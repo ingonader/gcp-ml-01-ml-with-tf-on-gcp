@@ -1,0 +1,406 @@
+1
+00:00:00,660 --> 00:00:03,690
+Hablemos de Compute Engine
+y Cloud Storage.
+
+2
+00:00:03,690 --> 00:00:07,970
+Es útil saber cómo funcionan
+las instancias de Compute y de Cloud
+
+3
+00:00:07,970 --> 00:00:11,495
+porque una instancia de Datalab
+se ejecutará en ellas.
+
+4
+00:00:11,495 --> 00:00:15,335
+Para la persistencia de datos en la nube,
+usarán Cloud Storage
+
+5
+00:00:15,335 --> 00:00:17,625
+por lo que deben comprender cómo funciona.
+
+6
+00:00:17,865 --> 00:00:21,480
+Consideren a Compute Engine
+como una CPU globalmente distribuida
+
+7
+00:00:21,480 --> 00:00:24,635
+y a Cloud Storage
+como un disco globalmente distribuido.
+
+8
+00:00:25,185 --> 00:00:28,400
+Datalab es un programa de un solo nodo
+
+9
+00:00:28,400 --> 00:00:31,576
+es decir que se ejecuta
+en una sola instancia de Compute Engine.
+
+10
+00:00:31,576 --> 00:00:35,210
+Sin embargo,
+cuando iniciamos trabajos de Dataflow
+
+11
+00:00:35,210 --> 00:00:40,995
+o de Cloud ML, lanzamos el procesamiento
+a muchas instancias de Compute Engine.
+
+12
+00:00:41,190 --> 00:00:45,335
+Compute Engine, básicamente,
+les permite alquilar una máquina virtual
+
+13
+00:00:45,335 --> 00:00:47,850
+en la nube
+para ejecutar sus cargas de trabajo.
+
+14
+00:00:48,270 --> 00:00:50,675
+¿Qué pueden personalizar?
+
+15
+00:00:51,175 --> 00:00:55,115
+La cantidad de núcleos,
+la memoria, el tamaño del disco
+
+16
+00:00:55,115 --> 00:00:57,345
+y el sistema operativo.
+
+17
+00:00:58,105 --> 00:01:00,275
+Pero los servicios
+como el balanceo de cargas
+
+18
+00:01:00,275 --> 00:01:02,495
+redes, etc., están integrados.
+
+19
+00:01:03,085 --> 00:01:05,745
+Pero no están atados
+a sus opciones iniciales
+
+20
+00:01:05,745 --> 00:01:07,405
+pueden cambiarlas.
+
+21
+00:01:07,825 --> 00:01:10,915
+Los descuentos
+en la facturación son automáticos
+
+22
+00:01:10,915 --> 00:01:13,200
+según el uso que hagan de la máquina.
+
+23
+00:01:13,200 --> 00:01:15,967
+Los discos adjuntos
+a las instancias Compute Engine
+
+24
+00:01:15,967 --> 00:01:18,685
+son rápidos, pero efímeros.
+
+25
+00:01:18,975 --> 00:01:22,200
+Cuando la VM ya no existe,
+el disco desaparece.
+
+26
+00:01:23,000 --> 00:01:27,225
+Google también ofrece discos persistentes,
+pero ignoremos eso por ahora.
+
+27
+00:01:27,655 --> 00:01:29,830
+Cloud Storage es durable.
+
+28
+00:01:30,080 --> 00:01:33,525
+Es decir, los BLOB en Cloud Storage
+se replican y almacenan
+
+29
+00:01:33,525 --> 00:01:35,220
+en varias ubicaciones.
+
+30
+00:01:35,630 --> 00:01:39,595
+Cloud Storage también es accesible
+desde cualquier máquina.
+
+31
+00:01:39,595 --> 00:01:43,260
+Gracias a la velocidad de la red,
+el ancho de banda biseccional
+
+32
+00:01:43,260 --> 00:01:45,300
+a escala de petabyes
+en un centro de Google
+
+33
+00:01:45,300 --> 00:01:46,895
+que básicamente quiere decir
+
+34
+00:01:46,895 --> 00:01:51,835
+que 100,000 máquinas
+pueden comunicarse a 10 GB por segundo
+
+35
+00:01:51,835 --> 00:01:54,775
+pueden leer directamente de Cloud Storage.
+
+36
+00:01:54,775 --> 00:01:57,575
+De hecho, eso haremos
+cuando escribamos nuestros programas
+
+37
+00:01:57,575 --> 00:01:58,877
+de TensorFlow.
+
+38
+00:01:59,517 --> 00:02:03,240
+El propósito de Cloud Storage
+es ofrecerles un sistema de archivos
+
+39
+00:02:03,240 --> 00:02:04,819
+global durable.
+
+40
+00:02:04,819 --> 00:02:06,715
+¿Cómo está organizado?
+
+41
+00:02:06,715 --> 00:02:09,775
+Una URL común
+de Cloud Storage se vería así
+
+42
+00:02:09,775 --> 00:02:16,925
+gs:acme-sales/data/sales003.csv.
+
+43
+00:02:18,205 --> 00:02:21,875
+La parte "acme-sales" es un depósito.
+
+44
+00:02:22,285 --> 00:02:25,380
+El nombre del depósito
+es único globalmente.
+
+45
+00:02:25,380 --> 00:02:28,840
+Es como un nombre de dominio
+en una URL de Internet.
+
+46
+00:02:28,840 --> 00:02:31,940
+La forma de obtener un nombre
+de depósito único global
+
+47
+00:02:31,940 --> 00:02:37,025
+es usar un nombre de dominio inverso
+y en ese caso Google Cloud Platform
+
+48
+00:02:37,025 --> 00:02:40,770
+les pedirá que confirmen
+que son dueños de ese dominio
+
+49
+00:02:41,280 --> 00:02:43,480
+o simplemente usen su ID del proyecto.
+
+50
+00:02:43,480 --> 00:02:47,770
+A menos que tengan mala suerte,
+su ID del proyecto, que también es único
+
+51
+00:02:47,770 --> 00:02:51,015
+no habrá sido usado
+en otro nombre de depósito.
+
+52
+00:02:52,135 --> 00:02:55,685
+El resto de la URL de gs
+es una convención
+
+53
+00:02:55,685 --> 00:03:00,585
+como una estructura de carpetas,
+en la que la URL completa
+
+54
+00:03:00,585 --> 00:03:03,480
+hace referencia
+a un objeto en Cloud Storage.
+
+55
+00:03:04,000 --> 00:03:06,000
+¿Cómo se trabaja con él?
+
+56
+00:03:06,000 --> 00:03:08,600
+Pueden usar gsutil,
+que es una herramienta
+
+57
+00:03:08,600 --> 00:03:11,965
+de línea de comandos
+integrada con el SDK de Google Cloud.
+
+58
+00:03:12,185 --> 00:03:14,700
+Si inician una instancia
+de Compute Engine
+
+59
+00:03:14,700 --> 00:03:16,890
+gsutil estará disponible.
+
+60
+00:03:16,890 --> 00:03:22,445
+Pueden descargar el SDK de Google Cloud
+en sus laptops para tener gsutil.
+
+61
+00:03:23,085 --> 00:03:27,035
+Gsutil usa la conocida sintaxis
+de línea de comandos de UNIX.
+
+62
+00:03:27,375 --> 00:03:32,030
+Por ejemplo, "mb" y "rb"
+quieren decir crear depósito y quitarlo.
+
+63
+00:03:32,030 --> 00:03:34,310
+Pueden usar "cp" para copiar.
+
+64
+00:03:34,310 --> 00:03:38,460
+Y en lugar de una línea de comandos,
+pueden usar GCP Console
+
+65
+00:03:38,460 --> 00:03:42,240
+o una API de programación o de REST.
+
+66
+00:03:42,700 --> 00:03:46,232
+Aquí, les muestro
+cómo copiar varios archivos
+
+67
+00:03:46,232 --> 00:03:50,471
+sales*.csv a una ubicación
+específica de Cloud Storage.
+
+68
+00:03:50,471 --> 00:03:54,590
+Recuerden que les dije que los depósitos
+de Cloud Storage son durables.
+
+69
+00:03:54,590 --> 00:03:57,270
+Eso quiere decir
+que se almacenan de manera redundante.
+
+70
+00:03:57,270 --> 00:03:59,765
+También obtienen almacenamiento
+en caché perimetral
+
+71
+00:03:59,765 --> 00:04:02,225
+y conmutación por error,
+con solo colocar su objeto
+
+72
+00:04:02,225 --> 00:04:03,395
+en Cloud Storage.
+
+73
+00:04:03,395 --> 00:04:06,300
+Sin embargo,
+solo porque Cloud Storage es un sistema
+
+74
+00:04:06,300 --> 00:04:10,468
+de archivos global, no significa
+que pueden olvidarse de la latencia.
+
+75
+00:04:11,838 --> 00:04:15,629
+Es mejor que almacenen sus datos
+cerca de sus nodos de Compute.
+
+76
+00:04:15,629 --> 00:04:19,595
+No obstante, ¿qué pasa
+si hay una interrupción en los servicios?
+
+77
+00:04:19,595 --> 00:04:23,470
+Deben distribuir sus aplicaciones
+y datos en varias zonas
+
+78
+00:04:23,470 --> 00:04:27,905
+para protegerse en caso
+de que una zona falle
+
+79
+00:04:27,905 --> 00:04:31,015
+en caso de que una zona
+sufra un corte de energía, por ejemplo.
+
+80
+00:04:31,015 --> 00:04:34,920
+Pueden usar zonas
+de diferentes regiones, si lo necesitan
+
+81
+00:04:34,920 --> 00:04:37,545
+para obtener
+una redundancia aún mayor.
+
+82
+00:04:37,875 --> 00:04:42,030
+Una zona es una ubicación aislada
+en una región.
+
+83
+00:04:42,410 --> 00:04:46,530
+El nombre incluye la región,
+la zona y una letra.
+
+84
+00:04:46,530 --> 00:04:50,750
+Finalmente, para la disponibilidad,
+si están creando una aplicación global
+
+85
+00:04:50,750 --> 00:04:53,750
+que tiene clientes dispersos
+en todo el mundo
+
+86
+00:04:53,750 --> 00:04:58,100
+deberían distribuir sus aplicaciones
+y datos en varias regiones.

@@ -1,0 +1,720 @@
+1
+00:00:00,000 --> 00:00:04,500
+In diesem Lab haben wir
+eine Compute Engine-Instanz erstellt,
+
+2
+00:00:04,500 --> 00:00:09,360
+die mit allen nötigen Zugriffs-
+und Sicherheitsrechten ausgestattet war.
+
+3
+00:00:09,360 --> 00:00:12,690
+Dann haben wir
+mit Daten in Cloud Storage interagiert
+
+4
+00:00:12,690 --> 00:00:14,490
+und eine einfache Aufgabe ausgeführt,
+
+5
+00:00:14,490 --> 00:00:19,277
+nämlich die Anzeige aktueller
+Erdbebendaten auf einer Webseite.
+
+6
+00:00:19,277 --> 00:00:23,610
+Dazu haben wir
+zuerst die GCP Console geöffnet,
+
+7
+00:00:23,610 --> 00:00:28,125
+um eine Compute Engine-Instanz
+zu erstellen.
+
+8
+00:00:28,125 --> 00:00:31,200
+Die Instanz wird hier links ausgewählt.
+
+9
+00:00:31,200 --> 00:00:35,720
+Hier ist es:
+Compute Engine, VM-Instanzen.
+
+10
+00:00:36,800 --> 00:00:40,300
+Jetzt können wir die Instanz erstellen.
+
+11
+00:00:43,550 --> 00:00:45,955
+Die Instanz kann beliebig benannt werden.
+
+12
+00:00:45,955 --> 00:00:49,475
+Ich nenne sie "earthquake".
+
+13
+00:00:49,475 --> 00:00:58,265
+Die Region ist us-central1-b
+und eine CPU sollte ausreichen.
+
+14
+00:00:58,265 --> 00:01:02,020
+Wir erlauben Zugriff auf alle Cloud-APIs
+
+15
+00:01:02,740 --> 00:01:05,679
+und erstellen dann die Instanz.
+
+16
+00:01:05,679 --> 00:01:07,105
+Nach dieser Vorbereitung
+
+17
+00:01:07,105 --> 00:01:09,097
+wird die Instanz erstellt.
+
+18
+00:01:09,097 --> 00:01:10,565
+Das Label wird nicht benötigt.
+
+19
+00:01:10,565 --> 00:01:12,678
+Deshalb blende ich das Info-Feld aus.
+
+20
+00:01:12,678 --> 00:01:17,750
+Jetzt wird die Instanz "earthquake"
+in Zone us-central1-b erstellt.
+
+21
+00:01:17,750 --> 00:01:20,770
+Sie hat noch keine IP-Adresse.
+
+22
+00:01:20,770 --> 00:01:24,513
+Jetzt wurde die Instanz erstellt
+und hat eine externe IP-Adresse.
+
+23
+00:01:24,513 --> 00:01:27,640
+Ich kann das SSH-Menü öffnen,
+
+24
+00:01:27,640 --> 00:01:30,010
+auf "SSH" klicken
+
+25
+00:01:31,300 --> 00:01:37,600
+und Pop-ups und SSH erlauben.
+
+26
+00:01:39,800 --> 00:01:40,710
+Fertig.
+
+27
+00:01:40,710 --> 00:01:47,980
+Jetzt greifen wir
+über SSH auf die neu erstellte VM zu.
+
+28
+00:01:47,980 --> 00:01:54,299
+Diese VM verfügt noch nicht
+über die erforderliche Software.
+
+29
+00:01:54,299 --> 00:01:59,585
+Zu den wichtigsten Programmen gehört Git,
+
+30
+00:01:59,585 --> 00:02:04,140
+mit dem ich den Quellcode
+aus dem Repository abrufen kann.
+
+31
+00:02:04,140 --> 00:02:05,530
+Doch wenn ich "git" eingebe,
+
+32
+00:02:05,530 --> 00:02:08,085
+wird der Befehl nicht gefunden.
+
+33
+00:02:08,085 --> 00:02:11,195
+Deshalb muss ich Git zuerst installieren.
+
+34
+00:02:11,195 --> 00:02:17,636
+Dazu gebe ich
+"sudo apt-get install git" ein.
+
+35
+00:02:17,636 --> 00:02:19,540
+Es wird eine weitere Zelle angezeigt
+
+36
+00:02:19,540 --> 00:02:22,765
+und ich lasse den Vorgang fortsetzen.
+
+37
+00:02:22,765 --> 00:02:25,140
+Git wird jetzt installiert.
+
+38
+00:02:25,140 --> 00:02:28,480
+Mit sudo kann ich
+Vorgänge als Route ausführen,
+
+39
+00:02:28,480 --> 00:02:32,742
+auf die ich zugreifen muss,
+um Software auf der VM zu installieren.
+
+40
+00:02:32,742 --> 00:02:36,345
+Wenn ich jetzt "git" eingebe,
+wird es angezeigt.
+
+41
+00:02:36,345 --> 00:02:38,860
+Nach der Installation von Git
+
+42
+00:02:38,860 --> 00:02:45,875
+möchte ich einen Git-Klon
+des Codes für diesen Kurs anlegen.
+
+43
+00:02:45,875 --> 00:02:54,475
+Er steht unter github.com/
+GoogleCloudPlatform/training-data-analyst.
+
+44
+00:02:55,985 --> 00:03:01,045
+So komme ich
+zum Repository "training data analyst".
+
+45
+00:03:01,045 --> 00:03:04,210
+Wenn wir jetzt
+zu Qwiklabs zurückkehren,
+
+46
+00:03:04,210 --> 00:03:07,190
+haben wir gerade
+die Compute Engine-Instanz erstellt.
+
+47
+00:03:07,190 --> 00:03:08,990
+Wir haben per SSH darauf zugegriffen.
+
+48
+00:03:08,990 --> 00:03:10,930
+Wir haben die Software Git installiert.
+
+49
+00:03:10,930 --> 00:03:12,700
+Was kommt als Nächstes?
+
+50
+00:03:12,700 --> 00:03:17,675
+Jetzt sollen Erdbebendaten
+des USGS aufgenommen werden.
+
+51
+00:03:17,675 --> 00:03:23,749
+Dafür gibt es bereits ein Skript.
+
+52
+00:03:23,749 --> 00:03:29,360
+Es befindet sich im Repository,
+im Verzeichnis training-data-analyst.
+
+53
+00:03:29,360 --> 00:03:32,645
+Wohin müssen wir jetzt?
+
+54
+00:03:32,645 --> 00:03:38,384
+Als Nächstes müssen wir 
+courses > machine_learning > deepdive >
+
+55
+00:03:38,384 --> 00:03:42,620
+01_googleml aufrufen.
+Das tun wir jetzt.
+
+56
+00:03:42,620 --> 00:03:46,530
+Wir wechseln in das Verzeichnis zu
+courses > machine_learning > deepdive.
+
+57
+00:03:46,530 --> 00:03:48,820
+Ich nutze
+eine automatische Vervollständigung,
+
+58
+00:03:48,820 --> 00:03:51,088
+damit ich nicht alles eingeben muss.
+
+59
+00:03:51,088 --> 00:03:53,620
+Jetzt wechsle ich
+ins Verzeichnis 01_googleml.
+
+60
+00:03:53,620 --> 00:04:00,190
+Hier sind die Skripts, die wir benötigen.
+
+61
+00:04:00,190 --> 00:04:05,615
+Jetzt können wir uns "ingest.sh" ansehen.
+
+62
+00:04:05,615 --> 00:04:14,910
+Dazu geben wir
+"earthquakes" und "less ingest.sh" ein.
+
+63
+00:04:14,910 --> 00:04:21,149
+Damit werden bereits vorhandene
+earthquakes.csv-Dateien entfernt
+
+64
+00:04:21,149 --> 00:04:25,615
+und ein Download über
+"wget" bzw. "web get" vorgenommen.
+
+65
+00:04:25,615 --> 00:04:28,879
+Die heruntergeladene CSV-Datei
+nenne ich earthquakes.csv.
+
+66
+00:04:30,009 --> 00:04:34,588
+Wir starten
+den Vorgang über "bash ingest.sh".
+
+67
+00:04:34,588 --> 00:04:38,285
+Jetzt haben wir 
+hier die Datei earthquakes.csv.
+
+68
+00:04:38,725 --> 00:04:44,100
+Über "head" können wir
+die ersten Zeilen anzeigen lassen.
+
+69
+00:04:44,100 --> 00:04:48,035
+Hier sieht man die ersten zehn Zeilen
+
+70
+00:04:48,035 --> 00:04:51,230
+mit der Uhrzeit,
+dem Längen- und Breitengrad
+
+71
+00:04:51,230 --> 00:04:54,640
+aller Erdbeben der letzten Woche.
+
+72
+00:04:56,060 --> 00:05:00,665
+Nachdem die Datei jetzt vorliegt,
+können wir die Daten umwandeln.
+
+73
+00:05:00,665 --> 00:05:03,085
+Die Datenumwandlung
+
+74
+00:05:03,085 --> 00:05:05,860
+ist ein gutes Beispiel
+für ein Datalab Notebook.
+
+75
+00:05:05,860 --> 00:05:08,435
+Ich zeige Ihnen, wie es aussieht.
+
+76
+00:05:08,435 --> 00:05:15,250
+Hier ist ein earthquakes.ipython-Notebook
+mit dem erzeugten Code.
+
+77
+00:05:15,250 --> 00:05:17,370
+Mit diesem Code
+
+78
+00:05:17,370 --> 00:05:22,620
+werden die Erdbebendaten abgerufen
+und über matplotlib dargestellt.
+
+79
+00:05:22,620 --> 00:05:28,485
+Dann speichern wir sie
+als Bild in einer PNG-Datei.
+
+80
+00:05:28,885 --> 00:05:30,974
+Das tun wir jetzt.
+
+81
+00:05:30,974 --> 00:05:36,323
+Laut Anleitung muss zuerst
+die fehlende Software installiert werden.
+
+82
+00:05:36,323 --> 00:05:38,355
+Welche Software brauchen wir noch?
+
+83
+00:05:38,355 --> 00:05:40,480
+Finden wir es heraus.
+
+84
+00:05:41,310 --> 00:05:45,893
+Hier nutzen wir "install missing.sh"
+
+85
+00:05:45,893 --> 00:05:52,570
+mit Installationsanleitungen für basemap.
+
+86
+00:05:52,570 --> 00:05:55,950
+Basemap ist ein Python-Paket 
+zum Zeichnen geografischer Karten.
+
+87
+00:05:55,950 --> 00:05:59,480
+Python numpy ist 
+eine numerische Verarbeitungsbibliothek
+
+88
+00:05:59,480 --> 00:06:03,530
+und matplotlib ist
+die einfache Plot-Bibliothek.
+
+89
+00:06:03,530 --> 00:06:06,754
+Diese drei Python-Pakete
+installieren wir jetzt.
+
+90
+00:06:06,754 --> 00:06:10,585
+Dazu gebe ich
+"bash install missing.sh" ein.
+
+91
+00:06:10,585 --> 00:06:14,730
+Damit werden alle Softwarepakete abgerufen
+
+92
+00:06:14,730 --> 00:06:18,700
+und auf dieser VM installiert.
+
+93
+00:06:20,610 --> 00:06:22,960
+Nach der Installation der Software
+
+94
+00:06:22,960 --> 00:06:29,079
+kann ich jetzt "transform.py"
+in diesem Verzeichnis ausführen.
+
+95
+00:06:29,079 --> 00:06:34,695
+Dies enthält den gesamten 
+Python-Code aus dem IPython-Notebook
+
+96
+00:06:34,695 --> 00:06:38,306
+für das Darstellen der Daten
+und das Erstellen einer Bilddatei.
+
+97
+00:06:38,306 --> 00:06:42,291
+Führen wir python transform.py aus.
+
+98
+00:06:54,591 --> 00:06:57,480
+Wenn wir jetzt "ls-lrt" eingeben,
+
+99
+00:06:57,480 --> 00:07:00,069
+wird alles angezeigt,
+was zuletzt erstellt wurde.
+
+100
+00:07:00,069 --> 00:07:04,190
+Hier ist eine neue Datei
+namens earthquakes.png.
+
+101
+00:07:04,190 --> 00:07:05,973
+Das ist die Bilddatei.
+
+102
+00:07:05,973 --> 00:07:09,755
+Diese Bilddatei wollen wir
+jetzt in die Cloud verschieben.
+
+103
+00:07:09,755 --> 00:07:12,990
+Der Speicherort in der Cloud
+
+104
+00:07:12,990 --> 00:07:14,950
+ist in Google Cloud Storage.
+
+105
+00:07:14,950 --> 00:07:18,100
+Dazu erstellen wir zuerst einen Bucket.
+
+106
+00:07:19,090 --> 00:07:24,610
+Wir kehren zum GCP-Webdienstmenü zurück,
+
+107
+00:07:25,410 --> 00:07:33,396
+klicken auf die linke Leiste, scrollen zu
+"Speicher" und erstellen einen Bucket.
+
+108
+00:07:33,396 --> 00:07:37,955
+Der Name des Buckets
+muss global eindeutig sein.
+
+109
+00:07:37,955 --> 00:07:41,590
+Dafür eignet sich etwa der Projektname.
+
+110
+00:07:41,590 --> 00:07:43,947
+Denn es ist äußerst unwahrscheinlich,
+
+111
+00:07:43,947 --> 00:07:47,730
+dass unser Projektname bereits
+für einen Bucket verwendet wurde.
+
+112
+00:07:47,730 --> 00:07:53,615
+Ich kopiere also den Namen des Projekts
+
+113
+00:07:53,615 --> 00:07:59,315
+und nutze ihn als Namen für den Bucket.
+
+114
+00:07:59,315 --> 00:08:04,477
+Der Bucket kann
+multiregional oder regional sein.
+
+115
+00:08:04,477 --> 00:08:07,105
+Ich wähle einen regionalen Bucket.
+
+116
+00:08:07,105 --> 00:08:09,770
+Er ist in der Region us-central-1 angesiedelt,
+
+117
+00:08:09,770 --> 00:08:14,113
+die ich auch für
+die Compute Engine-Instanz verwendet habe.
+
+118
+00:08:14,113 --> 00:08:17,640
+Das verringert die Latenz beim Datenabruf.
+
+119
+00:08:17,640 --> 00:08:20,510
+Ich starte den Vorgang jetzt.
+
+120
+00:08:20,510 --> 00:08:23,328
+Der Bucket wurde erstellt.
+
+121
+00:08:23,328 --> 00:08:28,040
+Jetzt wollen wir
+die Bilddatei earthquakes.png
+
+122
+00:08:28,040 --> 00:08:31,745
+in den Bucket kopieren.
+Wie funktioniert das?
+
+123
+00:08:31,745 --> 00:08:35,125
+Dazu können wir "gsutil" nutzen.
+
+124
+00:08:35,125 --> 00:08:38,000
+Ich kopiere jetzt die Datei.
+
+125
+00:08:38,000 --> 00:08:41,830
+Dazu gebe ich "gsutil"
+und den Namen des Buckets ein.
+
+126
+00:08:41,830 --> 00:08:45,720
+Der Bucketname ist der Projektname.
+
+127
+00:08:54,110 --> 00:08:58,650
+Ich gebe also
+den Projektnamen und "earthquakes" ein.
+
+128
+00:08:58,650 --> 00:09:01,622
+Jetzt werden alle drei Dateien,
+
+129
+00:09:01,622 --> 00:09:06,020
+earthquakes.htm,
+earthquakes.png und earthquakes.csv,
+
+130
+00:09:06,020 --> 00:09:10,980
+in die Cloud kopiert 
+und im Bucket gespeichert.
+
+131
+00:09:10,990 --> 00:09:16,470
+Wenn wir zum Bucket
+zurückkehren und ihn aktualisieren,
+
+132
+00:09:16,470 --> 00:09:21,925
+sehen wir "earthquakes"
+und darin die drei Dateien.
+
+133
+00:09:21,925 --> 00:09:28,535
+Jetzt wollen wir
+die drei Dateien öffentlich freigeben.
+
+134
+00:09:28,535 --> 00:09:30,495
+Durch die Freigabe
+
+135
+00:09:30,495 --> 00:09:33,345
+erhalten wir einen öffentlichen Link.
+
+136
+00:09:33,345 --> 00:09:37,215
+Über diesen Link
+gelange ich zu earthquakes.htm.
+
+137
+00:09:37,215 --> 00:09:40,589
+Der Link hat folgenden Namen:
+
+138
+00:09:40,589 --> 00:09:48,880
+storage.googleapis.com/Projektname/
+earthquakes/earthquakes.htm
+
+139
+00:09:48,880 --> 00:09:52,068
+Das entspricht der Ordnerstruktur.
+
+140
+00:09:52,068 --> 00:09:55,965
+Damit haben wir eine öffentliche Webseite.
+
+141
+00:09:55,965 --> 00:10:02,690
+Möglich wurde das
+über die Einstellung "Öffentlich teilen".
+
+142
+00:10:02,690 --> 00:10:08,045
+Ohne öffentliche Freigabe
+wäre die Seite im Netz nicht zugänglich.
+
+143
+00:10:08,045 --> 00:10:12,845
+In diesem Lab haben wir
+Compute Engine und Cloud Storage
+
+144
+00:10:12,845 --> 00:10:19,900
+ganz traditionell
+als Rechenressourcen verwendet.
+
+145
+00:10:19,900 --> 00:10:23,795
+In der Regel
+arbeiten wir so nicht mit Ressourcen.
+
+146
+00:10:23,795 --> 00:10:26,880
+Wir würden keine VM erstellen
+
+147
+00:10:26,880 --> 00:10:29,300
+und Software installieren, 
+um damit zu arbeiten.
+
+148
+00:10:29,300 --> 00:10:32,060
+Stattdessen nutzen wir in diesem Kurs
+
+149
+00:10:32,060 --> 00:10:34,640
+vor allem verwaltete Dienste.
+
+150
+00:10:34,640 --> 00:10:38,570
+Mit ihnen können wir
+unseren gewünschten Code ausführen,
+
+151
+00:10:38,570 --> 00:10:41,310
+ohne selber VMs bereitzustellen
+
+152
+00:10:41,310 --> 00:10:44,015
+oder Software zu installieren.
+
+153
+00:10:44,015 --> 00:10:46,485
+Stattdessen gibt man dem Dienst den Code,
+
+154
+00:10:46,485 --> 00:10:50,340
+lässt ihn ausführen
+und erhält die entsprechenden Ergebnisse.
+
+155
+00:10:50,340 --> 00:10:55,820
+Diese übergeordnete,
+abstraktere Nutzung von Cloud-Diensten
+
+156
+00:10:55,820 --> 00:10:58,340
+behandeln wir später in anderen Labs.
+
+157
+00:10:58,340 --> 00:11:01,340
+Ziel dieses Labs war es,
+
+158
+00:11:01,340 --> 00:11:04,940
+die grundlegenden Funktionen zu zeigen.
+
+159
+00:11:04,940 --> 00:11:08,730
+Dazu gehören
+Compute Engine für die Rechenleistung
+
+160
+00:11:08,730 --> 00:11:14,470
+und Cloud Storage
+für nichtflüchtige Speicherung.

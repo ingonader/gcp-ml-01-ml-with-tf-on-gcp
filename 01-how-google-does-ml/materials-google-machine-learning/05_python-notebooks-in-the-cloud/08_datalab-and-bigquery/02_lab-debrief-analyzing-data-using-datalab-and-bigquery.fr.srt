@@ -1,0 +1,921 @@
+1
+00:00:00,000 --> 00:00:02,120
+Nous voici dans l'atelier 2,
+
+2
+00:00:02,120 --> 00:00:07,345
+où nous allons voir comment utiliser
+Datalab pour exécuter une requête BigQuery.
+
+3
+00:00:07,345 --> 00:00:11,140
+Nous allons analyser un ensemble de données
+assez conséquent,
+
+4
+00:00:11,140 --> 00:00:14,230
+comportant 70 millions de lignes et
+8 gigaoctets de données,
+
+5
+00:00:14,230 --> 00:00:17,730
+à l'aide de BigQuery et de Cloud Datalab.
+
+6
+00:00:17,730 --> 00:00:20,940
+Commençons par lancer Cloud Datalab.
+
+7
+00:00:20,940 --> 00:00:23,350
+Nous pouvons le faire depuis Cloud Shell.
+
+8
+00:00:23,350 --> 00:00:26,370
+Premièrement, nous devons définir
+
+9
+00:00:26,370 --> 00:00:28,710
+quelles sont nos zones de calcul,
+
+10
+00:00:28,710 --> 00:00:32,325
+de manière à exécuter Datalab
+dans l'une de ces zones.
+
+11
+00:00:32,325 --> 00:00:34,900
+Je sais déjà que "us-central1"
+est une zone de calcul,
+
+12
+00:00:34,900 --> 00:00:36,460
+je vais donc sauter cette étape.
+
+13
+00:00:36,460 --> 00:00:39,205
+Je passe à la création de Datalab,
+en tapant
+
+14
+00:00:39,205 --> 00:00:43,750
+"datalab create" suivi du nom de ma VM
+et de la zone.
+
+15
+00:00:43,750 --> 00:00:45,510
+Allons-y.
+
+16
+00:00:45,510 --> 00:00:48,455
+Revenons dans Cloud Shell.
+
+17
+00:00:48,455 --> 00:00:50,580
+Dans Cloud Shell,
+
+18
+00:00:50,580 --> 00:00:53,765
+je tape "datalab create mydatalabvm",
+
+19
+00:00:53,765 --> 00:01:00,295
+et j'indique la zone "us-central1-b".
+
+20
+00:01:00,295 --> 00:01:06,795
+Il faut environ cinq minutes pour
+exécuter cette commande.
+
+21
+00:01:06,795 --> 00:01:08,810
+Faisons une avance rapide de la vidéo,
+
+22
+00:01:08,810 --> 00:01:12,300
+jusqu'au moment où apparaît le message
+
+23
+00:01:12,300 --> 00:01:16,450
+indiquant que vous pouvez vous connecter
+au "localhost" 8081
+
+24
+00:01:16,450 --> 00:01:19,485
+ou effectuer un aperçu sur le Web
+sur le port 8081.
+
+25
+00:01:19,485 --> 00:01:23,580
+Attendons qu'il s'affiche pour continuer.
+
+26
+00:01:23,580 --> 00:01:26,405
+Pendant que Datalab démarre,
+
+27
+00:01:26,405 --> 00:01:28,965
+poursuivons avec BigQuery.
+
+28
+00:01:28,965 --> 00:01:31,125
+Voici la requête que je souhaite exécuter.
+
+29
+00:01:31,125 --> 00:01:34,885
+Le commentaire ici est très important
+car nous voulons utiliser le SQL standard,
+
+30
+00:01:34,885 --> 00:01:40,355
+alors que l'interface utilisateur
+de BigQuery utilise par défaut
+
+31
+00:01:40,355 --> 00:01:45,220
+(en tout cas, pour le moment)
+ce que l'on appelle l'ancien SQL.
+
+32
+00:01:45,220 --> 00:01:47,180
+Nous allons accéder à la console BigQuery
+
+33
+00:01:47,180 --> 00:01:51,400
+via le menu de GCP, que l'on fait défiler
+
+34
+00:01:51,400 --> 00:01:58,590
+pour sélectionner BigQuery.
+
+35
+00:01:58,590 --> 00:02:02,860
+Nous devons alors nous connecter
+à l'aide d'un mot de passe
+
+36
+00:02:02,860 --> 00:02:05,255
+fourni dans QwikLabs.
+
+37
+00:02:05,255 --> 00:02:11,655
+Récupérons ce mot de passe
+dans QwikLabs, et saisissons-le.
+
+38
+00:02:15,585 --> 00:02:19,390
+Nous sommes maintenant dans BigQuery.
+
+39
+00:02:19,390 --> 00:02:22,500
+Vérifiez qu'il s'agit bien de votre projet.
+
+40
+00:02:22,500 --> 00:02:27,455
+Dans notre cas, ni ceci ni
+des ressources QwikLabs ou autres.
+
+41
+00:02:27,455 --> 00:02:30,640
+Vous pouvez alors cliquer sur
+"Saisir une requête".
+
+42
+00:02:30,640 --> 00:02:33,425
+Notez que votre interface utilisateur
+peut être différente,
+
+43
+00:02:33,425 --> 00:02:35,435
+car les interfaces changent régulièrement.
+
+44
+00:02:35,435 --> 00:02:38,480
+Cependant, la plupart des boutons
+
+45
+00:02:38,480 --> 00:02:42,835
+et autres éléments restent reconnaissables.
+
+46
+00:02:42,835 --> 00:02:48,445
+Nous allons donc récupérer notre requête
+et l'exécuter.
+
+47
+00:02:48,445 --> 00:02:51,025
+Allons-y.
+
+48
+00:02:51,025 --> 00:02:53,305
+J'aurais aussi bien pu choisir
+de ne pas ajouter
+
+49
+00:02:53,305 --> 00:02:55,760
+#standardSQL ici.
+
+50
+00:02:55,760 --> 00:02:57,900
+À la place, j'aurais pu afficher les options
+
+51
+00:02:57,900 --> 00:03:00,080
+et décocher l'ancien SQL,
+
+52
+00:03:00,080 --> 00:03:02,045
+ce qui est une autre manière de procéder.
+
+53
+00:03:02,045 --> 00:03:04,865
+Dans tous les cas, nous voulons utiliser
+le SQL standard.
+
+54
+00:03:04,865 --> 00:03:08,430
+Nous allons donc exécuter ce dialecte
+et la requête.
+
+55
+00:03:08,430 --> 00:03:11,560
+Nous utilisons un ensemble de données
+qui s'appelle
+
+56
+00:03:11,560 --> 00:03:15,355
+"bigquery-samples" (notre projet s’appelle
+BigQuery samples),
+
+57
+00:03:15,355 --> 00:03:18,090
+un ensemble de données
+"airline_ontime_data",
+
+58
+00:03:18,090 --> 00:03:20,320
+et une table "flights".
+
+59
+00:03:20,320 --> 00:03:24,135
+En fait nous ne voyons pas le projet
+
+60
+00:03:24,135 --> 00:03:26,855
+sur cette page.
+
+61
+00:03:26,855 --> 00:03:31,470
+Comment afficher un projet
+qui ne figure pas dans le menu de gauche ?
+
+62
+00:03:31,470 --> 00:03:34,530
+Il vous suffit de cliquer
+dans le menu déroulant
+
+63
+00:03:34,530 --> 00:03:37,365
+et de choisir "Basculer vers le projet",
+
+64
+00:03:37,365 --> 00:03:40,900
+puis "Afficher le projet",
+et de saisir le nom du projet.
+
+65
+00:03:40,900 --> 00:03:43,700
+Le projet "bigquery-samples" s'affiche alors.
+
+66
+00:03:43,700 --> 00:03:47,290
+Dans le projet, vous pouvez voir l'ensemble
+de données "airline_ontime_data"
+
+67
+00:03:47,290 --> 00:03:50,540
+(données horaires des vols)
+ainsi que la table "flights" (vols).
+
+68
+00:03:50,540 --> 00:03:53,070
+Je peux alors consulter les données des vols.
+
+69
+00:03:53,070 --> 00:03:56,325
+Dans l'aperçu,
+
+70
+00:03:56,325 --> 00:03:59,130
+je peux visualiser les colonnes
+
+71
+00:03:59,130 --> 00:04:02,665
+et des exemples de valeurs de données
+de la table.
+
+72
+00:04:02,665 --> 00:04:04,395
+Si l'on affiche les détails,
+
+73
+00:04:04,395 --> 00:04:07,880
+on peut voir que la table
+fait plus de 8 gigaoctets,
+
+74
+00:04:07,880 --> 00:04:10,425
+et qu'elle contient 70 millions de lignes.
+
+75
+00:04:10,425 --> 00:04:12,165
+Voilà.
+
+76
+00:04:12,165 --> 00:04:16,220
+Exécutons la requête.
+
+77
+00:04:21,630 --> 00:04:24,040
+Voici la requête
+
+78
+00:04:24,040 --> 00:04:27,300
+que nous avons exécutée.
+
+79
+00:04:27,300 --> 00:04:30,915
+Nous avons donc demandé à la requête
+de sélectionner les retards de départs
+
+80
+00:04:30,915 --> 00:04:33,800
+"departure_delay", et de compter
+le nombre de vols concernés.
+
+81
+00:04:33,800 --> 00:04:37,090
+Il s'agit du nombre de vols associés
+à un retard de départ spécifique,
+
+82
+00:04:37,090 --> 00:04:40,345
+car le groupement est fait en fonction
+des valeurs "departure_delay".
+
+83
+00:04:40,345 --> 00:04:42,920
+Par exemple, pour une valeur
+"departure_delay" de -37,
+
+84
+00:04:42,920 --> 00:04:47,040
+qui signifie que le vol a décollé
+avec 37 minutes d'avance,
+
+85
+00:04:47,040 --> 00:04:48,785
+combien de vols sont-ils recensés ?
+
+86
+00:04:48,785 --> 00:04:52,145
+Nous trouvons 107 vols correspondants
+dans l'ensemble de données,
+
+87
+00:04:52,145 --> 00:04:55,720
+qui sont donc les quantiles.
+
+88
+00:04:55,720 --> 00:05:00,195
+Cela correspond à 28 centiles,
+
+89
+00:05:00,195 --> 00:05:02,555
+puisqu'il faut diviser par cinq.
+
+90
+00:05:02,555 --> 00:05:06,025
+80 % de ces vols arrivent
+
+91
+00:05:06,025 --> 00:05:09,880
+avec au moins 66 minutes d'avance,
+
+92
+00:05:09,880 --> 00:05:17,975
+et 60 à 80 % d'entre eux arrivent
+avec 41 à 66 minutes d'avance, etc.
+
+93
+00:05:17,975 --> 00:05:20,635
+Voici une question pour vous :
+
+94
+00:05:20,635 --> 00:05:23,915
+si la valeur "departure_delay" est
+de 35 minutes d'avance,
+
+95
+00:05:23,915 --> 00:05:25,700
+quelle est la valeur médiane ?
+
+96
+00:05:25,700 --> 00:05:27,285
+Selon toute logique, cette valeur
+
+97
+00:05:27,285 --> 00:05:28,670
+devrait être au milieu,
+
+98
+00:05:28,670 --> 00:05:31,430
+donc 28 minutes.
+
+99
+00:05:31,430 --> 00:05:37,980
+Si on retourne dans la console,
+
+100
+00:05:37,980 --> 00:05:45,005
+Datalab demande si nous souhaitons continuer.
+Répondons que oui.
+
+101
+00:05:45,005 --> 00:05:49,910
+Continuons en acceptant
+tout ce qui est proposé.
+
+102
+00:05:49,910 --> 00:05:53,110
+Nous allons maintenant exécuter
+cette autre requête,
+
+103
+00:05:53,110 --> 00:05:55,810
+pour trouver les paires d’aéroports
+"airport-pair".
+
+104
+00:05:55,810 --> 00:05:58,720
+Il s'agit de trouver les aéroports de départ
+
+105
+00:05:58,720 --> 00:06:03,215
+et d'arrivée spécifiques qui ont
+le plus grand nombre d'interconnexions.
+
+106
+00:06:03,215 --> 00:06:05,940
+Nous nous trouvons dans la même table.
+
+107
+00:06:05,940 --> 00:06:09,530
+Mais cette fois-ci, je sélectionne
+l'aéroport de départ "departure_airport"
+
+108
+00:06:09,530 --> 00:06:12,780
+et celui d'arrivée "arrival_airport", 
+et je compte le nombre de vols
+
+109
+00:06:12,780 --> 00:06:15,455
+en groupant par "departure_airport" et
+"arrival_airport".
+
+110
+00:06:15,455 --> 00:06:19,430
+Je choisis un tri par ordre décroissant
+pour que la paire d’aéroports "airport-pair"
+
+111
+00:06:19,430 --> 00:06:23,055
+avec le plus d'interconnexions
+s'affiche en premier,
+
+112
+00:06:23,055 --> 00:06:24,420
+avec une limite de dix.
+
+113
+00:06:24,420 --> 00:06:26,100
+J'obtiendrai donc les dix premiers
+
+114
+00:06:26,100 --> 00:06:29,675
+résultats les plus courants.
+
+115
+00:06:29,675 --> 00:06:35,985
+Nous avons traité plus de 70 millions
+d'enregistrements. C'est impressionnant !
+
+116
+00:06:35,985 --> 00:06:37,360
+Et tout cela
+
+117
+00:06:37,360 --> 00:06:40,000
+en à peine 2,3 secondes.
+
+118
+00:06:40,000 --> 00:06:43,415
+Comment est-ce possible ?
+
+119
+00:06:43,415 --> 00:06:48,505
+Les 70 millions d'enregistrements n'ont
+pas tous été traités sur cette machine.
+
+120
+00:06:48,505 --> 00:06:52,220
+L'exécution se fait en réalité
+sur des milliers de machines.
+
+121
+00:06:52,220 --> 00:06:54,535
+Elle est évolutive,
+et se fait à grande échelle.
+
+122
+00:06:54,535 --> 00:06:56,975
+C'est ce que permettent
+les services dans le cloud ;
+
+123
+00:06:56,975 --> 00:06:58,240
+tout se fait sans serveur.
+
+124
+00:06:58,240 --> 00:07:00,440
+Revenons à notre requête,
+
+125
+00:07:00,440 --> 00:07:04,070
+L'aéroport de départ se trouve être
+celui de Los Angeles (LAX)
+
+126
+00:07:04,070 --> 00:07:06,570
+et l'aéroport d'arrivée celui de
+San Francisco (SAN).
+
+127
+00:07:06,570 --> 00:07:11,875
+Cela représente 133 000 interconnexions
+
+128
+00:07:11,875 --> 00:07:16,075
+Il s'agit donc de la paire d'aéroports avec
+le plus grand nombre d'interconnexions.
+
+129
+00:07:16,075 --> 00:07:19,405
+Si l'on revient dans Cloud Shell,
+
+130
+00:07:19,405 --> 00:07:22,360
+on peut désormais cliquer sur
+"Aperçu sur le Web",
+
+131
+00:07:22,360 --> 00:07:25,440
+et basculer sur le port 8081
+pour commencer à utiliser Datalab.
+
+132
+00:07:25,440 --> 00:07:28,240
+Cliquez sur "Aperçu sur le Web",
+
+133
+00:07:28,240 --> 00:07:32,010
+et remplacez le numéro de port par 8081.
+
+134
+00:07:32,010 --> 00:07:33,415
+Nous nous trouvons désormais
+
+135
+00:07:33,415 --> 00:07:35,755
+dans Datalab.
+
+136
+00:07:35,755 --> 00:07:39,370
+Vous avez fait du bon travail dans BigQuery.
+
+137
+00:07:39,370 --> 00:07:43,740
+Vous avez pu exécuter des requêtes SQL
+sur des millions de lignes de données,
+
+138
+00:07:43,740 --> 00:07:46,280
+et vous avez obtenu des réponses
+en quelques secondes.
+
+139
+00:07:46,280 --> 00:07:49,170
+C'est très bien, 
+mais au-delà de ça,
+
+140
+00:07:49,170 --> 00:07:53,740
+notre objectif est de tracer des graphiques
+et d'effectuer d'autres tâches.
+
+141
+00:07:53,740 --> 00:07:56,275
+Nous voulons être en mesure
+de visualiser les données.
+
+142
+00:07:56,275 --> 00:07:59,995
+Or, la console BigQuery ne propose
+pas de système de visualisation des données.
+
+143
+00:07:59,995 --> 00:08:02,800
+Nous devons utiliser un outil
+de visualisation personnalisé.
+
+144
+00:08:02,800 --> 00:08:04,670
+Nous allons donc faire appel à Datalab,
+
+145
+00:08:04,670 --> 00:08:06,810
+qui exploite pleinement
+
+146
+00:08:06,810 --> 00:08:10,920
+la puissance de Python pour
+générer tous nos graphiques.
+
+147
+00:08:10,920 --> 00:08:15,065
+Nous allons exécuter l'une de nos requêtes,
+
+148
+00:08:15,065 --> 00:08:19,745
+mais au lieu de le faire dans
+la console BigQuery,
+
+149
+00:08:19,745 --> 00:08:21,295
+nous allons utiliser Datalab.
+
+150
+00:08:21,295 --> 00:08:23,125
+Nous voici dans Datalab.
+
+151
+00:08:23,125 --> 00:08:26,975
+Je vais commencer par ouvrir le bloc-notes.
+
+152
+00:08:26,975 --> 00:08:30,145
+Ce bloc-notes
+
+153
+00:08:30,145 --> 00:08:32,390
+comporte une cellule de code.
+
+154
+00:08:32,390 --> 00:08:34,880
+Je vais y coller le code
+
+155
+00:08:34,880 --> 00:08:38,174
+et cliquer sur "Exécuter"
+pour lancer son exécution.
+
+156
+00:08:38,174 --> 00:08:42,710
+Comme l'exécution est effectuée
+par BigQuery,
+
+157
+00:08:42,710 --> 00:08:44,765
+l'analyse des millions de vols
+
+158
+00:08:44,765 --> 00:08:47,700
+ne prendra que quelques secondes.
+
+159
+00:08:47,700 --> 00:08:53,005
+J'obtiens comme résultat
+une structure de données Pandas.
+
+160
+00:08:53,005 --> 00:08:56,290
+Ici, ".to_dataframe" est bien
+une structure de données Pandas.
+
+161
+00:08:56,290 --> 00:09:03,485
+Les deux premières lignes de
+cette structure de données s'affichent,
+
+162
+00:09:03,485 --> 00:09:06,230
+et vous pouvez voir
+les retards de vols (departure_delay),
+
+163
+00:09:06,230 --> 00:09:07,725
+le nombre de vols
+
+164
+00:09:07,725 --> 00:09:10,400
+et, cette fois-ci, les déciles,
+
+165
+00:09:10,400 --> 00:09:12,570
+car j'ai défini les quantiles sur 10.
+
+166
+00:09:12,570 --> 00:09:13,720
+Il y en a donc 10,
+
+167
+00:09:13,720 --> 00:09:16,505
+qui s'affichent sous forme de liste Python.
+
+168
+00:09:16,505 --> 00:09:21,990
+Si on continue en prenant la même
+structure de données
+
+169
+00:09:21,990 --> 00:09:27,800
+et en la renommant,
+
+170
+00:09:27,800 --> 00:09:34,180
+voilà ce que l'on obtient.
+Les données de déciles
+
+171
+00:09:34,180 --> 00:09:35,795
+sont réparties en pourcentages.
+
+172
+00:09:35,795 --> 00:09:37,920
+Nous obtenons des colonnes séparées
+
+173
+00:09:37,920 --> 00:09:39,510
+pour chaque pourcentage :
+
+174
+00:09:39,510 --> 00:09:41,590
+0 %, 10 %, 20 %, 30 %, etc.
+
+175
+00:09:41,590 --> 00:09:44,760
+Pourquoi procéder ainsi ?
+Parce que le fait de séparer les colonnes
+
+176
+00:09:44,760 --> 00:09:49,220
+va me permettre de passer à l'étape suivante.
+
+177
+00:09:49,640 --> 00:09:54,680
+Continuons.
+
+178
+00:10:04,260 --> 00:10:08,770
+Je vais supprimer la colonne 0 %
+
+179
+00:10:08,770 --> 00:10:10,675
+et la colonne 100 %,
+
+180
+00:10:10,675 --> 00:10:14,840
+et je vais recueillir toutes les données
+entre 10 % et 90 %
+
+181
+00:10:14,840 --> 00:10:18,475
+pour les tracer sous forme de graphique.
+
+182
+00:10:18,475 --> 00:10:20,700
+Et maintenant, comment
+
+183
+00:10:20,700 --> 00:10:22,975
+interpréter ce graphique ?
+
+184
+00:10:22,975 --> 00:10:25,240
+Par exemple, lorsque la valeur
+
+185
+00:10:25,240 --> 00:10:27,065
+departure_delay est de 10,
+
+186
+00:10:27,065 --> 00:10:29,385
+cela indique un retard de 10 minutes.
+
+187
+00:10:29,385 --> 00:10:33,870
+Pourtant, 10 % des vols arrivent
+tout de même en avance.
+
+188
+00:10:33,870 --> 00:10:39,605
+Mais 90 % des vols arrivent avec
+plus de 21 minutes de retard.
+
+189
+00:10:39,605 --> 00:10:40,975
+Il s'agit des déciles.
+
+190
+00:10:40,975 --> 00:10:44,640
+La médiane est quant à elle
+d'un retard de départ
+
+191
+00:10:44,640 --> 00:10:47,545
+et d'un retard d'arrivée
+
+192
+00:10:47,545 --> 00:10:49,140
+d'environ trois à quatre minutes.
+
+193
+00:10:49,140 --> 00:10:51,320
+Voilà les informations que donnent
+ces lignes.
+
+194
+00:10:51,320 --> 00:10:55,500
+Elles fournissent une distribution pour
+une valeur departure_delay spécifique.
+
+195
+00:10:55,500 --> 00:11:00,990
+Il apparaît donc que la relation
+est principalement linéaire
+
+196
+00:11:00,990 --> 00:11:07,915
+pour toutes les valeurs departure_delay
+en dessous de -20.
+
+197
+00:11:07,915 --> 00:11:14,195
+Pour les vols qui décollent avec plus
+de 20 minutes d'avance,
+
+198
+00:11:14,195 --> 00:11:15,960
+(qui sont donc très en avance),
+
+199
+00:11:15,960 --> 00:11:18,640
+la relation semble assez éclatée,
+
+200
+00:11:18,640 --> 00:11:19,880
+et pas vraiment linéaire.
+
+201
+00:11:19,880 --> 00:11:21,885
+Si nous optons pour un modèle linéaire,
+
+202
+00:11:21,885 --> 00:11:24,920
+il fonctionnera bien pour les données
+
+203
+00:11:24,920 --> 00:11:28,170
+au milieu de la distribution,
+mais pas pour celles qui s'en écartent.
+
+204
+00:11:28,170 --> 00:11:31,330
+Il est impossible d'obtenir facilement
+
+205
+00:11:31,330 --> 00:11:34,685
+ce type d'information autrement.
+
+206
+00:11:34,685 --> 00:11:37,125
+Vous devez tracer les distributions,
+
+207
+00:11:37,125 --> 00:11:40,015
+ce qui est bien plus facile lorsque
+vous pouvez exploiter
+
+208
+00:11:40,015 --> 00:11:43,120
+toute la puissance de Python.

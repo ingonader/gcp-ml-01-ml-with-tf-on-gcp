@@ -1,0 +1,85 @@
+Estamos en el segundo lab. Les mostraremos cómo usar Datalab
+para ejecutar una consulta de BigQuery. Analizaremos un conjunto de datos
+que es bastante grande 70 millones de filas, 8 GB de datos lo analizaremos con BigQuery
+y Cloud Datalab. Lo primero que haremos
+es iniciar Cloud Datalab y podemos hacerlo desde Cloud Shell. Lo primero que debemos analizar es
+cuáles son las zonas de procesamiento. De modo que ejecutemos Datalab
+en una de esas zonas. Sé que us-central1
+es una zona de procesamiento por lo que saltaré esa parte. Luego, crearé el Datalab. Escribimos datalab create,
+el nombre de la VM y alguna zona. Hagamos eso. Regresemos a Cloud Shell. Estoy en Cloud Shell y escribiré datalab create mydatalabvm. Y la zona será "us-central1-b". Este comando tarda
+unos cinco minutos en completarse. Adelantaremos el video y, luego, iremos directamente al mensaje que indica que nos podemos conectar
+como localhost:8081 o que podemos obtener una vista
+previa en 8081. Esperemos que eso aparezca
+y luego continuaremos. Mientras Datalab se inicia,
+vayamos a BigQuery. Esta es una consulta que quiero ejecutar. El comentario aquí es muy importante,
+porque queremos ejecutar una consulta SQL estándar
+y la interfaz del usuario de BigQuery en el momento de esta grabación,
+usa Legacy SQL de manera predeterminada. Iré a la consola de BigQuery podemos hacerlo desde el menú de GCP si seleccionamos aquí
+y nos desplazamos hasta BigQuery. Nos piden acceder con una contraseña que es la de Qwiklabs. Copien la contraseña de Qwiklabs y úsenla para acceder a BigQuery. Ahora estamos en BigQuery. Asegúrense de estar en su proyecto. En este caso, no este
+ni Qwiklabs resources. Ya estamos aquí,
+podemos hacer clic en "Compose Query" recuerden que su interfaz
+podría ser un poco diferente pues las interfaces cambian
+todo el tiempo. Pero en general,
+muchos de estos botones deberían ser fáciles de reconocer. Vayamos aquí
+y ejecutemos esta consulta específica. Otra forma, si no quieren usar #standardSQL es ir a "Show Options" y, luego, inhabilitar "Legacy SQL". Esa es otra forma de hacerlo. De cualquier modo,
+queremos ejecutar SQL Standard. Ejecutamos la consulta en SQL Standard. Haremos este ejercicio
+en un conjunto de datos que se llama "bigquery-samples",
+que son muestras de BigQuery y un conjunto de datos llamado
+airline_ontime_data y el nombre de la tabla es flights. Podemos verlo aquí:
+está bigquery-samples. En realidad, no vemos eso aquí. ¿Cómo podemos ver un proyecto
+que no está en el menú izquierdo? Lo que tendrían que hacer
+es hacer clic en este menú y seleccionar "Switch to project" luego, "Display Proyect"
+y escribir el nombre del proyecto. Ahora, bigquery-samples es visible. Y en bigquery_samples,
+está airlines_ontime_data y allí está la tabla flights. Podemos ver los vuelos y vemos las columnas en la vista previa y algunos ejemplos
+de valores de datos en la tabla. Si ven los detalles resulta que esta tabla tiene casi 8 GB tiene más de 70 millones de filas. Esto es… Esto es básicamente lo que consultamos. ¿Qué hicimos aquí?
+Seleccionamos departure_delay y contamos la cantidad de vuelos. Esta es la cantidad de vuelos de una fila de departure_delay específica
+porque agrupamos por esa columna. Por ejemplo, si el valor
+de departure_delay es -37. En otras palabras,
+si el vuelo partió 37 minutos antes. ¿Cuántos vuelos hubo? Hay 107 de esos vuelos
+en el conjunto de datos y estos son los cuantiles. Este es el percentil 28. Porque está dividido entre cinco. Entonces, el 80% de esos vuelos llegaron 66 minutos 
+más temprano o más y de un 60% a un 80% de los vuelos
+llegaron entre 41 y 66 minutos, etc. Si les preguntara si el valor de departure_delay
+fuera 35 minutos antes ¿cuál es el valor de la mediana? Y el valor de la mediana sería el valor en el medio, ¿correcto? Es decir, 28 minutos. Entonces, si regresamos a Console vemos que Datalab nos pregunta
+si queremos continuar; decimos "Yes". Aceptamos todo. Ahora, ejecutemos esta otra consulta para encontrar el par de aeropuertos es decir, el aeropuerto específico
+de salidas y el aeropuerto específico
+de llegadas que tengan la cantidad máxima de vuelos entre ellos. Esto es de la misma tabla
+pero ahora, selecciono departure_airport arrival_airport
+y contamos la cantidad de vuelos pero agrupamos por ambas columnas
+arrival_airport y departure_airport. Y ordenamos por cantidad de vuelos
+de manera descendente es decir, el par de aeropuertos
+con la cantidad máxima de vuelos aparecerá primero
+y limitaré a los 10 primeros. Obtendremos los 10 más comunes. Observen que se procesaron
+17 millones de registros Y cuando lo hicimos,
+me tomó 2.3 segundos. ¿Cómo es posible? Porque los 70 millones no se procesaron
+en esta única máquina. Se ejecuta en miles de máquinas. Se ejecuta a escala. Eso es lo que quiero decir
+por servicios que se ejecutan en Cloud se hace sin servidores. Si regresamos a la consulta resulta que si departure_airport es LAX y arrival_airport es SAN tenemos 133,000 vuelos. Ese es el par de aeropuertos
+con la cantidad máxima de vuelos entre ellos.
+Ahora, regresamos a Cloud Shell. Podemos hacer clic en Web Preview y cambiamos al puerto 8081
+para comenzar a usar Datalab. El ícono de la vista previa web es este. Selecciónenlo
+y cambien al puerto 8081. Ahora, estamos en Datalab. Todo lo que hicimos en BigQuery
+hasta el momento es genial. Pudimos ejecutar consultas SQL
+en millones de filas de datos obtuvimos las respuestas en segundos. Eso es genial,
+pero lo que queremos en realidad además de obtener esas respuestas,
+es crear gráficos, etcétera. Queremos visualizar los datos. Y la visualización no se puede hacer
+en la consola de BigQuery. Debemos usar una herramienta
+personalizada de visualización. En este caso, usaremos Datalab que tiene acceso completo a los beneficios de Python
+para crear nuestros gráficos. Lo que haremos
+es ejecutar una consulta pero no lo haremos
+desde la consola de BigQuery sino desde Datalab. Estamos en Datalab. Crearé un nuevo cuaderno. En este cuaderno lo que tenemos es una celda de código y puedo pegar código en la celda y hacer clic en "Run" para ejecutarlo. Todo esto lo ejecuta BigQuery. En la misma cantidad de segundos analizaremos millones de vuelos y lo que hacemos ahora
+es obtener DataFrames de Pandas Entonces, to_dataframe() aquí
+es un DataFrame de Pandas. Básicamente, muestra las primeras filas
+de ese DataFrame y, como antes,
+tenemos el retraso de los vuelos y la cantidad de vuelos y tenemos deciles, porque en este caso hago los cuantiles de 10. Hay 10 de ellos y los obtenemos como una lista de Python. Ahora, si tomamos el mismo DataFrame y le cambiamos el nombre lo que tenemos ahora
+son los datos de los deciles los desglosamos y obtuvimos el 0%, 10%, 20%, 30%, etcétera como columnas separadas ¿Por qué lo estoy haciendo?
+Si usamos columnas separadas podré hacer lo que quiero hacer
+a continuación. Ignoraré el 0% y el 100% tomaré los datos del 10% al 90% y los trazaré como gráficos. ¿Cómo leemos este gráfico? Lo que vemos aquí es, por ejemplo si departure_delay es 10 que quiere decir 10 minutos de retraso un 10% de los vuelos,
+aun así, llegan temprano. Pero un 90% de los vuelos llegan
+dentro de 21 minutos. Estos son los deciles. Por otro lado, la mediana
+es un departure_delay y un arrival_delay de tal vez 3 o 4 minutos. Estas líneas significan eso. Nos dan la distribución
+en una departure_delay específica. Si observamos esto, vemos
+que la relación es, en esencia, lineal para todos los valores de departure_delay
+hasta que llega debajo de -20. Para los vuelos que salen
+más de 20 minutos antes es decir, que salen realmente temprano la relación es bastante dispersa. No es muy lineal. Si creamos un modelo lineal nos irá bien con ese modelo en alguna parte en el medio
+de la distribución pero no en los extremos. Este es el tipo de información valiosa
+que no se puede obtener de otra manera. Es necesario graficar las distribuciones y hacerlo es mucho más fácil cuando se tiene la potencia
+de Python a su disposición.

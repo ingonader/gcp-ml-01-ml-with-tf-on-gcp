@@ -1,0 +1,83 @@
+Nous avons abordé certaines méthodes
+permettant de rendre votre modèle de ML plus inclusif à l'aide
+de vos métriques d'évaluation. Mais pour obtenir les meilleurs résultats
+d'un modèle, vous devez parfaitement
+comprendre vos données. Le problème est que les ensembles
+de données comportent parfois des centaines de millions
+de points de données, chacun consistant en des centaines ou des
+milliers de caractéristiques. La compréhension intuitive d'un ensemble
+de données est donc presque impossible. La clé est d'utiliser des
+visualisations permettant de distinguer des nuances et de dégager des insights
+à partir de grands ensembles de données. Dans cette section, je vais vous présenter un outil de visualisation Open Source
+appelé Facets. Développé par Google, Facets permet de
+rendre vos modèles de ML plus inclusifs. Il se divise en deux parties :
+Overview et Dive. Cette diapositive présente une capture
+d'écran de Facets Overview, qui vous donne automatiquement
+un aperçu de la distribution des valeurs parmi les caractéristiques
+des ensembles de données. L'exemple présenté dans cette diapositive
+provient des données UCI Census. Les données sont extraites de la base de
+données "1994 Census Bureau", qui contient des informations anonymisées
+sur la population des États-Unis. Cet ensemble de données inclut
+des variables démographiques et liées à l'emploi, telles que l'âge
+et le salaire des individus. Il a été réuni par le Research Committee,
+et on l'utilise souvent dans les tâches de prédiction visant à
+déterminer si une personne est susceptible de gagner 50 000 $ ou plus par an. Il est possible de comparer plusieurs
+ensembles de données (entraînement et test, par exemple), sur le même écran de visualisation. Avec Facets, les problèmes de données
+courants pouvant entraver le ML sont identifiés et mis en avant : caractéristiques présentant
+des valeurs inattendues, fort pourcentage de valeurs manquantes,
+déséquilibre de distribution ou décalage de distribution
+entre les ensembles de données. Sur la capture d'écran
+de la diapositive précédente, vous pouvez voir deux
+caractéristiques numériques de l'ensemble de données UCI Census : 
+"Capital Gain" et "Capital Loss". Les caractéristiques sont triées en
+fonction de leur non-uniformité. Celle dont la distribution est la moins
+uniforme apparaît en haut. Les nombres en rouge indiquent les points
+potentiellement problématiques. Il s'agit de caractéristiques
+avec un grand pourcentage de valeurs définies sur zéro. L'histogramme de droite permet de comparer les distributions entre l'ensemble de données d'entraînement
+(en bleu) et celui de test (en orange). Facets Overview permet aussi de visualiser
+les caractéristiques catégorielles. Ici, vous pouvez observer la
+répartition de la caractéristique cible. Il s'agit de l'étiquette permettant
+de savoir si une personne a gagné plus de 50 000 $
+par an ou non. Mais ce que nous voyons en particulier,
+ce sont toutes les instances où le salaire annuel est inférieur
+ou égal à 50 000 $. Avez-vous vu quelque chose de suspect
+au sujet de cette caractéristique cible ? Les valeurs de l'étiquette diffèrent
+entre les ensembles de données d'entraînement et de test en raison de la
+période de suivi du test. Facets Overview est même allé jusqu'à
+trier ces écarts selon la distance de distribution, en affichant
+la caractéristique présentant le plus grand décalage entre
+l'entraînement (en bleu) et le test (en orange),
+en haut du tableau. Un décalage d'étiquettes de cet ordre
+pourrait provoquer une évaluation incorrecte d'un modèle 
+entraîné et testé à l'aide de ces données. Passons maintenant à Facets Dive. L'outil offre une interface intuitive
+et personnalisable, permettant d'explorer les relations entre
+les points de données pour les différentes caractéristiques
+d'un ensemble de données. Facets Dive vous permet de contrôler la
+position, la couleur et la représentation visuelle de chacun des points en fonction
+de ses valeurs de caractéristiques. Dans cet exemple, Facets Dive affiche
+tous les points de données de l'ensemble de données de test
+UCI Census. Dans cette animation, un utilisateur
+colore les points de données données en fonction d'une caractéristique,
+la relation, fixe l'affichage dans une dimension selon une caractéristique
+continue, l'âge, puis le fixe dans une autre dimension selon une
+caractéristique discrète, l'état civil. Dans Facets Dive, si des images sont
+associées aux points de données, elles peuvent être utilisées comme
+représentation visuelle. On ne se limite pas aux caractéristiques
+catégorielles ou numériques. L'exemple suivant provient
+d'un ensemble de données de recherche contenant des images de nombreux
+objets et animaux "réels", utilisé pour l'entraînement d'un outil
+de classification d'images. Les étiquettes Ground Truth (vérifiés)
+sont organisées en lignes, et celles prédites "Predicted"
+en colonnes. On obtient une matrice de confusion qui nous permet d'identifier certains
+types de classification erronée. Dans cet exemple, le modèle de ML a mal identifié
+un petit pourcentage d'images de chats, en leur attribuant l'étiquette
+de grenouilles ("frog"). Pouvez-vous repérer le chat "grenouille" ? En intégrant les images réelles à la
+matrice de confusion avec Facets Dive, nous constatons une chose intéressante. L'un des chats étiqueté comme
+"grenouille" par le modèle est bien une authentique grenouille.
+L'inspection visuelle le confirme. Avec Facets Dive, nous pouvons
+déterminer que cette "erreur de classification" du modèle
+n'est pas une erreur réelle. L'image a tout simplement
+été mal étiquetée lors de son ajout à l'ensemble de données. Nous espérons que des outils
+comme Facets vous permettront de découvrir de nouvelles choses
+intéressantes sur vos données, afin de créer des modèles de machine learning plus précis
+et inclusifs.

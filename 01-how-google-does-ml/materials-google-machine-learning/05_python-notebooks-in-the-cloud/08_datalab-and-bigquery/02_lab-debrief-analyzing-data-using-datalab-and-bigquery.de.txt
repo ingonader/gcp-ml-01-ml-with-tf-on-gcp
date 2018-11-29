@@ -1,0 +1,74 @@
+In Lab 2 zeigen wir jetzt, wie man mit Datalab
+eine BigQuery-Abfrage ausführt. Wir werden ein relativ
+großes Dataset analysieren: 70 Millionen Zeilen, 8 GB an Daten. Dies analysieren wir
+mit BigQuery und Cloud Datalab. Zunächst starten wir Cloud Datalab, und zwar innerhalb der Cloud Shell. Zuerst müssen wir
+unsere Compute-Zonen bestimmen. Dann können wir Datalab in einer
+dieser Compute-Zonen ausführen. Ich weiß, dass us-central1 eine Compute-Zone ist
+und überspringe diesen Teil. Danach erstelle ich Datalab. Also "datalab create",
+dann der Name der VM und eine Zone. Das machen wir jetzt. Ich kehre also zur Cloud Shell zurück. Hier bin ich in der Cloud Shell. Ich gebe "datalab create mydatalabvm" ein. Die Zone heißt "us-central1-b". Die Verarbeitung des Befehls dauert rund fünf Minuten. Wir spulen das Video vor bis zur Stelle, wo wir in einer Meldung informiert werden, dass wir eine Verbindung 
+auf localhost 8081 herstellen oder eine Webvorschau
+auf 8081 machen können. Warten wir auf diese Meldung. Danach geht's weiter. Während Datalab startet,
+testen wir die BigQuery-Abfrage. Diese Abfrage möchte ich ausführen. Dieser Kommentar ist wichtig,
+da wir standardSQL ausführen möchten. Die Standardeinstellung
+in BigQuery ist jedoch bislang Legacy SQL. Wir rufen also die BigQuery-Konsole auf, und zwar über das GCP-Menü. Wir klicken hier und
+wählen weiter unten BigQuery aus. Jetzt müssen wir unser Passwort eingeben. Das ist wieder das QwikLabs-Passwort. Geben Sie also das QwikLabs-Passwort ein. Jetzt sind wir in BigQuery. Stellen Sie sicher,
+dass das Ihr Projekt ist. Also nicht dies hier oder
+"QwikLabs Resources" oder etwas anderes. Hier können wir dann
+auf "Abfrage erstellen" klicken. Ihre Nutzeroberfläche
+kann etwas anders aussehen, da sich Nutzeroberflächen ständig ändern. Die meisten der Schaltflächen sollten aber erkennbar sein. Wir sind also angemeldet und
+führen jetzt unsere Abfrage aus. Los geht's. Wenn man übrigens nicht
+#standardSQL eingeben will, kann man auf "Optionen anzeigen" klicken und Legacy SQL deaktivieren. Das ist eine andere Möglichkeit. Auf alle Fälle
+möchten wir standardSQL ausführen. Wir führen standardSQL aus und danach die Abfrage. Wir verwenden dafür
+das Projekt "bigquery-samples" und das Dataset "airline_ontime_data". Der Tabellenname lautet "flights". Hier sehen wir also "bigquery_samples". Wo ist es denn? Wie kann man ein Projekt anzeigen, das nicht im Menü links steht? Klicken Sie auf dieses Drop-down-Menü, wählen Sie "Zum Projekt wechseln" 
+und "Projekt anzeigen" aus und geben Sie das Projekt ein. Dann wird "bigquery-samples" angezeigt. In "bigquery_samples"
+finden Sie "airline_ontime_data" und dort gibt es die Tabelle "flights". Ich schaue mir also die Flüge an und sehe in der Vorschau, dass dies die Spalten sind, mit einigen Beispielwerten in der Tabelle. Sehen Sie sich die Details an. Diese Tabelle ist fast 8 Gigabyte groß. Sie hat mehr als 70 Millionen Zeilen. Dies ist also... ...starten wir nun die Abfrage... Dies ist also
+die Basis für unsere Abfrage. Was haben wir also gemacht?
+Wir haben "departure_delay" ausgewählt und die Anzahl
+verspäteter Flugstarts gezählt. Das ist die Anzahl der Flüge
+mit einer bestimmten Verspätung, da wir nach "departure_delay" gruppieren. Ein Beispiel: Bei einer
+Abflugverzögerung von minus 37, wenn der Flug also
+37 Minuten zu früh startet, wie viele Flüge wären das? Es gibt 107 solcher Flüge im Dataset, und das hier sind die Quantilen. Das Perzentil
+ist dann jeweils 28, stimmt's? Man muss es ja durch fünf teilen. 80 Prozent dieser Flüge
+landeten mindestens 66 Minuten früher. 60 bis 80 Prozent der Flüge landeten
+innerhalb von 41 bis 66 Minuten usw. Meine Fragestellung war ja: Bei einem departure_delay
+von 35 Minuten vor Zeitplan, wie lautet da der Median? Der Medianwert ist der Wert in der Mitte. Also 28 Minuten. Kehren wir nun zur Konsole zurück. Datalab fragt uns,
+ob wir fortfahren möchten. Wir stimmen zu
+und akzeptieren alle Eingaben. Führen wir nun die andere Abfrage aus. Wir suchen das Flughafenpaar, also den Abflugflughafen
+und den Ankunftsflughafen, mit den meisten Flugverbindungen. Das ist wieder aus derselben Tabelle. Diesmal wähle ich jedoch
+"departure_airport" und "arrival_airport" aus und zähle die Anzahl von Flügen. Ich gruppiere aber nach
+"arrival_airport" und "departure_airport". Ich ordne die Anzahl der Flüge in absteigender Reihenfolge, sodass das Flughafenpaar
+mit den meisten Flügen ganz oben steht. Das Limit liegt bei zehn. Ich zeige also die ersten zehn an. Die zehn häufigsten. Beachten Sie, dass wir hier
+70 Mio. Einträge verarbeitet haben. Und die Abfrage dauerte nur 2,3 Sekunden. Wie ist das möglich? Weil die 70 Mio. Einträge nicht nur
+auf diesem Rechner verarbeitet wurden, sondern auf Tausenden Rechnern. In großem Maßstab. Das meinen wir, wenn wir sagen,
+wir starten Dienste in der Cloud. Diese Prozesse laufen serverlos ab. Zurück zur Aufgabe hier. Das Ergebnis lautet: Ist der departure_airport LAX
+und der arrival_airport ist SAN, dann sind das 133.000 Flüge. Das ist das Flughafenpaar
+mit den meisten Flugverbindungen. Wir kehren jetzt zur Cloud Shell zurück. Wir klicken auf die Webvorschau und ändern den Port zu 8081, um Datalab zu verwenden. Das ist dieses Element hier, die Webvorschau. Klicken Sie darauf
+und ändern Sie den Port in 8081. Jetzt befinden wir uns in Datalab. Alles, was wir bislang
+in BigQuery gemacht haben, war toll. Wir haben SQL-Abfragen
+auf Millionen Datenzeilen ausgeführt und die Antwort in Sekunden erhalten. Das ist schon eine tolle Sache, aber zusätzlich zu diesen Antworten
+wollen wir auch Diagramme erstellen usw. Wir wollen die Daten visualisieren. Diese Visualisierung ist
+in der BigQuery-Konsole nicht möglich. Dafür brauchen wir
+ein angepasstes Visualisierungstool. In diesem Fall verwenden wir Datalab, das vollen Zugriff
+auf die Python-Funktionen bietet, sodass wir Grafiken erstellen können. Wir führen also hier
+eine unserer Abfragen aus, aber nicht von der BigQuery-Konsole aus, sondern in Datalab. Wir sind jetzt in Datalab. Ich starte ein neues Notebook. In diesem Notebook
+haben wir eine Codezelle. Ich füge also den Code in die Zelle ein und klicke auf "Ausführen",
+um den Code auszuführen. Dies wird jetzt von BigQuery ausgeführt. In wenigen Sekunden
+analysieren wir wieder Millionen Flüge. Jetzt erstellen wir daraus
+einen Pandas-DataFrame. Also "to_dataframe" hier,
+das ist ein Pandas-DataFrame. Wir sehen dann die
+ersten Zeilen dieses DataFrame, wiederum mit departure_delay, der Anzahl an Flügen und den Dezilen, weil ich diesmal
+die Quantile mit zehn berechne. Es sind also zehn,
+die ich dann als Python-Liste erhalte. Ich nehme jetzt denselben DataFrame und benenne das Ganze schnell um. Wir haben jetzt die Dezilen aufgefächert, und zwar in 0 %, 10 %, 20 %, 30 % usw. Jeweils als separate Spalten. Warum mache ich das? Mit separaten Spalten kann ich
+meine nächste Aufgabe erledigen. Und zwar... Ich ignoriere 0 % und 100 %. Ich nehme die 10 bis 90 %, all diese Daten, und stelle sie graphisch dar. Wie liest man nun dieses Diagramm? Das hier zum Beispiel
+ist ein departure_delay von 10, also eine Verspätung von zehn Minuten. Zehn Prozent der Flüge
+landen trotzdem überpünktlich. 90 Prozent der Flüge
+landen innerhalb von 21 Minuten. Das sind also die Dezile. Der Median hingegen
+ist ein departure_delay und ein arrival_delay
+von rund 3 oder 4 Minuten. Das stellen diese Linien dar. Sie stellen die Verteilung
+einer speziellen Abflugsverzögerung dar. Sie werden feststellen, dass die Beziehung für alle
+Abflugsverzögerungen quasi linear ist, bis der Bereich
+unter minus 20 erreicht wird. Das sind Flüge, die mehr als
+20 Minuten zu früh starten. Sie starten also wirklich zeitig. Hier gibt es eine große Streuung. Es ist nicht sehr linear. Ein lineares Modell sollten wir daher
+in der Mitte der Verteilung erstellen, aber nicht an den Rändern. Diese Erkenntnisse erhält man
+nicht ohne Weiteres auf andere Weise. Sie müssen Verteilungen darstellen, und das ist viel einfacher, wenn Ihnen die Funktionsfülle
+von Python zur Verfügung steht.

@@ -1,0 +1,70 @@
+Je vais vous parler de
+Compute Engine et Cloud Storage. Il est utile de savoir comment
+fonctionnent les instances Compute Engine et Cloud Storage, car les instances
+Datalab sont exécutées sur ces systèmes. Pour le stockage persistant des données
+dans le cloud, vous utiliserez Cloud Storage. Vous devez donc comprendre
+comment ce produit fonctionne. Imaginez Compute Engine comme un
+processeur distribué à l'échelle mondiale, et Cloud Storage comme un disque
+distribué à l'échelle mondiale. Datalab est un programme à nœud unique, il s'exécute donc sur une seule
+instance Compute Engine. Cependant, lorsque nous exécutons
+des tâches Dataflow, ou encore des tâches Cloud ML Engine, nous lançons le traitement sur de
+nombreuses instances Compute Engine. Compute Engine vous permet
+essentiellement de louer une machine virtuelle sur le cloud pour
+exécuter vos charges de travail. Alors , quels sont les
+éléments personnalisables ? Vous pouvez choisir le nombre de cœurs, la quantité de mémoire,
+la capacité de stockage, ou encore le système d'exploitation. En revanche, l'équilibrage de charge, le réseau et les autres éléments
+de ce type sont prédéfinis. Rassurez-vous, vous n'êtes pas prisonnier
+de vos choix initiaux, vous pouvez les modifier à tout moment. Notez également que les
+remises sur facturation sont automatiques. Elles dépendent de
+l'utilisation de la machine. Les disques connectés aux
+instances Compute Engine sont véloces, mais ils sont aussi éphémères. Lorsque la VM disparaît,
+le disque disparaît également. Google propose aussi
+des disques persistants, mais laissons cela de côté pour l'instant. Cloud Storage est durable. Les blobs y sont répliqués
+et stockés à plusieurs endroits. Cloud Storage est de plus accessible
+depuis n'importe quelle machine. Et grâce à la vitesse du réseau,
+une bande passante bisectionnelle à l'échelle du pétabit dans
+les centres de données Google, 100 000 machines peuvent communiquer
+simultanément à une vitesse de 10 Gbit/s. Vous pouvez directement
+contrôler vos données Cloud Storage. En fait, c'est ce que nous ferons lorsque
+nous écrirons des programmes TensorFlow. Avec Cloud Storage,
+notre objectif est de vous offrir un système de fichiers mondial et durable. Mais comment cela est-il organisé ? Une URL Cloud Storage typique
+ressemble à cela : "gs:acme-sales/data/sales003.csv". "acme-sales" correspond à ce
+que nous appelons un "bucket". Le nom d'un bucket est unique
+à l'échelle mondiale. On peut comparer cela au nom de domaine
+dans une URL Internet. Pour définir un nom de bucket
+unique au monde, vous pouvez utiliser
+un nom de domaine inversé. Dans ce cas, Google Cloud Platform
+vous demandera de prouver que vous êtes le propriétaire
+du nom de domaine en question. Vous pouvez aussi
+utiliser l'ID de votre projet. À moins que vous soyez
+particulièrement malchanceux, il est peu probable que l'ID du projet,
+également unique au monde, ait déjà été utilisé
+en tant que nom de bucket. Le reste de l'URL "gs" est par convention
+semblable à une structure de fichiers. Une URL "gs" complète pointe vers un objet
+spécifique dans Cloud Storage. Et maintenant,
+comment exploiter ces outils ? Vous pouvez utiliser "gsutil". Il s'agit d'un outil de ligne de commande
+fourni avec le SDK Google Cloud. Si vous lancez une instance Compute Engine,
+gsutil est déjà disponible. Sur votre ordinateur portable, vous pouvez
+télécharger le SDK Google Cloud pour récupérer gsutil. Gsutil utilise une syntaxe
+de ligne de commande Unix classique. Par exemple, "mb" et "rb" permetttent de
+créer et supprimer un bucket. La commande "cp" vous permet
+de copier un élément. Outre la ligne de commande,
+vous pouvez utiliser la console GCP, une API de programmation,
+ou encore une API REST. Ici, je vous montre comment copier
+un groupe de fichiers "sales*.csv" vers un emplacement
+Cloud Storage spécifique. Je vous ai dit tout à l'heure que
+les buckets Cloud Storage sont durables. Cela signifie qu'ils sont stockés
+de façon redondante. Vous bénéficiez aussi d'une mise en cache
+et d'une solution de basculement périphériques lorsque vous
+stockez vos objets dans Cloud Storage. Notez toutefois que même si Cloud Storage
+est un système de fichiers mondial, les considérations relatives à la latence
+s'appliquent toujours. Il reste préférable de stocker les données
+à proximité de vos nœuds de calcul. Qu'en est-il des interruptions de service ? Vous devez distribuer vos applications
+et vos données sur plusieurs zones pour parer à une éventuelle interruption
+de service dans l'une des zones, par exemple en cas de coupure de courant. Notez que vous pouvez utiliser
+des zones sur plusieurs régions pour renforcer la redondance. Une zone est donc un emplacement isolé
+au sein d'une région. Le nom d'une zone est composé du nom de la
+région, d'un tiret et d'une "lettre de zone". Le dernier point concerne la
+disponibilité mondiale. Si vous concevez une application pour
+des clients répartis dans le monde entier, vous devez distribuer votre application 
+et vos données dans toutes les régions.

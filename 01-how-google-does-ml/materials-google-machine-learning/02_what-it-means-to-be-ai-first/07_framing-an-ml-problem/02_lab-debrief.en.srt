@@ -1,0 +1,275 @@
+1
+00:00:00,000 --> 00:00:01,960
+So, in my case,
+
+2
+00:00:01,960 --> 00:00:07,410
+one of the use cases I picked was demand forecasting in manufacturing.
+
+3
+00:00:07,410 --> 00:00:15,630
+So, first, we cast it as a machine learning problem and asked what is being predicted.
+
+4
+00:00:15,630 --> 00:00:19,275
+Well, because we're doing demand forecasting in manufacturing,
+
+5
+00:00:19,275 --> 00:00:27,030
+what is being predicted is how many units of widgets X should be manufactured this month.
+
+6
+00:00:27,030 --> 00:00:29,990
+For example, if you're making phone display panels,
+
+7
+00:00:29,990 --> 00:00:33,430
+how many phone display panels of
+
+8
+00:00:33,430 --> 00:00:38,440
+a four inch screen or a six inch screen should we manufacture this month?
+
+9
+00:00:38,440 --> 00:00:40,600
+So that is what is being predicted.
+
+10
+00:00:40,600 --> 00:00:43,460
+So when we cast it as a machine learning problem,
+
+11
+00:00:43,460 --> 00:00:44,900
+the next question is,
+
+12
+00:00:44,900 --> 00:00:46,575
+what data do we need?
+
+13
+00:00:46,575 --> 00:00:50,120
+Well, if you want to be predicting how many units
+
+14
+00:00:50,120 --> 00:00:53,725
+of that widget to manufacture, what data do we need?
+
+15
+00:00:53,725 --> 00:00:58,535
+Well, we need historical data on the number of units sold,
+
+16
+00:00:58,535 --> 00:01:00,800
+how many units did we sell last month,
+
+17
+00:01:00,800 --> 00:01:03,960
+how many units did we sell the month before, et cetera.
+
+18
+00:01:03,960 --> 00:01:07,800
+We also need to know the price that it was sold at,
+
+19
+00:01:07,800 --> 00:01:10,505
+the number of units that were returned,
+
+20
+00:01:10,505 --> 00:01:13,880
+the price of any competitor product out there,
+
+21
+00:01:13,880 --> 00:01:18,610
+and the number of units of all items that use widgets X.
+
+22
+00:01:18,610 --> 00:01:22,370
+So if you're making phone display screens,
+
+23
+00:01:22,370 --> 00:01:26,055
+how many smartphones are sold regardless of
+
+24
+00:01:26,055 --> 00:01:30,895
+which display panel they carried or whether it was ours or our competitors?
+
+25
+00:01:30,895 --> 00:01:35,270
+We will also need other data like economic figures,
+
+26
+00:01:35,270 --> 00:01:38,535
+customer confidence, interest rate,
+
+27
+00:01:38,535 --> 00:01:40,425
+what happened this month,
+
+28
+00:01:40,425 --> 00:01:43,870
+last year et cetera.
+
+29
+00:01:43,870 --> 00:01:50,445
+The second framing is as a software problem.
+
+30
+00:01:50,445 --> 00:01:53,060
+What is the API of the service?
+
+31
+00:01:53,060 --> 00:01:57,240
+Well, the method in the API could be predicted demand,
+
+32
+00:01:57,240 --> 00:01:59,410
+and what does it take?
+
+33
+00:01:59,410 --> 00:02:06,395
+The inputs might be the widget ID and the month that we want to do this prediction for,
+
+34
+00:02:06,395 --> 00:02:11,095
+with the default value for the month being the current month.
+
+35
+00:02:11,095 --> 00:02:14,570
+Notice that in this API,
+
+36
+00:02:14,570 --> 00:02:18,065
+we are only asking for the widget ID and the time.
+
+37
+00:02:18,065 --> 00:02:20,275
+We are not asking for
+
+38
+00:02:20,275 --> 00:02:24,980
+all those other ancillary data that our machine learning model needed.
+
+39
+00:02:24,980 --> 00:02:31,325
+We're not asking the end user to give us how many smartphone units were sold last month.
+
+40
+00:02:31,325 --> 00:02:35,885
+That is something that we would have to collect ourselves.
+
+41
+00:02:35,885 --> 00:02:41,635
+Next part of the framing as a software problem is who's going to use the service.
+
+42
+00:02:41,635 --> 00:02:44,700
+And because is the demand forecasting thing,
+
+43
+00:02:44,700 --> 00:02:47,830
+we might think that the users might be product managers,
+
+44
+00:02:47,830 --> 00:02:50,235
+might be logistics managers, et cetera.
+
+45
+00:02:50,235 --> 00:02:52,020
+How are they doing it today?
+
+46
+00:02:52,020 --> 00:02:54,605
+They examined trends of phone sales,
+
+47
+00:02:54,605 --> 00:02:57,840
+overall economy, trade publications,
+
+48
+00:02:57,840 --> 00:03:00,480
+and they somehow make a decision.
+
+49
+00:03:00,480 --> 00:03:06,155
+The third framing is as a data problem.
+
+50
+00:03:06,155 --> 00:03:09,285
+So what kind of data do we need to collect?
+
+51
+00:03:09,285 --> 00:03:11,700
+The things that we need to collect,
+
+52
+00:03:11,700 --> 00:03:14,495
+A, for training are all the data,
+
+53
+00:03:14,495 --> 00:03:16,500
+but for also for prediction,
+
+54
+00:03:16,500 --> 00:03:19,110
+we need to collect all the data except for the data
+
+55
+00:03:19,110 --> 00:03:21,835
+that we can expect the end user to give us.
+
+56
+00:03:21,835 --> 00:03:24,020
+So what data do we need to collect?
+
+57
+00:03:24,020 --> 00:03:27,170
+We need to collect the economic data, the competitor data,
+
+58
+00:03:27,170 --> 00:03:32,035
+the industry data, data from our company itself.
+
+59
+00:03:32,035 --> 00:03:35,080
+And what data do we need to analyze?
+
+60
+00:03:35,080 --> 00:03:39,470
+Well, we need to analyze all these datasets so that we can craft
+
+61
+00:03:39,470 --> 00:03:45,010
+features that our experts are looking at today from this data,
+
+62
+00:03:45,010 --> 00:03:49,690
+and we need to take those features and use them as inputs to our model.
+
+63
+00:03:49,690 --> 00:03:52,150
+And what is our reaction?
+
+64
+00:03:52,150 --> 00:03:55,920
+How do we react to a prediction of demand?
+
+65
+00:03:55,920 --> 00:03:58,920
+One way that we could do reaction might
+
+66
+00:03:58,920 --> 00:04:02,340
+be that if we predicted that demand is going to increase,
+
+67
+00:04:02,340 --> 00:04:05,925
+we automatically go ahead and put out
+
+68
+00:04:05,925 --> 00:04:11,385
+orders to our suppliers for more of the things that they provide to us.
+
+69
+00:04:11,385 --> 00:04:14,000
+So the reaction might be automatic.

@@ -1,0 +1,79 @@
+Ahora que ya sabemos cómo calcular las métricas de evaluación para las
+predicciones de un modelo en los subgrupos hablemos sobre un enfoque
+que se basa en estas métricas para lograr un mejor
+rendimiento en los subgrupos. El enfoque que presentaré
+se conoce como igualdad de oportunidades y se trata de lo siguiente. Digamos que tienen un modelo
+que debe funcionar para todos los usuarios independientemente
+de quiénes sean o de dónde vengan. Idealmente, los usuarios que califican
+para un resultado deseado que genera nuestro modelo
+deberían tener la misma oportunidad de clasificar
+correctamente para ese resultado. Digamos que trabajamos para un banco y creamos un modelo de AA para ayudar a determinar si aprobar o no un préstamo. ¿Qué significa la igualdad
+de oportunidades en este contexto? Lo ideal sería que todos los usuarios
+que califican para un préstamo tengan la misma oportunidad que los demás
+de clasificar para esa aprobación. Es decir, las probabilidades de que una
+persona califique para un préstamo deberían ser las mismas,
+independiente del subgrupo protegido. Aquí vemos que si mantienen
+igual todo lo relacionado a una persona y la cambian de un subgrupo a otro sus probabilidades de calificar
+para el préstamo deberían ser iguales. ¿Por qué deberían incorporar
+este tipo de enfoque a su sistema de AA? Bueno, porque un enfoque como este
+les ofrece una forma de analizar su modelo para descubrir las
+posibles áreas de preocupación. Después de identificar
+las oportunidades de mejora pueden hacer los ajustes
+necesarios para encontrar un mejor equilibrio
+entre la precisión y la no discriminación lo que, a su vez, puede hacer
+que su modelo de AA sea más inclusivo. Para ilustrar este enfoque,
+usaremos un clasificador de juguetes que no es un modelo real sino un ejemplo sintético
+para explicar los conceptos. El propósito del modelo es predecir
+con precisión quién pagará el préstamo y el banco puede usarlo para decidir si otorgar o no
+el préstamo al solicitante. En el diagrama que ven aquí los puntos oscuros representan
+a las personas que pagarían el préstamo y los claros a las que no lo harían. Los números de la fila
+superior son el puntaje de crédito que se simplifica en un rango de 0 a 100 donde el puntaje más alto representa
+mayor probabilidad de pagar el préstamo. En un mundo ideal trabajaríamos con estadísticas
+que separarían claramente las categorías como pueden ver
+en el ejemplo de la izquierda. Desafortunadamente, es más común ver la situación de la
+derecha, donde los grupos se superponen. Una sola estadística,
+como el puntaje de crédito puede incluir muchas variables. Más adelante verán que la mayoría de los modelos de AA
+muestran una probabilidad y este puntaje de crédito
+podría representar esa probabilidad. La probabilidad resultante de un modelo
+de AA, por ejemplo, el puntaje de crédito considera muchas cosas, como los ingresos y las condiciones
+para pagar la deuda, entre otras. El número podría
+representar la probabilidad de que una persona
+pague el préstamo o no. Pero también podría no hacerlo. Aquí es donde puede ser útil
+la idea de establecer un umbral. Básicamente, se elige un punto límite y si el puntaje de crédito
+es inferior, se les niega el préstamo y a las personas que lo
+superen, se les otorga el préstamo. Como pueden ver en este diagrama elegir el umbral
+requiere ciertas concesiones. Si es muy bajo, se otorgarán
+más préstamos que no se pagarán y si es muy alto, los
+que merecen el préstamo no lo conseguirán. Entonces, ¿cuál es el mejor umbral? El umbral que deben usar
+depende de sus objetivos y motivación. Uno podría ser aumentar
+la cantidad de decisiones correctas como pueden ver en este diagrama. En la izquierda, los puntos oscuros
+representan préstamos otorgados y pagados y los claros son préstamos
+rechazados por posible morosidad. Todos estos puntos
+representan predicciones correctas. A la derecha tenemos puntos azules claros que son
+préstamos otorgados en mora y los puntos oscuros representan préstamos negados a personas
+que los habrían pagado. Estos puntos
+representan predicciones incorrectas. Algunas decisiones son
+económicamente más costosas que otras. Tal vez hay una categoría de préstamos o préstamos por hipotecas
+de 15 años más rentables que otros. Así que, no conviene
+tratar igual todas las decisiones. Otro objetivo en una situación financiera podría ser maximizar
+no la cantidad de decisiones correctas sino el beneficio global. Y en la parte inferior del diagrama se observa la ganancia hipotética basada en nuestras estimaciones
+de ganancias asociadas con cada préstamo. Entonces, las preguntas serían ¿cuál es el umbral más rentable? y ¿coincide con el umbral
+que tiene más decisiones correctas? Este tipo de preguntas
+se complican mucho cuando una estadística como el puntaje de crédito tiene
+una distribución diferente en dos grupos. Aquí es donde entra
+la igualdad de oportunidades. La configuración formal de la
+igualdad de oportunidades se ve así. Digamos que tienen "A",
+que representa un atributo pronosticado. Por simplicidad, trataremos A como binario y haremos que represente
+la pertenencia a algún grupo protegido. No soy abogado así que no puedo decir
+qué sería un grupo protegido en el área de la aplicación. Deben hablar con su departamento legal para saber qué está protegido y qué no. Pero a modo de ejemplo en los Estados Unidos las leyes federales protegen a los
+empleados contra discriminación por edad. Así que, según la aplicación que compilen la edad podría ser un grupo protegido. También tienen un
+resultado binario que llamaremos "Y" donde podemos interpretar que su
+valor es igual al resultado deseable. En este caso, la aceptación del préstamo. En este ejemplo, consideren "Y"
+como su etiqueta o verdad básica. pero crearemos un modelo de "Y" así que necesitamos "Ŷ",
+nuestro predictor. En nuestro ejemplo, el predictor siempre es un umbral que se
+define con un puntaje entre cero y uno. El predictor puede usar
+umbrales que dependen de "A" o podemos usar diferentes
+umbrales para diferentes grupos. La idea es que los individuos en "A"
+que califican para un resultado positivo tengan la misma oportunidad de clasificar que los individuos que no están en "A". En palabras formales, este deseo coincide con una tasa
+de verdadero positivo en ambos grupos. Y este es el principio
+detrás de la igualdad de oportunidades.

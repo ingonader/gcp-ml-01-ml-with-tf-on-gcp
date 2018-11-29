@@ -1,0 +1,56 @@
+Vamos falar sobre o Compute Engine e o
+Cloud Storage. É útil saber como instâncias de
+computador e o Cloud funcionam, porque a instância do
+Datalab será executada neles. Para dados permanentes no Cloud, você usará o Cloud Storage, então você também precisa compreendê-lo. Pense no Compute Engine como uma CPU
+distribuída globalmente e no Cloud Storage como um disco
+distribuído globalmente. O Datalab, entretanto, é um programa
+de node único, então também é executado em uma única
+instância do Compute Engine. Porém, quando iniciamos jobs do Dataflow ou do Cloud ML Engine, iniciamos o processamento para muitas
+instâncias do Cloud Engine. O Compute Engine permite essencialmente
+que você alugue uma máquina virtual na nuvem para executar
+suas cargas de trabalho. E o que você pode personalizar? Coisas como o número de núcleos, a quantidade de memória, o tamanho de
+disco, o sistema operacional... Mas coisas como
+balanceamento de carga, rede etc. vêm integradas. Você não fica preso
+às suas escolhas iniciais, é sempre possível alterá-las. E os descontos de faturamento são
+automáticos, dependendo do quanto você usar a máquina. Os discos anexados a instâncias do Compute
+Engine são rápidos, mas temporários. Quando a VM for encerrada, o disco será também. O Google também oferece
+discos permanentes, mas vamos ignorar isso por enquanto. O Cloud Storage é durável. Os blobs no Cloud Storage são replicados
+e armazenados em vários lugares. O Cloud Storage também pode ser acessado
+de qualquer máquina. E por causa da velocidade da rede,
+[inaudível] por largura de banda secional dentro de uma central do Google, o que significa que cem mil máquinas podem se comunicar uma com
+a outra a 10 Gbit/s. Você pode ler diretamente do
+Cloud Storage. De fato, é isso que faremos ao gravar
+programas do TensorFlow. O propósito do Cloud Storage é dar a você
+um sistema de arquivos globais durável. Mas como ele é organizado? Um URL típico do Cloud Storage
+pode conter: gs://acme- sales/data/sales003.csv. O "acme-sales" é chamado de intervalo. O nome do intervalo é único globalmente. Pense nisso como um nome de domínio
+em um URL da Internet. A maneira de conseguir um nome de 
+intervalo único globalmente é usando um nome de domínio reverso. Neste caso, o Google Cloud Platform solicitará que você prove que é o dono
+do nome de domínio em questão, ou apenas use o código
+do projeto. A menos que você seja
+extremamente azarado, seu código de projeto,
+que também é único globalmente, não terá sido usado
+ainda como nome de intervalo. O resto do URL gs é, por convenção, como
+a estrutura de uma pasta, com um URL gs completo que se refere a um
+objeto no Cloud Storage. Como trabalhar com isso? Você pode usar o gsutil. Essa é uma ferramenta de linha de comando
+que vem com o Google Cloud SDK. Se você ativar uma instância do
+Compute Engine, o gsutil já estará disponível. Em seu laptop, você pode fazer o download
+do Google Cloud SDK para ter o gsutil. O gsutil usa uma sintaxe de linha de
+comando familiar do Unix. Por exemplo, MB e RB são "criar 
+intervalo" e "remover intervalo". Você pode fazer CP para criar uma cópia. E em vez da linha de comando, você também pode usar o console do GCP, uma API de programação ou a REST API. Aqui estou mostrando como copiar
+vários arquivos, sales*.csv para um local específico do
+Cloud Storage. Lembra que eu disse que os intervalos do
+Cloud Storage são duráveis? Isso significa que são armazenados
+de modo redundante. Você também tem armazenamento em cache
+próximo dos usuários finais e failover ao colocar seu objeto no Cloud Storage. Porém, só porque o Cloud Storage é um
+sistema de arquivos global, não significa que você pode esquecer as
+questões de latência. É melhor armazenar os dados perto dos seus
+nodes de computação. Porém, o que acontece com a interrupção
+do serviço? Você precisa seus aplicativos e
+dados pelas várias zonas para se proteger no caso
+de uma zona ser interrompida. Por exemplo, se uma zona sofre uma
+queda súbita de energia, você pode aproveitar zonas em regiões
+diferentes se precisar, até mesmo para redundância adicional. Uma zona é um local isolado dentro
+de uma região. É nomeada com nome da região, hífen,
+zona e uma letra. E por fim, para disponibilidade global. Se você estiver criando um
+aplicativo global com clientes pelo mundo, é bom distribuir seus
+aplicativos e dados pelas regiões.

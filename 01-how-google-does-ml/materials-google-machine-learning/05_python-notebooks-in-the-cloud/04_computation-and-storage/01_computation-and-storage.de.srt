@@ -1,0 +1,385 @@
+1
+00:00:00,000 --> 00:00:03,690
+Sprechen wir über
+Compute Engine und Cloud Storage.
+
+2
+00:00:03,690 --> 00:00:07,670
+Man sollte die Funktion von 
+Compute-Instanzen in der Cloud kennen,
+
+3
+00:00:07,670 --> 00:00:11,065
+weil Datalab dort ausgeführt wird.
+
+4
+00:00:11,065 --> 00:00:13,635
+Für nichtflüchtige Daten in der Cloud
+
+5
+00:00:13,635 --> 00:00:15,205
+wird Cloud Storage verwendet.
+
+6
+00:00:15,205 --> 00:00:17,610
+Deshalb müssen Sie
+auch Cloud Storage kennen.
+
+7
+00:00:17,610 --> 00:00:21,285
+Compute Engine ähnelt
+einer global verteilten CPU,
+
+8
+00:00:21,285 --> 00:00:24,880
+Cloud Storage einer
+global verteilten Festplatte.
+
+9
+00:00:24,880 --> 00:00:28,196
+Datalab ist ein Programm
+mit einem einzelnen Knoten.
+
+10
+00:00:28,196 --> 00:00:31,730
+Deshalb läuft es auf
+einer einzelnen Compute Engine-Instanz.
+
+11
+00:00:31,730 --> 00:00:34,835
+Nach dem Start werden Dataflow-Jobs
+
+12
+00:00:34,835 --> 00:00:36,830
+oder Cloud ML Engine-Jobs
+
+13
+00:00:36,830 --> 00:00:41,045
+aber an viele
+Compute Engine-Instanzen verteilt.
+
+14
+00:00:41,045 --> 00:00:44,210
+Bei Compute Engine mieten Sie im Grunde
+
+15
+00:00:44,210 --> 00:00:48,365
+eine virtuelle Maschine
+in der Cloud für Ihre Arbeitslasten.
+
+16
+00:00:48,365 --> 00:00:50,785
+Welche Merkmale können angepasst werden?
+
+17
+00:00:50,785 --> 00:00:53,015
+Dazu zählen die Anzahl der Kerne,
+
+18
+00:00:53,015 --> 00:00:55,315
+Speichermenge, Festplattengröße
+
+19
+00:00:55,315 --> 00:00:58,625
+und Betriebssystem.
+
+20
+00:00:58,625 --> 00:01:02,435
+Funktionen wie Lastenausgleich,
+Netzwerk usw. sind aber integriert.
+
+21
+00:01:02,435 --> 00:01:05,575
+Sie sind aber nicht
+an Ihre anfängliche Auswahl gebunden.
+
+22
+00:01:05,575 --> 00:01:07,265
+Sie kann jederzeit geändert werden.
+
+23
+00:01:07,265 --> 00:01:13,320
+Je nach Nutzung der VM
+werden automatisch Rabatte gewährt.
+
+24
+00:01:13,320 --> 00:01:18,705
+Compute Engine-Instanzen haben schnelle,
+aber sitzungsspezifische Festplatten.
+
+25
+00:01:18,705 --> 00:01:20,275
+Wird die VM beendet,
+
+26
+00:01:20,275 --> 00:01:22,220
+verschwindet die Festplatte.
+
+27
+00:01:22,220 --> 00:01:25,515
+Google bietet 
+auch nichtflüchtige Festplatten,
+
+28
+00:01:25,515 --> 00:01:27,270
+aber darum soll es hier nicht gehen.
+
+29
+00:01:27,270 --> 00:01:29,745
+Cloud Storage ist langlebig.
+
+30
+00:01:29,745 --> 00:01:35,220
+Blobs in Cloud Storage werden repliziert
+und an mehreren Orten gespeichert.
+
+31
+00:01:35,220 --> 00:01:39,595
+Der Zugriff auf Cloud Storage
+ist über jedes Gerät möglich.
+
+32
+00:01:39,595 --> 00:01:45,250
+Durch die Netzwerkgeschwindigkeit –
+Bisektionsbandbreite im Petabit-Bereich –
+
+33
+00:01:45,250 --> 00:01:49,015
+können 100.000 VMs mit 10 Gbit pro Sekunde
+
+34
+00:01:49,015 --> 00:01:51,835
+miteinander kommunizieren.
+
+35
+00:01:51,835 --> 00:01:54,775
+Daten werden direkt
+aus Cloud Storage ausgelesen.
+
+36
+00:01:54,775 --> 00:01:59,615
+Das tun wir später,
+wenn wir TensorFlow-Programme schreiben.
+
+37
+00:01:59,615 --> 00:02:04,487
+Cloud Storage soll Nutzern als
+langlebiges, globales Dateisystem dienen.
+
+38
+00:02:04,487 --> 00:02:06,640
+Doch wie ist es organisiert?
+
+39
+00:02:06,640 --> 00:02:09,319
+Eine typische Cloud Storage-URL
+sieht folgendermaßen aus:
+
+40
+00:02:09,319 --> 00:02:17,515
+gs:acme-sales/data/sales003.csv.
+
+41
+00:02:17,515 --> 00:02:21,745
+Der Teil "acme-sales"
+wird als Bucket bezeichnet.
+
+42
+00:02:21,745 --> 00:02:25,665
+Der Name des Buckets
+ist weltweit eindeutig.
+
+43
+00:02:25,665 --> 00:02:28,745
+Er entspricht dem 
+Domainnamen in einer Internet-URL.
+
+44
+00:02:28,745 --> 00:02:34,160
+Bucket-Namen werden entweder
+aus umgekehrten Domainnamen erstellt,
+
+45
+00:02:34,160 --> 00:02:38,070
+wobei Sie auf der Google Cloud Platform
+nachweisen müssen,
+
+46
+00:02:38,070 --> 00:02:41,060
+dass der Domainname Ihnen gehört,
+
+47
+00:02:41,060 --> 00:02:43,055
+oder Sie verwenden Ihre Projekt-ID.
+
+48
+00:02:43,055 --> 00:02:45,380
+In der Regel wurde die Projekt-ID,
+
+49
+00:02:45,380 --> 00:02:47,360
+die ebenfalls global eindeutig ist,
+
+50
+00:02:47,360 --> 00:02:51,350
+noch nicht als Bucket-Name verwendet.
+
+51
+00:02:51,350 --> 00:02:57,625
+Der Rest der gs-URL entspricht
+konventionsgemäß einer Ordnerstruktur.
+
+52
+00:02:57,625 --> 00:03:03,405
+Eine vollständige gs-URL
+verweist auf ein Objekt in Cloud Storage.
+
+53
+00:03:03,405 --> 00:03:05,885
+Wie können Sie damit arbeiten?
+
+54
+00:03:05,885 --> 00:03:08,030
+Eine Möglichkeit ist "gsutil".
+
+55
+00:03:08,030 --> 00:03:11,930
+Dieses Befehlszeilentool
+ist im Google Cloud SDK integriert.
+
+56
+00:03:11,930 --> 00:03:14,580
+Wenn Sie eine
+Compute Engine-Instanz aufrufen,
+
+57
+00:03:14,580 --> 00:03:16,775
+ist gsutil bereits verfügbar.
+
+58
+00:03:16,775 --> 00:03:23,460
+Laden Sie das Google Cloud SDK auf Ihren
+Laptop herunter, um gsutil zu nutzen.
+
+59
+00:03:23,460 --> 00:03:27,780
+In gsutil wird eine bekannte 
+Unix-Befehlszeilensyntax verwendet.
+
+60
+00:03:27,780 --> 00:03:32,005
+So stehen etwa MB und RB für
+"make bucket" und "remove bucket".
+
+61
+00:03:32,005 --> 00:03:34,575
+Mit CP können Sie eine Kopie erstellen.
+
+62
+00:03:34,575 --> 00:03:35,910
+Statt der Befehlszeile
+
+63
+00:03:35,910 --> 00:03:38,190
+können Sie auch die GCP Console,
+
+64
+00:03:38,190 --> 00:03:40,080
+eine Programmierungs-API
+
+65
+00:03:40,080 --> 00:03:42,800
+oder eine REST API verwenden.
+
+66
+00:03:42,800 --> 00:03:46,182
+Hier zeige ich, wie Sie mehrere Dateien,
+
+67
+00:03:46,182 --> 00:03:50,601
+sales*.csv,
+an einem Ort in Cloud Storage speichern.
+
+68
+00:03:50,601 --> 00:03:54,480
+Cloud Storage-Buckets sind langlebig.
+
+69
+00:03:54,480 --> 00:03:57,105
+Das heißt, sie werden
+redundant gespeichert.
+
+70
+00:03:57,105 --> 00:04:02,955
+Auch Edge-Caching und Failover
+sind in Cloud Storage inbegriffen.
+
+71
+00:04:02,955 --> 00:04:07,695
+Doch obwohl Cloud Storage 
+ein globales Dateisystem ist,
+
+72
+00:04:07,695 --> 00:04:11,565
+muss trotzdem die Latenz beachtet werden.
+
+73
+00:04:11,565 --> 00:04:15,880
+Speichern Sie Daten deshalb 
+nahe an den Compute-Knoten.
+
+74
+00:04:15,880 --> 00:04:19,358
+Was wird gegen
+Dienstunterbrechungen getan?
+
+75
+00:04:19,358 --> 00:04:23,539
+Sie müssen Apps und Daten
+über mehrere Zonen verteilen,
+
+76
+00:04:23,539 --> 00:04:27,765
+um beim Ausfall
+einer Zone geschützt zu sein.
+
+77
+00:04:27,765 --> 00:04:30,690
+Fällt in einer Zone etwa der Strom aus,
+
+78
+00:04:30,690 --> 00:04:34,595
+können Sie Zonen
+in verschiedenen Regionen nutzen,
+
+79
+00:04:34,595 --> 00:04:37,155
+um für zusätzliche Redundanz zu sorgen.
+
+80
+00:04:37,155 --> 00:04:42,330
+Eine Zone ist
+ein isolierter Bereich in einer Region.
+
+81
+00:04:42,330 --> 00:04:46,225
+Ihr Name entspricht dem Muster
+Regionsname-Zonenbuchstabe.
+
+82
+00:04:46,225 --> 00:04:48,900
+Kommen wir abschließend
+zur globalen Verfügbarkeit.
+
+83
+00:04:48,900 --> 00:04:51,030
+Wenn Sie eine globale Anwendung
+
+84
+00:04:51,030 --> 00:04:53,430
+für Kunden auf der ganzen Welt entwickeln,
+
+85
+00:04:53,430 --> 00:04:58,000
+sollten Sie Ihre Apps und Daten
+über mehrere Regionen verteilen.

@@ -1,0 +1,84 @@
+Après avoir appris à calculer
+les métriques d'évaluation des prédictions d'un modèle
+dans des sous-groupes, nous allons décrire une approche
+qui exploite ces métriques, afin d'améliorer les performances
+dans les sous-groupes. Cette approche s'appelle
+l'égalité des chances, et fonctionne ainsi. Imaginez que vous avez un modèle censé
+fonctionner avec tous les utilisateurs, quels qu'ils soient ou
+quelle que soit leur origine. Dans l'idéal, les utilisateurs compris
+dans un résultat généré par le modèle doivent tous avoir les mêmes chances d'être correctement classés
+dans ce résultat. Prenons l'exemple d'une banque. On crée un modèle de machine learning pour déterminer
+si on doit ou non approuver un prêt. Que signifie l'égalité des chances
+dans ce contexte ? Tous les utilisateurs qui peuvent
+prétendre à un prêt ont les mêmes chances d'obtenir l'approbation de leur prêt. En d'autres termes, nous devons tous
+avoir les mêmes chances d'obtenir un prêt, quel que soit le sous-groupe protégé
+auquel on appartient. Sur cette image, si on garde
+les mêmes caractéristiques d'un individu, mais qu'on change
+le groupe auquel il appartient, ses chances d'obtenir un prêt
+doivent rester les mêmes. Pourquoi intégrer cette approche
+dans votre système de ML ? Ce type d'approche vous permet
+d'examiner votre modèle, afin de détecter d'éventuels problèmes. Après avoir identifié
+les points à améliorer, vous pouvez modifier votre modèle
+afin d'obtenir le compromis idéal entre précision et non-discrimination, ce qui peut ensuite rendre
+votre modèle de ML plus ouvert. Illustrons cette approche
+à l'aide d'un classificateur test. Il ne s'agit pas d'un vrai modèle, mais d'un exemple théorique
+pour expliquer les concepts. Le modèle vise à prédire précisément les
+clients capables de rembourser leur prêt. La banque peut alors utiliser ce modèle pour décider d'octroyer ou non un prêt. Sur le diagramme de cette diapositive, les points foncés représentent les clients
+susceptibles de rembourser le prêt, et les points clairs
+ceux qui ne le sont pas. Les nombres en haut représentent
+la notation de crédit, simplifiée à une plage allant de 0 à 100. Plus la notation est élevée, plus le
+remboursement du prêt est probable. Dans l'idéal,
+il faut utiliser des statistiques qui divisent clairement les catégories, tel que dans l'exemple de gauche. Malheureusement,
+il est bien plus courant de rencontrer la situation de droite,
+où les groupes se chevauchent. Une statistique comme la notation de
+crédit peut remplacer nombre de variables. Nous verrons plus tard
+dans la spécialisation que de nombreux modèles de ML
+renvoient une probabilité, et la notation de crédit peut ici
+remplacer cette probabilité. Avec un modèle de ML
+comme la notation de crédit, qui inclut de nombreux éléments,
+tels que les revenus, la provenance des dettes à payer, etc., le chiffre renvoyé peut
+correspondre à la probabilité qu'un individu rembourse
+son prêt ou non. Il peut aussi ne pas y correspondre. Dans ce cas, on peut définir un seuil. En gros, vous choisisissez
+une limite spécifique. Les clients avec une notation inférieure
+à la limite n'obtiennent pas le prêt, et ceux avec une notation
+supérieure l'obtiennent. Comme l'indique ce diagramme, la définition d'un seuil
+implique des compromis. S'il est trop bas, le prêt peut être
+accordé à des personnes non solvables. S'il est trop haut, des personnes
+le méritant ne l'obtiendront pas. Comment bien définir le seuil ? Le seuil à utiliser dépend
+de vos objectifs et motivations. L'objectif peut être de maximiser
+le nombre de bonnes décisions, comme dans ce diagramme. À gauche, les points bleu foncé reflètent
+les prêts accordés et remboursés, et les points gris clair les prêts refusés
+aux emprunteurs défaillants. Ces points correspondent
+aux prédictions correctes. À droite, les points bleu clair reflètent
+les prêts accordés et non remboursés, et les points gris foncé représentent
+les prêts refusés à des individus qui les auraient remboursés. Ces points correspondent
+aux prédictions incorrectes. Certaines décisions sont plus coûteuses
+que d'autres. Par exemple, certaines catégories de prêts comme des prêts sur 15 ans
+peuvent être plus rentables que d'autres. Les décisions doivent donc
+être traitées différemment. D'un point de vue financier,
+un autre objectif peut être de maximiser, non pas le nombre de décisions correctes, mais le bénéfice global. Le chiffre en bas de ce diagramme
+représente le bénéfice présumé, calculé selon une estimation
+du bénéfice associé à chaque prêt. La question devient alors : quel est le seuil le plus rentable ? Correspond-t-il au seuil
+maximisant les bonnes décisions ? Ce type de questions devient épineux quand
+une statistique, comme la notation, est répartie différemment
+entre deux groupes. C'est là qu'intervient
+l'égalité des chances. La structure formelle de l'égalité
+des chances se présente ainsi. La valeur A représente
+une caractéristique prédite. Pour simplifier,
+A est un classificateur binaire, qui représente l'appartenance
+à un groupe protégé. Comme je ne suis pas avocat, je ne peux pas vous indiquer les types
+de groupes protégés dans votre région. Demandez à votre service juridique à quoi correspond un groupe protégé. Par exemple, aux États-Unis, la loi fédérale protège les employés
+contre la discrimination fondée sur l'âge. Selon l'application que vous développez, l'âge peut donc être un
+groupe protégé. On a aussi un résultat binaire,
+représenté par Y. Le résultat souhaitable correspond
+à la valeur Y égale 1. Dans notre exemple, l'acceptation du prêt. Considérez Y comme la vérité
+ou l'étiquette dans cet exemple. On crée un modèle pour Y. On doit donc aussi avoir un prédicteur,
+Y accent circonflexe. Dans notre exemple,
+le prédicteur est toujours un seuil défini à l'aide d'une note entre 0 et 1. Le prédicteur peut utiliser des seuils
+selon la valeur de A, ou utiliser différents seuils
+pour différents groupes. Le but est que les individus du groupe A,
+qui sont éligibles à un résultat positif, aient les mêmes chances
+d'obtenir ce résultat positif que les individus
+n'appartenant pas au groupe A. Techniquement, le taux de vrais positifs
+doit être identique dans les deux groupes. C'est le principe de l'égalité
+des chances.

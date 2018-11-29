@@ -1,0 +1,91 @@
+Nous voici dans l'atelier 2, où nous allons voir comment utiliser
+Datalab pour exécuter une requête BigQuery. Nous allons analyser un ensemble de données
+assez conséquent, comportant 70 millions de lignes et
+8 gigaoctets de données, à l'aide de BigQuery et de Cloud Datalab. Commençons par lancer Cloud Datalab. Nous pouvons le faire depuis Cloud Shell. Premièrement, nous devons définir quelles sont nos zones de calcul, de manière à exécuter Datalab
+dans l'une de ces zones. Je sais déjà que "us-central1"
+est une zone de calcul, je vais donc sauter cette étape. Je passe à la création de Datalab,
+en tapant "datalab create" suivi du nom de ma VM
+et de la zone. Allons-y. Revenons dans Cloud Shell. Dans Cloud Shell, je tape "datalab create mydatalabvm", et j'indique la zone "us-central1-b". Il faut environ cinq minutes pour
+exécuter cette commande. Faisons une avance rapide de la vidéo, jusqu'au moment où apparaît le message indiquant que vous pouvez vous connecter
+au "localhost" 8081 ou effectuer un aperçu sur le Web
+sur le port 8081. Attendons qu'il s'affiche pour continuer. Pendant que Datalab démarre, poursuivons avec BigQuery. Voici la requête que je souhaite exécuter. Le commentaire ici est très important
+car nous voulons utiliser le SQL standard, alors que l'interface utilisateur
+de BigQuery utilise par défaut (en tout cas, pour le moment)
+ce que l'on appelle l'ancien SQL. Nous allons accéder à la console BigQuery via le menu de GCP, que l'on fait défiler pour sélectionner BigQuery. Nous devons alors nous connecter
+à l'aide d'un mot de passe fourni dans QwikLabs. Récupérons ce mot de passe
+dans QwikLabs, et saisissons-le. Nous sommes maintenant dans BigQuery. Vérifiez qu'il s'agit bien de votre projet. Dans notre cas, ni ceci ni
+des ressources QwikLabs ou autres. Vous pouvez alors cliquer sur
+"Saisir une requête". Notez que votre interface utilisateur
+peut être différente, car les interfaces changent régulièrement. Cependant, la plupart des boutons et autres éléments restent reconnaissables. Nous allons donc récupérer notre requête
+et l'exécuter. Allons-y. J'aurais aussi bien pu choisir
+de ne pas ajouter #standardSQL ici. À la place, j'aurais pu afficher les options et décocher l'ancien SQL, ce qui est une autre manière de procéder. Dans tous les cas, nous voulons utiliser
+le SQL standard. Nous allons donc exécuter ce dialecte
+et la requête. Nous utilisons un ensemble de données
+qui s'appelle "bigquery-samples" (notre projet s’appelle
+BigQuery samples), un ensemble de données
+"airline_ontime_data", et une table "flights". En fait nous ne voyons pas le projet sur cette page. Comment afficher un projet
+qui ne figure pas dans le menu de gauche ? Il vous suffit de cliquer
+dans le menu déroulant et de choisir "Basculer vers le projet", puis "Afficher le projet",
+et de saisir le nom du projet. Le projet "bigquery-samples" s'affiche alors. Dans le projet, vous pouvez voir l'ensemble
+de données "airline_ontime_data" (données horaires des vols)
+ainsi que la table "flights" (vols). Je peux alors consulter les données des vols. Dans l'aperçu, je peux visualiser les colonnes et des exemples de valeurs de données
+de la table. Si l'on affiche les détails, on peut voir que la table
+fait plus de 8 gigaoctets, et qu'elle contient 70 millions de lignes. Voilà. Exécutons la requête. Voici la requête que nous avons exécutée. Nous avons donc demandé à la requête
+de sélectionner les retards de départs "departure_delay", et de compter
+le nombre de vols concernés. Il s'agit du nombre de vols associés
+à un retard de départ spécifique, car le groupement est fait en fonction
+des valeurs "departure_delay". Par exemple, pour une valeur
+"departure_delay" de -37, qui signifie que le vol a décollé
+avec 37 minutes d'avance, combien de vols sont-ils recensés ? Nous trouvons 107 vols correspondants
+dans l'ensemble de données, qui sont donc les quantiles. Cela correspond à 28 centiles, puisqu'il faut diviser par cinq. 80 % de ces vols arrivent avec au moins 66 minutes d'avance, et 60 à 80 % d'entre eux arrivent
+avec 41 à 66 minutes d'avance, etc. Voici une question pour vous : si la valeur "departure_delay" est
+de 35 minutes d'avance, quelle est la valeur médiane ? Selon toute logique, cette valeur devrait être au milieu, donc 28 minutes. Si on retourne dans la console, Datalab demande si nous souhaitons continuer.
+Répondons que oui. Continuons en acceptant
+tout ce qui est proposé. Nous allons maintenant exécuter
+cette autre requête, pour trouver les paires d’aéroports
+"airport-pair". Il s'agit de trouver les aéroports de départ et d'arrivée spécifiques qui ont
+le plus grand nombre d'interconnexions. Nous nous trouvons dans la même table. Mais cette fois-ci, je sélectionne
+l'aéroport de départ "departure_airport" et celui d'arrivée "arrival_airport", 
+et je compte le nombre de vols en groupant par "departure_airport" et
+"arrival_airport". Je choisis un tri par ordre décroissant
+pour que la paire d’aéroports "airport-pair" avec le plus d'interconnexions
+s'affiche en premier, avec une limite de dix. J'obtiendrai donc les dix premiers résultats les plus courants. Nous avons traité plus de 70 millions
+d'enregistrements. C'est impressionnant ! Et tout cela en à peine 2,3 secondes. Comment est-ce possible ? Les 70 millions d'enregistrements n'ont
+pas tous été traités sur cette machine. L'exécution se fait en réalité
+sur des milliers de machines. Elle est évolutive,
+et se fait à grande échelle. C'est ce que permettent
+les services dans le cloud ; tout se fait sans serveur. Revenons à notre requête, L'aéroport de départ se trouve être
+celui de Los Angeles (LAX) et l'aéroport d'arrivée celui de
+San Francisco (SAN). Cela représente 133 000 interconnexions Il s'agit donc de la paire d'aéroports avec
+le plus grand nombre d'interconnexions. Si l'on revient dans Cloud Shell, on peut désormais cliquer sur
+"Aperçu sur le Web", et basculer sur le port 8081
+pour commencer à utiliser Datalab. Cliquez sur "Aperçu sur le Web", et remplacez le numéro de port par 8081. Nous nous trouvons désormais dans Datalab. Vous avez fait du bon travail dans BigQuery. Vous avez pu exécuter des requêtes SQL
+sur des millions de lignes de données, et vous avez obtenu des réponses
+en quelques secondes. C'est très bien, 
+mais au-delà de ça, notre objectif est de tracer des graphiques
+et d'effectuer d'autres tâches. Nous voulons être en mesure
+de visualiser les données. Or, la console BigQuery ne propose
+pas de système de visualisation des données. Nous devons utiliser un outil
+de visualisation personnalisé. Nous allons donc faire appel à Datalab, qui exploite pleinement la puissance de Python pour
+générer tous nos graphiques. Nous allons exécuter l'une de nos requêtes, mais au lieu de le faire dans
+la console BigQuery, nous allons utiliser Datalab. Nous voici dans Datalab. Je vais commencer par ouvrir le bloc-notes. Ce bloc-notes comporte une cellule de code. Je vais y coller le code et cliquer sur "Exécuter"
+pour lancer son exécution. Comme l'exécution est effectuée
+par BigQuery, l'analyse des millions de vols ne prendra que quelques secondes. J'obtiens comme résultat
+une structure de données Pandas. Ici, ".to_dataframe" est bien
+une structure de données Pandas. Les deux premières lignes de
+cette structure de données s'affichent, et vous pouvez voir
+les retards de vols (departure_delay), le nombre de vols et, cette fois-ci, les déciles, car j'ai défini les quantiles sur 10. Il y en a donc 10, qui s'affichent sous forme de liste Python. Si on continue en prenant la même
+structure de données et en la renommant, voilà ce que l'on obtient.
+Les données de déciles sont réparties en pourcentages. Nous obtenons des colonnes séparées pour chaque pourcentage : 0 %, 10 %, 20 %, 30 %, etc. Pourquoi procéder ainsi ?
+Parce que le fait de séparer les colonnes va me permettre de passer à l'étape suivante. Continuons. Je vais supprimer la colonne 0 % et la colonne 100 %, et je vais recueillir toutes les données
+entre 10 % et 90 % pour les tracer sous forme de graphique. Et maintenant, comment interpréter ce graphique ? Par exemple, lorsque la valeur departure_delay est de 10, cela indique un retard de 10 minutes. Pourtant, 10 % des vols arrivent
+tout de même en avance. Mais 90 % des vols arrivent avec
+plus de 21 minutes de retard. Il s'agit des déciles. La médiane est quant à elle
+d'un retard de départ et d'un retard d'arrivée d'environ trois à quatre minutes. Voilà les informations que donnent
+ces lignes. Elles fournissent une distribution pour
+une valeur departure_delay spécifique. Il apparaît donc que la relation
+est principalement linéaire pour toutes les valeurs departure_delay
+en dessous de -20. Pour les vols qui décollent avec plus
+de 20 minutes d'avance, (qui sont donc très en avance), la relation semble assez éclatée, et pas vraiment linéaire. Si nous optons pour un modèle linéaire, il fonctionnera bien pour les données au milieu de la distribution,
+mais pas pour celles qui s'en écartent. Il est impossible d'obtenir facilement ce type d'information autrement. Vous devez tracer les distributions, ce qui est bien plus facile lorsque
+vous pouvez exploiter toute la puissance de Python.

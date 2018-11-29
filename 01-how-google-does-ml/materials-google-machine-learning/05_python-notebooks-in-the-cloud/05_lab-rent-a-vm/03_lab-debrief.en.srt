@@ -1,0 +1,683 @@
+1
+00:00:00,000 --> 00:00:04,500
+So in this lab, we looked at how to create a Compute Engine Instance
+
+2
+00:00:04,500 --> 00:00:09,360
+provided with the necessary access and security association to it,
+
+3
+00:00:09,360 --> 00:00:12,690
+and then interact with data on Cloud storageת
+
+4
+00:00:12,690 --> 00:00:14,490
+and carry out a simple task
+
+5
+00:00:14,490 --> 00:00:19,277
+which was to make a web page display current earthquake data.
+
+6
+00:00:19,277 --> 00:00:23,610
+So first thing that we did was at once we were in the GCP console,
+
+7
+00:00:23,610 --> 00:00:28,125
+we went ahead and wanted to create a Compute Engine Instance.
+
+8
+00:00:28,125 --> 00:00:31,200
+And the compute engine instance is on the left hand side.
+
+9
+00:00:31,200 --> 00:00:35,720
+There it is, compute engine, VM instances.
+
+10
+00:00:35,720 --> 00:00:41,690
+And at this point, we can go ahead and create the instance.
+
+11
+00:00:41,690 --> 00:00:45,955
+And we can call the instance whatever we want,
+
+12
+00:00:45,955 --> 00:00:49,475
+so let me go ahead and call it, maybe earthquake.
+
+13
+00:00:49,475 --> 00:00:58,265
+And, let me pick it to be in US Central 1-b and 1 vCPU should be enough,
+
+14
+00:00:58,265 --> 00:01:01,490
+and we will allow access to all the Cloud APIs,
+
+15
+00:01:01,490 --> 00:01:05,679
+and go ahead and create the instance.
+
+16
+00:01:05,679 --> 00:01:07,105
+So at this point,
+
+17
+00:01:07,105 --> 00:01:09,097
+this instance is being created.
+
+18
+00:01:09,097 --> 00:01:10,565
+You don't need the label.
+
+19
+00:01:10,565 --> 00:01:12,678
+So let me hide the info panel.
+
+20
+00:01:12,678 --> 00:01:17,750
+So the instance called earthquake is getting created in the zone US central 1-b.
+
+21
+00:01:17,750 --> 00:01:20,770
+And at this point, there is no IP address and at this point
+
+22
+00:01:20,770 --> 00:01:24,513
+the instance has been created and in now we have an external IP.
+
+23
+00:01:24,513 --> 00:01:27,640
+I can go to the SSH menu item,
+
+24
+00:01:27,640 --> 00:01:32,320
+click on SSH and go ahead and
+
+25
+00:01:32,320 --> 00:01:38,640
+allow pop-ups and SSH.
+
+26
+00:01:38,640 --> 00:01:40,710
+So there we are,
+
+27
+00:01:40,710 --> 00:01:47,980
+we are now SSH in into the virtual machine that we have just created.
+
+28
+00:01:47,980 --> 00:01:54,299
+Now this virtual machine that we've just created doesn't have the software that we need.
+
+29
+00:01:54,299 --> 00:01:59,585
+So for example, one of the key piece of software that will want is software called git,
+
+30
+00:01:59,585 --> 00:02:04,140
+which allows me to get the source code from the repository.
+
+31
+00:02:04,140 --> 00:02:05,530
+But if I type in git,
+
+32
+00:02:05,530 --> 00:02:08,085
+you notice that git command is not found.
+
+33
+00:02:08,085 --> 00:02:11,195
+So the first thing I need to do is to go ahead and install git.
+
+34
+00:02:11,195 --> 00:02:17,636
+So I can do that by sudo apt-get install git.
+
+35
+00:02:17,636 --> 00:02:19,540
+And at that point,
+
+36
+00:02:19,540 --> 00:02:22,765
+another cell, want to continue.
+
+37
+00:02:22,765 --> 00:02:25,140
+Git is getting installed.
+
+38
+00:02:25,140 --> 00:02:28,480
+Sudo let's me run an operation as
+
+39
+00:02:28,480 --> 00:02:32,742
+a route which I need access to in order to install software on the VM.
+
+40
+00:02:32,742 --> 00:02:36,345
+So at this point now if I type in git, there is git.
+
+41
+00:02:36,345 --> 00:02:39,660
+Git has been installed and what I want to do is to go ahead and do
+
+42
+00:02:39,660 --> 00:02:45,875
+a git clone of the code corresponding to this course.
+
+43
+00:02:45,875 --> 00:02:54,475
+That's in github.com, Google Cloud platform, training-data-analyst.
+
+44
+00:02:54,475 --> 00:02:57,085
+And at this point,
+
+45
+00:02:57,085 --> 00:03:01,045
+I have the repository training data analyst.
+
+46
+00:03:01,045 --> 00:03:04,210
+And if we now go back to the qwiklabs,
+
+47
+00:03:04,210 --> 00:03:07,360
+we've just gone ahead and created the compute engine instance.
+
+48
+00:03:07,360 --> 00:03:08,990
+We've SSH into it.
+
+49
+00:03:08,990 --> 00:03:10,930
+We've installed the software git.
+
+50
+00:03:10,930 --> 00:03:12,700
+So now what is it that we want to do?
+
+51
+00:03:12,700 --> 00:03:17,675
+We want to basically go ahead and ingest earthquake data from USGS.
+
+52
+00:03:17,675 --> 00:03:23,749
+Fortunately, a script has already been written that allows us to get it and that script.
+
+53
+00:03:23,749 --> 00:03:29,360
+So that script is present inside the repository cd to training data analyst.
+
+54
+00:03:29,360 --> 00:03:32,645
+And, let's see where we need to go.
+
+55
+00:03:32,645 --> 00:03:39,224
+And now, we need to go into a courses machine learning deepdive 01,
+
+56
+00:03:39,224 --> 00:03:42,620
+googleml. So let's do that.
+
+57
+00:03:42,620 --> 00:03:46,530
+So cd to courses machine learning deepdive.
+
+58
+00:03:46,530 --> 00:03:48,820
+And by the way, I'm typing in tabs to do
+
+59
+00:03:48,820 --> 00:03:51,088
+the completion so I don't have to type in everything.
+
+60
+00:03:51,088 --> 00:03:53,620
+So cd 01 googleml.
+
+61
+00:03:53,620 --> 00:04:00,190
+And in there are the scripts that we will need.
+
+62
+00:04:00,190 --> 00:04:05,615
+So we can go ahead and look at the ingest.sh. Let's go ahead and look at ingest.sh.
+
+63
+00:04:05,615 --> 00:04:14,910
+So that is in earthquakes and less ingest.sh.
+
+64
+00:04:14,910 --> 00:04:21,150
+And all that this is doing is removing any earthquakes.csv that already exists and doing
+
+65
+00:04:21,150 --> 00:04:24,825
+a download wget or web get is a way to download
+
+66
+00:04:24,825 --> 00:04:28,879
+a csv file and I'm calling it earthquakes.csv.
+
+67
+00:04:28,879 --> 00:04:34,588
+So, we can go ahead and run that by typing in bash ingest.sh.
+
+68
+00:04:34,588 --> 00:04:35,835
+And at this point,
+
+69
+00:04:35,835 --> 00:04:39,720
+there is an earthquakes.csv that exists.
+
+70
+00:04:39,720 --> 00:04:44,225
+We can do a head of it to look at the first few lines.
+
+71
+00:04:44,225 --> 00:04:49,600
+So there is the first ten lines of the file and as you noticed there is a time,
+
+72
+00:04:49,600 --> 00:04:51,520
+there's a latitude, longitude of all of
+
+73
+00:04:51,520 --> 00:04:55,360
+the earthquakes that have happened in the recent week.
+
+74
+00:04:55,360 --> 00:04:58,075
+And now having gotten that,
+
+75
+00:04:58,075 --> 00:05:00,575
+we can now go ahead and transform the data.
+
+76
+00:05:00,575 --> 00:05:02,690
+The transforming the data is done.
+
+77
+00:05:02,690 --> 00:05:05,185
+And this is an example of a data lab notebook.
+
+78
+00:05:05,185 --> 00:05:08,300
+So let me go ahead and click on this to show you what that looks like.
+
+79
+00:05:08,300 --> 00:05:15,070
+So there is an earthquakes.ipython notebook and it shows you the code that is being done
+
+80
+00:05:15,070 --> 00:05:17,770
+and what the code is being done as it goes ahead and gets
+
+81
+00:05:17,770 --> 00:05:22,295
+the earthquake data and plots it using matplotlib.
+
+82
+00:05:22,295 --> 00:05:28,914
+And then, what we will do is to basically go ahead and save it as an image as a png file.
+
+83
+00:05:28,914 --> 00:05:30,533
+So let's go ahead and do that.
+
+84
+00:05:30,533 --> 00:05:36,465
+Go back to the instructions and we need to install all of the missing software.
+
+85
+00:05:36,465 --> 00:05:38,070
+So what other software do we need?
+
+86
+00:05:38,070 --> 00:05:41,183
+Let's go ahead and look at what other software we need.
+
+87
+00:05:41,183 --> 00:05:46,320
+So there is the install missing.sh that
+
+88
+00:05:46,320 --> 00:05:52,560
+contains installation instructions to install basemap.
+
+89
+00:05:52,560 --> 00:05:56,370
+Basemap is a Python package that allows us to draw geographic maps.
+
+90
+00:05:56,370 --> 00:05:59,640
+Python numpy is a numeric processing library and
+
+91
+00:05:59,640 --> 00:06:03,504
+matplotlib which is the basic plotting library.
+
+92
+00:06:03,504 --> 00:06:07,215
+So we're just installing the three python packages that we need.
+
+93
+00:06:07,215 --> 00:06:10,020
+So I'll do bash install missing.sh.
+
+94
+00:06:10,020 --> 00:06:13,470
+At this point, it's going to go ahead and get all of
+
+95
+00:06:13,470 --> 00:06:19,800
+the software packages and install them on this virtual machine.
+
+96
+00:06:19,800 --> 00:06:23,359
+So now that all of the software has been installed,
+
+97
+00:06:23,359 --> 00:06:29,115
+I can go ahead and run transform.py In this directory.
+
+98
+00:06:29,115 --> 00:06:34,726
+Transform.py contains all of the python code that was present in the IPython notebook,
+
+99
+00:06:34,726 --> 00:06:38,101
+the ones to go ahead and plot it and create an image file.
+
+100
+00:06:38,101 --> 00:06:39,910
+So let's go ahead and do a python
+
+101
+00:06:39,910 --> 00:06:48,929
+transform.py.
+
+102
+00:06:48,929 --> 00:06:53,310
+And at this point,
+
+103
+00:06:53,490 --> 00:06:57,113
+if you can do ls minus lrt,
+
+104
+00:06:57,113 --> 00:07:00,095
+it shows us the latest things that have been created,
+
+105
+00:07:00,095 --> 00:07:04,430
+and as you see there is a new file called earthquakes.png.
+
+106
+00:07:04,430 --> 00:07:05,700
+That is the image file.
+
+107
+00:07:05,700 --> 00:07:09,860
+So now, we want to take this image file and we want to put it onto the Cloud,
+
+108
+00:07:09,860 --> 00:07:13,010
+and the way we do that, the storage on the Cloud,
+
+109
+00:07:13,010 --> 00:07:14,666
+is in Google Cloud storage.
+
+110
+00:07:14,666 --> 00:07:18,162
+So in order to do that, let's go ahead and create a bucket.
+
+111
+00:07:18,162 --> 00:07:25,195
+Let's go back to the GCP web services menu,
+
+112
+00:07:25,195 --> 00:07:33,380
+click on the left hand side bar and scroll down to storage and create a bucket.
+
+113
+00:07:33,380 --> 00:07:36,357
+And the name of the bucket I need it to be unique.
+
+114
+00:07:36,357 --> 00:07:38,420
+It needs to be globally unique and
+
+115
+00:07:38,420 --> 00:07:41,615
+one globally unique thing that we do have is a project name.
+
+116
+00:07:41,615 --> 00:07:43,955
+And unless we're extremely unlucky,
+
+117
+00:07:43,955 --> 00:07:47,267
+nobody has used our project name as the name of their bucket.
+
+118
+00:07:47,267 --> 00:07:52,725
+So let me go ahead and copy the name of the project.
+
+119
+00:07:52,725 --> 00:07:58,580
+And use that as the name of the bucket.
+
+120
+00:07:58,580 --> 00:08:04,413
+And, we can have this be a multi-regional bucket, our regional bucket.
+
+121
+00:08:04,413 --> 00:08:07,040
+Let me go and make it a regional bucket.
+
+122
+00:08:07,040 --> 00:08:09,200
+And it'll be in the US central one which is
+
+123
+00:08:09,200 --> 00:08:13,988
+the same region that I used to create my Compute Engine Instance.
+
+124
+00:08:13,988 --> 00:08:17,960
+This reduces the amount of latency involved in getting at the data.
+
+125
+00:08:17,960 --> 00:08:19,805
+So go ahead and create it.
+
+126
+00:08:19,805 --> 00:08:23,035
+And at this point the bucket has been created.
+
+127
+00:08:23,035 --> 00:08:26,160
+And now, what we want to do is to copy the
+
+128
+00:08:26,160 --> 00:08:31,350
+earthquake.png that we just created into this bucket. How do we do that?
+
+129
+00:08:31,350 --> 00:08:34,571
+We can do that using gsutil.
+
+130
+00:08:34,571 --> 00:08:37,110
+So, let's go ahead and we will copy this.
+
+131
+00:08:37,110 --> 00:08:42,240
+So I'm going to type in gsutil and the name of your bucket.
+
+132
+00:08:42,240 --> 00:08:45,492
+The name of your bucket again is the name of the project.
+
+133
+00:08:45,492 --> 00:08:49,490
+So fortunately, I can just use that.
+
+134
+00:08:52,140 --> 00:08:58,190
+Name of project and maybe earthquakes.
+
+135
+00:08:58,190 --> 00:09:01,420
+And at this point, all of the files,
+
+136
+00:09:01,420 --> 00:09:05,945
+all earthquakes.htm and earthquakes.png and earthquakes.csv.
+
+137
+00:09:05,945 --> 00:09:11,315
+All three of them get copied over to the Cloud and they are all present in the bucket.
+
+138
+00:09:11,315 --> 00:09:16,635
+In fact if we go back to the bucket and we refresh,
+
+139
+00:09:16,635 --> 00:09:21,885
+we are now seeing earthquakes and inside the earthquakes we see the three files.
+
+140
+00:09:21,885 --> 00:09:28,045
+Let's go ahead and take all of these three files and share them publicly.
+
+141
+00:09:28,045 --> 00:09:29,959
+And by sharing it publicly,
+
+142
+00:09:29,959 --> 00:09:32,770
+we basically get a public link.
+
+143
+00:09:32,770 --> 00:09:36,758
+So I can now click on this public link to earthquakes.htm.
+
+144
+00:09:36,758 --> 00:09:38,785
+And when I click on the public's link,
+
+145
+00:09:38,785 --> 00:09:45,160
+you basically see that it's called storage.googleapis.com slash the name of my project,
+
+146
+00:09:45,160 --> 00:09:51,385
+slash earthquake slash earthquake.htm which is basically the folder structure.
+
+147
+00:09:51,385 --> 00:09:56,020
+And we see that now we have a completely public webpage.
+
+148
+00:09:56,020 --> 00:10:01,330
+And the reason that we have a public webpage is because we went ahead and made it public.
+
+149
+00:10:01,330 --> 00:10:02,525
+We set share publicly.
+
+150
+00:10:02,525 --> 00:10:04,255
+If we did not have share publicly,
+
+151
+00:10:04,255 --> 00:10:07,940
+we would not be able to access this on the web.
+
+152
+00:10:07,940 --> 00:10:09,175
+So in this lab,
+
+153
+00:10:09,175 --> 00:10:13,750
+what we've done is that we've used Compute Engine and we use
+
+154
+00:10:13,750 --> 00:10:19,540
+Cloud storage as essentially computing resources, the traditional way.
+
+155
+00:10:19,540 --> 00:10:24,070
+Of course, this is not the way we are going to work with resources.
+
+156
+00:10:24,070 --> 00:10:26,530
+We're not going to be going ahead and creating a VM
+
+157
+00:10:26,530 --> 00:10:29,090
+and installing software to work with it.
+
+158
+00:10:29,090 --> 00:10:31,510
+Instead, for the most part in this course,
+
+159
+00:10:31,510 --> 00:10:33,775
+we'll be using what are called Managed Services.
+
+160
+00:10:33,775 --> 00:10:38,095
+Managed services allow us to run the code that we want to run,
+
+161
+00:10:38,095 --> 00:10:41,250
+without having to provision VM's ourselves.
+
+162
+00:10:41,250 --> 00:10:43,540
+Install software ourselves.
+
+163
+00:10:43,540 --> 00:10:45,280
+Instead, you say, here's same code,
+
+164
+00:10:45,280 --> 00:10:50,620
+run it for me and the end result would be the effect of that code having been dropped.
+
+165
+00:10:50,620 --> 00:10:53,700
+So we will see this higher level way,
+
+166
+00:10:53,700 --> 00:10:54,940
+the more abstract way,
+
+167
+00:10:54,940 --> 00:10:57,880
+of using Cloud services in later labs.
+
+168
+00:10:57,880 --> 00:11:02,590
+But, what we wanted to show you in this particular lab was
+
+169
+00:11:02,590 --> 00:11:05,620
+the fundamentals of what all of this is built
+
+170
+00:11:05,620 --> 00:11:08,632
+on and the fundamentals that everything is built on,
+
+171
+00:11:08,632 --> 00:11:14,080
+our Compute Engine for compute and Cloud storage for storing things in a persistent way.

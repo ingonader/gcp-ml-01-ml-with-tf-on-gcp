@@ -1,0 +1,82 @@
+In diesem Lab haben wir
+eine Compute Engine-Instanz erstellt, die mit allen nötigen Zugriffs-
+und Sicherheitsrechten ausgestattet war. Dann haben wir
+mit Daten in Cloud Storage interagiert und eine einfache Aufgabe ausgeführt, nämlich die Anzeige aktueller
+Erdbebendaten auf einer Webseite. Dazu haben wir
+zuerst die GCP Console geöffnet, um eine Compute Engine-Instanz
+zu erstellen. Die Instanz wird hier links ausgewählt. Hier ist es:
+Compute Engine, VM-Instanzen. Jetzt können wir die Instanz erstellen. Die Instanz kann beliebig benannt werden. Ich nenne sie "earthquake". Die Region ist us-central1-b
+und eine CPU sollte ausreichen. Wir erlauben Zugriff auf alle Cloud-APIs und erstellen dann die Instanz. Nach dieser Vorbereitung wird die Instanz erstellt. Das Label wird nicht benötigt. Deshalb blende ich das Info-Feld aus. Jetzt wird die Instanz "earthquake"
+in Zone us-central1-b erstellt. Sie hat noch keine IP-Adresse. Jetzt wurde die Instanz erstellt
+und hat eine externe IP-Adresse. Ich kann das SSH-Menü öffnen, auf "SSH" klicken und Pop-ups und SSH erlauben. Fertig. Jetzt greifen wir
+über SSH auf die neu erstellte VM zu. Diese VM verfügt noch nicht
+über die erforderliche Software. Zu den wichtigsten Programmen gehört Git, mit dem ich den Quellcode
+aus dem Repository abrufen kann. Doch wenn ich "git" eingebe, wird der Befehl nicht gefunden. Deshalb muss ich Git zuerst installieren. Dazu gebe ich
+"sudo apt-get install git" ein. Es wird eine weitere Zelle angezeigt und ich lasse den Vorgang fortsetzen. Git wird jetzt installiert. Mit sudo kann ich
+Vorgänge als Route ausführen, auf die ich zugreifen muss,
+um Software auf der VM zu installieren. Wenn ich jetzt "git" eingebe,
+wird es angezeigt. Nach der Installation von Git möchte ich einen Git-Klon
+des Codes für diesen Kurs anlegen. Er steht unter github.com/
+GoogleCloudPlatform/training-data-analyst. So komme ich
+zum Repository "training data analyst". Wenn wir jetzt
+zu Qwiklabs zurückkehren, haben wir gerade
+die Compute Engine-Instanz erstellt. Wir haben per SSH darauf zugegriffen. Wir haben die Software Git installiert. Was kommt als Nächstes? Jetzt sollen Erdbebendaten
+des USGS aufgenommen werden. Dafür gibt es bereits ein Skript. Es befindet sich im Repository,
+im Verzeichnis training-data-analyst. Wohin müssen wir jetzt? Als Nächstes müssen wir 
+courses > machine_learning > deepdive > 01_googleml aufrufen.
+Das tun wir jetzt. Wir wechseln in das Verzeichnis zu
+courses > machine_learning > deepdive. Ich nutze
+eine automatische Vervollständigung, damit ich nicht alles eingeben muss. Jetzt wechsle ich
+ins Verzeichnis 01_googleml. Hier sind die Skripts, die wir benötigen. Jetzt können wir uns "ingest.sh" ansehen. Dazu geben wir
+"earthquakes" und "less ingest.sh" ein. Damit werden bereits vorhandene
+earthquakes.csv-Dateien entfernt und ein Download über
+"wget" bzw. "web get" vorgenommen. Die heruntergeladene CSV-Datei
+nenne ich earthquakes.csv. Wir starten
+den Vorgang über "bash ingest.sh". Jetzt haben wir 
+hier die Datei earthquakes.csv. Über "head" können wir
+die ersten Zeilen anzeigen lassen. Hier sieht man die ersten zehn Zeilen mit der Uhrzeit,
+dem Längen- und Breitengrad aller Erdbeben der letzten Woche. Nachdem die Datei jetzt vorliegt,
+können wir die Daten umwandeln. Die Datenumwandlung ist ein gutes Beispiel
+für ein Datalab Notebook. Ich zeige Ihnen, wie es aussieht. Hier ist ein earthquakes.ipython-Notebook
+mit dem erzeugten Code. Mit diesem Code werden die Erdbebendaten abgerufen
+und über matplotlib dargestellt. Dann speichern wir sie
+als Bild in einer PNG-Datei. Das tun wir jetzt. Laut Anleitung muss zuerst
+die fehlende Software installiert werden. Welche Software brauchen wir noch? Finden wir es heraus. Hier nutzen wir "install missing.sh" mit Installationsanleitungen für basemap. Basemap ist ein Python-Paket 
+zum Zeichnen geografischer Karten. Python numpy ist 
+eine numerische Verarbeitungsbibliothek und matplotlib ist
+die einfache Plot-Bibliothek. Diese drei Python-Pakete
+installieren wir jetzt. Dazu gebe ich
+"bash install missing.sh" ein. Damit werden alle Softwarepakete abgerufen und auf dieser VM installiert. Nach der Installation der Software kann ich jetzt "transform.py"
+in diesem Verzeichnis ausführen. Dies enthält den gesamten 
+Python-Code aus dem IPython-Notebook für das Darstellen der Daten
+und das Erstellen einer Bilddatei. Führen wir python transform.py aus. Wenn wir jetzt "ls-lrt" eingeben, wird alles angezeigt,
+was zuletzt erstellt wurde. Hier ist eine neue Datei
+namens earthquakes.png. Das ist die Bilddatei. Diese Bilddatei wollen wir
+jetzt in die Cloud verschieben. Der Speicherort in der Cloud ist in Google Cloud Storage. Dazu erstellen wir zuerst einen Bucket. Wir kehren zum GCP-Webdienstmenü zurück, klicken auf die linke Leiste, scrollen zu
+"Speicher" und erstellen einen Bucket. Der Name des Buckets
+muss global eindeutig sein. Dafür eignet sich etwa der Projektname. Denn es ist äußerst unwahrscheinlich, dass unser Projektname bereits
+für einen Bucket verwendet wurde. Ich kopiere also den Namen des Projekts und nutze ihn als Namen für den Bucket. Der Bucket kann
+multiregional oder regional sein. Ich wähle einen regionalen Bucket. Er ist in der Region us-central-1 angesiedelt, die ich auch für
+die Compute Engine-Instanz verwendet habe. Das verringert die Latenz beim Datenabruf. Ich starte den Vorgang jetzt. Der Bucket wurde erstellt. Jetzt wollen wir
+die Bilddatei earthquakes.png in den Bucket kopieren.
+Wie funktioniert das? Dazu können wir "gsutil" nutzen. Ich kopiere jetzt die Datei. Dazu gebe ich "gsutil"
+und den Namen des Buckets ein. Der Bucketname ist der Projektname. Ich gebe also
+den Projektnamen und "earthquakes" ein. Jetzt werden alle drei Dateien, earthquakes.htm,
+earthquakes.png und earthquakes.csv, in die Cloud kopiert 
+und im Bucket gespeichert. Wenn wir zum Bucket
+zurückkehren und ihn aktualisieren, sehen wir "earthquakes"
+und darin die drei Dateien. Jetzt wollen wir
+die drei Dateien öffentlich freigeben. Durch die Freigabe erhalten wir einen öffentlichen Link. Über diesen Link
+gelange ich zu earthquakes.htm. Der Link hat folgenden Namen: storage.googleapis.com/Projektname/
+earthquakes/earthquakes.htm Das entspricht der Ordnerstruktur. Damit haben wir eine öffentliche Webseite. Möglich wurde das
+über die Einstellung "Öffentlich teilen". Ohne öffentliche Freigabe
+wäre die Seite im Netz nicht zugänglich. In diesem Lab haben wir
+Compute Engine und Cloud Storage ganz traditionell
+als Rechenressourcen verwendet. In der Regel
+arbeiten wir so nicht mit Ressourcen. Wir würden keine VM erstellen und Software installieren, 
+um damit zu arbeiten. Stattdessen nutzen wir in diesem Kurs vor allem verwaltete Dienste. Mit ihnen können wir
+unseren gewünschten Code ausführen, ohne selber VMs bereitzustellen oder Software zu installieren. Stattdessen gibt man dem Dienst den Code, lässt ihn ausführen
+und erhält die entsprechenden Ergebnisse. Diese übergeordnete,
+abstraktere Nutzung von Cloud-Diensten behandeln wir später in anderen Labs. Ziel dieses Labs war es, die grundlegenden Funktionen zu zeigen. Dazu gehören
+Compute Engine für die Rechenleistung und Cloud Storage
+für nichtflüchtige Speicherung.

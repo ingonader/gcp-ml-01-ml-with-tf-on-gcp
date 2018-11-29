@@ -1,0 +1,117 @@
+Dans cet atelier, nous avons donc vu
+comment créer une instance Compute Engine, configurer les règles d'accès et de
+sécurité associées, interagir avec les données sur 
+Cloud Storage et effectuer une tâche simple : concevoir une page Web affichant des données
+actualisées sur les tremblements de terre. Une fois dans la console GCP,
+nous avons tout d'abord créé une instance Compute Engine. Les instances sont accessibles
+sur le côté gauche de l'écran. C'est ici, Compute Engine,
+Instances de VM. Nous pouvons poursuivre
+et créer l'instance. Nous pouvons lui attribuer n'importe
+quel nom, disons, par exemple, "earthquake"
+(tremblement de terre). Nous allons la déployer dans la zone
+us-central1-b, un processeur virtuel devrait suffire, nous allons autoriser l'accès à toutes
+les API Cloud, enfin, nous pouvons créer l'instance. L'instance est en cours de création. Les libellés ne sont pas nécessaires. Je vais donc masquer le panneau
+d'information. Voilà, l'instance "Earthquake" est en cours
+de création dans la zone us-central1-b. Ici, il n'y a pas encore d'adresse IP, mais lorsque l'instance est créée,
+une adresse IP externe lui est attribuée. Je peux accéder à l'élément de menu SSH, cliquer sur SSH, puis autoriser les fenêtres contextuelles et lancer SSH. Nous y sommes, nous pouvons maintenant accéder via SSH
+à la VM que nous venons de créer. Mais les logiciels dont nous avons besoin ne
+sont pas installés sur cette VM. Par exemple, l'un des principaux logiciels
+dont nous aurons besoin est "git". Il permet de récupérer le code
+source depuis le dépôt. Mais si je tape "git", la commande "git"
+est introuvable. Je dois dans un premier temps
+installer git. Pour cela, je dois saisir la commande
+"sudo apt-get install git". Ici, je saisis "Y" (oui) pour confirmer et poursuivre l'installation. Git est maintenant en cours d'installation. "Sudo" signifie que j'effectue
+cette opération en tant qu'utilisateur "root". Cela est nécessaire
+pour installer des logiciels sur la VM. Maintenant, si je saisis la commande "git",
+l'outil git est présent. Git est désormais installé. Je vais ensuite créer un clone git du code correspondant à
+ce cours à l'aide de cette commande : "git clone https://github.com/
+GoogleCloudPlatform/training-data-analyst". Nous disposons alors d'une copie du dépôt " training data analyst". Revenons maintenant au Qwiklab. Nous avons créé l'instance Compute Engine, utilisé SSH pour nous connecter à l'instance et installé le logiciel "git". Que faire ensuite ? Nous voulons importer les données
+"earthquake" depuis USGS. Heureusement, il existe déjà un script
+permettant de réaliser cette opération. Ce script est présent dans le dépôt.
+Pour y accéder, je saisis la commande "cd training-data-analyst/". Voyons où nous devons aller. Maintenant, nous devons accéder au cours
+"machine_learning/deepdive/01_googleml". Pour ce faire, je saisis
+"cd courses/machine_learning/deepdive". Notez que j'utilise la touche de tabulation,
+ce qui m'évite de saisir tout le texte. Donc, "cd 01_googleml". Ce répertoire contient tous
+les scripts dont nous aurons besoin. Intéressons-nous maintenant au
+script "ingest.sh". Je saisis "cd earthquakes",
+puis "less ingest.sh". Cette opération a pour but de supprimer
+les fichiers earthquakes.csv existants. Ensuite, la commande "wget" (ou webget) 
+me permet de télécharger un fichier csv, que j'appelle
+"earthquakes.csv". Pour cela, je saisis
+la commande "bash ingest.sh". À ce stade, un fichier "earthquakes.csv" est présent
+dans le répertoire. La commande "head earthquake.csv" permet
+d'afficher les premières lignes du fichier. Nous pouvons voir les dix premières lignes
+du fichier, qui indiquent la date, la latitude et la longitude de tous les tremblements
+de terre qui se sont produits récemment. Maintenant que nous disposons
+de ces informations, nous pouvons passer à la
+transformation des données. La transformation des données
+est terminée. Ceci est un exemple de bloc-notes DataLab. Je vais l'ouvrir pour vous
+montrer à quoi cela ressemble. Voici un bloc-notes earthquakes.ipynb
+qui présente le code exécuté. Il récupère les données sur les
+tremblements de terre, et en trace une représentation visuelle
+à l'aide de matplotlib. Il ne nous reste plus qu'à
+enregistrer cette image au format PNG. C'est ce que nous allons faire. Revenons à la page des instructions afin
+d'installer tous les logiciels manquants. De quoi avons-nous besoin ? Voyons quels sont les
+logiciels nécessaires. Avec la commande "cat install_missing.sh",
+je peux obtenir des instructions pour installer Basemap, un package Python permettant
+de dessiner des cartes géographiques, Python Numpy, une bibliothèque de
+traitement numérique, et Matplotlib, la bibliothèque de
+base pour le traçage de graphiques. Nous allons donc uniquement installer les
+trois packages Python nécessaires. Pour cela, j'utilise la commande
+"bash install missing.sh". Cette commande permet de récupérer
+tous les packages logiciels et de les installer sur
+la machine virtuelle. Maintenant que tous les logiciels
+sont installés, je peux exécuter le script "transform.py"
+dans ce répertoire. Ce script contient tous les codes Python
+présents dans le bloc-notes IPython : codes de traçage et
+de création du fichier image. Lançons le script Python à l'aide de la commande
+" python transform.py". À ce stade, lorsque vous saisissez
+la commande "ls -lrt", les derniers éléments créés s'affichent. Vous pouvez voir qu'un nouveau fichier
+appelé "earthquakes.png" est présent. Il s'agit du fichier image. Maintenant, nous souhaitons envoyer ce
+fichier vers le cloud. Pour le stocker sur le cloud,
+nous allons l'envoyer vers Google Cloud Storage. Pour ce faire, nous devons d'abord
+créer un bucket. Je reviens dans le menu
+des services Web de GCP. Je clique sur la barre latérale gauche,
+je fais défiler jusqu'à "Stockage", puis je clique sur "Créer un bucket". Notez que le nom du bucket
+doit être unique. Il doit être unique à l'échelle mondiale. Nous pouvons alors utiliser 
+le nom de notre projet. À moins d'être particulièrement
+malchanceux, personne d'autre n'aura utilisé
+ce nom pour son bucket. Je vais donc copier le nom du projet et l'utiliser en tant que nom du bucket. Nous pouvons choisir d'utiliser un bucket
+multirégional ou un bucket régional. Je vais opter cette fois pour
+un bucket régional. Il sera déployé dans la zone us-central-1, la même que celle utilisée pour créer
+l'instance Compute Engine. Cela permet de réduire la latence pour
+l'accès aux données. Créons le bucket. Voilà. Le bucket est créé. Maintenant, nous souhaitons copier
+le fichier "earthquake.png" que nous venons de créer dans ce bucket. Comment faire ? Nous pouvons utiliser "gsutil" pour cela. Copions maintenant ce fichier. Je vais donc taper "gsutil",
+suivi du nom du bucket. Rappelez-vous, le bucket
+porte le même nom que le projet. Par conséquent, il me suffit
+d'utiliser ce nom. J'ajoute le nom de mon projet 
+à la commande gsutil, et je peux éventuellement ajouter un
+sous-répertoire "earthquakes". Ensuite, lorsque je valide la commande, les fichiers "earthquakes.htm",
+"earthquakes.png" et "earthquakes.csv" sont tous trois copiés dans le cloud.
+Ils sont bien présents dans le bucket. Si on revient sur l'écran du
+bucket et qu'on actualise l'affichage, on constate la présence du 
+répertoire "earthquakes", et dans ce répertoire,
+on peut voir les trois fichiers. Nous allons maintenant pouvoir
+partager ces fichiers publiquement. Pour ce faire, nous devons
+"générer" un lien public. Désormais, je peux cliquer sur le lien
+public vers "earthquakes.htm". Si je clique sur ce lien public, vous pouvez constater qu'il porte
+le nom suivant : "storage.googleapis.com/nom du projet
+/earthquake/earthquake.htm", ce qui correspond en fait
+à la structure du dossier de projet. Nous avons maintenant une page Web
+complètement publique. Cette page est désormais publique car
+nous l'avons rendue publique. Nous avons configuré le partage public. Sans ça, il aurait été impossible
+d'y accéder via le Web. Pour résumer, dans cet atelier, nous avons utilisé Compute Engine et
+Cloud Storage de façon traditionnelle, essentiellement comme
+des ressources informatiques. Bien sûr, nous n'allons pas procéder
+de cette manière avec les ressources. Notre but n'est pas de créer une VM
+et d'installer les logiciels avec lesquels nous allons travailler. Pour la majeure partie de ce cours, nous allons plutôt utiliser
+des services gérés. Ces services permettent d'exécuter
+facilement le code voulu, sans avoir à gérer
+le provisionnement des VM, ni à installer les logiciels requis. Au lieu de cela, nous disons au service :
+"voici le code, exécute-le pour moi", et nous obtenons le résultat
+de l'exécution du code. Dans les prochains ateliers, nous allons
+nous intéresser à cette méthode de plus haut niveau, 
+cette approche plus abstraite de l'utilisation des services cloud. Mais dans cet atelier,
+nous souhaitions vous présenter les bases sur lesquelles tout ceci repose : Compute Engine pour les opérations
+de calcul, et Cloud Storage pour le stockage
+persistant des données.

@@ -1,0 +1,573 @@
+1
+00:00:00,000 --> 00:00:01,830
+Agora que sabemos calcular
+
+2
+00:00:01,830 --> 00:00:05,314
+a métrica de avaliação de previsão
+de um modelo em subgrupos,
+
+3
+00:00:05,314 --> 00:00:08,550
+vamos falar sobre uma abordagem
+que aprofunda essas métricas
+
+4
+00:00:08,550 --> 00:00:11,610
+para ter um melhor desempenho
+nos subgrupos.
+
+5
+00:00:11,610 --> 00:00:14,850
+Essa abordagem é chamada
+de igualdade de oportunidade,
+
+6
+00:00:14,850 --> 00:00:16,690
+e funciona assim.
+
+7
+00:00:16,690 --> 00:00:20,310
+Digamos que você tem um modelo
+que deve funcionar com todos os usuários,
+
+8
+00:00:20,310 --> 00:00:23,402
+independente de quem eles forem
+ou de onde vieram.
+
+9
+00:00:23,402 --> 00:00:28,935
+Idealmente, todo usuário qualificado para
+um resultado desejado gerado pelo modelo
+
+10
+00:00:28,935 --> 00:00:31,500
+deve ter uma chance igual
+entre os usuários
+
+11
+00:00:31,500 --> 00:00:34,800
+de ser corretamente classificado
+para o resultado desejado.
+
+12
+00:00:34,800 --> 00:00:37,005
+Digamos que trabalhamos
+para um banco
+
+13
+00:00:37,005 --> 00:00:39,150
+na criação de um modelo para ajudar
+
+14
+00:00:39,150 --> 00:00:42,485
+a determinar se um empréstimo
+deve ser aprovado ou não.
+
+15
+00:00:42,485 --> 00:00:45,490
+O que é a igualdade de oportunidade
+nesse contexto?
+
+16
+00:00:45,490 --> 00:00:49,755
+Idealmente, todos os usuários qualificados
+para um empréstimo têm a mesma chance
+
+17
+00:00:49,755 --> 00:00:53,989
+de serem corretamente classificados
+para aprovação entre todos os usuários.
+
+18
+00:00:53,989 --> 00:00:57,735
+Ou seja, a chance de alguém
+ser qualificado para um empréstimo
+
+19
+00:00:57,735 --> 00:01:01,155
+deve ser a mesma independente
+do subgrupo da pessoa.
+
+20
+00:01:01,155 --> 00:01:05,099
+O que temos aqui é que, se mantivermos
+tudo igual para a pessoa
+
+21
+00:01:05,099 --> 00:01:08,325
+e a trocarmos de um grupo para outro,
+
+22
+00:01:08,325 --> 00:01:11,640
+ela deve ter a mesma chance
+de se qualificar para um empréstimo.
+
+23
+00:01:11,640 --> 00:01:15,405
+Por que incorporar essa abordagem
+no seu sistema de aprendizado de máquina?
+
+24
+00:01:15,405 --> 00:01:19,245
+Porque essa abordagem permite
+destrinchar o modelo
+
+25
+00:01:19,245 --> 00:01:22,140
+para descobrir possíveis
+áreas problemáticas.
+
+26
+00:01:22,140 --> 00:01:24,720
+Ao definir oportunidades de melhoria,
+
+27
+00:01:24,720 --> 00:01:27,660
+você pode fazer os ajustes necessários
+
+28
+00:01:27,660 --> 00:01:30,915
+para ter uma troca melhor
+entre precisão e não discriminação,
+
+29
+00:01:30,915 --> 00:01:34,320
+o que pode tornar seu modelo
+de aprendizado de máquina mais inclusivo.
+
+30
+00:01:34,320 --> 00:01:37,560
+Vamos ilustrar essa abordagem usando
+um classificador simulado,
+
+31
+00:01:37,560 --> 00:01:39,524
+não um modelo real,
+
+32
+00:01:39,524 --> 00:01:42,980
+só um exemplo sintético
+para explicar os conceitos.
+
+33
+00:01:42,980 --> 00:01:47,610
+O objetivo deste modelo é prever com
+alta precisão quem pagará o empréstimo,
+
+34
+00:01:47,610 --> 00:01:50,280
+e o banco pode usar esse modelo
+para ajudar a decidir
+
+35
+00:01:50,280 --> 00:01:53,755
+se deve aprovar o empréstimo ou não.
+
+36
+00:01:53,755 --> 00:01:55,850
+No diagrama que você está vendo,
+
+37
+00:01:55,850 --> 00:01:59,045
+os pontos escuros representam pessoas
+que pagam o empréstimo
+
+38
+00:01:59,045 --> 00:02:01,735
+e os pontos claros
+são as pessoas que não pagam.
+
+39
+00:02:01,735 --> 00:02:04,655
+Os números da linha de cima
+representam a pontuação de crédito
+
+40
+00:02:04,655 --> 00:02:07,165
+simplificada para um intervalo
+de zero a cem,
+
+41
+00:02:07,165 --> 00:02:11,425
+em que uma pontuação alta representa
+maior probabilidade de pagar o empréstimo.
+
+42
+00:02:11,425 --> 00:02:13,080
+Em um mundo ideal,
+
+43
+00:02:13,080 --> 00:02:16,935
+trabalharíamos com estatísticas
+que separam categorias claramente,
+
+44
+00:02:16,935 --> 00:02:19,125
+como pode ser visto
+no exemplo da esquerda.
+
+45
+00:02:19,125 --> 00:02:21,940
+Infelizmente, é muito mais comum
+
+46
+00:02:21,940 --> 00:02:25,515
+ver a situação da direita,
+em que os grupos se sobrepõem.
+
+47
+00:02:25,515 --> 00:02:30,840
+Uma estatística como pontuação de crédito
+pode substituir muitas variáveis.
+
+48
+00:02:30,840 --> 00:02:32,910
+Depois, na especialização,
+
+49
+00:02:32,910 --> 00:02:35,635
+você verá que modelos costumam
+retornar uma probabilidade,
+
+50
+00:02:35,635 --> 00:02:38,835
+então a pontuação de crédito
+pode substituir essa probabilidade.
+
+51
+00:02:38,835 --> 00:02:43,815
+A probabilidade resultante de um modelo,
+como pontuação de crédito, por exemplo,
+
+52
+00:02:43,815 --> 00:02:46,470
+considera diversas coisas, como renda,
+
+53
+00:02:46,470 --> 00:02:49,100
+capacidade de pagar dívidas
+e assim em diante,
+
+54
+00:02:49,100 --> 00:02:51,420
+então o número pode representar
+a probabilidade
+
+55
+00:02:51,420 --> 00:02:54,255
+de uma pessoa pagar
+o empréstimo ou ser inadimplente.
+
+56
+00:02:54,255 --> 00:02:56,450
+Mas pode ser que não.
+
+57
+00:02:56,450 --> 00:02:59,670
+É aqui que entra a ideia
+de configuração de limite.
+
+58
+00:02:59,670 --> 00:03:02,160
+Basicamente, você pode escolher
+um ponto de corte,
+
+59
+00:03:02,160 --> 00:03:05,685
+e pessoas com pontuação de crédito
+abaixo do ponto não recebem o empréstimo
+
+60
+00:03:05,685 --> 00:03:08,260
+e as pessoas acima recebem.
+
+61
+00:03:08,260 --> 00:03:10,080
+Como você pode ver no diagrama,
+
+62
+00:03:10,080 --> 00:03:12,490
+escolher o limite tem
+alguns prós e contras.
+
+63
+00:03:12,490 --> 00:03:16,030
+Se for baixo, serão aprovados mais
+empréstimos que causarão inadimplência,
+
+64
+00:03:16,030 --> 00:03:19,910
+se for alto, várias pessoas que merecem
+o empréstimo serão negadas.
+
+65
+00:03:19,910 --> 00:03:21,631
+Então, qual é o melhor limite?
+
+66
+00:03:21,631 --> 00:03:25,290
+O limite depende
+das suas metas e motivações.
+
+67
+00:03:25,290 --> 00:03:28,140
+Uma meta pode ser maximizar
+o número de decisões corretas,
+
+68
+00:03:28,140 --> 00:03:29,865
+como neste diagrama.
+
+69
+00:03:29,865 --> 00:03:35,400
+Na esquerda, pontos em azul escuro
+são empréstimos autorizados pagos,
+
+70
+00:03:35,400 --> 00:03:40,325
+e pontos em cinza são empréstimos negados
+porque resultariam em inadimplência,
+
+71
+00:03:40,325 --> 00:03:43,830
+todos esses pontos representariam
+previsões corretas.
+
+72
+00:03:43,830 --> 00:03:45,710
+Na direita,
+
+73
+00:03:45,710 --> 00:03:49,925
+os pontos em azul claro são empréstimos
+aprovados que resultaram em inadimplência,
+
+74
+00:03:49,925 --> 00:03:53,120
+e os pontos em cinza escuro
+representam empréstimos
+
+75
+00:03:53,120 --> 00:03:56,285
+que foram negados
+a pessoas que teriam pago.
+
+76
+00:03:56,285 --> 00:03:58,650
+Esses pontos representam
+previsões incorretas.
+
+77
+00:03:58,650 --> 00:04:02,570
+Mas, algumas decisões
+são mais custosas que outras.
+
+78
+00:04:02,570 --> 00:04:04,550
+Talvez haja
+uma categoria de empréstimos,
+
+79
+00:04:04,550 --> 00:04:09,410
+como financiamentos em 15 anos,
+que sejam mais lucrativos que outros.
+
+80
+00:04:09,410 --> 00:04:12,570
+Então, pode ser melhor não tratar
+todas as decisões da mesma forma.
+
+81
+00:04:12,570 --> 00:04:15,560
+Outro objetivo,
+em uma situação financeira,
+
+82
+00:04:15,560 --> 00:04:19,475
+pode ser maximizar não o número
+de decisões corretas,
+
+83
+00:04:19,475 --> 00:04:21,200
+mas o lucro geral.
+
+84
+00:04:21,200 --> 00:04:23,750
+A parte de baixo do diagrama
+que você está vendo aqui
+
+85
+00:04:23,750 --> 00:04:26,360
+representa o lucro hipotético baseado
+
+86
+00:04:26,360 --> 00:04:30,020
+na nossa estimativa
+do lucro associado a cada empréstimo.
+
+87
+00:04:30,020 --> 00:04:31,655
+Então, a questão é
+
+88
+00:04:31,655 --> 00:04:33,825
+qual é o limite mais lucrativo?
+
+89
+00:04:33,825 --> 00:04:37,340
+E será que ele corresponde
+ao limite com mais decisões corretas?
+
+90
+00:04:37,340 --> 00:04:40,790
+Perguntas como essa são especialmente
+difíceis quando uma estatística
+
+91
+00:04:40,790 --> 00:04:44,980
+como pontuação de crédito é distribuída
+de modo diferente entre dois grupos.
+
+92
+00:04:44,980 --> 00:04:47,375
+É aqui que entra
+a igualdade de oportunidade.
+
+93
+00:04:47,375 --> 00:04:51,140
+A configuração formal
+de igualdade de oportunidade é assim.
+
+94
+00:04:51,140 --> 00:04:55,135
+Digamos que A representa
+um atributo previsto.
+
+95
+00:04:55,135 --> 00:04:57,470
+Para simplificar,
+vamos considerar que A é binário
+
+96
+00:04:57,470 --> 00:05:00,710
+e representa um membro
+de um grupo protegido.
+
+97
+00:05:00,710 --> 00:05:02,690
+Não sou advogado,
+
+98
+00:05:02,690 --> 00:05:06,535
+então não posso dizer o que é
+um grupo protegido na sua área,
+
+99
+00:05:06,535 --> 00:05:08,390
+mas fale com o jurídico
+da sua empresa
+
+100
+00:05:08,390 --> 00:05:10,415
+para descobrir
+quem é protegido ou não.
+
+101
+00:05:10,415 --> 00:05:11,855
+Mas, para exemplificar,
+
+102
+00:05:11,855 --> 00:05:13,175
+nos Estados Unidos,
+
+103
+00:05:13,175 --> 00:05:17,310
+as leis federais protegem funcionários
+contra discriminação por idade.
+
+104
+00:05:17,310 --> 00:05:19,895
+Então, dependendo do aplicativo
+que estiver criando,
+
+105
+00:05:19,895 --> 00:05:22,715
+a idade pode ser um grupo protegido.
+
+106
+00:05:22,715 --> 00:05:25,825
+Você também tem um resultado binário,
+que chamaremos de Y,
+
+107
+00:05:25,825 --> 00:05:30,200
+em que podemos interpretar o valor de Y
+igual a 1 como um resultado desejável.
+
+108
+00:05:30,200 --> 00:05:33,135
+Neste caso, a aprovação do empréstimo.
+
+109
+00:05:33,135 --> 00:05:36,780
+Considere Y neste exemplo
+como o dado de referência ou rótulo.
+
+110
+00:05:36,780 --> 00:05:38,835
+Mas estamos criando um modelo de Y.
+
+111
+00:05:38,835 --> 00:05:42,250
+Então, precisamos que Y circunflexo
+seja nosso preditor.
+
+112
+00:05:42,250 --> 00:05:44,590
+No nosso exemplo, o preditor é sempre
+
+113
+00:05:44,590 --> 00:05:47,545
+um limite definido pela pontuação
+entre zero e um.
+
+114
+00:05:47,545 --> 00:05:50,575
+O preditor pode usar limites
+que dependem de A,
+
+115
+00:05:50,575 --> 00:05:53,500
+em que podemos usar diferentes limites
+para diferentes grupos.
+
+116
+00:05:53,500 --> 00:05:59,065
+Então, a ideia é que indivíduos em A
+qualificados para um resultado positivo
+
+117
+00:05:59,065 --> 00:06:01,915
+tenham a mesma chance
+de serem classificados positivamente
+
+118
+00:06:01,915 --> 00:06:04,295
+que indivíduos que não estejam em A.
+
+119
+00:06:04,295 --> 00:06:07,050
+Falando de maneira mais formal,
+esse desejo coincide
+
+120
+00:06:07,050 --> 00:06:10,180
+com uma taxa de verdadeiros
+positivos igual para os dois grupos.
+
+121
+00:06:10,180 --> 00:06:13,570
+Esse é o princípio por trás
+da igualdade de oportunidade.

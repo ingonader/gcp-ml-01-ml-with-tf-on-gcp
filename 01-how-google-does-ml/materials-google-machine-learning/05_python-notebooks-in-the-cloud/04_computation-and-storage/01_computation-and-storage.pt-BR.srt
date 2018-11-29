@@ -1,0 +1,410 @@
+1
+00:00:00,540 --> 00:00:03,690
+Vamos falar sobre o Compute Engine e o
+Cloud Storage.
+
+2
+00:00:03,690 --> 00:00:06,840
+É útil saber como instâncias de
+computador e
+
+3
+00:00:06,840 --> 00:00:11,065
+o Cloud funcionam, porque a instância do
+Datalab será executada neles.
+
+4
+00:00:11,065 --> 00:00:13,635
+Para dados permanentes no Cloud,
+
+5
+00:00:13,635 --> 00:00:15,205
+você usará o Cloud Storage,
+
+6
+00:00:15,205 --> 00:00:17,610
+então você também precisa compreendê-lo.
+
+7
+00:00:17,610 --> 00:00:21,285
+Pense no Compute Engine como uma CPU
+distribuída globalmente
+
+8
+00:00:21,285 --> 00:00:24,880
+e no Cloud Storage como um disco
+distribuído globalmente.
+
+9
+00:00:24,880 --> 00:00:28,196
+O Datalab, entretanto, é um programa
+de node único,
+
+10
+00:00:28,196 --> 00:00:31,730
+então também é executado em uma única
+instância do Compute Engine.
+
+11
+00:00:31,730 --> 00:00:34,835
+Porém, quando iniciamos jobs do Dataflow
+
+12
+00:00:34,835 --> 00:00:36,830
+ou do Cloud ML Engine,
+
+13
+00:00:36,830 --> 00:00:41,045
+iniciamos o processamento para muitas
+instâncias do Cloud Engine.
+
+14
+00:00:41,045 --> 00:00:44,210
+O Compute Engine permite essencialmente
+que você alugue
+
+15
+00:00:44,210 --> 00:00:47,685
+uma máquina virtual na nuvem para executar
+suas cargas de trabalho.
+
+16
+00:00:48,365 --> 00:00:50,785
+E o que você pode personalizar?
+
+17
+00:00:50,785 --> 00:00:53,015
+Coisas como o número de núcleos,
+
+18
+00:00:53,015 --> 00:00:55,315
+a quantidade de memória, o tamanho de
+disco,
+
+19
+00:00:55,315 --> 00:00:59,775
+o sistema operacional... Mas coisas como
+balanceamento de carga,
+
+20
+00:00:59,775 --> 00:01:02,435
+rede etc. vêm integradas.
+
+21
+00:01:03,345 --> 00:01:05,575
+Você não fica preso
+às suas escolhas iniciais,
+
+22
+00:01:05,575 --> 00:01:07,265
+é sempre possível alterá-las.
+
+23
+00:01:07,265 --> 00:01:11,780
+E os descontos de faturamento são
+automáticos, dependendo do quanto
+
+24
+00:01:11,780 --> 00:01:13,480
+você usar a máquina.
+
+25
+00:01:13,480 --> 00:01:18,705
+Os discos anexados a instâncias do Compute
+Engine são rápidos, mas temporários.
+
+26
+00:01:18,705 --> 00:01:20,275
+Quando a VM for encerrada,
+
+27
+00:01:20,275 --> 00:01:22,220
+o disco será também.
+
+28
+00:01:23,060 --> 00:01:25,515
+O Google também oferece
+discos permanentes,
+
+29
+00:01:25,515 --> 00:01:27,270
+mas vamos ignorar isso por enquanto.
+
+30
+00:01:27,270 --> 00:01:29,745
+O Cloud Storage é durável.
+
+31
+00:01:29,745 --> 00:01:35,220
+Os blobs no Cloud Storage são replicados
+e armazenados em vários lugares.
+
+32
+00:01:35,720 --> 00:01:38,915
+O Cloud Storage também pode ser acessado
+de qualquer máquina.
+
+33
+00:01:39,595 --> 00:01:42,770
+E por causa da velocidade da rede,
+[inaudível] por largura de banda
+
+34
+00:01:42,770 --> 00:01:45,250
+secional dentro de uma central do Google,
+
+35
+00:01:45,250 --> 00:01:47,975
+o que significa que cem mil
+
+36
+00:01:47,975 --> 00:01:51,835
+máquinas podem se comunicar uma com
+a outra a 10 Gbit/s.
+
+37
+00:01:51,835 --> 00:01:54,775
+Você pode ler diretamente do
+Cloud Storage.
+
+38
+00:01:54,775 --> 00:01:59,615
+De fato, é isso que faremos ao gravar
+programas do TensorFlow.
+
+39
+00:01:59,615 --> 00:02:04,487
+O propósito do Cloud Storage é dar a você
+um sistema de arquivos globais durável.
+
+40
+00:02:04,487 --> 00:02:06,640
+Mas como ele é organizado?
+
+41
+00:02:06,640 --> 00:02:09,759
+Um URL típico do Cloud Storage
+pode conter:
+
+42
+00:02:09,759 --> 00:02:17,105
+gs://acme- sales/data/sales003.csv.
+
+43
+00:02:17,905 --> 00:02:21,745
+O "acme-sales" é chamado de intervalo.
+
+44
+00:02:21,745 --> 00:02:25,665
+O nome do intervalo é único globalmente.
+
+45
+00:02:25,665 --> 00:02:28,745
+Pense nisso como um nome de domínio
+em um URL da Internet.
+
+46
+00:02:28,745 --> 00:02:32,810
+A maneira de conseguir um nome de 
+intervalo único globalmente é usando
+
+47
+00:02:32,810 --> 00:02:34,160
+um nome de domínio reverso.
+
+48
+00:02:34,160 --> 00:02:37,400
+Neste caso, o Google Cloud Platform
+
+49
+00:02:37,400 --> 00:02:41,060
+solicitará que você prove que é o dono
+do nome de domínio em questão,
+
+50
+00:02:41,060 --> 00:02:43,055
+ou apenas use o código
+do projeto.
+
+51
+00:02:43,055 --> 00:02:45,380
+A menos que você seja
+extremamente azarado,
+
+52
+00:02:45,380 --> 00:02:47,360
+seu código de projeto,
+que também
+
+53
+00:02:47,360 --> 00:02:51,350
+é único globalmente, não terá sido usado
+ainda como nome de intervalo.
+
+54
+00:02:51,350 --> 00:02:57,625
+O resto do URL gs é, por convenção, como
+a estrutura de uma pasta,
+
+55
+00:02:57,625 --> 00:03:03,405
+com um URL gs completo que se refere a um
+objeto no Cloud Storage.
+
+56
+00:03:03,835 --> 00:03:05,885
+Como trabalhar com isso?
+
+57
+00:03:05,885 --> 00:03:08,030
+Você pode usar o gsutil.
+
+58
+00:03:08,030 --> 00:03:11,930
+Essa é uma ferramenta de linha de comando
+que vem com o Google Cloud SDK.
+
+59
+00:03:11,930 --> 00:03:14,580
+Se você ativar uma instância do
+Compute Engine,
+
+60
+00:03:14,580 --> 00:03:16,775
+o gsutil já estará disponível.
+
+61
+00:03:16,775 --> 00:03:22,400
+Em seu laptop, você pode fazer o download
+do Google Cloud SDK para ter o gsutil.
+
+62
+00:03:23,230 --> 00:03:27,780
+O gsutil usa uma sintaxe de linha de
+comando familiar do Unix.
+
+63
+00:03:27,780 --> 00:03:32,005
+Por exemplo, MB e RB são "criar 
+intervalo" e "remover intervalo".
+
+64
+00:03:32,005 --> 00:03:34,455
+Você pode fazer CP para criar uma cópia.
+
+65
+00:03:34,455 --> 00:03:35,910
+E em vez da linha de comando,
+
+66
+00:03:35,910 --> 00:03:38,190
+você também pode usar o console do GCP,
+
+67
+00:03:38,190 --> 00:03:40,080
+uma API de programação
+
+68
+00:03:40,080 --> 00:03:42,200
+ou a REST API.
+
+69
+00:03:42,800 --> 00:03:46,182
+Aqui estou mostrando como copiar
+vários arquivos,
+
+70
+00:03:46,182 --> 00:03:50,601
+sales*.csv para um local específico do
+Cloud Storage.
+
+71
+00:03:50,601 --> 00:03:54,480
+Lembra que eu disse que os intervalos do
+Cloud Storage são duráveis?
+
+72
+00:03:54,480 --> 00:03:57,105
+Isso significa que são armazenados
+de modo redundante.
+
+73
+00:03:57,105 --> 00:04:00,905
+Você também tem armazenamento em cache
+próximo dos usuários finais e failover
+
+74
+00:04:00,905 --> 00:04:02,955
+ao colocar seu objeto no Cloud Storage.
+
+75
+00:04:02,955 --> 00:04:07,695
+Porém, só porque o Cloud Storage é um
+sistema de arquivos global,
+
+76
+00:04:07,695 --> 00:04:11,565
+não significa que você pode esquecer as
+questões de latência.
+
+77
+00:04:11,565 --> 00:04:15,880
+É melhor armazenar os dados perto dos seus
+nodes de computação.
+
+78
+00:04:15,880 --> 00:04:19,358
+Porém, o que acontece com a interrupção
+do serviço?
+
+79
+00:04:19,358 --> 00:04:21,959
+Você precisa seus aplicativos e
+dados pelas
+
+80
+00:04:21,959 --> 00:04:27,765
+várias zonas para se proteger no caso
+de uma zona ser interrompida.
+
+81
+00:04:27,765 --> 00:04:30,690
+Por exemplo, se uma zona sofre uma
+queda súbita de energia,
+
+82
+00:04:30,690 --> 00:04:34,595
+você pode aproveitar zonas em regiões
+diferentes se precisar,
+
+83
+00:04:34,595 --> 00:04:37,155
+até mesmo para redundância adicional.
+
+84
+00:04:37,155 --> 00:04:42,330
+Uma zona é um local isolado dentro
+de uma região.
+
+85
+00:04:42,330 --> 00:04:46,205
+É nomeada com nome da região, hífen,
+zona e uma letra.
+
+86
+00:04:46,205 --> 00:04:48,900
+E por fim, para disponibilidade global.
+
+87
+00:04:48,900 --> 00:04:51,030
+Se você estiver criando um
+aplicativo global
+
+88
+00:04:51,030 --> 00:04:53,430
+com clientes pelo mundo,
+
+89
+00:04:53,430 --> 00:04:58,000
+é bom distribuir seus
+aplicativos e dados pelas regiões.

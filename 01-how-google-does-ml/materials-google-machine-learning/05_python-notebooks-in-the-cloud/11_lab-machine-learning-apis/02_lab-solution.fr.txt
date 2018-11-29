@@ -1,0 +1,88 @@
+Dans cet atelier, nous allons voir
+comment invoquer des API de machine learning
+depuis Datalab. Allons-y ! Cette fois, au lieu de concevoir
+un bloc-notes à partir de zéro, nous allons utiliser un bloc-notes
+déjà présent dans notre dépôt GitHub. Nous devons tout d'abord le vérifier. Faisons cela, vérifions le bloc-notes. Pour ce faire, il est nécessaire
+de cloner le dépôt. Nous allons donc ouvrir Datalab, puis exécuter une commande Bash
+depuis Datalab. L'idée est de démarrer
+un nouveau bloc-notes. Vous pouvez lui attribuer
+le nom de votre choix. Appelons-le "checkout". Jusqu'à présent, nous avons
+essentiellement étudié l'exécution du code Python dans Datalab, mais si
+on ajoute "%bash" ici, Datalab exécutera tout le code présent dans
+cette cellule à l'aide de Bash. Cela fonctionne comme tous
+les autres éléments de Jupyter. Ici, je vais créer un clone
+git de notre dépôt. À ce stade, je peux saisir "!ls", il s'agit d'une autre manière
+d'exécuter Bash. Vous pouvez remarquer la présence d'un
+dossier appelé "training data analyst". Nous pouvons maintenant charger
+ce bloc-notes et commencer à l'exécuter. On retrouve le dossier
+"training data analyst" sur cette vue. Cette fois, vous allez cliquer sur "courses",
+"machine-learning", puis "deepdive". Ensuite, vous allez ouvrir "mlapis.ipynb",
+notre bloc-notes python. Le voici. Vous devez dans un premier temps
+activer les API et les services. Cela vous permettra d'exécuter
+l'API Vision, l'API Translate, l'API Speech, etc. Pour cela, procédez comme suit. Ensuite, saisissez "vision" dans ce champ. Et voici l'API Vision. Notez que l'API est activée. Faisons la même chose pour
+l'API Translate et l'API Speech. Voici l'API Google Translation,
+elle est également activée. Maintenant, l'API Natural Language. Elle est ici. Elle aussi est activée. Enfin, l'API Speech.
+Vérifions qu'elle est activée. Elle est bien activée. Parfait, toutes les API sont activées. Maintenant, nous devons récupérer
+les identifiants de connexion. Nous revenons dans la section
+"API et services" du menu latéral pour obtenir ces identifiants. C'est ici... Nous avons déjà la clé d'API, je vais donc l'utiliser pour la suite. J'aurais également pu créer
+des identifiants avec une clé d'API, et générer une nouvelle clé. Je copie l'identifiant ici. Voilà. Voici donc notre clé d'API. Elle est ici. Nous sommes maintenant prêts
+à utiliser les API ML. Dans la cellule "APIKEY" de notre bloc-notes, je vais remplacer la valeur existante par
+notre nouvelle clé d'API, puis lancer l'exécution. Je peux soit cliquer
+sur le bouton "Exécuter", soit appuyer simultanément sur
+"Maj" + "Entrée". Nous allons ensuite
+installer le client Python. Une fois que le client est installé,
+nous pouvons exécuter l'API Translate. Vous pouvez remarquer que
+les entrées sont bien présentes. Est-ce vraiment aussi simple ? La traduction s'affiche en français car nous
+avons défini cette langue comme cible. Choisissons maintenant ES (espagnol) comme langue cible,
+puis relançons l'API. Désormais, la sortie est en espagnol. Comment cela fonctionne-t-il ? Nous avons défini comme entrées
+un groupe de chaînes de texte, puis demandé au service d'effectuer
+une traduction de ces entrées de l'anglais vers une autre langue,
+définie par la variable "target". En sortie, nous obtenons donc
+les chaînes traduites. De la même façon, nous allons maintenant
+invoquer l'API Vision. Pour invoquer l'API Vision, nous avons besoin d'une image. Dans le cas présent, il s'agit d'une image
+représentant une plaque de rue. Je ne parle pas chinois, donc je ne sais
+pas ce que dit ce panneau. Voyons ce qu'il signifie. Nous allons
+l'envoyer vers Cloud Storage. Il est déjà accessible publiquement,
+nous n'avons donc rien à modifier ici. Nous allons maintenant le lire. Nous pouvons demander à l'API Vision
+de lire cette image, et de traduire ce texte pour nous. J'exécute l'API. Nous obtenons alors la sortie JSON. Ici, nous invoquons donc
+la version 1 de l'API Vision, en transmettant l'URI de l'image GCS. Je vous rappelle que GCS signifie
+Google Cloud Storage. Notre image est stockée sur Cloud Storage. Nous pourrions également
+transmettre cette image dans le corps de la requête, mais la stocker
+sur Cloud Storage accélère le processus, car nous n'avons pas besoin de charger
+cette image avec notre requête. Nous demandons à l'API d'effectuer
+une détection de texte. En sortie, nous obtenons le texte contenu
+dans cette image, la mention "ZH", qui signifie que la
+langue source est le chinois, ainsi qu'un polygone de délimitation
+pour chaque portion de texte. Nous pouvons bien sûr récupérer la
+première portion de texte, prendre l'annotation de texte, et obtenir la langue source,
+ou le code de langue, ZH en l'occurrence. Nous pouvons ensuite "imprimer"
+ce que nous avons obtenu : la langue étrangère concernée
+(le chinois, ZH), ainsi que le texte en langue étrangère,
+soit tout ceci. Maintenant, nous pouvons
+exécuter la requête. Bien sûr, le résultat de l'exécution
+précédente est encore présent. Je vais donc cliquer sur cette cellule
+et l'effacer. Maintenant, je peux
+relancer l'exécution et m'assurer qu'il s'agit bien
+de ma propre requête. Vous pouvez constater que le texte
+chinois a été traduit en anglais. Nous pouvons également
+faire appel à l'API Language. Ici, nous avons une série de citations. Imaginez que nous souhaitions identifier
+les sentiments associés à ces citations. Comme précédemment, nous allons effacer le contenu de la
+cellule et exécuter la requête d'API. Dans ce cas, nous imprimons la polarité et la magnitude associées à chacune de ces citations. Donc, la polarité est positive pour un sentiment positif. Elle est négative pour un
+sentiment négatif. C'est assez logique. La citation "to succeed you must have
+tremendous perseverance" (la persévérance est la clé de la réussite)
+est très positive. En revanche, celle qui commence par "when someone you love dies"
+(la perte d'un être cher) est assez négative. Donc sa polarité est négative. La magnitude indique quant à elle la fréquence d'utilisation d'un
+langage très fort dans le texte. Le dernier élément que je souhaite
+vous montrer est l'API Speech. Comme précédemment, nous avons importé
+un fichier (audio, cette fois) dans Cloud Storage, et nous demandons la transcription
+du discours en texte. Exécutons cette requête. Nous obtenons en retour une réponse JSON. La sortie JSON indique, avec
+un haut degré de certitude, que les paroles prononcées dans ce
+fichier audio sont les suivantes : "How old is the Brooklyn Bridge?"
+(De quand date le Pont de Brooklyn ?) Pour résumer, dans cet atelier, nous avons utilisé Datalab pour envoyer
+des requêtes aux API Python, principalement dans l'optique d'invoquer
+des modèles de machine learning. Souvenez-vous que nous n'avons pas
+eu besoin de concevoir ces modèles. Ils existent déjà, il vous
+suffit de les utiliser. Vous pouvez incorporer ces modèles de
+machine learning dans vos applications. Notez bien que vous n'aurez pas besoin
+de créer tous vos outils de ML à partir de zéro. Par exemple, pour effectuer une
+reconnaissance de texte ou d'image, il vous suffit d'utiliser l'API Vision.

@@ -1,0 +1,339 @@
+1
+00:00:00,000 --> 00:00:02,624
+Ahora que ya tenemos configurada
+la matriz de confusión
+
+2
+00:00:02,624 --> 00:00:06,272
+podemos comenzar a calcular
+todo tipo de métricas de evaluación
+
+3
+00:00:06,272 --> 00:00:10,633
+que podrían identificar dónde puede ser
+más inclusivo el sistema de AA.
+
+4
+00:00:10,633 --> 00:00:13,534
+Pero cuando se trata d hacer
+que el AA sea más inclusivo
+
+5
+00:00:13,534 --> 00:00:18,173
+tendemos a enfocarnos en las tasas
+de falsos positivos y falsos negativos
+
+6
+00:00:18,173 --> 00:00:22,233
+para comprender qué tan perjudicado
+se ve el rendimiento de un subgrupo.
+
+7
+00:00:22,233 --> 00:00:26,173
+Podemos calcular cosas como la tasa
+de verdaderos positivos, la sensibilidad
+
+8
+00:00:26,173 --> 00:00:30,944
+o la recuperación, que representan la
+proporción de veces que su modelo predice
+
+9
+00:00:30,944 --> 00:00:35,180
+p. ej., un rostro en una imagen cuando
+la etiqueta también muestra un rostro
+
+10
+00:00:35,180 --> 00:00:36,523
+en la imagen.
+
+11
+00:00:36,523 --> 00:00:39,739
+Todo lo que necesitan
+son los valores de verdaderos positivos
+
+12
+00:00:39,739 --> 00:00:42,550
+y falsos negativos
+para calcular la recuperación.
+
+13
+00:00:42,900 --> 00:00:46,320
+Otro ejemplo del tipo de cálculo
+que pueden obtener con una matriz
+
+14
+00:00:46,320 --> 00:00:50,046
+de confusión son la precisión,
+que representa la proporción
+
+15
+00:00:50,046 --> 00:00:52,584
+de veces que el modelo
+predice bien las etiquetas.
+
+16
+00:00:52,584 --> 00:00:55,721
+Considera cuándo
+es una etiqueta positiva, por ejemplo
+
+17
+00:00:55,721 --> 00:00:59,982
+cuando hay un rostro en una imagen
+y el modelo predice la etiqueta positiva.
+
+18
+00:00:59,982 --> 00:01:03,568
+Así como cuándo es una etiqueta negativa,
+cuando no hay un rostro presente
+
+19
+00:01:03,568 --> 00:01:05,901
+y el modelo predice
+que es una etiqueta negativa.
+
+20
+00:01:05,901 --> 00:01:09,388
+En este cálculo, todo lo que se necesita
+son las medidas respectivas
+
+21
+00:01:09,388 --> 00:01:11,452
+de verdaderos y falsos positivos.
+
+22
+00:01:11,452 --> 00:01:14,928
+Tasas de falsos positivos,
+falsos negativos y verdaderos positivos
+
+23
+00:01:14,928 --> 00:01:18,482
+de precisión, de recuperación
+son muchas métricas que considerar.
+
+24
+00:01:18,482 --> 00:01:21,414
+¿Cómo podemos
+seleccionar en qué métricas enfocarnos
+
+25
+00:01:21,414 --> 00:01:24,694
+para lograr que su
+sistema de AA sea más inclusivo?
+
+26
+00:01:24,714 --> 00:01:26,239
+La respuesta depende.
+
+27
+00:01:26,239 --> 00:01:29,503
+Depende de los resultados de sus
+falsos positivos y falsos negativos.
+
+28
+00:01:29,503 --> 00:01:33,309
+Según las concesiones entre los
+dos, tal vez desean que su modelo de AA
+
+29
+00:01:33,309 --> 00:01:37,200
+recupere poco y omita varios
+elementos a cambio de una mayor precisión
+
+30
+00:01:37,200 --> 00:01:41,063
+o cuando la cantidad limitada de elementos
+que clasifica el AA sea correcta.
+
+31
+00:01:41,063 --> 00:01:44,538
+Observen este ejemplo de un modelo
+de AA que determina si la imagen
+
+32
+00:01:44,538 --> 00:01:46,902
+debe o no difuminarse
+para proteger la privacidad.
+
+33
+00:01:46,902 --> 00:01:50,613
+Un falso positivo podría resultar
+en una sección que no necesita difuminarse
+
+34
+00:01:50,613 --> 00:01:53,292
+pero que se difumina
+porque el modelo predijo esa acción.
+
+35
+00:01:53,292 --> 00:01:54,542
+Eso puede ser un fastidio.
+
+36
+00:01:54,542 --> 00:01:57,896
+Un falso negativo es cuando
+debe difuminarse, pero no ocurre
+
+37
+00:01:57,896 --> 00:02:00,220
+porque el modelo no predijo esa acción.
+
+38
+00:02:00,220 --> 00:02:02,947
+Y algo así podría
+resultar en un robo de identidad
+
+39
+00:02:02,947 --> 00:02:06,115
+porque la privacidad
+del individuo en la imagen queda expuesta.
+
+40
+00:02:06,555 --> 00:02:08,031
+Así que, en este ejemplo
+
+41
+00:02:08,031 --> 00:02:11,591
+deberían minimizar la mayor
+cantidad de falsos negativos posible.
+
+42
+00:02:11,591 --> 00:02:15,463
+Enfoquen sus métricas para lograr
+una tasa baja de falsos negativos.
+
+43
+00:02:15,883 --> 00:02:18,770
+Por otra parte, podrían ver situaciones
+
+44
+00:02:18,770 --> 00:02:22,763
+donde es mejor encontrar un falso
+negativo en lugar de un falso positivo.
+
+45
+00:02:22,763 --> 00:02:25,482
+Digamos que trabajan
+en un modelo para filtrar el spam.
+
+46
+00:02:25,482 --> 00:02:28,933
+Un falso negativo hará que el modelo
+ignore un mensaje de spam
+
+47
+00:02:28,933 --> 00:02:31,830
+y este podría terminar
+en Recibidos, lo que es una molestia.
+
+48
+00:02:31,830 --> 00:02:34,510
+Pero ¿qué ocurre cuando
+encuentra un falso positivo?
+
+49
+00:02:34,510 --> 00:02:37,822
+El resultado es que el mensaje
+de un amigo o de un ser querido
+
+50
+00:02:37,822 --> 00:02:40,836
+podría marcarse como spam
+y quitarse de la carpeta Recibidos.
+
+51
+00:02:40,836 --> 00:02:42,852
+Y eso podría ser una gran pérdida.
+
+52
+00:02:42,852 --> 00:02:46,748
+En este caso, hay que enfocarse
+en la métrica para reducir la tasa
+
+53
+00:02:46,748 --> 00:02:49,001
+de falsos positivos lo más posible.
+
+54
+00:02:49,001 --> 00:02:52,764
+Una vez que descubren
+en qué métricas de evaluación enfocarse
+
+55
+00:02:52,764 --> 00:02:54,795
+asegúrense de ir un paso más allá
+
+56
+00:02:54,795 --> 00:02:59,002
+y calculen considerando esas métricas
+en los diferentes subgrupos en sus datos.
+
+57
+00:02:59,002 --> 00:03:03,010
+En este gráfico, pueden ver
+las distribuciones de sus métricas
+
+58
+00:03:03,010 --> 00:03:06,541
+de evaluación en un subgrupo,
+de color azul y verde
+
+59
+00:03:06,541 --> 00:03:10,012
+donde cada una representa
+a un subgrupo separado en sus datos.
+
+60
+00:03:10,012 --> 00:03:13,731
+Pero, una vez que todo está en su lugar,
+es cuestión de encontrar el punto
+
+61
+00:03:13,731 --> 00:03:17,382
+que es un valor aceptable
+y comparar esos valores en los subgrupos.
+
+62
+00:03:17,682 --> 00:03:22,083
+Por ejemplo, podrían descubrir
+que una tasa de falso negativo de 0.1
+
+63
+00:03:22,083 --> 00:03:26,194
+es aceptable para el problema
+que desean resolver con su sistema de AA.
+
+64
+00:03:26,194 --> 00:03:30,844
+¿Cómo se ve
+esa tasa general en sus subgrupos?
+
+65
+00:03:30,844 --> 00:03:35,001
+Incorporar estas metodologías
+los acerca un paso más para identificar
+
+66
+00:03:35,001 --> 00:03:38,303
+las formas en las que su sistema de AA
+puede ser más inclusivo.
+
+67
+00:03:38,303 --> 00:03:42,597
+Las métricas de evaluación
+son aspectos clave que podemos
+
+68
+00:03:42,597 --> 00:03:45,633
+usar para medir qué tan
+inclusivo es el sistema de AA.
+
+69
+00:03:45,633 --> 00:03:48,907
+Y es importante hacerlo
+teniendo en cuenta las concesiones
+
+70
+00:03:48,907 --> 00:03:51,207
+entre sus falsos positivos
+y falsos negativos.

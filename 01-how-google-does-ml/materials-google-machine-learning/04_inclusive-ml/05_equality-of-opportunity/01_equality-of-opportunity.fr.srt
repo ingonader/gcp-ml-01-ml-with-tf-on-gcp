@@ -1,0 +1,550 @@
+1
+00:00:00,240 --> 00:00:02,880
+Après avoir appris à calculer
+les métriques d'évaluation
+
+2
+00:00:02,880 --> 00:00:05,234
+des prédictions d'un modèle
+dans des sous-groupes,
+
+3
+00:00:05,234 --> 00:00:08,550
+nous allons décrire une approche
+qui exploite ces métriques,
+
+4
+00:00:08,550 --> 00:00:11,290
+afin d'améliorer les performances
+dans les sous-groupes.
+
+5
+00:00:11,740 --> 00:00:14,850
+Cette approche s'appelle
+l'égalité des chances,
+
+6
+00:00:14,850 --> 00:00:16,260
+et fonctionne ainsi.
+
+7
+00:00:16,690 --> 00:00:20,370
+Imaginez que vous avez un modèle censé
+fonctionner avec tous les utilisateurs,
+
+8
+00:00:20,370 --> 00:00:23,202
+quels qu'ils soient ou
+quelle que soit leur origine.
+
+9
+00:00:23,562 --> 00:00:28,935
+Dans l'idéal, les utilisateurs compris
+dans un résultat généré par le modèle
+
+10
+00:00:28,935 --> 00:00:31,500
+doivent tous avoir les mêmes chances
+
+11
+00:00:31,500 --> 00:00:34,270
+d'être correctement classés
+dans ce résultat.
+
+12
+00:00:35,350 --> 00:00:37,005
+Prenons l'exemple d'une banque.
+
+13
+00:00:37,005 --> 00:00:38,970
+On crée un modèle de machine learning
+
+14
+00:00:38,970 --> 00:00:41,645
+pour déterminer
+si on doit ou non approuver un prêt.
+
+15
+00:00:42,485 --> 00:00:45,010
+Que signifie l'égalité des chances
+dans ce contexte ?
+
+16
+00:00:45,530 --> 00:00:49,755
+Tous les utilisateurs qui peuvent
+prétendre à un prêt ont les mêmes chances
+
+17
+00:00:49,755 --> 00:00:53,429
+d'obtenir l'approbation de leur prêt.
+
+18
+00:00:53,989 --> 00:00:57,735
+En d'autres termes, nous devons tous
+avoir les mêmes chances d'obtenir un prêt,
+
+19
+00:00:57,735 --> 00:01:01,085
+quel que soit le sous-groupe protégé
+auquel on appartient.
+
+20
+00:01:01,155 --> 00:01:05,099
+Sur cette image, si on garde
+les mêmes caractéristiques d'un individu,
+
+21
+00:01:05,099 --> 00:01:08,325
+mais qu'on change
+le groupe auquel il appartient,
+
+22
+00:01:08,325 --> 00:01:11,640
+ses chances d'obtenir un prêt
+doivent rester les mêmes.
+
+23
+00:01:11,660 --> 00:01:15,025
+Pourquoi intégrer cette approche
+dans votre système de ML ?
+
+24
+00:01:15,575 --> 00:01:19,195
+Ce type d'approche vous permet
+d'examiner votre modèle,
+
+25
+00:01:19,195 --> 00:01:21,610
+afin de détecter d'éventuels problèmes.
+
+26
+00:01:22,300 --> 00:01:24,720
+Après avoir identifié
+les points à améliorer,
+
+27
+00:01:24,720 --> 00:01:28,470
+vous pouvez modifier votre modèle
+afin d'obtenir le compromis idéal
+
+28
+00:01:28,470 --> 00:01:30,915
+entre précision et non-discrimination,
+
+29
+00:01:30,915 --> 00:01:33,930
+ce qui peut ensuite rendre
+votre modèle de ML plus ouvert.
+
+30
+00:01:34,400 --> 00:01:37,480
+Illustrons cette approche
+à l'aide d'un classificateur test.
+
+31
+00:01:37,560 --> 00:01:39,524
+Il ne s'agit pas d'un vrai modèle,
+
+32
+00:01:39,524 --> 00:01:42,230
+mais d'un exemple théorique
+pour expliquer les concepts.
+
+33
+00:01:42,980 --> 00:01:47,370
+Le modèle vise à prédire précisément les
+clients capables de rembourser leur prêt.
+
+34
+00:01:47,610 --> 00:01:49,920
+La banque peut alors utiliser ce modèle
+
+35
+00:01:49,920 --> 00:01:52,535
+pour décider d'octroyer ou non un prêt.
+
+36
+00:01:53,755 --> 00:01:55,600
+Sur le diagramme de cette diapositive,
+
+37
+00:01:55,600 --> 00:01:59,395
+les points foncés représentent les clients
+susceptibles de rembourser le prêt,
+
+38
+00:01:59,395 --> 00:02:01,615
+et les points clairs
+ceux qui ne le sont pas.
+
+39
+00:02:01,735 --> 00:02:04,535
+Les nombres en haut représentent
+la notation de crédit,
+
+40
+00:02:04,535 --> 00:02:06,985
+simplifiée à une plage allant de 0 à 100.
+
+41
+00:02:07,045 --> 00:02:11,045
+Plus la notation est élevée, plus le
+remboursement du prêt est probable.
+
+42
+00:02:11,565 --> 00:02:14,470
+Dans l'idéal,
+il faut utiliser des statistiques
+
+43
+00:02:14,470 --> 00:02:16,935
+qui divisent clairement les catégories,
+
+44
+00:02:16,935 --> 00:02:18,685
+tel que dans l'exemple de gauche.
+
+45
+00:02:19,125 --> 00:02:21,940
+Malheureusement,
+il est bien plus courant de rencontrer
+
+46
+00:02:21,940 --> 00:02:24,745
+la situation de droite,
+où les groupes se chevauchent.
+
+47
+00:02:25,545 --> 00:02:30,270
+Une statistique comme la notation de
+crédit peut remplacer nombre de variables.
+
+48
+00:02:30,840 --> 00:02:33,000
+Nous verrons plus tard
+dans la spécialisation
+
+49
+00:02:33,000 --> 00:02:35,625
+que de nombreux modèles de ML
+renvoient une probabilité,
+
+50
+00:02:35,625 --> 00:02:38,535
+et la notation de crédit peut ici
+remplacer cette probabilité.
+
+51
+00:02:38,895 --> 00:02:43,815
+Avec un modèle de ML
+comme la notation de crédit,
+
+52
+00:02:43,815 --> 00:02:46,470
+qui inclut de nombreux éléments,
+tels que les revenus,
+
+53
+00:02:46,470 --> 00:02:48,920
+la provenance des dettes à payer, etc.,
+
+54
+00:02:48,920 --> 00:02:51,420
+le chiffre renvoyé peut
+correspondre à la probabilité
+
+55
+00:02:51,420 --> 00:02:54,015
+qu'un individu rembourse
+son prêt ou non.
+
+56
+00:02:54,255 --> 00:02:55,990
+Il peut aussi ne pas y correspondre.
+
+57
+00:02:56,450 --> 00:02:59,010
+Dans ce cas, on peut définir un seuil.
+
+58
+00:02:59,630 --> 00:03:02,000
+En gros, vous choisisissez
+une limite spécifique.
+
+59
+00:03:02,060 --> 00:03:05,735
+Les clients avec une notation inférieure
+à la limite n'obtiennent pas le prêt,
+
+60
+00:03:05,735 --> 00:03:08,080
+et ceux avec une notation
+supérieure l'obtiennent.
+
+61
+00:03:08,260 --> 00:03:10,080
+Comme l'indique ce diagramme,
+
+62
+00:03:10,080 --> 00:03:12,330
+la définition d'un seuil
+implique des compromis.
+
+63
+00:03:12,420 --> 00:03:16,010
+S'il est trop bas, le prêt peut être
+accordé à des personnes non solvables.
+
+64
+00:03:16,050 --> 00:03:19,550
+S'il est trop haut, des personnes
+le méritant ne l'obtiendront pas.
+
+65
+00:03:19,860 --> 00:03:21,351
+Comment bien définir le seuil ?
+
+66
+00:03:21,711 --> 00:03:24,690
+Le seuil à utiliser dépend
+de vos objectifs et motivations.
+
+67
+00:03:25,140 --> 00:03:28,140
+L'objectif peut être de maximiser
+le nombre de bonnes décisions,
+
+68
+00:03:28,140 --> 00:03:29,635
+comme dans ce diagramme.
+
+69
+00:03:29,865 --> 00:03:35,400
+À gauche, les points bleu foncé reflètent
+les prêts accordés et remboursés,
+
+70
+00:03:35,400 --> 00:03:39,755
+et les points gris clair les prêts refusés
+aux emprunteurs défaillants.
+
+71
+00:03:40,745 --> 00:03:43,270
+Ces points correspondent
+aux prédictions correctes.
+
+72
+00:03:44,110 --> 00:03:49,845
+À droite, les points bleu clair reflètent
+les prêts accordés et non remboursés,
+
+73
+00:03:49,845 --> 00:03:53,920
+et les points gris foncé représentent
+les prêts refusés à des individus
+
+74
+00:03:53,920 --> 00:03:56,235
+qui les auraient remboursés.
+
+75
+00:03:56,285 --> 00:03:58,780
+Ces points correspondent
+aux prédictions incorrectes.
+
+76
+00:03:58,800 --> 00:04:02,360
+Certaines décisions sont plus coûteuses
+que d'autres.
+
+77
+00:04:02,580 --> 00:04:04,620
+Par exemple, certaines catégories de prêts
+
+78
+00:04:04,620 --> 00:04:09,270
+comme des prêts sur 15 ans
+peuvent être plus rentables que d'autres.
+
+79
+00:04:09,450 --> 00:04:12,160
+Les décisions doivent donc
+être traitées différemment.
+
+80
+00:04:12,570 --> 00:04:17,040
+D'un point de vue financier,
+un autre objectif peut être de maximiser,
+
+81
+00:04:17,040 --> 00:04:19,475
+non pas le nombre de décisions correctes,
+
+82
+00:04:19,475 --> 00:04:21,090
+mais le bénéfice global.
+
+83
+00:04:21,200 --> 00:04:25,930
+Le chiffre en bas de ce diagramme
+représente le bénéfice présumé,
+
+84
+00:04:25,930 --> 00:04:29,550
+calculé selon une estimation
+du bénéfice associé à chaque prêt.
+
+85
+00:04:30,020 --> 00:04:31,655
+La question devient alors :
+
+86
+00:04:31,655 --> 00:04:33,825
+quel est le seuil le plus rentable ?
+
+87
+00:04:33,825 --> 00:04:36,840
+Correspond-t-il au seuil
+maximisant les bonnes décisions ?
+
+88
+00:04:37,480 --> 00:04:41,770
+Ce type de questions devient épineux quand
+une statistique, comme la notation,
+
+89
+00:04:41,770 --> 00:04:44,510
+est répartie différemment
+entre deux groupes.
+
+90
+00:04:44,980 --> 00:04:47,225
+C'est là qu'intervient
+l'égalité des chances.
+
+91
+00:04:47,375 --> 00:04:50,700
+La structure formelle de l'égalité
+des chances se présente ainsi.
+
+92
+00:04:51,310 --> 00:04:55,135
+La valeur A représente
+une caractéristique prédite.
+
+93
+00:04:55,215 --> 00:04:57,500
+Pour simplifier,
+A est un classificateur binaire,
+
+94
+00:04:57,500 --> 00:05:00,140
+qui représente l'appartenance
+à un groupe protégé.
+
+95
+00:05:00,580 --> 00:05:02,690
+Comme je ne suis pas avocat,
+
+96
+00:05:02,690 --> 00:05:06,495
+je ne peux pas vous indiquer les types
+de groupes protégés dans votre région.
+
+97
+00:05:06,605 --> 00:05:08,390
+Demandez à votre service juridique
+
+98
+00:05:08,390 --> 00:05:10,405
+à quoi correspond un groupe protégé.
+
+99
+00:05:10,435 --> 00:05:13,035
+Par exemple, aux États-Unis,
+
+100
+00:05:13,035 --> 00:05:16,890
+la loi fédérale protège les employés
+contre la discrimination fondée sur l'âge.
+
+101
+00:05:17,310 --> 00:05:19,895
+Selon l'application que vous développez,
+
+102
+00:05:19,895 --> 00:05:21,745
+l'âge peut donc être un
+groupe protégé.
+
+103
+00:05:22,715 --> 00:05:25,705
+On a aussi un résultat binaire,
+représenté par Y.
+
+104
+00:05:25,825 --> 00:05:29,810
+Le résultat souhaitable correspond
+à la valeur Y égale 1.
+
+105
+00:05:30,200 --> 00:05:32,615
+Dans notre exemple, l'acceptation du prêt.
+
+106
+00:05:33,135 --> 00:05:36,650
+Considérez Y comme la vérité
+ou l'étiquette dans cet exemple.
+
+107
+00:05:36,780 --> 00:05:38,795
+On crée un modèle pour Y.
+
+108
+00:05:38,885 --> 00:05:42,090
+On doit donc aussi avoir un prédicteur,
+Y accent circonflexe.
+
+109
+00:05:42,250 --> 00:05:45,190
+Dans notre exemple,
+le prédicteur est toujours un seuil
+
+110
+00:05:45,190 --> 00:05:47,205
+défini à l'aide d'une note entre 0 et 1.
+
+111
+00:05:47,725 --> 00:05:50,625
+Le prédicteur peut utiliser des seuils
+selon la valeur de A,
+
+112
+00:05:50,625 --> 00:05:53,310
+ou utiliser différents seuils
+pour différents groupes.
+
+113
+00:05:53,580 --> 00:05:59,065
+Le but est que les individus du groupe A,
+qui sont éligibles à un résultat positif,
+
+114
+00:05:59,065 --> 00:06:01,775
+aient les mêmes chances
+d'obtenir ce résultat positif
+
+115
+00:06:01,775 --> 00:06:04,075
+que les individus
+n'appartenant pas au groupe A.
+
+116
+00:06:04,295 --> 00:06:10,020
+Techniquement, le taux de vrais positifs
+doit être identique dans les deux groupes.
+
+117
+00:06:10,180 --> 00:06:13,440
+C'est le principe de l'égalité
+des chances.

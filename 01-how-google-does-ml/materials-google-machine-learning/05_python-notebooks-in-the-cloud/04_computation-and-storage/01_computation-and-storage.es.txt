@@ -1,0 +1,64 @@
+Hablemos de Compute Engine
+y Cloud Storage. Es útil saber cómo funcionan
+las instancias de Compute y de Cloud porque una instancia de Datalab
+se ejecutará en ellas. Para la persistencia de datos en la nube,
+usarán Cloud Storage por lo que deben comprender cómo funciona. Consideren a Compute Engine
+como una CPU globalmente distribuida y a Cloud Storage
+como un disco globalmente distribuido. Datalab es un programa de un solo nodo es decir que se ejecuta
+en una sola instancia de Compute Engine. Sin embargo,
+cuando iniciamos trabajos de Dataflow o de Cloud ML, lanzamos el procesamiento
+a muchas instancias de Compute Engine. Compute Engine, básicamente,
+les permite alquilar una máquina virtual en la nube
+para ejecutar sus cargas de trabajo. ¿Qué pueden personalizar? La cantidad de núcleos,
+la memoria, el tamaño del disco y el sistema operativo. Pero los servicios
+como el balanceo de cargas redes, etc., están integrados. Pero no están atados
+a sus opciones iniciales pueden cambiarlas. Los descuentos
+en la facturación son automáticos según el uso que hagan de la máquina. Los discos adjuntos
+a las instancias Compute Engine son rápidos, pero efímeros. Cuando la VM ya no existe,
+el disco desaparece. Google también ofrece discos persistentes,
+pero ignoremos eso por ahora. Cloud Storage es durable. Es decir, los BLOB en Cloud Storage
+se replican y almacenan en varias ubicaciones. Cloud Storage también es accesible
+desde cualquier máquina. Gracias a la velocidad de la red,
+el ancho de banda biseccional a escala de petabyes
+en un centro de Google que básicamente quiere decir que 100,000 máquinas
+pueden comunicarse a 10 GB por segundo pueden leer directamente de Cloud Storage. De hecho, eso haremos
+cuando escribamos nuestros programas de TensorFlow. El propósito de Cloud Storage
+es ofrecerles un sistema de archivos global durable. ¿Cómo está organizado? Una URL común
+de Cloud Storage se vería así gs:acme-sales/data/sales003.csv. La parte "acme-sales" es un depósito. El nombre del depósito
+es único globalmente. Es como un nombre de dominio
+en una URL de Internet. La forma de obtener un nombre
+de depósito único global es usar un nombre de dominio inverso
+y en ese caso Google Cloud Platform les pedirá que confirmen
+que son dueños de ese dominio o simplemente usen su ID del proyecto. A menos que tengan mala suerte,
+su ID del proyecto, que también es único no habrá sido usado
+en otro nombre de depósito. El resto de la URL de gs
+es una convención como una estructura de carpetas,
+en la que la URL completa hace referencia
+a un objeto en Cloud Storage. ¿Cómo se trabaja con él? Pueden usar gsutil,
+que es una herramienta de línea de comandos
+integrada con el SDK de Google Cloud. Si inician una instancia
+de Compute Engine gsutil estará disponible. Pueden descargar el SDK de Google Cloud
+en sus laptops para tener gsutil. Gsutil usa la conocida sintaxis
+de línea de comandos de UNIX. Por ejemplo, "mb" y "rb"
+quieren decir crear depósito y quitarlo. Pueden usar "cp" para copiar. Y en lugar de una línea de comandos,
+pueden usar GCP Console o una API de programación o de REST. Aquí, les muestro
+cómo copiar varios archivos sales*.csv a una ubicación
+específica de Cloud Storage. Recuerden que les dije que los depósitos
+de Cloud Storage son durables. Eso quiere decir
+que se almacenan de manera redundante. También obtienen almacenamiento
+en caché perimetral y conmutación por error,
+con solo colocar su objeto en Cloud Storage. Sin embargo,
+solo porque Cloud Storage es un sistema de archivos global, no significa
+que pueden olvidarse de la latencia. Es mejor que almacenen sus datos
+cerca de sus nodos de Compute. No obstante, ¿qué pasa
+si hay una interrupción en los servicios? Deben distribuir sus aplicaciones
+y datos en varias zonas para protegerse en caso
+de que una zona falle en caso de que una zona
+sufra un corte de energía, por ejemplo. Pueden usar zonas
+de diferentes regiones, si lo necesitan para obtener
+una redundancia aún mayor. Una zona es una ubicación aislada
+en una región. El nombre incluye la región,
+la zona y una letra. Finalmente, para la disponibilidad,
+si están creando una aplicación global que tiene clientes dispersos
+en todo el mundo deberían distribuir sus aplicaciones
+y datos en varias regiones.

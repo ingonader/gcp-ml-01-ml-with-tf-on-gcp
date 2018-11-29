@@ -1,0 +1,339 @@
+1
+00:00:00,000 --> 00:00:03,690
+So let's talk about computer engine, and cloud storage.
+
+2
+00:00:03,690 --> 00:00:06,840
+It's useful to know how computer instances and
+
+3
+00:00:06,840 --> 00:00:11,065
+cloud work because a Datalab instance is going to run on these.
+
+4
+00:00:11,065 --> 00:00:13,635
+For persistent data in the cloud,
+
+5
+00:00:13,635 --> 00:00:15,205
+you will use cloud storage,
+
+6
+00:00:15,205 --> 00:00:17,610
+so you need to understand cloud storage as well.
+
+7
+00:00:17,610 --> 00:00:21,285
+Think of computer engine as a globally distributed CPU,
+
+8
+00:00:21,285 --> 00:00:24,880
+and cloud storage as a global distributed disk.
+
+9
+00:00:24,880 --> 00:00:28,196
+Datalab though is a single node program,
+
+10
+00:00:28,196 --> 00:00:31,730
+so it runs on the single compute engine instance.
+
+11
+00:00:31,730 --> 00:00:34,835
+However, when we launch off Dataflow jobs,
+
+12
+00:00:34,835 --> 00:00:36,830
+or Cloud ML engine jobs,
+
+13
+00:00:36,830 --> 00:00:41,045
+we kick off the processing to many Compute Engine instances.
+
+14
+00:00:41,045 --> 00:00:44,210
+Compute Engine essentially allows you to rent
+
+15
+00:00:44,210 --> 00:00:48,365
+a virtual machine on the cloud to run your workloads.
+
+16
+00:00:48,365 --> 00:00:50,785
+So what are some of the things you can customize?
+
+17
+00:00:50,785 --> 00:00:53,015
+Things like the number of course,
+
+18
+00:00:53,015 --> 00:00:55,315
+the amount of memory, the disk size,
+
+19
+00:00:55,315 --> 00:00:59,775
+the operating system, but things like load balancing,
+
+20
+00:00:59,775 --> 00:01:02,435
+networking, et cetera come built in.
+
+21
+00:01:02,435 --> 00:01:05,575
+But you are not tied into your initial choices,
+
+22
+00:01:05,575 --> 00:01:07,265
+you can always change them.
+
+23
+00:01:07,265 --> 00:01:13,320
+And the billing discounts are automatic depending on how much you use the machine.
+
+24
+00:01:13,320 --> 00:01:18,705
+The disks attached to Compute Engine instances are fast, but they're ephemeral.
+
+25
+00:01:18,705 --> 00:01:20,275
+When the VM goes away,
+
+26
+00:01:20,275 --> 00:01:22,220
+the disk goes away.
+
+27
+00:01:22,220 --> 00:01:25,515
+Well, Google also offers persistent disks,
+
+28
+00:01:25,515 --> 00:01:27,270
+but lets ignore that for now.
+
+29
+00:01:27,270 --> 00:01:29,745
+Cloud storage is durable.
+
+30
+00:01:29,745 --> 00:01:35,220
+That is, blobs in cloud storage are replicated and stored in multiple places.
+
+31
+00:01:35,220 --> 00:01:39,595
+Cloud storage is also accessible from any machine.
+
+32
+00:01:39,595 --> 00:01:45,250
+And because of the speed of the network [inaudible] by sectional bandwidth within a Google center,
+
+33
+00:01:45,250 --> 00:01:47,975
+which essentially means that 100,000
+
+34
+00:01:47,975 --> 00:01:51,835
+machines can talk to each other at 10 gigabit per second.
+
+35
+00:01:51,835 --> 00:01:54,775
+You can directly read off cloud storage.
+
+36
+00:01:54,775 --> 00:01:59,615
+In fact, that's what we will do when we write our transfer flow programs.
+
+37
+00:01:59,615 --> 00:02:04,487
+The purpose of cloud storage is to give you a durable global file system,
+
+38
+00:02:04,487 --> 00:02:06,640
+but how is it organized?
+
+39
+00:02:06,640 --> 00:02:08,980
+A typical cloud storage URL might
+
+40
+00:02:08,980 --> 00:02:17,515
+look like gs:acme- sales/data/sales003.csv.
+
+41
+00:02:17,515 --> 00:02:21,745
+The acme-sales, that's called a bucket.
+
+42
+00:02:21,745 --> 00:02:25,665
+The name of the bucket is globally unique.
+
+43
+00:02:25,665 --> 00:02:28,745
+Think of it like a domain name and an internet URL.
+
+44
+00:02:28,745 --> 00:02:34,160
+The way to get a globally unique bucket name is to use a reverse domain name,
+
+45
+00:02:34,160 --> 00:02:37,400
+in which case Google Cloud platform will
+
+46
+00:02:37,400 --> 00:02:41,060
+ask you to prove that you own the domain name in question,
+
+47
+00:02:41,060 --> 00:02:43,055
+or simply use your project ID.
+
+48
+00:02:43,055 --> 00:02:45,380
+Unless you are extremely unlucky,
+
+49
+00:02:45,380 --> 00:02:47,360
+your project ID which is also globally
+
+50
+00:02:47,360 --> 00:02:51,350
+unique will not have already been used for a bucket name.
+
+51
+00:02:51,350 --> 00:02:57,625
+The rest of the gs URL is by convention like a folder structure,
+
+52
+00:02:57,625 --> 00:03:03,405
+with a complete gs URL referring to an object in cloud storage.
+
+53
+00:03:03,405 --> 00:03:05,885
+So, how do you work with it?
+
+54
+00:03:05,885 --> 00:03:08,030
+You can use gsutil.
+
+55
+00:03:08,030 --> 00:03:11,930
+This is a command line tool that comes with the Google Cloud SDK.
+
+56
+00:03:11,930 --> 00:03:14,580
+If you spin up a Compute Engine instance,
+
+57
+00:03:14,580 --> 00:03:16,775
+gsutil is already available.
+
+58
+00:03:16,775 --> 00:03:23,460
+On your laptop, you can download the Google Cloud SDK to get gsutil.
+
+59
+00:03:23,460 --> 00:03:27,780
+Gsutil uses a familiar Unix command line syntax.
+
+60
+00:03:27,780 --> 00:03:32,005
+So for example, MB and RB are make bucket and remove bucket.
+
+61
+00:03:32,005 --> 00:03:34,575
+You can do CP to do a copy.
+
+62
+00:03:34,575 --> 00:03:35,910
+And instead of a command line,
+
+63
+00:03:35,910 --> 00:03:38,190
+you can also use a GCP console,
+
+64
+00:03:38,190 --> 00:03:40,080
+or you can use a programming API,
+
+65
+00:03:40,080 --> 00:03:42,800
+or you can use a REST API.
+
+66
+00:03:42,800 --> 00:03:46,182
+Here, I'm showing you how to copy a bunch of files,
+
+67
+00:03:46,182 --> 00:03:50,601
+sales*.csv to a specific cloud storage location.
+
+68
+00:03:50,601 --> 00:03:54,480
+Remember I said cloud storage buckets are durable.
+
+69
+00:03:54,480 --> 00:03:57,105
+This means that they're stored redundantly.
+
+70
+00:03:57,105 --> 00:04:02,955
+You also get edge caching and failover simply by putting your object in cloud storage.
+
+71
+00:04:02,955 --> 00:04:07,695
+However, just because cloud storage is a global file system,
+
+72
+00:04:07,695 --> 00:04:11,565
+doesn't mean you can forget about latency considerations.
+
+73
+00:04:11,565 --> 00:04:15,880
+You are better off storing the data close to your compute nodes.
+
+74
+00:04:15,880 --> 00:04:19,359
+However, what happens about service disruption?
+
+75
+00:04:19,359 --> 00:04:21,960
+You need to distribute your apps and data across
+
+76
+00:04:21,960 --> 00:04:27,765
+multiple zones to protect yourself in case a single zone goes down.
+
+77
+00:04:27,765 --> 00:04:30,690
+So for example, if a zone suffers a power outage.
+
+78
+00:04:30,690 --> 00:04:34,595
+So you can leverage zones in different regions if you need to,
+
+79
+00:04:34,595 --> 00:04:37,155
+for even additional redundancy.
+
+80
+00:04:37,155 --> 00:04:42,330
+So a zone is an isolated location within a region.
+
+81
+00:04:42,330 --> 00:04:46,225
+It is named region name-azoneletter.
+
+82
+00:04:46,225 --> 00:04:48,900
+And then finally, for global availability.
+
+83
+00:04:48,900 --> 00:04:51,030
+So if you're building a global application where
+
+84
+00:04:51,030 --> 00:04:53,430
+you have customers spread across the globe,
+
+85
+00:04:53,430 --> 00:04:58,000
+then you would want a distribute your apps and data across regions.

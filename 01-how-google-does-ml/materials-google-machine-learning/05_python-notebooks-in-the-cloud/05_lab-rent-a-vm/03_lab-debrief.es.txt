@@ -1,0 +1,98 @@
+En este lab, veremos
+cómo crear una instancia de Compute Engine con el acceso
+y la seguridad asociados con ella. También interactuaremos
+con datos en Cloud Storage y realizaremos una tarea simple:
+hacer que una página web muestre los datos de terremotos actuales. Lo primero que hacemos en GCP Console es crear una instancia de Compute Engine. El menú está en el lado izquierdo. Aquí está,
+Compute Engine, VM Instances. En este punto, podemos crear la instancia. Podemos ponerle el nombre que queramos.
+La llamaremos "earthquake". Seleccionaremos la zona us-central1-b. Una CPU virtual será suficiente. Permitiremos el acceso
+a todas las API de Cloud y crearemos la instancia. La instancia se está creando. No necesitamos la etiqueta.
+Ocultemos el panel de información. La instancia con el nombre "earthquake"
+se está creando en la zona us-central1-b. No hay dirección IP todavía. La instancia se creó
+y ahora tenemos una dirección IP externa. Vamos al menú SSH, hago clic en SSH y permitimos las ventanas
+emergentes y hacemos clic en SSH. Accedimos a la máquina virtual
+que creamos mediante SSH. Esta máquina virtual que creamos
+no tiene el software que necesitamos. Por ejemplo, uno de los softwares clave
+que queremos tener es Git que permite obtener el código fuente
+desde el repositorio. Si escribo git,
+notarán que no encuentra el comando. Lo primero que debemos hacer
+es instalar Git. Podemos hacerlo mediante el comando
+sudo apt-get- install git. En este punto,
+indicaremos que queremos continuar. Git se está instalando. Sudo nos permite ejecutar operaciones
+con permisos de administrador que necesitamos
+para instalar software en la VM. Ahora, si escribimos git, allí está. Git se instaló y ahora
+ejecutaremos el comando git clone para el código de este curso. Eso está en github.com,
+en Google Cloud Platform training-data-analyst. Ahora tenemos el repositorio
+training-data-analyst. Si regresamos a Qwiklabs,
+ya creamos la instancia de Compute Engine accedimos a ella mediante SSH
+e instalamos el software Git. ¿Qué queremos hacer ahora? Queremos transferir datos
+de terremotos de USGS. Afortunadamente, ya existe un script
+que permite obtenerlos. Ese script está en el repositorio
+cd training-data-analyst. Veamos dónde tenemos que ir. Ahora, tenemos que ir a courses/
+machine_learning/deepdive/01_googleml. Hagamos eso. Escribimos
+cd courses/machine_learning/deepdive Por cierto, estoy usando la tecla TAB
+para completar y no escribir todo cd 01_googleml/ Allí están los scripts que necesitamos. Veamos el script ingest.sh. Está en earthquakes.
+Usemos el script ingest.sh Lo que hace es quitar cualquier
+archivo earthquakes.csv existente y hace una descarga mediante wget wget es una forma
+de descargar un archivo csv y lo llamaré earthquakes.csv. Podemos ejecutarlo mediante
+el comando bash ingest.sh. Hay un archivo earthquakes.csv existente. Podemos ver las primeras líneas
+mediante el comando head. Estas son las primeras 10 líneas
+del archivo y, como ven, está la hora la latitud y la longitud
+de todos los terremotos que ocurrieron durante la última semana. Ahora que ya lo tenemos,
+podemos transformar los datos. La transformación
+de los datos ya está hecha. Este es un ejemplo
+de un cuaderno de Datalab. Haré clic aquí
+para mostrarles cómo se ve. Tenemos un cuaderno earthquakes.ipython y muestra el código que se está ejecutando que obtiene los datos de los terremotos
+y los grafica mediante matplotlib. Luego, lo que haremos
+es guardarlo como una imagen PNG. Hagamos eso. Regresemos a las instrucciones. Debemos instalar el software que falta. ¿Qué otro software necesitamos? Veamos qué necesitamos. Ahí tenemos install missing.sh que contiene las instrucciones
+de instalación para basemap. Basemap es un paquete de Python
+que nos permite dibujar mapas geográficos. Python-numpy, que es una biblioteca
+de procesamiento numérico y matplotlib,
+que es la biblioteca de trazado. Estamos instalando los tres paquetes
+de Python que necesitamos. Escribiré bash install missing.sh. Este comando obtendrá los paquetes
+de software y los instalará en esta VM. Ahora que todos los softwares
+se instalaron, podemos ejecutar transform.py en este directorio. Transform.py contiene todo el código
+de Python que estaba presente en el cuaderno de IPython para trazar
+y crear un archivo de imagen. Ejecutemos python transform.py En este punto,
+si ejecutamos ls -l se muestra lo último que creamos
+y, como ven, hay un nuevo archivo con el nombre "earthquakes.png". Ese es el archivo de imagen. Ahora, queremos tomar ese archivo
+y colocarlo en el almacenamiento de Cloud y la forma de hacerlo
+es mediante Cloud Storage. Para hacerlo, crearemos un depósito. Regresemos al menú
+de los servicios de GCP hagamos clic en la parte izquierda
+y desplacémonos a "Storage" y creemos un depósito. El nombre del depósito
+debe ser globalmente único. El nombre del proyecto
+es un nombre único global. A menos que tengamos mala suerte,
+nadie habrá usado ya ese nombre para su depósito. Copiemos el nombre del proyecto y usemos ese nombre para el depósito. El depósito puede ser multirregional
+o regional. Hagamos un depósito regional. Estará en la zona us-central1,
+que es la misma región de la instancia de Compute Engine. Esto reduce la latencia
+en la obtención de los datos. Creemos eso. El depósito se creó. Ahora, copiaremos el archivo
+"earthquake.png" que creamos a este depósito.
+¿Cómo lo hacemos? Podemos hacerlo mediante gsutil. Copiemos el archivo. Escribiré gsutil
+y luego el nombre del depósito. El nombre del depósito
+es el nombre del proyecto. Afortunadamente, podemos usarlo. El nombre del proyecto
+y tal vez "earthquakes". Ahora, todos los archivos: earthquakes.htm earthquakes.png y earthquakes.csv
+se copiaron en Cloud y están en el depósito. De hecho, si regresamos
+al depósito y actualizamos veremos "earthquakes"
+y los tres archivos adentro. Tomaremos los tres archivos
+y los compartiremos de manera pública. Si lo hacemos,
+obtendremos un vínculo público. Ahora, podemos hacer clic
+en el vínculo público a earthquakes.htm. Y cuando lo hago,
+pueden ver que se llama storage.googleapis.com/el nombre
+del proyecto/earthquakes/earthquakes.htm que es básicamente la estructura
+de la carpeta. Ahora vemos que tenemos una página
+web completamente pública. Y la razón por la que
+tenemos una página web pública es que configuramos que se comparta
+de manera pública. Si no lo hubiéramos hecho,
+no podríamos acceder mediante la Web. En este lab,
+lo que hicimos fue usar Compute Engine y Cloud Storage como recursos informáticos
+de manera tradicional. Por supuesto, esta no es la manera
+en la que trabajaremos con los recursos. No crearemos una VM
+ni instalaremos software para trabajar. En su lugar, en la mayor parte del curso,
+usaremos servicios administrados. Estos servicios nos permiten
+ejecutar el código que queramos sin tener que aprovisionar las VM
+ni instalar software nosotros mismos. En vez, diremos:
+"aquí tenemos algo de código ejecútenlo por mí" y el resultado final
+será que ese código se ejecutará. Veremos esta forma de nivel superior,
+una forma más abstracta de usar los servicios de Cloud
+en los labs posteriores. Lo que queríamos mostrarles
+en este lab son los aspectos básicos de la tecnología subyacente que es Compute Engine para la computación y Cloud Storage
+para el almacenamiento persistente.

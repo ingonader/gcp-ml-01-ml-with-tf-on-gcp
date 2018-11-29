@@ -1,0 +1,776 @@
+1
+00:00:00,510 --> 00:00:04,500
+Neste laboratório, vimos como criar uma
+instância do Compute Engine
+
+2
+00:00:04,500 --> 00:00:09,360
+fornecida com a segurança e o acesso
+necessários associados a ela,
+
+3
+00:00:09,360 --> 00:00:12,690
+como interagir com dados no
+Cloud Storage
+
+4
+00:00:12,690 --> 00:00:14,490
+e realizar uma tarefa simples,
+
+5
+00:00:14,490 --> 00:00:19,277
+que era fazer uma página da Web mostrar
+dados atuais de terremotos.
+
+6
+00:00:19,277 --> 00:00:23,610
+A primeira coisa que fizemos ao entrar no
+console do GCP
+
+7
+00:00:23,610 --> 00:00:28,125
+foi criar uma instância do Compute Engine.
+
+8
+00:00:28,125 --> 00:00:31,200
+A instância do Compute Engine está do
+lado esquerdo.
+
+9
+00:00:31,200 --> 00:00:34,600
+Aqui está: Compute Engine,
+instâncias de VM.
+
+10
+00:00:36,610 --> 00:00:39,740
+Aqui, podemos seguir em frente e criar
+a instância.
+
+11
+00:00:43,490 --> 00:00:45,955
+Podemos chamá-la como quisermos,
+
+12
+00:00:45,955 --> 00:00:48,705
+então a chamarei de "earthquake".
+
+13
+00:00:49,475 --> 00:00:57,755
+Vou colocá-la na US Central 1-b,
+e uma vCPU será suficiente.
+
+14
+00:00:58,265 --> 00:01:01,490
+Vamos permitir acesso a todas as APIs
+do Cloud,
+
+15
+00:01:02,490 --> 00:01:05,159
+seguir adiante e criar a instância.
+
+16
+00:01:05,679 --> 00:01:07,105
+Neste ponto,
+
+17
+00:01:07,105 --> 00:01:09,097
+a instância está sendo criada.
+
+18
+00:01:09,097 --> 00:01:10,565
+Você não precisa do rótulo.
+
+19
+00:01:10,565 --> 00:01:12,678
+Então vou ocultar o painel de informações.
+
+20
+00:01:12,678 --> 00:01:17,750
+Então a instância chamada earthquake está
+sendo criada na zona US Central 1-b.
+
+21
+00:01:17,750 --> 00:01:20,460
+Neste ponto não temos endereço IP.
+
+22
+00:01:20,460 --> 00:01:24,513
+A instância está sendo criada e agora
+temos um IP externo.
+
+23
+00:01:24,513 --> 00:01:27,640
+Posso ir ao item "SSH" do menu,
+
+24
+00:01:27,640 --> 00:01:32,320
+clicar em "SSH" e
+
+25
+00:01:32,320 --> 00:01:36,660
+permitir pop-ups e SSH.
+
+26
+00:01:39,510 --> 00:01:40,710
+Aqui estamos.
+
+27
+00:01:40,710 --> 00:01:47,980
+O SSH está na máquina virtual que acabamos
+de criar.
+
+28
+00:01:47,980 --> 00:01:54,299
+Essa máquina virtual que acabamos de criar
+não tem o software que precisamos.
+
+29
+00:01:54,299 --> 00:01:59,585
+Por exemplo, um dos softwares principais
+que queremos se chama Git.
+
+30
+00:01:59,585 --> 00:02:04,140
+Ele permite que eu consiga o código-fonte
+do repositório.
+
+31
+00:02:04,140 --> 00:02:05,530
+Mas se eu digitar "Git",
+
+32
+00:02:05,530 --> 00:02:08,085
+você vê que o comando Git não foi
+encontrado.
+
+33
+00:02:08,085 --> 00:02:11,195
+A primeira coisa que preciso fazer
+é instalá-lo.
+
+34
+00:02:11,195 --> 00:02:17,636
+Posso fazer isso digitando 
+"sudo apt-get install git".
+
+35
+00:02:17,636 --> 00:02:19,540
+Neste ponto,
+
+36
+00:02:19,540 --> 00:02:22,765
+outra célula. "Você quer continuar?"
+
+37
+00:02:23,775 --> 00:02:25,140
+O Git está sendo instalado.
+
+38
+00:02:25,140 --> 00:02:28,480
+O sudo me permite executar uma
+operação como
+
+39
+00:02:28,480 --> 00:02:32,742
+uma rota que preciso acessar para instalar
+software na VM.
+
+40
+00:02:32,742 --> 00:02:36,345
+Agora, se eu digitar "Git",
+ele será encontrado.
+
+41
+00:02:36,345 --> 00:02:39,660
+O Git foi instalado, e o que eu quero
+fazer é
+
+42
+00:02:39,660 --> 00:02:45,875
+um clone do Git do código correspondente
+a este curso.
+
+43
+00:02:45,875 --> 00:02:53,455
+Ele está em github.com, Google Cloud
+Platform, training-data-analyst.
+
+44
+00:02:55,615 --> 00:02:57,085
+Aqui,
+
+45
+00:02:57,085 --> 00:03:01,045
+tenho o analista de dados de treinamento
+do repositório.
+
+46
+00:03:01,045 --> 00:03:04,210
+E se voltarmos ao Qwiklabs,
+
+47
+00:03:04,210 --> 00:03:07,360
+temos a instância do Compute Engine
+criada,
+
+48
+00:03:07,360 --> 00:03:08,990
+temos SSH nela
+
+49
+00:03:08,990 --> 00:03:10,930
+e instalamos o software Git.
+
+50
+00:03:10,930 --> 00:03:12,700
+O que queremos fazer agora?
+
+51
+00:03:12,700 --> 00:03:17,675
+Basicamente ingerir os dados de terremotos
+do USGS.
+
+52
+00:03:17,675 --> 00:03:22,259
+Felizmente, há um script já gravado que
+nos permite conseguir isso.
+
+53
+00:03:22,259 --> 00:03:29,360
+Esse script está no repositório,
+cd para "training data analyst".
+
+54
+00:03:29,360 --> 00:03:32,645
+Vamos ver aonde precisamos ir.
+
+55
+00:03:32,645 --> 00:03:39,224
+Agora precisamos entrar em "courses
+machine learning deepdive 01
+
+56
+00:03:39,224 --> 00:03:42,620
+googleml". Vamos fazer isso.
+
+57
+00:03:42,620 --> 00:03:46,530
+Cd para "courses machine
+learning deepdive".
+
+58
+00:03:46,530 --> 00:03:48,820
+Repare que estou digitando em guias
+
+59
+00:03:48,820 --> 00:03:51,088
+para completar. Assim não preciso
+digitar tudo.
+
+60
+00:03:51,088 --> 00:03:53,620
+"Cd 01 googleml".
+
+61
+00:03:53,620 --> 00:03:59,630
+E lá estão os scripts que vamos precisar.
+
+62
+00:04:00,190 --> 00:04:06,865
+Podemos olhar o ingest.sh.
+Vamos fazer isso.
+
+63
+00:04:06,865 --> 00:04:14,910
+Está em earthquakes e "less ingest.sh".
+
+64
+00:04:14,910 --> 00:04:21,149
+Tudo o que isso faz é remover qualquer 
+earthquakes.csv existente e fazer
+
+65
+00:04:21,149 --> 00:04:24,825
+o download wget ou web get. É uma
+maneira de fazer o download de um
+
+66
+00:04:24,825 --> 00:04:28,879
+arquivo csv, e estou chamando-o de 
+earthquakes.csv.
+
+67
+00:04:28,879 --> 00:04:34,588
+Faremos a execução digitando bash
+"ingest.sh".
+
+68
+00:04:34,588 --> 00:04:35,835
+Neste ponto,
+
+69
+00:04:35,835 --> 00:04:39,390
+existe um earthquake.csv.
+
+70
+00:04:39,720 --> 00:04:43,715
+Podemos fazer um head para ver as
+primeiras linhas.
+
+71
+00:04:45,235 --> 00:04:49,600
+Essas são as 10 primeiras linhas do
+arquivo, e você pode ver que há uma hora,
+
+72
+00:04:49,600 --> 00:04:51,520
+uma latitude, longitude de todos
+
+73
+00:04:51,520 --> 00:04:54,980
+os terremotos que ocorreram
+nas últimas semanas.
+
+74
+00:04:55,800 --> 00:04:58,075
+E tendo isso,
+
+75
+00:04:58,075 --> 00:05:00,575
+podemos transformar os dados.
+
+76
+00:05:00,575 --> 00:05:02,690
+A transformação dos dados está pronta.
+
+77
+00:05:02,690 --> 00:05:05,185
+E esse é um exemplo de um bloco de notas
+do Datalab.
+
+78
+00:05:05,185 --> 00:05:08,300
+Então clicarei aqui para mostrar 
+como fica.
+
+79
+00:05:08,300 --> 00:05:15,070
+Há um bloco de notas earthquakes.ipython e
+ele mostra o código que está sendo feito.
+
+80
+00:05:15,070 --> 00:05:17,770
+E o que está sendo feito é que
+ele avança, pega
+
+81
+00:05:17,770 --> 00:05:22,295
+os dados do earthquake e os plota usando o
+marplotlib.
+
+82
+00:05:22,295 --> 00:05:28,044
+E então, o que faremos é basicamente
+salvar como imagem, como um arquivo png.
+
+83
+00:05:28,914 --> 00:05:30,533
+Vamos fazer isso.
+
+84
+00:05:30,533 --> 00:05:36,465
+Volte às instruções. Precisamos instalar
+todos os softwares que faltam.
+
+85
+00:05:36,465 --> 00:05:38,070
+Que outros softwares precisamos?
+
+86
+00:05:38,070 --> 00:05:40,423
+Vamos ver quais softwares precisamos.
+
+87
+00:05:41,183 --> 00:05:46,320
+Aqui está o "install missing.sh", que
+
+88
+00:05:46,320 --> 00:05:52,560
+contém instruções para instalar 
+o Basemap.
+
+89
+00:05:52,560 --> 00:05:56,370
+O Basemap é um pacote do Python que
+nos permite desenhar mapas geográficos.
+
+90
+00:05:56,370 --> 00:05:59,640
+O Python NumPy é uma biblioteca de
+processamento numérico,
+
+91
+00:05:59,640 --> 00:06:03,504
+e o Matplotlib, que é a biblioteca de
+plotagem básica.
+
+92
+00:06:03,504 --> 00:06:07,215
+Então estamos instalando os três pacotes
+do Python que precisamos.
+
+93
+00:06:07,215 --> 00:06:10,300
+Farei "bash install missing.sh".
+
+94
+00:06:11,050 --> 00:06:13,470
+Neste ponto, seguiremos adiante,
+selecionarei todos
+
+95
+00:06:13,470 --> 00:06:18,340
+os pacotes de software e os instalarei
+nesta máquina virtual.
+
+96
+00:06:19,800 --> 00:06:23,359
+Agora todos os softwares estão instalados.
+
+97
+00:06:23,359 --> 00:06:29,115
+Posso seguir e executar transform.py neste
+diretório.
+
+98
+00:06:29,115 --> 00:06:34,726
+Transform.py contém todos os códigos do
+Python no bloco de notas do IPython,
+
+99
+00:06:34,726 --> 00:06:38,101
+aqueles a serem usados na plotagem para
+criar um arquivo de imagem.
+
+100
+00:06:38,101 --> 00:06:38,960
+Vamos fazer um
+
+101
+00:06:38,960 --> 00:06:41,399
+transform.py do Python.
+
+102
+00:06:50,119 --> 00:06:51,790
+Neste ponto,
+
+103
+00:06:55,280 --> 00:06:57,113
+se você puder fazer "ls minus lrt",
+
+104
+00:06:57,113 --> 00:07:00,095
+será mostrado o que foi criado
+mais recentemente,
+
+105
+00:07:00,095 --> 00:07:04,430
+e como você pode ver, há um arquivo novo
+chamado "earthquakes.png".
+
+106
+00:07:04,430 --> 00:07:05,700
+É o arquivo de imagem.
+
+107
+00:07:05,700 --> 00:07:09,860
+Agora queremos colocar esse arquivo de
+imagem no Cloud,
+
+108
+00:07:09,860 --> 00:07:13,010
+e a maneira de fazer isso, de armazenar
+no Cloud,
+
+109
+00:07:13,010 --> 00:07:14,666
+é no Google Cloud Storage.
+
+110
+00:07:14,666 --> 00:07:17,182
+Para fazer isso vamos criar um intervalo.
+
+111
+00:07:19,042 --> 00:07:25,195
+Vamos voltar ao menu de serviços da Web
+do GCP,
+
+112
+00:07:25,195 --> 00:07:33,380
+clicar na barra lateral esquerda, rolar
+para baixo até "armazenamento" e criar
+
+113
+00:07:33,380 --> 00:07:36,357
+um intervalo. O nome dele precisa
+ser exclusivo.
+
+114
+00:07:36,357 --> 00:07:38,420
+Precisa ser único globalmente, e
+
+115
+00:07:38,420 --> 00:07:41,615
+uma coisa única globalmente que temos
+é um nome de projeto.
+
+116
+00:07:41,615 --> 00:07:43,955
+A menos que sejamos extremamente
+azarados,
+
+117
+00:07:43,955 --> 00:07:47,267
+ninguém usou nosso nome de projeto para
+nomear um intervalo.
+
+118
+00:07:47,267 --> 00:07:51,485
+Copiarei o nome do projeto
+
+119
+00:07:53,835 --> 00:07:58,310
+e usarei como nome do intervalo.
+
+120
+00:07:59,180 --> 00:08:04,413
+Ele pode ser um intervalo multirregional,
+nosso intervalo regional.
+
+121
+00:08:04,413 --> 00:08:07,040
+Vou torná-lo um intervalo regional.
+
+122
+00:08:07,040 --> 00:08:09,200
+Ficará na US Central 1, que é
+
+123
+00:08:09,200 --> 00:08:13,988
+a mesma região que usei para criar minha
+instância do Compute Engine.
+
+124
+00:08:13,988 --> 00:08:17,960
+Isso reduz a quantidade de latência
+envolvida ao acessar os dados.
+
+125
+00:08:17,960 --> 00:08:19,805
+Siga adiante e crie.
+
+126
+00:08:19,805 --> 00:08:23,035
+Neste ponto, o intervalo foi criado.
+
+127
+00:08:23,035 --> 00:08:26,160
+O que queremos fazer agora é copiar o
+
+128
+00:08:26,160 --> 00:08:31,350
+"earthquake.png" que acabamos de criar
+para este intervalo. Como faremos isso?
+
+129
+00:08:31,350 --> 00:08:34,571
+Podemos fazer usando o gsutil.
+
+130
+00:08:34,571 --> 00:08:37,110
+Vamos copiá-lo.
+
+131
+00:08:37,110 --> 00:08:42,240
+Digitarei "gsutil" e o nome do intervalo.
+
+132
+00:08:42,240 --> 00:08:45,492
+O nome do intervalo é o
+nome do projeto.
+
+133
+00:08:45,492 --> 00:08:47,630
+Felizmente posso usá-lo.
+
+134
+00:08:53,680 --> 00:08:58,190
+Nome do projeto e talvez "earthquakes".
+
+135
+00:08:58,190 --> 00:09:01,420
+Aqui, todos os arquivos,
+
+136
+00:09:01,420 --> 00:09:05,945
+earthquakes.htm, earthquakes.png
+e earthquakes.csv,
+
+137
+00:09:05,945 --> 00:09:11,115
+os três são copiados para o Cloud e
+ficam no intervalo.
+
+138
+00:09:11,315 --> 00:09:16,635
+Se voltarmos ao intervalo e atualizarmos,
+
+139
+00:09:16,635 --> 00:09:21,265
+veremos agora "earthquakes" e, dentro
+dele, os três arquivos.
+
+140
+00:09:21,885 --> 00:09:28,045
+Vamos pegar esses três arquivos e
+compartilhá-los publicamente.
+
+141
+00:09:28,045 --> 00:09:29,959
+E ao fazer isso,
+
+142
+00:09:29,959 --> 00:09:32,770
+receberemos um link público.
+
+143
+00:09:32,770 --> 00:09:36,758
+Agora posso clicar nesse link público
+para earthquakes.htm.
+
+144
+00:09:36,758 --> 00:09:38,785
+E quando clico no link público,
+
+145
+00:09:38,785 --> 00:09:45,160
+ele se chama "storage.googleapis.com/
+o nome do meu projeto/
+
+146
+00:09:45,160 --> 00:09:51,385
+earthquake/earthquake.htm", que é 
+a estrutura da pasta.
+
+147
+00:09:51,385 --> 00:09:56,020
+E você pode ver que agora temos uma página
+da Web completamente pública.
+
+148
+00:09:56,020 --> 00:10:01,330
+E o motivo para isso é que nós a
+tornamos pública.
+
+149
+00:10:01,330 --> 00:10:02,525
+Nós configuramos assim.
+
+150
+00:10:02,525 --> 00:10:04,325
+Se não compartilhássemos
+publicamente,
+
+151
+00:10:04,325 --> 00:10:07,940
+não seria possível acessá-la na Web.
+
+152
+00:10:07,940 --> 00:10:09,175
+Neste laboratório,
+
+153
+00:10:09,175 --> 00:10:13,480
+o que fizemos foi usar o Compute Engine e
+
+154
+00:10:13,480 --> 00:10:19,850
+o Cloud Storage como recursos de
+computação, de modo tradicional.
+
+155
+00:10:19,870 --> 00:10:24,070
+Claro, esta não é a maneira que vamos
+trabalhar com recursos.
+
+156
+00:10:24,070 --> 00:10:26,530
+Não vamos criar uma VM
+
+157
+00:10:26,530 --> 00:10:29,090
+e instalar software para trabalhar
+com ela.
+
+158
+00:10:29,090 --> 00:10:31,510
+Em vez disso, para a maior parte
+deste curso,
+
+159
+00:10:31,510 --> 00:10:33,775
+usaremos os chamados Serviços Gerenciados.
+
+160
+00:10:33,775 --> 00:10:38,095
+Os Serviços Gerenciados nos permitem
+executar o código que queremos
+
+161
+00:10:38,095 --> 00:10:41,250
+sem ter que provisionar VMs,
+
+162
+00:10:41,250 --> 00:10:43,540
+instalar software...
+
+163
+00:10:43,540 --> 00:10:45,280
+Em vez disso temos o mesmo código,
+
+164
+00:10:45,280 --> 00:10:50,620
+o executamos e o resultado final será o
+efeito dele na prática.
+
+165
+00:10:50,620 --> 00:10:53,700
+Veremos esse nível mais avançado,
+
+166
+00:10:53,700 --> 00:10:54,940
+a maneira mais abstrata
+
+167
+00:10:54,940 --> 00:10:57,880
+de usar serviços do Cloud em laboratórios
+futuros.
+
+168
+00:10:57,880 --> 00:11:02,590
+Mas o que queríamos mostrar a você
+nesse laboratório eram
+
+169
+00:11:02,590 --> 00:11:05,620
+as noções básicas
+dessa estrutura fundamental,
+
+170
+00:11:05,620 --> 00:11:08,632
+os princípios gerais dela,
+
+171
+00:11:08,632 --> 00:11:14,080
+o Compute Engine para computação e o Cloud
+Storage para armazenamento permanente.

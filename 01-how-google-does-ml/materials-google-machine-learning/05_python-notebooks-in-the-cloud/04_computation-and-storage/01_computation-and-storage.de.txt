@@ -1,0 +1,47 @@
+Sprechen wir über
+Compute Engine und Cloud Storage. Man sollte die Funktion von 
+Compute-Instanzen in der Cloud kennen, weil Datalab dort ausgeführt wird. Für nichtflüchtige Daten in der Cloud wird Cloud Storage verwendet. Deshalb müssen Sie
+auch Cloud Storage kennen. Compute Engine ähnelt
+einer global verteilten CPU, Cloud Storage einer
+global verteilten Festplatte. Datalab ist ein Programm
+mit einem einzelnen Knoten. Deshalb läuft es auf
+einer einzelnen Compute Engine-Instanz. Nach dem Start werden Dataflow-Jobs oder Cloud ML Engine-Jobs aber an viele
+Compute Engine-Instanzen verteilt. Bei Compute Engine mieten Sie im Grunde eine virtuelle Maschine
+in der Cloud für Ihre Arbeitslasten. Welche Merkmale können angepasst werden? Dazu zählen die Anzahl der Kerne, Speichermenge, Festplattengröße und Betriebssystem. Funktionen wie Lastenausgleich,
+Netzwerk usw. sind aber integriert. Sie sind aber nicht
+an Ihre anfängliche Auswahl gebunden. Sie kann jederzeit geändert werden. Je nach Nutzung der VM
+werden automatisch Rabatte gewährt. Compute Engine-Instanzen haben schnelle,
+aber sitzungsspezifische Festplatten. Wird die VM beendet, verschwindet die Festplatte. Google bietet 
+auch nichtflüchtige Festplatten, aber darum soll es hier nicht gehen. Cloud Storage ist langlebig. Blobs in Cloud Storage werden repliziert
+und an mehreren Orten gespeichert. Der Zugriff auf Cloud Storage
+ist über jedes Gerät möglich. Durch die Netzwerkgeschwindigkeit –
+Bisektionsbandbreite im Petabit-Bereich – können 100.000 VMs mit 10 Gbit pro Sekunde miteinander kommunizieren. Daten werden direkt
+aus Cloud Storage ausgelesen. Das tun wir später,
+wenn wir TensorFlow-Programme schreiben. Cloud Storage soll Nutzern als
+langlebiges, globales Dateisystem dienen. Doch wie ist es organisiert? Eine typische Cloud Storage-URL
+sieht folgendermaßen aus: gs:acme-sales/data/sales003.csv. Der Teil "acme-sales"
+wird als Bucket bezeichnet. Der Name des Buckets
+ist weltweit eindeutig. Er entspricht dem 
+Domainnamen in einer Internet-URL. Bucket-Namen werden entweder
+aus umgekehrten Domainnamen erstellt, wobei Sie auf der Google Cloud Platform
+nachweisen müssen, dass der Domainname Ihnen gehört, oder Sie verwenden Ihre Projekt-ID. In der Regel wurde die Projekt-ID, die ebenfalls global eindeutig ist, noch nicht als Bucket-Name verwendet. Der Rest der gs-URL entspricht
+konventionsgemäß einer Ordnerstruktur. Eine vollständige gs-URL
+verweist auf ein Objekt in Cloud Storage. Wie können Sie damit arbeiten? Eine Möglichkeit ist "gsutil". Dieses Befehlszeilentool
+ist im Google Cloud SDK integriert. Wenn Sie eine
+Compute Engine-Instanz aufrufen, ist gsutil bereits verfügbar. Laden Sie das Google Cloud SDK auf Ihren
+Laptop herunter, um gsutil zu nutzen. In gsutil wird eine bekannte 
+Unix-Befehlszeilensyntax verwendet. So stehen etwa MB und RB für
+"make bucket" und "remove bucket". Mit CP können Sie eine Kopie erstellen. Statt der Befehlszeile können Sie auch die GCP Console, eine Programmierungs-API oder eine REST API verwenden. Hier zeige ich, wie Sie mehrere Dateien, sales*.csv,
+an einem Ort in Cloud Storage speichern. Cloud Storage-Buckets sind langlebig. Das heißt, sie werden
+redundant gespeichert. Auch Edge-Caching und Failover
+sind in Cloud Storage inbegriffen. Doch obwohl Cloud Storage 
+ein globales Dateisystem ist, muss trotzdem die Latenz beachtet werden. Speichern Sie Daten deshalb 
+nahe an den Compute-Knoten. Was wird gegen
+Dienstunterbrechungen getan? Sie müssen Apps und Daten
+über mehrere Zonen verteilen, um beim Ausfall
+einer Zone geschützt zu sein. Fällt in einer Zone etwa der Strom aus, können Sie Zonen
+in verschiedenen Regionen nutzen, um für zusätzliche Redundanz zu sorgen. Eine Zone ist
+ein isolierter Bereich in einer Region. Ihr Name entspricht dem Muster
+Regionsname-Zonenbuchstabe. Kommen wir abschließend
+zur globalen Verfügbarkeit. Wenn Sie eine globale Anwendung für Kunden auf der ganzen Welt entwickeln, sollten Sie Ihre Apps und Daten
+über mehrere Regionen verteilen.

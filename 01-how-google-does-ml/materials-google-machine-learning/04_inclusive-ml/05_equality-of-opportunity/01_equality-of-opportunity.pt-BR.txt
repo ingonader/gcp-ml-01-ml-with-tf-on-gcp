@@ -1,0 +1,91 @@
+Agora que sabemos calcular a métrica de avaliação de previsão
+de um modelo em subgrupos, vamos falar sobre uma abordagem
+que aprofunda essas métricas para ter um melhor desempenho
+nos subgrupos. Essa abordagem é chamada
+de igualdade de oportunidade, e funciona assim. Digamos que você tem um modelo
+que deve funcionar com todos os usuários, independente de quem eles forem
+ou de onde vieram. Idealmente, todo usuário qualificado para
+um resultado desejado gerado pelo modelo deve ter uma chance igual
+entre os usuários de ser corretamente classificado
+para o resultado desejado. Digamos que trabalhamos
+para um banco na criação de um modelo para ajudar a determinar se um empréstimo
+deve ser aprovado ou não. O que é a igualdade de oportunidade
+nesse contexto? Idealmente, todos os usuários qualificados
+para um empréstimo têm a mesma chance de serem corretamente classificados
+para aprovação entre todos os usuários. Ou seja, a chance de alguém
+ser qualificado para um empréstimo deve ser a mesma independente
+do subgrupo da pessoa. O que temos aqui é que, se mantivermos
+tudo igual para a pessoa e a trocarmos de um grupo para outro, ela deve ter a mesma chance
+de se qualificar para um empréstimo. Por que incorporar essa abordagem
+no seu sistema de aprendizado de máquina? Porque essa abordagem permite
+destrinchar o modelo para descobrir possíveis
+áreas problemáticas. Ao definir oportunidades de melhoria, você pode fazer os ajustes necessários para ter uma troca melhor
+entre precisão e não discriminação, o que pode tornar seu modelo
+de aprendizado de máquina mais inclusivo. Vamos ilustrar essa abordagem usando
+um classificador simulado, não um modelo real, só um exemplo sintético
+para explicar os conceitos. O objetivo deste modelo é prever com
+alta precisão quem pagará o empréstimo, e o banco pode usar esse modelo
+para ajudar a decidir se deve aprovar o empréstimo ou não. No diagrama que você está vendo, os pontos escuros representam pessoas
+que pagam o empréstimo e os pontos claros
+são as pessoas que não pagam. Os números da linha de cima
+representam a pontuação de crédito simplificada para um intervalo
+de zero a cem, em que uma pontuação alta representa
+maior probabilidade de pagar o empréstimo. Em um mundo ideal, trabalharíamos com estatísticas
+que separam categorias claramente, como pode ser visto
+no exemplo da esquerda. Infelizmente, é muito mais comum ver a situação da direita,
+em que os grupos se sobrepõem. Uma estatística como pontuação de crédito
+pode substituir muitas variáveis. Depois, na especialização, você verá que modelos costumam
+retornar uma probabilidade, então a pontuação de crédito
+pode substituir essa probabilidade. A probabilidade resultante de um modelo,
+como pontuação de crédito, por exemplo, considera diversas coisas, como renda, capacidade de pagar dívidas
+e assim em diante, então o número pode representar
+a probabilidade de uma pessoa pagar
+o empréstimo ou ser inadimplente. Mas pode ser que não. É aqui que entra a ideia
+de configuração de limite. Basicamente, você pode escolher
+um ponto de corte, e pessoas com pontuação de crédito
+abaixo do ponto não recebem o empréstimo e as pessoas acima recebem. Como você pode ver no diagrama, escolher o limite tem
+alguns prós e contras. Se for baixo, serão aprovados mais
+empréstimos que causarão inadimplência, se for alto, várias pessoas que merecem
+o empréstimo serão negadas. Então, qual é o melhor limite? O limite depende
+das suas metas e motivações. Uma meta pode ser maximizar
+o número de decisões corretas, como neste diagrama. Na esquerda, pontos em azul escuro
+são empréstimos autorizados pagos, e pontos em cinza são empréstimos negados
+porque resultariam em inadimplência, todos esses pontos representariam
+previsões corretas. Na direita, os pontos em azul claro são empréstimos
+aprovados que resultaram em inadimplência, e os pontos em cinza escuro
+representam empréstimos que foram negados
+a pessoas que teriam pago. Esses pontos representam
+previsões incorretas. Mas, algumas decisões
+são mais custosas que outras. Talvez haja
+uma categoria de empréstimos, como financiamentos em 15 anos,
+que sejam mais lucrativos que outros. Então, pode ser melhor não tratar
+todas as decisões da mesma forma. Outro objetivo,
+em uma situação financeira, pode ser maximizar não o número
+de decisões corretas, mas o lucro geral. A parte de baixo do diagrama
+que você está vendo aqui representa o lucro hipotético baseado na nossa estimativa
+do lucro associado a cada empréstimo. Então, a questão é qual é o limite mais lucrativo? E será que ele corresponde
+ao limite com mais decisões corretas? Perguntas como essa são especialmente
+difíceis quando uma estatística como pontuação de crédito é distribuída
+de modo diferente entre dois grupos. É aqui que entra
+a igualdade de oportunidade. A configuração formal
+de igualdade de oportunidade é assim. Digamos que A representa
+um atributo previsto. Para simplificar,
+vamos considerar que A é binário e representa um membro
+de um grupo protegido. Não sou advogado, então não posso dizer o que é
+um grupo protegido na sua área, mas fale com o jurídico
+da sua empresa para descobrir
+quem é protegido ou não. Mas, para exemplificar, nos Estados Unidos, as leis federais protegem funcionários
+contra discriminação por idade. Então, dependendo do aplicativo
+que estiver criando, a idade pode ser um grupo protegido. Você também tem um resultado binário,
+que chamaremos de Y, em que podemos interpretar o valor de Y
+igual a 1 como um resultado desejável. Neste caso, a aprovação do empréstimo. Considere Y neste exemplo
+como o dado de referência ou rótulo. Mas estamos criando um modelo de Y. Então, precisamos que Y circunflexo
+seja nosso preditor. No nosso exemplo, o preditor é sempre um limite definido pela pontuação
+entre zero e um. O preditor pode usar limites
+que dependem de A, em que podemos usar diferentes limites
+para diferentes grupos. Então, a ideia é que indivíduos em A
+qualificados para um resultado positivo tenham a mesma chance
+de serem classificados positivamente que indivíduos que não estejam em A. Falando de maneira mais formal,
+esse desejo coincide com uma taxa de verdadeiros
+positivos igual para os dois grupos. Esse é o princípio por trás
+da igualdade de oportunidade.

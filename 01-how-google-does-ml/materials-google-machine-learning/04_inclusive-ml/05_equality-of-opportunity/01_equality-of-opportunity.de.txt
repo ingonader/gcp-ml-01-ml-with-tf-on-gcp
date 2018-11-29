@@ -1,0 +1,77 @@
+Jetzt wissen wir, wie man Messwerte
+zur Evaluierung der Modellvorhersagen für mehrere Teilgruppen berechnet. Sprechen wir nun über einen Ansatz, der auf Basis dieser Messwerte zu besseren Leistungen
+bei Teilgruppen führen soll. Diesen Ansatz nennt man
+nennt man "Chancengleichheit" und er funktioniert ungefähr so: Angenommen, Sie haben ein Modell,
+das bei allen Nutzern funktionieren soll, ganz gleich, wer sie sind
+oder woher sie kommen. Idealerweise sollten alle Nutzer, die die Voraussetzungen Ihres Modells
+für das gewünschte Ergebnis erfüllen, die gleichen Chancen
+auf die richtige Einstufung für dieses Ergebnis haben. Sagen wir, wir arbeiten für eine Bank und entwickeln ein ML-Modell, das bei der Genehmigung
+von Krediten unterstützen soll. Was bedeutet Chancengleichheit in diesem Kontext? Idealerweise haben alle Nutzer, die die Voraussetzungen
+für einen Kredit erfüllen, gleiche Chancen auf richtige Einstufung für die Genehmigung des Kredits. Mit anderen Worten,
+die Chancen einer Person auf einen Kredit sollten gleich sein, egal,
+welcher Teilgruppe sie angehört. Wenn alle Informationen
+zu einer Person gleich bleiben, diese Person aber von einer
+Teilgruppe in eine andere wechselt, sollten ihre Chancen auf
+einen Kredit gleich bleiben. Warum sollte man so einen
+Ansatz in ein ML-System einbauen? Weil man ein Modell damit hinterfragen und mögliche Problemfelder aufspüren kann. Sobald man 
+Verbesserungsmöglichkeiten erkannt hat, kann man notwendige Änderungen
+vornehmen und damit ein besseres Verhältnis von Genauigkeit
+und Diskriminierungsfreiheit erreichen. Dadurch erreicht man, dass
+das ML-Modell inklusiver wird. Zur Veranschaulichung soll uns
+ein Muster-Klassifikator dienen. Dies ist kein echtes Modell, sondern ein synthetisches
+Beispiel zur Erläuterung des Konzepts. Das Modell soll mit hoher Genauigkeit
+vorhersagen, wer den Kredit zurückzahlt. Die Bank kann das Modell als Unterstützung für die Genehmigung oder
+Ablehnung des Kredits nutzen. In dem Diagramm, das Sie hier sehen, stellen dunkle Punkte Personen dar, die den Kredit zurückzahlen. Helle Punkte stehen für die, die es nicht tun. Die Zahlen in der ersten Reihe sind die Kredit-Punkte. Sie sind hier vereinfacht
+als Werte zwischen 0 und 100. Bei höherer Punktzahl
+ist die Wahrscheinlichkeit höher, den Kredit zurückzuzahlen. Im Idealfall würden wir mit Statistiken arbeiten, durch die
+Kategorien sauber getrennt werden, wie man hier im linken Beispiel sieht. Leider sieht man in
+der Praxis viel häufiger die Situation rechts:
+Die Gruppen überschneiden sich. Ein Wert wie eine Kredit-Punktzahl kann
+für viele verschiedene Variablen stehen. Im Spezialisierungskurs werden Sie sehen, dass die meisten Modelle
+Wahrscheinlichkeiten liefern. Die Kredit-Punktzahl hier könnte
+für diese Wahrscheinlichkeit stehen. Bei der Wahrscheinlichkeit, die ein
+Modell liefert, also der Kredit-Punktzahl, werden viele Dinge berücksichtigt, etwa das Einkommen,
+Herkunft der Mittel zur Rückzahlung und so weiter. Diese Zahl könnte also
+die Wahrscheinlichkeit angeben, dass jemand den
+Kredit zurückzahlt oder ausfällt. Vielleicht tut diese Zahl
+das aber auch nicht. Deshalb kann man mit
+einem Schwellenwert arbeiten. Man entscheidet sich für einen Grenzwert und Personen, deren Kredit-Punktzahl
+darunter liegt, bekommen keinen Kredit, während die, die
+darüber liegen, ihn bekommen. Wie man an diesem Diagramm sehen kann, ist die richtige Auswahl
+des Grenzwerts ein Kompromiss. Ist er zu niedrig, werden zu viele
+Kredite gewährt, die später ausfallen, ist er zu hoch, wird zu vielen Personen unnötig ein Kredit verweigert. Was ist also der beste Grenzwert? Das hängt von Ihren Zielen und Motiven ab. Ein Ziel könnten möglichst
+viele richtige Entscheidungen sein, wie in diesem Diagramm. Die dunkelblauen Punkte links stehen
+für gewährte und zurückgezahlte Kredite, die hellgrauen links
+für verweigerte Kredite, die ausgefallen wären. Alle diese Punkte stehen
+für richtige Vorhersagen. Auf der rechten Seite wiederum stehen hellblaue Punkte für
+gewährte Kredite, die ausgefallen sind, und dunkelgraue Punkte für Kredite, die verweigert wurden, obwohl
+die Personen sie zurückgezahlt hätten. Diese Punkte stehen
+für falsche Vorhersagen. Aber einige Entscheidungen
+sind kostspieliger als andere. Vielleicht gibt es eine Kreditkategorie, etwa 15-Jahres-Hypotheken,
+die profitabler sind als andere Kredite. Man sollte demnach nicht alle
+Entscheidungen gleich behandeln. Aus finanzieller Sicht
+könnte deshalb ein Ziel sein, nicht die Anzahl richtiger
+Entscheidungen zu maximieren, sondern den Gesamtgewinn. Und das untere Diagramm, das Sie hier sehen,
+stellt den hypothetischen Gewinn auf Basis unserer Gewinnschätzung für jeden Kredit dar. Die Frage lautet jetzt also anders: Welcher Grenzwert ist am profitabelsten und stimmt er mit dem
+ersten Grenzwert überein? Solche Fragen werden besonders knifflig, wenn ein Wert
+wie eine Kredit-Punktzahl zwischen zwei Gruppen
+unterschiedlich verteilt ist. An diesem Punkt setzt
+Chancengleichheit an. Die formale Konfiguration für
+Chancengleichheit sieht etwa so aus. Nehmen wir an, A stellt
+ein vorhergesagtes Attribut dar. Zur Vereinfachung
+betrachten wir A als binär. Es soll die Mitgliedschaft in
+einer geschützten Gruppe darstellen. Ich bin kein Jurist. Ich kann Ihnen also nicht sagen, was
+bei Ihnen eine geschützte Gruppe wäre. Ihre Rechtsabteilung kann Ihnen sagen, was geschützt ist und was nicht. Ein Beispiel aus den USA: Hier gibt es Bundesgesetze,
+die Arbeitnehmer vor Diskriminierung aufgrund des Alters schützen. Je nachdem, was für eine
+Anwendung Sie entwickeln, kann "Alter" also eine
+geschützte Gruppe sein. Wir betrachten das Ergebnis als binäre Größe namens Y. Ein Y-Wert von 1 sei
+ein erwünschtes Ergebnis. In diesem Fall die
+Gewährung eines Kredits. Betrachten wir Y in diesem Beispiel als Grundwahrheit oder Label. Aber wir entwickeln ein Modell von Y. Wir brauchen also auch
+unseren Prädiktor namens Y-Dach. In unserem Beispiel
+ist der Prädiktor immer als Grenzwert einer Punktzahl
+zwischen null und eins definiert. Der Prädiktor könnte Grenzwerte verwenden, die von A abhängen. Verschiedene Gruppen können
+verschiedene Grenzwerte haben. Personen in A, 
+die die Voraussetzungen für ein positives Ergebnis erfüllen, sollten die gleiche Chance auf
+eine positive Einstufung haben, wie Personen, die nicht zu A gehören. Formaler ausgedrückt, bedeutet dieses Ziel,
+dass beide Gruppen den gleichen Anteil richtiger Positive aufweisen. Und das ist das Prinzip
+hinter der Chancengleichheit.
