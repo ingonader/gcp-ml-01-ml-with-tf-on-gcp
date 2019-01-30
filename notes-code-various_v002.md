@@ -63,8 +63,8 @@ printf "Y\n\n\n" | datalab create mydatalabvm --zone $ZONE
 # datalab create mydatalabvm --zone $ZONE
 
 ## ssh into datalab vm:
-#export PROJECT=$(gcloud config get-value project)
-#export ZONE=europe-west1-c
+export PROJECT=$(gcloud config get-value project)
+export ZONE=europe-west1-c
 gcloud compute ssh mydatalabvm --project $PROJECT --zone $ZONE
 
 ## in datalab vm:
