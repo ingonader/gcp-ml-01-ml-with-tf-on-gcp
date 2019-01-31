@@ -474,6 +474,322 @@ node {
   }
 }
 node {
+  name: "Shape"
+  op: "Shape"
+  input: "MatchingFiles"
+  device: "/device:CPU:0"
+  attr {
+    key: "T"
+    value {
+      type: DT_STRING
+    }
+  }
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+          dim {
+            size: 1
+          }
+        }
+      }
+    }
+  }
+  attr {
+    key: "out_type"
+    value {
+      type: DT_INT64
+    }
+  }
+}
+node {
+  name: "strided_slice/stack"
+  op: "Const"
+  device: "/device:CPU:0"
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+          dim {
+            size: 1
+          }
+        }
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT32
+        tensor_shape {
+          dim {
+            size: 1
+          }
+        }
+        int_val: 0
+      }
+    }
+  }
+}
+node {
+  name: "strided_slice/stack_1"
+  op: "Const"
+  device: "/device:CPU:0"
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+          dim {
+            size: 1
+          }
+        }
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT32
+        tensor_shape {
+          dim {
+            size: 1
+          }
+        }
+        int_val: 1
+      }
+    }
+  }
+}
+node {
+  name: "strided_slice/stack_2"
+  op: "Const"
+  device: "/device:CPU:0"
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+          dim {
+            size: 1
+          }
+        }
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT32
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT32
+        tensor_shape {
+          dim {
+            size: 1
+          }
+        }
+        int_val: 1
+      }
+    }
+  }
+}
+node {
+  name: "strided_slice"
+  op: "StridedSlice"
+  input: "Shape"
+  input: "strided_slice/stack"
+  input: "strided_slice/stack_1"
+  input: "strided_slice/stack_2"
+  device: "/device:CPU:0"
+  attr {
+    key: "Index"
+    value {
+      type: DT_INT32
+    }
+  }
+  attr {
+    key: "T"
+    value {
+      type: DT_INT64
+    }
+  }
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+        }
+      }
+    }
+  }
+  attr {
+    key: "begin_mask"
+    value {
+      i: 0
+    }
+  }
+  attr {
+    key: "ellipsis_mask"
+    value {
+      i: 0
+    }
+  }
+  attr {
+    key: "end_mask"
+    value {
+      i: 0
+    }
+  }
+  attr {
+    key: "new_axis_mask"
+    value {
+      i: 0
+    }
+  }
+  attr {
+    key: "shrink_axis_mask"
+    value {
+      i: 1
+    }
+  }
+}
+node {
+  name: "Maximum/y"
+  op: "Const"
+  device: "/device:CPU:0"
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+        }
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT64
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT64
+        tensor_shape {
+        }
+        int64_val: 1
+      }
+    }
+  }
+}
+node {
+  name: "Maximum"
+  op: "Maximum"
+  input: "strided_slice"
+  input: "Maximum/y"
+  device: "/device:CPU:0"
+  attr {
+    key: "T"
+    value {
+      type: DT_INT64
+    }
+  }
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+        }
+      }
+    }
+  }
+}
+node {
+  name: "seed"
+  op: "Const"
+  device: "/device:CPU:0"
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+        }
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT64
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT64
+        tensor_shape {
+        }
+        int64_val: 0
+      }
+    }
+  }
+}
+node {
+  name: "seed2"
+  op: "Const"
+  device: "/device:CPU:0"
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+        }
+      }
+    }
+  }
+  attr {
+    key: "dtype"
+    value {
+      type: DT_INT64
+    }
+  }
+  attr {
+    key: "value"
+    value {
+      tensor {
+        dtype: DT_INT64
+        tensor_shape {
+        }
+        int64_val: 0
+      }
+    }
+  }
+}
+node {
   name: "buffer_size"
   op: "Const"
   device: "/device:CPU:0"
@@ -505,69 +821,7 @@ node {
   }
 }
 node {
-  name: "seed"
-  op: "Const"
-  device: "/device:CPU:0"
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-        }
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT64
-    }
-  }
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT64
-        tensor_shape {
-        }
-        int64_val: 87654321
-      }
-    }
-  }
-}
-node {
-  name: "seed2/Const"
-  op: "Const"
-  device: "/device:CPU:0"
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-        }
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT64
-    }
-  }
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT64
-        tensor_shape {
-        }
-        int64_val: 2
-      }
-    }
-  }
-}
-node {
-  name: "seed2/Equal/y"
+  name: "seed_1"
   op: "Const"
   device: "/device:CPU:0"
   attr {
@@ -598,29 +852,7 @@ node {
   }
 }
 node {
-  name: "seed2/Equal"
-  op: "Equal"
-  input: "seed"
-  input: "seed2/Equal/y"
-  device: "/device:CPU:0"
-  attr {
-    key: "T"
-    value {
-      type: DT_INT64
-    }
-  }
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-        }
-      }
-    }
-  }
-}
-node {
-  name: "seed2/Equal_1/y"
+  name: "seed2_1"
   op: "Const"
   device: "/device:CPU:0"
   attr {
@@ -646,98 +878,6 @@ node {
         tensor_shape {
         }
         int64_val: 0
-      }
-    }
-  }
-}
-node {
-  name: "seed2/Equal_1"
-  op: "Equal"
-  input: "seed2/Const"
-  input: "seed2/Equal_1/y"
-  device: "/device:CPU:0"
-  attr {
-    key: "T"
-    value {
-      type: DT_INT64
-    }
-  }
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-        }
-      }
-    }
-  }
-}
-node {
-  name: "seed2/LogicalAnd"
-  op: "LogicalAnd"
-  input: "seed2/Equal"
-  input: "seed2/Equal_1"
-  device: "/device:CPU:0"
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-        }
-      }
-    }
-  }
-}
-node {
-  name: "seed2/Const_1"
-  op: "Const"
-  device: "/device:CPU:0"
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-        }
-      }
-    }
-  }
-  attr {
-    key: "dtype"
-    value {
-      type: DT_INT64
-    }
-  }
-  attr {
-    key: "value"
-    value {
-      tensor {
-        dtype: DT_INT64
-        tensor_shape {
-        }
-        int64_val: 2147483647
-      }
-    }
-  }
-}
-node {
-  name: "seed2"
-  op: "Select"
-  input: "seed2/LogicalAnd"
-  input: "seed2/Const_1"
-  input: "seed2/Const"
-  device: "/device:CPU:0"
-  attr {
-    key: "T"
-    value {
-      type: DT_INT64
-    }
-  }
-  attr {
-    key: "_output_shapes"
-    value {
-      list {
-        shape {
-        }
       }
     }
   }
@@ -925,9 +1065,57 @@ node {
   }
 }
 node {
+  name: "ShuffleDataset"
+  op: "ShuffleDataset"
+  input: "TensorSliceDataset"
+  input: "Maximum"
+  input: "seed"
+  input: "seed2"
+  attr {
+    key: "_class"
+    value {
+      list {
+        s: "loc:@Iterator"
+      }
+    }
+  }
+  attr {
+    key: "_output_shapes"
+    value {
+      list {
+        shape {
+        }
+      }
+    }
+  }
+  attr {
+    key: "output_shapes"
+    value {
+      list {
+        shape {
+        }
+      }
+    }
+  }
+  attr {
+    key: "output_types"
+    value {
+      list {
+        type: DT_STRING
+      }
+    }
+  }
+  attr {
+    key: "reshuffle_each_iteration"
+    value {
+      b: true
+    }
+  }
+}
+node {
   name: "FlatMapDataset"
   op: "FlatMapDataset"
-  input: "TensorSliceDataset"
+  input: "ShuffleDataset"
   attr {
     key: "Targuments"
     value {
@@ -1051,12 +1239,12 @@ node {
   }
 }
 node {
-  name: "ShuffleDataset"
+  name: "ShuffleDataset_1"
   op: "ShuffleDataset"
   input: "MapDataset"
   input: "buffer_size"
-  input: "seed"
-  input: "seed2"
+  input: "seed_1"
+  input: "seed2_1"
   attr {
     key: "_class"
     value {
@@ -1119,7 +1307,7 @@ node {
 node {
   name: "RepeatDataset"
   op: "RepeatDataset"
-  input: "ShuffleDataset"
+  input: "ShuffleDataset_1"
   input: "count"
   attr {
     key: "_class"
@@ -4964,7 +5152,7 @@ node {
 node {
   name: "linear/Reshape"
   op: "Reshape"
-  input: "linear/linear_model/dropofflon/weights/part_0/read"
+  input: "linear/linear_model/dropofflat/weights/part_0/read"
   input: "linear/Reshape/shape"
   attr {
     key: "T"
@@ -5030,7 +5218,7 @@ node {
 node {
   name: "linear/Reshape_1"
   op: "Reshape"
-  input: "linear/linear_model/pickuplat/weights/part_0/read"
+  input: "linear/linear_model/pickuplon/weights/part_0/read"
   input: "linear/Reshape_1/shape"
   attr {
     key: "T"
@@ -5096,7 +5284,7 @@ node {
 node {
   name: "linear/Reshape_2"
   op: "Reshape"
-  input: "linear/linear_model/pickuplon/weights/part_0/read"
+  input: "linear/linear_model/dropofflon/weights/part_0/read"
   input: "linear/Reshape_2/shape"
   attr {
     key: "T"
@@ -5228,7 +5416,7 @@ node {
 node {
   name: "linear/Reshape_4"
   op: "Reshape"
-  input: "linear/linear_model/dropofflat/weights/part_0/read"
+  input: "linear/linear_model/pickuplat/weights/part_0/read"
   input: "linear/Reshape_4/shape"
   attr {
     key: "T"
@@ -15952,7 +16140,7 @@ node {
         dtype: DT_STRING
         tensor_shape {
         }
-        string_val: "_temp_1eba5a3916154fa29373f09c3bc66601/part"
+        string_val: "_temp_57ba4f7172db4ca89edee342ef4cf3c9/part"
       }
     }
   }
