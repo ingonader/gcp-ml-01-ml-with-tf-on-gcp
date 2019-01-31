@@ -1,0 +1,166 @@
+1
+00:00:00,140 --> 00:00:03,844
+Además de los errores de forma
+que vimos en las lecciones anteriores
+
+2
+00:00:03,844 --> 00:00:06,435
+otro error común que encontrará
+
+3
+00:00:06,435 --> 00:00:08,525
+cuando desarrolle programas de TensorFlow
+
+4
+00:00:08,525 --> 00:00:10,745
+son los errores de tipo de datos.
+
+5
+00:00:10,745 --> 00:00:13,010
+El mensaje de error aquí dice
+
+6
+00:00:13,010 --> 00:00:17,490
+que tiene un tensor cuyos valores
+están almacenados como matrices de enteros
+
+7
+00:00:17,490 --> 00:00:20,705
+pero lo está pasando
+a un método que espera un tensor
+
+8
+00:00:20,705 --> 00:00:24,430
+con valores de punto flotante.
+¿En qué caso ocurriría algo así?
+
+9
+00:00:25,460 --> 00:00:27,930
+Tal vez si mira
+el seguimiento de las llamadas
+
+10
+00:00:27,930 --> 00:00:33,960
+y la línea de código identificada
+es esta suma de aquí, s = a + b.
+
+11
+00:00:34,410 --> 00:00:37,755
+Tal vez a es una matriz de flotantes
+
+12
+00:00:37,755 --> 00:00:40,635
+mientras que b es una de enteros.
+
+13
+00:00:40,635 --> 00:00:44,089
+Tal vez piense que puede sumar
+un número de punto flotante a un entero.
+
+14
+00:00:44,089 --> 00:00:46,270
+¿Cuál es el problema?
+Debería ser automático.
+
+15
+00:00:46,270 --> 00:00:48,575
+El resultado
+es un número de punto flotante.
+
+16
+00:00:48,575 --> 00:00:54,885
+Sin embargo, ni Python ni C++ permiten
+sumar una matriz de punto flotante
+
+17
+00:00:54,885 --> 00:00:56,825
+a una de números enteros.
+
+18
+00:00:56,825 --> 00:00:59,750
+Hay muchas optimizaciones
+de almacenamiento involucradas
+
+19
+00:00:59,750 --> 00:01:02,810
+y si tiene una matriz de enteros,
+los datos podrían encontrarse
+
+20
+00:01:02,810 --> 00:01:05,720
+en un dispositivo o una parte
+de la memoria donde simplemente
+
+21
+00:01:05,720 --> 00:01:08,270
+no es posible realizar
+aritmética de puntos flotantes.
+
+22
+00:01:08,270 --> 00:01:09,520
+Hay que corregirlo.
+
+23
+00:01:09,520 --> 00:01:12,500
+¿Redondeará los valores
+de punto flotante a enteros?
+
+24
+00:01:12,500 --> 00:01:14,690
+¿O tal vez cometió un error
+
+25
+00:01:14,690 --> 00:01:18,505
+y la matriz de punto flotante
+en realidad debía ser una de enteros?
+
+26
+00:01:18,505 --> 00:01:21,965
+¿O tal vez prefiere convertir
+los enteros en valores de punto flotante
+
+27
+00:01:21,965 --> 00:01:24,490
+y hacer la suma sabiendo que el resultado
+
+28
+00:01:24,490 --> 00:01:26,190
+será una matriz de punto flotante?
+
+29
+00:01:26,190 --> 00:01:28,860
+Debido a que hay varias opciones
+
+30
+00:01:28,860 --> 00:01:31,310
+TensorFlow le pide que sea más claro.
+
+31
+00:01:31,310 --> 00:01:35,690
+Una forma de corregir el problema
+es tomar la matriz de enteros b
+
+32
+00:01:35,690 --> 00:01:40,710
+y decir que ahora queremos que sea
+un tensor de valores de punto flotante.
+
+33
+00:01:40,810 --> 00:01:46,430
+Esta llamada a tf.cast
+se insertará en el gráfico de computación
+
+34
+00:01:46,430 --> 00:01:49,880
+y las optimizaciones, etc.,
+tomarán eso en cuenta
+
+35
+00:01:49,880 --> 00:01:54,410
+cuando decidan
+dónde almacenar b y cómo moverla.
+
+36
+00:01:54,410 --> 00:01:59,640
+Aquí, agregamos al método
+la operación tf.cast para corregirlo.

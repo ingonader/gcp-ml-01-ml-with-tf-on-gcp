@@ -1,0 +1,547 @@
+1
+00:00:01,280 --> 00:00:04,115
+Una situación común
+que encuentran los profesionales
+
+2
+00:00:04,115 --> 00:00:06,685
+es que cuando vuelven
+a ejecutar un código de modelo
+
+3
+00:00:06,685 --> 00:00:10,400
+esperan que produzca
+el mismo resultado, pero eso no ocurre.
+
+4
+00:00:11,720 --> 00:00:15,215
+Los programadores suelen
+trabajar en configuraciones deterministas.
+
+5
+00:00:15,215 --> 00:00:18,015
+En el AA, este no siempre es el caso.
+
+6
+00:00:18,445 --> 00:00:21,460
+En muchos modelos,
+si se entrenan por segunda vez
+
+7
+00:00:21,460 --> 00:00:24,225
+incluso con la misma configuración
+de hiperparámetro
+
+8
+00:00:24,225 --> 00:00:27,475
+la configuración de parámetro
+resultante podría ser muy diferente.
+
+9
+00:00:27,865 --> 00:00:30,270
+Al principio, parece algo desconcertante.
+
+10
+00:00:30,270 --> 00:00:32,600
+¿No buscamos el mejor
+conjunto de parámetros?
+
+11
+00:00:32,850 --> 00:00:35,280
+¿Significa que
+el descenso de gradientes no sirve
+
+12
+00:00:35,280 --> 00:00:37,140
+o que lo implementamos mal?
+
+13
+00:00:37,650 --> 00:00:39,180
+No necesariamente.
+
+14
+00:00:39,860 --> 00:00:42,490
+Podría significar
+que, en lugar de buscar una superficie
+
+15
+00:00:42,490 --> 00:00:44,490
+de pérdida como la de la izquierda
+
+16
+00:00:44,490 --> 00:00:47,865
+en realidad, buscamos superficies
+de pérdida como la del lado derecho.
+
+17
+00:00:47,865 --> 00:00:51,465
+Noten que la superficie de pérdida
+izquierda tiene un solo fondo
+
+18
+00:00:51,465 --> 00:00:53,920
+y la del lado derecho tiene más de uno.
+
+19
+00:00:54,530 --> 00:00:57,475
+El nombre formal
+de esta propiedad es convexidad.
+
+20
+00:00:57,855 --> 00:01:01,955
+El lado izquierdo es una superficie
+convexa y el derecho no lo es.
+
+21
+00:01:03,785 --> 00:01:07,230
+¿Por qué la superficie de pérdida
+de un modelo tiene más de un mínimo?
+
+22
+00:01:08,120 --> 00:01:10,350
+Bueno, significa que
+hay una cantidad de puntos
+
+23
+00:01:10,350 --> 00:01:13,340
+equivalentes o casi
+equivalentes en un espacio de parámetros.
+
+24
+00:01:13,340 --> 00:01:15,260
+Una configuración para los parámetros
+
+25
+00:01:15,260 --> 00:01:18,555
+que produce modelos con la misma
+capacidad para realizar predicciones.
+
+26
+00:01:18,945 --> 00:01:22,030
+Revisaremos esto más adelante
+cuando veamos las redes neuronales
+
+27
+00:01:22,030 --> 00:01:24,375
+porque son un excelente ejemplo de ello.
+
+28
+00:01:24,375 --> 00:01:26,640
+Así que está bien si no queda muy claro.
+
+29
+00:01:27,460 --> 00:01:29,180
+Por ahora, tengan presente
+
+30
+00:01:29,180 --> 00:01:32,785
+que los servicios de pérdida varían
+según la cantidad de mínimos que tengan.
+
+31
+00:01:33,605 --> 00:01:36,550
+A veces, rápido no es
+lo suficientemente rápido.
+
+32
+00:01:36,980 --> 00:01:40,120
+A nadie le gusta esperar que
+los modelos terminen el entrenamiento.
+
+33
+00:01:40,120 --> 00:01:42,960
+¿Hay alguna forma de acelerarlo?
+
+34
+00:01:43,570 --> 00:01:48,125
+Sí. Pero para conocer las opciones,
+debemos considerar los pasos de alto nivel
+
+35
+00:01:48,125 --> 00:01:51,345
+de nuestro algoritmo 
+y sus fuentes de complejidad de tiempo.
+
+36
+00:01:51,345 --> 00:01:55,255
+Aquí se ven los tres pasos
+básicos que debe dar nuestro algoritmo.
+
+37
+00:01:56,525 --> 00:02:00,405
+Cuando calculamos la derivada,
+el costo del cálculo es proporcional
+
+38
+00:02:00,405 --> 00:02:03,440
+a los puntos de datos que
+agregamos a nuestra función de pérdida
+
+39
+00:02:03,440 --> 00:02:06,345
+así como la cantidad
+de parámetros en nuestro modelo.
+
+40
+00:02:07,075 --> 00:02:11,855
+En la práctica, los modelos varían
+de decenas a millones de parámetros.
+
+41
+00:02:11,855 --> 00:02:16,990
+Y los conjuntos de datos
+varían de algunos miles a millones.
+
+42
+00:02:18,600 --> 00:02:22,540
+La actualización de los parámetros
+del modelo ocurre una vez por bucle
+
+43
+00:02:22,540 --> 00:02:26,445
+y su costo se determina según la cantidad
+de parámetros en el modelo.
+
+44
+00:02:27,205 --> 00:02:31,500
+El costo de la actualización
+es bajo frente a otros pasos.
+
+45
+00:02:32,160 --> 00:02:34,600
+Finalmente, hay que verificar la pérdida.
+
+46
+00:02:35,390 --> 00:02:39,220
+La complejidad de tiempo de este paso
+es proporcional a la cantidad de puntos
+
+47
+00:02:39,220 --> 00:02:43,445
+de datos en el conjunto con el que medimos
+la pérdida y la complejidad del modelo.
+
+48
+00:02:43,965 --> 00:02:47,575
+Aunque representamos
+este proceso como un bucle
+
+49
+00:02:47,575 --> 00:02:50,695
+el paso de verificación
+de pérdida se realiza en cada pasada.
+
+50
+00:02:50,695 --> 00:02:55,475
+ya que la mayoría de los cambios
+en la función de pérdida son incrementales.
+
+51
+00:02:57,645 --> 00:03:00,900
+Entonces, ¿qué podemos hacer
+para mejorar el tiempo de entrenamiento?
+
+52
+00:03:00,900 --> 00:03:04,280
+La cantidad de parámetros afectados
+en un modelo suele ser fija
+
+53
+00:03:04,280 --> 00:03:09,100
+aunque veremos cómo esto puede variar
+en un módulo futuro sobre regularización.
+
+54
+00:03:10,120 --> 00:03:12,530
+Además, aunque parezca atractivo
+
+55
+00:03:12,530 --> 00:03:15,635
+disminuir la cantidad de puntos
+de datos para verificar la pérdida
+
+56
+00:03:15,635 --> 00:03:17,620
+no es recomendable.
+
+57
+00:03:19,230 --> 00:03:22,830
+En su lugar, tenemos dos opciones
+para mejorar el tiempo de entrenamiento.
+
+58
+00:03:22,830 --> 00:03:25,860
+La cantidad de puntos de datos
+en los que calculamos la derivada
+
+59
+00:03:25,860 --> 00:03:28,600
+y la frecuencia
+con la que verificamos la pérdida.
+
+60
+00:03:29,120 --> 00:03:32,270
+Como dijimos, una de las opciones
+para acelerar el entrenamiento
+
+61
+00:03:32,270 --> 00:03:35,585
+es la cantidad de puntos
+de datos en la que calculamos la derivada.
+
+62
+00:03:36,015 --> 00:03:38,900
+Recuerden, la derivada
+proviene de nuestra función de pérdida
+
+63
+00:03:38,900 --> 00:03:42,800
+y esta compone el error de una
+cantidad de predicciones en conjunto.
+
+64
+00:03:43,070 --> 00:03:46,420
+Básicamente, este método
+disminuye la cantidad de puntos de datos
+
+65
+00:03:46,420 --> 00:03:50,480
+que alimentamos en nuestra función
+de pérdida en cada iteración de algoritmo.
+
+66
+00:03:50,950 --> 00:03:54,465
+Piensen un momento
+por qué esto podría funcionar.
+
+67
+00:03:56,935 --> 00:04:00,910
+Podría funcionar
+porque es posible extraer muestras
+
+68
+00:04:00,910 --> 00:04:04,575
+de nuestros datos de entrenamiento
+que, en promedio, se equilibran entre sí.
+
+69
+00:04:04,985 --> 00:04:09,410
+En otros módulos, hablaremos más
+sobre estos obstáculos y cómo evitarlos.
+
+70
+00:04:09,410 --> 00:04:11,550
+Por ahora, tengamos
+presente que la estrategia
+
+71
+00:04:11,550 --> 00:04:15,340
+de muestreo selecciona del conjunto
+de entrenamiento con probabilidad fija.
+
+72
+00:04:15,340 --> 00:04:20,330
+Cada instancia del conjunto tiene
+la misma probabilidad de visualización.
+
+73
+00:04:21,720 --> 00:04:24,580
+En el AA, nos referimos
+a esta práctica de tomar muestras
+
+74
+00:04:24,580 --> 00:04:28,145
+de nuestro conjunto
+de entrenamiento como minilote
+
+75
+00:04:28,145 --> 00:04:31,925
+y a esta variante del descenso
+como descenso de gradientes por minilote.
+
+76
+00:04:32,865 --> 00:04:35,660
+A las muestras se las denomina lotes.
+
+77
+00:04:36,100 --> 00:04:41,230
+El descenso de gradientes
+por minilote necesita menos tiempo
+
+78
+00:04:41,230 --> 00:04:44,575
+usa menos memoria
+y es fácil de paralelizar.
+
+79
+00:04:46,260 --> 00:04:51,315
+Podrían escuchar el término
+descenso de gradientes por lotes.
+
+80
+00:04:51,715 --> 00:04:54,745
+Aquí, lotes se refiere
+al procesamiento por lotes.
+
+81
+00:04:54,745 --> 00:04:58,170
+Este tipo de descenso calcula
+el gradiente de todo el conjunto de datos.
+
+82
+00:04:58,950 --> 00:05:02,440
+No es lo mismo que un
+descenso de gradientes por minilotes.
+
+83
+00:05:02,440 --> 00:05:06,100
+Aquí hablamos sobre
+un descenso de gradientes por minilotes.
+
+84
+00:05:06,100 --> 00:05:10,845
+Paradójicamente, al tamaño
+de minilote se lo llama tamaño del lote.
+
+85
+00:05:10,845 --> 00:05:12,700
+Así lo llama TensorFlow.
+
+86
+00:05:12,700 --> 00:05:15,115
+Y así lo llamaremos nosotros.
+
+87
+00:05:15,705 --> 00:05:19,230
+En el resto de la especialización,
+cuando hablemos sobre el tamaño del lote
+
+88
+00:05:19,230 --> 00:05:23,430
+hablaremos del tamaño de las muestras
+en el descenso de gradientes por minilote.
+
+89
+00:05:24,320 --> 00:05:26,835
+¿Qué tan grandes
+deberían ser estos minilotes?
+
+90
+00:05:27,460 --> 00:05:31,120
+Tal como la tasa de aprendizaje,
+el tamaño del lote es otro hiperparámetro.
+
+91
+00:05:31,120 --> 00:05:33,950
+Y, como tal, su valor óptimo
+depende del problema
+
+92
+00:05:33,950 --> 00:05:36,310
+y se encuentra
+con el ajuste del hiperparámetro
+
+93
+00:05:36,310 --> 00:05:37,995
+de lo que hablaremos más adelante.
+
+94
+00:05:38,415 --> 00:05:42,320
+Por lo general, el tamaño
+del lote es entre 10 y 100 ejemplos.
+
+95
+00:05:42,590 --> 00:05:44,470
+Al igual que la tasa de aprendizaje
+
+96
+00:05:44,470 --> 00:05:47,405
+el tamaño del lote
+es otro hiperparámetro y, como tal
+
+97
+00:05:47,405 --> 00:05:51,800
+su valor óptimo depende del problema y se
+encuentra con el ajuste de hiperparámetro
+
+98
+00:05:51,800 --> 00:05:53,970
+que veremos más adelante.
+
+99
+00:05:54,610 --> 00:05:58,685
+Por lo general, el tamaño
+del lote es entre 10 y 1,000 ejemplos.
+
+100
+00:05:59,155 --> 00:06:01,805
+La otra opción
+para acelerar el entrenamiento del modelo
+
+101
+00:06:01,805 --> 00:06:04,325
+es la frecuencia
+con la que verificamos la pérdida.
+
+102
+00:06:04,995 --> 00:06:09,065
+Aunque sería ideal solo verificar
+la pérdida en un subconjunto de los datos
+
+103
+00:06:09,065 --> 00:06:10,780
+no es una buena idea.
+
+104
+00:06:12,040 --> 00:06:13,740
+La implementación es muy sencilla.
+
+105
+00:06:13,740 --> 00:06:16,685
+Introducimos algo de lógica
+para que nuestra costosa función
+
+106
+00:06:16,685 --> 00:06:19,515
+de pérdida de cálculo
+evalúe esa frecuencia reducida.
+
+107
+00:06:20,255 --> 00:06:23,455
+Algunas estrategias para la función
+de pérdida lista para actualizar
+
+108
+00:06:23,455 --> 00:06:25,435
+son las basadas en tiempo y en pasos.
+
+109
+00:06:25,835 --> 00:06:28,295
+Por ejemplo, una vez cada 1,000 pasos
+
+110
+00:06:28,295 --> 00:06:30,295
+o una vez cada 30 minutos.
+
+111
+00:06:30,815 --> 00:06:32,430
+Con la reducción de la frecuencia
+
+112
+00:06:32,430 --> 00:06:35,745
+con la que verificamos la pérdida
+y la introducción de los minilotes
+
+113
+00:06:35,745 --> 00:06:39,250
+comenzamos a separar las dos partes
+básicas del entrenamiento del modelo.
+
+114
+00:06:39,250 --> 00:06:41,220
+Cambiar los parámetros de nuestro modelo
+
+115
+00:06:41,220 --> 00:06:44,010
+y revisar
+si realizamos los cambios adecuados.

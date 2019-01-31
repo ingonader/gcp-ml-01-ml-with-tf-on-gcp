@@ -1,0 +1,562 @@
+1
+00:00:00,320 --> 00:00:03,890
+Una variable es un tensor
+cuyo valor se inicializa
+
+2
+00:00:04,300 --> 00:00:07,695
+y luego cambia
+a medida que el programa se ejecuta.
+
+3
+00:00:08,115 --> 00:00:10,805
+Veamos este ejemplo en detalle.
+
+4
+00:00:11,415 --> 00:00:13,840
+Tengo una función
+que se llama forward_pass.
+
+5
+00:00:14,240 --> 00:00:18,650
+Toma dos parámetros,
+w y x, y los multiplica.
+
+6
+00:00:19,010 --> 00:00:21,885
+Es una multiplicación de matrices
+porque son tensores
+
+7
+00:00:22,575 --> 00:00:24,685
+pero multiplica w y x.
+
+8
+00:00:25,645 --> 00:00:27,744
+En mi función train_loop
+
+9
+00:00:28,304 --> 00:00:31,132
+creo el tensor w
+
+10
+00:00:31,572 --> 00:00:34,870
+solo que no es una constante
+
+11
+00:00:35,030 --> 00:00:37,375
+como los tensores
+que hemos visto hasta ahora.
+
+12
+00:00:37,785 --> 00:00:39,865
+w es una variable.
+
+13
+00:00:40,255 --> 00:00:41,950
+Tiene el nombre "weights".
+
+14
+00:00:42,310 --> 00:00:44,320
+Su forma es [1, 2]
+
+15
+00:00:44,610 --> 00:00:47,600
+lo que significa
+que tiene una fila y dos columnas.
+
+16
+00:00:47,690 --> 00:00:49,430
+Es una matriz de 1 x 2.
+
+17
+00:00:50,030 --> 00:00:52,170
+Y cuando se inicializa w…
+
+18
+00:00:52,820 --> 00:00:55,960
+No lo hacemos aquí,
+porque recuerde que TensorFlow
+
+19
+00:00:55,960 --> 00:00:58,155
+es un marco de trabajo
+de evaluación perezosa
+
+20
+00:00:58,155 --> 00:00:59,765
+y ahora estamos
+creando el gráfico.
+
+21
+00:00:59,765 --> 00:01:01,670
+Todavía no lo ejecutamos.
+
+22
+00:01:01,670 --> 00:01:04,350
+Cuando se inicialice w
+
+23
+00:01:04,350 --> 00:01:08,655
+lo hará
+con un inicializador normal truncado.
+
+24
+00:01:08,655 --> 00:01:11,240
+Este es un inicializador muy común
+
+25
+00:01:11,240 --> 00:01:14,210
+que verá en los programas
+de redes neuronales de TensorFlow.
+
+26
+00:01:14,210 --> 00:01:17,310
+Inicializa una variable
+con números aleatorios.
+
+27
+00:01:17,310 --> 00:01:21,285
+Pero estos números aleatorios
+no tienen una distribución uniforme.
+
+28
+00:01:21,285 --> 00:01:24,445
+En su lugar, tienen
+una distribución gaussiana normal
+
+29
+00:01:24,445 --> 00:01:27,255
+con media cero y varianza de unidad.
+
+30
+00:01:27,255 --> 00:01:30,210
+Pero esta distribución
+tiene una cola muy larga
+
+31
+00:01:30,210 --> 00:01:32,470
+y podrían obtenerse
+valores atípicos extremos.
+
+32
+00:01:32,470 --> 00:01:34,650
+Es poco probable, pero podría suceder.
+
+33
+00:01:34,650 --> 00:01:37,170
+¿Qué hace un normal truncado?
+
+34
+00:01:37,170 --> 00:01:42,060
+Hace un corte en algún múltiplo de sigma.
+
+35
+00:01:42,060 --> 00:01:46,665
+Finalmente, decimos
+que la variable w es entrenable.
+
+36
+00:01:46,665 --> 00:01:51,810
+Una variable entrenable
+se puede cambiar durante el entrenamiento.
+
+37
+00:01:51,810 --> 00:01:54,200
+La idea de una variable
+
+38
+00:01:54,200 --> 00:01:58,470
+es que se pueda cambiar,
+de modo que la mayoría serán entrenables.
+
+39
+00:01:58,470 --> 00:02:00,360
+Pero de vez en cuando…
+
+40
+00:02:00,360 --> 00:02:02,300
+Hablaremos de esto en la sección
+
+41
+00:02:02,300 --> 00:02:05,925
+sobre la reducción de tamaño
+del modelo y aprendizaje transferido.
+
+42
+00:02:05,925 --> 00:02:07,905
+De vez en cuando
+
+43
+00:02:07,905 --> 00:02:13,330
+puede ser útil congelar un gráfico,
+de modo que las variables no cambien.
+
+44
+00:02:13,330 --> 00:02:16,625
+Esta marca booleana nos permite hacerlo.
+
+45
+00:02:17,295 --> 00:02:21,950
+Observe que llamo
+a tf.get_variable para crear w.
+
+46
+00:02:22,460 --> 00:02:26,510
+Es posible que vea código de TensorFlow
+que crea una variable directamente
+
+47
+00:02:26,510 --> 00:02:29,195
+mediante la llamada
+al constructor tf.variable.
+
+48
+00:02:29,195 --> 00:02:32,835
+No se recomienda llamar
+al constructor directamente.
+
+49
+00:02:32,835 --> 00:02:37,775
+Use tf.get_variable
+porque, como veremos en el curso 9
+
+50
+00:02:37,775 --> 00:02:43,050
+puede ser útil reutilizar
+variables o crearlas de cero
+
+51
+00:02:43,050 --> 00:02:48,325
+según los diferentes casos.
+y esta función nos permite hacerlo.
+
+52
+00:02:48,325 --> 00:02:52,290
+Le recomiendo
+que se acostumbre a usar tf.get_variable.
+
+53
+00:02:53,430 --> 00:02:57,020
+Luego, ejecutamos forward_pass cinco veces
+
+54
+00:02:57,020 --> 00:03:00,220
+y almacenamos los resultados
+de la multiplicación de la matriz
+
+55
+00:03:00,220 --> 00:03:02,240
+en cada iteración.
+
+56
+00:03:02,240 --> 00:03:05,280
+Luego de obtener
+el producto, cambiamos el peso.
+
+57
+00:03:05,280 --> 00:03:08,280
+Aquí, agregamos 0.1.
+
+58
+00:03:08,280 --> 00:03:10,465
+Es como una actualización del gradiente.
+
+59
+00:03:10,465 --> 00:03:11,670
+En realidad, claro
+
+60
+00:03:11,670 --> 00:03:16,315
+en la actualización del gradiente, 
+elegiríamos qué pesos cambiar y cómo.
+
+61
+00:03:16,315 --> 00:03:21,415
+Aquí, para la demostración,
+solo agregaré 0.1 a los pesos cada vez.
+
+62
+00:03:22,010 --> 00:03:24,030
+Ahora, desde la sesión
+
+63
+00:03:24,030 --> 00:03:28,660
+llamamos a train_loop y pasamos x.
+
+64
+00:03:28,660 --> 00:03:31,890
+x es una matriz de 2 x 3.
+
+65
+00:03:31,890 --> 00:03:33,470
+En forward_pass
+
+66
+00:03:33,470 --> 00:03:38,075
+multiplicamos w por esta x.
+w es una matriz de 1 x 2.
+
+67
+00:03:38,075 --> 00:03:44,380
+Si multiplicamos una matriz de 1 x 2
+por una de 2 x 3, obtenemos una de 1 x 3.
+
+68
+00:03:44,380 --> 00:03:49,070
+En este punto, el gráfico está listo,
+pero debemos inicializar las variables.
+
+69
+00:03:49,070 --> 00:03:51,080
+Eso es en la etapa de ejecución.
+
+70
+00:03:51,080 --> 00:03:56,230
+Por lo general, solo inicializamos
+todas las variables del gráfico de una vez
+
+71
+00:03:56,230 --> 00:03:58,980
+con el inicializador de variables global.
+
+72
+00:03:58,980 --> 00:04:04,530
+Ahora, cuando vemos el valor del producto,
+después de cada paso del bucle
+
+73
+00:04:04,530 --> 00:04:10,490
+observamos que la matriz de 1 x 3
+es diferente cada vez, como es de esperar.
+
+74
+00:04:11,330 --> 00:04:14,120
+Resumamos lo que aprendimos.
+
+75
+00:04:14,120 --> 00:04:18,950
+Primero, se crea una variable
+mediante una llamada a get_variable.
+
+76
+00:04:19,850 --> 00:04:24,905
+Omití una línea de código
+durante la explicación: el alcance.
+
+77
+00:04:24,984 --> 00:04:29,275
+Cuando se crea una variable
+se puede especificar el alcance.
+
+78
+00:04:29,275 --> 00:04:33,545
+Ahí es donde le instruyo
+a TensorFlow que reutilice la variable
+
+79
+00:04:33,545 --> 00:04:37,545
+en lugar de crear una nueva cada vez.
+
+80
+00:04:37,545 --> 00:04:41,320
+Aquí, llamo a train_loop solo una vez,
+así que no hace diferencia en este caso
+
+81
+00:04:41,320 --> 00:04:43,490
+pero si llamara a train_loop de nuevo
+
+82
+00:04:43,490 --> 00:04:46,725
+los pesos se reanudarían
+donde se quedaron.
+
+83
+00:04:46,725 --> 00:04:49,835
+No crearíamos una nueva variable,
+sino que la reutilizaríamos.
+
+84
+00:04:49,835 --> 00:04:54,035
+Segundo, cuando se crea una variable
+
+85
+00:04:54,035 --> 00:04:57,430
+es necesario decidir cómo inicializarla.
+
+86
+00:04:57,430 --> 00:04:59,350
+En el entrenamiento de redes neuronales
+
+87
+00:04:59,350 --> 00:05:03,400
+la opción más común es
+la distribución normal aleatoria truncada.
+
+88
+00:05:03,980 --> 00:05:09,115
+Tercero, use la variable
+como cualquier otro tensor
+
+89
+00:05:09,115 --> 00:05:11,235
+cuando cree el gráfico.
+
+90
+00:05:11,235 --> 00:05:13,945
+Cuarto, en su sesión
+
+91
+00:05:13,945 --> 00:05:16,315
+recuerde inicializar la variable
+
+92
+00:05:16,315 --> 00:05:20,020
+Por lo general,
+inicializará todas las variables juntas
+
+93
+00:05:20,020 --> 00:05:23,305
+mediante una llamada
+al inicializador de variables global.
+
+94
+00:05:23,305 --> 00:05:25,640
+Y, después que se inicialicen
+
+95
+00:05:25,640 --> 00:05:27,380
+y este es el quinto punto
+
+96
+00:05:27,380 --> 00:05:31,571
+puede evaluar
+cualquier tensor que desee.
+
+97
+00:05:32,575 --> 00:05:33,900
+En este ejemplo
+
+98
+00:05:33,900 --> 00:05:36,425
+llamamos a train_loop con x
+
+99
+00:05:36,425 --> 00:05:39,610
+pero x es una constante.
+
+100
+00:05:39,610 --> 00:05:41,750
+¿Es realista?
+
+101
+00:05:41,750 --> 00:05:45,040
+¿Usa valores de entrada hard-coded
+en sus programas?
+
+102
+00:05:45,040 --> 00:05:48,705
+Los marcadores de posición
+permiten introducir valores al gráfico.
+
+103
+00:05:48,705 --> 00:05:52,070
+Por ejemplo, puede leer valores
+desde un archivo de texto
+
+104
+00:05:52,070 --> 00:05:54,470
+a una lista de Python
+y, luego, inyectar esa lista
+
+105
+00:05:54,470 --> 00:05:56,050
+en el gráfico de TensorFlow.
+
+106
+00:05:56,050 --> 00:05:58,740
+Aquí, a es un marcador de posición.
+
+107
+00:05:58,740 --> 00:06:00,045
+Tendrá un escalar.
+
+108
+00:06:00,045 --> 00:06:03,350
+Y b es a multiplicado por 4.
+
+109
+00:06:03,350 --> 00:06:06,700
+Si ejecuta print a, obtendrá
+la salida de depuración del tensor.
+
+110
+00:06:06,700 --> 00:06:08,900
+Descubrirá que este tensor en particular
+
+111
+00:06:08,900 --> 00:06:13,340
+es un marcador de posición
+que espera números de punto flotante.
+
+112
+00:06:13,340 --> 00:06:18,185
+Para evaluar b, no podemos
+escribir simplemente session.run(b).
+
+113
+00:06:18,250 --> 00:06:21,105
+Tenemos que brindar valores
+para los marcadores de posición
+
+114
+00:06:21,105 --> 00:06:22,280
+que b necesita.
+
+115
+00:06:22,280 --> 00:06:28,790
+En este caso, hay que pasar una lista
+o una matriz de Numpy para el marcador a.
+
+116
+00:06:28,790 --> 00:06:32,395
+Esto se hace
+con un feed_dict, un diccionario.
+
+117
+00:06:32,395 --> 00:06:35,150
+Un diccionario contiene pares clave-valor.
+
+118
+00:06:35,150 --> 00:06:37,065
+La clave es un marcador.
+
+119
+00:06:37,065 --> 00:06:38,715
+En este caso, a.
+
+120
+00:06:38,715 --> 00:06:41,655
+El valor es una lista o matriz de Numpy.
+
+121
+00:06:41,655 --> 00:06:45,030
+En este caso, es [1, 2, 3].
+
+122
+00:06:45,030 --> 00:06:46,485
+Eso es lo que inyectamos
+
+123
+00:06:46,485 --> 00:06:48,325
+y cuando se evalúa b
+
+124
+00:06:48,325 --> 00:06:51,150
+obtenemos el valor
+de a multiplicado por 4
+
+125
+00:06:51,150 --> 00:06:53,800
+es decir, obtenemos [4, 8,12].

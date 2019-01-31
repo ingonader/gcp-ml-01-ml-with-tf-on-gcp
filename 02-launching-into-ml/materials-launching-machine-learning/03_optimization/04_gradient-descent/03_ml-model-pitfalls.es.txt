@@ -1,0 +1,89 @@
+Una situación común
+que encuentran los profesionales es que cuando vuelven
+a ejecutar un código de modelo esperan que produzca
+el mismo resultado, pero eso no ocurre. Los programadores suelen
+trabajar en configuraciones deterministas. En el AA, este no siempre es el caso. En muchos modelos,
+si se entrenan por segunda vez incluso con la misma configuración
+de hiperparámetro la configuración de parámetro
+resultante podría ser muy diferente. Al principio, parece algo desconcertante. ¿No buscamos el mejor
+conjunto de parámetros? ¿Significa que
+el descenso de gradientes no sirve o que lo implementamos mal? No necesariamente. Podría significar
+que, en lugar de buscar una superficie de pérdida como la de la izquierda en realidad, buscamos superficies
+de pérdida como la del lado derecho. Noten que la superficie de pérdida
+izquierda tiene un solo fondo y la del lado derecho tiene más de uno. El nombre formal
+de esta propiedad es convexidad. El lado izquierdo es una superficie
+convexa y el derecho no lo es. ¿Por qué la superficie de pérdida
+de un modelo tiene más de un mínimo? Bueno, significa que
+hay una cantidad de puntos equivalentes o casi
+equivalentes en un espacio de parámetros. Una configuración para los parámetros que produce modelos con la misma
+capacidad para realizar predicciones. Revisaremos esto más adelante
+cuando veamos las redes neuronales porque son un excelente ejemplo de ello. Así que está bien si no queda muy claro. Por ahora, tengan presente que los servicios de pérdida varían
+según la cantidad de mínimos que tengan. A veces, rápido no es
+lo suficientemente rápido. A nadie le gusta esperar que
+los modelos terminen el entrenamiento. ¿Hay alguna forma de acelerarlo? Sí. Pero para conocer las opciones,
+debemos considerar los pasos de alto nivel de nuestro algoritmo 
+y sus fuentes de complejidad de tiempo. Aquí se ven los tres pasos
+básicos que debe dar nuestro algoritmo. Cuando calculamos la derivada,
+el costo del cálculo es proporcional a los puntos de datos que
+agregamos a nuestra función de pérdida así como la cantidad
+de parámetros en nuestro modelo. En la práctica, los modelos varían
+de decenas a millones de parámetros. Y los conjuntos de datos
+varían de algunos miles a millones. La actualización de los parámetros
+del modelo ocurre una vez por bucle y su costo se determina según la cantidad
+de parámetros en el modelo. El costo de la actualización
+es bajo frente a otros pasos. Finalmente, hay que verificar la pérdida. La complejidad de tiempo de este paso
+es proporcional a la cantidad de puntos de datos en el conjunto con el que medimos
+la pérdida y la complejidad del modelo. Aunque representamos
+este proceso como un bucle el paso de verificación
+de pérdida se realiza en cada pasada. ya que la mayoría de los cambios
+en la función de pérdida son incrementales. Entonces, ¿qué podemos hacer
+para mejorar el tiempo de entrenamiento? La cantidad de parámetros afectados
+en un modelo suele ser fija aunque veremos cómo esto puede variar
+en un módulo futuro sobre regularización. Además, aunque parezca atractivo disminuir la cantidad de puntos
+de datos para verificar la pérdida no es recomendable. En su lugar, tenemos dos opciones
+para mejorar el tiempo de entrenamiento. La cantidad de puntos de datos
+en los que calculamos la derivada y la frecuencia
+con la que verificamos la pérdida. Como dijimos, una de las opciones
+para acelerar el entrenamiento es la cantidad de puntos
+de datos en la que calculamos la derivada. Recuerden, la derivada
+proviene de nuestra función de pérdida y esta compone el error de una
+cantidad de predicciones en conjunto. Básicamente, este método
+disminuye la cantidad de puntos de datos que alimentamos en nuestra función
+de pérdida en cada iteración de algoritmo. Piensen un momento
+por qué esto podría funcionar. Podría funcionar
+porque es posible extraer muestras de nuestros datos de entrenamiento
+que, en promedio, se equilibran entre sí. En otros módulos, hablaremos más
+sobre estos obstáculos y cómo evitarlos. Por ahora, tengamos
+presente que la estrategia de muestreo selecciona del conjunto
+de entrenamiento con probabilidad fija. Cada instancia del conjunto tiene
+la misma probabilidad de visualización. En el AA, nos referimos
+a esta práctica de tomar muestras de nuestro conjunto
+de entrenamiento como minilote y a esta variante del descenso
+como descenso de gradientes por minilote. A las muestras se las denomina lotes. El descenso de gradientes
+por minilote necesita menos tiempo usa menos memoria
+y es fácil de paralelizar. Podrían escuchar el término
+descenso de gradientes por lotes. Aquí, lotes se refiere
+al procesamiento por lotes. Este tipo de descenso calcula
+el gradiente de todo el conjunto de datos. No es lo mismo que un
+descenso de gradientes por minilotes. Aquí hablamos sobre
+un descenso de gradientes por minilotes. Paradójicamente, al tamaño
+de minilote se lo llama tamaño del lote. Así lo llama TensorFlow. Y así lo llamaremos nosotros. En el resto de la especialización,
+cuando hablemos sobre el tamaño del lote hablaremos del tamaño de las muestras
+en el descenso de gradientes por minilote. ¿Qué tan grandes
+deberían ser estos minilotes? Tal como la tasa de aprendizaje,
+el tamaño del lote es otro hiperparámetro. Y, como tal, su valor óptimo
+depende del problema y se encuentra
+con el ajuste del hiperparámetro de lo que hablaremos más adelante. Por lo general, el tamaño
+del lote es entre 10 y 100 ejemplos. Al igual que la tasa de aprendizaje el tamaño del lote
+es otro hiperparámetro y, como tal su valor óptimo depende del problema y se
+encuentra con el ajuste de hiperparámetro que veremos más adelante. Por lo general, el tamaño
+del lote es entre 10 y 1,000 ejemplos. La otra opción
+para acelerar el entrenamiento del modelo es la frecuencia
+con la que verificamos la pérdida. Aunque sería ideal solo verificar
+la pérdida en un subconjunto de los datos no es una buena idea. La implementación es muy sencilla. Introducimos algo de lógica
+para que nuestra costosa función de pérdida de cálculo
+evalúe esa frecuencia reducida. Algunas estrategias para la función
+de pérdida lista para actualizar son las basadas en tiempo y en pasos. Por ejemplo, una vez cada 1,000 pasos o una vez cada 30 minutos. Con la reducción de la frecuencia con la que verificamos la pérdida
+y la introducción de los minilotes comenzamos a separar las dos partes
+básicas del entrenamiento del modelo. Cambiar los parámetros de nuestro modelo y revisar
+si realizamos los cambios adecuados.

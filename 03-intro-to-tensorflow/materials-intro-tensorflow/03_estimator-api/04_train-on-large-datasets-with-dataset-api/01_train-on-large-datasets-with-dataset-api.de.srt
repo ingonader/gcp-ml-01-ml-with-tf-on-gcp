@@ -1,0 +1,657 @@
+1
+00:00:00,000 --> 00:00:03,225
+Hier stellen wir die Dataset API vor,
+
+2
+00:00:03,225 --> 00:00:07,445
+die in TensorFlow enthalten ist und zur
+Nutzung mit Estimators entwickelt wurde.
+
+3
+00:00:07,445 --> 00:00:10,320
+Betrachten wir,
+warum und wann wir sie verwenden.
+
+4
+00:00:10,320 --> 00:00:14,460
+Wir wissen, wie man ein Modell auswählt, 
+und ihm Daten aus dem Speicher zuführt,
+
+5
+00:00:14,460 --> 00:00:16,184
+für Training und Vorhersagen.
+
+6
+00:00:16,184 --> 00:00:18,120
+Aber für reale Modelle
+
+7
+00:00:18,120 --> 00:00:21,645
+müssen wir noch einige
+praktische Probleme lösen.
+
+8
+00:00:21,645 --> 00:00:24,125
+Die Estimator API kann auch hier helfen.
+
+9
+00:00:24,125 --> 00:00:26,145
+Beginnen wir mit dem ersten,
+
+10
+00:00:26,145 --> 00:00:28,970
+der Datengröße. 
+In der Praxis passen
+
+11
+00:00:28,970 --> 00:00:31,875
+Ihre Trainingsdaten
+selten in den Arbeitsspeicher
+
+12
+00:00:31,875 --> 00:00:35,445
+und werden während des Trainings
+progressiv von der Festplatte geladen.
+
+13
+00:00:35,445 --> 00:00:38,549
+Wie können Sie eine Eingabefunktion
+für den Estimator schreiben,
+
+14
+00:00:38,549 --> 00:00:43,710
+die dies mithilfe von Datasets tut,
+wie in tf.data.Dataset.
+
+15
+00:00:43,710 --> 00:00:47,520
+Große Datasets werden oft
+in mehrere Dateien aufgeteilt,
+
+16
+00:00:47,520 --> 00:00:49,410
+die progressiv geladen werden können.
+
+17
+00:00:49,410 --> 00:00:52,890
+Denken Sie daran,
+dass wir mit Minibatches trainieren.
+
+18
+00:00:52,890 --> 00:00:56,430
+Wir müssen nicht das
+ganze Dataset im Speicher haben.
+
+19
+00:00:56,430 --> 00:01:00,940
+Wir brauchen nur ein
+Minibatch je Trainingsschritt.
+
+20
+00:01:00,940 --> 00:01:02,910
+Hier ist die Dataset API.
+
+21
+00:01:02,910 --> 00:01:07,505
+Sie hilft uns, Eingabefunktionen
+für das Modell zu erstellen,
+
+22
+00:01:07,505 --> 00:01:08,505
+die Daten progressiv laden.
+
+23
+00:01:08,505 --> 00:01:11,400
+Es gibt spezielle Datasetklassen,
+
+24
+00:01:11,400 --> 00:01:15,910
+die Daten aus Textdateien wie CSVs,
+TensorFlow-Datensätze oder
+
+25
+00:01:15,910 --> 00:01:18,385
+Datensätze mit
+fester Länge lesen können.
+
+26
+00:01:18,385 --> 00:01:21,700
+Für alles andere können Sie
+die allgemeine Datasetklausel verwenden
+
+27
+00:01:21,700 --> 00:01:23,905
+und einen eigenen
+Decodierungscode hinzufügen.
+
+28
+00:01:23,905 --> 00:01:30,760
+In diesem Beispiel laden wir ein
+Textzeilendataset aus einer CSV-Datei.
+
+29
+00:01:30,760 --> 00:01:33,360
+Betrachten wir die verschiedenen Teile.
+
+30
+00:01:33,360 --> 00:01:36,885
+Dieser Teil des Codes
+weist die Datasetklasse an,
+
+31
+00:01:36,885 --> 00:01:41,399
+wie die Daten im Training organisiert
+werden sollen: Batches zu 128,
+
+32
+00:01:41,399 --> 00:01:44,565
+die 15 Epochen lang wiederholt
+
+33
+00:01:44,565 --> 00:01:49,480
+und mit einem Zufallsspeicher
+von 1.000 Elementen gemischt werden.
+
+34
+00:01:49,480 --> 00:01:55,165
+Hier instanziieren wir das 
+Textzeilendataset aus einem Dateinamen.
+
+35
+00:01:55,165 --> 00:01:58,650
+Dies lädt die Datei
+und teilt sie in Zeilen auf.
+
+36
+00:01:58,650 --> 00:02:02,100
+Das resultierende Dataset
+besteht aus einer Reihe von Textzeilen.
+
+37
+00:02:02,100 --> 00:02:06,330
+Wir können jetzt die Funktion "map"
+verwenden, um die Zeilen umzuformen.
+
+38
+00:02:06,330 --> 00:02:10,220
+In diesem Fall möchten wir
+jede Zeile in Datenelemente aufteilen.
+
+39
+00:02:10,220 --> 00:02:14,970
+"map" wendet eine Funktion auf 
+jedes Element im Dataset separat an.
+
+40
+00:02:14,970 --> 00:02:20,317
+In dieser Funktion verwenden
+wir die "tf_decode_csv",
+
+41
+00:02:20,317 --> 00:02:24,885
+um die kommagetrennten Werte
+aus den Textzeilen zu extrahieren
+
+42
+00:02:24,885 --> 00:02:29,992
+und sie in Features und Labels zu
+formatieren, wie das Modell sie erwartet.
+
+43
+00:02:29,992 --> 00:02:34,645
+Nach der Zuordnung haben wir ein Dataset
+basierend auf Features und Labels.
+
+44
+00:02:34,645 --> 00:02:38,775
+Schließlich erstellen wir
+die Eingabefunktion für unser Modell.
+
+45
+00:02:38,775 --> 00:02:42,540
+Dazu dient dieser Boilerplate-Code.
+
+46
+00:02:42,540 --> 00:02:46,615
+Vielleicht fragen sie sich,
+warum er "iterator" genannt wird,
+
+47
+00:02:46,615 --> 00:02:48,425
+und warum "get_next",
+
+48
+00:02:48,425 --> 00:02:50,435
+und was passiert eigentlich beim Training?
+
+49
+00:02:50,435 --> 00:02:52,525
+Sehen wir uns nochmal den Mechanismus an.
+
+50
+00:02:52,525 --> 00:02:56,200
+Das hilft uns beim Verstehen.
+
+51
+00:02:56,200 --> 00:02:59,605
+TensorFlow arbeitet mit
+einem verzögerten Ausführungsprinzip.
+
+52
+00:02:59,605 --> 00:03:05,465
+Ältere, in Python verfasste Befehle mit
+"tf.irgendwas" verarbeiten keine Daten.
+
+53
+00:03:05,465 --> 00:03:09,020
+Sie erstellen im Arbeitsspeicher
+einen Funktionsgraphen.
+
+54
+00:03:09,020 --> 00:03:12,185
+Dieser Graph wird beim Trainieren
+oder bei Vorhersagen ausgeführt.
+
+55
+00:03:12,185 --> 00:03:14,755
+Wenn wir einen Estimator instanziieren,
+
+56
+00:03:14,755 --> 00:03:17,354
+wie einen linearen Regressor,
+passiert dasselbe.
+
+57
+00:03:17,354 --> 00:03:22,310
+Im Speicher wird ein TensorFlow-
+Graph erstellt und stellt das Modell dar.
+
+58
+00:03:22,310 --> 00:03:26,280
+Das Problem ist,
+ihn mit einer Datenquelle zu verbinden.
+
+59
+00:03:26,280 --> 00:03:28,890
+Dafür gibt es Eingabefunktionen.
+
+60
+00:03:28,890 --> 00:03:31,595
+Die Aufgabe einer Eingabefunktion ist,
+
+61
+00:03:31,595 --> 00:03:34,490
+einen TensorFlow-Knoten zurückzugeben,
+
+62
+00:03:34,490 --> 00:03:37,790
+der die vom Modell erwarteten
+Features und Labels darstellt.
+
+63
+00:03:37,790 --> 00:03:41,775
+Dieser Knoten wird mit den
+Eingaben des Modells verbunden
+
+64
+00:03:41,775 --> 00:03:48,120
+und hat die Aufgabe, bei jeder Ausführung
+ein neues Datenbatch zu liefern,
+
+65
+00:03:48,120 --> 00:03:50,185
+während des Trainings oder der Inferenz.
+
+66
+00:03:50,185 --> 00:03:53,320
+Dazu dient die Dataset API.
+
+67
+00:03:53,320 --> 00:03:56,545
+Sie generiert Eingabeknoten für Sie,
+die bei jedem Trainingsschritt
+
+68
+00:03:56,545 --> 00:04:00,215
+ein Datenbatch liefern.
+
+69
+00:04:00,215 --> 00:04:06,200
+Außerdem liefert sie Daten progressiv,
+sodass der Speicher nicht überfüllt wird.
+
+70
+00:04:06,200 --> 00:04:11,595
+Wenn Sie 
+dataset.makeiterator.get_next aufrufen
+
+71
+00:04:11,595 --> 00:04:15,850
+erhalten Sie nicht wirklich
+das nächste Element im Dataset.
+
+72
+00:04:15,850 --> 00:04:19,075
+Sie erhalten einen TensorFlow-Knoten,
+
+73
+00:04:19,075 --> 00:04:24,835
+der bei jeder Ausführung im Training
+ein Trainingsdatenbatch zurückgibt.
+
+74
+00:04:24,835 --> 00:04:26,697
+Zur Wiederholung:
+
+75
+00:04:26,697 --> 00:04:30,220
+Es werden Eingabefunktionen aufgerufen
+wenn ein Modell instanziiert wird.
+
+76
+00:04:30,220 --> 00:04:35,765
+Sie liefern ein TensorFlow-Knotenpaar, das
+an die Eingabe des Modells angefügt wird,
+
+77
+00:04:35,765 --> 00:04:38,470
+und diese Knoten sind
+für das Liefern von Daten
+
+78
+00:04:38,470 --> 00:04:42,575
+an das Modell während des
+Trainings oder der Inferenz zuständig.
+
+79
+00:04:42,575 --> 00:04:47,045
+Es gibt einige falsche
+Vorstellungen zu Eingabefunktionen,
+
+80
+00:04:47,045 --> 00:04:48,275
+die ich ausräumen möchte.
+
+81
+00:04:48,275 --> 00:04:53,750
+Die Eingabefunktion wird nicht jedes Mal
+aufgerufen, wenn Modelle Daten benötigen.
+
+82
+00:04:53,750 --> 00:04:56,510
+Sie wird nur einmal
+bei der Modellerstellung aufgerufen.
+
+83
+00:04:56,510 --> 00:05:00,965
+Und nein, Eingabefunktionen
+geben nicht tatsächliche Daten zurück
+
+84
+00:05:00,965 --> 00:05:04,470
+selbst, wenn es 
+beim Programmieren so wirkt.
+
+85
+00:05:04,470 --> 00:05:07,260
+Sie geben TensorFlow-Knoten zurück,
+
+86
+00:05:07,260 --> 00:05:10,790
+und diese Knoten geben Daten zurück,
+wenn sie ausgeführt werden.
+
+87
+00:05:10,790 --> 00:05:13,070
+Sie können beliebig komplexen Code
+
+88
+00:05:13,070 --> 00:05:17,625
+in die Eingabefunktion einfügen,
+um Ihre Daten umzuwandeln,
+
+89
+00:05:17,625 --> 00:05:20,550
+solange Sie bedenken,
+dass sie nur einmal ausgeführt wird.
+
+90
+00:05:20,550 --> 00:05:23,620
+Unabhängig von den Transformationen,
+die Sie anwenden möchten,
+
+91
+00:05:23,620 --> 00:05:27,100
+und ob Sie die Dataset API verwenden,
+
+92
+00:05:27,100 --> 00:05:30,245
+achten Sie darauf, sie mit
+"tf.irgendwas"-Befehlen auszudrücken,
+
+93
+00:05:30,245 --> 00:05:32,840
+die einen TensorFlow-Graphen erzeugen.
+
+94
+00:05:32,840 --> 00:05:37,515
+So werden Ihre Transformationen
+auf jedes Datenbatch angewendet,
+
+95
+00:05:37,515 --> 00:05:40,465
+das in Ihr Modell geladen wird.
+
+96
+00:05:40,465 --> 00:05:45,475
+Auch, wenn die Eingabefunktion
+selbst nur einmal aufgerufen wird.
+
+97
+00:05:45,475 --> 00:05:47,335
+Hier ist wieder der vollständige Code.
+
+98
+00:05:47,335 --> 00:05:48,930
+Gehen wir ihn noch einmal durch.
+
+99
+00:05:48,930 --> 00:05:51,700
+Von unten beginnend nach oben.
+
+100
+00:05:51,700 --> 00:05:55,125
+model.train startet die Trainingsschleife.
+
+101
+00:05:55,125 --> 00:05:59,900
+Das Modell empfängt Daten
+von seinen Eingabeknoten,
+
+102
+00:05:59,900 --> 00:06:03,490
+Features und Labels,
+wie in der Eingabefunktion definiert.
+
+103
+00:06:03,490 --> 00:06:06,340
+Diese Knoten durchlaufen
+das Dataset und geben jedes Mal,
+
+104
+00:06:06,340 --> 00:06:12,240
+wenn sie in der Trainingsschleife
+ausgeführt werden, ein Datenbatch zurück.
+
+105
+00:06:12,240 --> 00:06:17,590
+Das erklärt, warum die
+Dataset API, mit der Sie sie aufrufen,
+
+106
+00:06:17,590 --> 00:06:20,690
+dataset.make_one_shot_iterator().get_next()
+heißt.
+
+107
+00:06:20,690 --> 00:06:23,615
+Das Dataset mischt die Daten,
+
+108
+00:06:23,615 --> 00:06:25,745
+wiederholt sie für 15 Epochen
+
+109
+00:06:25,745 --> 00:06:29,305
+und sammelt sie in
+Minibatches von 128 Elementen.
+
+110
+00:06:29,305 --> 00:06:34,305
+Das Dataset wurde erstellt,
+indem Zeilen aus einer Textdatei gelesen
+
+111
+00:06:34,305 --> 00:06:38,190
+und die durch Komma getrennten
+Werte daraus dekodiert wurden.
+
+112
+00:06:38,190 --> 00:06:42,290
+Die Map-Operation wandelt
+ein Dataset aus Textzeilen
+
+113
+00:06:42,290 --> 00:06:45,095
+in ein Dataset von Features und Labels um.
+
+114
+00:06:45,095 --> 00:06:49,700
+Zurück zu unserem anfänglichen Problem:
+
+115
+00:06:49,700 --> 00:06:54,395
+große Datenmengen aus einer Reihe
+von fragmentierten Dateien laden.
+
+116
+00:06:54,395 --> 00:06:56,685
+Eine zusätzliche Codezeile reicht aus.
+
+117
+00:06:56,685 --> 00:06:59,400
+Wir scannen zuerst den Datenträger
+
+118
+00:06:59,400 --> 00:07:05,110
+und laden ein Dataset mit Dateinamen
+über die Funktion von Dataset.list_files.
+
+119
+00:07:05,110 --> 00:07:09,570
+Sie unterstützt
+eine Glob-ähnliche Syntax mit Platzhaltern
+
+120
+00:07:09,570 --> 00:07:12,380
+zum Musterabgleich von Dateinamen.
+
+121
+00:07:12,380 --> 00:07:16,785
+Dann verwenden wir 
+TextLineDataset, um diese Dateien zu laden
+
+122
+00:07:16,785 --> 00:07:20,055
+und jeden Dateinamen in ein
+Dataset von Textzeilen umzuwandeln.
+
+123
+00:07:20,055 --> 00:07:23,410
+Wir benutzen "flat map",
+um alle in einem Dataset zusammenzufassen.
+
+124
+00:07:23,410 --> 00:07:27,165
+Dann verwenden wir
+für jede Textzeile "map",
+
+125
+00:07:27,165 --> 00:07:30,765
+um den CSV-Parsing-Algorithmus anzuwenden
+
+126
+00:07:30,765 --> 00:07:33,700
+und ein Dataset mit
+Features und Labels zu erhalten.
+
+127
+00:07:33,700 --> 00:07:38,220
+Warum zwei Zuordnungsfunktionen,
+"map" und "flat map"?
+
+128
+00:07:38,220 --> 00:07:42,530
+Eine ist für 1-zu-1-Transformationen,
+
+129
+00:07:42,530 --> 00:07:45,570
+die andere für 1-zu-n-Transformationen.
+
+130
+00:07:45,570 --> 00:07:50,725
+Das Parsen einer Textzeile
+ist eine 1-zu-1-Transformation,
+
+131
+00:07:50,725 --> 00:07:53,155
+also wenden wir auf sie "map" an.
+
+132
+00:07:53,155 --> 00:07:56,505
+Beim Laden einer Datei
+mit einem Textzeilendataset
+
+133
+00:07:56,505 --> 00:07:59,965
+wird ein Dateiname
+zu einer Sammlung von Textzeilen.
+
+134
+00:07:59,965 --> 00:08:06,190
+Das ist eine 1-zu-n-Transformation,
+daher wird "flat map" angewendet,
+
+135
+00:08:06,190 --> 00:08:10,825
+um alle resultierenden Textzeilen
+in einem Dataset zusammenzufassen.
+
+136
+00:08:10,825 --> 00:08:14,050
+Jetzt wissen Sie,
+wie Sie Datasets verwenden,
+
+137
+00:08:14,050 --> 00:08:17,255
+um geeignete Eingabefunktionen
+für Ihre Modelle zu generieren und
+
+138
+00:08:17,255 --> 00:08:20,980
+sie mit Datasets zu trainieren,
+die zu groß für den Arbeitsspeicher sind.
+
+139
+00:08:20,980 --> 00:08:24,755
+Aber Datasets bietet
+auch eine umfangreiche API
+
+140
+00:08:24,755 --> 00:08:27,235
+zum Bearbeiten und Transformieren
+Ihrer Daten.
+
+141
+00:08:27,235 --> 00:08:29,025
+Nutzen Sie sie.

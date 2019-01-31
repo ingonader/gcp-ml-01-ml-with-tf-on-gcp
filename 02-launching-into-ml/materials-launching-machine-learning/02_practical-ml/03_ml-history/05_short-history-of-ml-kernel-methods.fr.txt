@@ -1,0 +1,67 @@
+Les méthodes du noyau
+sont apparues dans les années 90. Corinna Cortes,
+directrice de la recherche Google, a été l'une des pionnières. Ce domaine permet l'utilisation de classes
+intéressantes de modèles non linéaires, principalement des SVM, ou machines
+à vecteur de support, non linéaires, qui sont des classifieurs à vaste marge
+que vous connaissez peut-être déjà. En substance, une SVM comprend
+une activation non linéaire et une sortie sigmoïde
+pour les vastes marges. Vous savez que la régression logistique
+permet de créer une frontière de décision pour maximiser les probabilités
+de déclassification. Dans le cas d'une frontière
+de décision linéaire, la régression logistique doit avoir
+les points et les classes associées aussi éloignés que possible
+de l'hyperplan, et fournir une probabilité servant
+d'indice de confiance de la prédiction. Vous pouvez créer de nombreux hyperplans entre deux classes
+linéairement séparables, comme ceux présentés en pointillés
+dans ces deux figures. Avec les SVM, deux hyperplans
+parallèles sont ajoutés de chaque côté de l'hyperplan
+de la frontière de décision, et croisent le point de données
+le plus proche de chaque côté. Il s'agit des vecteurs de support. La distance entre les deux vecteurs
+correspond à la marge. À gauche, l'hyperplan vertical
+sépare les deux classes. Cependant, la marge entre
+les deux vecteurs de support est faible. En optant pour un hyperplan différent, tel que celui de droite, vous obtenez une marge
+beaucoup plus vaste. Plus la marge est vaste, plus la frontière
+de décision est généralisable, ce qui vous permet de mieux
+exploiter vos données. Par conséquent, les SVM cherchent
+à maximiser la marge entre les deux vecteurs de support
+à l'aide d'une fonction de marge maximale comparés à la minimisation par régression
+logistique de l'entropie croisée. Notre exemple ne comporte que
+deux classes, on a donc un problème
+de classification binaire. Le label 1 est attribué
+à l'une des classes, et le label -1 est attribué à l'autre. S'il y a plus de deux classes, utilisez une méthode "one-vs-all",
+ou "une contre toutes", et choisissez la meilleure
+des classifications binaires obtenues. Que faire si les données ne sont pas
+linéairement séparables en deux classes ? Vous pouvez appliquer une transformation
+de noyau pour transposer les données de votre espace vectoriel d'entrée
+dans un espace où elles peuvent être séparées
+linéairement, comme dans ce diagramme. Grâce au développement des réseaux
+de neurones profonds et à beaucoup de travail, la représentation
+brute des données est transformée en un espace vectoriel via une fonction
+de projection créée par l'utilisateur. Mais, avec les méthodes de noyaux, l'utilisateur définit uniquement le noyau, la fonction de similarité entre les points
+dans la représentation brute des données. Une transformation de noyau est semblable aux fonctions d'activation
+d'un réseau neuronal qui associent l'entrée à la fonction
+pour transformer l'espace. Le nombre de neurones
+dans la couche contrôle la dimension. Si vous avez deux entrées
+et trois neurones, vous transformez l'espace 2D d'entrée
+en espace 3D. Il existe de nombreux types de noyaux,
+les plus basiques étant le noyau linéaire, le noyau polynomial
+et le noyau gaussien radial. Quand le classifieur
+binaire utilise le noyau, il calcule typiquement
+certaines similarités attendues. Quand utiliser une SVM
+pour la discrimination ? Les SVM à noyau offrent une solution
+parcimonieuse et donc plus d'évolutivité. Elles fonctionnent mieux
+si le nombre de dimensions est élevé, et quand les prédicteurs prédisent
+la réponse avec quasi-certitude. Les SVM à noyaux transposent l'entrée en
+espace d'attributs à dimension supérieure. Dans les réseaux de neurones, qu'est-ce
+qui permet aussi cette transposition ? La bonne réponse est : "Plus de neurones par couche". Le nombre de neurones par couche détermine le nombre
+de dimensions de l'espace vectoriel. Si j'ai trois attributs d'entrée, j'ai un espace vectoriel R3. Même si j'ai des centaines de couches
+avec trois neurones chacune, j'ai toujours un espace vectoriel R3,
+et je ne change que la base. Par exemple, avec une SVM
+à noyau gaussien RBF, l'espace d'entrée est transposé
+en espace à dimension infinie. La fonction d'activation change
+la base de l'espace vectoriel, mais n'ajoute ou ne supprime
+aucune dimension. Ce sont des sortes de rotation,
+d'étirement ou de compression. Les points ne sont pas linaires, mais l'espace vectoriel reste le même. La fonction de perte est l'objectif :
+vous cherchez à minimiser. Ce scalaire met à jour avec son gradient
+les pondérations de paramètres du modèle. Elle change juste le niveau de rotation,
+d'étirement et de compression, pas le nombre de dimensions.

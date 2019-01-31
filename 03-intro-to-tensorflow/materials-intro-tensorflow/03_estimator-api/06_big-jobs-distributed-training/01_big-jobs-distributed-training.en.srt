@@ -1,0 +1,451 @@
+1
+00:00:00,000 --> 00:00:02,880
+Now, we'll discuss what to do about
+
+2
+00:00:02,880 --> 00:00:06,210
+large ML jobs and the benefits of distributed training.
+
+3
+00:00:06,210 --> 00:00:09,300
+We can check off the first item in our checklist of
+
+4
+00:00:09,300 --> 00:00:12,150
+annoying problems that the real world models have,
+
+5
+00:00:12,150 --> 00:00:14,765
+and move onto the second one, speed.
+
+6
+00:00:14,765 --> 00:00:19,970
+Yes. Real models train for ages, hours, days, weeks.
+
+7
+00:00:19,970 --> 00:00:22,220
+When it gets to multiple weeks of training,
+
+8
+00:00:22,220 --> 00:00:24,145
+at Google we actually give up.
+
+9
+00:00:24,145 --> 00:00:28,125
+Optimizing a model in these conditions, is not workable.
+
+10
+00:00:28,125 --> 00:00:32,700
+You have to distribute it on a cluster to make it faster.
+
+11
+00:00:32,700 --> 00:00:35,050
+Going from one machine to many,
+
+12
+00:00:35,050 --> 00:00:37,985
+might sound complicated, but as we will see,
+
+13
+00:00:37,985 --> 00:00:42,275
+with the estimator API and ML engine managing the cluster automatically,
+
+14
+00:00:42,275 --> 00:00:44,995
+you get distribution out of the box.
+
+15
+00:00:44,995 --> 00:00:51,540
+The function that implements distributed training is called estimator.train and evaluate.
+
+16
+00:00:51,540 --> 00:00:55,050
+The name of the function also highlights that evaluating
+
+17
+00:00:55,050 --> 00:00:58,695
+and monitoring a large training job will be important.
+
+18
+00:00:58,695 --> 00:01:00,305
+We will see that later.
+
+19
+00:01:00,305 --> 00:01:03,045
+Let's focus for now on distribution.
+
+20
+00:01:03,045 --> 00:01:05,850
+The traditional distribution model for
+
+21
+00:01:05,850 --> 00:01:09,285
+training neural networks is called data parallelism.
+
+22
+00:01:09,285 --> 00:01:13,170
+Your model is replicated on multiple workers.
+
+23
+00:01:13,170 --> 00:01:15,035
+At each training steps,
+
+24
+00:01:15,035 --> 00:01:17,305
+these load a batch of training data,
+
+25
+00:01:17,305 --> 00:01:19,500
+hopefully a different one each,
+
+26
+00:01:19,500 --> 00:01:25,590
+computer gradients and send them to one or several central parameter servers,
+
+27
+00:01:25,590 --> 00:01:29,535
+which hold all the weights and biases of the neural network model.
+
+28
+00:01:29,535 --> 00:01:31,830
+The gradients are applied as they arrive.
+
+29
+00:01:31,830 --> 00:01:33,615
+Change the weights and biases,
+
+30
+00:01:33,615 --> 00:01:39,240
+and the updated model is then sent back to workers for the next step of training.
+
+31
+00:01:39,240 --> 00:01:42,480
+There is a lot of work to do to make this happen.
+
+32
+00:01:42,480 --> 00:01:44,210
+Workers must be started,
+
+33
+00:01:44,210 --> 00:01:45,870
+then receive their copy of the model,
+
+34
+00:01:45,870 --> 00:01:47,220
+data flows between workers,
+
+35
+00:01:47,220 --> 00:01:49,150
+and parameter servers must be established,
+
+36
+00:01:49,150 --> 00:01:51,060
+the system must also handle exceptions,
+
+37
+00:01:51,060 --> 00:01:54,210
+and failures and restart fieldworkers from where they
+
+38
+00:01:54,210 --> 00:01:57,870
+left off and if an incident occurs and,
+
+39
+00:01:57,870 --> 00:02:00,545
+check pointing also becomes a bit more complicated,
+
+40
+00:02:00,545 --> 00:02:02,240
+when all this is going on.
+
+41
+00:02:02,240 --> 00:02:07,425
+Fortunately for you, distribution will be as simple as writing a config file.
+
+42
+00:02:07,425 --> 00:02:11,890
+All the boilerplate code is already written in the estimator API,
+
+43
+00:02:11,890 --> 00:02:15,775
+and the estimator.train and evaluate function.
+
+44
+00:02:15,775 --> 00:02:17,805
+You will need to do four things.
+
+45
+00:02:17,805 --> 00:02:21,250
+Choose your estimator, provide a run configuration,
+
+46
+00:02:21,250 --> 00:02:26,165
+and provide training, and test data through a TrainSpec and an EvalSpec.
+
+47
+00:02:26,165 --> 00:02:27,670
+Once that is set up,
+
+48
+00:02:27,670 --> 00:02:29,515
+call train and evaluate.
+
+49
+00:02:29,515 --> 00:02:32,270
+And if you are running on ML engine,
+
+50
+00:02:32,270 --> 00:02:34,585
+and have specified the cluster size,
+
+51
+00:02:34,585 --> 00:02:37,050
+distributed training will kick in.
+
+52
+00:02:37,050 --> 00:02:38,895
+Let's have a closer look.
+
+53
+00:02:38,895 --> 00:02:40,735
+The run config first.
+
+54
+00:02:40,735 --> 00:02:44,205
+This is where you specify the output directory for checkpoints.
+
+55
+00:02:44,205 --> 00:02:46,440
+You can still set it directly,
+
+56
+00:02:46,440 --> 00:02:48,490
+when instantiating the estimator,
+
+57
+00:02:48,490 --> 00:02:50,515
+but it's cleaner to have it here,
+
+58
+00:02:50,515 --> 00:02:52,935
+along with other checkpoint settings.
+
+59
+00:02:52,935 --> 00:02:58,520
+Indeed, this is also where you set the frequency at which you want to see checkpoints,
+
+60
+00:02:58,520 --> 00:03:02,015
+and also the frequency of your trading logs or summaries.
+
+61
+00:03:02,015 --> 00:03:04,005
+We will come to that later.
+
+62
+00:03:04,005 --> 00:03:09,690
+The TrainSpec, is where you pass in your data input function for training data.
+
+63
+00:03:09,690 --> 00:03:13,080
+Please use the data set API to set it up properly.
+
+64
+00:03:13,080 --> 00:03:17,380
+Optionally, you can limit the training to a given number of steps.
+
+65
+00:03:17,380 --> 00:03:21,765
+By default, training proceeds until the input data set is exhausted.
+
+66
+00:03:21,765 --> 00:03:26,220
+Which might happen after multiple e-bugs if that's how you set it up.
+
+67
+00:03:26,220 --> 00:03:30,990
+The EvalSpec, is where you plug in your test data set.
+
+68
+00:03:30,990 --> 00:03:34,420
+Yes, if you want to see how well your model is doing,
+
+69
+00:03:34,420 --> 00:03:39,685
+you have to measure that on a data set that it has not seen during training.
+
+70
+00:03:39,685 --> 00:03:43,960
+Usually a subset of your data that you set aside for testing.
+
+71
+00:03:43,960 --> 00:03:47,270
+The test data comes in through an eval input function,
+
+72
+00:03:47,270 --> 00:03:50,725
+and again, please use the data set API to get it.
+
+73
+00:03:50,725 --> 00:03:55,964
+You also get to specify on how many batches of test data you want to evaluate,
+
+74
+00:03:55,964 --> 00:03:59,180
+and how frequently evaluations happen.
+
+75
+00:03:59,180 --> 00:04:04,415
+One implementation detail to bear in mind, in distributed training,
+
+76
+00:04:04,415 --> 00:04:07,625
+evaluation happens on a dedicated server,
+
+77
+00:04:07,625 --> 00:04:12,785
+which responds the model from the latest checkpoint and then runs eval.
+
+78
+00:04:12,785 --> 00:04:16,555
+So, you cannot get evaluations more frequently
+
+79
+00:04:16,555 --> 00:04:20,840
+than the check points frequency you entered in your run config.
+
+80
+00:04:20,840 --> 00:04:23,470
+You can, however, get them less frequently,
+
+81
+00:04:23,470 --> 00:04:27,530
+by adding the throttling parameter in the EvalSpec.
+
+82
+00:04:27,530 --> 00:04:32,445
+You notice that the EvalSpec also has a parameter for exporters.
+
+83
+00:04:32,445 --> 00:04:36,990
+They control how a model is exported for deployment to production,
+
+84
+00:04:36,990 --> 00:04:39,510
+and we will cover them in the next chapter.
+
+85
+00:04:39,510 --> 00:04:41,845
+Here is what we have so far.
+
+86
+00:04:41,845 --> 00:04:43,945
+You instantiate an estimator,
+
+87
+00:04:43,945 --> 00:04:48,000
+give it a run config where you can set how often and in
+
+88
+00:04:48,000 --> 00:04:51,960
+which folder are you want to write checkpoints and other monitoring data,
+
+89
+00:04:51,960 --> 00:04:56,735
+you then set up a training and an evaluation data set,
+
+90
+00:04:56,735 --> 00:05:03,390
+which you pipe in through the data input functions in TrainSpec and EvalSpec,
+
+91
+00:05:03,390 --> 00:05:06,775
+you are then ready to train and evaluate.
+
+92
+00:05:06,775 --> 00:05:09,180
+I want to say a couple of words about
+
+93
+00:05:09,180 --> 00:05:12,260
+an important practical consideration, data shuffling.
+
+94
+00:05:12,260 --> 00:05:17,760
+The stochastic gradient descent algorithm that neural networks use for training,
+
+95
+00:05:17,760 --> 00:05:20,435
+only works on well-shuffled data.
+
+96
+00:05:20,435 --> 00:05:23,790
+The data set API has a shuffle function that can help there,
+
+97
+00:05:23,790 --> 00:05:26,280
+but some people might not use it if they think
+
+98
+00:05:26,280 --> 00:05:29,450
+their data set is already well shuffled on disk.
+
+99
+00:05:29,450 --> 00:05:32,400
+With distributed training, beware.
+
+100
+00:05:32,400 --> 00:05:35,490
+Even with a well-shuffled data set on disk,
+
+101
+00:05:35,490 --> 00:05:39,660
+if all your workers are loading straight from this data set,
+
+102
+00:05:39,660 --> 00:05:42,005
+they will be seeing the same batch of data,
+
+103
+00:05:42,005 --> 00:05:45,245
+at the same time, and produce the same gradients.
+
+104
+00:05:45,245 --> 00:05:48,360
+The benefits of distributed training are wasted.
+
+105
+00:05:48,360 --> 00:05:52,350
+Your multiple workers all do the exact same things.
+
+106
+00:05:52,350 --> 00:05:54,604
+With data set that shuffle,
+
+107
+00:05:54,604 --> 00:05:56,610
+the shuffling happens independently on
+
+108
+00:05:56,610 --> 00:05:59,870
+each worker using a different random seed, so please use it.
+
+109
+00:05:59,870 --> 00:06:03,375
+Even if your data comes already shuffled on disk.
+
+110
+00:06:03,375 --> 00:06:05,895
+And if you want to be extra sure,
+
+111
+00:06:05,895 --> 00:06:10,290
+you can also shuffle the list of filenames in your shorter data set.
+
+112
+00:06:10,290 --> 00:06:14,160
+List files, returns a data set of filenames,
+
+113
+00:06:14,160 --> 00:06:17,070
+so just call shuffle lines.

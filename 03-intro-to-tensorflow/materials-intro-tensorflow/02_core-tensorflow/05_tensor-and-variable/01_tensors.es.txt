@@ -1,0 +1,38 @@
+Ya hablamos sobre lo que es TensorFlow y sobre la jerarquía
+de API de TensorFlow. En la lección anterior, hablamos
+sobre el grafo acíclico dirigido o DAG y cómo se ejecuta en una sesión. Dijimos que un DAG está compuesto
+de tensores y operaciones en ellos. Ahora, veamos qué son
+los tensores en más detalle. Como ya dijimos, un tensor
+es un arreglo de datos de n dimensiones. Cuando se crea un tensor,
+por lo general se especifica su forma. A veces no se especifica
+la forma por completo. Por ejemplo, el primer elemento
+de la forma puede ser variable pero ignoremos
+ese caso especial por ahora. Aquí, estoy creando tf.constant(3). Este es un tensor de rango 0. Es solo un número, un escalar. La forma, cuando vemos la salida
+del depurador del tensor será (). Su rango es 0. Por otro lado ¿qué sucede si paso
+la lista [3, 5, 7] a tf.constant? Ahora tenemos un tensor
+de una dimensión, un vector. Y podemos seguir. Aquí, paso un arreglo 2D con [3, 5, 7] en la primera fila
+y [4, 6, 8] en la segunda. La forma del tensor resultante es (2, 3) Tiene 2 filas y 3 columnas. El rango es 2. Una matriz puede pensarse
+como una pila de tensores 1D. El primer tensor es el vector [3, 5, 7] y el segundo tensor 1D
+que se apila es el vector [4, 6, 8]. De manera similar,
+podemos crear una matriz 3D si apilamos dos matrices 2D,
+una encima de la otra. Aquí, apilo la matriz 3, 5, 7, etcétera sobre la matriz 1, 2, 3… Puesto que apilé dos matrices de 2 x 3 la forma resultante del tensor es (2, 2, 3). Por supuesto,
+puedo hacer el apilado en el código en lugar de contar todos esos paréntesis. Aquí, x1 es una constante y está construida
+de una lista simple [2, 3, 4]. Eso la hace un vector de longitud 3. x2 se construye al apilar x1 sobre x1 lo que la convierte
+en una matriz de 2 x 3. x3 se construye al apilar cuatro x2 una sobre la otra. Ya que cada x2 era una matriz de 2 x 3 eso hace de x3 un tensor 3D cuya forma es 4 x 2 x 3. x4 se construye al apilar x3 sobre x3 lo que hace dos de esos tensores de 4 x 2 x 3 o un tensor 4D que tiene la forma 2, 4, 2, 3. Puede apilar tensores unos sobre otros para crear tensores de más dimensiones. También puede usar slice en un tensor para extraer tensores
+de menos dimensiones. Aquí, ¿cuál es la forma de x? Es 2 x 3. 2 filas y 3 columnas. Ahora, veamos el código de y. Está dividiendo x. Los dos puntos indican
+que estamos obteniendo todas las filas y el 1 indica que estamos
+obteniendo solo la columna 1. Ya que Python indexa con base en 0,
+es en realidad la segunda columna: 0, 1. Cuando evaluamos y,
+obtenemos el valor de la segunda columna para todas las filas. Por eso se muestra [5, 6]. Cuestionario rápido. ¿Qué haría x[1, :]? ¿Y x[1, 0:2]? ¿Qué haría? ¿Respuestas? Cuando se usa x[1, : ] se obtiene la segunda fila. Recuerde: indexación en 0,
+así que 1 es la segunda fila. Y se obtienen todas las columnas. Entonces, obtendremos [4, 6, 8]. ¿Qué columnas obtendrá 0:2? Esto es muy similar
+a la función xrange en Python. Quiere decir que empieza en 0
+y sube 2, pero no incluye 2. Eso quiere decir, 0 y 1. Esto quiere decir que obtendrá
+ambas filas, entonces es lo mismo. Igual obtendremos
+[4, 6, 8] en estos datos. Una vez que tenga los datos en el tensor puede tomarlos
+y cambiar la forma del tensor. Entonces, x es un tensor 2D. ¿Qué forma tiene? Correcto. Es 2 x 3. ¿Qué pasa si cambio la forma a [3, 2]? Quiero los seis valores de x pero quiero que estén
+en 3 filas y 2 columnas. Básicamente, Python leerá
+el tensor de entrada, fila por fila y colocará los números
+en el tensor de salida. Tomará los primeros dos valores
+y los colocará en la primera fila por lo que obtenemos 3 y 5. Los dos valores siguientes,
+7 y 4, irán a la segunda fila y los dos últimos, 6 y 8, a la tercera. Eso es lo que hace reshape. Podemos usar reshape y slice. Aquí, cambio la forma en 3 x 2, como antes y luego lo divido por eso obtengo solo la segunda fila
+y todas las columnas. Y por eso obtengo [7, 4].

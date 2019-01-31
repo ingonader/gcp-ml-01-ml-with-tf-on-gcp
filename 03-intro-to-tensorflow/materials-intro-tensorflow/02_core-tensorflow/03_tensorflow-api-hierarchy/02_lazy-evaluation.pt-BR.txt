@@ -1,0 +1,41 @@
+Então, vamos ver o código no slide. À primeira vista, se parece com NumPy. Você quer adicionar dois tensores, a e b. Então, você escreve tf.add(a, b). Ele retorna um tensor c. Ao contrário do código típico do Python, executar o tf.add não o executa, apenas cria o DAG. No DAG, ou gráfico acíclico direcionado, a, b e c são tensores
+e add é uma operação. Para executar este código, para executar o DAG, você precisa executá-lo como parte
+do que é chamado de sessão. Então, você diz que quer um valor de c
+e pede à sessão: "Sessão, avalie c para mim". Então, é isso que executa o DAG. Em seguida, você recupera
+uma matriz numérica tradicional no Python que contém os valores para c. A programação do TensorFlow
+envolve a programação de um DAG. Então, há dois passos. Primeiro passo, crie o gráfico. Segundo, execute o gráfico. A definição do gráfico é separada do loop de treinamento porque
+esse é um modelo de avaliação lenta. Ele minimiza o Python para as trocas de contexto de C++ e permite
+que o cálculo seja muito eficiente. Conceitualmente,
+é como escrever um programa, compilá-lo e, em seguida,
+executá-lo em alguns dados. Mas não leve essa analogia longe demais. Não há fase de compilação explícita aqui. Note que c, depois de chamar tf.add, não é o valor real. Você tem que avaliar c no contexto
+de uma sessão do TensorFlow para conseguir uma matriz de valores
+NumPy, numpy_c. Então, para reiterar,
+o TensorFlow faz uma avaliação lenta. Você escreve o DAG e o executa no contexto
+de uma sessão para ter resultados. Agora, há um modo diferente
+em que você pode executar o TensorFlow. Chama-se tf.eager e, nele, a avaliação é imediata e não é lenta. Mas o modo imediato geralmente
+não é usado em programas de produção. É usado normalmente
+apenas para desenvolvimento. Vamos ver o tf.eager um pouco mais tarde
+neste curso, mas, na maior parte, vamos nos concentrar
+no paradigma da avaliação lenta. E quase todo o código que
+escrevemos e executamos em produção será em modo de avaliação lenta. Em NumPy, em que a maior parte
+do software numérico Python está escrita, a e b são matrizes NumPy. O NumPy consegue a velocidade
+sendo implementado em c, então, quando você chama np.add, esse add é feito em c. Mas isso é feito quando a CPU
+executa o código np.add(a, b) e a matriz NumPy c
+é preenchida com as somas. Então, quando você imprime c, recebe 8, 2 e 10. 8 é a soma de 5 e 3, 3 e -1 que você soma
+para conseguir 2 etc. O ponto é que np.add
+é avaliado imediatamente. Ao contrário do NumPy, no TensorFlow,
+c não é o valor real. Em vez disso, c é um tensor,
+e você precisa avaliá-lo no contexto de uma sessão do TensorFlow para conseguir
+uma matriz NumPy de valores, o resultado. Portanto, quando a CPU, a GPU ou qualquer
+outro hardware avalia tf.add(a, b), um tensor é criado
+no gráfico acíclico direcionado, ou DAG. Mas a adição em si não é executada
+até que session.run seja chamada. Então, se chamamos print c, o que é impresso na primeira caixa é
+a saída de depuração da classe do tensor. Ela inclui um nome exclusivo
+atribuído pelo sistema para o nó no DAG, neste caso, add_7,
+e a forma e o tipo de dados do valor que serão exibidos
+quando o DAG for executado. Depois que a sessão é executada
+e c é avaliado no contexto de uma sessão, podemos imprimir o resultado
+e recebemos 8, 2 e 10, da mesma forma
+que com o NumPy. Então, há dois estágios, um de criação e um de execução,
+mas por quê? Por que o TensorFlow
+faz uma avaliação lenta? Essa pergunta fica para a próxima aula.

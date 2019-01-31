@@ -1,0 +1,198 @@
+1
+00:00:00,000 --> 00:00:03,420
+Vamos para os dados reais,
+e não as constantes que
+
+2
+00:00:03,420 --> 00:00:06,705
+usamos anteriormente para
+ilustrar a API Estimator.
+
+3
+00:00:06,705 --> 00:00:12,780
+Se os dados cabem em uma memória
+na forma de matrizes numpy ou Pandas,
+
+4
+00:00:12,780 --> 00:00:17,760
+a API Estimator tem funções fáceis de
+conveniência para inseri-los no modelo,
+
+5
+00:00:17,760 --> 00:00:24,110
+chamadas estimator.inputs.numpy_input_fn
+e estimator.inputs.Pandas_input_fn.
+
+6
+00:00:24,110 --> 00:00:30,270
+Você especifica o dicionário de atributos
+como x, usando os mesmos nomes usados
+
+7
+00:00:30,270 --> 00:00:34,415
+​​para definir as colunas de
+atributo, e os rótulos como y.
+
+8
+00:00:34,415 --> 00:00:36,235
+Ao ler do Pandas,
+
+9
+00:00:36,235 --> 00:00:38,430
+esses nomes de atributos
+não são necessários.
+
+10
+00:00:38,430 --> 00:00:41,160
+A API selecionará as colunas corretas do
+
+11
+00:00:41,160 --> 00:00:46,155
+frame de dados do Pandas com base nos
+nomes usados ​​nas colunas de atributo.
+
+12
+00:00:46,155 --> 00:00:48,690
+Essas funções de entrada implementam
+
+13
+00:00:48,690 --> 00:00:52,485
+as principais funcionalidades necessárias
+ao treinar modelos de redes neurais.
+
+14
+00:00:52,485 --> 00:00:56,730
+Geralmente, o treinamento funciona
+melhor quando uma etapa de treinamento é
+
+15
+00:00:56,730 --> 00:01:01,230
+executada no chamado minilote de
+dados de entrada por vez,
+
+16
+00:01:01,230 --> 00:01:05,285
+não um único item de dados e nem
+todo o conjunto de dados.
+
+17
+00:01:05,285 --> 00:01:08,080
+Você pode especificar o
+tamanho do lote aqui.
+
+18
+00:01:08,080 --> 00:01:11,320
+E também dizer quantas
+vezes quer repetir o
+
+19
+00:01:11,320 --> 00:01:14,840
+conjunto de dados durante o treinamento,
+que é o número de épocas.
+
+20
+00:01:14,840 --> 00:01:20,100
+E, por fim, o rigor na organização dos
+dados de treinamento é importante.
+
+21
+00:01:20,100 --> 00:01:23,245
+Você pode pedir à API Estimator
+para fazer isso.
+
+22
+00:01:23,245 --> 00:01:26,345
+E, para evitar a replicação do conjunto
+de dados na memória,
+
+23
+00:01:26,345 --> 00:01:30,045
+ao fazer isso, você pode especificar o
+tamanho da fila aleatória.
+
+24
+00:01:30,045 --> 00:01:34,560
+Por padrão, o treino será executado
+até que os dados de treinamento sejam
+
+25
+00:01:34,560 --> 00:01:41,130
+esgotados ou esgotados n vezes, se você
+especificar n épocas na função de entrada.
+
+26
+00:01:41,130 --> 00:01:44,115
+Você também pode modificar isso
+
+27
+00:01:44,115 --> 00:01:47,775
+com um número explícito de etapas
+ao chamar a função de treino.
+
+28
+00:01:47,775 --> 00:01:50,610
+Há duas variantes para a
+configuração da etapa.
+
+29
+00:01:50,610 --> 00:01:54,180
+Etapas equivalentes a 1.000 executarão
+
+30
+00:01:54,180 --> 00:01:58,965
+1.000 etapas de treinamento adicionais
+do último ponto de verificação.
+
+31
+00:01:58,965 --> 00:02:03,210
+Uma etapa aqui corresponde a um lote
+de dados de entrada.
+
+32
+00:02:03,210 --> 00:02:09,315
+Etapas máximas iguais a 1.000 reiniciam
+dos pontos de verificação mais recentes,
+
+33
+00:02:09,315 --> 00:02:12,255
+leem a contagem de etapas
+alcançada na execução anterior
+
+34
+00:02:12,255 --> 00:02:15,765
+e continuam até que a contagem
+atinja o máximo de etapas.
+
+35
+00:02:15,765 --> 00:02:20,085
+Isso pode não fazer nada se o ponto
+de verificação já está lá.
+
+36
+00:02:20,085 --> 00:02:24,770
+Aqui está o código inteiro com
+colunas de atributo, um modelo,
+
+37
+00:02:24,770 --> 00:02:30,870
+uma função de entrada que lê dados de um
+frame do Pandas e o próprio treinamento.
+
+38
+00:02:30,870 --> 00:02:33,090
+Você gostaria de adicionar
+um novo atributo?
+
+39
+00:02:33,090 --> 00:02:35,745
+Como o número de quartos da casa.
+
+40
+00:02:35,745 --> 00:02:39,105
+Você pode adicioná-lo à lista de colunas
+de atributo e verificar se ele
+
+41
+00:02:39,105 --> 00:02:42,770
+está presente com o mesmo nome
+no frame de dados do Pandas.

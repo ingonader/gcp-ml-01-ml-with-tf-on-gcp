@@ -1,0 +1,45 @@
+Wir haben erörtert, was Tensor Flow ist, und über die Hierarchie
+der Tensor Flow API gesprochen. In der vorangegangenen Lektion haben wir
+den gerichteten azyklischen Graphen (DAG) und seine Ausführung in
+einer Sitzung besprochen. Ein DAG besteht aus Tensoren
+und Operationen auf diesen Tensoren. Sehen wir uns Tensoren jetzt genauer an. Ein Tensor ist ein
+n-dimensionaler Datenarray. Wenn man einen Tensor erstellt,
+legt man normalerweise dessen Form fest. Gelegentlich legt man die Form
+allerdings nicht vollständig fest. Das erste Element der Form
+könnte beispielsweise variabel sein, aber diesen Spezialfall
+lassen wir jetzt außer Acht. Hier erstelle ich einen tf.constant(3). Das ist ein Tensor mit dem Rang 0. Es ist nur eine Zahl, ein Skalar. Wenn man sich den Tensor in der Debug-
+Ausgabe ansieht, ist die Form einfach (). Sein Rang beträgt 0. Was aber, wenn ich die Liste
+3, 5, 7 an tf.constant übergebe? Jetzt haben wir einen
+eindimensionalen Tensor. Wir haben einen Vektor. Hier übergebe ich einen
+zweidimensionalen Array, 3, 5, 7 in der ersten Zeile
+und 4, 6, 8 in der zweiten. Die Form des Ergebnistensors ist 2, 3: 2 Zeilen, 3 Spalten, der Rang beträgt 2. Eine Matrix kann einfach als Stapel
+von 1-D-Tensoren betrachtet werden. Der erste Tensor ist ein Vektor 3, 5, 7 und der zweite gestapelte 1-D-Tensor ist ein Vektor 4, 6, 8. Ebenso können wir durch Stapeln von
+2-D-Matrizen eine 3-D-Matrix erstellen, eine über der anderen. Hier stapele ich die Matrix 3, 5, 7 usw. über die Matrix 1, 2, 3. Da ich zwei 2-mal-3-
+Matrizen gestapelt habe, hat der Ergebnistensor die Form 2, 2, 3. Natürlich kann ich das Stapeln
+auch im Code durchführen lassen, statt all diese Klammern zu zählen. x1 ist hier eine Konstante, konstruiert aus
+einer einfachen Liste 2, 3, 4. Sie ist also ein Vektor der Länge 3. x2 wird durch Stapeln
+von x1 auf x1 konstruiert, dies ist also eine 2-mal-3-Matrix. x3 wird durch 4-maliges Stapeln
+von x2 übereinander konstruiert. Und da jedes x2 eine 2-mal-3-Matrix war, wird x3 ein 3-D-Tensor
+der Form 4 mal 2 mal 3. x4 wird durch Stapeln
+von x3 auf x3 konstruiert, es besteht also aus zwei
+dieser 4-mal-2-mal-3-Tensoren und ist damit ein
+4-D-Tensor der Form 2, 4, 2, 3. Man kann also Tensoren übereinander
+stapeln und enthält dadurch Tensoren höherer Dimensionen. Man kann Tensoren auch zerlegen und Tensoren kleinerer 
+Dimensionen extrahieren. Welche Form hat x hier also? Die Form 2 mal 3. 2 Zeilen, 3 Spalten. Jetzt sehen wir uns den Code für y an. x wird hier zerlegt. Am Doppelpunkt erkennt man, dass wir alle Zeilen abrufen, und die 1 zeigt an,
+dass wir nur Spalte 1 abrufen. Python-Indexe beginnen bei 0,
+Spalte 1 ist also die zweite Spalte. Für y bekommen wir für alle Zeilen
+also den Wert der zweiten Spalte. Und deshalb wird hier 5, 6 ausgegeben. Ein kleines Quiz: Was würde der Ausdruck x[1, :] ergeben? Und was würde x[1, 0:2] ergeben? Die Antworten? Durch x[1, : ] erhält 
+man die zweite Zeile. Wie gesagt, nullbasiert. 1 bedeutet also die zweite Zeile. Und man bekommt alle Spalten. Wir bekommen also [4, 6, 8]. Welche Spalten werden
+durch 0:2 extrahiert? Das funktioniert ganz ähnlich
+wie die x-Range-Funktion in Python. Es bedeutet, man beginnt bei 0 und
+geht 2 hoch, aber nicht einschließlich 2. Es bedeutet also 0 und 1. Also bekommt man hier beide Zeilen, und damit eigentlich dasselbe. Wir bekommen bei
+diesen Daten weiterhin 4, 6, 8. Sobald man die Daten in einem Tensor hat, kann man all diese Daten nehmen und den Tensor umformen. x ist ein 2-D-Tensor, welche Form hat er? Genau, 2 mal 3. Wenn ich ihn in 3, 2 
+umforme, was passiert dann? Ich möchte Folgendes erreichen:
+ich möchte die sechs Werte aus x haben, aber in 3 Zeilen und 2 Spalten. Python liest den
+Eingangstensor also zeilenweise und schreibt die Zahlen
+in den Ausgangstensor. Die ersten beiden Werte würden
+also in die erste Zeile geschrieben. Damit bekommen wir 3 und 5. Die nächsten beiden Werte,
+7 und 4, kommen in die zweite Zeile, und die letzten beiden Werte,
+6 und 8, kommen in die dritte Zeile. Das geschieht bei der Umformung. Wir können umformen
+und wir können zerlegen. Hier forme ich ihn wieder in 3 mal 2 um und dann zerlege ich ihn, sodass ich nur
+die zweite Zeile und alle Spalten bekomme. Und deshalb bekomme ich 7, 4.

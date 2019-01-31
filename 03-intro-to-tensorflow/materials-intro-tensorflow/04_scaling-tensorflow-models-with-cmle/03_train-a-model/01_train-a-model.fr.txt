@@ -1,0 +1,41 @@
+Voyons maintenant comment fonctionne
+l'entraînement d'un modèle dans CMLE. Avant de commencer l'entraînement,
+veillez à bien rassembler et préparer vos données d'entraînement (caractéristiques de nettoyage,
+de tri, extraites et prétraitées), et à mettre ces données d'entraînement
+dans une source en ligne accessible par CMLE,
+telle que Cloud Storage. Pour envoyer
+des tâches d'entraînement à CMLE, il est fréquent de diviser la logique
+entre des fichiers task.py et model.py. Le fichier task.py est le point d'entrée
+pour votre code que CMLE démarrera dans des détails au niveau des tâches,
+comme le traitement des arguments de ligne de commande, la durée
+d'exécution, l'emplacement des sorties, l'interaction avec le réglage
+des hyperparamètres, etc. Pour effectuer le ML, le fichier
+task.py appellera le fichier model.py. Ce dernier se concentre sur les tâches
+de ML de base comme la récupération des données, la définition
+des caractéristiques, la configuration de la signature de service et bien sûr,
+la boucle d'entraînement et d'évaluation. Le partage de code entre des ordinateurs
+implique toujours un type d'empaquetage. Idem pour l'envoi d'un modèle à CMLE
+pour l'entraînement. TensorFlow, et notamment Python, nécessitent des structures d'empaquetage
+très spécifiques, mais normalisées, présentées ici. Il est important de faire un test local
+pour vérifier que votre empaquetage fonctionne comme prévu. Essayez de l'appeler directement
+avec python -m pour vérifier que toutes les importations
+sont correctes. Nous allons ensuite utiliser Google Cloud
+pour tester notre code en local. Cela permet de vérifier rapidement
+la structure de notre package. Lorsque c'est bon, nous pouvons soumettre
+une tâche d'entraînement pour faire évoluer la tâche
+dans le cloud. Les principales lignes de commande sont
+package-path, pour spécifier l'emplacement du code, module-name,
+pour spécifier les fichiers à exécuter dans le package, et scale-tier,
+pour spécifier le type de matériel sur lequel vous voulez
+que le code soit exécuté. Vous pouvez spécifier scale-tier=BASIC
+pour l'exécuter sur une machine, scale-tier=STANDARD
+pour l'exécuter sur un petit cluster, ou scale-tier=BASIC_GPU
+pour l'exécuter sur un seul GPU. Et pour l'exécuter sur un TPU,
+scale-tier=BASIC_TPU. Vous pouvez aussi spécifier
+des niveaux personnalisés et définir chaque type de machine. Les niveaux d'évolutivité
+ne cessent de se développer. Consultez la documentation de CMLE
+pour connaître les options disponibles. Un petit conseil : pour obtenir
+les meilleures performances dans vos tâches de ML, veillez
+à sélectionner un bucket régional dans Google Cloud Storage. Un bucket multirégional,
+plus adapté à la diffusion Web qu'à l'entraînement ML,
+est sélectionné par défaut.

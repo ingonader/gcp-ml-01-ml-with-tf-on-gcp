@@ -1,0 +1,70 @@
+We trained our model on a large dataset,
+using distributed training, our TensorBoard curves all check out,
+it's time to deploy. That is easy. A couple of clicks in the ML engine cloud
+console, and our train model will be live behind an autoscaled, fully managed,
+REST API, ready to accept JSON traffic. But wait, you said JSON? The model doesn't know how to read JSON. We have input functions for
+training and test data but not for live JSON data
+coming to our REST endpoint. It's time to add one. Remember the exporter's parameter we
+mentioned in the evolved spec previously. That is what defines a complete model. Ready for deployment with not only a
+checkpoint on good trained parameters, but also an extra input function
+that will map between the JSON received by the REST API and
+the features as expected by the model. This one is called
+the serving input function. So, here's the key point. Serving and training time inputs
+are often very different. To understand what is going on,
+let us peek under the hood again. In TensorFlow, everything is a graph. And here's our model graph produced
+when we instantiated our model. It is essentially the same at training and
+inference time, even if a bit simpler for inference, it takes in features and
+produces predictions. Let's connect a data source to its inputs. At training time this is done
+through the training input function. We use the data as an API there to make
+an input node that could progressively read from CSV files and send batches
+of training data into the model. We will use a similar pattern for
+our deployed model. The serving input function lets us add
+a set of TensorFlow transformations between the JSON our REST API receives and
+the features expected by our model. We don't need to parse the JSON, that is
+taken care of automatically by ML engine, but any other transformations
+need to be written there. Its a common misconception to believe
+that the serving input function will get called on every piece of
+data your REST endpoint receives. That's not how it works. It's run only once,
+when the model is instantiated. And it produces a piece of tensile
+flow graph, connected on one end to the JSON parser and,
+on the other end, to your model. How you transform data from JSON
+values to features is up to you, but please remember to do so
+with tensile flow commands, so that a graph of
+transformations is returned. When do all these pieces
+of graph come together? Well the connection happens when you
+specify the serving input function in your exporter and
+add the exporter to your eval_spec. The exporter will save a checkpointed
+version of the model along with the transformation info into an exported
+model file that is ready to be deployed. What checkpoint gets saved? That depends on the kind of exporter. The simplest one is latest
+exporter used here, which takes the latest
+checkpoint available. We can see the exported model on
+disk here in the export folder. We called this exporter pricing in the
+API, so a pricing subfolder was created. In it, each numbered folder is
+a model ready for deployment. To test the REST API just send
+JSON data at its endpoint. The Google Cloud SDK has
+the G Cloud ML engine predict command that allows you to test
+easily with the data in a JSON file. The syntax for this must be a single JSON
+field called instances, which contains a list of JSON objects of the format
+expected by your serving input function. Here, square footage and property type. The data instances in the list will
+be automatically batched together and your serving input function will receive
+a list of square footage numbers and a list of property type strengths. That is even an easier way of
+testing without deploying anything. The G cloud ML engine local
+predict command lets you get predictions directly from
+an exported model on disk. No need to deploy. Notice the slightly different
+format expected by this command. A list of JSON objects in a file,
+one object per line. Here is another very typical use
+of a serving input function, decoding JPEG images. If you are working with
+a model processing images, you will always be sending the images
+across the network compressed. But your model will always
+expect them uncompressed. The serving input function
+can handle the decompression. And here is the sample code for that. You see that the image is right from
+the JSON feed as type tf.string, which in TensorFlow terminology designates
+a byte string, a list of random bytes. Yes, JPEG is a binary format,
+and base 64 encoding is required to turn it into a text
+string that will work in JSON. TensorFlow adopts a custom
+JSON convention for marking base 64 encoded
+binary string as such. The name of the field must end with
+_bytes and the value must be a JSON object called b64, with the base
+64-encoded string as its value. With this convention,
+base 64 decoding happens automatically. You do not have to handle it in
+your serving input function.

@@ -1,0 +1,129 @@
+Vimos o conjunto de status da gorjeta e que podemos usar como marcador o valor 
+da gorjeta ou o gênero do cliente. Na primeira opção, usamos o valor como
+o marcador e queremos prevê-lo de acordo com os outros recursos
+do conjunto. Suponha que você use apenas um recurso, apenas o total da conta para prever
+a gorjeta. Como a gorjeta é um número contínuo, este é um problema de regressão. Nos problemas de regressão, o objetivo
+é usar funções matemáticas de diferentes
+combinações de recursos para prever o valor contínuo do marcador. Isso é demonstrado pela linha, em que, para um determinado total da conta
+vezes a inclinação da linha, conseguimos um valor contínuo
+para a gorjeta. Talvez a taxa média de gorjeta seja 18%
+do total da conta, então a inclinação da linha será 0,18. Ao multiplicar a conta por 0,18,
+conseguiremos prever a gorjeta. Esta regressão linear com apenas
+um recurso generaliza outros. Nesse caso, temos um problema
+multidimensional, mas o conceito é o mesmo. Multiplicamos o valor dos recursos dos
+exemplos pelo gradiente de um hiperplano, que é apenas a generalização da linha para
+conseguir um valor contínuo do marcador. Nos problemas de regressão, queremos
+minimizar o erro entre o valor contínuo da previsão e o do marcador, geralmente usando o erro quadrático
+médio. Na segunda opção, usaremos o gênero
+como marcador para prever o gênero do cliente com dados
+da gorjeta e do total da conta. Claro, como você pode ver nos dados,
+esta não é uma boa ideia. Os dados de homens e mulheres
+não estão separados, e criaremos um modelo incorreto
+se fizermos isso. Mas a separação ajuda a ilustrar o que acontece quando o que você quer prever
+é de categoria, e não contínuo. Os valores da coluna de gênero neste conjunto de dados são poucos, masculino ou feminino. Como o gênero é de categoria e usamos sua coluna do conjunto de dados
+como marcador, o problema é de classificação. Nos problemas de classificação, em vez de
+prever uma variável contínua, queremos criar um limite de decisão
+que separa as diferentes classes. Nesse caso, há duas classes de gênero:
+feminino e masculino. O limite de decisão linear forma uma linha
+ou um hiperplano em dimensões maiores, com cada classe em ambos os lados. Por exemplo, podemos dizer que,
+se o valor da gorjeta tiver sido maior que 0,18 vezes 
+o total da conta, a previsão é de que o pagamento foi feito
+por um homem. Isso é mostrado pela linha vermelha. Mas não funciona muito bem para este
+conjunto de dados. Os homens parecem ter maior variabilidade, já mulheres dão gorjeta em uma faixa
+mais estreita. Este é um exemplo de limite de decisão
+não linear, mostrado pela elipse amarela no
+gráfico. Como saber se o limite de decisão vermelho
+é inválido e se o amarelo é mais apropriado? Nos problemas de classificação,
+queremos minimizar o erro ou a classificação incorreta entre
+a classe prevista e a classe do marcador. Isso costuma ser feito com a entropia
+cruzada. Mesmo ao prever o valor da gorjeta, às vezes não precisamos saber 
+a quantia exata. Na verdade, queremos determinar
+se a gorjeta será alta, média ou baixa. Definimos um valor como alto se for maior
+do que 25%, médio se estiver entre 15% e 25% e baixo se for inferior a 15%. Em outras palavras,
+é possível discretizar o valor. Agora, criar o valor da gorjeta ou,
+melhor dizendo, a classe dela se torna um problema
+de classificação. Em geral, é possível discretizar um 
+recurso bruto contínuo em um de categoria. Mais adiante neste curso, falaremos sobre o processo reverso. É possível incorporar um recurso
+de categoria em um espaço contínuo. Isso depende do problema que
+você quer resolver e do que funciona melhor. O aprendizado de máquina
+é experimentação. Os dois tipos de problema, regressão
+e classificação, são considerados como problemas de
+previsão, ao contrário dos não supervisionados,
+que são como problemas de descrição. Agora, de onde vêm todos estes dados? Chamamos este conjunto de dados de gorjeta
+como dados estruturados, formados por linhas e colunas. Sua origem mais comum no aprendizado de
+máquina é o armazenamento de dados. Os dados não estruturados são itens como
+imagens, áudios ou vídeos. Aqui, você vê um conjunto de dados
+de natalidade, que inclui informações médicas. Ele é um conjunto de dados público
+no BigQuery, e você o usará mais tarde no curso. Agora, suponha que este conjunto de dados
+esteja no armazenamento de dados. Vamos supor que você queira prever
+as semanas de gestação de um bebê. Em outras palavras, queremos prever
+quando o bebê vai nascer. Realize uma instrução SELECT de SQL no
+BigQuery para criar dados de ML. Escolheremos os recursos de entrada
+do modelo, como idade da mãe, o ganho de peso em quilos e o marcador, semanas de gestação. Como as semanas de gestação são um número
+contínuo, este é um problema de regressão. Fazer previsões com dados
+estruturados é algo muito comum, e este foi o foco da primeira parte deste
+curso. Claro, é possível usar este conjunto de
+dados médicos para prever outras coisas. Talvez seja preciso prever o peso do bebê
+usando outros atributos como os recursos. O peso é um indicador de saúde. Ao prever que o bebê nascerá com
+peso baixo, o hospital poderá contar com equipamentos
+como uma incubadora, então é importante fazer esse tipo de
+previsão. Aqui, o marcador é o peso do bebê, que é uma variável contínua. Ele é armazenado como ponto flutuante, 
+tornando-se um problema de regressão. Este conjunto de dados é adequado para a regressão linear e/ou classificação linear? A resposta correta é "Ambos". Vamos descobrir por quê. Olhe novamente
+para o conjunto com as classes misturadas. Sem as diferentes cores e formas para
+nos ajudar, os dados são linhas com ruído, inclinadas
+negativamente, com interceptação positiva. Como há uma aparência bem linear, este é provavelmente um caso adequado de
+regressão linear, em que o previsto será o valor de Y. Adicionando formas e cores diferentes, fica muito mais evidente que este conjunto
+de dados são duas séries lineares com algum ruído
+gaussiano. As linhas têm inclinações
+diferentes e interceptações distintas, e o ruído tem diferentes desvios padrão. As linhas foram aplicadas para mostrar
+a você que este é definitivamente um conjunto de dados linear pelo design,
+apesar de ter algum ruído. Este caso é adequado para a regressão
+linear. Mesmo havendo duas séries lineares
+diferentes, primeiro veremos o resultado de
+uma regressão linear unidimensional, prevendo Y a partir de X, para começar a criar uma hipótese. Depois iremos ainda mais longe. A linha verde é a equação linear ajustada
+de acordo com a regressão linear. Perceba que ela está distante de cada
+distribuição de classe individual porque a classe B afasta a linha da classe
+A e vice-versa. Isso acaba praticamente cortando o espaço
+entre as duas distribuições. É algo que faz sentido já que,
+na regressão, reduzimos a perda do erro quadrático
+médio. Com o mesmo afastamento de cada classe, a regressão terá o menor erro quadrático
+médio entre elas, sendo praticamente equidistante das
+médias. Cada classe é uma série linear diferente
+com inclinação e interceptação distintas, então teremos uma precisão ainda melhor ao realizar a regressão linear de
+cada uma delas, que encaixará muito perto de cada linha
+esboçada. Melhor ainda, em vez de realizar a regressão linear unidimensional
+prevendo Y a partir de um recurso X, podemos fazer uma bidimensional para
+prever o Y de dois recursos: X e a classe do ponto. O recurso pode ser um se o ponto pertencer
+à classe A e zero se pertencer à classe B. Ele forma um hiperplano 2D em vez de uma
+linha. Vamos ver como ele é. Estes são os resultados da
+regressão linear 2D. Para prever o marcador Y, usamos dois 
+recursos: X e a classe. Como você pode ver, foi formado
+um hiperplano 2D entre os dois conjuntos de dados agora
+separados pela dimensão de classe. Também estão incluídas as linhas reais
+das classes A e B, além da linha de tendência da regressão 
+linear 1D. O plano não contém as linhas por completo por conta dos ruídos dos dados que oscilam
+em duas extremidades dele. Do contrário, sem nenhum ruído, todas as três linhas ficariam
+perfeitamente no plano. Além disso, também respondemos à outra parte da pergunta sobre
+classificação linear. Isso porque a linha da regressão linear faz um ótimo trabalho ao separar
+as classes. Este também é um caso muito adequado para
+a classificação linear. Mas ele produziria um limite de decisão
+exatamente na linha de tendência da regressão linear
+1D? Vamos descobrir. Em amarelo, está o resultado de um classificador linear unidimensional:
+regressão logística. Perceba que está muito perto da linha
+verde da regressão linear, mas não exatamente. Por quê? Lembre-se: você viu que os modelos de
+regressão costumam usar o erro quadrático médio como
+função de perda, enquanto os de classificação geralmente
+usam entropia cruzada. Então qual é a diferença entre as duas? Sem mencionar muitos detalhes agora, há uma penalidade quadrática para erro
+quadrático médio. Ela tenta basicamente minimizar a distância euclidiana entre o marcador
+real e o previsto. Por outro lado, com a entropia cruzada
+das classificações, a penalidade é quase linear, e a previsão
+de probabilidade está perto do marcador. Mas ao se afastar, torna-se exponencial, quando chega perto de prever a classe
+oposta do marcador. Portanto, ao analisar de perto o plano, o motivo mais provável para a linha do limite na classificação
+ter uma inclinação mais negativa é que alguns dos pontos vermelhos de
+ruído, tendo a distribuição com ruído essa cor, ficam do outro lado do limite de decisão, 
+perdendo a alta contribuição de erro. Como eles estão muito perto da linha, a contribuição de erro seria pequena na
+regressão linear, já que o erro é quadrático, e não há preferência de lado na linha para
+a regressão, contanto que a distância permaneça a
+menor possível. Então como você pode ver, este conjunto de dados é adequado para
+regressão e classificação linear. Ao contrário do conjunto de dados
+das gorjetas, em que a regressão linear era adequada, além da classificação não linear.

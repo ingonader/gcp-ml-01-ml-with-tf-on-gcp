@@ -1,0 +1,193 @@
+Neste ponto,
+entrei no Qwiklabs, iniciei o laboratório, e agora tenho nome de usuário e senha
+para fazer login no Console do GCP, iniciei o laboratório de dados
+e o coloquei em execução. A primeira coisa que vou fazer
+é clonar o repositório onde todos os nossos blocos de notas estão. Um jeito fácil de fazer isso
+é usar o ícone do git aqui, mas outro jeito de fazer isso é criar um novo bloco de notas
+e usar o recurso bash. Então posso usar bash e git clone... Agora, uso git clone
+no repositório training data analyst que contém o bloco de notas
+que usaremos neste laboratório. Agora, se viermos aqui, veremos que há um "training data analyst"
+que acabou de aparecer. Entramos no "training data analyst",
+acessamos a pasta que contém o bloco de notas,
+entramos mais e estamos no terceiro curso e estamos
+vendo o Cloud ML Engine. Este é o Cloud ML Engine,
+e o que estamos fazendo neste laboratório é essencialmente ampliar
+nosso modelo de fluxo de transferência. O mesmo modelo que tínhamos,
+só que agora temos um modelo Python e vamos executá-lo no ML Engine. Então, a primeira coisa a fazer é,
+como vamos executá-lo na nuvem, precisamos especificar
+o projeto que será criado. E o Qwiklabs nos deu
+um código de projeto, aqui está ele. Vamos usar esse código
+como o projeto que será criado e o intervalo, o que é um intervalo? Precisamos criar um intervalo,
+então vamos entrar no Console do GCP
+e ir ao armazenamento e ao navegador. E verificar se já existe um intervalo,
+senão vamos criar um. Os nomes dos intervalos precisam ser
+exclusivos, mas como conseguimos isso? Uma maneira é usar um nome de intervalo
+que seja igual ao nome do projeto e, a menos que sejamos muito azarados,
+ninguém criou um intervalo com esse nome. Vou em frente e crio o nome desse intervalo,
+e posso criar um intervalo multirregional. Vá em frente e crie o intervalo,
+que aparecerá aqui. O intervalo tem o mesmo nome do projeto,
+o que facilita bastante. Vou em frente e, onde o intervalo for necessário,
+especificarei o nome e a região dele. A região é muito importante, ela é a região na qual
+você enviará seu job do ML Engine. Se você tivesse
+um intervalo de região única, seu computador
+precisaria estar na mesma região. O nosso é um intervalo multirregional,
+por isso não importa, podemos usar qualquer região em que
+quisermos fazer nosso cálculo, por isso vou deixá-la como US central. Essa é a mesma região em que iniciei
+o laboratório de dados, mas a instância do laboratório de dados
+e os jobs do ML Engine não precisam ser executados na mesma região,
+pode ser em regiões diferentes. Então estamos enviando um job,
+e todas as máquinas que eles vão criar para executar o job
+estarão na região US-central 1. Posso salvar
+o bloco de notas para não perdê-lo. Este é meu projeto,
+e só preciso clicar em "Run". De agora em diante,
+apertarei Shift+Enter para executá-lo. Então, isso cria um intervalo de projeto
+e variáveis de região em Python. A próxima célula essencialmente define
+as mesmas variáveis exatas, mas em bash. Vamos digitar os.environ, que é um comando
+do Python que define uma variável bash. Agora, a qualquer momento
+no bloco de notas que fizermos $PROJECT ou $BUCKET, teremos
+a variável apropriada no script bash. Então, estamos usando isso aqui
+e dizendo que o GCloud pode definir o projeto como sendo este
+que eles configuraram e definir a região de computação
+como essa que definimos. Neste ponto, ele atualizou o projeto
+principal e a região de computação. O Cloud ML Engine
+é executado em um projeto de sombra, e queremos dar acesso a todos
+os arquivos de dados para o ML Engine. O ML Engine não é a gente, é uma conta
+de robô, uma conta automatizada. É uma conta de serviço,
+e queremos conceder acesso a ela para poder ler arquivos no intervalo,
+e é isso que está acontecendo. Ela está dizendo para ir em frente e dar ao ML Engine acesso
+a qualquer arquivo do intervalo e também a novos arquivos
+que serão criados no intervalo. Pois também armazenaremos
+itens como o ponto de verificação e a saída do modelo nesse intervalo,
+é exatamente isso que estamos fazendo. Portanto, o recomendável
+é que você coloque apenas dados essenciais no intervalo para que
+o ML Engine possa acessar e lê-los. Normalmente, você não cria um intervalo
+para armazenar todos os seus dados. Você cria intervalos específicos
+para o aprendizado de máquina e mantém apenas esses arquivos lá,
+isso ajuda a reforçar a segurança. Então vamos fazer isso, vamos dar acesso para o ML Engine
+ler e escrever neste intervalo. E então, feito isso,
+neste ponto foi autorizada a conta de serviço do ML Engine,
+que é essencialmente "service-". Este é o código do projeto, e você pode encontrá-lo
+acessando o Console do GCP. Se você acessar a página inicial,
+verá um código de projeto, o número do projeto,
+que é o mesmo número do projeto. Mas você não precisa saber disso.
+Podemos fazer um script e, para isso, basicamente examinamos a conta de serviço da resposta
+usando uma chamada JSON simples. E, tendo feito isso,
+agora temos que pegar nosso código, nos laboratórios anteriores
+ele estava em um bloco de notas, estava lá porque estávamos testando. Estamos criando coisas, mas agora
+queremos executá-lo em escala e, sempre que quiser enviar um código
+para ser executado, esse código estará em um pacote Python,
+e é isso que estamos fazendo aqui. Estamos criando um pacote Python, vou chamá-lo de taxifare,
+e ele contém todos esses arquivos. Você pode vê-los no laboratório de dados
+indo até lá e, se abrir a pasta taxifare, você verá
+que há uma pasta chamada trainer, e ela contém os dois arquivos
+sobre os quais falamos nos slides. Task.py e model.py, task.py
+é o que contém main, faz toda a linha de comando
+por sincronização e procura caminhos de dados de treino,
+tamanho de lote de treino etc. Isso vem da linha de comando,
+e model.py contém um núcleo do modelo. Isso é basicamente o que cria
+a regressão apropriada, tem as funções de entrada
+para ler os dados etc. E então, neste ponto, temos nosso pacote,
+e o pacote em Python é apenas uma estrutura de pastas que tem
+todos esses arquivos que precisamos. Podemos olhar para o model.py, e este é o código que estava nos blocos
+de notas do laboratório de dados antes que agora estamos
+colocando em um pacote Python. Então, a pergunta que fazemos é:
+como você pega o código Python e o coloca em um pacote Python? Há uma forma fácil de fazer isso...
+vamos procurar por algo que tenha Python. Digamos que este é o código que
+queremos escrever em um arquivo, uma maneira fácil de fazer isso é usar
+o Jupiter Magic chamado writefile. Posso escrever writefile tensorboard.py e, quando executar isso, esse código
+será escrito em tensorboard.py. Esse é um modo fácil de pegar o código
+que está no bloco de notas Python e escrevê-lo em um arquivo Python
+em um pacote Python. O writefile também tem
+a opção de anexar, então você pode adicionar
+linhas extras em python.py, se quiser. Então, vou remover isso
+porque queremos executá-lo, mas para mostrar que tensorboard.py
+realmente foi escrito, podemos voltar para o diretório e, em 03_tensorflow,
+você verá um tensorboard.py. Este é o arquivo que foi escrito
+por mim escrevendo o percentual correto, então vamos
+voltar para onde estávamos. Nós criamos um pacote Python, e precisamos dos nossos arquivos de dados. Este é o arquivo de dados.
+Tudo no laboratório de dados é mapeado para /content,
+então tudo está nesse diretório. E nós imprimimos uma linha
+do arquivo de entrada de treinamento e uma linha do arquivo
+de entrada de validação. E agora tenho um pacote Python.
+O ideal é sempre tentar executá-lo, executar o pacote Python,
+isso não tem nada a ver com o ML Engine. Você tem um pacote Python
+e quer executá-lo. Para isso, você passa
+python-m no módulo. O nome do módulo é task,
+ele está no pacote trainer, mas para fazer isso, temos que dizer
+ao Python onde encontrá-lo, e você faz isso
+configurando um PYTHONPATH. E você o configura
+como sendo o diretório atual/taxifare, porque é onde o trainer estava,
+então eu especifico o PYTHONPATH e executo o programa Python,
+passando taxi-train e tax-valid. E os caminhos de linha de comando
+precisam funcionar conforme o esperado, especificando um diretório de saída
+e algumas etapas de treinamento. Eu poderia especificar
+apenas dez etapas se quisesse, e agora posso executá-los
+pressionando Shift+Enter. E agora, esse módulo Python
+está sendo executado. Veremos se ele funciona e,
+se estiver funcionando, podemos verificar
+se algo realmente foi escrito. Então tudo é executado, e você notou que um modelo salvo
+foi escrito, isso é algo fundamental. Queremos ter certeza de que
+o treinamento aconteceu e que conseguimos um modelo salvo,
+e podemos verificar isso procurando dentro de export/exporter
+para ver se o modelo salvo está lá. Ele está nesse diretório,
+e uma das coisas que podemos fazer é verificar se tudo funciona. Ainda não fiz nada do ML Engine, ainda
+estou executando no laboratório de dados. Estou verificando
+se o módulo Python funciona, se eu tenho um JSON testado.
+Veja que estou usando o writefile aqui, mesmo que escreva
+esta linha como test.json. E então, usando o comando gcloud, com o diretório local
+que está sendo exportado, estou passando o test.json para ver
+se a exportação e as previsões funcionam. E toda essa sequência funciona como
+um módulo Python, executando localmente. A previsão não vai ser muito precisa,
+apenas treinei para 10 etapas, mas sabemos que todo o código funciona,
+que treinamos o modelo, o exportamos e conseguimos passar uma entrada JSON
+e somos capazes de prever com isso. E agora, se quisermos, podemos treinar localmente
+usando o GCloud ML Engine, que é exatamente o mesmo
+que fazer python-m. A diferença aqui
+é que especificamos o nome do módulo e o caminho do pacote de um modo
+um pouco diferente, e não é preciso especificar um caminho do Python
+porque o ML Engine sabe como fazer isso. E podemos especificar
+todos os parâmetros que nosso modelo realmente usa. Depois de fazer isso, não importando como,
+seja usando com o GCloud ou com o python-m, você pode executar
+o TensorBoard para visualizar o modelo. Então prossigo e inicio o TensorBoard.
+Ele deve estar aqui. Queremos passar no diretório atual. Na verdade, não precisamos disso,
+vamos fazer isso. Então iniciamos isso, e, neste ponto,
+o TensorBoard foi iniciado. Podemos clicar lá para acessá-lo,
+e isso mostra a você, é claro, que o executamos por apenas dez etapas,
+mas isso mostra como a perda varia. Isso será útil quando voltarmos
+e o executarmos no ML Engine. Também podemos apontar
+para um diretório do Google Cloud Storage e observar a última função
+que mudou durante o treinamento. Então vamos interrompê-lo, pois isso é só para mostrar
+que você pode usá-lo localmente. E ele parou em 4122, então, neste ponto, vamos executá-lo na nuvem.
+Ao executá-lo na nuvem, há algo fundamental:
+os dados também precisam estar na nuvem. Então vou copiar os arquivos de entrada para a nuvem,
+é o que estou fazendo, estou copiando
+os arquivos CSV para a nuvem. E depois de ter feito isso,
+depois de copiar todos esses arquivos, posso enviar o job de treinamento
+para o ML Engine. Neste ponto, envio o job de treinamento
+para o ML Engine por várias etapas em todas essas entradas e, aqui,
+ele informa que o job está na fila, e podemos voltar para o Console do GCP, rolar para baixo
+para onde está o ML Engine. O ML Engine está aqui.
+Veja os jobs, e você verá que agora há um job
+que está em processo de começar. E enquanto o job está em execução,
+você pode visualizar os registros e ver o que está sendo produzido
+pelo job enquanto ele é executado e, no fim, poderá
+implementar esse modelo. E você poderá fazer previsões
+da mesma forma que fizemos localmente, só que agora este é
+um modelo totalmente treinado, foi treinado em várias etapas
+e está pronto para execução. Depois de implantá-lo, podemos tentar
+prever não apenas no GCloud ML Engine, mas de modo que
+um programa cliente faria. E o modo como ele faria isso
+é criando uma entrada JSON de algum tipo de programa Python, e usando essa API Python para chamar a função
+preditiva e recuperar uma resposta. A essa altura não conseguimos
+um grande modelo, tudo o que fizemos foi pegar os dados brutos e jogá-los
+no modelo, não fizemos o que faremos no próximo curso, que é a engenharia
+de recursos para melhorar nosso modelo. E só para mostrar a você
+como seria o desempenho, poderíamos também treinar em um conjunto
+de dados maior, isso não ajuda muito, nosso modelo não é ideal,
+não usamos insights humanos. Você também pode executar o treinamento
+em nuvem em um conjunto de dados muito maior, eles executam exatamente
+as mesmas coisas, então vou pular isso. Mas, se você tiver tempo
+e quiser um desafio, modifique a solução
+para o exercício de desafio anterior. Novamente, recomendo
+que você faça os exercícios de desafio, volte e discuta-os
+nos fóruns do Coursera. Obrigado.

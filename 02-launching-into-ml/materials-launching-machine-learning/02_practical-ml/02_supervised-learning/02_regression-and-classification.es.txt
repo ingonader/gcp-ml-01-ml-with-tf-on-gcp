@@ -1,0 +1,157 @@
+En el conjunto de datos de las propinas vimos que podíamos usar
+el importe de la propina o el género del cliente
+como etiquetas. En la primera opción,
+el importe de la propina es la etiqueta que queremos predecir dados los otros atributos
+en el conjunto de datos. Supongamos que están usando
+solo un atributo para predecir la propina:
+el importe total de la factura. Ya que la propina es un número continuo,
+este es un problema de regresión. En estos problemas, el objetivo
+es usar funciones matemáticas de diferentes combinaciones de atributos para predecir el valor continuo
+de la etiqueta. Esto se muestra en la línea, en la que
+por un importe total dado de la factura por la pendiente de la línea,
+obtenemos un valor continuo para el importe de la propina. Si el porcentaje de la contribución
+es 18% de la factura total, entonces, la pendiente
+de la línea será 0.18. Si multiplicamos el importe
+de la factura por 0.18, obtendremos la predicción de la propina. Esta regresión lineal
+con un solo atributo se generaliza a atributos adicionales. En ese caso,
+tenemos un problema multidimensional pero el concepto es el mismo. El valor de cada atributo
+para cada ejemplo se multiplica por el gradiente del hiperplano,
+que es la generalización de la línea, para obtener un valor continuo
+para la etiqueta. En los problemas de regresión,
+queremos minimizar el error entre el valor continuo pronosticado
+y el valor continuo de la etiqueta por lo general,
+mediante el error cuadrático medio. En la segunda opción,
+usaremos el género como la etiqueta y predeciremos el género del cliente
+con los datos de la propina y el total de la factura. Por supuesto, como pueden ver
+en los datos, no es una buena idea. Los datos de hombres
+y mujeres no están separados y obtendremos un mal modelo si lo hacemos. Pero hacerlo ayuda a ilustrar qué pasa cuando lo que se quiere predecir
+es categórico y no continuo. Los valores de las columnas de género,
+al menos en este conjunto de datos, son discretos, masculino o femenino. Puesto que el género es categórico
+y que usamos esta columna del conjunto de datos como la etiqueta,
+el problema es de clasificación. En los problemas de clasificación, en lugar de intentar
+predecir una variable continua, intentamos crear un límite de decisión
+que separe las diferentes clases. En este caso, hay dos clases de géneros: femenino y masculino. Un límite de decisión lineal
+formará una línea o un hiperplano en dimensiones más altas,
+con cada clase en uno de los lados. Por ejemplo, podríamos decir
+que si el importe de la propina es mayor que 0.18 veces
+el importe total de la factura, entonces predecimos que la persona
+que hizo el pago fue un hombre. La línea roja muestra esto. Pero eso no funciona muy bien
+con este conjunto de datos. Las propinas de los hombres
+parecen tener mayor variabilidad y las de las mujeres tienden
+a estar en una franja más estrecha. Este es un ejemplo
+de un límite de decisión no lineal que se ve
+en las franjas amarillas en el gráfico. ¿Cómo sabemos que el límite
+de decisión rojo no es bueno? ¿Y que el límite
+de decisión amarillo es mejor? En problemas de clasificación,
+queremos minimizar el error o la clasificación incorrecta
+entre nuestra clase pronosticada y la clase de la etiqueta. Por lo general, esto se logra
+mediante la entropía cruzada. Aun si predecimos el importe de la propina tal vez no necesitamos
+conocer el importe exacto. En vez, queremos determinar
+si la propina será alta, media o baja. Podemos definir
+que un importe alto sea mayor que 25%, medio esté entre 15% y 25% y bajo sea menos que 15%. Es decir,
+podemos discretizar el importe. Ahora, crear el importe de la propina o, mejor dicho, la clase de la propina se convierte
+en un problema de clasificación. En general,
+un atributo continuo, sin procesar se puede discretizar
+en un atributo categórico. Más adelante en esta especialización,
+hablaremos sobre el proceso contrario. Un atributo categórico
+se puede incrustar en un espacio continuo. Depende del problema
+que estén tratando de resolver y de qué funciona mejor. El aprendizaje automático
+se trata de la experimentación. Ambos tipos de problemas,
+la regresión y la clasificación, se pueden considerar
+como problemas de predicción, a diferencia
+de los problemas no supervisados que son problemas descriptivos. Ahora, ¿de dónde vienen estos datos? El conjunto de datos de propinas es lo que llamamos datos estructurados,
+compuesto de filas y columnas. Una fuente común de estos datos
+para el aprendizaje automático es su almacén de datos. Los datos no estructurados
+son elementos como fotos, audio o video. Este es un conjunto de datos de natalidad, un conjunto público de información médica. Es un conjunto
+de datos públicos en BigQuery y lo usarán más tarde
+en la especialización. Por ahora, supongamos
+que está en su almacén de datos. Digamos que queremos predecir
+las semanas de gestación del bebé. Es decir, cuándo nacerá el bebé. Pueden ejecutar una instrucción
+SELECT de SQL en BigQuery para crear un conjunto de datos de AA. Elegiremos los atributos
+de entrada del modelo, como edad de la madre,
+aumento de peso en libras y la etiqueta, "gestation_weeks". Ya que este es un número continuo,
+es un problema de regresión. Realizar predicciones
+a partir de datos estructurados es común y eso es en lo que nos enfocamos
+en la primera parte de esta especialización. Este conjunto de datos se puede usar
+para realizar otras predicciones también. Tal vez queremos predecir el peso del bebé mediante otros atributos. El peso del bebé
+puede ser un indicador de salud. Cuando se predice
+que un bebé tendrá un bajo peso, por lo general, el hospital tendrá equipo
+preparado, como una incubadora, por lo que puede ser importante
+predecir el peso del bebé. La etiqueta será "baby_weight"
+y es una variable continua. Se almacena
+como un número de punto flotante que debería convertir esto
+en un problema de regresión. ¿Es este conjunto
+de datos un buen candidato para una regresión lineal?
+¿O para una clasificación lineal? La respuesta correcta es
+C. Ambas. Investiguemos por qué. Observemos el conjunto de datos
+con ambas clases mezcladas. Sin los diferentes colores
+y formas para guiarnos los datos parecen ser una línea
+con ruido, con una pendiente negativa y una ordenada al origen positiva. Ya que parece bastante lineal,
+probablemente será un buen candidato para una regresión lineal, en la que
+intentamos predecir el valor de Y. Si agregamos diferentes colores y formas,
+es más claro que este conjunto de datos tiene en realidad dos series lineales
+con un poco de ruido gaussiano. Las líneas tienen ordenadas
+y pendientes diferentes y el ruido tiene diferentes
+desviaciones estándar. Hice que estas líneas muestren
+que este conjunto de datos está diseñado para ser lineal
+y tendrá un poco de ruido. Sería un buen candidato
+para la regresión lineal. A pesar de existir
+dos series lineales distintas, primero veamos el resultado
+de una regresión lineal de una dimensión si trazamos Y desde X
+para comenzar a crear una intuición. Luego, veremos si podemos hacerlo mejor. La línea verde es la ecuación lineal
+ajustada de la regresión lineal. Observen que está lejos
+de cada distribución de clase individual porque la clase B aleja la línea
+de la clase A y viceversa. Cruza el espacio
+entre las dos distribuciones. Esto tiene sentido, ya que
+con la regresión optimizamos la pérdida del error cuadrático medio. Con un alejamiento parejo de cada clase la regresión debería tener
+el error cuadrático medio más bajo entre las dos clases, aproximadamente
+equidistante de sus medias. Ya que cada clase es una serie
+lineal diferente con ordenadas y pendientes diferentes,
+tendríamos una mejor precisión si realizáramos una regresión
+lineal para cada clase que debería ajustarse muy cerca
+a cada una de las líneas trazadas aquí. Aún mejor,
+en vez de realizar una regresión lineal de una dimensión
+para predecir el valor de Y a partir de un atributo de X,
+podemos realizar una regresión lineal de dos dimensiones para predecir Y
+a partir de dos atributos X y la clase del punto. El atributo de la clase podría ser uno si el punto pertenece a la clase A
+y cero si el punto pertenece a la clase B. En vez de una línea,
+formaría un hiperplano 2D. Veamos cómo se vería. Estos son los resultados
+de la regresión lineal 2D. Para predecir la etiqueta Y,
+usamos dos atributos X y la clase. Cómo pueden ver,
+se formó un hiperplano 2D entre los dos conjuntos de datos
+que ahora están separados por la dimensión de la clase. También incluí las líneas
+verdaderas para las clases A y B al igual que la línea
+de mejor ajuste de la regresión lineal 1D. El plano no contiene
+ninguna de las líneas por completo debido al ruido de los datos
+que inclinan las dos pendientes del plano. De otro modo, sin ruido,
+las tres líneas entrarían perfectamente en el plano. También, ya respondimos
+a la otra parte de la pregunta del cuestionario
+sobre la clasificación lineal. Puesto que la línea de la regresión lineal ya logra separar las clases. Entonces, también es un buen candidato
+para la clasificación lineal. Pero, ¿produciría un límite de decisión
+exacto en la línea de mejor ajuste de la regresión lineal 1D? Averigüémoslo. El trazo amarillo es la salida
+de un clasificador lineal de una dimensión:
+una regresión logística. Observen que está muy cerca
+de la línea verde de la regresión lineal pero no exactamente. ¿Por qué? Si recuerdan, mencioné
+que los modelos de regresión por lo general, usan el error cuadrático
+medio como su función de pérdida, mientras que los modelos de clasificación
+usan la entropía cruzada. ¿Cuál es la diferencia entre ambos? Sin profundizar demasiado aún,
+existe una penalización cuadrática en el error cuadrático medio,
+por lo que intenta minimizar la distancia euclidiana
+entre la etiqueta real y la etiqueta de la predicción. Por otro lado, con la entropía
+cruzada de las clasificaciones la penalización es casi lineal
+y la probabilidad pronosticada es cercana a la etiqueta real,
+pero a medida que se aleja se convierte en exponencial
+cuando se acerca a la predicción de la clase opuesta de la etiqueta. Por lo tanto,
+si miran el gráfico cuidadosamente la razón más probable
+por la que la línea del límite de decisión de la clasificación
+tiene una pendiente ligeramente negativa es porque algunos
+de esos puntos rojos de ruido es decir, la distribución ruidosa, se ubican en el otro lado
+del límite de decisión y pierden su alta contribución al error. Puesto que están tan cerca de la línea,
+su contribución al error sería pequeña en la regresión lineal,
+no solo porque el error es cuadrático sino porque no importa estar en un lado
+u otro de la línea en la regresión lineal mientras la distancia permanezca
+lo más pequeña posible. Como pueden ver,
+este conjunto de datos es excelente tanto para la regresión lineal
+como para la clasificación lineal. A diferencia
+del conjunto de datos de propinas que solo era aceptable
+para la regresión lineal y mejor para la clasificación no lineal.

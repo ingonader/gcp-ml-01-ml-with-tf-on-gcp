@@ -1,0 +1,31 @@
+Estou no repositório do GitHub do curso. Estou no 03_tensorflow, esse capítulo que estamos fazendo. Vamos em frente e abrir o debug_demo, e veremos algumas coisas das quais
+já falamos no capítulo. Vou em frente e importo o TensorFlow. Aqui está o primeiro exemplo que vimos. Tínhamos dados, estávamos cortando
+e conseguindo todas as linhas dos dados, e estávamos conseguindo duas das colunas. Veja que estamos conseguindo todas
+as linhas, mas apenas uma coluna. Agora, quando adicionamos a e c, nos deparamos com um erro de formato, e é exatamente com isso que nos deparamos. Perceba que, na parte inferior do
+rastreamento de pilha, a mensagem de erro, você consegue seu erro de valor. As dimensões precisam ser iguais, mas são 2 e 4. O primeiro é um tensor 2D, "4, 2", o segundo é um tensor 1D de 4. Quando você subir pelo
+rastreamento da pilha, verá que esse em particular, common_shapes.python, não é nosso, isso é do TensorFlow. Então podemos ignorar. Este também é do TensorFlow,
+então podemos ignorá-lo. Como este, que também é do TensorFlow. Tudo isso é do TensorFlow,
+podemos continuar ignorando e continuar rolando até encontrar
+algo no meu código. Então, há o some_method
+que está no meu código e há o método chamado s = (a + c), que indica que este é o problema. Isso, claro, é chamado de session.run, mas vamos ignorar isso,
+porque esse é o problema aqui, s = (a + c). Vamos analisar onde o erro de valor
+pode ter acontecido. Tudo bem com s = (a + c), certo? Estamos somando dois itens e sabemos que,
+de acordo com as regras da álgebra linear, quando somamos dois tensores, eles
+precisam ter o mesmo formato, é a única maneira de funcionar. Agora podemos ir em frente
+e tentar corrigi-lo. Neste caso, agora vou criar dados falsos, estou passando meus
+dados falsos que é minha... Qual é o formato aqui? É uma matriz 4x3. Estou passando isso e conseguindo
+o formato de a, imprimindo o formato de c. Agora executo esta célula. Quando a executo, basicamente vejo que o formato de a é 4, 2 e o formato de c é 4, e isso
+me diz que agora eu sei qual foi o problema. A pergunta é: como corrigi-lo? E a maneira de corrigir é basicamente garantir que
+ambos tenham o mesmo formato, então posso pegar 0:2 no primeiro exemplo e 1:3, em outras palavras,
+a janela deslizante, estamos movendo um de cada vez. O salto, quando falamos de imagens, aprenderemos sobre esse termo, "salto". Ele é 1 e o tamanho da minha janela é 2. É isso que estou fazendo. Agora, quando executo, funcionará perfeitamente, e eu recupero a soma que é
+resultado da janela deslizante. Esse é o processo que você
+fará para depurar seu código. Leia o rastreamento de chamadas, leia a mensagem de erro, descubra onde está o problema
+e, depois disso, corrija-o, verifique se funciona
+nos dados falsos. Aí você pode testá-lo no conjunto
+de dados completo e esperar que funcione. Da mesma forma, falamos sobre o erro
+de tipo, e é exatamente o mesmo processo. Neste caso, estou somando a e b, a é basicamente números
+de ponto flutuante, b é basicamente números inteiros, não vai funcionar. Vou analisar
+o rastreamento de pilha, olhar para a mensagem de erro e aprender
+que, para corrigir isso, uma maneira é pegar b, que é originalmente
+apenas inteiros, e fazer um cast. E depois de fazer cast, tudo funcionará,
+e essa é a ideia básica aqui.

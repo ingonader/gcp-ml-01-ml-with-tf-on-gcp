@@ -1,0 +1,571 @@
+1
+00:00:00,000 --> 00:00:02,495
+Why only one layer of perceptron?
+
+2
+00:00:02,495 --> 00:00:06,000
+Why not send the output of one layer as the input to the next layer?
+
+3
+00:00:06,000 --> 00:00:10,885
+Combining multiple layers of perceptron sounds like a real much more powerful model.
+
+4
+00:00:10,885 --> 00:00:14,550
+However, without using nonlinear activation functions,
+
+5
+00:00:14,550 --> 00:00:17,740
+all of the additional layers can be compressed back down into
+
+6
+00:00:17,740 --> 00:00:21,695
+just a single linear layer, and there's no real benefit.
+
+7
+00:00:21,695 --> 00:00:24,670
+You need nonlinear activation functions.
+
+8
+00:00:24,670 --> 00:00:27,260
+Therefore, sigmoid, or hyperbolic tangent,
+
+9
+00:00:27,260 --> 00:00:28,720
+or tanh for short,
+
+10
+00:00:28,720 --> 00:00:32,200
+activation functions started to be used for nonlinearity.
+
+11
+00:00:32,200 --> 00:00:35,840
+At the time, we were limited to just these because we needed
+
+12
+00:00:35,840 --> 00:00:38,395
+a differentiable function since that fact is
+
+13
+00:00:38,395 --> 00:00:41,765
+exploited in back propagation to be the model weights.
+
+14
+00:00:41,765 --> 00:00:45,290
+Modern day activation functions are not necessarily differentiable,
+
+15
+00:00:45,290 --> 00:00:48,275
+and people didn't know how to work with them.
+
+16
+00:00:48,275 --> 00:00:51,920
+This constraint, that activation functions had to be differentiable,
+
+17
+00:00:51,920 --> 00:00:54,310
+could make the networks hard to train.
+
+18
+00:00:54,310 --> 00:00:58,445
+The effectiveness of these models was also constrained by the amount of data,
+
+19
+00:00:58,445 --> 00:01:02,280
+available computational resources, and other difficulties in training.
+
+20
+00:01:02,280 --> 00:01:06,325
+For instance, optimization tends to get caught in saddle points.
+
+21
+00:01:06,325 --> 00:01:07,960
+Instead of finding the global minimum,
+
+22
+00:01:07,960 --> 00:01:10,625
+we hoped it would during gradient decent.
+
+23
+00:01:10,625 --> 00:01:16,390
+However, once the trick to use rectify linear units or ReLUs was developed,
+
+24
+00:01:16,390 --> 00:01:19,535
+then you could have faster training like eight to ten times,
+
+25
+00:01:19,535 --> 00:01:22,765
+almost guaranteed convergence for logistic regression.
+
+26
+00:01:22,765 --> 00:01:26,095
+Building up the perceptron, just like the brain,
+
+27
+00:01:26,095 --> 00:01:28,960
+we can connect many of them together to form layers,
+
+28
+00:01:28,960 --> 00:01:31,545
+to create feedforward neural networks.
+
+29
+00:01:31,545 --> 00:01:35,340
+Really not much has changed in components from the single layer perceptron,
+
+30
+00:01:35,340 --> 00:01:37,060
+there are still inputs,
+
+31
+00:01:37,060 --> 00:01:40,925
+weighted sums, activation functions, and outputs.
+
+32
+00:01:40,925 --> 00:01:44,875
+One difference is that the inputs to neurons not in the input layer
+
+33
+00:01:44,875 --> 00:01:48,925
+are not the raw inputs but the outputs of the previous layer.
+
+34
+00:01:48,925 --> 00:01:53,570
+Another difference is that the ways connecting the neurons between layers are no longer
+
+35
+00:01:53,570 --> 00:01:56,420
+a vector but now a matrix because of
+
+36
+00:01:56,420 --> 00:01:59,850
+the completely connecting nature of all neurons between layers.
+
+37
+00:01:59,850 --> 00:02:01,900
+For instance, in the diagram,
+
+38
+00:02:01,900 --> 00:02:03,540
+the input layer weights matrix is
+
+39
+00:02:03,540 --> 00:02:06,720
+four by two and the hidden layer weights matrix is two by one.
+
+40
+00:02:06,720 --> 00:02:10,130
+We will learn later that neural networks don't always have
+
+41
+00:02:10,130 --> 00:02:11,980
+complete connectivity which has
+
+42
+00:02:11,980 --> 00:02:15,230
+some amazing applications and performance like with images.
+
+43
+00:02:15,230 --> 00:02:19,185
+Also, there are different activation functions than just the units that function,
+
+44
+00:02:19,185 --> 00:02:23,510
+such as the sigmoid and hyperbolic tangent or tanh activation functions.
+
+45
+00:02:23,510 --> 00:02:26,040
+Each non-input neuron, you can think of as
+
+46
+00:02:26,040 --> 00:02:29,240
+a collection of three steps packaged up into a single unit.
+
+47
+00:02:29,240 --> 00:02:31,670
+The first component is a weighted sum,
+
+48
+00:02:31,670 --> 00:02:34,190
+the second component is the activation function,
+
+49
+00:02:34,190 --> 00:02:37,520
+and the third component is the output of the activation function.
+
+50
+00:02:37,520 --> 00:02:41,360
+Neural networks can become quite complicated with all the layers,
+
+51
+00:02:41,360 --> 00:02:44,940
+neurons, activation functions, and ways to train them.
+
+52
+00:02:44,940 --> 00:02:47,940
+Throughout this course, we'll be using TensorFlow Playground to get
+
+53
+00:02:47,940 --> 00:02:51,810
+a more intuitive sense of how information flows through a neural network.
+
+54
+00:02:51,810 --> 00:02:53,400
+It's also a lot of fun,
+
+55
+00:02:53,400 --> 00:02:55,790
+allows you to customize a lot more hyper parameters,
+
+56
+00:02:55,790 --> 00:02:58,225
+as well as provide the visuals of the wait magnitudes,
+
+57
+00:02:58,225 --> 00:03:01,695
+and how the lost function is evolving over time.
+
+58
+00:03:01,695 --> 00:03:04,715
+This is the linear activation function,
+
+59
+00:03:04,715 --> 00:03:09,390
+is essentially an identity function because the function of x just returns x.
+
+60
+00:03:09,390 --> 00:03:11,650
+This was the original activation function.
+
+61
+00:03:11,650 --> 00:03:13,370
+However, as said before,
+
+62
+00:03:13,370 --> 00:03:15,900
+even with a neural network with thousands of layers,
+
+63
+00:03:15,900 --> 00:03:18,105
+all using a linear activation function,
+
+64
+00:03:18,105 --> 00:03:22,690
+the output at the end will just be a linear combination of the input features.
+
+65
+00:03:22,690 --> 00:03:27,430
+This can be reduced to the input features each multiplied by some constant.
+
+66
+00:03:27,430 --> 00:03:29,325
+Does that sound familiar?
+
+67
+00:03:29,325 --> 00:03:31,260
+It's simply a linear regression.
+
+68
+00:03:31,260 --> 00:03:34,780
+Therefore, nonlinear activation functions are needed to get
+
+69
+00:03:34,780 --> 00:03:36,840
+the complex chain functions that allow
+
+70
+00:03:36,840 --> 00:03:41,655
+neural networks to learn data distributions so well.
+
+71
+00:03:41,655 --> 00:03:45,480
+Besides the linear activation function,
+
+72
+00:03:45,480 --> 00:03:47,205
+where f of x equals x,
+
+73
+00:03:47,205 --> 00:03:50,680
+the primary activation functions back when neural networks were having
+
+74
+00:03:50,680 --> 00:03:54,920
+their first golden age with the sigmoid and tanh activation functions.
+
+75
+00:03:54,920 --> 00:03:59,525
+The sigmoid activation function is essentially a smooth version of the unit step function
+
+76
+00:03:59,525 --> 00:04:01,010
+where asymptote to zero at
+
+77
+00:04:01,010 --> 00:04:04,665
+negative infinity and asymptote towards to one at positive infinity,
+
+78
+00:04:04,665 --> 00:04:08,860
+but there are intermediate values all in between.
+
+79
+00:04:08,860 --> 00:04:13,060
+The hyperbolic tangent or tanh for short is
+
+80
+00:04:13,060 --> 00:04:16,040
+another commonly used activation function at this point,
+
+81
+00:04:16,040 --> 00:04:18,220
+which is essentially just a scaled and
+
+82
+00:04:18,220 --> 00:04:21,405
+shifted sigmoid with its range now negative one to one.
+
+83
+00:04:21,405 --> 00:04:24,270
+These were great choices because they were differentiable
+
+84
+00:04:24,270 --> 00:04:27,365
+everywhere, monotonic, and smooth.
+
+85
+00:04:27,365 --> 00:04:31,230
+However, problems such as saturation would occur due
+
+86
+00:04:31,230 --> 00:04:35,120
+to either high or low input values to the functions,
+
+87
+00:04:35,120 --> 00:04:38,240
+which would end up in the asymptotic Plateau to the function.
+
+88
+00:04:38,240 --> 00:04:41,180
+Since the curve is almost flat at these points,
+
+89
+00:04:41,180 --> 00:04:43,825
+the derivatives are very close to zero.
+
+90
+00:04:43,825 --> 00:04:46,990
+Therefore, training of the weights would go very
+
+91
+00:04:46,990 --> 00:04:50,840
+slow or even halt since the gradients were all very close to zero,
+
+92
+00:04:50,840 --> 00:04:55,870
+which will result in very small step sizes down the hill during gradient descent.
+
+93
+00:04:55,870 --> 00:04:59,735
+Linear activation functions were differentiable, monotonic, and smooth.
+
+94
+00:04:59,735 --> 00:05:01,235
+However, as mentioned before,
+
+95
+00:05:01,235 --> 00:05:05,040
+a linear combination of linear functions can be collapsed back down neurons into one.
+
+96
+00:05:05,040 --> 00:05:07,460
+This doesn't enable us to create the complex chain
+
+97
+00:05:07,460 --> 00:05:10,035
+of functions that we will need to describe our data row.
+
+98
+00:05:10,035 --> 00:05:13,030
+There were approximations of linear activation function,
+
+99
+00:05:13,030 --> 00:05:14,845
+but they were not differentiable everywhere.
+
+100
+00:05:14,845 --> 00:05:18,710
+So, not until much later did people know what to do with them.
+
+101
+00:05:18,710 --> 00:05:24,425
+Very popular now is the rectified linear unit or ReLU activation function.
+
+102
+00:05:24,425 --> 00:05:27,830
+It is nonlinear, so you can get the complex modeling needed,
+
+103
+00:05:27,830 --> 00:05:32,080
+and it doesn't have the saturation in the non-negative portion of the input space.
+
+104
+00:05:32,080 --> 00:05:37,430
+However, due to the negative portion of the input space translating to a zero activation,
+
+105
+00:05:37,430 --> 00:05:41,115
+ReLU layers could end up dying or no longer activating,
+
+106
+00:05:41,115 --> 00:05:45,490
+which can also cause training to slow or stop.
+
+107
+00:05:45,490 --> 00:05:49,065
+There are some ways to solve this problem,
+
+108
+00:05:49,065 --> 00:05:50,370
+one of which is using
+
+109
+00:05:50,370 --> 00:05:54,320
+another activation function called the exponential linear unit or ELU.
+
+110
+00:05:54,320 --> 00:05:59,140
+It is approximately linear and the non-negative portion of the input space,
+
+111
+00:05:59,140 --> 00:06:02,225
+and it's smooth, monotonic and most importantly,
+
+112
+00:06:02,225 --> 00:06:05,440
+non-zero in the negative portion of the input space.
+
+113
+00:06:05,440 --> 00:06:08,680
+The main drawback of ELUs are that they are more
+
+114
+00:06:08,680 --> 00:06:12,680
+computationally expensive than ReLUs due to having the calculated exponential.
+
+115
+00:06:12,680 --> 00:06:16,065
+We will get to experiment more with this in the next module.
+
+116
+00:06:16,065 --> 00:06:19,690
+If I wanted my outputs to be in the former probabilities,
+
+117
+00:06:19,690 --> 00:06:24,260
+which activation function should I choose in the final layer?
+
+118
+00:06:24,440 --> 00:06:29,370
+The correct answer is a sigmoid activation function.
+
+119
+00:06:29,370 --> 00:06:33,090
+This is because the range of a sigmoid function is between zero and one,
+
+120
+00:06:33,090 --> 00:06:35,095
+which is also the range for probability.
+
+121
+00:06:35,095 --> 00:06:36,630
+Beyond just the range,
+
+122
+00:06:36,630 --> 00:06:39,680
+the sigmoid function is the cumulative distribution function of
+
+123
+00:06:39,680 --> 00:06:42,600
+the logistic probability distribution whose quantile function
+
+124
+00:06:42,600 --> 00:06:46,275
+is the inverse of the logic which models the log odds.
+
+125
+00:06:46,275 --> 00:06:49,585
+This is why it can be used as a true probability.
+
+126
+00:06:49,585 --> 00:06:53,165
+We will talk more about those reasons later in the specialization.
+
+127
+00:06:53,165 --> 00:06:57,545
+Tanh is incorrect because even though it is a squashing function like a sigmoid,
+
+128
+00:06:57,545 --> 00:06:59,590
+its range ranges between negative one to
+
+129
+00:06:59,590 --> 00:07:02,285
+one which is not the same range as the probability.
+
+130
+00:07:02,285 --> 00:07:04,500
+Furthermore, just squashing tanh into
+
+131
+00:07:04,500 --> 00:07:07,595
+a sigmoid will not magically turn it into a probability
+
+132
+00:07:07,595 --> 00:07:10,140
+because it doesn't have the same properties mentioned above that
+
+133
+00:07:10,140 --> 00:07:13,315
+allows a sigmoid output to be interpreted as a probability.
+
+134
+00:07:13,315 --> 00:07:15,610
+To correctly convert into a sigmoid,
+
+135
+00:07:15,610 --> 00:07:19,790
+first you have to add one and divide by two to get the correct range.
+
+136
+00:07:19,790 --> 00:07:22,475
+Also, to get the right spread,
+
+137
+00:07:22,475 --> 00:07:25,080
+you'd have to divide tanh argument by two.
+
+138
+00:07:25,080 --> 00:07:27,365
+But you've already calculated tanh,
+
+139
+00:07:27,365 --> 00:07:29,220
+so we will pinned a bunch of work,
+
+140
+00:07:29,220 --> 00:07:32,050
+and you may as well have just used a sigmoid to start.
+
+141
+00:07:32,050 --> 00:07:36,565
+Really was incorrect because its range is between zero and infinity,
+
+142
+00:07:36,565 --> 00:07:39,315
+which is far from the representation of probability.
+
+143
+00:07:39,315 --> 00:07:44,000
+It was also incorrect because its range between negative infinity and infinity.

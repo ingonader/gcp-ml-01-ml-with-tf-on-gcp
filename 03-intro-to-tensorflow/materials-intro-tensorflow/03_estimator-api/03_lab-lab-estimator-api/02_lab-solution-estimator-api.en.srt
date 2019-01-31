@@ -1,0 +1,582 @@
+1
+00:00:00,190 --> 00:00:03,732
+Let's go through our first
+estimator code lab together.
+
+2
+00:00:03,732 --> 00:00:07,920
+To start,
+we need to locate the code lab files.
+
+3
+00:00:07,920 --> 00:00:09,980
+Let me do that with you.
+
+4
+00:00:09,980 --> 00:00:17,450
+You go to cloud.google.com/console,
+and log with your lab account.
+
+5
+00:00:17,450 --> 00:00:18,380
+I'll do that as well.
+
+6
+00:00:30,700 --> 00:00:33,550
+And now, you have to pick a project.
+
+7
+00:00:33,550 --> 00:00:35,580
+Sometimes it's already selected for you.
+
+8
+00:00:36,650 --> 00:00:39,760
+And open the Cloud Shell,
+it's this icon here.
+
+9
+00:00:44,109 --> 00:00:50,836
+In the Cloud Shell,
+we are going to type datalab create.
+
+10
+00:00:54,831 --> 00:00:59,050
+Let's call our data lab instance, mylab.
+
+11
+00:01:01,110 --> 00:01:07,644
+And we will create it in the zone,
+us-central1-a.
+
+12
+00:01:07,644 --> 00:01:12,920
+So this will create our
+first data lab instance.
+
+13
+00:01:14,750 --> 00:01:18,759
+It does take a while on the first attempt.
+
+14
+00:01:21,886 --> 00:01:26,948
+The next time, you don't have to
+recreate the data of instance,
+
+15
+00:01:26,948 --> 00:01:30,815
+just reconnect to it by
+typing datalab connect and
+
+16
+00:01:30,815 --> 00:01:33,959
+the data of instance, mylab in my case.
+
+17
+00:01:47,098 --> 00:01:52,030
+And now,
+locate the Web preview button right here.
+
+18
+00:01:53,140 --> 00:01:57,239
+Change the port to 8081,
+that's what the data lab uses.
+
+19
+00:01:58,380 --> 00:02:00,370
+And click Preview.
+
+20
+00:02:00,370 --> 00:02:03,050
+And this opens a familiar
+notebook interface.
+
+21
+00:02:06,908 --> 00:02:10,760
+From here we still need to
+get the code from GitHub.
+
+22
+00:02:10,760 --> 00:02:17,385
+So we open a notebook to start
+typing bash commands into it,
+
+23
+00:02:17,385 --> 00:02:21,720
+%bash.
+
+24
+00:02:21,720 --> 00:02:27,039
+And we will git clone our code lab
+
+25
+00:02:27,039 --> 00:02:33,541
+repository into the local directory.
+
+26
+00:02:33,541 --> 00:02:36,650
+As soon as this is finished,
+
+27
+00:02:36,650 --> 00:02:41,189
+the local directory appears right here.
+
+28
+00:02:47,488 --> 00:02:48,270
+Here we go.
+
+29
+00:02:49,920 --> 00:02:54,614
+So it's called training-data-analyst, and
+
+30
+00:02:54,614 --> 00:02:59,994
+in there you want to locate
+a directory called courses,
+
+31
+00:02:59,994 --> 00:03:04,584
+then the machine_learning, then deepdive.
+
+32
+00:03:05,664 --> 00:03:09,460
+Then tensorflow.
+
+33
+00:03:09,460 --> 00:03:15,104
+And our first lab is b_estimator.ipynb.
+
+34
+00:03:16,707 --> 00:03:21,313
+So in this example, we will be using
+Pandas to read our data from CSV
+
+35
+00:03:21,313 --> 00:03:25,260
+files containing information
+about taxi rides.
+
+36
+00:03:25,260 --> 00:03:29,630
+Pick up location, drop off location,
+and the number of passengers.
+
+37
+00:03:29,630 --> 00:03:32,599
+We will be training our model
+to predict the taxi fare.
+
+38
+00:03:34,580 --> 00:03:35,670
+So let's go through it.
+
+39
+00:03:37,816 --> 00:03:42,589
+First, we define our column names here,
+fare amount, pickuplon,
+
+40
+00:03:42,589 --> 00:03:44,250
+pickuplat, and so on.
+
+41
+00:03:46,167 --> 00:03:52,890
+And we use Pandas to read
+this data from CSV files.
+
+42
+00:03:52,890 --> 00:03:56,150
+One data set for training data,
+one data set for validation data.
+
+43
+00:04:00,880 --> 00:04:05,201
+Now, we use the built-in functionality in
+
+44
+00:04:05,201 --> 00:04:10,597
+estimators to make an input
+function from our Pandas.
+
+45
+00:04:10,597 --> 00:04:15,594
+It's called
+tf.estimators.inputs.pandas_input_fn.
+
+46
+00:04:15,594 --> 00:04:20,703
+The function lets us specify
+the features as x right here,
+
+47
+00:04:20,703 --> 00:04:24,920
+and the target labels as y right here.
+
+48
+00:04:24,920 --> 00:04:28,750
+It also handles all the standard
+settings for a training data set,
+
+49
+00:04:28,750 --> 00:04:32,497
+the batch size, the number of epochs,
+and also shuffling
+
+50
+00:04:32,497 --> 00:04:36,950
+with the queue_capacity here that
+is simply the shuffle queue buffer.
+
+51
+00:04:38,370 --> 00:04:39,310
+So let's run this one.
+
+52
+00:04:41,410 --> 00:04:44,560
+And now, we create our feature columns.
+
+53
+00:04:44,560 --> 00:04:46,580
+All of them are numeric columns.
+
+54
+00:04:46,580 --> 00:04:47,275
+So we call
+
+55
+00:04:47,275 --> 00:04:51,170
+tf.feature_column.numeric_column for
+each one.
+
+56
+00:04:51,170 --> 00:04:54,850
+The list of features columns is what
+tells the model how to back the data
+
+57
+00:04:54,850 --> 00:04:56,040
+into its input vector.
+
+58
+00:05:00,069 --> 00:05:03,910
+The model is instantiated here,
+right here.
+
+59
+00:05:05,440 --> 00:05:07,770
+We give it the list of feature columns and
+
+60
+00:05:07,770 --> 00:05:12,730
+a directory where all the output
+data will be written, right here.
+
+61
+00:05:14,250 --> 00:05:15,480
+To train the model,
+
+62
+00:05:15,480 --> 00:05:19,830
+we call it train function passing
+in the data input function.
+
+63
+00:05:19,830 --> 00:05:23,122
+Train and data input function.
+
+64
+00:05:24,689 --> 00:05:29,519
+That's the one getting data from
+the Pandas' data frame into our model.
+
+65
+00:05:33,596 --> 00:05:36,760
+So the model is now running for
+ten epochs.
+
+66
+00:05:36,760 --> 00:05:40,220
+You see the training logs here.
+
+67
+00:05:40,220 --> 00:05:42,500
+And it has finished, it is trained.
+
+68
+00:05:42,500 --> 00:05:43,672
+How good is it?
+
+69
+00:05:43,672 --> 00:05:46,710
+Why not try it out on our
+validation data center?
+
+70
+00:05:46,710 --> 00:05:51,251
+For that,
+we call model evaluates Right here.
+
+71
+00:05:51,251 --> 00:05:56,247
+Parsing in, this time the data
+input function that gets
+
+72
+00:05:56,247 --> 00:06:01,800
+the data from the df_valid
+validation Pandas' data frame.
+
+73
+00:06:01,800 --> 00:06:03,240
+So we parse it in here.
+
+74
+00:06:07,756 --> 00:06:10,770
+And we get our results.
+
+75
+00:06:10,770 --> 00:06:17,428
+The final RMSE root mean
+square error is $10.
+
+76
+00:06:17,428 --> 00:06:20,740
+Well, $10 is a big error for a taxi fare.
+
+77
+00:06:20,740 --> 00:06:23,800
+And it is nowhere near our
+previous benchmark of $6.
+
+78
+00:06:23,800 --> 00:06:29,790
+We will improve this later, now that
+we have working code to play with.
+
+79
+00:06:29,790 --> 00:06:32,619
+Let's see if we can use this model for
+predictions.
+
+80
+00:06:38,591 --> 00:06:41,402
+When we instantiate the model again,
+it will look for
+
+81
+00:06:41,402 --> 00:06:45,590
+a check point in the model directory and
+reload itself from there.
+
+82
+00:06:45,590 --> 00:06:49,780
+Since we have just trained the model, we
+have a trained checkpoint on the model and
+
+83
+00:06:49,780 --> 00:06:51,349
+it is ready for predictions.
+
+84
+00:06:53,250 --> 00:06:57,890
+We instantiate it here,
+passing it the same output directory.
+
+85
+00:07:01,852 --> 00:07:09,300
+And the predict function, called here,
+returns a Python generator.
+
+86
+00:07:09,300 --> 00:07:14,214
+We call it in a loop to
+get predicted fares.
+
+87
+00:07:14,214 --> 00:07:18,570
+Right here, and
+you see the predicted fares here.
+
+88
+00:07:18,570 --> 00:07:22,690
+And maybe this explains
+why the RMSE was so high.
+
+89
+00:07:22,690 --> 00:07:26,550
+The model essentially predicts
+the same amount for every trip.
+
+90
+00:07:26,550 --> 00:07:28,860
+Would a more complex model help?
+
+91
+00:07:28,860 --> 00:07:31,600
+Lets try,
+using a good deep neural network.
+
+92
+00:07:31,600 --> 00:07:35,680
+We keep everything as it is,
+feature columns, input functions.
+
+93
+00:07:35,680 --> 00:07:40,400
+And we changed the model from
+a linear regressor to a DNN regressor
+
+94
+00:07:40,400 --> 00:07:41,600
+with three hidden layers.
+
+95
+00:07:45,930 --> 00:07:47,990
+So let's do that.
+
+96
+00:07:47,990 --> 00:07:53,822
+We instantiate the DNN regressor here,
+and configure the hidden layers here.
+
+97
+00:07:53,822 --> 00:07:57,779
+So 32 nodes in the first one, 8 nodes in
+the second one, 2 nodes in the last one.
+
+98
+00:08:00,022 --> 00:08:01,740
+Let's train it.
+
+99
+00:08:01,740 --> 00:08:04,868
+It trains again for ten epochs.
+
+100
+00:08:05,931 --> 00:08:11,824
+And at the end,
+we will be calling this the model.predict
+
+101
+00:08:11,824 --> 00:08:16,649
+function again from
+this print_rmse helper.
+
+102
+00:08:25,165 --> 00:08:26,840
+It's training, training, training.
+
+103
+00:08:32,106 --> 00:08:33,560
+Now, it is validating.
+
+104
+00:08:35,634 --> 00:08:41,196
+And the RMSE on the validation
+data set is this time is $11.
+
+105
+00:08:41,196 --> 00:08:43,610
+Well, it's still bad.
+
+106
+00:08:43,610 --> 00:08:47,010
+We are not beating our benchmark
+model with either model.
+
+107
+00:08:47,010 --> 00:08:47,720
+What's up?
+
+108
+00:08:47,720 --> 00:08:51,727
+Well, maybe we are using TensorFlow for
+Machine Learning but
+
+109
+00:08:51,727 --> 00:08:53,583
+we are not yet using it well.
+
+110
+00:08:53,583 --> 00:08:56,980
+That's what the rest of
+this course is about.
+
+111
+00:08:56,980 --> 00:09:00,800
+But for the record, let's say we had
+to choose between the two models,
+
+112
+00:09:00,800 --> 00:09:05,150
+we would choose the one with
+the lowest validation error.
+
+113
+00:09:05,150 --> 00:09:10,650
+And finally, we would measure the RMSE
+on the test data with this chosen model.
+
+114
+00:09:10,650 --> 00:09:16,010
+This final RMSE can be published as the
+objective performance of our best model.
+
+115
+00:09:16,010 --> 00:09:20,780
+There is the standard procedure in
+data science, training, validation,
+
+116
+00:09:20,780 --> 00:09:24,060
+test, each with its separate data sets.
+
+117
+00:09:24,060 --> 00:09:27,101
+Let's try this on our benchmark data set.
+
+118
+00:09:27,101 --> 00:09:35,478
+The RMSE on the benchmark
+data set is 9.41.
+
+119
+00:09:57,647 --> 00:10:03,774
+And here we are, the RMSE on
+the benchmark data set is $10.5.
+
+120
+00:10:03,774 --> 00:10:08,124
+This is not only way more than
+our original benchmark of $6.
+
+121
+00:10:08,124 --> 00:10:13,964
+But it doesn't even beat our
+distance based rules RMSE of $80.
+
+122
+00:10:13,964 --> 00:10:18,550
+Fair enough you have learned how
+to write a TensorFlow model.
+
+123
+00:10:18,550 --> 00:10:23,350
+But not to do all the things, that you
+will have to do to improve your model and
+
+124
+00:10:23,350 --> 00:10:24,790
+make it performing.
+
+125
+00:10:24,790 --> 00:10:27,030
+We will do this in the next chapters.
+
+126
+00:10:27,030 --> 00:10:30,015
+In this chapter though,
+we will get our TensorFlow model ready for
+
+127
+00:10:30,015 --> 00:10:31,035
+these improvements.

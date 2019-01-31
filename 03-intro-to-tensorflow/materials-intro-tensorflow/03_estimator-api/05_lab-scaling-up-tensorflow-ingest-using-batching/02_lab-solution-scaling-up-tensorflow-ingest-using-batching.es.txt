@@ -1,0 +1,40 @@
+Hagamos este segundo codelab juntos. Esta vez, veremos
+cómo usar la API de Dataset para crear nuestras funciones de entrada. Localicemos los archivos del lab. Vamos a cloud.google.com/console y accedemos a nuestra cuenta de lab. Estamos en Console. Podemos abrir Cloud Shell. Y volvernos a conectarnos
+a nuestra instancia existente de Datalab mediante datalab connect mylab. Se estableció la conexión. Hacemos clic en el botón "Web preview". Cambiamos al puerto 8081,
+que es el que usa Datalab. Ahora estamos
+en la interfaz de notebook habitual. Crearemos un nuevo notebook
+para escribir unos comandos de Git y obtener los códigos. Entonces, escribimos %bash y clonamos este repositorio. Se está ejecutando. El repositorio apareció aquí
+como "training-data-analyst". Localicemos los archivos del lab. Hacemos clic en "training-data-analyst". Luego, en "courses". Luego, en "machine_learning". Luego, en "deepdive";
+y, finalmente, en "03_tensorflow". Abrimos el segundo lab,
+que se llama "c_dataset.ipynb". La API de Dataset se puede usar para crear las funciones
+de entrada de su estimador. Permite cargar datos de forma progresiva. Úsela cuando tenga
+un conjunto de datos grande. Comencemos analizando el código. Nuestro conjunto de datos en el disco es un conjunto
+de archivos CSV fragmentados. Usamos la función Dataset.list_files
+para analizar el disco y obtener un conjunto de datos
+de nombres de archivo. La función TextLineDataset
+se puede usar para leer cada archivo y transformarlo
+en un conjunto de líneas de texto. Es una transformación de uno a varios. Un nombre de archivo
+se convierte en varias líneas de texto. Por eso, la aplicamos
+con la función flat_map. Ahora, tenemos
+un conjunto de datos de líneas de texto que obtuvimos
+del contenido de nuestros archivos. Esto no es más
+que una representación conceptual. Los archivos no se cargaron a la memoria. No entrarían. Finalmente, usamos la función map para aplicar una transformación
+de uno a uno a las líneas de texto. Cada línea se analiza como
+un conjunto de valores separados por comas y se convierte en una lista de atributos. La decodificación ocurre aquí. Ahora, tenemos el conjunto de datos
+de atributos y etiquetas que queríamos. Redistribuimos
+con un tamaño de búfer específico. Lo repetimos
+durante cierta cantidad de ciclos y dividimos en minilotes
+del tamaño batch_size. Finalmente,
+llamamos a la función get_next que muestra los atributos
+y etiquetas como un nodo de TensorFlow. Es lo que nuestro modelo espera. Cada vez que el modelo ejecute
+estos nodos durante el entrenamiento mostrará el siguiente lote
+de atributos y etiquetas y activará operaciones de carga
+de archivos de manera progresiva solo cuando sea necesario. Aquí, definimos las funciones de entrada de los conjuntos de datos
+de entrenamiento, validación y prueba mediante la carga
+de los archivos CSV correspondientes "taxi-train.csv",
+"taxi-valid.csv" y "taxi-test.csv". Ejecutemos esas celdas. Dejamos nuestras columnas
+de atributos como están por ahora y estamos listos para entrenar. El entrenamiento se está ejecutando. Para ello, como antes,
+llamamos a la función model.train en la función de entrada que obtiene el conjunto
+de datos de entrenamiento. Ahora tenemos un modelo entrenado. Finalmente, lo evaluamos
+y obtenemos las métricas de validación. Aquí están.
+Y eso es todo para este codelab.

@@ -1,0 +1,95 @@
+Hier stellen wir die Dataset API vor, die in TensorFlow enthalten ist und zur
+Nutzung mit Estimators entwickelt wurde. Betrachten wir,
+warum und wann wir sie verwenden. Wir wissen, wie man ein Modell auswählt, 
+und ihm Daten aus dem Speicher zuführt, für Training und Vorhersagen. Aber für reale Modelle müssen wir noch einige
+praktische Probleme lösen. Die Estimator API kann auch hier helfen. Beginnen wir mit dem ersten, der Datengröße. 
+In der Praxis passen Ihre Trainingsdaten
+selten in den Arbeitsspeicher und werden während des Trainings
+progressiv von der Festplatte geladen. Wie können Sie eine Eingabefunktion
+für den Estimator schreiben, die dies mithilfe von Datasets tut,
+wie in tf.data.Dataset. Große Datasets werden oft
+in mehrere Dateien aufgeteilt, die progressiv geladen werden können. Denken Sie daran,
+dass wir mit Minibatches trainieren. Wir müssen nicht das
+ganze Dataset im Speicher haben. Wir brauchen nur ein
+Minibatch je Trainingsschritt. Hier ist die Dataset API. Sie hilft uns, Eingabefunktionen
+für das Modell zu erstellen, die Daten progressiv laden. Es gibt spezielle Datasetklassen, die Daten aus Textdateien wie CSVs,
+TensorFlow-Datensätze oder Datensätze mit
+fester Länge lesen können. Für alles andere können Sie
+die allgemeine Datasetklausel verwenden und einen eigenen
+Decodierungscode hinzufügen. In diesem Beispiel laden wir ein
+Textzeilendataset aus einer CSV-Datei. Betrachten wir die verschiedenen Teile. Dieser Teil des Codes
+weist die Datasetklasse an, wie die Daten im Training organisiert
+werden sollen: Batches zu 128, die 15 Epochen lang wiederholt und mit einem Zufallsspeicher
+von 1.000 Elementen gemischt werden. Hier instanziieren wir das 
+Textzeilendataset aus einem Dateinamen. Dies lädt die Datei
+und teilt sie in Zeilen auf. Das resultierende Dataset
+besteht aus einer Reihe von Textzeilen. Wir können jetzt die Funktion "map"
+verwenden, um die Zeilen umzuformen. In diesem Fall möchten wir
+jede Zeile in Datenelemente aufteilen. "map" wendet eine Funktion auf 
+jedes Element im Dataset separat an. In dieser Funktion verwenden
+wir die "tf_decode_csv", um die kommagetrennten Werte
+aus den Textzeilen zu extrahieren und sie in Features und Labels zu
+formatieren, wie das Modell sie erwartet. Nach der Zuordnung haben wir ein Dataset
+basierend auf Features und Labels. Schließlich erstellen wir
+die Eingabefunktion für unser Modell. Dazu dient dieser Boilerplate-Code. Vielleicht fragen sie sich,
+warum er "iterator" genannt wird, und warum "get_next", und was passiert eigentlich beim Training? Sehen wir uns nochmal den Mechanismus an. Das hilft uns beim Verstehen. TensorFlow arbeitet mit
+einem verzögerten Ausführungsprinzip. Ältere, in Python verfasste Befehle mit
+"tf.irgendwas" verarbeiten keine Daten. Sie erstellen im Arbeitsspeicher
+einen Funktionsgraphen. Dieser Graph wird beim Trainieren
+oder bei Vorhersagen ausgeführt. Wenn wir einen Estimator instanziieren, wie einen linearen Regressor,
+passiert dasselbe. Im Speicher wird ein TensorFlow-
+Graph erstellt und stellt das Modell dar. Das Problem ist,
+ihn mit einer Datenquelle zu verbinden. Dafür gibt es Eingabefunktionen. Die Aufgabe einer Eingabefunktion ist, einen TensorFlow-Knoten zurückzugeben, der die vom Modell erwarteten
+Features und Labels darstellt. Dieser Knoten wird mit den
+Eingaben des Modells verbunden und hat die Aufgabe, bei jeder Ausführung
+ein neues Datenbatch zu liefern, während des Trainings oder der Inferenz. Dazu dient die Dataset API. Sie generiert Eingabeknoten für Sie,
+die bei jedem Trainingsschritt ein Datenbatch liefern. Außerdem liefert sie Daten progressiv,
+sodass der Speicher nicht überfüllt wird. Wenn Sie 
+dataset.makeiterator.get_next aufrufen erhalten Sie nicht wirklich
+das nächste Element im Dataset. Sie erhalten einen TensorFlow-Knoten, der bei jeder Ausführung im Training
+ein Trainingsdatenbatch zurückgibt. Zur Wiederholung: Es werden Eingabefunktionen aufgerufen
+wenn ein Modell instanziiert wird. Sie liefern ein TensorFlow-Knotenpaar, das
+an die Eingabe des Modells angefügt wird, und diese Knoten sind
+für das Liefern von Daten an das Modell während des
+Trainings oder der Inferenz zuständig. Es gibt einige falsche
+Vorstellungen zu Eingabefunktionen, die ich ausräumen möchte. Die Eingabefunktion wird nicht jedes Mal
+aufgerufen, wenn Modelle Daten benötigen. Sie wird nur einmal
+bei der Modellerstellung aufgerufen. Und nein, Eingabefunktionen
+geben nicht tatsächliche Daten zurück selbst, wenn es 
+beim Programmieren so wirkt. Sie geben TensorFlow-Knoten zurück, und diese Knoten geben Daten zurück,
+wenn sie ausgeführt werden. Sie können beliebig komplexen Code in die Eingabefunktion einfügen,
+um Ihre Daten umzuwandeln, solange Sie bedenken,
+dass sie nur einmal ausgeführt wird. Unabhängig von den Transformationen,
+die Sie anwenden möchten, und ob Sie die Dataset API verwenden, achten Sie darauf, sie mit
+"tf.irgendwas"-Befehlen auszudrücken, die einen TensorFlow-Graphen erzeugen. So werden Ihre Transformationen
+auf jedes Datenbatch angewendet, das in Ihr Modell geladen wird. Auch, wenn die Eingabefunktion
+selbst nur einmal aufgerufen wird. Hier ist wieder der vollständige Code. Gehen wir ihn noch einmal durch. Von unten beginnend nach oben. model.train startet die Trainingsschleife. Das Modell empfängt Daten
+von seinen Eingabeknoten, Features und Labels,
+wie in der Eingabefunktion definiert. Diese Knoten durchlaufen
+das Dataset und geben jedes Mal, wenn sie in der Trainingsschleife
+ausgeführt werden, ein Datenbatch zurück. Das erklärt, warum die
+Dataset API, mit der Sie sie aufrufen, dataset.make_one_shot_iterator().get_next()
+heißt. Das Dataset mischt die Daten, wiederholt sie für 15 Epochen und sammelt sie in
+Minibatches von 128 Elementen. Das Dataset wurde erstellt,
+indem Zeilen aus einer Textdatei gelesen und die durch Komma getrennten
+Werte daraus dekodiert wurden. Die Map-Operation wandelt
+ein Dataset aus Textzeilen in ein Dataset von Features und Labels um. Zurück zu unserem anfänglichen Problem: große Datenmengen aus einer Reihe
+von fragmentierten Dateien laden. Eine zusätzliche Codezeile reicht aus. Wir scannen zuerst den Datenträger und laden ein Dataset mit Dateinamen
+über die Funktion von Dataset.list_files. Sie unterstützt
+eine Glob-ähnliche Syntax mit Platzhaltern zum Musterabgleich von Dateinamen. Dann verwenden wir 
+TextLineDataset, um diese Dateien zu laden und jeden Dateinamen in ein
+Dataset von Textzeilen umzuwandeln. Wir benutzen "flat map",
+um alle in einem Dataset zusammenzufassen. Dann verwenden wir
+für jede Textzeile "map", um den CSV-Parsing-Algorithmus anzuwenden und ein Dataset mit
+Features und Labels zu erhalten. Warum zwei Zuordnungsfunktionen,
+"map" und "flat map"? Eine ist für 1-zu-1-Transformationen, die andere für 1-zu-n-Transformationen. Das Parsen einer Textzeile
+ist eine 1-zu-1-Transformation, also wenden wir auf sie "map" an. Beim Laden einer Datei
+mit einem Textzeilendataset wird ein Dateiname
+zu einer Sammlung von Textzeilen. Das ist eine 1-zu-n-Transformation,
+daher wird "flat map" angewendet, um alle resultierenden Textzeilen
+in einem Dataset zusammenzufassen. Jetzt wissen Sie,
+wie Sie Datasets verwenden, um geeignete Eingabefunktionen
+für Ihre Modelle zu generieren und sie mit Datasets zu trainieren,
+die zu groß für den Arbeitsspeicher sind. Aber Datasets bietet
+auch eine umfangreiche API zum Bearbeiten und Transformieren
+Ihrer Daten. Nutzen Sie sie.

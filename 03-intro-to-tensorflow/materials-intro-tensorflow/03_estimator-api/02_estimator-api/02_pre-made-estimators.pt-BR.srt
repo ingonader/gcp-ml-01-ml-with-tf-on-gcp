@@ -1,0 +1,400 @@
+1
+00:00:00,000 --> 00:00:02,025
+Vamos ver um exemplo.
+
+2
+00:00:02,025 --> 00:00:03,525
+Que tal imóveis?
+
+3
+00:00:03,525 --> 00:00:05,880
+Podemos prever o preço
+de uma propriedade?
+
+4
+00:00:05,880 --> 00:00:08,160
+Precisamos primeiro escolher
+nossos atributos.
+
+5
+00:00:08,160 --> 00:00:11,475
+Esses são os dados em que
+basearemos nossas previsões.
+
+6
+00:00:11,475 --> 00:00:14,625
+Por que não testar e criar um
+modelo que preveja o preço
+
+7
+00:00:14,625 --> 00:00:18,160
+com base no tamanho de uma
+casa ou de um apartamento?
+
+8
+00:00:18,160 --> 00:00:20,310
+Nossos atributos serão, primeiro,
+
+9
+00:00:20,310 --> 00:00:22,410
+a área
+e, segundo,
+
+10
+00:00:22,410 --> 00:00:25,225
+a categoria: casa ou apartamento.
+
+11
+00:00:25,225 --> 00:00:27,435
+Veja como implementamos isso.
+
+12
+00:00:27,435 --> 00:00:31,275
+Podemos usar a API da coluna de atributo
+para definir atributos.
+
+13
+00:00:31,275 --> 00:00:34,500
+Primeiro, uma coluna numérica
+para a área
+
+14
+00:00:34,500 --> 00:00:38,125
+e, em seguida, uma coluna categórica
+para o tipo de propriedade.
+
+15
+00:00:38,125 --> 00:00:42,670
+É possível duas categorias neste
+modelo simples, casa ou apartamento.
+
+16
+00:00:42,670 --> 00:00:46,049
+Podemos agora instanciar um
+regressor linear,
+
+17
+00:00:46,049 --> 00:00:49,315
+um dos estimadores pré-fabricados
+para esses atributos.
+
+18
+00:00:49,315 --> 00:00:52,230
+Um regressor é um modelo que
+gera um número,
+
+19
+00:00:52,230 --> 00:00:56,090
+no nosso caso, o preço de venda
+previsto da propriedade.
+
+20
+00:00:56,090 --> 00:00:58,785
+Mas por que precisamos
+de colunas de atributo?
+
+21
+00:00:58,785 --> 00:01:01,335
+É hora de aprender mais sobre isso.
+
+22
+00:01:01,335 --> 00:01:05,325
+Um regressor linear é um modelo que
+funciona em um vetor de dados.
+
+23
+00:01:05,325 --> 00:01:09,540
+Ele calcula uma soma ponderada de todos
+os elementos de dados de entrada
+
+24
+00:01:09,540 --> 00:01:14,255
+e pode ser treinado para ajustar
+os pesos para o seu problema.
+
+25
+00:01:14,255 --> 00:01:16,845
+Aqui, para prever o preço de venda.
+
+26
+00:01:16,845 --> 00:01:24,225
+Mas como empacotar dados no vetor único
+de entrada que o regressor linear espera?
+
+27
+00:01:24,225 --> 00:01:29,160
+De várias maneiras, dependendo
+de quais dados estamos empacotando.
+
+28
+00:01:29,160 --> 00:01:33,420
+E é aí que a API de colunas
+de atributo é útil.
+
+29
+00:01:33,420 --> 00:01:38,720
+Ela realiza formas padrão de empacotamento
+de dados em elementos vetoriais.
+
+30
+00:01:38,720 --> 00:01:43,090
+Aqui, os valores na coluna
+numérica são apenas números.
+
+31
+00:01:43,090 --> 00:01:48,615
+Eles podem ser copiados como estão
+em um único elemento do vetor de entrada.
+
+32
+00:01:48,615 --> 00:01:53,745
+Por outro lado, nossa coluna categórica
+é codificada como one-hot.
+
+33
+00:01:53,745 --> 00:01:55,305
+Temos duas categorias.
+
+34
+00:01:55,305 --> 00:01:57,360
+Então, casa será 1, 0,
+
+35
+00:01:57,360 --> 00:02:00,625
+enquanto apartamento se tornará 0, 1.
+
+36
+00:02:00,625 --> 00:02:03,120
+Uma terceira categoria seria
+codificada como 0, 0, 1
+
+37
+00:02:03,120 --> 00:02:05,310
+e assim por diante.
+
+38
+00:02:05,310 --> 00:02:10,235
+Agora, o regressor linear sabe como pegar
+os atributos que nos interessam,
+
+39
+00:02:10,235 --> 00:02:12,420
+empacotá-los no vetor de entrada
+
+40
+00:02:12,420 --> 00:02:16,310
+e aplicar o que quer
+que um regressor linear faça.
+
+41
+00:02:16,310 --> 00:02:22,270
+Há mais tipos de coluna de atributo para
+escolher, como para valores contínuos
+
+42
+00:02:22,270 --> 00:02:23,590
+que você queira agrupar,
+
+43
+00:02:23,590 --> 00:02:26,970
+incorporação de palavras, cruzamentos de
+colunas e assim por diante.
+
+44
+00:02:26,970 --> 00:02:31,900
+As transformações que eles aplicam são
+descritas na documentação do TensorFlow
+
+45
+00:02:31,900 --> 00:02:34,490
+para que você sempre saiba
+o que está acontecendo.
+
+46
+00:02:34,490 --> 00:02:36,160
+Para treinar o modelo,
+
+47
+00:02:36,160 --> 00:02:39,090
+precisamos gravar uma função
+de entrada que retornará
+
+48
+00:02:39,090 --> 00:02:42,690
+os atributos nomeados como
+nas colunas de atributo.
+
+49
+00:02:42,690 --> 00:02:46,815
+Como estamos treinando, precisamos
+também das respostas corretas, ou rótulos.
+
+50
+00:02:46,815 --> 00:02:51,500
+Agora, podemos chamar a função de
+treino do nosso estimador,
+
+51
+00:02:51,500 --> 00:02:56,655
+que treinará o modelo repetindo
+este conjunto de dados por 100 vezes.
+
+52
+00:02:56,655 --> 00:03:00,750
+Veremos como os lotes
+funcionam mais tarde,
+
+53
+00:03:00,750 --> 00:03:04,770
+mas para aqueles que já conhecem
+o conceito de lotes,
+
+54
+00:03:04,770 --> 00:03:08,490
+o código, conforme gravado aqui, treina
+em um único lote de dados
+
+55
+00:03:08,490 --> 00:03:12,705
+em cada etapa e esse lote contém
+todo o conjunto de dados.
+
+56
+00:03:12,705 --> 00:03:16,230
+Uma vez treinado, o modelo pode ser
+usado para as previsões.
+
+57
+00:03:16,230 --> 00:03:20,250
+Vamos precisar de uma função de entrada
+que forneça dados para a previsão.
+
+58
+00:03:20,250 --> 00:03:24,970
+Aqui, uma casa de 1500 pés quadrados
+e um apartamento de 1800 pés quadrados.
+
+59
+00:03:24,970 --> 00:03:28,410
+A função de previsão na
+API Estimator retorna
+
+60
+00:03:28,410 --> 00:03:32,730
+um gerador Python que você pode
+usar para iterar as previsões.
+
+61
+00:03:32,730 --> 00:03:37,065
+Aqui está um resumo da API Estimator
+até o momento.
+
+62
+00:03:37,065 --> 00:03:43,175
+Usamos colunas de atributo para colocar os
+dados em um formato que o modelo entenda.
+
+63
+00:03:43,175 --> 00:03:48,270
+Instanciamos um regressor linear com base
+nessas colunas de atributo,
+
+64
+00:03:48,270 --> 00:03:52,545
+chamamos "train", para treinar o
+modelo para 100 etapas.
+
+65
+00:03:52,545 --> 00:03:57,850
+Dados de treino são fornecidos por meio da
+função de entrada chamada "predict",
+
+66
+00:03:57,850 --> 00:04:00,330
+para ter previsões,
+e os dados para isso
+
+67
+00:04:00,330 --> 00:04:03,760
+foram novamente fornecidos por meio
+de uma função de entrada de dados.
+
+68
+00:04:03,760 --> 00:04:08,200
+Vamos abordar mais esses
+detalhes ao longo deste curso.
+
+69
+00:04:08,200 --> 00:04:10,505
+Para usar um estimador
+pré-fabricado diferente,
+
+70
+00:04:10,505 --> 00:04:15,330
+apenas altere o nome da classe e forneça
+parâmetros de configuração apropriados.
+
+71
+00:04:15,330 --> 00:04:18,329
+Por exemplo, aqui, poderíamos usar
+uma rede neural densa,
+
+72
+00:04:18,329 --> 00:04:21,000
+um regressor, com duas camadas ocultas.
+
+73
+00:04:21,000 --> 00:04:23,155
+O primeiro tem três neurônios.
+
+74
+00:04:23,155 --> 00:04:24,650
+O segundo, apenas dois,
+
+75
+00:04:24,650 --> 00:04:28,930
+e terminamos no neurônio único que
+prevê o preço da propriedade.
+
+76
+00:04:28,930 --> 00:04:32,415
+Observe que o vetor de entrada é
+o mesmo para os dois modelos.
+
+77
+00:04:32,415 --> 00:04:35,190
+Podemos reutilizar as mesmas
+colunas de atributo.
+
+78
+00:04:35,190 --> 00:04:38,430
+Aqui estão alguns detalhes
+que você pode ajustar
+
+79
+00:04:38,430 --> 00:04:41,840
+em uma rede neural densa: número e
+tamanho das camadas ocultas,
+
+80
+00:04:41,840 --> 00:04:44,130
+a opção da função de ativação,
+
+81
+00:04:44,130 --> 00:04:50,025
+parâmetros de regularização como drop-out,
+ou seu otimizador favorito para o treino.
+
+82
+00:04:50,025 --> 00:04:55,175
+Mas o mais importante é que há bons
+padrões para quase todos eles.
+
+83
+00:04:55,175 --> 00:04:56,910
+Para um regressor DNN,
+
+84
+00:04:56,910 --> 00:05:00,560
+os únicos parâmetros obrigatórios
+são as camadas ocultas.

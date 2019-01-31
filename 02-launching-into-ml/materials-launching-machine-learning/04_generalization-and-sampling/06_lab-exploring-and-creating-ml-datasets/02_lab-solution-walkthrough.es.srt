@@ -1,0 +1,1909 @@
+1
+00:00:00,810 --> 00:00:03,850
+Este es el último lab que haremos
+como parte de este módulo
+
+2
+00:00:03,850 --> 00:00:06,970
+sobre generalización y muestreo,
+y es bastante completo.
+
+3
+00:00:07,200 --> 00:00:11,450
+Si les llevó bastante tiempo hacer
+todos los pasos, eso era de esperarse.
+
+4
+00:00:11,450 --> 00:00:14,200
+Ahora,
+veamos la explicación de la solución.
+
+5
+00:00:14,200 --> 00:00:17,450
+Si aún no lo intentaron,
+traten de obtener el notebook de Datalab
+
+6
+00:00:17,450 --> 00:00:21,275
+el notebook de iPython
+y revisen el código de las celdas.
+
+7
+00:00:21,275 --> 00:00:24,235
+Luego, regresen a este video
+de la explicación de la solución.
+
+8
+00:00:24,885 --> 00:00:27,845
+Los que se quedarán conmigo,
+veamos lo que tenemos aquí.
+
+9
+00:00:27,845 --> 00:00:33,095
+Aquí tengo el notebook de Google Cloud
+de la estimación de tarifas de taxis.
+
+10
+00:00:33,125 --> 00:00:38,130
+Lo que haremos será explorar…
+¿Recuerdan los tres pasos?
+
+11
+00:00:38,130 --> 00:00:41,825
+Tenemos que explorar los datos
+y crear los conjuntos de datos.
+
+12
+00:00:41,825 --> 00:00:45,390
+Ahora ya entienden mejor
+cómo utilizar las funciones hash.
+
+13
+00:00:45,390 --> 00:00:48,640
+Entonces, esos tres pasos
+son el conjunto de datos de entrenamiento
+
+14
+00:00:48,640 --> 00:00:50,630
+el de evaluación y el de pruebas.
+
+15
+00:00:50,630 --> 00:00:54,770
+Lo último, que tal vez no vieron todavía,
+es cómo crear una comparativa
+
+16
+00:00:55,140 --> 00:00:58,845
+que abordaremos más tarde
+cuando sepan mucho más sobre el AA
+
+17
+00:00:58,845 --> 00:01:01,620
+y superemos ese modelo simple
+con los métodos más avanzados
+
+18
+00:01:01,620 --> 00:01:03,255
+que aprenderán en otros cursos
+
+19
+00:01:03,255 --> 00:01:06,350
+por ejemplo, cómo crear redes
+neuronales profundas con TensorFlow.
+
+20
+00:01:06,350 --> 00:01:08,570
+Antes de hacerlo,
+tenemos que empezar de cero
+
+21
+00:01:08,570 --> 00:01:10,575
+desde abajo hacia arriba.
+
+22
+00:01:10,575 --> 00:01:16,285
+Lo primero que debemos hacer
+es obtener los datos de muestra.
+
+23
+00:01:16,285 --> 00:01:19,650
+Lo genial sobre BigQuery es que hay
+muchos conjuntos de datos públicos.
+
+24
+00:01:19,650 --> 00:01:23,720
+Al igual que datos de vuelos,
+también hay de taxis.
+
+25
+00:01:24,020 --> 00:01:29,135
+Lo que haremos es obtener las tarifas
+de los taxis para la ciudad de Nueva York.
+
+26
+00:01:29,135 --> 00:01:31,560
+Eso está en este conjunto de datos público
+
+27
+00:01:31,560 --> 00:01:33,620
+y estos son los campos
+que queremos revisar.
+
+28
+00:01:33,620 --> 00:01:36,605
+Decidir qué exploraremos
+y usaremos en nuestro modelo
+
+29
+00:01:36,605 --> 00:01:39,035
+es un poco de ingeniería de funciones.
+
+30
+00:01:39,325 --> 00:01:42,590
+Si pensaran en el problema
+de predecir la tarifa de taxis
+
+31
+00:01:42,590 --> 00:01:44,715
+¿qué información les interesaría?
+
+32
+00:01:45,105 --> 00:01:49,635
+Queremos saber cuándo los recogieron,
+cuál es el punto exacto
+
+33
+00:01:49,635 --> 00:01:52,550
+la latitud y la longitud
+de los puntos de partida y de destino
+
+34
+00:01:52,550 --> 00:01:54,625
+y cuántas personas estaban en el taxi.
+
+35
+00:01:54,625 --> 00:01:58,170
+Tal vez hay varios tipos de tarifas
+o una estructura de niveles
+
+36
+00:01:58,170 --> 00:02:01,290
+para la cantidad de ocupantes,
+cuánto tiempo estuvieron en el taxi
+
+37
+00:02:01,290 --> 00:02:03,880
+qué pasa si se cruza
+uno de los puentes de Nueva York.
+
+38
+00:02:03,880 --> 00:02:05,300
+Ese es el importe del peaje.
+
+39
+00:02:05,300 --> 00:02:08,970
+Luego, tenemos el monto de la tarifa,
+además de propinas y otros gastos
+
+40
+00:02:08,970 --> 00:02:10,955
+y así obtenemos ese importe total.
+
+41
+00:02:10,955 --> 00:02:13,920
+Veremos cuáles de estos factores
+finalmente juegan un papel
+
+42
+00:02:13,920 --> 00:02:16,305
+en la determinación
+de la tarifa final del taxi
+
+43
+00:02:16,305 --> 00:02:18,540
+incluso antes de entrar.
+
+44
+00:02:19,170 --> 00:02:21,510
+Lo primero que debemos hacer
+es obtener los datos.
+
+45
+00:02:21,510 --> 00:02:25,425
+Para hacerlo en Cloud Datalab,
+invocaremos una consulta en BigQuery
+
+46
+00:02:25,425 --> 00:02:28,930
+como ven aquí
+y esto es de la muestra de BigQuery.
+
+47
+00:02:28,930 --> 00:02:31,980
+Tenemos los viajes en taxis amarillos
+de la ciudad de Nueva York
+
+48
+00:02:31,980 --> 00:02:35,099
+obtuvimos todos esos campos que mencioné
+
+49
+00:02:36,044 --> 00:02:40,744
+y analizaremos una pequeña parte.
+
+50
+00:02:41,254 --> 00:02:44,579
+Usaremos un muestreo del 1%
+
+51
+00:02:44,579 --> 00:02:47,280
+al igual que con los datos
+de vuelos del último lab.
+
+52
+00:02:47,540 --> 00:02:50,000
+Usaremos solo un pequeño subconjunto.
+
+53
+00:02:50,540 --> 00:02:53,570
+Esta es la consulta inicial
+y lo que queremos usar
+
+54
+00:02:54,340 --> 00:02:57,625
+es 100,000…
+
+55
+00:03:00,275 --> 00:03:02,675
+Tenemos 100,000 registros para elegir.
+
+56
+00:03:02,675 --> 00:03:09,425
+Veamos si podemos obtener
+10,000 traslados en taxi.
+
+57
+00:03:10,110 --> 00:03:14,110
+Hemos parametrizado la consulta
+de SQL un poco.
+
+58
+00:03:14,110 --> 00:03:17,755
+Pueden parametrizarla como harían
+un reemplazo de cadenas de consulta
+
+59
+00:03:17,755 --> 00:03:20,970
+La consulta es…
+usen la consulta sin procesar
+
+60
+00:03:20,970 --> 00:03:24,230
+porque especificamos datos
+sin procesar aquí arriba, como pueden ver
+
+61
+00:03:24,230 --> 00:03:28,705
+reemplacen cada n,
+esto es capturar los registros
+
+62
+00:03:28,705 --> 00:03:30,515
+usen cada n en la muestra
+
+63
+00:03:31,275 --> 00:03:34,370
+y el tamaño total que vemos
+es de 100,000 registros.
+
+64
+00:03:34,370 --> 00:03:37,625
+Luego, mostrarán
+y ejecutarán la consulta.
+
+65
+00:03:37,625 --> 00:03:41,200
+Esta es la consulta ejecutada
+y, luego, haremos el muestreo con esto
+
+66
+00:03:42,770 --> 00:03:46,155
+donde el resto de la operación es 1
+
+67
+00:03:46,155 --> 00:03:49,270
+y ahora se redujo
+a 10,000 traslados en taxi.
+
+68
+00:03:49,270 --> 00:03:51,485
+La razón por la que queremos
+hacer el muestreo
+
+69
+00:03:51,485 --> 00:03:55,065
+es porque no queremos
+tomar los primeros 1,000 registros
+
+70
+00:03:55,065 --> 00:03:58,130
+ya que podrían estar ordenados
+y obtendrían sesgo en los datos.
+
+71
+00:03:58,130 --> 00:04:03,035
+Un buen ejemplo
+es que podrían estar ordenados
+
+72
+00:04:03,035 --> 00:04:05,280
+por traslados recientes.
+
+73
+00:04:05,280 --> 00:04:07,665
+Si comienzan
+a analizar y explorar los datos
+
+74
+00:04:07,665 --> 00:04:11,945
+de los 3,000 traslados más recientes,
+podrían introducir sesgo en los resultados
+
+75
+00:04:11,945 --> 00:04:16,910
+porque tal vez hubo un incremento
+en la tarifa que se registró recién
+
+76
+00:04:16,910 --> 00:04:20,795
+o una reducción
+que no detectarían solo mirando los datos.
+
+77
+00:04:20,795 --> 00:04:23,015
+Lo llamamos sesgo de recencia.
+
+78
+00:04:23,015 --> 00:04:26,515
+Hicimos el muestreo correctamente
+y esto es lo que tenemos.
+
+79
+00:04:27,075 --> 00:04:28,575
+Todavía no hicimos nada.
+
+80
+00:04:28,575 --> 00:04:31,990
+Solo son los campos que se muestran
+del conjunto de datos.
+
+81
+00:04:31,990 --> 00:04:34,140
+El siguiente paso es explorar.
+
+82
+00:04:34,360 --> 00:04:38,340
+Tenemos la cantidad de pasajeros,
+vemos de 1 a 5 en algunos ejemplos.
+
+83
+00:04:38,650 --> 00:04:41,955
+Tenemos qué distancia recorrieron.
+Muy interesante…
+
+84
+00:04:41,955 --> 00:04:45,590
+Tenemos distancia cero,
+para millas de distancia del viaje.
+
+85
+00:04:45,590 --> 00:04:47,120
+Eso es un poco raro.
+
+86
+00:04:47,120 --> 00:04:49,275
+Cero peajes; eso se puede esperar.
+
+87
+00:04:49,275 --> 00:04:52,715
+El importe de la tarifa que es USD 2.50
+y el monto total que es USD 2.50.
+
+88
+00:04:53,725 --> 00:04:55,500
+Los datos se ven interesantes.
+
+89
+00:04:55,500 --> 00:04:57,955
+Veamos si podemos explorar
+un poco más rápido.
+
+90
+00:04:57,955 --> 00:05:01,975
+La mejor forma de hacerlo
+es crear una visualización de datos.
+
+91
+00:05:01,975 --> 00:05:05,500
+A menudo, en el aprendizaje automático,
+crearemos un gráfico de dispersión
+
+92
+00:05:05,500 --> 00:05:07,580
+y observaremos algunos de los puntos.
+
+93
+00:05:07,580 --> 00:05:10,290
+Hicimos un gráfico de la distancia
+del traslado comparada
+
+94
+00:05:10,290 --> 00:05:11,710
+con el importe de la tarifa.
+
+95
+00:05:11,710 --> 00:05:14,250
+Podrían pensar que mientras
+más largo es el viaje
+
+96
+00:05:14,250 --> 00:05:16,425
+más subirá la tarifa del taxímetro.
+
+97
+00:05:16,425 --> 00:05:19,450
+Aquí vemos
+que mientras más largo el viaje…
+
+98
+00:05:19,840 --> 00:05:25,950
+incluso con una distancia de 40 aquí,
+vemos una tarifa general alta de USD 100.
+
+99
+00:05:25,950 --> 00:05:30,280
+Pero vemos dos extrañas
+anomalías en los datos.
+
+100
+00:05:30,930 --> 00:05:34,845
+Hay muchos viajes muy cortos,
+que incluso podrían ser cero
+
+101
+00:05:34,845 --> 00:05:36,555
+porque están justo en esta línea.
+
+102
+00:05:36,555 --> 00:05:39,570
+Esa es una anomalía.
+Debemos filtrarlos del conjunto de datos.
+
+103
+00:05:39,570 --> 00:05:42,245
+Cómo podría haber un traslado
+que no va a ninguna parte.
+
+104
+00:05:42,245 --> 00:05:44,630
+Tal vez entran
+y luego se salen inmediatamente.
+
+105
+00:05:44,630 --> 00:05:48,295
+Debemos observar los puntos
+que son cero en esta línea.
+
+106
+00:05:48,295 --> 00:05:54,875
+Y tal vez cualquier otro punto…
+vean esta línea sólida que sube
+
+107
+00:05:54,875 --> 00:05:56,420
+en diagonal aquí.
+
+108
+00:05:56,420 --> 00:06:00,060
+Parece una línea, pero en realidad
+es un montón de puntos recolectados
+
+109
+00:06:00,060 --> 00:06:00,985
+en esa línea.
+
+110
+00:06:00,985 --> 00:06:02,955
+Se debe a la naturaleza de los datos.
+
+111
+00:06:02,955 --> 00:06:06,665
+Es interesante, porque en Nueva York,
+cuando se sale del aeropuerto JFK
+
+112
+00:06:06,665 --> 00:06:10,585
+se puede obtener una tarifa plana
+para ir a cualquier parte en Manhattan.
+
+113
+00:06:10,585 --> 00:06:13,060
+Será una tarifa plana.
+
+114
+00:06:13,060 --> 00:06:16,550
+Según la distancia que se viaja,
+la tarifa se conoce en ese momento.
+
+115
+00:06:16,550 --> 00:06:20,485
+Por eso es fácil modelar esa relación,
+que es simplemente una línea.
+
+116
+00:06:20,485 --> 00:06:23,915
+Pero queremos predecir no solo 
+para las personas que vienen de JFK
+
+117
+00:06:23,915 --> 00:06:27,240
+sino para los que se trasladan
+a cualquier parte dentro de Nueva York.
+
+118
+00:06:27,770 --> 00:06:29,505
+Son detalles interesantes.
+
+119
+00:06:29,505 --> 00:06:32,530
+Veamos algunas de las formas
+de preprocesar y limpiar los datos
+
+120
+00:06:32,530 --> 00:06:35,415
+antes de agruparlos
+en los conjuntos de datos
+
+121
+00:06:35,415 --> 00:06:38,225
+de entrenamiento, 
+de validación y de prueba.
+
+122
+00:06:38,225 --> 00:06:41,250
+No queremos apresurarnos
+y crear esas divisiones de datos
+
+123
+00:06:41,250 --> 00:06:43,530
+sin limpiarlos antes,
+sin sacar la basura.
+
+124
+00:06:43,530 --> 00:06:45,905
+Si comienzan a dividir datos
+que no están limpios
+
+125
+00:06:45,905 --> 00:06:49,375
+tendrán un modelo desastroso
+y no podrán modelar ningún comportamiento
+
+126
+00:06:49,375 --> 00:06:50,800
+del mundo real.
+
+127
+00:06:50,800 --> 00:06:53,415
+Una regla general
+es que todos los datos tienen basura.
+
+128
+00:06:53,415 --> 00:06:56,990
+Debemos limpiarlos y prepararlos
+antes de usarlos para alimentar el modelo.
+
+129
+00:06:56,990 --> 00:07:00,355
+El modelo solo quiere datos
+de alta calidad. Eso es lo que le gusta.
+
+130
+00:07:00,585 --> 00:07:03,340
+Veamos algunos de los traslados.
+
+131
+00:07:04,680 --> 00:07:07,800
+Veamos cualquiera que cruzó un puente.
+
+132
+00:07:07,800 --> 00:07:09,890
+Es decir, peaje superior a cero.
+
+133
+00:07:09,890 --> 00:07:12,610
+Y un día en particular
+en el que vemos la hora de partida.
+
+134
+00:07:12,610 --> 00:07:14,715
+En este caso, es 20 de mayo de 2014.
+
+135
+00:07:15,015 --> 00:07:17,855
+Un detalle interesante aparece
+en cuanto vemos los datos.
+
+136
+00:07:17,855 --> 00:07:21,700
+Longitud o latitud
+de partida igual a cero
+
+137
+00:07:21,700 --> 00:07:25,630
+son claramente datos sucios o incorrectos.
+
+138
+00:07:25,630 --> 00:07:29,665
+Debemos filtrar los datos
+sin una ubicación válida de partida.
+
+139
+00:07:29,665 --> 00:07:32,970
+Debemos tener un conjunto de datos
+que tenga sentido
+
+140
+00:07:34,080 --> 00:07:37,190
+y sin registros que sean extraños.
+
+141
+00:07:37,590 --> 00:07:41,030
+Otro detalle que notarán
+es que, en el importe total
+
+142
+00:07:41,030 --> 00:07:44,890
+en ninguna parte vemos
+columnas disponibles
+
+143
+00:07:44,890 --> 00:07:50,020
+que indiquen si el cliente dio propina
+o un importe en efectivo de propina
+
+144
+00:07:50,020 --> 00:07:52,410
+porque no está registrado.
+
+145
+00:07:52,410 --> 00:07:55,445
+Entonces, para nuestro modelo
+y dado que ese dato es desconocido
+
+146
+00:07:55,445 --> 00:07:59,330
+y que las propinas se dan a discreción,
+no están incluidas en la tarifa original
+
+147
+00:07:59,330 --> 00:08:01,290
+por lo que no vamos a predecirla.
+
+148
+00:08:01,290 --> 00:08:04,800
+Configuraremos el nuevo total
+con una nueva tarifa
+
+149
+00:08:04,800 --> 00:08:11,390
+que sea el importe total por la distancia
+que se viaja, más los peajes.
+
+150
+00:08:12,230 --> 00:08:16,020
+En este ejemplo en particular,
+el importe de la tarifa de USD 8.5
+
+151
+00:08:16,020 --> 00:08:19,300
+es solo la distancia
+que viajaron: 2.22
+
+152
+00:08:20,290 --> 00:08:24,490
+más si pasaron por un puente
+que es USD 5.33, tenemos el importe total.
+
+153
+00:08:24,490 --> 00:08:28,190
+Sumamos ambos para volverlo a calcular.
+
+154
+00:08:28,190 --> 00:08:30,780
+Y ese será el nuevo importe total
+sin las propinas.
+
+155
+00:08:32,620 --> 00:08:36,525
+Una función interesante
+que pueden usar es ".describe()"
+
+156
+00:08:36,525 --> 00:08:39,815
+que los ayudará a familiarizarse
+con algunos de los límites
+
+157
+00:08:39,815 --> 00:08:42,730
+o algunos de los rangos de datos
+para las columnas que tienen
+
+158
+00:08:42,730 --> 00:08:44,480
+muy útil en estadísticas.
+
+159
+00:08:44,480 --> 00:08:47,925
+Observemos los valores mínimo y máximo
+
+160
+00:08:47,925 --> 00:08:51,230
+en caso de que no sea claro
+para la longitud o la latitud de partida.
+
+161
+00:08:51,230 --> 00:08:52,905
+Por ejemplo, cuando es cero
+
+162
+00:08:52,905 --> 00:08:55,735
+pueden ver que el valor máximo es cero
+y el mínimo es cero.
+
+163
+00:08:55,735 --> 00:08:58,040
+Entonces verán algunos datos extraños.
+
+164
+00:08:58,040 --> 00:09:01,125
+Lo que puede verse de inmediato
+es que tienen un valor mínimo
+
+165
+00:09:01,125 --> 00:09:04,045
+de -10 para una tarifa de taxi.
+
+166
+00:09:04,045 --> 00:09:07,315
+No es posible tener una tarifa negativa.
+
+167
+00:09:07,315 --> 00:09:10,970
+Nadie les está pagando para tomar el taxi.
+Más bien, se paga por él.
+
+168
+00:09:11,830 --> 00:09:16,670
+Por ejemplo, encontremos el máximo
+de la cantidad de pasajeros.
+
+169
+00:09:16,670 --> 00:09:18,125
+Menos mal, es seis.
+
+170
+00:09:18,685 --> 00:09:21,520
+Pero si encontraran un máximo
+de doce, por ejemplo
+
+171
+00:09:21,520 --> 00:09:25,035
+no sería un taxi, 
+a menos que se haya incluido un bus aquí.
+
+172
+00:09:25,035 --> 00:09:26,750
+También aparecerá eso.
+
+173
+00:09:26,750 --> 00:09:31,585
+Nos estamos enfocando en limpiar
+y recortar todo el conjunto de datos
+
+174
+00:09:31,585 --> 00:09:33,860
+mediante un ejercicio
+llamado preprocesamiento.
+
+175
+00:09:33,860 --> 00:09:37,780
+Los preparamos para dividirlos
+en esos tres grupos
+
+176
+00:09:37,780 --> 00:09:41,545
+para crear una comparativa muy simple
+que tendremos que superar más tarde.
+
+177
+00:09:42,795 --> 00:09:46,030
+Después de trabajar duro
+para entender los datos…
+
+178
+00:09:46,030 --> 00:09:48,229
+Por cierto, este proceso
+podría tomar semanas.
+
+179
+00:09:48,229 --> 00:09:51,320
+Si no están familiarizados
+con el conjunto de datos que analizan
+
+180
+00:09:51,320 --> 00:09:55,920
+y podría tratarse de cientos de columnas
+o miles de millones de registros
+
+181
+00:09:55,920 --> 00:09:59,675
+entonces, interactúen con un experto
+que conozca muy bien los datos.
+
+182
+00:09:59,675 --> 00:10:02,550
+Y luego comprendan bien
+las relaciones en los datos
+
+183
+00:10:02,550 --> 00:10:05,390
+visualícenlas,
+usen diferentes visualizaciones
+
+184
+00:10:05,390 --> 00:10:09,235
+funciones estadísticas,
+incluso antes de comenzar el AA.
+
+185
+00:10:09,235 --> 00:10:12,075
+Es necesario entender
+lo que pasa en los datos.
+
+186
+00:10:12,395 --> 00:10:14,220
+Aunque nos levó apenas cinco minutos
+
+187
+00:10:14,220 --> 00:10:17,660
+la parte de exploración del AA,
+la comprensión del conjunto de datos
+
+188
+00:10:17,660 --> 00:10:19,690
+puede llevar semanas o incluso meses.
+
+189
+00:10:19,690 --> 00:10:23,375
+Bien. Veamos algunos
+de los viajes individuales.
+
+190
+00:10:23,705 --> 00:10:26,595
+Estamos creando un gráfico de ellos,
+lo que es genial.
+
+191
+00:10:26,595 --> 00:10:28,795
+Y podemos ver los viajes
+
+192
+00:10:29,175 --> 00:10:31,085
+la latitud y la longitud
+
+193
+00:10:31,085 --> 00:10:33,060
+Esta es la línea de los viajes.
+
+194
+00:10:33,060 --> 00:10:38,150
+Y ven que las líneas que son más largas,
+por lo general, incluyen un peaje.
+
+195
+00:10:38,150 --> 00:10:41,080
+Tiene sentido,
+porque si están cruzando un puente
+
+196
+00:10:41,080 --> 00:10:42,570
+podrían ir más lejos.
+
+197
+00:10:42,570 --> 00:10:46,445
+No es probable que alguien se suba
+al taxi a la entrada del puente
+
+198
+00:10:46,445 --> 00:10:50,140
+y luego se baje inmediatamente
+después de cruzar el puente.
+
+199
+00:10:50,140 --> 00:10:51,720
+Es buena información.
+
+200
+00:10:52,260 --> 00:10:55,640
+Limpiaremos los datos de esta forma.
+
+201
+00:10:55,640 --> 00:10:58,990
+Estas son los cinco datos
+de los que hablamos antes.
+
+202
+00:10:58,990 --> 00:11:01,540
+Nos concentramos en que
+las longitudes y latitudes
+
+203
+00:11:01,540 --> 00:11:04,610
+de Nueva York deben estar
+en el rango entre -74 y 41.
+
+204
+00:11:04,610 --> 00:11:06,720
+No se pueden tener cero pasajeros.
+
+205
+00:11:08,390 --> 00:11:11,010
+No deberían tener más
+de una cantidad fija establecida
+
+206
+00:11:11,010 --> 00:11:14,545
+pero nuestro modelo de referencia
+será que no hay cero pasajeros.
+
+207
+00:11:14,545 --> 00:11:18,815
+Como señalamos sobre las propinas,
+volveremos a calcular el importe total
+
+208
+00:11:18,815 --> 00:11:23,080
+con base en el importe de la tarifa
+más los peajes, como ven aquí.
+
+209
+00:11:23,300 --> 00:11:26,940
+Luego, lo que haremos es…
+conocemos las ubicaciones de partida
+
+210
+00:11:26,940 --> 00:11:29,855
+y de destino, pero no la distancia.
+
+211
+00:11:30,545 --> 00:11:34,200
+Es un inconveniente interesante
+que muchas personas encuentran
+
+212
+00:11:34,200 --> 00:11:37,410
+cuando crean conjuntos de datos
+de entrenamiento para modelos de AA.
+
+213
+00:11:37,410 --> 00:11:38,885
+No se puede saber.
+
+214
+00:11:38,885 --> 00:11:40,880
+Si no se puede saber
+durante la producción
+
+215
+00:11:40,880 --> 00:11:42,685
+no se puede entrenar con ellos.
+
+216
+00:11:42,685 --> 00:11:47,785
+No pueden decir algo como
+"la distancia fue de 5.5 millas".
+
+217
+00:11:47,785 --> 00:11:53,025
+Diré que fue un dólar por milla,
+entonces, un modelo muy simple
+
+218
+00:11:53,025 --> 00:11:55,925
+sería que el viaje costaría USD 5.50.
+
+219
+00:11:55,925 --> 00:11:58,680
+Eso es porque cuando comienzan
+a obtener nuevos datos
+
+220
+00:11:58,680 --> 00:12:00,770
+por ejemplo, cuando piden un taxi.
+
+221
+00:12:01,740 --> 00:12:04,950
+Y el modelo pregunta:
+"Bien. ¿Cuánto tiempo duró el viaje?"
+
+222
+00:12:04,950 --> 00:12:07,155
+Y dirán: "un momento. No me subí al taxi".
+
+223
+00:12:07,155 --> 00:12:09,400
+Es como predecir el futuro
+antes de que ocurra.
+
+224
+00:12:09,400 --> 00:12:12,440
+No se puede entrenar con datos
+que ocurren en el futuro.
+
+225
+00:12:12,440 --> 00:12:17,015
+Por eso lo descartamos
+del conjunto de datos de atributos.
+
+226
+00:12:17,015 --> 00:12:18,560
+Es un punto muy importante.
+
+227
+00:12:18,560 --> 00:12:23,745
+Piensen en datos que existen
+y existirán cuando inicien la producción.
+
+228
+00:12:25,115 --> 00:12:29,750
+Muchos filtros en las instrucciones WHERE
+en la consulta de BigQuery que ven aquí.
+
+229
+00:12:29,750 --> 00:12:31,750
+Estamos calculando fare_amount.
+
+230
+00:12:31,750 --> 00:12:35,030
+Estamos cambiando los nombres
+de las diferentes columnas por alias
+
+231
+00:12:35,030 --> 00:12:37,600
+y creando esta función, que dice
+
+232
+00:12:37,600 --> 00:12:41,965
+"esta será una consulta parametrizada
+que usaremos para el muestreo
+
+233
+00:12:41,965 --> 00:12:44,700
+en estos rangos específicos".
+
+234
+00:12:44,700 --> 00:12:48,690
+Aquí están todos los filtros
+de los que hablamos un poco antes.
+
+235
+00:12:48,690 --> 00:12:50,800
+Este es nuestro operador "módulo"
+
+236
+00:12:50,800 --> 00:12:53,055
+en la forma
+de funciones hash de huella digital.
+
+237
+00:12:53,055 --> 00:12:55,370
+Estamos usando hash en pickup_datetime
+
+238
+00:12:55,370 --> 00:12:59,770
+y no debemos olvidar
+que todo lo que tiene hash, lo perderán.
+
+239
+00:13:00,200 --> 00:13:02,925
+Estamos dispuestos
+a perder pickup_datetime
+
+240
+00:13:02,925 --> 00:13:07,570
+a fin de usar esa columna
+para crear las barreras entre esos grupos.
+
+241
+00:13:07,570 --> 00:13:10,760
+Entrenamiento, evaluación y prueba.
+
+242
+00:13:10,760 --> 00:13:14,890
+Lo que quiere decir
+que la hora del día, al final
+
+243
+00:13:16,500 --> 00:13:21,310
+no tendrá poder predictivo
+sobre cuánto será el importe de la tarifa.
+
+244
+00:13:22,100 --> 00:13:25,530
+Bien. Creamos la consulta
+que se puede parametrizar
+
+245
+00:13:25,530 --> 00:13:29,055
+y diremos,
+si estamos en entrenamiento…
+
+246
+00:13:29,055 --> 00:13:30,820
+y lo que deben considerar
+
+247
+00:13:30,820 --> 00:13:32,960
+es que se repetirá esta consulta
+tres veces.
+
+248
+00:13:32,960 --> 00:13:36,190
+Crearán tres conjuntos de datos:
+entrenamiento, evaluación y prueba.
+
+249
+00:13:36,360 --> 00:13:40,175
+Si estamos entrenando,
+queremos el 70% de los datos.
+
+250
+00:13:40,175 --> 00:13:42,600
+Hagan un muestreo entre cero y 70.
+
+251
+00:13:42,600 --> 00:13:45,300
+Como pueden ver,
+sample_between es la consulta
+
+252
+00:13:45,300 --> 00:13:47,020
+que creamos antes: a, b.
+
+253
+00:13:47,020 --> 00:13:50,250
+Y "a" y "b" se insertan en "a" y "b" aquí
+
+254
+00:13:51,300 --> 00:13:56,410
+y eso funciona en el operador "módulo"
+que ven aquí para cada final.
+
+255
+00:13:57,270 --> 00:13:59,750
+Para el entrenamiento, es el 70%,
+
+256
+00:13:59,750 --> 00:14:03,100
+para la validación, es entre el 70% y 85%.
+
+257
+00:14:03,100 --> 00:14:05,520
+Si los restamos,
+significa que es un 15% adicional
+
+258
+00:14:05,520 --> 00:14:07,670
+que tenemos disponible
+del conjunto de datos.
+
+259
+00:14:07,670 --> 00:14:13,350
+Y el último 15%, o del 85% al 100%,
+será el conjunto de prueba.
+
+260
+00:14:14,340 --> 00:14:16,175
+Ahora está listo para ejecutar.
+
+261
+00:14:16,175 --> 00:14:18,920
+Así se vería una consulta
+si la ejecutáramos.
+
+262
+00:14:21,010 --> 00:14:26,190
+Lo que haremos ahora es especificar
+dónde se almacenarán las salidas.
+
+263
+00:14:26,210 --> 00:14:29,312
+Porque necesitaremos
+algún tipo de archivo CSV
+
+264
+00:14:29,312 --> 00:14:32,350
+o algún otro formato
+que el modelo de AA pueda usar
+
+265
+00:14:32,350 --> 00:14:35,800
+para acceder a los datos de entrenamiento,
+de evaluación y de prueba.
+
+266
+00:14:35,800 --> 00:14:39,540
+Para hacerlo, debemos crear una función
+que creará estos CSV.
+
+267
+00:14:39,540 --> 00:14:42,520
+En este caso en particular,
+estamos entrenando de manera local.
+
+268
+00:14:42,520 --> 00:14:45,325
+En Datalab, crearemos CSV
+y almacenaremos en ellos.
+
+269
+00:14:45,325 --> 00:14:47,390
+En los próximos módulos,
+cuando conozcan más
+
+270
+00:14:47,390 --> 00:14:52,160
+de Cloud Machine Learning Engine
+y usen otras herramientas de escalamiento…
+
+271
+00:14:52,160 --> 00:14:55,490
+Ahora hacemos un poco de prototipo
+
+272
+00:14:55,490 --> 00:14:57,320
+localmente en Cloud Datalab.
+
+273
+00:14:57,320 --> 00:15:01,810
+Pero se pueden usar referencias
+de datos desde BigQuery
+
+274
+00:15:02,500 --> 00:15:05,235
+y desde Google Cloud Storage directamente
+
+275
+00:15:05,235 --> 00:15:08,430
+mediante un depósito
+de Google Cloud Storage.
+
+276
+00:15:08,430 --> 00:15:10,430
+Aquí está el CSV que estamos creando.
+
+277
+00:15:10,430 --> 00:15:12,695
+Solicitamos que se quite el importe
+de la tarifa
+
+278
+00:15:12,695 --> 00:15:15,330
+y luego actualizamos
+con la nueva que tenemos en el CSV.
+
+279
+00:15:15,330 --> 00:15:17,725
+Aquí están todos los atributos
+que estamos volcando
+
+280
+00:15:17,725 --> 00:15:21,640
+que es prácticamente todo
+lo que se incluyó en la consulta anterior.
+
+281
+00:15:21,640 --> 00:15:24,230
+Y aquí está el bucle clave.
+
+282
+00:15:24,230 --> 00:15:28,605
+Para las fases
+de entrenamiento, validación y prueba
+
+283
+00:15:28,605 --> 00:15:33,570
+invocamos la consulta
+en la muestra de 100,000
+
+284
+00:15:33,570 --> 00:15:36,300
+ejecutamos la consulta en BigQuery
+
+285
+00:15:36,300 --> 00:15:39,580
+y obtenemos los resultados
+del data frame que podemos iterar.
+
+286
+00:15:40,770 --> 00:15:45,000
+Y con esos resultados,
+restablecemos el data frame
+
+287
+00:15:45,000 --> 00:15:51,420
+con el prefijo taxi-, que será el nombre
+de su conjunto de datos.
+
+288
+00:15:51,420 --> 00:15:55,185
+Algo como taxi-train,
+taxi-validation, taxi-test
+
+289
+00:15:55,185 --> 00:15:58,695
+en el almacenamiento de los CSV.
+
+290
+00:15:58,695 --> 00:16:01,475
+Y pueden ver que es exactamente
+lo que sucede aquí.
+
+291
+00:16:01,765 --> 00:16:03,460
+Confíen, pero verifiquen.
+
+292
+00:16:03,460 --> 00:16:06,595
+Debemos asegurarnos
+de que esos conjuntos de datos existen.
+
+293
+00:16:06,595 --> 00:16:10,450
+Ejecutamos un simple ls
+en los archivos que tenemos
+
+294
+00:16:10,450 --> 00:16:15,220
+y vemos que hay 58,000 traslados en taxi
+en nuestro conjunto de prueba.
+
+295
+00:16:16,370 --> 00:16:21,320
+Tenemos 400,000 en el de entrenamiento
+y 100,000 en el de validación.
+
+296
+00:16:21,320 --> 00:16:26,555
+Eso refleja la división
+de lo que tenemos en la parte superior
+
+297
+00:16:26,555 --> 00:16:28,960
+70, 15 y 15.
+
+298
+00:16:28,960 --> 00:16:33,970
+Lo interesante,
+si se preguntan por qué los conjuntos
+
+299
+00:16:33,970 --> 00:16:36,205
+de prueba y de validación
+pueden ser diferentes
+
+300
+00:16:36,205 --> 00:16:39,120
+es por la distribución de los datos.
+
+301
+00:16:39,120 --> 00:16:41,420
+Es posible que no estén distribuidos
+normalmente.
+
+302
+00:16:41,420 --> 00:16:43,720
+Si tienen muchas fechas aglomeradas
+
+303
+00:16:43,720 --> 00:16:47,670
+y usan hash
+en un día como el 1 de enero de 2018
+
+304
+00:16:47,670 --> 00:16:49,590
+mostrará el mismo resultado.
+
+305
+00:16:49,590 --> 00:16:53,990
+Si los datos no tienen mucho ruido,
+incluso si establecen un 70, 15 y 15
+
+306
+00:16:53,990 --> 00:16:59,480
+usarán hash en bloques
+porque podrían tener muchos taxis
+
+307
+00:16:59,480 --> 00:17:02,025
+que se usaron el día de Año Nuevo
+
+308
+00:17:02,025 --> 00:17:04,805
+y tiene que entrar
+en uno de los diferentes grupos.
+
+309
+00:17:04,805 --> 00:17:09,700
+No puede estar en ambos
+porque no pueden dividir una sola fecha
+
+310
+00:17:09,700 --> 00:17:13,130
+cuando se está usando hash
+en dos lugares diferentes.
+
+311
+00:17:15,850 --> 00:17:19,885
+Veamos las divisiones. Lo hacemos aquí.
+
+312
+00:17:21,565 --> 00:17:26,665
+Y ahora que tenemos los datos listos
+en esos tres grupos aislados
+
+313
+00:17:26,665 --> 00:17:31,595
+es momento de comenzar
+a crear lo que llamo un modelo ficticio.
+
+314
+00:17:31,595 --> 00:17:33,250
+Esta es la comparativa.
+
+315
+00:17:33,250 --> 00:17:39,460
+Si pudieran hacer una predicción simple
+de cuál sería la tarifa de taxi...
+
+316
+00:17:39,460 --> 00:17:44,825
+Esto no toma en cuenta
+el clima, si vienen de un aeropuerto.
+
+317
+00:17:44,825 --> 00:17:48,880
+De nuevo, las intuiciones y los atributos
+más complejos que pueden usar
+
+318
+00:17:48,880 --> 00:17:51,245
+en un modelo avanzado,
+los guardaremos para más tarde
+
+319
+00:17:51,245 --> 00:17:54,735
+cuando aprendan a usar TensorFlow
+y a realizar la ingeniería de funciones.
+
+320
+00:17:54,735 --> 00:17:57,640
+Ahora, queremos crear un modelo
+simple que diga
+
+321
+00:17:57,640 --> 00:18:01,280
+"Más vale que su modelo avanzado
+supere a la RMSE
+
+322
+00:18:01,280 --> 00:18:06,705
+o la métrica de pérdida del modelo
+que estamos ejecutando como comparativa".
+
+323
+00:18:06,705 --> 00:18:08,980
+¿Cómo sería ese modelo simple?
+
+324
+00:18:08,980 --> 00:18:13,375
+Observaremos… primero, tendremos
+que predecir la distancia del viaje
+
+325
+00:18:13,375 --> 00:18:15,475
+el modelo simple hará eso.
+
+326
+00:18:15,475 --> 00:18:19,855
+Tomaremos el importe total de la tarifa
+y lo dividiremos por la distancia.
+
+327
+00:18:19,855 --> 00:18:23,765
+Usaremos una tarifa por milla
+o por kilómetro, algo así.
+
+328
+00:18:23,765 --> 00:18:28,975
+Luego, según el conjunto de datos
+de entrenamiento que está etiquetado
+
+329
+00:18:28,975 --> 00:18:33,085
+lo que quiere decir que sabemos
+cuál es el importe de la tarifa.
+
+330
+00:18:33,085 --> 00:18:35,945
+Así podemos calcular la métrica
+de pérdida de los datos
+
+331
+00:18:35,945 --> 00:18:39,635
+y usaremos RMSE
+porque es un modelo lineal, flotante.
+
+332
+00:18:39,635 --> 00:18:41,585
+Así lo hacemos.
+
+333
+00:18:43,465 --> 00:18:46,795
+Definiremos un par de funciones
+diferentes para calcular las distancias
+
+334
+00:18:46,855 --> 00:18:50,390
+entre las latitudes y las longitudes
+de los puntos de partida y de destino.
+
+335
+00:18:50,390 --> 00:18:53,735
+Luego, estimaremos la distancia
+entre ambos
+
+336
+00:18:53,735 --> 00:18:59,015
+y obtendremos una idea
+de cuántas millas recorrió el taxi.
+
+337
+00:18:59,015 --> 00:19:02,035
+De nuevo, conocemos esa información
+del entrenamiento
+
+338
+00:19:02,035 --> 00:19:05,005
+pero como haremos la predicción,
+no podemos usar esa columna.
+
+339
+00:19:05,005 --> 00:19:06,865
+Así que haremos la predicción de nuevo.
+
+340
+00:19:06,865 --> 00:19:11,415
+Calculamos la RMSE
+mediante la ecuación que ven aquí.
+
+341
+00:19:11,835 --> 00:19:14,425
+Y luego haremos el print
+y pasaremos los atributos
+
+342
+00:19:14,425 --> 00:19:15,500
+a nuestro modelo.
+
+343
+00:19:15,500 --> 00:19:19,090
+Queremos predecir el objetivo,
+que es el importe de la tarifa.
+
+344
+00:19:19,090 --> 00:19:21,355
+Mostraremos la lista de los atributos
+
+345
+00:19:21,355 --> 00:19:25,750
+y, finalmente, definiremos
+dónde están nuestros data frames
+
+346
+00:19:25,750 --> 00:19:29,405
+para entrenamiento, validación y prueba;
+esos tres conjuntos existen.
+
+347
+00:19:29,405 --> 00:19:32,580
+Y luego realizaremos el entrenamiento.
+
+348
+00:19:32,580 --> 00:19:35,745
+Entrenaremos un modelo simple
+que dice: "predecir el importe
+
+349
+00:19:35,745 --> 00:19:41,270
+de la tarifa como el promedio
+dividido por…"
+
+350
+00:19:41,270 --> 00:19:46,140
+de modo que la tarifa
+que calculamos sea el promedio del costo.
+
+351
+00:19:46,140 --> 00:19:49,665
+Si es una tarifa de taxi de USD 10,
+dividida por el promedio de la distancia
+
+352
+00:19:49,665 --> 00:19:50,720
+que recorrió.
+
+353
+00:19:50,720 --> 00:19:57,700
+La línea 28 es el único lugar
+donde se ve un poco de modelado.
+
+354
+00:19:57,700 --> 00:20:00,865
+Ya pasamos 15 o 20 minutos
+en la demostración de este lab
+
+355
+00:20:00,865 --> 00:20:04,060
+y la línea 28 es el único lugar
+en la que se realiza la predicción
+
+356
+00:20:04,060 --> 00:20:05,420
+o el modelado.
+
+357
+00:20:05,910 --> 00:20:09,270
+Tomó todo este tiempo
+crear los conjuntos de datos
+
+358
+00:20:09,270 --> 00:20:11,815
+limpiar y preprocesar.
+
+359
+00:20:11,815 --> 00:20:14,830
+Configurar los archivos CSV
+para que la transferencia al modelo
+
+360
+00:20:14,830 --> 00:20:16,230
+sea muy fácil
+
+361
+00:20:16,230 --> 00:20:19,270
+y, finalmente, este modelo
+sea la comparativa del rendimiento
+
+362
+00:20:19,270 --> 00:20:20,610
+del futuro modelo.
+
+363
+00:20:20,610 --> 00:20:26,260
+Esta proporción del 99%
+de exploración, limpieza y creación
+
+364
+00:20:26,260 --> 00:20:29,200
+de los nuevos conjuntos de datos,
+establecer las comparativas
+
+365
+00:20:29,200 --> 00:20:32,860
+de 99% a 1% en el modelo actual,
+cambiará a medida que aprendamos más
+
+366
+00:20:32,860 --> 00:20:36,090
+sobre la creación de modelos
+y cómo crear unos más sofisticados
+
+367
+00:20:36,090 --> 00:20:38,620
+y cómo hacer la ingeniería
+de funciones en el futuro.
+
+368
+00:20:38,620 --> 00:20:41,095
+Por ahora, esta será nuestra comparativa.
+
+369
+00:20:41,095 --> 00:20:43,510
+Esta es la tarifa
+por kilómetro que obtenemos.
+
+370
+00:20:43,510 --> 00:20:50,690
+Al final, tenemos una tarifa 
+de USD 2.60 por km en el taxi.
+
+371
+00:20:52,610 --> 00:20:55,070
+Las RMSE son las que ven aquí
+
+372
+00:20:55,070 --> 00:21:00,025
+y tenemos una métrica de pérdida
+de entrenamiento de 7.45
+
+373
+00:21:00,685 --> 00:21:02,620
+una validación de 9.35
+
+374
+00:21:02,620 --> 00:21:08,670
+y la prueba, sorpresivamente,
+fue la mejor de las tres con 5.44.
+
+375
+00:21:08,670 --> 00:21:11,850
+Ahora, esa es nuestra comparativa
+
+376
+00:21:12,880 --> 00:21:19,960
+que de manera global dice:
+la tarifa de taxi será USD 2.61 por km
+
+377
+00:21:19,960 --> 00:21:21,930
+sin importar dónde vayan
+
+378
+00:21:21,930 --> 00:21:26,035
+sin tomar en cuenta el tráfico
+ni dónde vayan en Manhattan
+
+379
+00:21:26,035 --> 00:21:28,125
+ni los peajes en puentes.
+
+380
+00:21:28,125 --> 00:21:31,495
+No tenemos parámetros aquí
+para saber si cruzarán un puente.
+
+381
+00:21:31,495 --> 00:21:33,300
+No toma en cuenta la hora del día.
+
+382
+00:21:33,300 --> 00:21:38,550
+Todo esto en lo que reflexionaban,
+no se puede forzar USD 2.6 por km
+
+383
+00:21:38,550 --> 00:21:42,310
+toda la intuición que desarrollaremos
+en un modelo más sofisticado
+
+384
+00:21:42,310 --> 00:21:46,040
+al final,
+más vale que hagan un mejor trabajo
+
+385
+00:21:46,040 --> 00:21:49,410
+con toda las estadísticas avanzadas
+que incluiremos
+
+386
+00:21:49,410 --> 00:21:53,970
+cuando revisemos esto en el futuro,
+de modo que supere 5.44.
+
+387
+00:21:53,970 --> 00:21:58,380
+Esa es la RMSE comparativa
+que debemos superar. Y eso es todo.
+
+388
+00:21:59,280 --> 00:22:01,050
+Básicamente, la RMSE
+
+389
+00:22:01,050 --> 00:22:07,585
+si tomamos 5.44 veces la tarifa actual,
+es cuando se obtiene ese 9.…
+
+390
+00:22:08,595 --> 00:22:09,885
+No, perdón.
+
+391
+00:22:09,885 --> 00:22:12,250
+Esto es un poco diferente.
+
+392
+00:22:12,250 --> 00:22:15,200
+Este es el 5.44
+para este conjunto de datos aquí.
+
+393
+00:22:15,200 --> 00:22:18,120
+Es posible que obtengan
+una respuesta un poco diferente.
+
+394
+00:22:18,120 --> 00:22:20,890
+Excelente. 
+Con esto hemos terminado este lab.
+
+395
+00:22:20,890 --> 00:22:24,845
+Los invitamos a continuar realizando
+cursos en esta especialización.
+
+396
+00:22:24,845 --> 00:22:27,820
+En realidad, ahora que comenzaron,
+no pueden detenerse aquí.
+
+397
+00:22:27,820 --> 00:22:29,790
+Ahora que saben cómo limpiar los datos
+
+398
+00:22:29,790 --> 00:22:32,785
+obtenerlos, transferirlos,
+crear el modelo de comparación
+
+399
+00:22:32,785 --> 00:22:36,415
+lo siguiente es: "Estoy listo
+para hacer modelos más sofisticados
+
+400
+00:22:36,415 --> 00:22:40,995
+y programar el aprendizaje genial
+que el modelo puede realizar
+
+401
+00:22:40,995 --> 00:22:45,135
+para obtener estadísticas más sofisticadas
+y superar este modelo con esta RMSE.
+
+402
+00:22:45,455 --> 00:22:48,935
+Estén atentos a los futuros cursos
+sobre TensorFlow
+
+403
+00:22:48,935 --> 00:22:51,515
+para conocer cómo superar esta RMSE.
+
+404
+00:22:51,515 --> 00:22:53,890
+Tienen tres oportunidades
+para completar este lab.
+
+405
+00:22:53,890 --> 00:22:57,135
+No duden en repetirlo y editar el código
+según consideren necesario
+
+406
+00:22:57,135 --> 00:23:00,585
+en sus cuadernos de Datalab sobre taxis.
+Los veré pronto. Buen trabajo.

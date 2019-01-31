@@ -1,0 +1,258 @@
+1
+00:00:00,000 --> 00:00:05,076
+Sehen wir uns zuerst die Komponenten
+der Estimator API an und die Handhabung
+
+2
+00:00:05,076 --> 00:00:10,210
+anderer gängiger ML-Aufgaben
+wie verteiltes Training, Überwachung
+
+3
+00:00:10,210 --> 00:00:11,230
+und Bereitstellung.
+
+4
+00:00:11,230 --> 00:00:15,100
+Estimators sind ein Teil der 
+fortgeschritteneren TensorFlow APIs.
+
+5
+00:00:15,100 --> 00:00:18,450
+Ihr erster Kontakt mit
+TensorFlow im vorherigen Modul
+
+6
+00:00:18,450 --> 00:00:20,920
+beschränkte sich auf
+die Grundlagen von TensorFlow.
+
+7
+00:00:20,920 --> 00:00:24,820
+Sie verwenden TensorFlow hier aber
+nur als Bibliothek zur Zahlenverarbeitung.
+
+8
+00:00:24,820 --> 00:00:29,370
+Unterhalb dieser Ebene liegen einige
+APIs, mit denen Sie selten interagieren.
+
+9
+00:00:29,370 --> 00:00:34,730
+Sie dienen der Hardware, CPU, GPU, TPU
+oder alternativen Plattformen wie Android.
+
+10
+00:00:34,730 --> 00:00:38,580
+Über den Kernfunktionen von TensorFlow 
+finden Sie APIs für typische Bausteine,
+
+11
+00:00:38,580 --> 00:00:41,080
+die zum Erstellen
+eines Modells benötigt werden.
+
+12
+00:00:41,080 --> 00:00:45,020
+Verschiedene neuronale Netzwerkschichten,
+verschiedene Verlustfunktionen und mehr.
+
+13
+00:00:45,020 --> 00:00:48,160
+Und schließlich Estimators.
+
+14
+00:00:48,160 --> 00:00:53,580
+Ein simples TensorFlow-Modell umfasst
+meist einige neurale elektrische Schichten
+
+15
+00:00:53,580 --> 00:00:54,964
+und eine Trainingsschleife.
+
+16
+00:00:54,964 --> 00:00:58,254
+Vielleicht fragen Sie sich,
+warum Sie dabei Hilfe brauchen sollten.
+
+17
+00:00:58,254 --> 00:01:00,710
+Sie wissen, wie man
+eine Schleife programmiert.
+
+18
+00:01:00,710 --> 00:01:03,220
+Das ist richtig,
+aber inzwischen verwende ich
+
+19
+00:01:03,220 --> 00:01:07,590
+selbst für winzige
+Protypmodelle meistens Estimators.
+
+20
+00:01:07,590 --> 00:01:11,230
+Ich finde es gut, dass sie austauschbar
+sind und ich viele standardmäßige,
+
+21
+00:01:11,230 --> 00:01:15,400
+vorgefertigte Estimator-Modelle
+schnell hintereinander testen kann.
+
+22
+00:01:15,400 --> 00:01:20,930
+Mit der Datenmenge und der Trainingszeit
+steigen jedoch auch die Anforderungen.
+
+23
+00:01:20,930 --> 00:01:24,400
+Brauchen Sie Checkpoints, um
+das Training anzuhalten und fortzusetzen?
+
+24
+00:01:24,400 --> 00:01:25,880
+Estimators haben sie.
+
+25
+00:01:25,880 --> 00:01:28,270
+Ihre Daten sind zu groß
+für den Arbeitsspeicher?
+
+26
+00:01:28,270 --> 00:01:32,690
+Estimators haben eine Dataset API,
+die solche Datasets verarbeitet.
+
+27
+00:01:32,690 --> 00:01:36,280
+Sie können ein großes Netzwerk nur
+trainieren, wenn Sie sehen, wie es läuft.
+
+28
+00:01:36,280 --> 00:01:39,910
+Estimators erfassen während des 
+Trainings automatisch wichtige Messwerte
+
+29
+00:01:39,910 --> 00:01:41,810
+für die Visualisierung im Tensorboard.
+
+30
+00:01:41,810 --> 00:01:44,740
+Vielleicht denken Sie
+jetzt an verteiltes Training?
+
+31
+00:01:44,740 --> 00:01:49,040
+Estimators enthalten bereits den
+benötigten Cluster-Aggregationsscode.
+
+32
+00:01:49,040 --> 00:01:52,710
+Und schließlich wollen Sie Ihr Modell
+so verpacken, dass es bereit für die
+
+33
+00:01:52,710 --> 00:01:55,350
+Hyperparameter-Optimierung
+der ML-Engine ist, oder es
+
+34
+00:01:55,350 --> 00:01:58,922
+mit dem verwalteten und autoskalierten
+Vorhersagedienst der ML-Engine
+
+35
+00:01:58,922 --> 00:02:00,502
+in die Produktion verschieben.
+
+36
+00:02:00,502 --> 00:02:04,200
+Auch das kann die Estimator API.
+
+37
+00:02:04,200 --> 00:02:07,740
+Wollen Sie Ihre Trainingsschleife
+jetzt immer noch selbst schreiben,
+
+38
+00:02:07,740 --> 00:02:12,280
+mit all dem Boilerplate-Code,
+der sich immer wiederholt?
+
+39
+00:02:12,280 --> 00:02:17,739
+Ich denke nicht, also
+sehen wir uns die Estimator API einmal an.
+
+40
+00:02:17,739 --> 00:02:21,780
+Mit dem Basisklassen-Estimator können Sie
+Ihr eigenes Modell einbetten, dass Sie aus
+
+41
+00:02:21,780 --> 00:02:25,460
+Ebenen der TF Layers API erstellen.
+
+42
+00:02:25,460 --> 00:02:29,078
+Wenn Sie aber etwas recht Einfaches
+bauen wollen, brauchen Sie das nicht.
+
+43
+00:02:29,078 --> 00:02:34,140
+TensorFlow hat einige vorgefertigte
+Estimators für Sie zum Ausprobieren.
+
+44
+00:02:34,140 --> 00:02:39,220
+Lineare oder dichte neuronale Netzwerk-
+Klassifikatoren zur Datenkategorisierung
+
+45
+00:02:39,220 --> 00:02:43,110
+und ähnliche Regressoren zur
+Vorhersage von kontinuierlichen Werten.
+
+46
+00:02:43,110 --> 00:02:46,200
+Nicht zu vergessen den
+DNNLinearCombinedClassifier, bekannt als
+
+47
+00:02:46,200 --> 00:02:53,030
+das breite und tiefe Modell, gemäß dem 
+Google-Paper, das ihn bekannt machte.
+
+48
+00:02:53,030 --> 00:02:56,950
+Er ist sehr wichtig, weil wir ihn
+zum Beispiel für die Empfehlungs-Engine
+
+49
+00:02:56,950 --> 00:02:58,730
+von Google Play nutzen.
+
+50
+00:02:58,730 --> 00:03:01,390
+Er ist jedoch sehr flexibel und
+
+51
+00:03:01,390 --> 00:03:06,010
+wurde schon als Zugpferd des maschinellen
+Lernens in Unternehmen bezeichnet.
+
+52
+00:03:06,010 --> 00:03:10,860
+Er funktioniert für alle strukturierten
+Daten und ist sofort einsatzbereit.
+
+53
+00:03:10,860 --> 00:03:17,136
+Dank der gemeinsamen API sind
+vorgefertigte Estimators austauschbar.
+
+54
+00:03:17,136 --> 00:03:20,820
+Man kann sie alle leicht ausprobieren.

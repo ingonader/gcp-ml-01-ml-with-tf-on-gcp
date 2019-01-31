@@ -1,0 +1,108 @@
+Vous connaissez déjà ce graphique. Vous savez que TF peut s'exécuter
+sur différents types de matériel. Vous pouvez le programmer
+sur une API C++ de bas niveau, et surtout utiliser l'API Python,
+comme nous allons le voir dans ce cours. Et vous avez déjà vu
+les différentes couches d'abstraction pour l'entraînement distribué. Mais comme vous exécutez l'entraînement
+distribué à grande échelle en production, nous devons alors parler de
+Cloud Machine Learning Engine. Lorsque nous découvrons le ML, nous commençons souvent
+avec de petits ensembles de données en mémoire,
+mais ce n'est pas le cas au final. Avec ces ensembles de données
+d'introduction, presque tous les frameworks
+de ML suffisent. Python, comme de nombreux autres langages, dispose de packages statistiques
+qui n'ont besoin que de trois ou quatre lignes de code
+pour pouvoir s'exécuter. Un Estimator TensorFlow
+propose une API qui peut décider d'apprendre,
+ce qui est simple et efficace sur de petits ensembles de données Mais bien sûr, nous voulons gérer
+des ensembles de données en production à l'échelle de l'entreprise. Ces ensembles sont trop volumineux
+pour tenir dans la mémoire. Nous devons alors adopter
+des packages plus sophistiqués. Maintenant que nos ensembles de données
+sont trop volumineux, nous devons effectuer plusieurs
+itérations pendant l'entraînement. Même si c'est possible
+avec une seule machine, c'est loin d'être idéal. Imaginez devoir attendre des semaines
+pour voir si l'entraînement a convergé. Nous devons distribuer l'entraînement
+sur de nombreuses machines. Ce n'est pas aussi simple
+que MapReduce où tout est parallèle. Les algorithmes, comme l'optimisation
+de la descente de gradient, sont complexes. Il nous faut des serveurs de paramètres
+pour aider les équipes d'entraînement. Ces serveurs forment un type
+de mémoire partagée, et aident chaque outil d'entraînement
+à apprendre des autres. Il est tentant d'essayer d'éviter
+l'entraînement distribué à l'aide d'une énorme machine
+avec beaucoup de GPU. Mais au final cela n'a pas grand intérêt,
+car les ensembles de données s'accroissent souvent plus vite
+que les capacités d'une machine. Le scaling horizontal,
+et non vertical, est là pour nous aider. Les gens tentent souvent aussi
+d'échantillonner les données pour réduire leur taille et permettre le ML
+sur le matériel existant. Cela entraîne des questions
+de performances. Il faut utiliser toutes les données
+disponibles, et définir un plan permettant de collecter
+10 fois plus de données que cela pour garantir l'efficacité du ML. Vous construisez souvent des modèles de ML
+dans un domaine où l'homme sait améliorer les performances
+au-delà de l'entraînement, juste sur les données brutes. Ce savoir se présente,
+quand les experts connaissent déjà le problème, sous la forme
+de nouvelles caractéristiques. Ces caractéristiques sont ajoutées juste
+après le prétraitement des données brutes, au moment du scaling,
+du codage, etc. Pour pouvoir travailler avec les volumes
+de données qui nous intéressent, ces deux choses doivent être
+distribuées et effectuées sur le cloud. Lorsque vous faites du ML,
+vous devez souvent faire de nombreux choix arbitraires : nombre de nœuds,
+intégration et valeur de stride de la couche de convolution, etc. Plus votre modèle devient complexe,
+plus vous vous demandez si vous avez choisi les bonnes valeurs. Manuellement ou automatiquement,
+vous devez faire des recherches sur l'espace d'hyperparamètres
+pour voir si vous auriez pu faire de meilleurs choix, par exemple sur le nombre de couches
+ou le nombre de nœuds. Mais comme vous allez le voir,
+il faut aussi vérifier les éléments de prétraitement,
+comme le nombre de buckets, et les traiter comme des hyperparamètres. Pour l'instant, nous n'avons parlé
+que de l'entraînement. Mais à quoi sert un modèle entraîné
+s'il est inutilisable pour l'inférence ? Souvent, nous ne voulons et ne pouvons pas
+intégrer directement notre modèle de ML dans l'application qui a besoin
+des caractéristiques prédites. Il convient alors d'intégrer le modèle
+dans son propre microservice, et de le faire communiquer
+avec tous les autres microservices, comme toute autre application Web. Vous pouvez aussi
+mettre à jour votre modèle, lancer des tests A/B, sans changer
+la logique de base de votre application, mais seulement le microservice. Mais comment provisionner
+la bonne quantité de matériel nécessaire pour ce modèle ? Les systèmes évoluent automatiquement
+pour fournir le nombre de machines nécessaires au bon moment. Dans le cloud, on peut passer de zéro
+à autant de machines que nécessaire pour gérer un grand nombre
+de requêtes par seconde. Laissez-moi vous éviter
+quelques migraines. Nous avons parlé du prétraitement
+de vos examples avant l'entraînement. Mais attention ! Car vous devez vérifier
+que le même prétraitement a lieu lors de la prédiction. Après le prétraitement,
+votre modèle entraîné peut différer de votre prédiction
+pour de nombreuses raisons. Cloud Machine Learning Engine
+aide à éviter ces problèmes. On ne parle pas assez souvent
+de la différence souvent subtile et indétectable entre vos entrées
+de prédiction et celles en entraînement. La moyenne d'une colonne
+peut avoir changé, ou la variance a pu évoluer avec le temps. La collecte et l'examen continus
+des données sont nécessaires pour détecter ce phénomène de
+"décalage entraînement-service". TensorFlow peut être difficile à utiliser. Vous devez installer des pilotes,
+trouver les bonnes machines, suivre l'ordre de prétraitement
+des opérations, les paramètres de scaling, etc. Google Cloud peut vous aider. Nous offrons plusieurs services
+de big data. Aujourd'hui, j'aimerais me concentrer
+sur Cloud Machine Learning Engine, ou CMLE. CMLE vous donne les machines
+dont vous avez besoin au bon moment, simplifie la comptabilité
+et garantit que le modèle entraîné correspond à l'exécution
+pendant la prédiction. Ce service haute évolutivité simplifie
+la diffusion et l'entraînement distribué. CMLE aide à distribuer le prétraitement, à trouver les serveurs de paramètres
+et même à régler les hyperparamètres. Pour les prédictions, le modèle de ML
+est accessible via une API REST et comprend toutes les caractéristiques
+de prétraitement créées. Le code client peut donc fournir
+simplement les variables d'entrée brutes, ce que vous avez collecté
+dans les fichiers journaux, les capteurs, les bases de données,
+puis retourner une prédiction. CMLE fait aussi évoluer votre service
+avec le nombre de machines que vous voulez, pour un plus grand nombre
+de requêtes par seconde. C'est très important. Vous avez besoin d'une exécution efficace
+à l'entraînement et en prédiction. Le calcul avec le modèle TensorFlow
+est peu onéreux. Le modèle de ML permet d'obtenir
+de nombreuses prédictions. Les blocs-notes comme Cloud Datalab
+de Google, ou les kernels Kaggle permettent de se lancer et de développer
+rapidement des modèles. Ils vous permettent d'explorer
+les données de manière interactive, pour définir et vérifier
+de nouvelles caractéristiques, et même pour lancer
+des tâches d'entraînement. L'interface combine code, résultats
+et documents dans un format lisible. Et comme vous êtes dans le cloud,
+vous bénéficiez d'une aide précieuse pour le partage et la collaboration,
+ainsi que de nombreux tutoriels. Datalab permet de se lancer facilement,
+puis de faire évoluer les calculs de manière fluide, avec une variété
+de services Google Cloud. Dans cet exemple, nous lançons une tâche
+Apache Beam sur Dataflow, qui peut effectuer la distribution
+sur de nombreuses VM.

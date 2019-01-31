@@ -1,0 +1,328 @@
+1
+00:00:00,370 --> 00:00:03,050
+There are five main topics in this module.
+
+2
+00:00:03,050 --> 00:00:07,370
+First, we'll create a working, but
+formal definition of what a model is.
+
+3
+00:00:07,370 --> 00:00:10,180
+Then because optimization
+always requires a standard
+
+4
+00:00:10,180 --> 00:00:13,070
+by which to say we're improving,
+we'll discuss loss functions.
+
+5
+00:00:14,450 --> 00:00:17,740
+Then we'll show how gradient descent is
+like trying to find the bottom of a hill
+
+6
+00:00:17,740 --> 00:00:19,050
+defined by the loss function.
+
+7
+00:00:20,970 --> 00:00:24,575
+Next, we'll play around in a sandbox
+where you can see models descending
+
+8
+00:00:24,575 --> 00:00:25,930
+loss surfaces in real time.
+
+9
+00:00:27,780 --> 00:00:30,530
+Lastly, we'll discuss how to
+measure a model's performance
+
+10
+00:00:30,530 --> 00:00:31,870
+outside the context of training.
+
+11
+00:00:33,650 --> 00:00:36,037
+Let's start with reviewing
+exactly what an ML model is and
+
+12
+00:00:36,037 --> 00:00:37,750
+where parameters fit into the equation.
+
+13
+00:00:40,014 --> 00:00:45,260
+ML models are mathematical functions
+with parameters and hyper-parameters.
+
+14
+00:00:45,260 --> 00:00:48,880
+A parameter is a real-valued variable
+that changes during model training.
+
+15
+00:00:50,210 --> 00:00:52,966
+A hyper-parameter is a setting
+that we set before training and
+
+16
+00:00:52,966 --> 00:00:54,583
+which doesn't change afterwards.
+
+17
+00:00:56,672 --> 00:00:58,976
+As we talked about in the last module,
+
+18
+00:00:58,976 --> 00:01:03,010
+linear models were one of
+the first sorts of ML models.
+
+19
+00:01:03,010 --> 00:01:06,600
+They remain an important and
+widely used class of models today though.
+
+20
+00:01:08,660 --> 00:01:12,030
+In a linear model, small changes
+in the independent variables, or
+
+21
+00:01:12,030 --> 00:01:14,570
+features as we refer to
+them in machine learning,
+
+22
+00:01:14,570 --> 00:01:17,770
+yield the same amount of change in
+the dependent variable or label.
+
+23
+00:01:17,770 --> 00:01:20,430
+Regardless of where that change
+takes place in the input space.
+
+24
+00:01:21,720 --> 00:01:23,931
+Visually, this looks
+like a line in 2D space.
+
+25
+00:01:23,931 --> 00:01:28,284
+And the formula used to model
+the relationship is simply y = mx + b.
+
+26
+00:01:28,284 --> 00:01:31,891
+Where m captures the amount of change
+we've observed in our label in
+
+27
+00:01:31,891 --> 00:01:34,179
+response to a small change in our feature.
+
+28
+00:01:36,430 --> 00:01:40,630
+This same concept of a relationship
+defined by a fixed ratio change between
+
+29
+00:01:40,630 --> 00:01:44,580
+labels and features can be extended
+to arbitrarily high dimensionality,
+
+30
+00:01:44,580 --> 00:01:47,710
+both with respect to the inputs and
+the outputs.
+
+31
+00:01:47,710 --> 00:01:51,990
+Meaning, we can build models that
+accept many more features as input,
+
+32
+00:01:51,990 --> 00:01:54,870
+model multiple labels simultaneously,
+or both.
+
+33
+00:01:56,370 --> 00:01:59,820
+When we increase the dimensionality
+of the input, our slope term m,
+
+34
+00:01:59,820 --> 00:02:02,180
+must become n-dimensional.
+
+35
+00:02:02,180 --> 00:02:03,500
+We call this new term the weight.
+
+36
+00:02:05,520 --> 00:02:09,530
+Visually, this process yields the
+n-dimensional generalization of a line,
+
+37
+00:02:09,530 --> 00:02:12,709
+which is called a hyperplane, which
+I've depicted on the right-hand side.
+
+38
+00:02:14,240 --> 00:02:17,340
+I won't go into detail here but
+when we increase the dimensionality of
+
+39
+00:02:17,340 --> 00:02:22,640
+the outputs, our y and c terms must
+become vectors of dimensionality and two.
+
+40
+00:02:24,760 --> 00:02:29,460
+The b term, whether as a scalar or
+a vector, is referred to as the bias term.
+
+41
+00:02:29,460 --> 00:02:33,280
+How a linear model can be used for
+regression should be somewhat intuitive.
+
+42
+00:02:33,280 --> 00:02:38,510
+You simply use the formula b plus m
+times x to get your prediction y.
+
+43
+00:02:38,510 --> 00:02:42,040
+But how can a linear model be used for
+classification?
+
+44
+00:02:42,040 --> 00:02:45,490
+How do you take a continuous number and
+interpret it as a class?
+
+45
+00:02:47,300 --> 00:02:50,830
+In order to take our model's numerical
+output and turn it into a class,
+
+46
+00:02:50,830 --> 00:02:53,819
+we need to first think about how
+class membership can be encoded.
+
+47
+00:02:54,920 --> 00:02:58,380
+The simplest way to encode class
+membership is with a binary.
+
+48
+00:02:58,380 --> 00:02:59,840
+Either you're a member, or you're not.
+
+49
+00:03:01,310 --> 00:03:05,790
+Of course in many cases categorical
+variables can take more than two values.
+
+50
+00:03:05,790 --> 00:03:07,520
+This approach still works though.
+
+51
+00:03:07,520 --> 00:03:10,480
+Just pretend that each value
+is its own independent class.
+
+52
+00:03:11,700 --> 00:03:15,600
+For now though,
+let's stick with a single binary class.
+
+53
+00:03:15,600 --> 00:03:18,810
+We'll return to the topic of feature
+representation in course three.
+
+54
+00:03:20,230 --> 00:03:23,820
+Once you adopt this representation of
+the label, the task is more manageable.
+
+55
+00:03:24,880 --> 00:03:28,880
+Now we need a way to map our line
+onto a binary classification rule.
+
+56
+00:03:30,360 --> 00:03:33,670
+One easy way to do this is to simply
+rely on the sign of the output.
+
+57
+00:03:35,170 --> 00:03:38,530
+Graphically, that looks like
+dividing our graph into two regions,
+
+58
+00:03:38,530 --> 00:03:42,150
+the points above the line and
+the points below it.
+
+59
+00:03:42,150 --> 00:03:43,850
+We call this line the decision boundary,
+
+60
+00:03:43,850 --> 00:03:47,180
+because it reflects our decision about
+where the classes begin and end.
+
+61
+00:03:48,650 --> 00:03:49,490
+And critically,
+
+62
+00:03:49,490 --> 00:03:53,330
+the decision boundary is intended not just
+to be descriptive of the current data.
+
+63
+00:03:53,330 --> 00:03:55,540
+It's intended to be
+predictive of unseen data.
+
+64
+00:03:57,030 --> 00:04:01,240
+This property of extending to unseen
+examples is called generalization, and
+
+65
+00:04:01,240 --> 00:04:02,830
+it's essential to ML models.
+
+66
+00:04:02,830 --> 00:04:06,000
+We will talk more about
+generalization in the next module.
+
+67
+00:04:08,140 --> 00:04:11,400
+Learning about ML in the in
+the abstract can be rather dry though.
+
+68
+00:04:11,400 --> 00:04:14,720
+So let's talk about an important
+problem that is a candidate for ML, and
+
+69
+00:04:14,720 --> 00:04:16,040
+then talk about how you would frame it.

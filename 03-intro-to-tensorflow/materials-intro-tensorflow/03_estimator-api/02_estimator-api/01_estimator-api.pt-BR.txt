@@ -1,0 +1,46 @@
+Vamos começar explorando os componentes
+da API Estimator e lidando com outras tarefas comuns de AM, como treino
+distribuído, monitoramento e serviço. Os estimadores fazem parte das APIs
+de alto nível do TensorFlow. O primeiro contato com o
+TensorFlow no módulo anterior foi no nível Core TensorFlow. Mas você usa o TensorFlow essencialmente
+como biblioteca de processamento numérico. Abaixo desse nível, há uma série de APIs
+com as quais você não costuma interagir. Elas lidam com hardware, CPUs,
+GPUs, TPUs ou plataformas alternativas, como o Android. Acima do Core TensorFlow, você
+encontrará APIs para todos os tijolos necessários
+para criar um modelo. Diferentes tipos de camadas de redes 
+neurais, diferentes funções de perda etc. E, para finalizar tudo, estimadores. Um modelo TensorFlow de nível iniciante
+envolve duas camadas elétricas neurais e um loop de treinamento. Você pode pensar: por que eu
+precisaria de ajuda com isso? Sou um desenvolvedor, 
+posso escrever um loop. Eu concordo com você,
+mas agora, mesmo para modelos minúsculos de
+prototipagem, costumo usar estimadores. Eu gosto do fato de eles
+serem intercambiáveis e possibilitam testar modelos padrão
+pré-fabricados em rápida sucessão. Conforme dados e tempo de treino crescem,
+também aumentam as necessidades. Você precisa de pontos de verificação para
+pausar e retomar o treino? Os estimadores têm isso. Os dados não se ajustam 
+mais à memória? Estimadores têm uma API que manipula
+conjuntos de dados fora da memória. Você não pode treinar uma grande rede
+sem ver como ela está indo. Estimadores exibem automaticamente
+as métricas importantes durante o treino e você pode visualizá-las no TensorBoard. Pensou em
+treinamento distribuído? Estimadores vêm com o código de execução
+de cluster necessário já incorporado. E, por fim, você vai querer envolver
+o modelo e torná-lo pronto para o ajuste de hiperparâmetro do ML Engine,
+e talvez também colocá-lo em produção atrás da previsão gerenciada com
+escalonamento automático do ML Engine. A API Estimator também faz isso. Você ainda quer gravar seu
+loop de treinamento com toda essa funcionalidade de código 
+boilerplate repetida toda vez? Imagino que não. Então vamos dar
+uma olhada nesta API. O estimador de classe base permite
+envolver seu próprio modelo, que você criaria a partir de camadas
+usando a API TF Layers. Mas se você está criando algo
+relativamente padrão, não precisa disso. O TensorFlow possui um conjunto de
+estimadores pré-fabricados para teste. Classificadores de redes neurais lineares
+ou densas para rotular dados em categorias e regressores semelhantes para
+prever valores contínuos. Não esqueça o DNNLinearCombinedClassifier,
+também conhecido como modelo amplo e profundo, de acordo com
+o estudo do Google que o popularizou. Este não é trivial, e
+usamos, por exemplo, para alimentar o mecanismo de
+recomendação no Google Play. Mas é muito flexível e tem sido descrito como o burro de carga
+do aprendizado de máquina empresarial. Funciona para todos os dados de
+estrutura e já está pronto para uso. Apenas lembre que,
+graças à API comum, os estimadores pré-fabricados
+são intercambiáveis. É fácil testar todos eles.

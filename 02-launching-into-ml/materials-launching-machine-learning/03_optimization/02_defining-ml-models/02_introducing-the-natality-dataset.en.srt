@@ -1,0 +1,498 @@
+1
+00:00:00,760 --> 00:00:02,770
+Babies are precious.
+
+2
+00:00:02,770 --> 00:00:05,240
+Some of them need urgent care
+immediately after they're born.
+
+3
+00:00:06,710 --> 00:00:10,150
+The sorts of doctors who can provide
+such care, however, are scarce.
+
+4
+00:00:11,290 --> 00:00:14,310
+In a perfect world, we'd know
+precisely where to send doctors so
+
+5
+00:00:14,310 --> 00:00:17,550
+that the babies who need them
+can get the care that they need.
+
+6
+00:00:17,550 --> 00:00:18,871
+But we don't live in that world.
+
+7
+00:00:21,368 --> 00:00:23,170
+How might this be an ML problem?
+
+8
+00:00:24,820 --> 00:00:28,210
+Well, if we knew which babies
+needed care before they were born,
+
+9
+00:00:28,210 --> 00:00:30,410
+we can make sure we had doctors
+on hand to care for them.
+
+10
+00:00:32,290 --> 00:00:36,616
+Assuming we want to make predictions
+before the baby is born,
+
+11
+00:00:36,616 --> 00:00:39,872
+which of these could be
+a feature in our model?
+
+12
+00:00:39,872 --> 00:00:43,785
+Mother's age, birth time, baby weight.
+
+13
+00:00:46,017 --> 00:00:49,138
+Assuming we want to make predictions
+before the baby is born,
+
+14
+00:00:49,138 --> 00:00:51,367
+which of these could be
+a label in our model?
+
+15
+00:00:53,330 --> 00:00:57,807
+Mother's age, birth time, baby weight.
+
+16
+00:00:57,807 --> 00:01:00,953
+If you didn't know the answers
+to these questions, that's okay,
+
+17
+00:01:00,953 --> 00:01:03,170
+because a lot of this is
+quite domain specific.
+
+18
+00:01:04,340 --> 00:01:07,610
+What you should have intuitions about,
+however, are when the information is
+
+19
+00:01:07,610 --> 00:01:10,820
+available relative to when we want
+to actually make predictions.
+
+20
+00:01:12,050 --> 00:01:17,090
+In this case, birth time is not available
+to us until well after the baby is born,
+
+21
+00:01:17,090 --> 00:01:18,120
+and so we can't use it.
+
+22
+00:01:19,980 --> 00:01:23,240
+Baby weight also happens to be
+an important indicator of baby health.
+
+23
+00:01:25,490 --> 00:01:29,710
+Mother's age is something we can observe
+and which is predictive of baby weight.
+
+24
+00:01:31,090 --> 00:01:34,030
+So this seems like a good
+candidate ML problem,
+
+25
+00:01:34,030 --> 00:01:38,734
+because there is a demonstrated need
+to know something that is too expensive
+
+26
+00:01:38,734 --> 00:01:43,377
+to wait for, baby health, and
+which seems to be predictable beforehand.
+
+27
+00:01:43,377 --> 00:01:46,229
+Assuming that we've chosen
+baby weight as out label,
+
+28
+00:01:46,229 --> 00:01:47,910
+what sort of ML problem is this?
+
+29
+00:01:49,650 --> 00:01:53,310
+As a hint, remember that baby
+weight is a continuous number.
+
+30
+00:01:53,310 --> 00:01:56,250
+For now,
+let's treat this as a regression problem.
+
+31
+00:01:56,250 --> 00:01:59,630
+And to simplify things, let's consider
+only the feature mother's age and
+
+32
+00:01:59,630 --> 00:02:00,609
+the label baby weight.
+
+33
+00:02:02,240 --> 00:02:05,590
+This data comes from a data set
+collected by the US government and
+
+34
+00:02:05,590 --> 00:02:08,870
+it's called the natality data set,
+because natality means birth.
+
+35
+00:02:09,920 --> 00:02:12,440
+It's available as a public
+data set in BigQuery.
+
+36
+00:02:14,540 --> 00:02:17,460
+Often the first step to modeling
+data is to look at the data
+
+37
+00:02:17,460 --> 00:02:20,969
+to verify that there is some signal and
+that it's not all noise.
+
+38
+00:02:22,310 --> 00:02:25,424
+Here I've graphed baby weight as
+a function of mother's age using
+
+39
+00:02:25,424 --> 00:02:26,211
+a scatter plot.
+
+40
+00:02:28,122 --> 00:02:31,042
+We usually make scatter plots
+from samples of large data sets,
+
+41
+00:02:31,042 --> 00:02:32,650
+rather than from the whole thing.
+
+42
+00:02:33,720 --> 00:02:35,640
+Why use samples?
+
+43
+00:02:35,640 --> 00:02:40,000
+Firstly, because scatter plotting too
+much data is computationally infeasible.
+
+44
+00:02:40,000 --> 00:02:44,460
+And secondly, with lots of data, scatter
+plots become visually hard to interpret.
+
+45
+00:02:46,330 --> 00:02:48,000
+Note that there seems to be a small,
+
+46
+00:02:48,000 --> 00:02:51,260
+positive relationship between
+mother's age and baby weight.
+
+47
+00:02:51,260 --> 00:02:54,500
+Here is a new sort of plot that
+uses the same two variables, but
+
+48
+00:02:54,500 --> 00:02:58,070
+unlike a scatter plot which
+represents data individually,
+
+49
+00:02:58,070 --> 00:03:01,710
+this graph represents groups of data,
+specifically quantiles.
+
+50
+00:03:02,860 --> 00:03:05,585
+As a result, we need in
+the sample before building it and
+
+51
+00:03:05,585 --> 00:03:08,354
+there's consequently no risk of
+getting a non-representative sample.
+
+52
+00:03:09,800 --> 00:03:12,764
+As an added bonus,
+the results are also repeatable, and
+
+53
+00:03:12,764 --> 00:03:14,385
+the process parallelizable.
+
+54
+00:03:15,560 --> 00:03:21,310
+I made this plot, which looks at about 22
+gigabytes of data, in just a few seconds.
+
+55
+00:03:21,310 --> 00:03:23,368
+We'll cover how to create
+graphs like this later on.
+
+56
+00:03:26,305 --> 00:03:29,250
+So do you see any relationship in
+the data just by looking at it?
+
+57
+00:03:31,058 --> 00:03:35,283
+You might have noticed something that
+wasn't apparent on our scatter plot,
+
+58
+00:03:35,283 --> 00:03:39,118
+baby weight seems to reach its
+maximum when mothers are around 30 and
+
+59
+00:03:39,118 --> 00:03:41,994
+it tapers off as mothers
+get both older and younger.
+
+60
+00:03:41,994 --> 00:03:43,990
+This suggests a non-linear relationship,
+
+61
+00:03:43,990 --> 00:03:47,320
+which is both something that wasn't
+apparent in our scatter plot.
+
+62
+00:03:47,320 --> 00:03:48,570
+And an ominous sign,
+
+63
+00:03:48,570 --> 00:03:51,720
+given our intention to model this
+relationship with a linear model.
+
+64
+00:03:53,060 --> 00:03:57,450
+In fact, our intention to model
+a non-linear function with a linear model
+
+65
+00:03:57,450 --> 00:03:59,409
+is an example of what's
+called underfitting.
+
+66
+00:04:00,750 --> 00:04:04,400
+You might wonder why we're not
+using a more complex type of model.
+
+67
+00:04:04,400 --> 00:04:07,360
+Here it's for pedagogical reasons.
+
+68
+00:04:07,360 --> 00:04:11,870
+We'll talk later about model selection and
+a concept known as overfitting.
+
+69
+00:04:11,870 --> 00:04:16,161
+In short, there are risks that
+are proportional to model complexity.
+
+70
+00:04:16,161 --> 00:04:20,301
+It appears that there is a slight positive
+relationship between mother's age and
+
+71
+00:04:20,301 --> 00:04:21,025
+baby weight.
+
+72
+00:04:21,025 --> 00:04:24,586
+We're going to model this with a line.
+
+73
+00:04:24,586 --> 00:04:28,539
+Given that we're using a linear model,
+our earlier intuition translates into
+
+74
+00:04:28,539 --> 00:04:31,140
+an upward sloping line with
+a positive y intercept.
+
+75
+00:04:32,740 --> 00:04:35,210
+We've eyeballed the data
+to select this line, but
+
+76
+00:04:35,210 --> 00:04:37,570
+how do we know whether the line
+should be higher or lower?
+
+77
+00:04:38,710 --> 00:04:40,189
+How do we know it's in the right place?
+
+78
+00:04:42,400 --> 00:04:45,352
+How, for example, do we know it's
+actually better than this other line?
+
+79
+00:04:49,191 --> 00:04:53,198
+Those of you who have taken statistics
+may remember seeing a process for
+
+80
+00:04:53,198 --> 00:04:57,422
+determining the best weights for
+a line called least squares regression.
+
+81
+00:04:57,422 --> 00:05:01,186
+And it's true that there are ways of
+analytically determining the best possible
+
+82
+00:05:01,186 --> 00:05:02,524
+weights for linear models.
+
+83
+00:05:03,790 --> 00:05:08,060
+The problem is that these solutions
+only work up to a certain scale.
+
+84
+00:05:08,060 --> 00:05:10,320
+Once you start using really big data sets,
+
+85
+00:05:10,320 --> 00:05:14,000
+the computation required to analytically
+solve this problem becomes impractical.
+
+86
+00:05:15,790 --> 00:05:18,820
+What do you do when an analytical
+solution is no longer an option?
+
+87
+00:05:19,840 --> 00:05:20,915
+You use gradient descent.
+
+88
+00:05:23,792 --> 00:05:28,790
+Let’s start by thinking about optimization
+as a search in parameter-space.
+
+89
+00:05:28,790 --> 00:05:32,630
+Remember that our simple linear model
+has two parameters, a weight term and
+
+90
+00:05:32,630 --> 00:05:33,290
+a bias term.
+
+91
+00:05:34,300 --> 00:05:38,270
+Because they are both real valued, we can
+think of the space of all combinations of
+
+92
+00:05:38,270 --> 00:05:41,899
+values for these two parameters
+as points in 2D space.
+
+93
+00:05:43,300 --> 00:05:45,050
+But remember, we're looking for
+the best value.
+
+94
+00:05:46,950 --> 00:05:50,100
+So how does one point in parameter-space
+compare to another with respect to
+
+95
+00:05:50,100 --> 00:05:50,600
+quality?
+
+96
+00:05:51,650 --> 00:05:54,470
+Well, first we need to reframe
+the question a little.
+
+97
+00:05:54,470 --> 00:05:55,940
+Because input spaces,
+
+98
+00:05:55,940 --> 00:05:59,360
+which are the space where the data live,
+are often themselves infinite,
+
+99
+00:05:59,360 --> 00:06:03,270
+it's not possible to evaluate the
+parameters on every point in input space.
+
+100
+00:06:04,410 --> 00:06:08,880
+And so, as we often do, we estimate
+what this calculation would look like
+
+101
+00:06:08,880 --> 00:06:11,230
+using what we have, our training data.
+
+102
+00:06:12,380 --> 00:06:15,390
+And to do that, we'll need to somehow
+generalize from the quality of
+
+103
+00:06:15,390 --> 00:06:19,050
+a prediction for a single data point,
+which is simply the error of that
+
+104
+00:06:19,050 --> 00:06:23,400
+prediction, to a number that captures
+the quality of a group of predictions.
+
+105
+00:06:24,400 --> 00:06:26,930
+The functions that do this
+are known as loss functions.

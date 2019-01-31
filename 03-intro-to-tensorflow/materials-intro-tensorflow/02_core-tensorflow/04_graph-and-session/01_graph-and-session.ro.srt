@@ -1,0 +1,271 @@
+1
+00:00:00,000 --> 00:00:03,045
+Now let's look at graph and session.
+
+2
+00:00:03,045 --> 00:00:05,370
+The Directed Acyclic Graph,
+
+3
+00:00:05,370 --> 00:00:07,260
+the DAG in TensorFlow,
+
+4
+00:00:07,260 --> 00:00:08,790
+is like any graph.
+
+5
+00:00:08,790 --> 00:00:11,955
+It consists of edges and nodes.
+
+6
+00:00:11,955 --> 00:00:14,785
+The edges represent data,
+
+7
+00:00:14,785 --> 00:00:20,075
+they represent tensors, which as we now know, are n-dimensional arrays.
+
+8
+00:00:20,075 --> 00:00:24,920
+The nodes represent TensorFlow operations on those tensors.
+
+9
+00:00:24,920 --> 00:00:28,995
+Things like tf.add that we solved in the previous lesson.
+
+10
+00:00:28,995 --> 00:00:36,410
+A TensorFlow DAG consists of tensors and operations on those tensors.
+
+11
+00:00:36,410 --> 00:00:40,470
+So, why does TensorFlow do lazy evaluation?
+
+12
+00:00:40,470 --> 00:00:44,380
+It's because lazy evaluation allows for a lot of
+
+13
+00:00:44,380 --> 00:00:48,745
+flexibility and optimization when you're running the graph.
+
+14
+00:00:48,745 --> 00:00:52,310
+TensorFlow can now process the graph, compiler it,
+
+15
+00:00:52,310 --> 00:00:55,900
+inserts send and receive nodes in the middle of the DAG,
+
+16
+00:00:55,900 --> 00:00:58,535
+also that it can be remotely executed.
+
+17
+00:00:58,535 --> 00:01:02,680
+Tensorflow can assign different parts of the DAG to different devices,
+
+18
+00:01:02,680 --> 00:01:04,855
+depending on whether it's I/O bound,
+
+19
+00:01:04,855 --> 00:01:08,305
+or whether it's going to require GPU capabilities.
+
+20
+00:01:08,305 --> 00:01:11,035
+While the graph is being processed,
+
+21
+00:01:11,035 --> 00:01:14,375
+TensorFlow can add quantization or data types,
+
+22
+00:01:14,375 --> 00:01:15,950
+it can add debug nodes,
+
+23
+00:01:15,950 --> 00:01:18,710
+it can create summaries to write values out,
+
+24
+00:01:18,710 --> 00:01:22,700
+so tensor can read them besides computation like add,
+
+25
+00:01:22,700 --> 00:01:27,755
+matmul, constants, variables all of these are ops and TensorFlow can work with them.
+
+26
+00:01:27,755 --> 00:01:30,260
+When the graph is being compiled,
+
+27
+00:01:30,260 --> 00:01:34,515
+TensorFlow can take two ops and fuse them to improve performance.
+
+28
+00:01:34,515 --> 00:01:38,415
+For example, you may have two consecutive add nodes,
+
+29
+00:01:38,415 --> 00:01:41,355
+and TensorFlow can fuse them into a single one.
+
+30
+00:01:41,355 --> 00:01:45,640
+TensorFlow's XLA compiler can use the information
+
+31
+00:01:45,640 --> 00:01:49,640
+into a Directed Acyclic Graph to generate faster code.
+
+32
+00:01:49,640 --> 00:01:55,865
+So, that's one aspect of why you want to use a DAG for optimization.
+
+33
+00:01:55,865 --> 00:01:59,230
+But the most exciting part is that the DAG can
+
+34
+00:01:59,230 --> 00:02:02,630
+be remotely executed and assigned to devices.
+
+35
+00:02:02,630 --> 00:02:08,500
+And that's where the benefits of the DAG approach become very evident.
+
+36
+00:02:08,500 --> 00:02:14,965
+By using explicit edges to represent dependencies between operations,
+
+37
+00:02:14,965 --> 00:02:20,980
+it's easy for the system to identify operations that can execute in parallel.
+
+38
+00:02:20,980 --> 00:02:26,230
+And by using explicit edges to represent the values that flow between operations,
+
+39
+00:02:26,230 --> 00:02:32,110
+it's possible for TensorFLow to partition your program across multiple devices;
+
+40
+00:02:32,110 --> 00:02:37,885
+CPUs, GPUs, TPUs, etc that are attached even to different machines.
+
+41
+00:02:37,885 --> 00:02:43,870
+TensorFlow inserts the necessary communication and coordination between these devices.
+
+42
+00:02:43,870 --> 00:02:46,030
+So, note the colors in the diagram.
+
+43
+00:02:46,030 --> 00:02:49,270
+Several parts of the graph can be on different devices,
+
+44
+00:02:49,270 --> 00:02:52,470
+it doesn't matter whether it's GPU or different computers.
+
+45
+00:02:52,470 --> 00:02:55,840
+So, one key benefit of this model to be
+
+46
+00:02:55,840 --> 00:02:58,970
+able to distribute computation across many machines,
+
+47
+00:02:58,970 --> 00:03:00,695
+and many types of machines,
+
+48
+00:03:00,695 --> 00:03:02,680
+comes because of the DAG.
+
+49
+00:03:02,680 --> 00:03:05,900
+We just write Python code and let
+
+50
+00:03:05,900 --> 00:03:11,275
+the TensorFlow execution system optimize and distribute the graph.
+
+51
+00:03:11,275 --> 00:03:17,315
+The session class represents this connection between the Python program that we write,
+
+52
+00:03:17,315 --> 00:03:19,150
+and the C++ runtime.
+
+53
+00:03:19,150 --> 00:03:24,769
+The session object provides access to the devices on the local machine,
+
+54
+00:03:24,769 --> 00:03:29,395
+and to remote devices using the distributor TensorFlow runtime.
+
+55
+00:03:29,395 --> 00:03:32,450
+It also caches information about the graph,
+
+56
+00:03:32,450 --> 00:03:36,275
+so, the same computation can be run multiple times.
+
+57
+00:03:36,275 --> 00:03:43,265
+As we saw, we execute TensorFlow graphs by calling run on a tf session,
+
+58
+00:03:43,265 --> 00:03:44,665
+and when we do that,
+
+59
+00:03:44,665 --> 00:03:47,640
+we specify a tensor that we want to evaluate.
+
+60
+00:03:47,640 --> 00:03:50,290
+So, in this code example,
+
+61
+00:03:50,290 --> 00:03:53,660
+I'm defining two data tensors X and Y.
+
+62
+00:03:53,660 --> 00:03:57,015
+They're constants, they are 1D tensors.
+
+63
+00:03:57,015 --> 00:04:05,465
+The tensor Z is a result of invoking tf.add on X and Y.
+
+64
+00:04:05,465 --> 00:04:07,415
+When I want to evaluate,
+
+65
+00:04:07,415 --> 00:04:10,990
+I call session.run on Z.
+
+66
+00:04:10,990 --> 00:04:16,470
+Session here scss, is an instance of tf session,
+
+67
+00:04:16,470 --> 00:04:19,130
+and the with statement in Python,
+
+68
+00:04:19,130 --> 00:04:23,990
+is how we can ensure that the session is automatically closed when we are done.

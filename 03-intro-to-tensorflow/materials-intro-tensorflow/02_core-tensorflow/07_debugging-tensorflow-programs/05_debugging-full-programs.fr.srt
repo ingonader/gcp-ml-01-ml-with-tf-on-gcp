@@ -1,0 +1,378 @@
+1
+00:00:01,110 --> 00:00:02,770
+Au cours des dernières leçons,
+
+2
+00:00:02,770 --> 00:00:05,920
+vous avez vu comment déboguer
+un programme TensorFlow :
+
+3
+00:00:05,920 --> 00:00:10,110
+regarder le message d'erreur,
+isoler la méthode concernée,
+
+4
+00:00:10,110 --> 00:00:11,710
+charger des données fictives,
+
+5
+00:00:11,710 --> 00:00:15,220
+et enfin corriger l'erreur une fois
+que vous avez compris ce qui se passe.
+
+6
+00:00:15,590 --> 00:00:18,840
+Il arrive toutefois parfois
+que les problèmes soient plus subtils.
+
+7
+00:00:18,840 --> 00:00:22,900
+Ils ne surviennent que lorsque
+certaines choses se produisent.
+
+8
+00:00:22,900 --> 00:00:24,905
+Et vous pourriez ne pas pouvoir déterminer
+
+9
+00:00:24,905 --> 00:00:29,030
+pourquoi tout fonctionne correctement
+pour cinq, six ou sept lots,
+
+10
+00:00:29,030 --> 00:00:32,989
+avant qu'une erreur n'apparaisse
+soudainement pour disparaître ensuite.
+
+11
+00:00:32,989 --> 00:00:38,380
+En d'autres termes, lorsque les erreurs
+sont liées à une valeur d'entrée donnée
+
+12
+00:00:38,380 --> 00:00:41,380
+ou à une condition du système d'exécution.
+
+13
+00:00:41,900 --> 00:00:46,187
+Dans ce cas, vous devez déboguer
+le programme dans son intégralité,
+
+14
+00:00:46,187 --> 00:00:48,362
+et il existe pour cela trois méthodes.
+
+15
+00:00:49,202 --> 00:00:53,234
+tf.Print() permet d'afficher
+les valeurs des Tensors
+
+16
+00:00:53,234 --> 00:00:55,375
+lorsque certaines conditions sont remplies.
+
+17
+00:00:55,865 --> 00:00:59,038
+tf_debug est un débogueur interactif
+
+18
+00:00:59,038 --> 00:01:01,231
+que vous pouvez exécuter
+à partir d'un terminal
+
+19
+00:01:01,231 --> 00:01:04,260
+en vous connectant à une session
+TensorFlow locale ou distante.
+
+20
+00:01:04,940 --> 00:01:08,320
+TensorBoard est un outil de surveillance
+doté d'une interface graphique.
+
+21
+00:01:08,320 --> 00:01:11,270
+J'en ai déjà parlé comme
+d'un mode de consultation du DAG,
+
+22
+00:01:11,270 --> 00:01:14,830
+mais cet outil est également utilisable
+pour d'autres tâches de dépannage.
+
+23
+00:01:14,830 --> 00:01:17,260
+Vous pouvez consulter
+les statistiques d'évaluation,
+
+24
+00:01:17,260 --> 00:01:20,170
+rechercher le surapprentissage
+ou les couches mortes, etc.,
+
+25
+00:01:20,170 --> 00:01:23,604
+c.-à-d. procéder à un débogage
+de haut niveau de vos réseaux de neurones.
+
+26
+00:01:23,604 --> 00:01:26,413
+Nous verrons TensorBoard
+dans un futur chapitre de ce cours.
+
+27
+00:01:26,413 --> 00:01:30,981
+Je voulais simplement en parler
+pour que vous sachiez et reteniez
+
+28
+00:01:30,981 --> 00:01:34,432
+que c'est un puissant outil de débogage.
+
+29
+00:01:35,072 --> 00:01:38,311
+Il n'est pas non plus sans intérêt
+que je vous signale
+
+30
+00:01:38,311 --> 00:01:44,310
+que le niveau de journalisation par défaut
+des programmes TensorFlow est warn
+
+31
+00:01:44,310 --> 00:01:46,390
+(relativement peu de messages).
+
+32
+00:01:46,390 --> 00:01:48,300
+Si vous optez pour le niveau info,
+
+33
+00:01:48,300 --> 00:01:52,550
+vous verrez beaucoup plus
+de messages pendant l'entraînement.
+
+34
+00:01:52,550 --> 00:01:55,880
+Vous pouvez changer de niveau
+à l'aide de tf.logging
+
+35
+00:01:55,880 --> 00:01:58,690
+et définir le niveau de détails
+avec le paramètre verbosity.
+
+36
+00:01:58,690 --> 00:02:04,060
+Les niveaux sont debug, info, warn,
+error et fatal. Dans cet ordre.
+
+37
+00:02:04,060 --> 00:02:09,030
+Debug est le plus détaillé, tandis
+que fatal est celui qui l'est le moins.
+
+38
+00:02:09,030 --> 00:02:12,080
+J'ai tendance à utiliser le niveau info
+pendant le développement,
+
+39
+00:02:12,080 --> 00:02:15,240
+et je me sers plutôt de warn en production.
+
+40
+00:02:15,240 --> 00:02:18,142
+Vous pouvez bien sûr définir
+un paramètre de ligne de commande
+
+41
+00:02:18,142 --> 00:02:19,675
+pour passer d'un mode à l'autre.
+
+42
+00:02:20,525 --> 00:02:23,142
+tf.Print() peut être utilisé
+pour la journalisation
+
+43
+00:02:23,142 --> 00:02:25,130
+de valeurs de Tensor données.
+
+44
+00:02:25,690 --> 00:02:28,320
+Par exemple, si vous divisez a par b,
+
+45
+00:02:28,320 --> 00:02:32,330
+et que vous obtenez nan
+(Not a Number) dans la sortie,
+
+46
+00:02:32,330 --> 00:02:35,680
+vous voulez avoir connaissance
+des valeurs de a et de b
+
+47
+00:02:35,680 --> 00:02:37,870
+dont le traitement
+est à l'origine du problème.
+
+48
+00:02:37,870 --> 00:02:39,300
+Si vous affichez a avec print,
+
+49
+00:02:39,300 --> 00:02:42,681
+vous n'obtiendrez que la sortie
+du débogage du Tensor, et pas sa valeur.
+
+50
+00:02:42,681 --> 00:02:44,630
+Souvenez-vous de l'exécution paresseuse :
+
+51
+00:02:44,630 --> 00:02:47,185
+vous devez évaluer un Tensor
+pour obtenir sa valeur.
+
+52
+00:02:47,775 --> 00:02:51,760
+Vous ne voulez pas que la valeur de a
+soit affichée à chaque fois.
+
+53
+00:02:52,130 --> 00:03:00,390
+L'idée est ici d'utiliser le Tensor print_ab
+qui encapsule s et affiche à la fois a et b.
+
+54
+00:03:00,820 --> 00:03:05,855
+Je remplace alors s
+par print_ab dans le graphe,
+
+55
+00:03:05,855 --> 00:03:09,290
+mais seulement au niveau des lots
+pour lesquels s retourne la sortie nan.
+
+56
+00:03:09,290 --> 00:03:12,170
+Et donc, seules les données
+de ces lots sont affichées.
+
+57
+00:03:12,170 --> 00:03:14,550
+Cela doit être effectué
+dans un programme autonome,
+
+58
+00:03:14,550 --> 00:03:17,698
+car Datalab utilise le Tensor
+pour générer les messages du journal.
+
+59
+00:03:17,698 --> 00:03:21,084
+C'est la raison pour laquelle
+ma solution consiste à exécuter un fichier
+
+60
+00:03:21,084 --> 00:03:22,590
+dans lequel j'ai écrit le code.
+
+61
+00:03:22,980 --> 00:03:26,985
+Il est fréquent que l'on utilise tf.Print
+pour des programmes TF en cours d'exécution
+
+62
+00:03:26,985 --> 00:03:28,955
+afin de diagnostiquer des erreurs rares
+
+63
+00:03:28,955 --> 00:03:31,520
+et d'enregistrer les informations
+dans les journaux.
+
+64
+00:03:31,700 --> 00:03:33,030
+C'est propre et pratique.
+
+65
+00:03:34,520 --> 00:03:38,215
+TensorFlow comporte également
+un débogueur interactif dynamique
+
+66
+00:03:38,215 --> 00:03:41,690
+appelé tf_debug, exécutable depuis
+l'interface de ligne de commande.
+
+67
+00:03:41,690 --> 00:03:43,740
+Vous exécutez le programme TensorFlow
+
+68
+00:03:43,740 --> 00:03:45,990
+à partir d'un terminal
+comme programme autonome
+
+69
+00:03:45,990 --> 00:03:50,730
+en ajoutant l'indicateur
+de ligne de commande --debug.
+
+70
+00:03:51,270 --> 00:03:53,940
+C'est aussi utile pour déboguer
+des programmes TensorFlow
+
+71
+00:03:53,940 --> 00:03:55,320
+exécutés sur un site distant
+
+72
+00:03:55,320 --> 00:03:57,960
+(établissement d'un lien avec le programme).
+
+73
+00:03:57,960 --> 00:04:00,698
+Il existe également
+des raccordements de débogage spéciaux
+
+74
+00:04:00,698 --> 00:04:03,760
+pour le débogage des programmes
+Experiment et Estimator.
+
+75
+00:04:03,760 --> 00:04:05,640
+Et dès qu'un programme démarre,
+
+76
+00:04:05,640 --> 00:04:08,640
+vous pouvez utiliser un débogueur
+pour suivre le code pas à pas,
+
+77
+00:04:08,640 --> 00:04:10,540
+définir des points d'arrêt, etc.
+
+78
+00:04:10,540 --> 00:04:12,830
+Si vous avez déjà utilisé
+un débogueur interactif
+
+79
+00:04:12,830 --> 00:04:14,800
+pour tout autre langage ou environnement,
+
+80
+00:04:14,800 --> 00:04:18,010
+cette terminologie (exécution
+pas à pas, points d'arrêt, etc.)
+
+81
+00:04:18,010 --> 00:04:19,759
+ne vous est sans doute pas inconnue.

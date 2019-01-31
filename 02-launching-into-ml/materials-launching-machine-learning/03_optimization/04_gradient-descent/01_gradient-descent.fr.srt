@@ -1,0 +1,460 @@
+1
+00:00:00,240 --> 00:00:02,030
+Dans la section précédente,
+
+2
+00:00:02,030 --> 00:00:04,555
+nous avons envisagé l'optimisation
+comme une recherche
+
+3
+00:00:04,555 --> 00:00:05,935
+dans l'espace des paramètres,
+
+4
+00:00:05,935 --> 00:00:07,600
+puis présenté
+les fonctions de perte
+
+5
+00:00:07,600 --> 00:00:10,080
+qui permettent
+de comparer ces points.
+
+6
+00:00:10,180 --> 00:00:12,090
+Comment transformer
+une fonction de perte
+
+7
+00:00:12,090 --> 00:00:14,540
+en stratégie de recherche ?
+
+8
+00:00:14,820 --> 00:00:17,060
+C'est là qu'intervient
+la descente de gradient.
+
+9
+00:00:17,620 --> 00:00:20,840
+Cette technique consiste
+à descendre le long de la surface
+
+10
+00:00:21,010 --> 00:00:23,390
+formée par l'utilisation
+de notre fonction de perte
+
+11
+00:00:23,390 --> 00:00:26,560
+sur tous les points
+de l'espace des paramètres.
+
+12
+00:00:26,850 --> 00:00:29,830
+Voici à quoi devrait ressembler
+cette surface.
+
+13
+00:00:30,630 --> 00:00:34,390
+Dans l'idéal, c'est ce que vous verriez
+avec des informations parfaites, c.-à-d.
+
+14
+00:00:34,390 --> 00:00:36,410
+avec une connaissance complète du graphe.
+
+15
+00:00:37,140 --> 00:00:41,145
+Dans la réalité, nous ne connaîtrons
+les valeurs de perte que pour les points
+
+16
+00:00:41,145 --> 00:00:43,515
+analysés avec notre fonction.
+
+17
+00:00:43,515 --> 00:00:46,870
+À savoir, dans notre cas,
+les deux points figurant dans le cadre rouge.
+
+18
+00:00:48,800 --> 00:00:52,190
+Mais il reste à choisir la méthode
+qui permettra ensuite de trouver
+
+19
+00:00:52,190 --> 00:00:53,790
+malgré tout le minimum.
+
+20
+00:00:54,805 --> 00:00:57,125
+Pour déterminer un minimum,
+
+21
+00:00:57,125 --> 00:01:00,760
+il faut se poser deux questions
+questions importantes.
+
+22
+00:01:00,760 --> 00:01:02,540
+Quelle direction dois-je choisir ?
+
+23
+00:01:02,540 --> 00:01:05,250
+Et combien de pas dois-je faire ?
+
+24
+00:01:05,250 --> 00:01:07,870
+Nous allons dans un premier temps
+simplifier les choses,
+
+25
+00:01:07,870 --> 00:01:12,290
+et nous n'utiliserons
+qu'un pas d'apprentissage fixe.
+
+26
+00:01:12,780 --> 00:01:15,130
+Nous obtenons alors
+un algorithme très simple.
+
+27
+00:01:15,950 --> 00:01:20,710
+Tant que la perte est supérieure à une petite
+constante, il calcule la direction.
+
+28
+00:01:20,710 --> 00:01:25,430
+Il recalcule ensuite chaque paramètre
+du modèle en additionnant l'ancienne valeur
+
+29
+00:01:25,430 --> 00:01:29,154
+au produit du pas d'apprentissage
+et de la direction.
+
+30
+00:01:29,154 --> 00:01:31,521
+Enfin, il calcule à nouveau la perte.
+
+31
+00:01:34,621 --> 00:01:38,778
+Une surface de perte peut être vue
+comme une carte topographique
+
+32
+00:01:38,778 --> 00:01:41,720
+dont chaque courbe (de niveau)
+représente une profondeur.
+
+33
+00:01:41,830 --> 00:01:47,080
+Plus les courbes sont proches les unes
+des autres, plus la surface est abrupte.
+
+34
+00:01:47,750 --> 00:01:52,090
+L'algorithme fait des pas
+représentés ici sous la forme de points.
+
+35
+00:01:52,090 --> 00:01:54,770
+Dans ce cas,
+l'algorithme est parti du bord supérieur,
+
+36
+00:01:54,770 --> 00:01:58,720
+puis il a progressé vers le bas en direction
+de la valeur minimale située au milieu.
+
+37
+00:01:59,050 --> 00:02:03,120
+Notez que la taille
+des pas d'apprentissage ne varie pas.
+
+38
+00:02:03,120 --> 00:02:05,929
+Laissons la question de la direction
+de côté pour le moment.
+
+39
+00:02:05,929 --> 00:02:09,800
+Si le pas est trop petit, l'apprentissage
+risque de durer éternellement.
+
+40
+00:02:09,800 --> 00:02:12,530
+Mais vous finirez toujours
+par trouver le minimum.
+
+41
+00:02:12,530 --> 00:02:13,810
+J'ai utilisé le singulier,
+
+42
+00:02:13,810 --> 00:02:17,000
+car nous allons supposer pour le moment
+qu'il n'y en a qu'un seul.
+
+43
+00:02:17,000 --> 00:02:19,580
+Toutefois, il pourrait
+y en avoir plusieurs à l'avenir,
+
+44
+00:02:19,580 --> 00:02:22,500
+et nous verrons ultérieurement
+comment traiter ce problème.
+
+45
+00:02:23,730 --> 00:02:25,699
+Si le pas d'apprentissage est trop grand,
+
+46
+00:02:25,699 --> 00:02:28,780
+nous risquons de rebondir
+sur les parois de la surface de perte,
+
+47
+00:02:28,780 --> 00:02:31,400
+voire même de sortir complètement
+du creux de la courbe,
+
+48
+00:02:31,400 --> 00:02:34,090
+et de nous retrouver sur
+une nouvelle zone de la surface.
+
+49
+00:02:34,090 --> 00:02:36,310
+Ainsi, lorsque le pas est trop grand,
+
+50
+00:02:36,310 --> 00:02:39,695
+le processus risque de ne pas converger.
+
+51
+00:02:40,805 --> 00:02:45,140
+Si le pas d'apprentissage convient
+parfaitement, tout va bien.
+
+52
+00:02:45,140 --> 00:02:46,630
+Mais quelle que soit sa valeur,
+
+53
+00:02:46,630 --> 00:02:50,051
+il est peu probable qu'elle soit aussi
+appropriée pour un autre problème.
+
+54
+00:02:50,051 --> 00:02:53,790
+Voyez comme le pas qui semblait
+fonctionner pour la courbe de gauche
+
+55
+00:02:53,790 --> 00:02:56,621
+échoue totalement pour celle de droite.
+
+56
+00:02:59,374 --> 00:03:02,319
+La taille ne peut donc pas être
+la même pour tous les modèles.
+
+57
+00:03:02,319 --> 00:03:05,650
+Alors, comment devons-nous la faire varier ?
+
+58
+00:03:06,830 --> 00:03:10,140
+Heureusement, la pente qui correspond
+au taux d'évolution de la courbe
+
+59
+00:03:10,140 --> 00:03:12,844
+nous donne une assez bonne idée
+du pas d'apprentissage,
+
+60
+00:03:12,844 --> 00:03:15,389
+mais aussi de la direction,
+que nous devons adopter.
+
+61
+00:03:15,469 --> 00:03:18,800
+Regardez le point du graphique du bas
+qui indique la valeur de la pente
+
+62
+00:03:18,800 --> 00:03:21,910
+en divers endroits
+de la courbe de perte de poids.
+
+63
+00:03:21,910 --> 00:03:24,730
+Notez que lorsque les valeurs sont
+plus grandes, elles sont
+
+64
+00:03:24,730 --> 00:03:26,370
+plus éloignées du bas de la courbe
+
+65
+00:03:26,370 --> 00:03:28,445
+que lorsque la pente est faible.
+
+66
+00:03:28,445 --> 00:03:30,160
+Dans le diagramme du haut, notez que
+
+67
+00:03:30,160 --> 00:03:33,320
+lorsque la pente est négative,
+le minimum se situe vers la droite,
+
+68
+00:03:33,320 --> 00:03:37,370
+et lorsqu'elle est positive,
+il se situe vers la gauche.
+
+69
+00:03:37,370 --> 00:03:39,150
+Voici un autre exemple.
+
+70
+00:03:39,150 --> 00:03:43,840
+Regardez le point B. La pente est-elle
+positive ou négative à cet endroit ?
+
+71
+00:03:43,840 --> 00:03:48,650
+Elle est positive. Il faut donc aller vers
+la gauche pour trouver la perte minimale.
+
+72
+00:03:48,650 --> 00:03:53,359
+Notez que la pente est raide,
+ce qui signifie que le pas doit être grand.
+
+73
+00:03:54,049 --> 00:03:56,360
+Regardez le point C de la surface de perte.
+
+74
+00:03:56,360 --> 00:03:59,180
+La pente est-elle positive
+ou négative à cet endroit ?
+
+75
+00:03:59,180 --> 00:04:00,960
+Est-elle raide ?
+
+76
+00:04:02,110 --> 00:04:06,330
+Là encore, la pente est positive. Nous devons
+donc toujours aller vers la gauche.
+
+77
+00:04:07,290 --> 00:04:09,510
+La pente est beaucoup plus douce
+à cet endroit.
+
+78
+00:04:09,510 --> 00:04:11,370
+Nous allons faire des pas plus petits
+
+79
+00:04:11,370 --> 00:04:14,180
+pour ne pas risquer
+de dépasser le minimum.
+
+80
+00:04:14,180 --> 00:04:16,560
+Nous avons remplacé
+le pas d'apprentissage constant
+
+81
+00:04:16,560 --> 00:04:18,300
+et l'appel qui calcule la direction
+
+82
+00:04:18,300 --> 00:04:21,169
+par l'appel de notre nouvelle
+fonction computeDerivative.
+
+83
+00:04:21,169 --> 00:04:24,879
+Nous avons aussi modifié la boucle For
+de mise à jour des paramètres du modèle,
+
+84
+00:04:24,879 --> 00:04:26,124
+selon le calcul suivant :
+
+85
+00:04:26,124 --> 00:04:27,600
+ancienne valeur du paramètre
+
+86
+00:04:27,600 --> 00:04:32,480
+moins la dérivée partielle de ce
+paramètre par rapport à la perte.
+
+87
+00:04:32,480 --> 00:04:34,100
+Alors, avons-nous terminé ?
+
+88
+00:04:34,100 --> 00:04:36,680
+Nous semblons aller dans la bonne direction
+
+89
+00:04:36,680 --> 00:04:38,570
+avec le pas d'apprentissage approprié.
+
+90
+00:04:38,570 --> 00:04:40,430
+Qu'est-ce qui pourrait poser problème ?
+
+91
+00:04:40,430 --> 00:04:43,350
+Eh bien, les performances empiriques.
+
+92
+00:04:43,920 --> 00:04:47,829
+Pour l'ensemble de problèmes sur lequel
+les chercheurs en ML ont travaillé,
+
+93
+00:04:47,829 --> 00:04:50,049
+c'est-à-dire celui des surfaces de perte
+
+94
+00:04:50,049 --> 00:04:52,370
+auxquelles nous avons appliqué
+cette procédure,
+
+95
+00:04:52,370 --> 00:04:54,510
+il arrive souvent
+que notre algorithme de base
+
+96
+00:04:54,510 --> 00:04:58,080
+prenne trop de temps, trouve des minima
+sous-optimaux, ou ne termine jamais.
+
+97
+00:04:59,180 --> 00:05:02,200
+Cela ne veut pas dire que l'algorithme
+ne fonctionne pas,
+
+98
+00:05:02,220 --> 00:05:06,169
+mais simplement que nous avons tendance
+à ne pas rencontrer les types de problèmes
+
+99
+00:05:06,169 --> 00:05:07,439
+pour lesquels il excelle.

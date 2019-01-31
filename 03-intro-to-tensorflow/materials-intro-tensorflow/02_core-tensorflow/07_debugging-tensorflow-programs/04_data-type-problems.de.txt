@@ -1,0 +1,25 @@
+Neben den Formfehlern, die wir in den
+vorherigen Lektionen behandelt haben, sind Datentypenfehler ein weiteres
+häufiges Problem bei der Entwicklung von TensorFlow-Programmen. Die Fehlermeldung hier sagt,
+dass alle Werte Ihres Tensors als Ganzzahlenarray gespeichert sind;
+Sie geben ihn aber an eine Methode weiter, die erwartet, dass ein 
+Tensor Gleitkommawerte hat. Wo könnte so etwas vorkommen? Sehen Sie sich 
+den Aufruftrace und die Codezeile an, die in dieser Zusatzzeile
+identifiziert wird: s = a + b. Eventuell ist a ein Gleitkommawert-
+und b ein Ganzzahlenarray. Sie denken, eine Gleitkomma-
+wertzahl zu einer Ganzzahl hinzuzufügen, ist kein Problem,
+da dies automatisiert sein sollte. Das Ergebnis wäre eine Gleitkommazahl. Doch weder Python noch C++ lassen Sie von einem Gleitkomma- 
+zu einem Ganzzahlenarray wechseln. Viele Speicheroptimierungen 
+sind hier involviert und wenn Sie ein Ganzzahlenarray haben,
+werden Daten vielleicht auf einem Gerät oder in einem Arbeitsspeicher-
+bereich gespeichert, wo keine Gleitkommaarithmetik möglich ist. Dieses Problem müssen Sie beheben. Runden Sie die Gleitkommazahlen auf Ganzzahlen auf oder ab? Haben Sie einen Fehler gemacht und das Gleitkommaarray sollte
+eigentlich ein Ganzzahlenarray sein? Oder möchten Sie die Ganzzahlen 
+in Gleitkommerzahlen umwandeln und die Addition durchführen mit dem Wissen, dass
+das Ergebnis nun ein Gletkommaaray ist? Da es hier mehrere Möglichkeiten gibt,
+werden Sie von TensorFlow aufgefordert, präziser zu ein. Eine Möglichkeit, das Problem zu lösen,
+ist, das Ganzzahlenarray b zu nehmen und zu sagen, dass dies nun ein
+Tensor mit Gleitkommawerten sein soll. Der Aufruf tf.cast wird also in
+die Berechnungsgrafik eingefügt und Optimierungen usw.
+werden dies berücksichtigen, wenn es um das Speichern
+und Verschieben von b geht. Hier fügen wir den Vorgang tf.cast in
+die Methode ein, um das Problem zu lösen.

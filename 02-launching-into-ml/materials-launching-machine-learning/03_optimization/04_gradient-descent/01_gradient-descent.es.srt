@@ -1,0 +1,416 @@
+1
+00:00:01,270 --> 00:00:02,480
+En la sección anterior
+
+2
+00:00:02,480 --> 00:00:05,780
+planteamos la optimización como
+búsqueda en el espacio de parámetros.
+
+3
+00:00:05,780 --> 00:00:09,260
+Luego, presentamos las funciones
+de pérdida para comparar estos puntos.
+
+4
+00:00:09,960 --> 00:00:13,750
+¿Cómo podemos convertir una función
+de pérdida en una estrategia de búsqueda?
+
+5
+00:00:14,820 --> 00:00:16,660
+Aquí entra el descenso de gradientes.
+
+6
+00:00:17,620 --> 00:00:21,280
+El descenso de gradientes es el proceso
+de descender por la superficie
+
+7
+00:00:21,280 --> 00:00:25,270
+que se forma con el uso de la función
+de pérdida en todos los puntos del espacio
+
+8
+00:00:26,850 --> 00:00:29,420
+y esa superficie podría verse así.
+
+9
+00:00:30,930 --> 00:00:34,280
+Por supuesto, esto es lo que
+verían con la información perfecta
+
+10
+00:00:34,280 --> 00:00:36,810
+con el conocimiento completo del gráfico.
+
+11
+00:00:36,810 --> 00:00:40,135
+En realidad, solo conoceremos
+los valores de pérdida en los puntos
+
+12
+00:00:40,135 --> 00:00:42,285
+del espacio de parámetros
+donde hemos evaluado
+
+13
+00:00:42,285 --> 00:00:43,635
+nuestra función de pérdida.
+
+14
+00:00:43,635 --> 00:00:46,850
+O, en este caso, solo los dos
+puntos en el cuadro rojo que vemos.
+
+15
+00:00:48,800 --> 00:00:52,310
+De alguna forma, tenemos
+que decidir dónde ir a continuación
+
+16
+00:00:52,310 --> 00:00:53,540
+para encontrar el mínimo.
+
+17
+00:00:54,880 --> 00:00:58,500
+Resulta que el problema
+de encontrar el fondo se puede separar
+
+18
+00:00:58,500 --> 00:01:00,330
+en dos preguntas importantes.
+
+19
+00:01:01,000 --> 00:01:02,850
+¿Qué dirección debería tomar?
+
+20
+00:01:02,850 --> 00:01:04,470
+Y ¿qué tan lejos debo llegar?
+
+21
+00:01:05,269 --> 00:01:07,990
+Por ahora, crearemos
+una hipótesis simplificada
+
+22
+00:01:07,990 --> 00:01:09,840
+y solo usaremos
+un paso de tamaño fijo.
+
+23
+00:01:12,840 --> 00:01:15,250
+Esto nos llevará a un algoritmo sencillo.
+
+24
+00:01:16,080 --> 00:01:21,050
+Si la pérdida es mayor que una
+constante mínima, calcular la dirección.
+
+25
+00:01:21,050 --> 00:01:25,404
+Y para cada parámetro del modelo,
+configurar el valor a su valor anterior
+
+26
+00:01:25,404 --> 00:01:28,141
+más el producto
+del tamaño del paso y la dirección.
+
+27
+00:01:28,841 --> 00:01:31,088
+Después, volver a calcular la pérdida.
+
+28
+00:01:34,546 --> 00:01:38,680
+Una superficie de pérdida
+es como un mapa topográfico o de contorno.
+
+29
+00:01:39,150 --> 00:01:41,450
+Cada línea representa
+una profundidad específica.
+
+30
+00:01:42,080 --> 00:01:46,110
+Mientras más juntas estén las líneas,
+más inclinada estará la superficie ahí.
+
+31
+00:01:47,820 --> 00:01:51,560
+El algoritmo da pasos,
+que representé como puntos.
+
+32
+00:01:52,170 --> 00:01:55,160
+En este caso, el algoritmo
+comenzó en el borde superior
+
+33
+00:01:55,160 --> 00:01:57,560
+y descendió hacia el mínimo, en el centro.
+
+34
+00:01:59,030 --> 00:02:02,739
+Observen cómo el algoritmo da pasos
+de tamaño fijo en dirección al mínimo.
+
+35
+00:02:04,230 --> 00:02:06,190
+Dejemos de lado la dirección.
+
+36
+00:02:06,190 --> 00:02:09,950
+Si el tamaño del paso es muy pequeño,
+el entrenamiento podría demorar demasiado.
+
+37
+00:02:09,950 --> 00:02:12,750
+Pero es seguro que encontrarán el mínimo.
+
+38
+00:02:12,750 --> 00:02:15,470
+Y dije “el” mínimo
+porque por ahora asumiremos
+
+39
+00:02:15,470 --> 00:02:16,800
+que hay uno solo.
+
+40
+00:02:16,800 --> 00:02:19,010
+Sin embargo,
+en el futuro podría haber más.
+
+41
+00:02:19,010 --> 00:02:21,659
+Hablaremos sobre eso más adelante.
+
+42
+00:02:24,060 --> 00:02:25,780
+Si el tamaño del paso es muy grande
+
+43
+00:02:25,780 --> 00:02:28,940
+podrían pasar de una pared
+a otra en la superficie de pérdida
+
+44
+00:02:28,940 --> 00:02:34,080
+o salir por completo y pasar a una
+parte nueva de la superficie de pérdida.
+
+45
+00:02:34,080 --> 00:02:36,605
+Debido a esto, cuando
+el tamaño del paso es muy grande
+
+46
+00:02:36,605 --> 00:02:39,130
+no se garantiza
+la convergencia del proceso.
+
+47
+00:02:40,900 --> 00:02:44,840
+Si el tamaño del paso es el correcto,
+significa que todo está listo.
+
+48
+00:02:44,840 --> 00:02:47,081
+Independientemente
+del valor del tamaño del paso
+
+49
+00:02:47,081 --> 00:02:49,910
+es poco probable que sirva
+para un problema diferente.
+
+50
+00:02:49,910 --> 00:02:53,841
+Observen que el tamaño del paso
+que funciona en la curva izquierda
+
+51
+00:02:53,841 --> 00:02:56,236
+falla completamente en la curva derecha.
+
+52
+00:02:59,139 --> 00:03:02,210
+En realidad, un tamaño único
+no es para todos los modelos.
+
+53
+00:03:02,210 --> 00:03:04,400
+¿Cómo debemos variar el tamaño del paso?
+
+54
+00:03:06,689 --> 00:03:11,029
+Por suerte, la pendiente o la tasa
+a la que cambia la curva nos da una idea
+
+55
+00:03:11,029 --> 00:03:14,600
+del tamaño del paso y la dirección.
+
+56
+00:03:15,550 --> 00:03:18,800
+Fíjense en la subtrama inferior
+que muestra el valor de la pendiente
+
+57
+00:03:18,800 --> 00:03:21,750
+en varios puntos a lo largo
+de la curva de pérdida de peso.
+
+58
+00:03:21,980 --> 00:03:24,125
+Observen que,
+cuando los valores son mayores
+
+59
+00:03:24,124 --> 00:03:26,227
+por lo general,
+estamos más lejos del fondo
+
+60
+00:03:26,227 --> 00:03:28,150
+que cuando la pendiente es pequeña.
+
+61
+00:03:28,510 --> 00:03:30,720
+Noten que
+cuando la pendiente es negativa
+
+62
+00:03:30,720 --> 00:03:33,100
+el fondo del gráfico superior
+queda a la derecha
+
+63
+00:03:33,100 --> 00:03:36,740
+y cuando la pendiente
+es positiva, queda a la izquierda.
+
+64
+00:03:37,420 --> 00:03:39,260
+Aquí hay otro ejemplo.
+
+65
+00:03:39,260 --> 00:03:42,610
+Observen el punto B,
+¿tiene una pendiente positiva o negativa?
+
+66
+00:03:44,250 --> 00:03:48,389
+Positiva, lo que nos lleva
+a la izquierda para encontrar el mínimo.
+
+67
+00:03:48,789 --> 00:03:52,190
+La pendiente es profunda,
+por lo que necesitamos dar un gran paso.
+
+68
+00:03:54,100 --> 00:03:56,500
+Fíjense en el punto C
+en la superficie de pérdida.
+
+69
+00:03:56,500 --> 00:03:59,390
+¿Tiene una pendiente positiva o negativa?
+
+70
+00:03:59,390 --> 00:04:00,820
+¿Qué tan inclinada es?
+
+71
+00:04:02,260 --> 00:04:05,990
+El punto C tiene una pendiente
+positiva; hay que ir hacia la izquierda.
+
+72
+00:04:07,410 --> 00:04:09,480
+Aquí, la pendiente es mucho más gradual.
+
+73
+00:04:09,480 --> 00:04:11,580
+Así que daremos pasos más pequeños
+
+74
+00:04:11,580 --> 00:04:13,920
+para no pisar el mínimo.
+
+75
+00:04:14,450 --> 00:04:17,239
+Reemplazamos el tamaño del paso
+constante y la llamada
+
+76
+00:04:17,239 --> 00:04:21,649
+para calcular la dirección por una llamada
+a la nueva función, computeDerivative.
+
+77
+00:04:21,649 --> 00:04:23,040
+Y actualizamos nuestro bucle
+
+78
+00:04:23,040 --> 00:04:27,540
+para actualizar los parámetros del modelo
+y configurar cada uno a su valor anterior
+
+79
+00:04:27,540 --> 00:04:31,380
+menos el derivado parcial de ese
+parámetro con relación a la pérdida.
+
+80
+00:04:32,530 --> 00:04:33,930
+¿Ya terminamos?
+
+81
+00:04:33,930 --> 00:04:37,170
+Parece que encontramos la forma
+de dar pasos en la dirección correcta
+
+82
+00:04:37,170 --> 00:04:38,700
+con el tamaño de paso correcto.
+
+83
+00:04:38,700 --> 00:04:39,870
+¿Qué podría salir mal?
+
+84
+00:04:40,250 --> 00:04:42,129
+Bueno, el rendimiento empírico.
+
+85
+00:04:43,940 --> 00:04:47,100
+Con respecto al conjunto
+de problemas en los que trabajan
+
+86
+00:04:47,100 --> 00:04:48,990
+los investigadores de AA
+
+87
+00:04:48,990 --> 00:04:52,830
+como el conjunto de superficies
+en el que aplicamos este procedimiento
+
+88
+00:04:52,830 --> 00:04:58,080
+nuestro algoritmo básico se demora,
+tiene un mínimo subóptimo o no termina.
+
+89
+00:04:59,180 --> 00:05:02,500
+Para ser claro, esto no significa
+que nuestro algoritmo no funcione
+
+90
+00:05:02,500 --> 00:05:06,510
+solo que tendemos a no encontrar
+el tipo de problema donde se destaca.

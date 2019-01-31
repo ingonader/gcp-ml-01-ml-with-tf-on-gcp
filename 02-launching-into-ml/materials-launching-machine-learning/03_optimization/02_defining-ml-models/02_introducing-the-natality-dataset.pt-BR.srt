@@ -1,0 +1,503 @@
+1
+00:00:00,760 --> 00:00:02,770
+Bebês são preciosos.
+
+2
+00:00:02,770 --> 00:00:05,580
+Alguns precisam de cuidados
+urgentes logo após o nascimento.
+
+3
+00:00:06,710 --> 00:00:10,150
+No entanto, os médicos que
+podem prestar essa assistência são raros.
+
+4
+00:00:11,160 --> 00:00:14,310
+Em um mundo perfeito, saberíamos
+exatamente aonde enviar os médicos
+
+5
+00:00:14,310 --> 00:00:17,550
+para que os bebês recebessem
+os cuidados necessários.
+
+6
+00:00:17,550 --> 00:00:19,311
+Mas não vivemos em um mundo perfeito.
+
+7
+00:00:21,368 --> 00:00:23,170
+Como esse pode ser um problema de ML?
+
+8
+00:00:24,820 --> 00:00:28,210
+Se soubermos quais bebês precisarão
+de cuidados antes do nascimento,
+
+9
+00:00:28,210 --> 00:00:31,310
+poderemos garantir que os médicos
+estarão prontos para atendê-los.
+
+10
+00:00:32,290 --> 00:00:36,616
+Se quisermos fazer previsões
+antes do nascimento do bebê,
+
+11
+00:00:36,616 --> 00:00:39,872
+quais destes valores poderiam
+ser uma característica no nosso modelo?
+
+12
+00:00:39,872 --> 00:00:43,785
+Idade da mãe, hora
+do nascimento ou peso do bebê.
+
+13
+00:00:46,017 --> 00:00:49,138
+Se quisermos fazer previsões
+antes do nascimento do bebê,
+
+14
+00:00:49,138 --> 00:00:51,947
+quais destes valores poderiam
+ser um rótulo no nosso modelo?
+
+15
+00:00:53,330 --> 00:00:57,807
+Idade da mãe, hora
+do nascimento ou peso do bebê.
+
+16
+00:00:57,807 --> 00:01:00,953
+Se você não sabe as respostas
+dessas perguntas, não tem problema
+
+17
+00:01:00,953 --> 00:01:03,170
+porque isso é muito
+específico de um domínio.
+
+18
+00:01:04,200 --> 00:01:07,870
+Mas você deveria ter uma ideia de quando
+essas informações estarão disponíveis
+
+19
+00:01:07,870 --> 00:01:10,820
+em relação a quando
+queremos fazer as previsões.
+
+20
+00:01:12,050 --> 00:01:17,090
+Nesse caso, saberemos a hora
+do nascimento apenas depois do parto.
+
+21
+00:01:17,090 --> 00:01:18,470
+Portanto, não podemos usá-la.
+
+22
+00:01:19,980 --> 00:01:23,240
+O peso também é um indicador
+importante da saúde do bebê.
+
+23
+00:01:25,490 --> 00:01:29,710
+A idade da mãe é um dado que podemos
+observar e ajuda a prever o peso do bebê.
+
+24
+00:01:31,090 --> 00:01:34,030
+Portanto, esse é um bom
+exemplo de problema de ML
+
+25
+00:01:34,030 --> 00:01:37,734
+porque há uma necessidade real de
+saber algo importante demais para esperar,
+
+26
+00:01:37,734 --> 00:01:38,734
+a saúde do bebê,
+
+27
+00:01:38,734 --> 00:01:43,377
+e aparentemente pode ser previsto.
+
+28
+00:01:43,377 --> 00:01:46,229
+Suponha que escolhemos
+o peso do bebê como rótulo,
+
+29
+00:01:46,229 --> 00:01:47,910
+que tipo de problema de ML é esse?
+
+30
+00:01:49,650 --> 00:01:53,310
+Uma dica: o peso
+do bebê é um número contínuo.
+
+31
+00:01:53,310 --> 00:01:56,250
+Por enquanto, vamos tratar esse
+problema como uma regressão.
+
+32
+00:01:56,250 --> 00:01:59,630
+Para simplificar, usaremos apenas
+a idade da mãe como característica e
+
+33
+00:01:59,630 --> 00:02:00,919
+o peso do bebê como rótulo.
+
+34
+00:02:02,140 --> 00:02:05,670
+Esses dados pertencem a um conjunto
+de dados coletados pelo governo dos EUA
+
+35
+00:02:05,670 --> 00:02:08,870
+chamado conjunto de dados
+de natalidade, que significa nascimento.
+
+36
+00:02:09,919 --> 00:02:13,020
+Ele está disponível como
+um conjunto de dados público no BigQuery.
+
+37
+00:02:14,540 --> 00:02:17,460
+Geralmente, o primeiro passo
+para modelar é analisar os dados
+
+38
+00:02:17,460 --> 00:02:21,169
+para verificar se há algo notável ou
+não passam de informações sem importância.
+
+39
+00:02:22,210 --> 00:02:25,354
+No gráfico, coloquei o peso do bebê
+como uma função da idade da mãe
+
+40
+00:02:25,354 --> 00:02:26,831
+usando um gráfico de dispersão.
+
+41
+00:02:28,022 --> 00:02:31,692
+Geralmente, gráficos de dispersão usam
+amostras de conjuntos de dados grandes,
+
+42
+00:02:31,692 --> 00:02:32,880
+em vez de todos os dados.
+
+43
+00:02:33,720 --> 00:02:35,640
+Por que usamos amostras?
+
+44
+00:02:35,640 --> 00:02:40,000
+Primeiro, um gráfico de dispersão com muitos
+dados é inviável em termos computacionais.
+
+45
+00:02:40,000 --> 00:02:44,460
+Segundo, um gráfico de dispersão com muitos
+dados é difícil de interpretar visualmente.
+
+46
+00:02:46,280 --> 00:02:48,000
+Observe que parece haver uma pequena
+
+47
+00:02:48,000 --> 00:02:51,260
+relação positiva entre
+a idade da mãe e o peso do bebê.
+
+48
+00:02:51,260 --> 00:02:54,640
+Aqui temos um tipo novo de gráfico
+que usa as mesmas duas variáveis, mas
+
+49
+00:02:54,640 --> 00:02:58,300
+ao contrário do gráfico de dispersão,
+que representa os dados individualmente,
+
+50
+00:02:58,300 --> 00:03:01,710
+esse gráfico representa grupos
+de dados, quantis especificamente.
+
+51
+00:03:02,860 --> 00:03:05,585
+Como resultado, não precisamos
+de uma amostra para criá-lo
+
+52
+00:03:05,585 --> 00:03:09,014
+e, portanto, não corremos o risco
+de usar uma amostra não representativa.
+
+53
+00:03:09,800 --> 00:03:12,764
+Como bônus, os resultados serão reproduzíveis
+
+54
+00:03:12,764 --> 00:03:14,905
+e o processo poderá
+ser realizado em paralelo.
+
+55
+00:03:15,560 --> 00:03:21,310
+Fiz esse gráfico, que analisa cerca de
+22 gigabytes de dados, em poucos segundos.
+
+56
+00:03:21,310 --> 00:03:23,688
+Falaremos como criar gráficos
+como esse mais tarde.
+
+57
+00:03:26,305 --> 00:03:29,300
+Percebeu alguma relação entre
+os dados apenas olhando para eles?
+
+58
+00:03:31,058 --> 00:03:35,283
+Você deve ter percebido algo que não
+estava explícito no gráfico de dispersão.
+
+59
+00:03:35,283 --> 00:03:39,118
+O peso do bebê parece atingir o valor
+máximo quando a mãe tem cerca de 30 anos
+
+60
+00:03:39,118 --> 00:03:41,994
+e decresce conforme
+a idade da mãe aumenta ou diminui.
+
+61
+00:03:41,994 --> 00:03:43,990
+Isso sugere uma relação não linear.
+
+62
+00:03:43,990 --> 00:03:47,320
+É algo que não estava explícito
+no gráfico de dispersão
+
+63
+00:03:47,320 --> 00:03:48,570
+e é um péssimo sinal
+
+64
+00:03:48,570 --> 00:03:51,720
+porque pretendíamos modelar
+essa relação com um modelo linear.
+
+65
+00:03:53,060 --> 00:03:57,450
+Nossa intenção de aplicar um modelo
+linear em uma função não linear
+
+66
+00:03:57,450 --> 00:03:59,409
+é um exemplo do que
+chamamos de subajuste.
+
+67
+00:04:00,750 --> 00:04:04,400
+Você deve estar se perguntando por que
+não usamos um modelo mais complexo.
+
+68
+00:04:04,400 --> 00:04:07,360
+Por motivos pedagógicos.
+
+69
+00:04:07,360 --> 00:04:11,870
+Mais tarde, falaremos sobre como selecionar 
+um modelo e o conceito de sobreajuste.
+
+70
+00:04:11,870 --> 00:04:16,161
+Resumindo, os riscos são proporcionais
+à complexidade do modelo.
+
+71
+00:04:16,161 --> 00:04:19,991
+Aparentemente, há uma relação
+ligeiramente positiva entre a idade da mãe
+
+72
+00:04:19,991 --> 00:04:21,064
+e o peso do bebê.
+
+73
+00:04:21,114 --> 00:04:24,586
+Vamos modelar isso com uma linha.
+
+74
+00:04:24,586 --> 00:04:28,339
+Como estamos usando um modelo linear,
+nossa intuição anterior se traduz em
+
+75
+00:04:28,339 --> 00:04:31,860
+uma linha com inclinação ascendente e
+valor positivo de ordenada na origem.
+
+76
+00:04:32,740 --> 00:04:35,210
+Observamos os dados
+para selecionar essa linha.
+
+77
+00:04:35,210 --> 00:04:37,930
+Mas como saber se a linha deve
+ficar mais acima ou abaixo?
+
+78
+00:04:38,710 --> 00:04:40,519
+Como saber se ela está no lugar certo?
+
+79
+00:04:42,400 --> 00:04:45,352
+Como saber se ela é melhor
+do que a outra linha?
+
+80
+00:04:49,191 --> 00:04:53,198
+Quem já estudou estatística
+talvez se lembre de um processo para
+
+81
+00:04:53,198 --> 00:04:57,422
+determinar os melhores pesos de uma linha
+chamado regressão de mínimos quadrados.
+
+82
+00:04:57,422 --> 00:05:01,186
+É verdade que há como determinar
+analiticamente os melhores pesos possíveis
+
+83
+00:05:01,186 --> 00:05:02,524
+para modelos lineares.
+
+84
+00:05:03,790 --> 00:05:08,060
+O problema é que essas soluções
+funcionam apenas até certa escala.
+
+85
+00:05:08,060 --> 00:05:10,320
+Em conjuntos de dados realmente grandes,
+
+86
+00:05:10,320 --> 00:05:14,000
+é inviável solucionar analiticamente
+esse problema em termos computacionais.
+
+87
+00:05:15,790 --> 00:05:18,820
+O que fazer quando uma solução
+analítica deixa de ser uma opção?
+
+88
+00:05:19,840 --> 00:05:21,795
+Usa-se o método do gradiente descendente.
+
+89
+00:05:23,792 --> 00:05:28,790
+Vamos começar pensando na otimização
+como uma pesquisa em parâmetro-espaço.
+
+90
+00:05:28,790 --> 00:05:32,700
+Lembre-se de que nosso modelo linear
+simples tem dois parâmetros: um termo de peso
+
+91
+00:05:32,700 --> 00:05:33,710
+e outro de tendência.
+
+92
+00:05:34,230 --> 00:05:38,270
+Como ambos têm valor real, podemos pensar
+no espaço de todas as combinações de valores
+
+93
+00:05:38,270 --> 00:05:41,899
+desses dois parâmetros como
+pontos no espaço bidimensional.
+
+94
+00:05:43,300 --> 00:05:45,110
+Mas queremos encontrar o melhor valor.
+
+95
+00:05:46,950 --> 00:05:50,100
+Como comparar dois pontos
+de parâmetro-espaço em termos de
+
+96
+00:05:50,100 --> 00:05:50,630
+qualidade?
+
+97
+00:05:51,650 --> 00:05:54,470
+Primeiro, precisamos
+reformular a pergunta.
+
+98
+00:05:54,470 --> 00:05:55,940
+Como os espaços de entrada,
+
+99
+00:05:55,940 --> 00:05:59,360
+que são onde os dados residem,
+muitas vezes são infinitos,
+
+100
+00:05:59,360 --> 00:06:03,270
+não é possível avaliar os parâmetros
+em cada ponto do espaço de entrada.
+
+101
+00:06:04,410 --> 00:06:08,880
+Assim, geralmente estimamos
+como seria esse cálculo
+
+102
+00:06:08,880 --> 00:06:11,230
+usando o que temos,
+nossos dados de treinamento.
+
+103
+00:06:12,380 --> 00:06:15,390
+Para fazer isso, precisamos
+generalizar a partir da qualidade
+
+104
+00:06:15,390 --> 00:06:19,050
+de uma previsão de um único
+ponto de dados, que é o erro dessa
+
+105
+00:06:19,050 --> 00:06:23,400
+previsão, para um número que capture
+a qualidade de um grupo de previsões.
+
+106
+00:06:24,400 --> 00:06:26,930
+As funções que fazem isso são
+chamadas de funções de perda.

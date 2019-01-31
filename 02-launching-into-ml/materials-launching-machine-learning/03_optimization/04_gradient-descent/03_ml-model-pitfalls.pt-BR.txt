@@ -1,0 +1,73 @@
+Uma situação comum para os profissionais é executar novamente
+o código que eles escreveram esperando que o mesmo resultado seja gerado, mas isso não acontece. Os programadores costumam trabalhar 
+com cenários determinísticos. No ML, nem sempre é assim. Há muitos modelos que,
+quando treinados pela segunda vez, mesmo usando as mesmas
+configurações de hiperparâmetro, retornam configurações de parâmetro
+muito diferentes. Em um primeiro momento,
+isso parece preocupante. Não estamos procurando
+o melhor conjunto de parâmetros? Será que o gradiente
+descendente não está funcionando? Ou que não foi implementado corretamente? Não necessariamente. Talvez, ao invés de pesquisar uma superfície
+de perda como a do lado esquerdo, estamos pesquisando uma superfície de perda
+como a do lado direito. Observe que, enquanto a superfície
+à esquerda tem uma única base, a superfície da direita tem mais de uma. O nome formal dessa propriedade 
+é convexidade. Temos uma superfície convexa à esquerda
+e uma não convexa à direita. Por que a superfície de perda de um modelo
+de ML teria mais de um mínimo? Quer dizer que há vários pontos equivalentes, ou quase equivalentes, em parâmetro-espaço. Ou seja, configurações de parâmetros que produzem modelos com
+a mesma capacidade de previsão. Voltaremos ao assunto depois, quando falarmos sobre redes neurais, porque elas apresentam muitas
+ocorrências desse tipo. Tudo bem se não ficou muito claro. Por enquanto, apenas lembre-se de que as superfícies de perda variam
+com relação ao número de mínimos. Às vezes, não é tão rápido como gostaríamos. Odiamos ter que esperar
+até que o modelo termine de treinar. Há alguma maneira de acelerar
+ainda mais o treinamento de modelos? Sim, mas para entender as nossas opções, o melhor é pensar
+sobre as etapas gerais do algoritmo e o que causa a complexidade temporal. Temos aqui as três etapas principais
+a que o algoritmo é submetido. Quando calculamos a derivada, o custo do cálculo é proporcional ao número de pontos de dados
+incluídos na função de perda, bem como ao número
+de parâmetros no modelo. Na prática, os modelos podem ter
+de dezenas a milhões de parâmetros. Da mesma maneira, os conjuntos de dados
+podem ter de milhares a bilhões de pontos. No caso da atualização
+dos parâmetros do modelo, isso ocorre uma vez por loop e o custo é determinado apenas
+pelo número de parâmetros no modelo. No entanto, o custo da atualização
+é normalmente menor do que em outras etapas. Por fim, há a verificação da perda. Ela tem complexidade temporal proporcional
+ao número de pontos de dados no conjunto que estamos usando para medir
+a perda e à complexidade do modelo. É surpreendente que mesmo tendo
+representado esse processo como um loop, a verificação da perda
+não precisa ser executada todas as vezes. O motivo é que a maioria das alterações
+na função de perda é incrementada. Então, o que podemos mudar
+para reduzir o tempo de treinamento? Geralmente, o número de parâmetros afetados
+no modelo é fixo, mas falaremos como ele pode variar
+em um módulo sobre regularização. Além disso, pode parecer uma boa ideia reduzir o número de pontos de dados
+usados para verificar a perda, mas isso não é recomendável. Podemos mudar dois aspectos 
+para reduzir o tempo de treinamento: o número de pontos de dados
+que usamos para calcular a derivada e a frequência de verificação da perda. Como dissemos, um desses aspectos é o número de pontos de dados
+que usamos para calcular a derivada. A derivada é resultante da função de perda, que, por sua vez, compõe
+o erro de várias previsões juntas. Portanto, esse método basicamente
+reduz o número de pontos de dados que inserimos na função de perda
+a cada iteração do algoritmo. Pare e pense por que isso pode funcionar. Isso pode funcionar porque é possível extrair amostras
+que costumam se equilibrar mutuamente dos dados de treinamento . Falaremos sobre as armadilhas da amostragem
+e como evitá-las nos próximos módulos. Por enquanto, lembre-se de que
+nossa amostragem seleciona os dados no conjunto de treinamento
+com distribuição uniforme. Cada instância do conjunto tem a mesma chance
+de ser analisada pelo modelo. Em ML, chamamos a amostragem
+do conjunto de treinamento, extraída durante o treinamento,
+de minilote, e essa variante do gradiente descendente,
+de gradiente descendente de minilote. As amostras são chamadas de lotes. Além de poupar tempo, o gradiente descendente
+de minilote tem os benefícios adicionais de usar menos memória e
+de ser fácil de reproduzir em paralelo. Talvez você escute o termo
+gradiente descendente em lote. Nesse caso,
+ele se refere a processamento em lote. Logo, o gradiente descendente em lote calcula
+o gradiente em todo o conjunto de dados. Definitivamente, não é o mesmo
+que gradiente descendente de minilote. Agora, estamos falando de
+gradiente descendente de minilote. Pode ser confuso, mas tamanho de minilote
+é muitas vezes chamado de tamanho de lote. É o termo que o TensorFlow usa. Portanto, é o termo que usaremos também. No restante da especialização, ao mencionarmos tamanho de lote, estaremos falando do tamanho das amostras
+no gradiente descendente de minilote. Qual tamanho esses minilotes devem ter? Assim como a taxa de aprendizado, o tamanho do lote é outro hiperparâmetro. Assim, o valor ideal depende do problema e pode ser encontrado
+por meio do ajuste do hiperparâmetro, que abordaremos mais tarde. Normalmente, o tamanho do lote
+é de 10 a 100 exemplos. Assim como a taxa de aprendizado, o tamanho do lote é outro hiperparâmetro
+e, assim, o valor ideal depende do problema e pode ser
+encontrado com o ajuste do hiperparâmetro, que abordaremos mais tarde. Normalmente, o tamanho do lote
+é de 10 a 1.000 exemplos. O outro aspecto que podemos ajustar para acelerar o modelo de treinamento
+é a frequência de verificação da perda. Lembre-se de que apenas checar a perda 
+em um subconjunto de dados não é uma boa ideia. A implementação é bastante simples. Introduzimos um pouco de lógica para que a nossa função de perda
+faça avaliações com frequência reduzida. Algumas estratégias muito utilizadas
+para a função readyToUpdateLoss são baseadas em tempo e passos. Por exemplo, uma vez a cada mil passos ou uma vez a cada 30 minutos. Com a redução da frequência
+de verificação da perda e a introdução de minilotes, começamos a separar os dois elementos
+fundamentais do treinamento de modelos: a alteração de parâmetros do modelo e a verificação para constatar
+quando as alterações certas foram feitas.

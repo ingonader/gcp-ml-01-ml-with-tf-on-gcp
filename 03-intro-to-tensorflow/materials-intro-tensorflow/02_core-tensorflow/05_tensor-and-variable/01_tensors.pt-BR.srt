@@ -1,0 +1,404 @@
+1
+00:00:00,800 --> 00:00:03,420
+Falamos sobre o que é o TensorFlow
+
+2
+00:00:03,420 --> 00:00:06,490
+e sobre a hierarquia
+de APIs do TensorFlow.
+
+3
+00:00:06,490 --> 00:00:10,820
+Na aula anterior, falamos sobre o
+gráfico acíclico direcionado, ou DAG,
+
+4
+00:00:10,820 --> 00:00:13,400
+e como ele é executado em uma sessão.
+
+5
+00:00:13,400 --> 00:00:18,610
+Dissemos que um DAG consiste em tensores
+e operações nesses tensores.
+
+6
+00:00:18,610 --> 00:00:21,900
+Vamos examinar mais detalhadamente
+o que são os tensores agora.
+
+7
+00:00:23,120 --> 00:00:27,080
+Lembre-se, um tensor
+é uma matriz N dimensional de dados.
+
+8
+00:00:27,080 --> 00:00:31,070
+Quando você cria um tensor,
+normalmente especifica a forma dele.
+
+9
+00:00:31,070 --> 00:00:34,530
+Bem, às vezes, você não especificará
+a forma completamente.
+
+10
+00:00:34,530 --> 00:00:37,410
+Por exemplo, o primeiro elemento da forma
+pode ser variável,
+
+11
+00:00:37,410 --> 00:00:40,170
+mas por enquanto
+vamos ignorar esse caso especial.
+
+12
+00:00:40,170 --> 00:00:45,435
+Então, vou criar aqui um tf.constant(3).
+
+13
+00:00:45,435 --> 00:00:47,670
+Este é um tensor de classificação 0.
+
+14
+00:00:47,670 --> 00:00:50,370
+É só um número, um escalar.
+
+15
+00:00:50,370 --> 00:00:57,370
+A forma, quando você olha para a saída de
+depuração do tensor, será simplesmente ().
+
+16
+00:00:57,370 --> 00:00:58,610
+É classificação 0.
+
+17
+00:00:59,380 --> 00:01:06,720
+Por outro lado, e se eu tivesse passado
+uma lista 3, 5, 7 para tf.constant?
+
+18
+00:01:06,720 --> 00:01:09,700
+Agora, temos um tensor unidimensional.
+
+19
+00:01:09,700 --> 00:01:12,350
+Temos um vetor, então posso continuar.
+
+20
+00:01:12,350 --> 00:01:15,730
+Aqui, estou passando
+uma matriz 2D, 3, 5, 7
+
+21
+00:01:15,730 --> 00:01:19,700
+na primeira linha e 4, 6, 8 na segunda.
+
+22
+00:01:19,700 --> 00:01:23,109
+A forma do tensor resultante é 2, 3,
+
+23
+00:01:23,109 --> 00:01:27,442
+2 linhas, 3 colunas, a classificação é 2.
+
+24
+00:01:27,442 --> 00:01:32,610
+Você pode pensar em uma matriz
+como uma pilha de tensores 1D.
+
+25
+00:01:32,610 --> 00:01:36,574
+O primeiro tensor é um vetor 3, 5, 7
+
+26
+00:01:36,574 --> 00:01:41,993
+e o segundo tensor 1D que
+está sendo empilhado é um vetor 4, 6, 8.
+
+27
+00:01:43,373 --> 00:01:47,896
+Podemos, da mesma forma, criar
+uma matriz 3D empilhando matrizes 2D,
+
+28
+00:01:47,896 --> 00:01:50,340
+uma sobre a outra.
+
+29
+00:01:50,340 --> 00:01:58,010
+Você me vê aqui empilhando a matriz
+3, 5, 7 etc. em cima da matriz 1, 2, 3.
+
+30
+00:01:58,010 --> 00:02:01,592
+Como empilhei duas matrizes 2x3,
+
+31
+00:02:01,592 --> 00:02:06,160
+a forma resultante do tensor é 2, 2, 3.
+
+32
+00:02:07,210 --> 00:02:10,990
+Claro, posso fazer
+o empilhamento no código
+
+33
+00:02:10,990 --> 00:02:13,740
+em vez de contar todos esses parênteses.
+
+34
+00:02:13,740 --> 00:02:20,786
+Aqui, x1 é uma constante e é criada
+de uma lista 2, 3, 4 simples.
+
+35
+00:02:20,786 --> 00:02:24,791
+Isso faz com que seja
+um vetor de comprimento 3.
+
+36
+00:02:24,791 --> 00:02:30,126
+x2 é criado ao empilharmos x1
+em cima de x1,
+
+37
+00:02:30,126 --> 00:02:33,790
+então isso faz
+com que seja uma matriz 2x3.
+
+38
+00:02:33,790 --> 00:02:40,420
+x3 é criado ao empilharmos quatro x2
+em cima uns dos outros.
+
+39
+00:02:40,420 --> 00:02:43,860
+E como cada x2 era uma matriz 2x3,
+
+40
+00:02:43,860 --> 00:02:51,182
+isso faz de x3 um tensor 3D
+com forma de 4x2x3.
+
+41
+00:02:51,182 --> 00:02:56,491
+x4 é criado ao empilharmos
+x3 em cima de x3,
+
+42
+00:02:56,491 --> 00:03:00,291
+de modo que isso torna
+dois deles tensores 4x2x3,
+
+43
+00:03:00,291 --> 00:03:06,216
+ou um tensor 4D
+que tem a forma 2, 4, 2, 3.
+
+44
+00:03:07,256 --> 00:03:10,077
+Assim, você pode empilhar tensores
+um sobre o outro
+
+45
+00:03:10,077 --> 00:03:12,680
+para criar tensores
+de dimensões maiores.
+
+46
+00:03:13,320 --> 00:03:19,335
+Você também pode cortar um tensor para
+extrair tensores dimensionais inferiores.
+
+47
+00:03:20,295 --> 00:03:22,710
+Então, aqui, qual é a forma de x?
+
+48
+00:03:24,690 --> 00:03:26,040
+É 2x3.
+
+49
+00:03:26,040 --> 00:03:28,050
+Duas linhas, três colunas.
+
+50
+00:03:29,410 --> 00:03:32,290
+Agora, dê uma olhada no código para y.
+
+51
+00:03:32,290 --> 00:03:34,910
+Está cortando x.
+
+52
+00:03:34,910 --> 00:03:39,310
+Os dois-pontos indicam que
+estamos conseguindo todas as linhas,
+
+53
+00:03:39,310 --> 00:03:44,640
+e o 1 indica que estamos conseguindo
+apenas a coluna 1.
+
+54
+00:03:44,640 --> 00:03:47,085
+Como o Python é indexado em zero,
+
+55
+00:03:47,085 --> 00:03:51,485
+é na verdade a segunda coluna, 01,
+portanto, a segunda coluna.
+
+56
+00:03:51,485 --> 00:03:58,160
+Quando avaliamos y, conseguimos o valor
+da segunda coluna para todas as linhas.
+
+57
+00:03:58,160 --> 00:04:02,310
+E é por isso que 5, 6 está sendo impresso.
+
+58
+00:04:03,720 --> 00:04:12,332
+Teste rápido: o que x[1, :] faria?
+
+59
+00:04:13,593 --> 00:04:20,453
+Que tal x[1, 0:2]? O que isso faria?
+
+60
+00:04:22,180 --> 00:04:23,810
+Alguma resposta?
+
+61
+00:04:23,810 --> 00:04:29,090
+Quando você faz x[1, : ],
+recebe a segunda linha.
+
+62
+00:04:29,090 --> 00:04:30,280
+Lembra da indexação zero?
+
+63
+00:04:30,280 --> 00:04:31,820
+Então 1 é a segunda linha.
+
+64
+00:04:31,820 --> 00:04:33,990
+E você conseguirá todas as colunas.
+
+65
+00:04:33,990 --> 00:04:37,415
+Então conseguiremos [4, 6, 8].
+
+66
+00:04:38,435 --> 00:04:42,070
+Quais colunas serão trazidas por 0:2?
+
+67
+00:04:42,760 --> 00:04:47,410
+Isso é muito semelhante
+à função x range em Python.
+
+68
+00:04:47,410 --> 00:04:52,500
+Significa que começa em 0 e vai até 2,
+mas não inclui 2.
+
+69
+00:04:52,500 --> 00:04:54,010
+Então, isso significa 0 e 1.
+
+70
+00:04:55,070 --> 00:04:59,225
+E significa que você terá as duas linhas,
+então é na verdade a mesma coisa.
+
+71
+00:04:59,225 --> 00:05:02,750
+Ainda teremos 4, 6, 8 nesses dados.
+
+72
+00:05:04,826 --> 00:05:07,420
+Depois que você tiver
+os dados em um tensor,
+
+73
+00:05:07,420 --> 00:05:11,360
+poderá pegar todos os dados,
+e isso poderá reformular o tensor.
+
+74
+00:05:12,440 --> 00:05:16,020
+Então x é um tensor 2D,
+qual é a forma dele?
+
+75
+00:05:17,620 --> 00:05:19,110
+É isso mesmo, 2x3.
+
+76
+00:05:20,110 --> 00:05:24,590
+Se eu o reformular para 3, 2,
+o que acontecerá?
+
+77
+00:05:26,350 --> 00:05:29,840
+O que eu quero
+são os seis valores em x, mas
+
+78
+00:05:29,840 --> 00:05:34,140
+quero que eles sejam colocados
+em três linhas e duas colunas.
+
+79
+00:05:34,140 --> 00:05:39,000
+Então, essencialmente, o Python lerá
+o tensor de entrada, linha por linha,
+
+80
+00:05:39,000 --> 00:05:41,810
+e colocará os números no tensor de saída.
+
+81
+00:05:41,810 --> 00:05:45,730
+Escolheria os dois primeiros
+valores e os colocaria na primeira linha,
+
+82
+00:05:45,730 --> 00:05:47,370
+então recebemos 3 e 5.
+
+83
+00:05:47,370 --> 00:05:52,480
+Os próximos dois valores, 7 e 4,
+vão para a segunda linha,
+
+84
+00:05:52,480 --> 00:05:56,220
+e os dois últimos, 6 e 8,
+vão para a terceira.
+
+85
+00:05:56,220 --> 00:05:57,980
+É isso que a reformulação faz.
+
+86
+00:05:59,180 --> 00:06:02,150
+Podemos reformular e podemos cortar.
+
+87
+00:06:02,150 --> 00:06:06,030
+Aqui, estou reformulando
+para 3x2, como antes,
+
+88
+00:06:06,030 --> 00:06:12,250
+e depois estou cortando, recebendo
+apenas a segunda linha e todas as colunas.
+
+89
+00:06:12,250 --> 00:06:15,392
+E é por isso que recebo 7, 4.

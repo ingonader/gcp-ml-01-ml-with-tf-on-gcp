@@ -1,0 +1,347 @@
+1
+00:00:00,000 --> 00:00:02,835
+Então, vamos ver o código no slide.
+
+2
+00:00:02,835 --> 00:00:08,039
+À primeira vista, se parece com NumPy.
+
+3
+00:00:08,039 --> 00:00:11,305
+Você quer adicionar dois tensores, a e b.
+
+4
+00:00:11,305 --> 00:00:14,710
+Então, você escreve tf.add(a, b).
+
+5
+00:00:14,710 --> 00:00:17,560
+Ele retorna um tensor c.
+
+6
+00:00:18,490 --> 00:00:21,240
+Ao contrário do código típico do Python,
+
+7
+00:00:21,240 --> 00:00:25,385
+executar o tf.add não o executa,
+
+8
+00:00:25,385 --> 00:00:27,830
+apenas cria o DAG.
+
+9
+00:00:27,830 --> 00:00:31,630
+No DAG, ou gráfico acíclico direcionado,
+
+10
+00:00:31,630 --> 00:00:37,125
+a, b e c são tensores
+e add é uma operação.
+
+11
+00:00:37,125 --> 00:00:39,545
+Para executar este código,
+
+12
+00:00:39,545 --> 00:00:41,965
+para executar o DAG,
+
+13
+00:00:41,965 --> 00:00:47,690
+você precisa executá-lo como parte
+do que é chamado de sessão.
+
+14
+00:00:47,690 --> 00:00:52,680
+Então, você diz que quer um valor de c
+e pede à sessão:
+
+15
+00:00:52,680 --> 00:00:56,080
+"Sessão, avalie c para mim".
+
+16
+00:00:56,080 --> 00:00:58,720
+Então, é isso que executa o DAG.
+
+17
+00:00:58,720 --> 00:01:02,330
+Em seguida, você recupera
+uma matriz numérica tradicional no Python
+
+18
+00:01:02,330 --> 00:01:04,400
+que contém os valores para c.
+
+19
+00:01:05,570 --> 00:01:09,395
+A programação do TensorFlow
+envolve a programação de um DAG.
+
+20
+00:01:09,395 --> 00:01:11,285
+Então, há dois passos.
+
+21
+00:01:11,285 --> 00:01:13,835
+Primeiro passo, crie o gráfico.
+
+22
+00:01:13,835 --> 00:01:16,675
+Segundo, execute o gráfico.
+
+23
+00:01:16,675 --> 00:01:20,465
+A definição do gráfico é separada
+
+24
+00:01:20,465 --> 00:01:24,600
+do loop de treinamento porque
+esse é um modelo de avaliação lenta.
+
+25
+00:01:24,600 --> 00:01:27,130
+Ele minimiza o Python para
+
+26
+00:01:27,130 --> 00:01:33,045
+as trocas de contexto de C++ e permite
+que o cálculo seja muito eficiente.
+
+27
+00:01:33,045 --> 00:01:36,735
+Conceitualmente,
+é como escrever um programa,
+
+28
+00:01:36,735 --> 00:01:40,145
+compilá-lo e, em seguida,
+executá-lo em alguns dados.
+
+29
+00:01:40,145 --> 00:01:42,320
+Mas não leve essa analogia longe demais.
+
+30
+00:01:42,320 --> 00:01:44,915
+Não há fase de compilação explícita aqui.
+
+31
+00:01:45,325 --> 00:01:49,060
+Note que c, depois de chamar tf.add,
+
+32
+00:01:49,060 --> 00:01:51,400
+não é o valor real.
+
+33
+00:01:51,400 --> 00:01:56,410
+Você tem que avaliar c no contexto
+de uma sessão do TensorFlow
+
+34
+00:01:56,410 --> 00:02:00,160
+para conseguir uma matriz de valores
+NumPy, numpy_c.
+
+35
+00:02:01,540 --> 00:02:06,375
+Então, para reiterar,
+o TensorFlow faz uma avaliação lenta.
+
+36
+00:02:06,375 --> 00:02:13,890
+Você escreve o DAG e o executa no contexto
+de uma sessão para ter resultados.
+
+37
+00:02:13,890 --> 00:02:17,260
+Agora, há um modo diferente
+em que você pode executar o TensorFlow.
+
+38
+00:02:17,260 --> 00:02:20,420
+Chama-se tf.eager e, nele,
+
+39
+00:02:20,420 --> 00:02:23,745
+a avaliação é imediata e não é lenta.
+
+40
+00:02:23,745 --> 00:02:27,820
+Mas o modo imediato geralmente
+não é usado em programas de produção.
+
+41
+00:02:27,820 --> 00:02:30,320
+É usado normalmente
+apenas para desenvolvimento.
+
+42
+00:02:30,320 --> 00:02:33,535
+Vamos ver o tf.eager um pouco mais tarde
+neste curso,
+
+43
+00:02:33,535 --> 00:02:35,095
+mas, na maior parte,
+
+44
+00:02:35,095 --> 00:02:37,865
+vamos nos concentrar
+no paradigma da avaliação lenta.
+
+45
+00:02:37,865 --> 00:02:42,460
+E quase todo o código que
+escrevemos e executamos em produção
+
+46
+00:02:42,460 --> 00:02:44,850
+será em modo de avaliação lenta.
+
+47
+00:02:44,850 --> 00:02:50,355
+Em NumPy, em que a maior parte
+do software numérico Python está escrita,
+
+48
+00:02:50,355 --> 00:02:53,505
+a e b são matrizes NumPy.
+
+49
+00:02:53,505 --> 00:02:57,675
+O NumPy consegue a velocidade
+sendo implementado em c,
+
+50
+00:02:57,675 --> 00:03:00,260
+então, quando você chama np.add,
+
+51
+00:03:00,260 --> 00:03:03,380
+esse add é feito em c.
+
+52
+00:03:03,380 --> 00:03:08,300
+Mas isso é feito quando a CPU
+executa o código np.add(a, b)
+
+53
+00:03:08,300 --> 00:03:12,360
+e a matriz NumPy c
+é preenchida com as somas.
+
+54
+00:03:12,360 --> 00:03:14,265
+Então, quando você imprime c,
+
+55
+00:03:14,265 --> 00:03:16,825
+recebe 8, 2 e 10.
+
+56
+00:03:16,825 --> 00:03:18,645
+8 é a soma de 5 e 3,
+
+57
+00:03:18,645 --> 00:03:21,590
+3 e -1 que você soma
+para conseguir 2 etc.
+
+58
+00:03:21,590 --> 00:03:27,245
+O ponto é que np.add
+é avaliado imediatamente.
+
+59
+00:03:27,945 --> 00:03:34,235
+Ao contrário do NumPy, no TensorFlow,
+c não é o valor real.
+
+60
+00:03:34,235 --> 00:03:38,840
+Em vez disso, c é um tensor,
+e você precisa avaliá-lo
+
+61
+00:03:38,840 --> 00:03:41,715
+no contexto de uma sessão do TensorFlow
+
+62
+00:03:41,715 --> 00:03:45,315
+para conseguir
+uma matriz NumPy de valores, o resultado.
+
+63
+00:03:45,315 --> 00:03:52,159
+Portanto, quando a CPU, a GPU ou qualquer
+outro hardware avalia tf.add(a, b),
+
+64
+00:03:52,159 --> 00:03:57,165
+um tensor é criado
+no gráfico acíclico direcionado, ou DAG.
+
+65
+00:03:57,165 --> 00:04:04,275
+Mas a adição em si não é executada
+até que session.run seja chamada.
+
+66
+00:04:04,275 --> 00:04:06,905
+Então, se chamamos print c,
+
+67
+00:04:06,905 --> 00:04:12,750
+o que é impresso na primeira caixa é
+a saída de depuração da classe do tensor.
+
+68
+00:04:12,750 --> 00:04:17,220
+Ela inclui um nome exclusivo
+atribuído pelo sistema para o nó no DAG,
+
+69
+00:04:17,220 --> 00:04:22,110
+neste caso, add_7,
+e a forma e o tipo de dados do valor
+
+70
+00:04:22,110 --> 00:04:24,785
+que serão exibidos
+quando o DAG for executado.
+
+71
+00:04:24,785 --> 00:04:30,805
+Depois que a sessão é executada
+e c é avaliado no contexto de uma sessão,
+
+72
+00:04:30,805 --> 00:04:33,880
+podemos imprimir o resultado
+e recebemos 8, 2 e 10,
+
+73
+00:04:33,880 --> 00:04:35,710
+da mesma forma
+que com o NumPy.
+
+74
+00:04:35,710 --> 00:04:37,630
+Então, há dois estágios,
+
+75
+00:04:37,630 --> 00:04:43,360
+um de criação e um de execução,
+mas por quê?
+
+76
+00:04:43,360 --> 00:04:46,580
+Por que o TensorFlow
+faz uma avaliação lenta?
+
+77
+00:04:46,580 --> 00:04:48,810
+Essa pergunta fica para a próxima aula.

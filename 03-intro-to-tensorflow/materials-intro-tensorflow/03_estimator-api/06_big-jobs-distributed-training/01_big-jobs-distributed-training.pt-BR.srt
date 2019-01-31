@@ -1,0 +1,529 @@
+1
+00:00:00,000 --> 00:00:02,880
+Agora, discutiremos o que fazer em relação
+
+2
+00:00:02,880 --> 00:00:06,210
+a grandes jobs de AM e os benefícios
+do treinamento distribuído.
+
+3
+00:00:06,210 --> 00:00:10,110
+Podemos riscar o primeiro item
+na lista de problemas
+
+4
+00:00:10,110 --> 00:00:12,150
+que os modelos reais têm,
+
+5
+00:00:12,150 --> 00:00:14,765
+e passar para o segundo: a velocidade.
+
+6
+00:00:14,765 --> 00:00:19,970
+Sim. Modelos reais treinam por eras,
+horas, dias, semanas.
+
+7
+00:00:19,970 --> 00:00:22,220
+Quando chega a várias semanas
+de treinamento,
+
+8
+00:00:22,220 --> 00:00:24,145
+no Google, nós desistimos mesmo.
+
+9
+00:00:24,145 --> 00:00:28,125
+Otimizar um modelo nessas
+condições não é viável.
+
+10
+00:00:28,125 --> 00:00:32,700
+Você precisa distribuí-lo em um cluster
+para torná-lo mais rápido.
+
+11
+00:00:32,700 --> 00:00:35,050
+Ir de uma máquina para muitas
+
+12
+00:00:35,050 --> 00:00:37,985
+pode parecer complicado, mas como veremos,
+
+13
+00:00:37,985 --> 00:00:42,275
+com a API Estimator e o mecanismo de AM
+gerenciando o cluster automaticamente,
+
+14
+00:00:42,275 --> 00:00:44,995
+você tem a distribuição pronta para uso.
+
+15
+00:00:44,995 --> 00:00:51,410
+A função que realiza o treino distribuído
+é chamada estimator.train_and_evaluate.
+
+16
+00:00:51,480 --> 00:00:55,050
+O nome da função também
+destaca que avaliar e
+
+17
+00:00:55,050 --> 00:00:58,695
+monitorar um grande job de
+treinamento será importante.
+
+18
+00:00:58,695 --> 00:01:00,305
+Veremos isso mais tarde.
+
+19
+00:01:00,305 --> 00:01:03,045
+Vamos nos concentrar na distribuição.
+
+20
+00:01:03,045 --> 00:01:05,850
+O modelo de distribuição tradicional para
+
+21
+00:01:05,850 --> 00:01:09,285
+o treinamento de redes neurais é
+chamado de paralelismo de dados.
+
+22
+00:01:09,285 --> 00:01:13,170
+O modelo é replicado em
+vários workers.
+
+23
+00:01:13,170 --> 00:01:15,035
+Em cada etapa de treinamento,
+
+24
+00:01:15,035 --> 00:01:17,305
+eles carregam um lote de
+dados de treinamento,
+
+25
+00:01:17,305 --> 00:01:19,500
+um diferente em cada,
+
+26
+00:01:19,500 --> 00:01:25,040
+gradientes de computador, e os enviam
+para um ou mais servidores de
+
+27
+00:01:25,040 --> 00:01:29,535
+parâmetros centrais, que contêm todos os
+pesos e vieses do modelo de rede neural.
+
+28
+00:01:29,535 --> 00:01:31,830
+Os gradientes são aplicados
+à medida que chegam.
+
+29
+00:01:31,830 --> 00:01:33,615
+Altere os pesos e vieses,
+
+30
+00:01:33,615 --> 00:01:38,970
+e o modelo atualizado é enviado de volta
+aos workers para a próxima etapa.
+
+31
+00:01:38,970 --> 00:01:42,010
+Há muito trabalho a fazer
+para que isso aconteça.
+
+32
+00:01:42,010 --> 00:01:43,860
+Os workers
+precisam ser iniciados,
+
+33
+00:01:43,860 --> 00:01:45,330
+receber a cópia do modelo,
+
+34
+00:01:45,330 --> 00:01:47,150
+os fluxos de dados entre workers
+
+35
+00:01:47,150 --> 00:01:49,410
+e servidores de parâmetros
+precisam ser criados.
+
+36
+00:01:49,410 --> 00:01:51,480
+O sistema ainda trata as
+exceções e falhas,
+
+37
+00:01:51,480 --> 00:01:54,550
+e reinicia os pesquisadores
+de campo de onde eles pararam,
+
+38
+00:01:54,550 --> 00:01:57,610
+e, se ocorrer um incidente,
+
+39
+00:01:57,610 --> 00:02:00,545
+o uso de pontos de verificação fica
+um pouco mais complicado
+
+40
+00:02:00,545 --> 00:02:02,240
+quando tudo isso está acontecendo.
+
+41
+00:02:02,240 --> 00:02:07,425
+Felizmente, a distribuição é tão simples
+quanto gravar um arquivo de configuração.
+
+42
+00:02:07,425 --> 00:02:11,890
+Todo o código boilerplate já
+está gravado na API Estimator
+
+43
+00:02:11,890 --> 00:02:15,775
+e na função estimator.train_and_evaluate.
+
+44
+00:02:15,775 --> 00:02:17,805
+Você precisará realizar
+quatro ações.
+
+45
+00:02:17,805 --> 00:02:21,250
+Escolha seu estimador,
+configure a execução,
+
+46
+00:02:21,250 --> 00:02:25,795
+forneça treino e dados de teste por meio
+de um TrainSpec e um EvalSpec.
+
+47
+00:02:25,795 --> 00:02:27,890
+Depois de configurado,
+
+48
+00:02:27,890 --> 00:02:29,815
+chame o treinamento e avalie.
+
+49
+00:02:29,815 --> 00:02:32,270
+Se você está executando no
+ML Engine
+
+50
+00:02:32,270 --> 00:02:34,585
+e especificou o tamanho do cluster,
+
+51
+00:02:34,585 --> 00:02:37,050
+o treinamento distribuído será ativado.
+
+52
+00:02:37,050 --> 00:02:38,895
+Vamos dar uma olhada mais de perto.
+
+53
+00:02:38,895 --> 00:02:40,735
+Primeiro, a configuração de execução.
+
+54
+00:02:40,735 --> 00:02:44,205
+É aqui que você especifica o diretório de
+saída dos pontos de verificação.
+
+55
+00:02:44,205 --> 00:02:46,440
+Você ainda pode configurá-lo diretamente
+
+56
+00:02:46,440 --> 00:02:48,490
+ao instanciar o estimador,
+
+57
+00:02:48,490 --> 00:02:50,515
+mas é melhor tê-lo aqui,
+
+58
+00:02:50,515 --> 00:02:52,935
+com outras configurações
+de ponto de verificação.
+
+59
+00:02:52,935 --> 00:02:58,520
+É também onde você define a frequência
+em que quer ver os pontos de verificação
+
+60
+00:02:58,520 --> 00:03:02,015
+e também a frequência dos resumos
+ou registros de treinamento.
+
+61
+00:03:02,015 --> 00:03:04,005
+Veremos isso mais tarde.
+
+62
+00:03:04,005 --> 00:03:09,690
+O TrainSpec é onde você passa sua função
+de entrada de dados para dados de treino.
+
+63
+00:03:09,690 --> 00:03:13,080
+Use a API Dataset para
+configurá-lo corretamente.
+
+64
+00:03:13,080 --> 00:03:17,380
+Outra opção é limitar o treinamento a um
+determinado número de etapas.
+
+65
+00:03:17,380 --> 00:03:21,765
+Por padrão, ele continua até o conjunto
+de dados de entrada ser esgotado.
+
+66
+00:03:21,765 --> 00:03:26,220
+O que pode acontecer depois de vários
+e-bugs, se é assim que você configura.
+
+67
+00:03:26,220 --> 00:03:30,990
+EvalSpec é onde você conecta o
+conjunto de dados de teste.
+
+68
+00:03:30,990 --> 00:03:34,420
+Sim, se você quiser ver o
+desempenho do modelo,
+
+69
+00:03:34,420 --> 00:03:39,685
+é preciso medir isso em um conjunto de
+dados que não foi visto durante o treino.
+
+70
+00:03:39,685 --> 00:03:43,960
+Normalmente, um subconjunto de dados
+que você separa para testes.
+
+71
+00:03:43,960 --> 00:03:47,270
+Os dados de teste chegam por meio da
+função de entrada eval e,
+
+72
+00:03:47,270 --> 00:03:50,725
+novamente, use a API Dataset
+para conseguir isso.
+
+73
+00:03:50,725 --> 00:03:55,964
+Você também pode especificar quantos lotes
+de dados de teste quer avaliar
+
+74
+00:03:55,964 --> 00:03:59,180
+e com que frequência as
+avaliações ocorrem.
+
+75
+00:03:59,180 --> 00:04:04,415
+Um detalhe de implementação
+importante: no treinamento distribuído,
+
+76
+00:04:04,415 --> 00:04:07,625
+a avaliação acontece em um
+servidor dedicado,
+
+77
+00:04:07,625 --> 00:04:12,785
+que responde ao modelo do último ponto
+de verificação e, depois, executa o eval.
+
+78
+00:04:12,785 --> 00:04:16,555
+Então, você não pode conseguir avaliações
+com mais frequência
+
+79
+00:04:16,555 --> 00:04:20,839
+do que a frequência dos pontos de
+verificação da configuração de execução.
+
+80
+00:04:20,839 --> 00:04:23,470
+Você pode, no entanto, tê-los com
+menos frequência,
+
+81
+00:04:23,470 --> 00:04:27,530
+adicionando o parâmetro de
+limitação no EvalSpec.
+
+82
+00:04:27,530 --> 00:04:32,445
+Você percebe que o EvalSpec também
+tem um parâmetro para exportadores.
+
+83
+00:04:32,445 --> 00:04:36,990
+Eles controlam como um modelo é exportado
+para implantação na produção
+
+84
+00:04:36,990 --> 00:04:39,510
+e os abordaremos no próximo capítulo.
+
+85
+00:04:39,510 --> 00:04:41,845
+Aqui está o que temos até agora.
+
+86
+00:04:41,845 --> 00:04:43,945
+Você instancia um estimador,
+
+87
+00:04:43,945 --> 00:04:48,000
+dá a ele uma configuração de execução
+em que você pode definir a frequência
+
+88
+00:04:48,000 --> 00:04:51,960
+e a pasta em que quer gravar pontos de
+verificação e dados de monitoramento,
+
+89
+00:04:51,960 --> 00:04:56,735
+e então configura um conjunto de dados
+de treinamento e avaliação,
+
+90
+00:04:56,735 --> 00:05:03,390
+que você canaliza por meio das funções de
+entrada de dados no TrainSpec e EvalSpec.
+
+91
+00:05:03,390 --> 00:05:06,775
+Você está pronto, então,
+para treinar e avaliar.
+
+92
+00:05:06,775 --> 00:05:09,180
+Quero dizer algumas palavras sobre
+
+93
+00:05:09,180 --> 00:05:12,260
+uma consideração importante:
+o embaralhamento de dados.
+
+94
+00:05:12,260 --> 00:05:16,910
+O algoritmo de gradiente descente
+estocástico que redes neurais usam
+
+95
+00:05:16,910 --> 00:05:20,435
+para treinamento só funciona em dados
+bem embaralhados.
+
+96
+00:05:20,435 --> 00:05:23,790
+A API Dataset tem uma função
+de embaralhamento que pode ajudar,
+
+97
+00:05:23,790 --> 00:05:26,280
+mas algumas pessoas podem
+não usá-la se acharem que
+
+98
+00:05:26,280 --> 00:05:29,450
+o conjunto de dados já está bem
+embaralhado no disco.
+
+99
+00:05:29,450 --> 00:05:32,400
+Com o treinamento distribuído, cuidado.
+
+100
+00:05:32,400 --> 00:05:35,490
+Mesmo com um conjunto de dados
+bem embaralhado no disco,
+
+101
+00:05:35,490 --> 00:05:39,660
+se todos os workers estiverem carregando
+diretamente desse conjunto de dados,
+
+102
+00:05:39,660 --> 00:05:42,005
+eles verão o mesmo lote de dados,
+
+103
+00:05:42,005 --> 00:05:45,245
+ao mesmo tempo, e produzirão
+os mesmos gradientes.
+
+104
+00:05:45,245 --> 00:05:48,360
+Os benefícios do treinamento
+distribuído serão desperdiçados.
+
+105
+00:05:48,360 --> 00:05:52,350
+Todos os workers farão
+exatamente o mesmo.
+
+106
+00:05:52,350 --> 00:05:54,604
+Com a função de embaralhamento,
+
+107
+00:05:54,604 --> 00:05:56,610
+o embaralhamento é
+independente
+
+108
+00:05:56,610 --> 00:06:00,290
+em cada worker e usa uma sugestão
+aleatória diferente. Então, use-a.
+
+109
+00:06:00,290 --> 00:06:03,375
+Mesmo que os dados já
+estejam embaralhados no disco.
+
+110
+00:06:03,375 --> 00:06:05,895
+E se você quiser ter mais certeza,
+também pode
+
+111
+00:06:05,895 --> 00:06:10,290
+embaralhar a lista de nomes de arquivos
+no conjunto de dados mais curto.
+
+112
+00:06:10,290 --> 00:06:14,160
+Listar arquivos retorna um conjunto de
+dados de nomes de arquivos,
+
+113
+00:06:14,160 --> 00:06:17,070
+portanto, apenas chame as
+linhas aleatoriamente.

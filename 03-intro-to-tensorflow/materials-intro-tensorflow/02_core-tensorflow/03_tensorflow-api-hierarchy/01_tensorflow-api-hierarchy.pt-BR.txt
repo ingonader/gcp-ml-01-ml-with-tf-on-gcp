@@ -1,0 +1,44 @@
+Nas aulas anteriores, falamos sobre o que é o TensorFlow. Agora, vamos começar a observar
+a hierarquia das APIs do TensorFlow. Como a maioria
+das bibliotecas de software, o TensorFlow tem várias
+camadas de abstração. O menor nível de abstração é uma camada implementada para atingir
+diferentes plataformas de hardware. A menos que sua empresa produza hardware, é improvável que você faça muito
+nesse nível. O próximo nível é
+uma API do TensorFlow para C++. É assim que você pode escrever um app
+personalizado do TensorFlow. Você implementará uma função
+que quer em C++ e a registrará como
+uma operação do TensorFlow. Veja a documentação do TensorFlow sobre
+como ampliar um app. O TensorFlow então lhe dará um wrapper
+em Python que você pode usar, exatamente como faria
+com uma função existente. No entanto, nesta especialização, vamos supor que você
+não é um pesquisador de ML, então você não precisa fazer isso, mas, se precisasse implementar
+seu próprio app personalizado, você faria isso em C++, e não é muito difícil. O TensorFlow é extensível dessa maneira. A API Python principal, o próximo nível, contém grande parte
+do código de processamento numérico: somar, subtrair, dividir,
+multiplicar matrizes etc. Criar variáveis e tensores, conseguir a forma,
+todas as dimensões de um tensor, todo esse material de processamento
+numérico básico principal está na API Python. Então, há um conjunto de
+módulos Python que têm representação de alto nível de componentes
+úteis de rede neural. Por exemplo, uma maneira de criar uma
+nova camada de neurônios ocultos, com uma função de ativação ReLU, está em tf.layers. Uma maneira de calcular o erro quadrático
+médio dos dados à medida que chegam: Tf.metrics. Uma maneira de computar a
+entropia cruzada com logits. Este é um problema comum
+de classificação de medição de perda. Entropia cruzada com logits? Está em tf.losses. Estes modelos fornecem componentes
+que são úteis na criação de modelos NN personalizados. Por que eu enfatizo
+personalizados? Como muitas vezes, você não precisa de um
+modelo de rede neural personalizado, muitas vezes está contente em seguir
+um modo relativamente padrão de treino, avaliação e veiculação de modelos. Você não precisa personalizar
+a maneira como treina, você usará um dos otimizadores
+de gradiente descendente da família e fará retropropagação das ponderações de modo iterativo. Nesse caso, não escreva um loop de sessão
+de baixo nível. Apenas use um Estimator. O Estimator é
+a API de alto nível do TensorFlow. Ela sabe como fazer treino distribuído, como avaliar, como criar
+um ponto de verificação, como salvar um modelo, como configurá-lo para veiculação. Tudo é feito
+de uma maneira lógica, que se encaixa na maioria dos modelos
+de aprendizado de máquina e produção. Então, caso veja exemplos
+de código do TensorFlow na Internet que não usem a API Estimator, simplesmente ignore esse código, vá embora, não vale a pena. Você terá que escrever
+um monte de código para fazer posicionamento do dispositivo e
+distribuição e gerenciamento de memória. Deixe o Estimator fazer isso por você. Então, esses são
+os níveis de abstração do TensorFlow. O Cloud ML Engine
+é ortogonal a essa hierarquia. Não importa o nível de abstração em que
+você escreve o código do TensorFlow, o CMLE oferece um serviço gerenciado. É o TensorFlow hospedado. Portanto, você pode executar o TensorFlow
+na nuvem em um cluster de máquinas sem precisar instalar nenhum software
+ou gerenciar nenhum servidor.

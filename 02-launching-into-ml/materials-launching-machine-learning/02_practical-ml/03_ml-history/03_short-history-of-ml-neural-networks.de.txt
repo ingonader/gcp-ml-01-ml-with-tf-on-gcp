@@ -1,0 +1,110 @@
+Weshalb nur eine Perzeptronschicht? Wie wäre es, das Output einer Schicht als
+Input an die nächste zu senden? Perzeptronschichten zu kombinieren, klingt
+nach einem viel leistungsfähigeren Modell. Aber ohne die Verwendung
+nicht linearer Aktivierungsfunktionen können alle zusätzlichen Schichten
+zurückkomprimiert werden in eine einzelne lineare Schicht, und
+es ergibt sich kein wirklicher Vorteil. Wir brauchen
+nicht lineare Aktivierungsfunktionen. Deshalb fing man an, Sigmoid- oder
+hyperbolische Tangens- - kurz: tanh - Aktivierungsfunktionen
+für Nichtlinearität zu verwenden. Damals waren wir auf diese beschränkt,
+denn was wir brauchten, war eine differenzierbare
+Funktion, da dieser Aspekt bei der Fehlerrückführung zum
+Ändern der Modellgewichte genutzt wird. Moderne Aktivierungsfunktionen sind
+nicht unbedingt differenzierbar und man wusste nicht, wie
+man mit ihnen umgehen sollte. Dadurch, dass Aktivierungsfunktionen
+differenzierbar sein mussten, war es mitunter schwierig,
+die Netze zu trainieren. Die Wirksamkeit dieser Modelle war auch
+durch die Datenmenge eingeschränkt, die verfügbaren Rechenressourcen
+und andere Schwierigkeiten beim Training. Beispielsweise bleibt die
+Optimierung gerne in Sattelpunkten hängen, anstatt, wie wir gehofft hatten, das globale Minimum
+beim Gradientenverfahren zu finden. Aber seit es den Trick mit rektifizierten
+Lineareinheiten (ReLUs) gibt, war ein 8- bis 10-mal
+schnelleres Training möglich, nahezu garantierte Konvergenz
+für logistische Regression. Aufbauend auf dem
+Perzeptron, ganz wie das Gehirn, können wir viele davon
+verbinden, um Schichten zu bilden und neuronale
+Feedforward-Netze zu erstellen. Die Komponenten sind im Vergleich zum
+einlagigen Perzeptron nicht sehr anders. Es gibt weiterhin Inputs, gewichtete Summen,
+Aktivierungsfunktionen und Outputs. Ein Unterschied ist, dass die Inputs an
+Neuronen in einer anderen Schicht nicht die Roheingaben, sondern die
+Ausgaben der vorherigen Schicht sind. Ein weiterer Unterschied ist, dass die
+Neuronen zwischen den Schichten nicht mehr in Form eines Vektors, sondern
+einer Matrix verbunden sind, da alle Neuronen der Schichten
+vollständig miteinander verbunden sind. Zum Beispiel ist in diesem Diagramm die Matrix der Eingangsschicht-Gewichtungen 4 × 2 und die Matrix der Schicht
+verdeckter Gewichtungen ist 2 × 1. Wir lernen später,
+dass neuronale Netze nicht immer vollständige Verbindung bieten, was für erstaunliche Anwendungen
+und Leistungen, etwa bei Bildern, sorgt. Auch gibt es mehr Aktivierungsfunktionen
+als nur die Einheitssprungfunktion, etwa die Sigmoid- und hyperbolische
+Tangens- oder tanh-Aktivierungsfunktionen. Sie können sich jedes
+Nicht-Eingabeneuron als eine Sammlung von drei in einer Einheit
+verpackten Schritten vorstellen. Die erste Komponente ist
+eine gewichtete Summe, die zweite Komponente ist die
+Aktivierungsfunktion und die dritte Komponente ist die
+Ausgabe der Aktivierungsfunktion. Neuronale Netze können ziemlich komplex
+werden, bei all den Schichten, Neuronen, Aktivierungsfunktionen
+und Lernverfahren. In diesem Kurs verwenden wir
+TensorFlow Playground, um den Informationsfluss durch ein neuronales
+Netz verständlicher darzustellen. Es macht auch viel Spaß, lässt Sie viel mehr
+Hyperparameter anpassen, stellt die Größe der Gewichte optisch dar und die zeitliche
+Entwicklung der Verlustfunktion. Das ist die lineare Aktivierungsfunktion, im Wesentlichen eine Identitätsfunktion,
+da die Funktion von x einfach x ausgibt. Dies war die
+ursprüngliche Aktivierungsfunktion. Aber, wie bereits gesagt, ist selbst bei neuronalen
+Netzen mit tausenden Schichten, allen mit linearer Aktivierungsfunktion, die Ausgabe schließlich nur eine
+lineare Kombination der Input-Merkmale. Das reduziert sich auf die Input-Merkmale
+multipliziert mit je einer Konstanten. Hört sich das bekannt an? Es ist einfach eine lineare Regression. Deshalb brauchen wir
+nicht lineare Funktionen, um die komplexen
+Kettenfunktionen zu erhalten, die es neuronalen Netzen so gut
+ermöglichen, Datenverteilungen zu lernen. Neben den linearen Aktivierungsfunktionen, wo f von x gleich x ist, waren damals, während der ersten
+Blütezeit der neuronalen Netze, Sigmoid und tanh die
+Haupt-Aktivierungsfunktionen. Die Sigmoid-Funktion ist eigentlich eine
+glatte Version der Einheitssprungfunktion, wo Asymptote zu 0 gegen negative Unendlichkeit und Asymptote
+zu 1 gegen positive Unendlichkeit gehen, aber überall Zwischenwerte sind. Der hyperbolische Tangens, kurz tanh, ist derzeit eine weitere häufig
+verwendete Aktivierungsfunktion, die im Wesentlichen nur eine skalierte und verschobene Sigmoid-Funktion
+mit dem Bereich -1 bis 1 ist. Das waren sehr gute Optionen,
+da sie überall differenzierbar, monoton und glatt waren. Es ergaben sich aber Probleme
+wie Sättigung aufgrund hoher oder niedriger
+Eingangswerte für die Funktionen, die zu asymptotischen Plateaus
+der Funktionen führten. Da die Kurve an diesen
+Stellen nahezu flach ist, nähern sich die Ableitungen sehr an 0 an. Deshalb verläuft das Lernen
+der Gewichte sehr langsam oder hält sogar an,
+da die Gradienten alle gegen 0 gehen, was im Endeffekt zu sehr kleinen
+Schritten beim Gradientenverfahren führt. Lineare Aktivierungsfunktionen waren
+differenzierbar, monoton und glatt. Aber, wie bereits gesagt, ist eine Linearkombination von linearen
+Funktionen wieder eine lineare Funktion. Das hilft uns nicht beim Erstellen
+der komplexen Funktionskette, die wir zum Beschreiben
+der Datenzeile brauchen. Es waren Annäherungen an
+lineare Aktivierungsfunktionen, aber nicht überall differenzierbar. Erst viel später konnte man
+etwas mit ihnen anfangen. Jetzt ist die rektifizierte Lineareinheit
+oder ReLU-Aktivierungsfunktion beliebt. Sie ist nicht linear, ermöglicht also
+die nötige komplexe Modellierung und hat keine Sättigung
+im nicht negativen Teil des Input-Raums. Da aber der negative Teil des
+Input-Raums eine Null-Aktivierung ergibt, können sich ReLU-Schichten totlaufen
+oder hören auf zu aktivieren, was ebenfalls zur Verlangsamung oder
+Beendigung des Lernvorgangs führt. Es gibt Möglichkeiten,
+dieses Problem zu lösen, zum Beispiel die Verwendung einer anderen Aktivierungsfunktion, der
+exponentiellen Lineareinheit oder ELU. Sie ist im nicht negativen Teil
+des Input-Raums annähernd linear, glatt, monoton und vor allem nicht null im negativen
+Teil des Input-Raums. Der größte Nachteil von ELUs ist, dass sie rechenlastiger sind als ReLus,
+da sie den Exponent berechnen müssen. Wir werden im nächsten Modul
+mehr damit experimentieren. Wenn ich meine Ausgaben in
+Form von Wahrscheinlichkeiten möchte, welche Aktivierungsfunktion sollte
+ich dann für die letzte Schicht wählen? Die richtige Antwort lautet:
+die Sigmoid-Aktivierungsfunktion. Und zwar deshalb, weil der Bereich
+der Sigmoid-Funktion 0 bis 1 ist, so wie der Bereich für Wahrscheinlichkeit. Abgesehen vom Bereich ist die Sigmoid-Funktion
+die kumulative Verteilungsfunktion der logistischen Wahrscheinlichkeits-
+verteilung, deren Quantilfunktion die Umkehrung der Logik ist,
+die die Log Odds modelliert. Deshalb kann das als eine wirkliche
+Wahrscheinlichkeit verwendet werden. Später in diesem Kurs
+gehen wir weiter auf diese Gründe ein. Tanh ist falsch, denn, obwohl sie wie ein
+Sigmoid eine komprimierende Funktion ist, hat sie einen Bereich von -1 bis 1, was nicht dem Bereich der
+Wahrscheinlichkeit entspricht. Durch bloßes Komprimieren von tanh in ein Sigmoid entsteht außerdem
+nicht plötzlich eine Wahrscheinlichkeit, da es nicht dieselben
+erwähnten Eigenschaften hat, durch die Sigmoid-Ausgaben als
+Wahrscheinlichkeit interpretierbar sind. Für eine richtige Umformung in ein Sigmoid addieren wir erst 1 und dividieren durch 
+2, um den richtigen Bereich zu erhalten. Um die
+richtige Verteilung zu erhalten, müssten wir das
+tanh-Argument durch 2 dividieren, aber wir haben tanh schon berechnet, sodass es viel Arbeit wäre und wir genauso gut
+gleich ein Sigmoid verwenden könnten. ReLu ist falsch, da ihr Bereich
+zwischen 0 und unendlich liegt, was weit von der Darstellung der
+Wahrscheinlichkeit entfernt ist. ELU ist auch falsch wegen des Bereichs
+von negativer Unendlichkeit und unendlich.

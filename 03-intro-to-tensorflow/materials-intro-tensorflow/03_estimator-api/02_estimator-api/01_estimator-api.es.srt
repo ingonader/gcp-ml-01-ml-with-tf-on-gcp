@@ -1,0 +1,300 @@
+1
+00:00:01,020 --> 00:00:04,596
+Exploremos los componentes
+de la API de Estimator
+
+2
+00:00:04,596 --> 00:00:07,115
+y veamos cómo realizar
+otras tareas comunes de AA
+
+3
+00:00:07,115 --> 00:00:11,105
+como el entrenamiento distribuido,
+la supervisión y la entrega.
+
+4
+00:00:11,105 --> 00:00:15,100
+Los estimadores son parte
+de las API de alto nivel de TensorFlow.
+
+5
+00:00:15,100 --> 00:00:18,630
+Su primera experiencia
+con TensorFlow en el módulo anterior
+
+6
+00:00:18,630 --> 00:00:20,920
+fue en el nivel básico de TensorFlow
+
+7
+00:00:20,920 --> 00:00:24,820
+en el que se usa
+como una biblioteca de cálculo numérico.
+
+8
+00:00:24,820 --> 00:00:29,440
+Debajo de este nivel se encuentran las API
+con las que no se interactúa normalmente.
+
+9
+00:00:29,440 --> 00:00:32,740
+Administran el hardware, las CPU, GPU, TPU
+
+10
+00:00:32,740 --> 00:00:35,410
+o plataformas alternativas, como Android.
+
+11
+00:00:35,410 --> 00:00:38,050
+Por encima de TensorFlow están las API
+
+12
+00:00:38,050 --> 00:00:40,970
+de todos los componentes
+necesarios para construir un modelo
+
+13
+00:00:40,970 --> 00:00:43,130
+diferentes tipos de capas
+de redes neuronales
+
+14
+00:00:43,130 --> 00:00:45,160
+funciones de pérdida, etcétera.
+
+15
+00:00:45,160 --> 00:00:48,880
+Por último, para unirlo todo,
+tenemos los estimadores.
+
+16
+00:00:48,880 --> 00:00:51,784
+Un modelo de TensorFlow
+de nivel básico, por lo general
+
+17
+00:00:51,784 --> 00:00:55,244
+incluye un par de capas de redes 
+neuronales y un bucle de entrenamiento.
+
+18
+00:00:55,244 --> 00:00:57,910
+Tal vez piense:
+¿Por qué necesitaría ayuda con eso?
+
+19
+00:00:57,910 --> 00:00:59,990
+Soy desarrollador,
+puedo escribir un bucle.
+
+20
+00:00:59,990 --> 00:01:05,490
+Y estoy de acuerdo, pero hoy,
+incluso en modelos de prototipo pequeños
+
+21
+00:01:05,490 --> 00:01:08,190
+me inclino por los estimadores.
+
+22
+00:01:08,190 --> 00:01:10,890
+Me gustan porque son intercambiables
+
+23
+00:01:10,890 --> 00:01:13,270
+y me permiten probar muchos modelos
+
+24
+00:01:13,270 --> 00:01:16,560
+de estimadores estándares
+preparados previamente en sucesión rápida.
+
+25
+00:01:16,560 --> 00:01:19,535
+A medida que los datos
+y el tiempo de entrenamiento crecen
+
+26
+00:01:19,535 --> 00:01:21,195
+sus necesidades aumentarán.
+
+27
+00:01:21,200 --> 00:01:24,490
+¿Necesita controles para pausar
+y reanudar el entrenamiento?
+
+28
+00:01:24,490 --> 00:01:25,940
+Los estimadores los tienen.
+
+29
+00:01:25,940 --> 00:01:27,840
+¿Sus datos ya no caben en la memoria?
+
+30
+00:01:27,840 --> 00:01:31,155
+Los estimadores están diseñados
+para trabajar con una API que se ocupa
+
+31
+00:01:31,155 --> 00:01:33,085
+de los conjuntos de datos sin memoria.
+
+32
+00:01:33,095 --> 00:01:36,180
+No puede entrenar
+una red grande sin verificar su eficacia.
+
+33
+00:01:36,180 --> 00:01:39,960
+Los estimadores muestran métricas clave
+automáticamente durante el entrenamiento
+
+34
+00:01:39,960 --> 00:01:42,150
+que pueden visualizarse en TensorBoard.
+
+35
+00:01:42,150 --> 00:01:44,670
+¿Qué pasa
+con el entrenamiento distribuido?
+
+36
+00:01:44,670 --> 00:01:49,410
+Los estimadores tienen el código
+de ejecución de clúster integrado.
+
+37
+00:01:49,410 --> 00:01:51,692
+Por último, hay que unir el modelo
+
+38
+00:01:51,692 --> 00:01:55,270
+a fin de que esté listo para el ajuste
+de hiperparámetros de ML Engine
+
+39
+00:01:55,270 --> 00:01:57,685
+y tal vez enviarlo
+a producción con el servicio
+
+40
+00:01:57,685 --> 00:02:00,805
+de predicciones administrado
+y con escala automática de ML Engine.
+
+41
+00:02:00,805 --> 00:02:03,200
+La API de Estimator
+también lo ayuda en eso.
+
+42
+00:02:04,040 --> 00:02:08,009
+¿Todavía quiere seguir escribiendo
+usted mismo sus bucles de entrenamiento
+
+43
+00:02:08,009 --> 00:02:12,240
+con todas las funciones
+de código estándar repetidas cada vez?
+
+44
+00:02:12,240 --> 00:02:16,570
+Claro que no. Por eso, veamos
+cómo funciona la API de Estimator.
+
+45
+00:02:17,600 --> 00:02:21,318
+La clase base: estimator,
+le permite unir su propio modelo
+
+46
+00:02:21,318 --> 00:02:25,480
+que se compila en capas
+mediante la API de tf.layers.
+
+47
+00:02:25,480 --> 00:02:29,270
+Pero si compila
+un modelo estándar, no la necesitará.
+
+48
+00:02:29,270 --> 00:02:34,050
+TensorFlow tiene estimadores
+preparados previamente que puede probar
+
+49
+00:02:34,140 --> 00:02:37,050
+así como clasificadores lineales
+o de redes neuronales densas
+
+50
+00:02:37,050 --> 00:02:39,230
+para clasificar datos en categorías
+
+51
+00:02:39,230 --> 00:02:43,120
+y regresores similares
+para predecir valores continuos.
+
+52
+00:02:43,120 --> 00:02:47,610
+Y no olvide
+el DNNLinearCombinedClassifier
+
+53
+00:02:47,610 --> 00:02:49,910
+también conocido
+como el modelo amplio y profundo
+
+54
+00:02:49,910 --> 00:02:53,510
+según el artículo de investigación
+de Google que lo popularizó.
+
+55
+00:02:53,510 --> 00:02:56,280
+Este no es trivial.
+Es la tecnología que usamos
+
+56
+00:02:56,280 --> 00:02:59,300
+en el motor de recomendaciones
+de Google Play, por ejemplo.
+
+57
+00:02:59,300 --> 00:03:00,810
+Pero es muy flexible
+
+58
+00:03:00,810 --> 00:03:04,146
+y se lo describe a menudo
+como el caballo de batalla
+
+59
+00:03:04,146 --> 00:03:05,956
+de Enterprise Machine Learning.
+
+60
+00:03:05,956 --> 00:03:08,690
+Funciona con todo tipo
+de datos estructurados
+
+61
+00:03:08,690 --> 00:03:10,780
+y viene listo para usarse.
+
+62
+00:03:10,780 --> 00:03:14,535
+Lo que debe recordar es que,
+como comparten una API en común
+
+63
+00:03:14,535 --> 00:03:17,550
+los estimadores preparados
+previamente son intercambiables.
+
+64
+00:03:17,550 --> 00:03:20,080
+Es fácil probarlos todos.

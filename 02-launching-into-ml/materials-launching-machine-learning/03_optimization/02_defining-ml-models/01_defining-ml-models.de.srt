@@ -1,0 +1,330 @@
+1
+00:00:00,370 --> 00:00:03,050
+Dieses Modul
+umfasst fünf Hauptthemen.
+
+2
+00:00:03,050 --> 00:00:07,370
+Zuerst erstellen wir eine
+formelle Definition eines Modells.
+
+3
+00:00:07,370 --> 00:00:10,180
+Da Optimierungen einen Standard
+zum Messen der Verbesserung
+
+4
+00:00:10,180 --> 00:00:13,070
+erfordern,
+besprechen wir dann Verlustfunktionen.
+
+5
+00:00:14,370 --> 00:00:17,890
+Wir vergleichen das Gradientenverfahren
+mit einem durch die Verlustfunktion
+
+6
+00:00:17,890 --> 00:00:19,170
+definierten Bergabstieg.
+
+7
+00:00:20,970 --> 00:00:24,575
+Dann beobachten wir in einer
+Sandbox Modelle in Echtzeit beim
+
+8
+00:00:24,575 --> 00:00:25,930
+Verlustdienst-Abstieg.
+
+9
+00:00:27,780 --> 00:00:30,530
+Zum Schluss widmen wir uns
+dem Messen der Modellleistung
+
+10
+00:00:30,530 --> 00:00:31,870
+außerhalb des Trainingskontexts.
+
+11
+00:00:33,650 --> 00:00:36,037
+Sehen wir uns zuerst an,
+was ein ML-Modell ist und
+
+12
+00:00:36,037 --> 00:00:37,750
+wo sich Parameter einreihen.
+
+13
+00:00:40,014 --> 00:00:45,260
+ML-Modelle sind mathematische Funktionen
+mit Parametern und Hyperparametern.
+
+14
+00:00:45,260 --> 00:00:48,880
+Parameter sind reellwertige Variablen,
+die sich während des Trainings ändern.
+
+15
+00:00:50,210 --> 00:00:52,966
+Hyperparameter sind vor dem
+Training festgelegte und danach
+
+16
+00:00:52,966 --> 00:00:54,583
+unveränderliche Einstellungen.
+
+17
+00:00:56,672 --> 00:00:58,976
+Wie im vorherigen Modul erwähnt,
+
+18
+00:00:58,976 --> 00:01:03,010
+waren lineare Modelle eine der
+ersten Arten von ML-Modellen.
+
+19
+00:01:03,010 --> 00:01:06,600
+Auch heute sind sie noch eine
+wichtige und viel genutzte Modellklasse.
+
+20
+00:01:08,660 --> 00:01:12,030
+In linearen Modellen führen kleine
+Änderungen an unabhängigen Variablen
+
+21
+00:01:12,030 --> 00:01:14,570
+oder Features, wie wir sie
+im ML-Kontext nennen, zum
+
+22
+00:01:14,570 --> 00:01:17,770
+gleichen Änderungsausmaß in
+der abhängigen Variable oder dem Label.
+
+23
+00:01:17,770 --> 00:01:20,430
+Das ist unabhängig vom Ort
+der Änderung in der Eingabe.
+
+24
+00:01:21,640 --> 00:01:24,271
+Visuell sieht das wie
+eine Linie im 2D-Raum aus.
+
+25
+00:01:24,271 --> 00:01:28,284
+Die für die Modellierung der Beziehung
+verwendete Formel ist einfach y = mx + b.
+
+26
+00:01:28,774 --> 00:01:31,891
+"m" steht dabei für das
+Änderungsausmaß in unserem Label aufgrund
+
+27
+00:01:31,891 --> 00:01:34,179
+einer kleinen Änderung in unserem Feature.
+
+28
+00:01:36,430 --> 00:01:40,630
+Dieses Konzept einer Beziehung, die durch
+eine feste Verhältnisänderung zwischen
+
+29
+00:01:40,630 --> 00:01:44,580
+Labels und Features definiert ist, ist
+auf eine beliebig hohe Dimensionalität
+
+30
+00:01:44,580 --> 00:01:47,710
+erweiterbar, und zwar im
+Hinblick auf Ein- und Ausgaben.
+
+31
+00:01:47,710 --> 00:01:51,990
+Somit können wir Modelle erstellen, die
+mehr Features als Eingabe unterstützen,
+
+32
+00:01:51,990 --> 00:01:54,870
+mehrere Labels
+gleichzeitig modellieren oder beides.
+
+33
+00:01:56,370 --> 00:01:59,642
+Ist die Eingabedimensionalität
+höher, muss der Steigungsterm "m"
+
+34
+00:01:59,820 --> 00:02:02,140
+n-dimensional werden.
+
+35
+00:02:02,150 --> 00:02:03,880
+Dieser neue Term ist die Gewichtung.
+
+36
+00:02:05,520 --> 00:02:09,530
+Visuell ergibt der Prozess
+eine n-dimensionale Verallgemeinerung
+
+37
+00:02:09,530 --> 00:02:12,709
+einer Linie, genannt
+Hyperebene, wie rechts abgebildet.
+
+38
+00:02:14,240 --> 00:02:17,340
+Ich gehe hier nicht ins Detail,
+aber bei höherer Dimensionalität
+
+39
+00:02:17,340 --> 00:02:22,640
+der Ausgaben müssen y und c
+zweidimensionale Vektoren werden.
+
+40
+00:02:24,760 --> 00:02:29,460
+Der b-Term wird unabhängig davon, ob
+Skalar oder Vektor, Bias-Term genannt.
+
+41
+00:02:29,460 --> 00:02:33,280
+Die Verwendung eines linearen Modells
+für die Regression sollte intuitiv sein.
+
+42
+00:02:33,280 --> 00:02:38,510
+Anhand der Formel b plus m
+mal x erhält man die Vorhersage y.
+
+43
+00:02:38,510 --> 00:02:42,040
+Doch wie kann ein lineares Modell
+für die Klassifizierung verwendet werden?
+
+44
+00:02:42,040 --> 00:02:45,490
+Wie wird eine fortlaufende
+Nummer als Klasse interpretiert?
+
+45
+00:02:47,300 --> 00:02:50,830
+Um aus der numerischen Ausgabe
+unseres Modells eine Klasse zu machen,
+
+46
+00:02:50,830 --> 00:02:53,819
+müssen wir uns der Codierung
+der Klassenmitgliedschaft widmen.
+
+47
+00:02:54,920 --> 00:02:58,380
+Eine Binärmethode ist hier
+die einfachste Codierungsoption.
+
+48
+00:02:58,380 --> 00:02:59,840
+Man ist Mitglied oder nicht.
+
+49
+00:03:01,310 --> 00:03:05,790
+Kategorievariablen können natürlich
+oftmals mehr als zwei Werte haben.
+
+50
+00:03:05,790 --> 00:03:07,520
+Der Ansatz funktioniert trotzdem.
+
+51
+00:03:07,520 --> 00:03:10,480
+Jeder Wert wird als eigene,
+unabhängige Klasse interpretiert.
+
+52
+00:03:11,700 --> 00:03:15,600
+Bleiben wir jetzt aber bei
+einer einzigen Binärklasse.
+
+53
+00:03:15,600 --> 00:03:18,810
+Mit der Feature-Darstellung
+befassen wir uns im dritten Kurs.
+
+54
+00:03:20,230 --> 00:03:23,820
+Bei Annahme dieser Label-Darstellung
+wird die Aufgabe leichter zu verwalten.
+
+55
+00:03:24,880 --> 00:03:28,880
+Nun müssen wir unsere Linie auf
+eine Binärklassifikationsregel abbilden.
+
+56
+00:03:30,360 --> 00:03:34,100
+Eine einfache Option hierfür ist die
+Berücksichtigung des Zeichens der Ausgabe.
+
+57
+00:03:35,170 --> 00:03:38,530
+Grafisch sieht das aus, als hätten
+wir unsere Grafik in zwei Bereiche
+
+58
+00:03:38,530 --> 00:03:42,040
+unterteilt: die Punkte über
+der Linie und die Punkte darunter.
+
+59
+00:03:42,040 --> 00:03:43,850
+Die Linie ist die Entscheidungsgrenze,
+
+60
+00:03:43,850 --> 00:03:47,180
+die unsere Entscheidung über
+Klassenanfang und -ende widerspiegelt.
+
+61
+00:03:48,500 --> 00:03:49,410
+Wichtig ist,
+
+62
+00:03:49,410 --> 00:03:53,330
+dass die Entscheidungslinie nicht nur für
+die aktuellen Daten aussagekräftig sein
+
+63
+00:03:53,330 --> 00:03:55,820
+soll, sondern auch
+prädiktiv für unbekannte Daten.
+
+64
+00:03:57,030 --> 00:04:00,820
+Diese Eigenschaft der Ausdehnung auf
+unbekannte Daten wird Generalisierung
+
+65
+00:04:00,820 --> 00:04:02,830
+genannt und ist essenziell für ML-Modelle.
+
+66
+00:04:02,830 --> 00:04:06,160
+Mit der Generalisierung befassen wir
+uns im nächsten Modul eingehender.
+
+67
+00:04:08,140 --> 00:04:11,400
+ML nur in der Theorie näher zu
+erkunden, kann ziemlich trocken sein.
+
+68
+00:04:11,400 --> 00:04:14,920
+Sprechen wir also über ein wichtiges
+Problem, das ein Kandidat für ML wäre,
+
+69
+00:04:14,920 --> 00:04:17,160
+und darüber,
+wie es formuliert werden kann.

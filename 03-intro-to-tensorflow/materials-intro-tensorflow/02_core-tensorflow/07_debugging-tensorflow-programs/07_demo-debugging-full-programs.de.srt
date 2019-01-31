@@ -1,0 +1,360 @@
+1
+00:00:00,000 --> 00:00:03,735
+Ich habe jetzt das GitHub-
+Repository des Kurses geöffnet.
+
+2
+00:00:03,735 --> 00:00:06,270
+Ich bin in 03_TensorFlow,
+
+3
+00:00:06,270 --> 00:00:08,189
+das ist unser aktuelles Kursthema.
+
+4
+00:00:08,189 --> 00:00:10,900
+Jetzt öffne ich debug_demo.
+
+5
+00:00:10,900 --> 00:00:14,505
+Schauen wir uns ein paar Sachen an,
+
+6
+00:00:14,505 --> 00:00:16,885
+die wir gerade besprochen haben.
+
+7
+00:00:16,885 --> 00:00:21,505
+Ich importiere also schnell TensorFlow.
+
+8
+00:00:21,505 --> 00:00:23,350
+Hier ist ein erstes Beispiel,
+
+9
+00:00:23,350 --> 00:00:24,550
+das wir erörtert haben.
+
+10
+00:00:24,550 --> 00:00:27,350
+Wir haben ein Slicing
+der Daten durchgeführt.
+
+11
+00:00:27,350 --> 00:00:31,670
+Wir haben alle Datenzeilen
+und zwei der Spalten erhalten.
+
+12
+00:00:31,670 --> 00:00:34,895
+Bei c haben wir alle Zeilen,
+aber nur eine Spalte erhalten.
+
+13
+00:00:34,895 --> 00:00:37,025
+Wenn wir jetzt a und c addieren,
+
+14
+00:00:37,025 --> 00:00:39,415
+wird ein ShapeError generiert.
+
+15
+00:00:39,415 --> 00:00:41,560
+Das passiert genau hier.
+
+16
+00:00:41,560 --> 00:00:48,070
+Am Ende des Stacktrace
+sehen Sie die Fehlermeldung
+
+17
+00:00:48,070 --> 00:00:49,670
+Es wird ein ValueError angezeigt.
+
+18
+00:00:49,670 --> 00:00:51,380
+Die Dimensionen sind nicht gleich,
+
+19
+00:00:51,380 --> 00:00:52,470
+sondern 2 und 4.
+
+20
+00:00:52,470 --> 00:00:55,805
+Nummer Eins ist ein 2D-Tensor mit 4,2.
+
+21
+00:00:55,805 --> 00:00:58,595
+Nummer Zwei ist ein 1D-Tensor mit 4.
+
+22
+00:00:58,595 --> 00:01:03,470
+Weiter oben im Stacktrace
+sehen Sie genau das hier:
+
+23
+00:01:03,470 --> 00:01:05,910
+common_shapes.python gehört nicht zu uns.
+
+24
+00:01:05,910 --> 00:01:07,605
+Das ist irgendwo in TensorFlow.
+
+25
+00:01:07,605 --> 00:01:08,910
+Wir können es ignorieren.
+
+26
+00:01:08,910 --> 00:01:10,655
+Auch dies hier ist in TensorFlow
+
+27
+00:01:10,655 --> 00:01:11,955
+und kann ignoriert werden.
+
+28
+00:01:11,955 --> 00:01:13,255
+Dasselbe gilt für das hier.
+
+29
+00:01:13,255 --> 00:01:15,775
+Und auch das ist TensorFlow.
+
+30
+00:01:15,775 --> 00:01:20,140
+All dies ist TensorFlow
+und kann ignoriert werden.
+
+31
+00:01:20,140 --> 00:01:25,480
+Ich gehe weiter nach oben,
+bis ich etwas in meinem Code finde.
+
+32
+00:01:25,480 --> 00:01:28,640
+Hier ist some_method in meinem Code.
+
+33
+00:01:28,640 --> 00:01:31,870
+Die Methode lautet s = (a + c).
+
+34
+00:01:31,870 --> 00:01:33,885
+Hier ist das Problem markiert.
+
+35
+00:01:33,885 --> 00:01:37,020
+Dies hier wird von session.run aufgerufen,
+
+36
+00:01:37,020 --> 00:01:41,075
+aber wir ignorieren das,
+da das Problem bei s = (a + c) liegt.
+
+37
+00:01:41,075 --> 00:01:44,505
+Finden wir also heraus,
+wo der ValueError aufgetreten sein könnte.
+
+38
+00:01:44,505 --> 00:01:48,500
+Schauen wir es uns an.
+Wir finden s = (a + c). Okay.
+
+39
+00:01:48,500 --> 00:01:50,335
+Wenn man zwei Dinge addiert,
+
+40
+00:01:50,335 --> 00:01:53,015
+dann besagen 
+die Regeln der linearen Algebra,
+
+41
+00:01:53,015 --> 00:01:56,120
+dass die Form von zwei
+addierten Tensoren identisch sein muss.
+
+42
+00:01:56,120 --> 00:01:57,380
+Sonst geht es nicht.
+
+43
+00:01:57,380 --> 00:01:59,415
+Jetzt können wir versuchen,
+
+44
+00:01:59,415 --> 00:02:01,845
+den Fehler zu beheben.
+
+45
+00:02:01,845 --> 00:02:08,794
+Ich mache also Folgendes:
+Ich erstelle fake data oder Testdaten.
+
+46
+00:02:08,794 --> 00:02:10,770
+Ich füge diese fake data
+
+47
+00:02:10,770 --> 00:02:12,500
+in meine Matrix ein.
+
+48
+00:02:12,500 --> 00:02:14,090
+Wie ist die Form?
+
+49
+00:02:14,090 --> 00:02:15,815
+Es ist eine 4x3-Matrix.
+
+50
+00:02:15,815 --> 00:02:23,605
+Ich füge sie ein und rufe mit print
+die Form von a und von c ab.
+
+51
+00:02:23,605 --> 00:02:25,865
+Jetzt führe ich diese Zelle aus.
+
+52
+00:02:25,865 --> 00:02:29,000
+Wenn ich diese Zelle ausführe, sehe ich:
+
+53
+00:02:29,000 --> 00:02:33,320
+die Form von a ist 4,2
+und die Form von c ist 4.
+
+54
+00:02:33,320 --> 00:02:36,630
+Damit weiß ich, worin das Problem lag.
+
+55
+00:02:36,630 --> 00:02:39,680
+Wie kann ich nun das Problem beheben?
+
+56
+00:02:39,680 --> 00:02:41,565
+Sie können das Problem beheben,
+
+57
+00:02:41,565 --> 00:02:44,450
+indem Sie dafür sorgen,
+dass beide dieselbe Form haben.
+
+58
+00:02:44,450 --> 00:02:48,570
+Ich habe hier 0:2 in der
+ersten Instanz und hier 1:3.
+
+59
+00:02:48,570 --> 00:02:50,425
+Es ist also ein Schiebefenster,
+
+60
+00:02:50,425 --> 00:02:51,495
+jedes Mal mit 1.
+
+61
+00:02:51,495 --> 00:02:56,140
+Bei Bildern spricht man auch
+vom "Schreiten" oder "dem Schritt".
+
+62
+00:02:56,150 --> 00:02:59,470
+Der Schritt ist 1 und
+meine Fenstergröße ist 2.
+
+63
+00:02:59,470 --> 00:03:01,150
+Das ist genau, was ich tue.
+
+64
+00:03:01,150 --> 00:03:04,260
+Wenn ich es jetzt ausführe,
+sollte es perfekt funktionieren.
+
+65
+00:03:04,260 --> 00:03:08,800
+Ich sollte die Summe erhalten,
+die das Ergebnis des Schiebefensters ist.
+
+66
+00:03:08,800 --> 00:03:13,315
+Mit diesem Verfahren
+können Sie Ihren Code korigieren.
+
+67
+00:03:13,315 --> 00:03:15,270
+Prüfen Sie den Calltrace,
+
+68
+00:03:15,270 --> 00:03:16,745
+lesen Sie die Fehlermeldung,
+
+69
+00:03:16,745 --> 00:03:19,780
+finden Sie das Problem
+und wenn Sie es gefunden haben,
+
+70
+00:03:19,780 --> 00:03:23,165
+beheben Sie es und
+prüfen Sie es gegen Ihre Testdaten.
+
+71
+00:03:23,165 --> 00:03:26,805
+Prüfen Sie dann, ob es auch
+mit Ihrem vollen Datensatz funktioniert.
+
+72
+00:03:26,805 --> 00:03:28,305
+Was es hoffentlich tut.
+
+73
+00:03:28,305 --> 00:03:31,450
+Wir haben auch über Typfehler gesprochen.
+
+74
+00:03:31,450 --> 00:03:33,460
+Der Prozess ist genau derselbe.
+
+75
+00:03:33,460 --> 00:03:35,555
+In diesem Fall addiere ich a + b.
+
+76
+00:03:35,555 --> 00:03:38,285
+a besteht aus Gleitkommazahlen,
+
+77
+00:03:38,285 --> 00:03:40,029
+b sind Ganzzahlen.
+
+78
+00:03:40,029 --> 00:03:41,245
+Das funktioniert nicht.
+
+79
+00:03:41,245 --> 00:03:44,840
+Ich prüfe also den Stacktrace
+und schaue mir die Fehlermeldung an.
+
+80
+00:03:44,840 --> 00:03:47,975
+Ich sehe, dass ich den Fehler
+beispielsweise beheben kann,
+
+81
+00:03:47,975 --> 00:03:52,470
+indem ich die Ganzzahlen von b umwandle.
+
+82
+00:03:52,470 --> 00:03:54,215
+Wenn ich den Datentyp umwandle,
+
+83
+00:03:54,215 --> 00:03:57,260
+dann funktioniert es,
+und das ist die Grundidee hier.

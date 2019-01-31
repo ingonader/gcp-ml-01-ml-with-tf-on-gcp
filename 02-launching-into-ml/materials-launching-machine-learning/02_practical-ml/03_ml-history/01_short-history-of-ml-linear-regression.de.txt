@@ -1,0 +1,103 @@
+Gehen wir auf eine kurze Reise durch die
+Geschichte des maschinellen Lernens um zu sehen, wie sich daraus mit der Zeit neuronale Deep-Learning-Netze entwickelt
+haben, die heute so beliebt sind. Obwohl neuronale Netze während der letzten Jahrzehnte 
+mal "in" und mal "out" waren, lassen sich die für andere Algorithmen
+entwickelten Tricks und Techniken auf neuronale Deep-Learning-Netze anwenden, wodurch sie sehr leistungsstark werden. Lineare Regression wurde zur
+Vorhersage der Bewegung von Planeten und der Größe von Erbsenhülsen
+basierend auf ihrem Aussehen entwickelt. Sir Francis Galton
+war ein Pionier des Einsatzes von statistischen Methoden zum
+Messen natürlicher Phänomene. Er betrachtete Daten zur
+relativen Größe von Eltern und Kindern verschiedener Spezies,
+einschließlich bestimmter Erbsen. Er beobachtete etwas, das nicht sofort ins
+Auge fällt, etwas wirklich Merkwürdiges. Natürlich haben überdurchschnittlich große
+Eltern eher übernormal große Kinder, aber wie viel größer ist das Kind als der
+Durchschnitt der Kinder dieser Generation? Es zeigte sich, dass dieses Verhältnis für
+die Nachkommen geringer ist als das entsprechende
+Verhältnis für die Eltern. Wenn die Elterngröße
+1,5 Standardabweichung vom Mittelwert ist, innerhalb der eigenen Generation, dann sagte er eine
+Nachkommengröße von weniger als 1,5 Standardabweichungen vom
+Mittelwert in deren Generation voraus. Wir sagen,
+dass von Generation zu Generation die Dinge in der Natur rückläufig werden oder zum Mittelwert zurückkehren. Daher der Name lineare Regression. Diese Tabelle hier von 1877 ist die erste lineare Regression
+überhaupt. Ganz schön cool. Die Rechenleistung im 19. Jahrhundert
+war doch recht begrenzt, sodass ihnen damals
+nicht bewusst war, wie gut das auch noch mit großen
+Datasets funktionieren würde. Es gab tatsächlich eine geschlossene Form
+der Lösung für die lineare Regression, aber auch das Gradientenverfahren
+kann verwendet werden, jedes mit Vor- und Nachteilen, je nach Ihrem Dataset. Nehmen wir die Funktionsweise
+der linearen Regression unter die Lupe. Wir gehen etwas genauer ins Detail, um die Beweggründe in Bezug auf die
+lineare Regression zu verstehen. Beginnen wir mit einer linearen Gleichung,
+die vermutlich unser System beschreibt, indem wir Gewichtungen mit beobachteten
+Merkmalvektoren multiplizieren und dann alles zusammenzählen. Wir können das in dieser Gleichung für
+jedes Beispiel unseres Datasets zeigen, y=w0 × x0 + w1 × x1 + w2 × x2 und so weiter für jedes
+Merkmal in unserem Modell. Sprich: Wir wenden die Gleichung auf
+jede Zeile in unserem Dataset an, wo die Gewichtungswerte
+festgesetzt sind und die Merkmalwerte aus
+jeder zugehörigen Spalte in unserem ML-Dataset stammen. Dies lässt sich gut in die
+folgende Matrixgleichung packen: y = x × w. Diese
+Hypothesengleichung ist sehr wichtig, nicht nur für lineare Regression, sondern auch für andere ML-Modelle, wie neuronale Deep-Learning-Netze,
+auf die wir später noch eingehen. Wie erkennt man, ob die Gewichtungen
+gute oder schlechte Schätzungen liefern? Die Antwort lautet: Wir müssen
+eine Verlustfunktion erstellen, die an sich einfach eine objektive
+Funktion ist, die wir optimieren möchten. Wie bereits erklärt, ist bei
+Regressionsproblemen normalerweise die Verlustfunktion die
+mittlere quadratische Abweichung, die in dieser Gleichung
+als Matrix dargestellt ist. Ich lasse die Konstante weg, da sie
+später in der Ableitung verschwindet. Zuerst suchen wir den Unterschied zwischen
+dem Wert der tatsächlichen Zielantwort und dem Wert unseres
+vorausgesagten Labels, y mit Hut × w, was einfach X × w ist.
+Beachten Sie aber, dass es mein Ziel ist, den Verlust
+so weit wie möglich zu verringern. Ich muss also
+herausfinden, wie ich ihn bezüglich der
+Gewichtungen minimieren kann. Dafür nehme ich die Ableitung
+in Bezug auf die Gewichtungen, im eindimensionalen Fall oder allgemeiner die Steigung,
+wenn ich mehrere Merkmale habe. Damit kann ich dann
+das globale Minimum finden. Die Gleichung hier,
+ich gehe nicht auf die Ableitung ein, liefert eine geschlossene analytische
+Lösung für lineare Regression. Das heißt, wenn man
+die x- und y-Werte in die Formel einsetzt, erhält man die Werte für die Gewichtungen. Das ist aber nicht sehr praktisch. Es gibt Probleme mit der Inverse. Wir gehen zuerst davon aus, dass die
+Grand-Matrix, X transponiert X, nicht singulär ist, also dass alle Spalten unserer
+Merkmalsmatrix X linear unabhängig sind. Aber in Datasets kommen häufig doppelte oder
+nahezu doppelte Daten vor. Dieselben Kunden
+kaufen dasselbe Produkt wieder, zwei Fotos zeigen denselben
+Sonnenuntergang im Abstand von Sekunden. Selbst wenn die Grand-Matrix
+technisch linear unabhängig ist, könnte sie trotzdem
+schlecht konditioniert sein, wodurch sie
+für die Berechnung singulär wird und uns weiterhin Probleme macht. Die Inverse hat außerdem
+Zeitkomplexität O(n) hoch drei, bei Verwendung des naiven Algorithmus, wird aber mit komplexen
+Algorithmen nicht viel besser. Und die haben an sich schon
+einige numerische Probleme. Dasselbe gilt sogar für die Multiplikation
+zur Erzeugung der Grand-Matrix. Stattdessen könnten wir zur Lösung der normalen Gleichungen eine Cholesky- oder QR-Zerlegung verwenden. Für O(n) hoch drei
+oder sogar O(n) hoch 2,5, wenn n gleich 10.000 oder mehr ist, kann der Algorithmus sehr langsam sein. Ja, man kann mit der normalen Gleichung
+genau auf die Gewichtungen auflösen, das ist aber sehr von den Daten abhängig, vom Modell, von den Matrixalgorithmen der linearen Algebra,
+die Sie verwenden, usw. Zum Glück gibt es das Gradientenverfahren als
+Optimierungsalgorithmus, das erstens weniger Kosten- und Zeitaufwand
+für die Berechnung erfordert, zweitens abänderungsfähiger für
+milde Generalisierung und drittens allgemein genug ist, um bei den
+meisten Problemen zu funktionieren. Stattdessen haben wir
+beim Gradientenverfahren unsere Verlustfunktion, oder allgemeiner,
+unsere objektive Funktion, die von den Gewichtungen
+unseres Modells parameterisiert ist. In diesem Raum gibt es Hügel und Täler, genau wie auf der Erde. In vielen Problemen des
+maschinellen Lernens gibt es aber viel mehr Dimensionen als die dreidimensionale,
+räumliche Welt, in der wir leben. Da dies das Verfahren
+des steilsten Abstiegs ist, Minimierung in Richtung des negativen
+Gradienten, nicht des positiven Gradienten, was eine Maximierung wäre, möchten wir die
+Verlust-Hyperebene durchlaufen und das globale Minimum suchen. Sprich: Wir hoffen,
+das niedrigste Tal zu finden, unabhängig von unserem
+Startpunkt auf der Hyperebene. Dazu suchen wir den
+Gradienten der Verlustfunktion und multiplizieren ihn
+mit einem Hyperparameter, Lernrate, und ziehen diesen Wert
+dann von den aktuellen Gewichtungen ab. Dies wird iteriert bis zur Konvergenz. Das Bestimmen der optimalen Lernrate
+und die vielen Iterationen lassen Sie vielleicht stattdessen
+die Normalgleichung wählen, sofern die Anzahl der Merkmale gering ist, keine Probleme mit Kollinearität bestehen usw. Oder einen Gradientenverfahren-
+Optimierer hinzufügen, wie Momentum, oder eine
+abklingende Lernrate verwenden. Im nächsten Modul werden wir noch
+genau auf das Gradientenverfahren eingehen. Welcher Hyperparameter hilft, die
+Schrittgröße des Gradientenverfahrens entlang der Hyperebene zu finden, um hoffentlich
+die Konvergenz zu beschleunigen? Die richtige Antwort lautet: Lernrate. Die Lernrate zusammen mit anderen Hyperparametern, die Sie
+in den künftigen Modulen kennenlernen, hilft bei der Wahl der Schrittgröße
+beim Gradientenverfahren. Ist sie zu klein, dauert der
+Abstieg zur Konvergenz sehr lang. Ist sie zu groß, kann das Gradientenverfahren
+sogar divergieren und den Verlust mehr und mehr steigern. Die übrigen drei Antworten haben mit
+Kollinearität und Konditionierung zu tun, was uns beim
+Gradientenverfahren nicht kümmert. Anders wäre das bei Verwendung
+der Normalgleichung.

@@ -1,0 +1,311 @@
+1
+00:00:00,000 --> 00:00:03,735
+So here I am in the GitHub repository of the course.
+
+2
+00:00:03,735 --> 00:00:06,270
+And I'm in the 03_TensorFlow,
+
+3
+00:00:06,270 --> 00:00:08,190
+this chapters that we're doing.
+
+4
+00:00:08,190 --> 00:00:10,900
+And let me go ahead and open the debug_demo.
+
+5
+00:00:10,900 --> 00:00:16,885
+And let's look at some of the things that we talked about in the chapter.
+
+6
+00:00:16,885 --> 00:00:21,505
+So here, let me go ahead and import TensorFlow.
+
+7
+00:00:21,505 --> 00:00:24,430
+And here's a first example that we looked at.
+
+8
+00:00:24,430 --> 00:00:29,420
+We had data and we were basically slicing and getting all of the rows of data,
+
+9
+00:00:29,420 --> 00:00:31,670
+and we were getting two of the columns and
+
+10
+00:00:31,670 --> 00:00:34,895
+see we are getting all of the rows but we're getting only one column,
+
+11
+00:00:34,895 --> 00:00:37,025
+and so now when we add a and c,
+
+12
+00:00:37,025 --> 00:00:39,415
+we're going to run into a shape error,
+
+13
+00:00:39,415 --> 00:00:41,570
+and that's exactly what we run into.
+
+14
+00:00:41,570 --> 00:00:48,070
+And you notice that at the very bottom of the stack trace the error message,
+
+15
+00:00:48,070 --> 00:00:49,670
+you get your value error.
+
+16
+00:00:49,670 --> 00:00:51,255
+Dimensions must be equal,
+
+17
+00:00:51,255 --> 00:00:52,470
+but they are two and four.
+
+18
+00:00:52,470 --> 00:00:55,805
+The first one is a 2D tensor for coma two,
+
+19
+00:00:55,805 --> 00:00:58,595
+the second one is a 1D tensor of four.
+
+20
+00:00:58,595 --> 00:01:01,180
+And then when you walk up the stack trace,
+
+21
+00:01:01,180 --> 00:01:03,330
+you'll see that this particular one;
+
+22
+00:01:03,330 --> 00:01:05,910
+common_shapes.python, this is not ours,
+
+23
+00:01:05,910 --> 00:01:07,605
+this is way back in TensorFlow.
+
+24
+00:01:07,605 --> 00:01:08,910
+So we can't ignore it.
+
+25
+00:01:08,910 --> 00:01:11,895
+This one's also in TensorFlow so we can ignore it.
+
+26
+00:01:11,895 --> 00:01:17,255
+As is this, this one is also TensorFlow so is that.
+
+27
+00:01:17,255 --> 00:01:21,060
+So this is all TensorFlow we can keep ignoring it and I'm keeping on
+
+28
+00:01:21,060 --> 00:01:25,480
+scrolling until I find something that's in my code.
+
+29
+00:01:25,480 --> 00:01:27,770
+So there is sum method and that's in
+
+30
+00:01:27,770 --> 00:01:31,870
+my code and there is the method called s equals a plus c,
+
+31
+00:01:31,870 --> 00:01:33,885
+it's pointing out that this is the problem.
+
+32
+00:01:33,885 --> 00:01:36,790
+And this of course gets called from session that
+
+33
+00:01:36,790 --> 00:01:39,695
+run but we're going ignore that because that's the problem here,
+
+34
+00:01:39,695 --> 00:01:41,850
+s equals a plus c. So let's go ahead and
+
+35
+00:01:41,850 --> 00:01:44,505
+look at this and say where could the value error have happened.
+
+36
+00:01:44,505 --> 00:01:48,500
+And we go in and we say s equals a plus c all right, right.
+
+37
+00:01:48,500 --> 00:01:53,015
+If you're adding two things and we know that according to linear algebra rules,
+
+38
+00:01:53,015 --> 00:01:56,120
+when we added two tensors they have to have the exact same shape,
+
+39
+00:01:56,120 --> 00:01:57,380
+that's the only way it works.
+
+40
+00:01:57,380 --> 00:02:01,845
+So now we can go ahead and try to fix it.
+
+41
+00:02:01,845 --> 00:02:08,795
+So in this case what I'm doing is I'm going to go ahead and create fake data,
+
+42
+00:02:08,795 --> 00:02:12,150
+I'm passing in my fake data that is my,
+
+43
+00:02:12,150 --> 00:02:14,090
+what is the shape here?
+
+44
+00:02:14,090 --> 00:02:15,815
+It's a four by three matrix.
+
+45
+00:02:15,815 --> 00:02:23,605
+I'm passing it in and I'm passing going ahead and getting s shape printing out c shape.
+
+46
+00:02:23,605 --> 00:02:25,865
+And now let me go ahead and run this cell.
+
+47
+00:02:25,865 --> 00:02:27,430
+And when I run the cell,
+
+48
+00:02:27,430 --> 00:02:33,440
+I basically get that the shape of a is four coma two and the shape of c is four and
+
+49
+00:02:33,440 --> 00:02:35,860
+that tells me okay I now know what was
+
+50
+00:02:35,860 --> 00:02:39,680
+a problem and then question becomes how do I fix it?
+
+51
+00:02:39,680 --> 00:02:41,565
+And the way that you would fix it,
+
+52
+00:02:41,565 --> 00:02:44,450
+is to basically make sure that both of these are the same shape.
+
+53
+00:02:44,450 --> 00:02:47,590
+So I might get 0-2 in the first instance,
+
+54
+00:02:47,590 --> 00:02:49,840
+and 1-3, in other words the sliding window,
+
+55
+00:02:49,840 --> 00:02:51,495
+we are removing the one each time.
+
+56
+00:02:51,495 --> 00:02:53,620
+The stride, when we talk about
+
+57
+00:02:53,620 --> 00:02:56,150
+images you will basically learn about this term ''the stride''.
+
+58
+00:02:56,150 --> 00:02:59,470
+The stride is one and the size of my window is two.
+
+59
+00:02:59,470 --> 00:03:01,150
+So that's exactly what I'm doing.
+
+60
+00:03:01,150 --> 00:03:02,620
+And now when I run it,
+
+61
+00:03:02,620 --> 00:03:05,220
+it should work perfectly and I basically get
+
+62
+00:03:05,220 --> 00:03:08,800
+back the sum that is a result of the sliding window.
+
+63
+00:03:08,800 --> 00:03:13,315
+So that is essentially the process that you go through to debug your code.
+
+64
+00:03:13,315 --> 00:03:15,270
+Read the call trace,
+
+65
+00:03:15,270 --> 00:03:16,745
+read the error message,
+
+66
+00:03:16,745 --> 00:03:19,780
+find out where problem is and having found out the problem,
+
+67
+00:03:19,780 --> 00:03:23,165
+fix it, make sure that it works on your fake data.
+
+68
+00:03:23,165 --> 00:03:28,265
+And then you can try it back on your full large data set and hopefully everything works.
+
+69
+00:03:28,265 --> 00:03:33,460
+Similarly, we talked about a type error and that's exactly the same process.
+
+70
+00:03:33,460 --> 00:03:35,555
+In this case, I'm adding a and b,
+
+71
+00:03:35,555 --> 00:03:38,285
+a is basically floating point numbers,
+
+72
+00:03:38,285 --> 00:03:40,029
+b is basically integers,
+
+73
+00:03:40,029 --> 00:03:41,245
+it's not going to work.
+
+74
+00:03:41,245 --> 00:03:43,490
+And then I'm going to go ahead and look at these [inaudible] ,
+
+75
+00:03:43,490 --> 00:03:46,825
+look at the error message and learn that in order to fix it,
+
+76
+00:03:46,825 --> 00:03:52,470
+one way would be to take b which is originally just integers and go ahead and do a cast.
+
+77
+00:03:52,470 --> 00:03:53,945
+And we're going to do the cast,
+
+78
+00:03:53,945 --> 00:03:57,260
+things will work, and that is the basic idea here.

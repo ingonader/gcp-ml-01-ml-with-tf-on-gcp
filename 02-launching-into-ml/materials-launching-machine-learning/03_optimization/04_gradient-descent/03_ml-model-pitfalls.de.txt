@@ -1,0 +1,83 @@
+In der Praxis kommt es häufig vor, dass man einen fertigen
+Modellcode erneut ausführt und erwartet, dass er dasselbe Ergebnis 
+erbringt, was aber nicht eintritt. Programmierer sind daran gewöhnt,
+in vorbestimmten Umgebungen zu arbeiten. Im ML ist das teilweise nicht so. Viele Modelle erzeugen
+bei der zweiten Ausführung abweichende Parameter. 
+Selbst mit denselben Hyperparametern kann das Ergebnis völlig anders ausfallen. Dies wirkt im ersten Moment befremdlich. Suchen wir nicht nach
+den bestmöglichen Parametern? Bedeutet das, dass der 
+Gradientenabstieg nicht funktioniert oder falsch umgesetzt wurde? Nicht unbedingt. Es kann bedeuten, dass wir statt einer 
+Verlustoberfläche wie links im Bild Verlustoberflächen 
+wie rechts im Bild untersuchen. Beachten Sie, dass die Verlustoberfläche 
+links einen einzigen Boden hat, während die rechte mehrere hat. Der formale Name für 
+diese Eigenschaft ist Konvexität. Links haben wir 
+eine konvexe Fläche, rechts nicht. Warum hat die Verlustoberfläche 
+eines ML-Modells mehr als ein Minimum? Es bedeutet, dass es eine 
+Reihe von Punkten im Parameterraum gibt, die vollständig oder fast äquivalent sind. Also Einstellungen für 
+unsere Parameter, die Modelle mit derselben Vorhersagekraft erzeugen. Wir gehen später noch darauf ein, wenn wir neuronale Netzwerke besprechen, denn diese sind ein 
+gutes Beispiel dafür. Das muss jetzt 
+noch nicht ganz klar sein. Merken Sie sich im Moment nur, dass Verlustdienste je nach Anzahl 
+der vorhandenen Minima variieren. Manchmal ist schnell 
+einfach nicht schnell genug. Niemand wartet gerne 
+auf den Abschluss des Modelltrainings. Gibt es eine Möglichkeit, 
+das Modelltraining zu beschleunigen? Ja. Aber um die 
+verfügbaren Optionen zu verstehen, muss man die übergeordneten Schritte des Algorithmus betrachten, 
+und was daran Zeit kostet. Hier sehen Sie die drei Hauptschritte, 
+die unser Algorithmus durchlaufen muss. Wenn wir eine Ableitung berechnen, sind die Kosten 
+der Berechnung proportional zur Anzahl der Datenpunkte
+in unserer Verlustfunktion sowie zur Anzahl der 
+Parameter in unserem Modell. In der Praxis können Modelle Dutzende 
+bis zu Hunderte Millionen Parameter haben. Genauso können Datensätze einige Tausend
+oder Hunderte Milliarden Punkte haben. Bei der Aktualisierung der Modellparameter geschieht das einmal pro Schleife, wobei die Kosten allein von der 
+Parameteranzahl im Modell abhängen. Die Aktualisierungskosten sind verglichen 
+mit den anderen Schritten oft gering. Abschließend wird der Verlust gemessen. Wie lange dieser Schritt dauert, hängt
+von der Anzahl der Datenpunkte im Set ab, das wir zur Verlustmessung einsetzen,
+und von der Komplexität des Modells. Überraschend ist, dass 
+dieser Ablauf zwar eine Schleife hat, die Verlustmessung aber trotzdem 
+in jedem Durchgang erfolgen muss. Das liegt an den meist inkrementellen
+Änderungen in der Verlustfunktion. Was können wir ändern,
+um die Trainingszeit zu verkürzen? In der Regel steht die Anzahl der 
+betroffenen Parameter eines Modells fest. Wie man das variieren kann, sehen wir
+später im Modul zur Regularisierung. Außerdem mag es verlockend sein, die Anzahl der Datenpunkte zur 
+Verlustmessung zu reduzieren, aber das ist nicht empfehlenswert. Stattdessen gibt es zwei Hauptansätze
+für eine kürzere Trainingszeit. Die Anzahl der Datenpunkte, 
+für die die Ableitung berechnet wird, und die Häufigkeit, 
+mit der wir den Verlust messen. Einer der Ansätze, um das Modelltraining 
+zu beschleunigen, ist wie gesagt die Anzahl der Datenpunkte, 
+für die wir die Ableitung berechnen. Denken Sie daran: Die Ableitung 
+stammt von der Verlustfunktion, die Verlustfunktion setzt die Fehlersumme
+einer Anzahl von Vorhersagen zusammen. Diese Methode reduziert also
+die Anzahl der Datenpunkte, die in jeder Iteration des Algorithmus 
+in die Verlustfunktion eingespeist wird. Denken Sie einen Moment darüber nach, 
+warum das doch funktionieren könnte. Es könnte deshalb funktionieren, weil es möglich ist, 
+Proben aus den Trainingsdaten zu entnehmen, die sich 
+im Durchschnitt gegenseitig ausgleichen. Die Fallstricke der Probennahme und wie 
+man sie umgeht, ist Thema späterer Module. Merken Sie sich für den Moment, dass die Probenstrategie 
+mit einheitlicher Wahrscheinlichkeit aus dem Trainingssatz wählt. Jede Instanz 
+im Trainingssatz hat die gleiche Chance, vom Modell erfasst zu werden. In ML wird diese Praxis der Probenahme aus dem Trainingset während 
+des Trainings Mini-Batching genannt, und diese Variante des Gradientenabstiegs 
+als Mini-Batch-Gradientenabstieg. Die Proben selbst
+werden als Batches bezeichnet. Der Mini-Batch-Gradientenabstieg hat 
+den Vorteil, dass er weniger Zeit kostet, weniger Speicher braucht 
+und einfach zu parallelisieren ist. Kurz am Rande: Vielleicht haben Sie den
+Begriff Batch-Gradientenabstieg gehört. Hier bezieht sich 
+"Batch" auf "Batch-Verarbeitung". Der Batch-Gradientenabstieg berechnet 
+also den Gradienten für das ganze Dataset. Das ist etwas völlig anderes 
+als der Mini-Batch-Gradientenabstieg, um den es hier geht. Verwirrend ist, dass die Mini-Batch-Größe 
+oft nur Batch-Größe genannt wird. So wird sie bei TensorFlow genannt. Daher nennen wir sie auch so. Wenn also ab
+jetzt in diesem Kurs der Begriff "Batch-Größe" fällt, bezieht sich das auf die Probengröße 
+für den Mini-Batch-Gradientenabstieg. Wie groß sollten also 
+diese Mini-Batches sein? Ebenso wie die Lernrate ist die Batch-Größe ein Hyperparameter. Als solcher ist 
+der optimale Wert problemabhängig und wird durch 
+Hyperparameter-Tuning ermittelt. Darüber sprechen wir später. Die Batch-Größe liegt meist 
+zwischen 10 und 100 Beispielen. Genauso wie die Lernrate ist die Batch-Größe ein Hyperparameter. Als solcher ist der
+optimale Wert problemabhängig und wird durch 
+Hyperparameter-Tuning ermittelt. Darüber sprechen wir später. Die Batch-Größe liegt meist 
+zwischen 10 und 1.000 Beispielen. Der andere Weg, auf dem wir 
+das Modelltraining beschleunigen können, ist die Häufigkeit, 
+mit der wir den Verlust messen. Bedenken Sie, dass man zwar den Verlust an
+einer Teilmenge der Daten messen könnte, das wäre aber keine gute Idee. Die Implementierung ist einfach. Wir führen eine Logik ein, mit der die teure Berechnung der
+Verlustfunktion seltener ausgewertet wird. Beliebte Strategien für die zum
+Update vorbereitete Verlustfunktion basieren auf der Zeit und den Schritten. Beispielsweise einmal alle 1.000 Schritte oder einmal alle 30 Minuten. Durch weniger häufige Messungen des Verlusts und die
+Verwendung von Mini-Batching Haben wir begonnen, die beiden Hauptteile 
+des Modelltrainings zu entkoppeln. Das Ändern der Modellparameter und das Überprüfen, 
+ob die Änderungen richtig waren.

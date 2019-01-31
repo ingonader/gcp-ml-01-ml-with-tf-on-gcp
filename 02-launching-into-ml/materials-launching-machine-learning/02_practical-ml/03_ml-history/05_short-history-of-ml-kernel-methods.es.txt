@@ -1,0 +1,75 @@
+En la década de los 90 se creó el campo
+de los métodos de kernel. Corinna Cortes,
+directora de Google Research, fue una de las pioneras. Este campo de estudio usa clases
+interesantes de nuevos modelos no lineales,
+principalmente SVM no lineales, o máquinas de vectores de soporte,
+que son clasificadores de margen máximo. Básicamente, el principio
+de una SVM es una activación no lineal más una salida tipo sigmoide
+para márgenes máximos. Hace poco, vimos
+cómo la regresión logística se usa para crear un límite de decisión
+para maximizar el logaritmo de la verosimilitud
+de las probabilidades de clasificación. En el caso de un límite de decisión
+lineal, en la regresión logística se quiere que cada punto
+y su clase asociada estén tan lejos del hiperplano como sea posible
+y proporciona una probabilidad que se puede interpretar
+como confianza de la predicción. Hay una cantidad infinita
+de hiperplanos que se pueden crear entre dos clases linealmente separables,
+como los dos hiperplanos que se muestran con las líneas punteadas
+en estas dos figuras. En las SVM,
+incluimos dos hiperplanos paralelos en cualquiera de los lados
+del hiperplano del límite de decisión en el que se cruzan con el punto de datos
+más cercano en cada lado del hiperplano. Estos son los vectores de soporte. La distancia entre dos vectores
+de soporte es el margen. A la izquierda, tenemos un hiperplano
+vertical que separa las dos clases. No obstante, el margen
+entre los dos vectores de soporte es pequeño. Si elegimos un hiperplano diferente,
+como el de la derecha, hay un margen mucho más grande. Mientras más amplio el margen,
+más generalizable es el límite de decisión lo que debería conducir
+a un mejor rendimiento de los datos. Por lo tanto, los clasificadores SVM
+buscan maximizar el margen entre los dos vectores de soporte
+mediante una función de pérdida de bisagra
+comparada con la minimización de la regresión logística
+de la entropía cruzada. Notarán que solo tengo dos clases,
+es decir que es un problema de clasificación binaria. A una de las etiquetas de las clases
+se le da el valor de uno y a la etiqueta de la otra clase
+se le da el valor de menos uno. Si hay más de dos clases,
+debería adoptarse el enfoque de uno frente a todos
+y elegir la mejor de las clasificaciones binarias permutadas. Pero, ¿qué pasa si los datos
+no se pueden separar linealmente en las dos clases? La buena noticia es que podemos
+aplicar una transformación kernel que asigna los datos
+del espacio vectorial de entrada a un espacio que ahora tiene atributos
+que se pueden separar linealmente como se muestra en el diagrama. Como antes, durante la aparición
+de las redes neuronales profundas se dedicó mucho tiempo a transformar
+la representación sin procesar de los datos en un vector
+de atributo mediante un mapa de atributos muy ajustado,
+creado por el usuario. No obstante, con los métodos kernel,
+el único elemento definido por el usuario es el kernel,
+solo función de similitud entre pares de puntos en la representación
+sin procesar de los datos. Una transformación kernel es similar a cómo una función de activación
+en las redes neuronales asigna la entrada a la función
+para transformar el espacio. La cantidad de neuronas
+en la capa controla la dimensión. Si tienen dos entradas y tres neuronas,
+están asignando el espacio de la entrada 2D al espacio 3D. Hay muchos tipos de kernels
+y los más básicos son el lineal, el kernel polinomial
+y el de función de base radial gaussiana. Cuando nuestro clasificador binario
+usa el kernel por lo general, calcula una suma
+ponderada de similitudes. ¿Cuándo se debe usar una SVM
+en vez de la regresión logística? Las SVM con kernel tienden a ofrecer
+soluciones más dispersas y, por ende, tienen mejor escalabilidad. Las SVM tienen mejor rendimiento
+cuando hay una gran cantidad de dimensiones y los predictores
+casi con certeza predicen la respuesta. Vimos cómo las SVM usan kernels
+para asignar las entradas a un espacio dimensional de atributos más alto. ¿De qué otra forma también
+se puede asignar a un espacio vectorial de dimensión más alta
+en las redes neuronales? La respuesta correcta es:
+C. Más neuronas por capa. La cantidad de neuronas por capa
+determina en cuántas dimensiones de espacio vectorial se encuentran. Si comienzo
+con tres atributos de entrada estoy en el espacio vectorial R3. Aunque tenga cientos de capas
+pero solo tres neuronas en cada una, seguiré en el espacio vectorial R3
+y solo estoy cambiando la base. Por ejemplo, si uso
+un kernel de BR gaussiana con las SVM, el espacio de entrada se asigna
+a infinitas dimensiones. A. La función de activación
+cambia la base del espacio vectorial pero no agrega ni sustrae dimensiones. Considérenlas como rotaciones,
+estiramientos y compresiones. Es posible que no sean lineales pero se mantienen en el mismo
+espacio vectorial que antes. D. La función de pérdida
+es el objetivo que intentan minimizar. Es un escalar que usa su gradiente
+para actualizar los pesos de los parámetros del modelo. Eso solo cambia cuánto se rota,
+estira y comprime no la cantidad de dimensiones.

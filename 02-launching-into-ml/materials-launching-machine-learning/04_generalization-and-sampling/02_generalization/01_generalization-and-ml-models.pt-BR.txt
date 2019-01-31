@@ -1,0 +1,90 @@
+Vamos começar pela generalização. Ela nos ajuda a saber
+quando o modelo de ML mais preciso nem sempre é a melhor escolha. Mais uma vez, veremos o conhecido
+conjunto de dados de natalidade. Desta vez, usaremos
+o ganho de peso da mãe no eixo X para prever
+a duração da gravidez no eixo Y. O que você nota sobre
+o padrão apresentado nos dados? A correlação
+parece muito clara. Quanto maior o peso,
+mais avançada a gestação. E isso faz sentido, 
+porque o bebê está crescendo. Para moldar esse comportamento
+e provar uma correlação, qual modelo você
+normalmente chamaria primeiro? Se você disse modelo
+de regressão linear, acertou em cheio. Como já resolvemos os
+problemas de regressão, a métrica de perda
+que você quer otimizar costuma ser 
+o erro quadrático médio (MSE) ou a raiz do erro 
+quadrático médio (RMSE). O MSE diz o quanto uma linha de regressão
+está perto de seu conjunto de pontos. Ele faz isso medindo as distâncias entre 
+os pontos e a linha de regressão real. E essas distâncias são
+os erros elevados ao quadrado. E esse cálculo é necessário para
+remover quaisquer sinais negativos. E o MSE também dá mais peso
+a essas diferenças maiores da linha. Calcular a raiz quadrada do MSE
+gera a RMSE que é a distância média de um ponto de dados da linha ajustada
+medida ao longo de uma linha vertical. A RMSE é interpretada diretamente em 
+termos das unidades de medida no eixo Y. Então, é uma medida de adequação 
+e não um coeficiente de correlação. Nas duas medidas de erro, um valor mais baixo indica um
+modelo com melhor desempenho e quanto mais próximo
+o erro estiver de zero, melhor. Aqui, estamos usando
+um modelo de regressão linear que apenas desenha a linha de melhor
+ajuste para minimizar o erro. Nossa RMSE final é 2,224. E, no nosso caso,
+isso é muito bom! Ok, mas veja isto. E se você usasse um
+modelo mais complexo? Esse modelo poderia ter
+mais parâmetros livres. Tais parâmetros
+permitem que capturemos todos os rabiscos nesse conjunto
+de dados, como você pode ver. Ao reduzir nossa RMSE
+em direção a zero, o modelo fica
+totalmente preciso. Tudo certo? Este é o melhor modelo? Podemos colocá-lo
+em produção? Talvez você pense que há
+algo de suspeito no modelo número 2. Mas como podemos afirmar isso? Em ML, muitas vezes temos
+muitos dados e nenhuma intuição. Uma rede neural com 8 nodes
+é melhor do que uma com 12? A rede com 16 nodes tem uma RMSE menor. Devemos escolher essa rede? O exemplo mostrado pode ser
+um polinômio da centésima ordem ou uma rede neural
+com centenas de nodes. Conforme visto no exemplo de espiral, no fim da última aula
+sobre otimização, um modelo mais complexo tem
+mais parâmetros a serem otimizados. Os modelos ajudam a ajustar
+dados mais complexos como a espiral e a memorizar
+conjuntos menores e mais simples. Em que ponto
+dizemos a um modelo: pare de treinar, você está memorizando 
+o conjunto de dados e talvez se ajustando demais? Uma das melhores maneiras de avaliar
+a qualidade de um modelo é ver o desempenho dele com
+um conjunto de dados novo. Depois, podemos ver se esse modelo
+generaliza bem nos novos pontos de dados. É um bom representante para a
+produção de dados do mundo real. Voltemos ao modelo de regressão linear e aos modelos de rede neural
+para ver como eles estão se saindo. O modelo de regressão linear
+nos novos pontos de dados está generalizando muito bem. Nossa RMSE é comparável
+com a que vimos antes e, neste caso, não
+ter surpresas é bom. Queremos um desempenho consistente
+nos modelos em treinamento e validação. Se olharmos de novo o modelo 2,
+veremos que ele não generaliza bem no novo design de treinamento, e isso é muito preocupante. A RMSE pulou
+de 0 para 3,2. Isso é problemático e
+indica que o modelo está se autoajustando demais nos dados de
+treinamento fornecidos e que ele provou ser muito frágil ou
+não generalizável em dados novos. Talvez você se pergunte: como saber se meu modelo
+não está se ajustando demais? Como saber a hora
+de parar o treinamento? E a resposta é muito simples. Nós dividiremos os seus dados. Ao dividir o conjunto de dados original em
+grupos isolados e separados, você pode reprogramar seu modelo, treiná-lo no conjunto
+de dados de treinamento e comparar o desempenho dele em relação a um
+conjunto de dados de validação separado. E os modelos que generalizaram bem terão métricas de perda ou valores de erro
+similares no treinamento e na validação. Assim que notar
+que os modelos não têm um bom desempenho em relação ao conjunto
+de dados de validação, como se as métricas de perda
+aumentassem, é hora de parar. O treinamento e a avaliação
+de modelos de ML tentam encontrar o modelo e os parâmetros
+certos e generalizáveis que se ajustem ao seu conjunto de dados
+de treinamento sem memorização. Como você vê aqui, temos um modelo
+linear muito simples que não se ajusta aos
+relacionamentos verdadeiros com os dados. O resultado ruim é quase
+notado visualmente. Certo? Há alguns pontos fora da
+forma dessa linha de tendência. Chamamos isso de subajuste. No extremo oposto do espectro, está o sobreajuste 
+que é um pouco mais perigoso, como já falamos. Isso é mostrado na extrema direita. Aumentamos muito a 
+complexidade do modelo linear interpretado para
+a enésima ordem polinomial que parece ajudar o modelo e ajustar os dados e todos
+os rabiscos mencionados antes. É aí que o seu conjunto de dados
+de avaliação entra em cena. Você determina se os parâmetros
+do modelo geram um sobreajuste. São complexos demais? E o sobreajuste ou a memorização 
+naqueles dados de treinamento podem ser piores do que
+um modelo que apenas se ajusta aos dados. Às vezes você só
+descobre na produção, foi o que validamos. O nível certo de
+complexidade do modelo fica entre o subajuste e o sobreajuste. Vejamos como usar nosso
+conjunto de dados de validação para saber quando parar
+de treinar e evitar o sobreajuste.

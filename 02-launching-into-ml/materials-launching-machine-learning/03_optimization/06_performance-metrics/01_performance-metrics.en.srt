@@ -1,0 +1,267 @@
+1
+00:00:00,000 --> 00:00:04,610
+In the previous section, we train models in our browsers using grading descent.
+
+2
+00:00:04,610 --> 00:00:06,145
+And the models that we created,
+
+3
+00:00:06,145 --> 00:00:08,920
+were able to learn complex non-linear relationships
+
+4
+00:00:08,920 --> 00:00:11,295
+using a learned hierarchy of features.
+
+5
+00:00:11,295 --> 00:00:13,490
+However, we discovered at the end of
+
+6
+00:00:13,490 --> 00:00:16,165
+the section that our current approach suffers from problems.
+
+7
+00:00:16,165 --> 00:00:19,480
+The consequences of which include things like long training times,
+
+8
+00:00:19,480 --> 00:00:22,370
+suboptimal minima, and inappropriate minima.
+
+9
+00:00:22,370 --> 00:00:26,710
+In this section, we'll review what exactly an inappropriate minimum is,
+
+10
+00:00:26,710 --> 00:00:31,265
+why they exist, and how performance metrics help us get better results.
+
+11
+00:00:31,265 --> 00:00:34,055
+So, what is an inappropriate minimum?
+
+12
+00:00:34,055 --> 00:00:37,910
+You can think of them as points in parameter space that reflect strategies,
+
+13
+00:00:37,910 --> 00:00:39,830
+either that won't generalize well,
+
+14
+00:00:39,830 --> 00:00:43,405
+that don't reflect the true relationship being modeled, or both.
+
+15
+00:00:43,405 --> 00:00:46,250
+For example, say we're training a model to predict
+
+16
+00:00:46,250 --> 00:00:49,960
+whether a parking spot is vacant from an image of the parking lot.
+
+17
+00:00:49,960 --> 00:00:55,765
+One inappropriate strategy will be to simply predict that every space is occupied.
+
+18
+00:00:55,765 --> 00:01:00,225
+With a dataset composed of an equal number of positive and negative examples,
+
+19
+00:01:00,225 --> 00:01:03,775
+such a strategy would never survive the optimization process.
+
+20
+00:01:03,775 --> 00:01:09,045
+However, when datasets are skewed and contain far more of one class than another,
+
+21
+00:01:09,045 --> 00:01:13,305
+then suddenly strategies like this can become much more seductive.
+
+22
+00:01:13,305 --> 00:01:16,550
+Such a strategy doesn't make an effort to understand
+
+23
+00:01:16,550 --> 00:01:19,060
+the true relationship between the features and the label,
+
+24
+00:01:19,060 --> 00:01:21,390
+which we would expect would have something to do with
+
+25
+00:01:21,390 --> 00:01:24,035
+the visual characteristics of an empty space.
+
+26
+00:01:24,035 --> 00:01:26,430
+Consequently, it won't generalize well to
+
+27
+00:01:26,430 --> 00:01:29,900
+new parking lots where the underlying relationship will be the same,
+
+28
+00:01:29,900 --> 00:01:32,955
+but the proportion of vacant spots may not be.
+
+29
+00:01:32,955 --> 00:01:35,470
+It's tempting to think of the existence of
+
+30
+00:01:35,470 --> 00:01:38,460
+inappropriate minima as a problem with our loss function.
+
+31
+00:01:38,460 --> 00:01:40,705
+If only we had the perfect loss function,
+
+32
+00:01:40,705 --> 00:01:44,325
+one that rewarded the truly best strategies and penalize the bad ones,
+
+33
+00:01:44,325 --> 00:01:46,285
+then life would be grand.
+
+34
+00:01:46,285 --> 00:01:49,240
+Sadly, this just is not possible.
+
+35
+00:01:49,240 --> 00:01:52,090
+There will always be a gap between the metrics we care about,
+
+36
+00:01:52,090 --> 00:01:55,595
+and the metrics that work well with gradient descent.
+
+37
+00:01:55,595 --> 00:02:00,705
+For example, let's assume we're still classifying parking spaces.
+
+38
+00:02:00,705 --> 00:02:05,110
+A seemingly perfect loss function would minimize the number of incorrect predictions.
+
+39
+00:02:05,110 --> 00:02:08,235
+However, such a loss function would be piecewise.
+
+40
+00:02:08,235 --> 00:02:12,705
+That is, the range of values it could take would be integers and not real numbers.
+
+41
+00:02:12,705 --> 00:02:15,515
+And surprisingly, this is problematic.
+
+42
+00:02:15,515 --> 00:02:18,810
+The issue boils down to differentiability.
+
+43
+00:02:18,810 --> 00:02:22,245
+Gradient descent makes incremental changes to our weights.
+
+44
+00:02:22,245 --> 00:02:26,770
+This in turn requires that we can differentiate the weights with respect to the loss.
+
+45
+00:02:26,770 --> 00:02:30,170
+Piecewise functions however, have gaps in their ranges.
+
+46
+00:02:30,170 --> 00:02:32,640
+And while TensorFlow can differentiate them,
+
+47
+00:02:32,640 --> 00:02:34,290
+the resulting loss surface will have
+
+48
+00:02:34,290 --> 00:02:38,065
+discontinuities that will make it much more challenging to traverse.
+
+49
+00:02:38,065 --> 00:02:40,380
+So, we need to reframe the problem.
+
+50
+00:02:40,380 --> 00:02:43,670
+Instead of searching for the perfect loss function during training,
+
+51
+00:02:43,670 --> 00:02:47,725
+we're instead going to use a new sort of metric after training is complete.
+
+52
+00:02:47,725 --> 00:02:50,105
+And this new sort of metric will allow us to
+
+53
+00:02:50,105 --> 00:02:54,215
+reject models that have settled into inappropriate minima.
+
+54
+00:02:54,215 --> 00:02:58,590
+Such metrics are called performance metrics.
+
+55
+00:02:58,590 --> 00:03:02,370
+Performance metrics have two benefits over loss functions.
+
+56
+00:03:02,370 --> 00:03:04,755
+Firstly, they're easier to understand.
+
+57
+00:03:04,755 --> 00:03:09,070
+This is because they're often simple combinations of countable statistics.
+
+58
+00:03:09,070 --> 00:03:13,520
+Secondly, performance metrics are directly connected to business goals.
+
+59
+00:03:13,520 --> 00:03:15,545
+This is a sadder point,
+
+60
+00:03:15,545 --> 00:03:17,910
+but it boils down to the fact that while loss and
+
+61
+00:03:17,910 --> 00:03:20,480
+the business goal that is being sought will often agree,
+
+62
+00:03:20,480 --> 00:03:22,275
+they won't always agree.
+
+63
+00:03:22,275 --> 00:03:24,505
+Sometimes, it will be possible to lower loss,
+
+64
+00:03:24,505 --> 00:03:27,620
+or making little progress toward the business goal.
+
+65
+00:03:27,620 --> 00:03:30,655
+We'll review three performance metrics;
+
+66
+00:03:30,655 --> 00:03:33,560
+confusion matrices, precision, and recall,
+
+67
+00:03:33,560 --> 00:03:35,000
+and when you want to use them.

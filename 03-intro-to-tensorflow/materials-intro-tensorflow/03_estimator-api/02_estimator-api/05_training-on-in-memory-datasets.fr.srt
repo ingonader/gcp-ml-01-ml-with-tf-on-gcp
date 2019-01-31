@@ -1,0 +1,226 @@
+1
+00:00:00,000 --> 00:00:03,420
+Passons maintenant aux vraies données
+et laissons de côté les constantes
+
+2
+00:00:03,420 --> 00:00:06,705
+que nous avons utilisées
+pour illustrer l'API Estimator.
+
+3
+00:00:06,705 --> 00:00:08,810
+Si vos données rentrent en mémoire
+
+4
+00:00:08,810 --> 00:00:12,780
+sous la forme de tableaux
+NumPy ou Pandas,
+
+5
+00:00:12,780 --> 00:00:15,740
+l'API Estimator est dotée
+de fonctions pratiques
+
+6
+00:00:15,740 --> 00:00:17,760
+pour les importer dans votre modèle :
+
+7
+00:00:17,760 --> 00:00:23,950
+"estimator.inputs.numpy_input_fn"
+et "estimator.inputs.pandas_input_fn".
+
+8
+00:00:24,420 --> 00:00:27,420
+Vous spécifiez votre dictionnaire
+de caractéristiques sous "x"
+
+9
+00:00:27,420 --> 00:00:31,555
+en reprenant les noms utilisés pour
+définir les colonnes de caractéristiques,
+
+10
+00:00:31,555 --> 00:00:34,265
+et vos libellés sous "y".
+
+11
+00:00:34,395 --> 00:00:36,040
+Lors de la lecture depuis Pandas,
+
+12
+00:00:36,040 --> 00:00:38,800
+ces noms de caractéristiques
+ne sont même pas obligatoires.
+
+13
+00:00:38,800 --> 00:00:43,150
+L'API prendra les colonnes appropriées
+dans le dataframe Pandas en fonction
+
+14
+00:00:43,150 --> 00:00:46,155
+des noms utilisés pour définir
+les colonnes de caractéristiques.
+
+15
+00:00:46,635 --> 00:00:50,010
+Ces fonctions d'entrée implémentent
+les fonctionnalités clés nécessaires
+
+16
+00:00:50,010 --> 00:00:52,485
+pour l'entraînement
+de modèles de réseau de neurones.
+
+17
+00:00:52,485 --> 00:00:57,120
+En général, l'entraînement fonctionne
+mieux lorsqu'une étape est effectuée
+
+18
+00:00:57,120 --> 00:01:02,250
+sur un mini-lot de données d'entrée
+à la fois, et non sur un seul élément
+
+19
+00:01:02,250 --> 00:01:05,285
+de données ni sur tout
+l'ensemble de données.
+
+20
+00:01:05,765 --> 00:01:08,080
+Vous pouvez spécifier ici
+la taille du lot.
+
+21
+00:01:08,080 --> 00:01:12,030
+Vous pouvez aussi indiquer combien de fois
+vous voulez répéter l'ensemble de données
+
+22
+00:01:12,030 --> 00:01:14,840
+pendant l'entraînement,
+c'est-à-dire le nombre d'itérations.
+
+23
+00:01:14,840 --> 00:01:20,100
+Enfin, il est important de bien
+brasser vos données.
+
+24
+00:01:20,100 --> 00:01:23,245
+Vous pouvez demander
+à l'API Estimator de s'en charger.
+
+25
+00:01:23,245 --> 00:01:26,345
+Et pour éviter la réplication
+de l'ensemble de données en mémoire,
+
+26
+00:01:26,345 --> 00:01:30,045
+vous pouvez spécifier la taille
+de la file d'attente de brassage.
+
+27
+00:01:30,565 --> 00:01:34,560
+Par défaut, l'entraînement s'exécute
+jusqu'à ce que vos données d'entraînement
+
+28
+00:01:34,560 --> 00:01:38,840
+soient épuisées, ou épuisées n fois
+si vous spécifiez que vous voulez
+
+29
+00:01:38,840 --> 00:01:40,875
+n itérations dans votre fonction d'entrée.
+
+30
+00:01:41,435 --> 00:01:45,525
+Vous pouvez aussi définir
+un nombre explicite d'étapes
+
+31
+00:01:45,525 --> 00:01:47,775
+lorsque vous appelez
+la fonction d'entraînement.
+
+32
+00:01:47,775 --> 00:01:50,780
+Il existe deux manières
+de définir les étapes.
+
+33
+00:01:50,780 --> 00:01:56,580
+"steps=1000" exécutera 1 000 étapes
+d'entraînement supplémentaires
+
+34
+00:01:56,580 --> 00:01:58,965
+à partir du dernier point de contrôle.
+
+35
+00:01:59,395 --> 00:02:03,210
+Ici, une étape correspond à
+un lot de données d'entrée.
+
+36
+00:02:03,800 --> 00:02:09,315
+"max_steps=1000" recommence
+à partir du dernier point de contrôle,
+
+37
+00:02:09,315 --> 00:02:12,225
+lit le nombre d'étapes atteint
+lors de l'exécution précédente,
+
+38
+00:02:12,225 --> 00:02:15,955
+et continue jusqu'à ce que le nombre
+d'étapes atteigne la valeur "max_steps".
+
+39
+00:02:15,955 --> 00:02:19,755
+Cela peut donc être inefficace si
+le point de contrôle y était déjà arrivé.
+
+40
+00:02:21,065 --> 00:02:24,770
+Voici le code complet avec les colonnes
+de caractéristiques, un modèle,
+
+41
+00:02:24,770 --> 00:02:28,480
+une fonction d'entrée qui lit les données
+à partir du dataframe Pandas,
+
+42
+00:02:28,480 --> 00:02:30,690
+et l'entraînement lui-même.
+
+43
+00:02:31,120 --> 00:02:33,455
+Vous voulez ajouter
+une nouvelle caractéristique,
+
+44
+00:02:33,455 --> 00:02:35,575
+comme le nombre de chambres
+dans la maison ?
+
+45
+00:02:35,680 --> 00:02:38,680
+Vous pouvez l'ajouter à la liste
+de colonnes de caractéristiques
+
+46
+00:02:38,680 --> 00:02:40,256
+et vérifier qu'elle est présente,
+
+47
+00:02:40,256 --> 00:02:42,516
+avec le même nom que
+dans le dataframe Pandas.

@@ -1,0 +1,415 @@
+1
+00:00:00,000 --> 00:00:03,620
+We discussed ML as a process and how Google has adopted
+
+2
+00:00:03,620 --> 00:00:07,955
+several philosophical positions that have been crucial to our ML success.
+
+3
+00:00:07,955 --> 00:00:11,330
+What we haven't done yet is dive into what
+
+4
+00:00:11,330 --> 00:00:15,430
+ML is and how it works. That's what we'll do now.
+
+5
+00:00:15,430 --> 00:00:19,890
+In this module, we'll cover supervised learning which is one branch of
+
+6
+00:00:19,890 --> 00:00:24,460
+machine learning where you give the model labeled examples of what it should learn.
+
+7
+00:00:24,460 --> 00:00:27,420
+A history of ML to survey the algorithms of
+
+8
+00:00:27,420 --> 00:00:32,670
+the last 50 years and to understand why neural networks are so prominent at this moment.
+
+9
+00:00:32,670 --> 00:00:35,810
+Let's start with supervised machine learning.
+
+10
+00:00:35,810 --> 00:00:38,750
+Two of the most common classes of machine learning models are
+
+11
+00:00:38,750 --> 00:00:41,715
+supervised and unsupervised ML models.
+
+12
+00:00:41,715 --> 00:00:44,680
+The key difference is that with supervised models,
+
+13
+00:00:44,680 --> 00:00:46,860
+we have labels or in other words,
+
+14
+00:00:46,860 --> 00:00:50,825
+the correct answers to whatever it is that we want to learn to predict.
+
+15
+00:00:50,825 --> 00:00:54,945
+In unsupervised learning, the data does not have labels.
+
+16
+00:00:54,945 --> 00:00:57,240
+This graph is an example of the sort of
+
+17
+00:00:57,240 --> 00:01:00,355
+problem that an unsupervised model might try to solve.
+
+18
+00:01:00,355 --> 00:01:03,870
+Here, we want to look at tenure and income and
+
+19
+00:01:03,870 --> 00:01:08,720
+then group or cluster employees to see whether someone is on the fast track.
+
+20
+00:01:08,720 --> 00:01:11,855
+Critically, there is no ground truth here.
+
+21
+00:01:11,855 --> 00:01:14,760
+Management doesn't, as far as we know,
+
+22
+00:01:14,760 --> 00:01:17,470
+have a big table of people they are going to promote
+
+23
+00:01:17,470 --> 00:01:20,665
+fast and those they are not going to promote.
+
+24
+00:01:20,665 --> 00:01:25,250
+Consequently, unsupervised problems are all about discovery,
+
+25
+00:01:25,250 --> 00:01:29,715
+about looking at the raw data and seeing if it naturally falls into groups.
+
+26
+00:01:29,715 --> 00:01:31,990
+At first look, it seems that there are
+
+27
+00:01:31,990 --> 00:01:36,775
+two distinct clusters or groups that I could separate nicely with a line.
+
+28
+00:01:36,775 --> 00:01:38,325
+In this course though,
+
+29
+00:01:38,325 --> 00:01:42,180
+we'll be focused on supervised machine learning problems, like this one.
+
+30
+00:01:42,180 --> 00:01:44,925
+The critical difference is that with supervised learning,
+
+31
+00:01:44,925 --> 00:01:47,360
+we have some notion of a label or
+
+32
+00:01:47,360 --> 00:01:51,070
+one characteristic of each data point that we care a lot about.
+
+33
+00:01:51,070 --> 00:01:53,700
+Typically, this is something we know about in
+
+34
+00:01:53,700 --> 00:01:56,550
+historical data but we don't know in real time.
+
+35
+00:01:56,550 --> 00:01:59,675
+We know other things which we call predictors
+
+36
+00:01:59,675 --> 00:02:03,365
+and we want to use those predictors to predict the thing we don't know.
+
+37
+00:02:03,365 --> 00:02:07,005
+For example, let's say you are the waiter in a restaurant.
+
+38
+00:02:07,005 --> 00:02:11,645
+You have historical data of the bill amount and how much different people tipped.
+
+39
+00:02:11,645 --> 00:02:14,510
+Now, you're looking at the group sitting at the corner table,
+
+40
+00:02:14,510 --> 00:02:19,345
+you know what their total bill is but you don't know what their tip is going to be.
+
+41
+00:02:19,345 --> 00:02:22,720
+In the historical data, the tip is a label.
+
+42
+00:02:22,720 --> 00:02:26,030
+You create a model to predict the tip from the bill amount.
+
+43
+00:02:26,030 --> 00:02:28,495
+Then, you try to predict the tip,
+
+44
+00:02:28,495 --> 00:02:30,190
+in real time, based on
+
+45
+00:02:30,190 --> 00:02:33,640
+the historical data and the values that you know for the specific table.
+
+46
+00:02:33,640 --> 00:02:39,225
+Within supervise ML, there are two types of problems: regression and classification.
+
+47
+00:02:39,225 --> 00:02:42,930
+To explain them, let's dive a little deeper into this data.
+
+48
+00:02:42,930 --> 00:02:45,565
+In this data set of tips,
+
+49
+00:02:45,565 --> 00:02:48,950
+an example data set that comes with a python package seaborn,
+
+50
+00:02:48,950 --> 00:02:51,040
+each row has many characteristics,
+
+51
+00:02:51,040 --> 00:02:54,235
+such as total bill, tip, and sex.
+
+52
+00:02:54,235 --> 00:02:57,900
+In machine learning, we call each row an example.
+
+53
+00:02:57,900 --> 00:03:01,515
+We'll choose one of the columns as the characteristic we want to predict,
+
+54
+00:03:01,515 --> 00:03:03,865
+called the label, and we'll choose a set
+
+55
+00:03:03,865 --> 00:03:06,705
+of the other columns which are called the features.
+
+56
+00:03:06,705 --> 00:03:08,615
+In model option one,
+
+57
+00:03:08,615 --> 00:03:10,320
+we want to protect the tip amount,
+
+58
+00:03:10,320 --> 00:03:13,255
+therefore the column tip is my label.
+
+59
+00:03:13,255 --> 00:03:15,520
+I can use one, all,
+
+60
+00:03:15,520 --> 00:03:18,655
+or any number of columns as my features to predict the tip.
+
+61
+00:03:18,655 --> 00:03:23,460
+This will be a regression model because tip is a continuous label.
+
+62
+00:03:23,460 --> 00:03:25,575
+In model option two,
+
+63
+00:03:25,575 --> 00:03:27,600
+we want to predict the sex of the customer,
+
+64
+00:03:27,600 --> 00:03:29,930
+therefore the column sex is the label.
+
+65
+00:03:29,930 --> 00:03:33,100
+Once again, I will use some set of the rest of
+
+66
+00:03:33,100 --> 00:03:37,180
+the columns as my features to try and predict the customer sex.
+
+67
+00:03:37,180 --> 00:03:39,800
+This will be a classification model because
+
+68
+00:03:39,800 --> 00:03:43,865
+our label sex has a discrete number of values or classes.
+
+69
+00:03:43,865 --> 00:03:48,290
+In summary, depending on the problem you're trying to solve, the data you have,
+
+70
+00:03:48,290 --> 00:03:51,120
+explainability, etc will determine
+
+71
+00:03:51,120 --> 00:03:54,655
+which machine learning models you use to find a solution.
+
+72
+00:03:54,655 --> 00:03:56,735
+Your data isn't labelled,
+
+73
+00:03:56,735 --> 00:04:00,130
+we won't be able to use supervised learning then and will have to
+
+74
+00:04:00,130 --> 00:04:04,195
+resort to clustering algorithms to discover interesting properties of the data.
+
+75
+00:04:04,195 --> 00:04:07,125
+Your data is labelled and the label is dog breed,
+
+76
+00:04:07,125 --> 00:04:08,670
+which is a discrete quantity,
+
+77
+00:04:08,670 --> 00:04:10,920
+since there are a finite number of dog breeds,
+
+78
+00:04:10,920 --> 00:04:13,270
+we use a classification algorithm.
+
+79
+00:04:13,270 --> 00:04:15,630
+If instead the label is dog weight,
+
+80
+00:04:15,630 --> 00:04:17,185
+which is a continuous quantity,
+
+81
+00:04:17,185 --> 00:04:19,290
+we should use a regression algorithm.
+
+82
+00:04:19,290 --> 00:04:23,340
+The label again is the thing that you are trying to predict.
+
+83
+00:04:23,340 --> 00:04:27,675
+In supervised learning, you have some data with the correct answers.
+
+84
+00:04:27,675 --> 00:04:30,640
+Imagine you are in banking and you create
+
+85
+00:04:30,640 --> 00:04:34,670
+an ML model for detecting if transactions are fraudulent or not.
+
+86
+00:04:34,670 --> 00:04:39,660
+Is this classification or regression, and why?
+
+87
+00:04:39,660 --> 00:04:44,280
+The correct answer is classification, categorical label.
+
+88
+00:04:44,280 --> 00:04:47,140
+This is a binary classification problem because there are
+
+89
+00:04:47,140 --> 00:04:50,085
+two possible classes for each transaction,
+
+90
+00:04:50,085 --> 00:04:52,560
+fraudulent or not fraudulent.
+
+91
+00:04:52,560 --> 00:04:57,605
+In practice, you may actually have a third class, uncertain.
+
+92
+00:04:57,605 --> 00:05:01,105
+This way, depending on your classification threshold,
+
+93
+00:05:01,105 --> 00:05:04,350
+it could send any cases that it can't firmly place into
+
+94
+00:05:04,350 --> 00:05:09,240
+the fraudulent or not fraudulent buckets to a human to have a closer look.
+
+95
+00:05:09,240 --> 00:05:13,800
+It is often good practice to have a human in the loop when performing machine learning.
+
+96
+00:05:13,800 --> 00:05:16,925
+We can eliminate regression, categorical label,
+
+97
+00:05:16,925 --> 00:05:19,660
+and classification continuous label
+
+98
+00:05:19,660 --> 00:05:23,420
+because the model types have the opposite label type that they should.
+
+99
+00:05:23,420 --> 00:05:27,385
+Regression and continuous label at least is a correct pairing.
+
+100
+00:05:27,385 --> 00:05:29,885
+However, it is incorrect because this is
+
+101
+00:05:29,885 --> 00:05:33,500
+a classification problem so we would not use regression.
+
+102
+00:05:33,500 --> 00:05:36,395
+You could also create a regression model
+
+103
+00:05:36,395 --> 00:05:39,250
+such as predicting the number of fraudulent transactions,
+
+104
+00:05:39,250 --> 00:05:42,000
+fraudulent transaction amounts, etc.

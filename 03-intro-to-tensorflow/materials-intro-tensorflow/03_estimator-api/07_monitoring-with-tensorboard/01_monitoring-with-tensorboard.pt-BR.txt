@@ -1,0 +1,45 @@
+Aqui, mostraremos como monitorar o
+treinamento usando o TensorBoard. Vamos revisitar nosso progresso. Dois prontos, faltam dois. Já estamos usando train_and_evaluate, então estamos conseguindo métricas de
+avaliação à medida que o treino progride. Vamos visualizá-las usando uma
+ferramenta chamada TensorBoard. Esta é uma prática recomendada
+para qualquer treino. Há muitas coisas úteis que você pode ver ao comparar curvas de treinamento e
+avaliação em um gráfico. Eu uso train_and_evaluate para isso
+o tempo todo, não apenas quando estou executando
+treinamentos distribuídos. TensorBoard é uma ferramenta
+que permite visualizar o treinamento e a biometria
+que o modelo grava em disco. O TensorBoard vem como padrão com
+a instalação do TensorFlow. É uma ferramenta de linha comum, apontada para o diretório de saída
+especificado na configuração de execução, e o painel TensorBoard aparece na
+coluna de host local 606. Os estimadores pré-fabricados vêm com um
+conjunto de métricas padrão pré-definidas, portanto não há mais nada
+para você configurar. Por exemplo, você verá a perda de
+treinamento e avaliação no mesmo gráfico. Isso é útil para ver se o modelo
+está sobreajustando. O estimador de rede neural densa também rastreia a fração de neurônios
+que estão produzindo zeros. Isso acontece quando você usa a função
+de ativação de ReLU, mas fique de olho nela. Se todos os neurônios
+estiverem emitindo zeros, a rede neural está morta. No TensorBoard você também
+pode ver seu gráfico do TensorFlow. Isso pode ser útil para depuração ou se você quiser ver qual gráfico
+o código produziu. Se você está criando um
+estimador personalizado, especificando suas próprias
+camadas de rede neural, você também pode usar comandos
+tf.summary para registrar vários tipos de dados e
+visualizá-los no TensorBoard. Eles podem ser números, textos, imagens, ou até mesmo arquivos de áudio. Com a API Estimator, uma linha é tudo que
+você precisa para escrever em um modelo. tf.summary.scalar e, em seguida, o nome do gráfico que você quer
+ver no TensorBoard e o Tensor com os valores a
+serem plotados. Se você não está usando a API Estimator, há algumas etapas adicionais. Confira na documentação aqui. Por exemplo, este é um gráfico
+de histograma. Acho útil visualizar coisas ruins que
+podem acontecer em suas próprias saídas. Aqui à esquerda, temos um histograma do tempo
+de todos os valores que saem de uma camada de rede neural
+ativada por um sigmoide. Então nós vemos um problema. Há um pico em zero, outro em um e a maioria dos neurônios está
+saturada e não muito útil. Uma técnica de regularização, chamada
+normalização em lote, pode corrigir isso. Aqui está a saída da mesma camada
+após a normalização do lote, e agora nossos neurônios estão produzindo
+valores em toda a faixa útil. Se isso produz resultados melhores ou não, depende do modelo, mas pelo menos eu vejo que minha
+normalização em lote está funcionando. Ao trabalhar com imagens ou sons, o TensorBoard tem painéis específicos para
+você ver e ouvir o que está acontecendo. Você pode usar as funções 
+summary.image e summary.audio no código para
+especificar que o Tensor que você está registrando é
+uma imagem ou um arquivo de áudio, e eles aparecerão no painel
+dedicado no TensorBoard. Aqui está, por exemplo, uma
+visualização que eu estava usando ao desenvolver
+um modelo de detecção de aviões.

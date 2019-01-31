@@ -1,0 +1,175 @@
+1
+00:00:00,000 --> 00:00:04,740
+Let's take a few minutes to discuss how monitoring our jobs works.
+
+2
+00:00:04,740 --> 00:00:08,655
+Once you've submitted a job to execute on the Cloud Machine Learning Engine,
+
+3
+00:00:08,655 --> 00:00:10,935
+there's a variety of ways to check in on it.
+
+4
+00:00:10,935 --> 00:00:13,620
+The simplest one is to just get its current state.
+
+5
+00:00:13,620 --> 00:00:15,465
+This will tell you if it's pending,
+
+6
+00:00:15,465 --> 00:00:17,145
+running, or already done.
+
+7
+00:00:17,145 --> 00:00:18,540
+Of course, once it's running,
+
+8
+00:00:18,540 --> 00:00:21,320
+you might want to inspect the most recent log entries from that job,
+
+9
+00:00:21,320 --> 00:00:23,470
+which you can also do with GCloud.
+
+10
+00:00:23,470 --> 00:00:26,745
+Finally, when you're submitting many jobs to run in parallel,
+
+11
+00:00:26,745 --> 00:00:30,800
+you should try out GCloud's ability to list and filter jobs.
+
+12
+00:00:30,800 --> 00:00:35,980
+The GCP Web console has a great UI for monitoring your jobs.
+
+13
+00:00:35,980 --> 00:00:38,300
+You can see exactly how they were invoked,
+
+14
+00:00:38,300 --> 00:00:41,920
+check out their logs, and see how much CPU and memory they are consuming.
+
+15
+00:00:41,920 --> 00:00:46,120
+While inspecting log entries may help you debug technical issues like an exception,
+
+16
+00:00:46,120 --> 00:00:49,615
+it's really not the right tool to investigate the ML performance.
+
+17
+00:00:49,615 --> 00:00:52,150
+TensorBoard however, is a great tool.
+
+18
+00:00:52,150 --> 00:00:57,025
+To use it, make sure your job saves summary data the Google cloud storage location,
+
+19
+00:00:57,025 --> 00:00:58,825
+and then when you start TensorBoard,
+
+20
+00:00:58,825 --> 00:01:00,370
+simply provide that directory.
+
+21
+00:01:00,370 --> 00:01:03,535
+You can even handle multiple jobs per folder.
+
+22
+00:01:03,535 --> 00:01:05,140
+Now that we've got a model,
+
+23
+00:01:05,140 --> 00:01:07,040
+let's see what we can do with it.
+
+24
+00:01:07,040 --> 00:01:09,420
+Once our training job completes,
+
+25
+00:01:09,420 --> 00:01:12,760
+we'll have a tensorflow model ready to serve for predictions.
+
+26
+00:01:12,760 --> 00:01:16,090
+Cloud ML engine provides a great infrastructure for this.
+
+27
+00:01:16,090 --> 00:01:20,290
+CMLE we'll build you a production ready Web app out of your train model,
+
+28
+00:01:20,290 --> 00:01:24,265
+and offer a batch service for your less latency sensitive predictions.
+
+29
+00:01:24,265 --> 00:01:26,530
+Since these are both rest APIs,
+
+30
+00:01:26,530 --> 00:01:28,570
+you'll be able to make scalable secure
+
+31
+00:01:28,570 --> 00:01:32,900
+inferences from whatever language you want to write the client in.
+
+32
+00:01:33,200 --> 00:01:37,710
+So, to send your TF model artifact to cloud for serving,
+
+33
+00:01:37,710 --> 00:01:41,535
+we need to create a CMLE model inversion resource.
+
+34
+00:01:41,535 --> 00:01:47,065
+The individual TF trained model file you have will correspond to a specific version.
+
+35
+00:01:47,065 --> 00:01:49,790
+On CMLE, a model is actually a group of
+
+36
+00:01:49,790 --> 00:01:52,910
+these versions that has a default version as well.
+
+37
+00:01:52,910 --> 00:01:56,360
+This extra layer of abstraction and grouping allows us to
+
+38
+00:01:56,360 --> 00:02:00,605
+seamlessly migrate traffic from one TF model version to the next.
+
+39
+00:02:00,605 --> 00:02:04,480
+Just need to change in models default version.
+
+40
+00:02:04,670 --> 00:02:07,650
+Here's a simple example of how to use
+
+41
+00:02:07,650 --> 00:02:11,315
+the remotely deployed model for predictions with the rest call.
+
+42
+00:02:11,315 --> 00:02:13,830
+CMLE online prediction is
+
+43
+00:02:13,830 --> 00:02:18,345
+a completely serverless system so you don't have to worry about any resource allocations.
+
+44
+00:02:18,345 --> 00:02:20,740
+It will just scale for you.

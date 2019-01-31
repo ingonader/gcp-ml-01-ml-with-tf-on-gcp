@@ -1,0 +1,519 @@
+1
+00:00:01,030 --> 00:00:03,975
+Ya vimos cómo funciona
+el descenso de gradientes.
+
+2
+00:00:04,485 --> 00:00:08,580
+Usaremos una herramienta
+que nos permitirá ver en tiempo real
+
+3
+00:00:08,580 --> 00:00:11,605
+varios de los fenómenos que analizamos.
+
+4
+00:00:13,455 --> 00:00:18,050
+TensorFlow Playground nos permite
+ver cómo funcionan las redes neuronales.
+
+5
+00:00:18,050 --> 00:00:20,080
+Tal vez pensarán, "un momento
+
+6
+00:00:20,080 --> 00:00:22,550
+aún no sabemos
+qué son las redes neuronales”.
+
+7
+00:00:22,560 --> 00:00:24,925
+No se preocupen, ya lo veremos.
+
+8
+00:00:25,355 --> 00:00:27,235
+Por razones que ya explicaremos
+
+9
+00:00:27,235 --> 00:00:30,825
+las redes neuronales más sencillas
+son equivalentes a los modelos lineales.
+
+10
+00:00:30,825 --> 00:00:35,000
+Así que esta herramienta también
+es ideal para demostrar lo que aprendimos.
+
+11
+00:00:35,000 --> 00:00:36,470
+La usaremos para verificar
+
+12
+00:00:36,470 --> 00:00:39,265
+de forma experimental
+los aspectos teóricos que presentamos
+
+13
+00:00:39,265 --> 00:00:41,725
+a fin de que puedan
+respaldar sus intuiciones de AA.
+
+14
+00:00:41,725 --> 00:00:44,270
+Verán el impacto
+de configurar la tasa de aprendizaje
+
+15
+00:00:44,270 --> 00:00:46,655
+y cómo los modelos
+de AA descienden gradientes.
+
+16
+00:00:46,655 --> 00:00:49,010
+También mencionaré las conexiones a temas
+
+17
+00:00:49,010 --> 00:00:52,360
+que exploraremos en detalle
+en este curso y en otros posteriores.
+
+18
+00:00:53,180 --> 00:00:55,645
+Primero, hablemos sobre la interfaz.
+
+19
+00:00:55,645 --> 00:00:58,095
+Quité algunas
+funciones de la herramienta
+
+20
+00:00:58,095 --> 00:01:00,775
+porque incluyen
+material que veremos después
+
+21
+00:01:00,775 --> 00:01:03,935
+pero aun así tiene
+muchas opciones interesantes.
+
+22
+00:01:04,865 --> 00:01:07,300
+Primero, la columna de atributos.
+
+23
+00:01:07,300 --> 00:01:10,190
+Estas son las entradas que ve su modelo.
+
+24
+00:01:10,190 --> 00:01:14,125
+El color de las casillas
+es el valor de cada atributo.
+
+25
+00:01:14,505 --> 00:01:17,550
+El naranja significa
+negativo y el azul positivo.
+
+26
+00:01:18,000 --> 00:01:22,310
+Tenemos la columna de capas ocultas,
+donde podemos decir que están los pesos.
+
+27
+00:01:22,835 --> 00:01:27,065
+Si se desplazan sobre una línea
+de peso, verán el valor de ese peso.
+
+28
+00:01:27,725 --> 00:01:31,350
+A medida que se entrena el modelo,
+el ancho y la opacidad de estas líneas
+
+29
+00:01:31,350 --> 00:01:35,750
+cambiarán para permitirles
+entender sus valores rápidamente.
+
+30
+00:01:36,500 --> 00:01:38,270
+Luego está la columna de salida
+
+31
+00:01:38,270 --> 00:01:41,100
+en la que se ven datos
+de entrenamiento y las predicciones
+
+32
+00:01:41,100 --> 00:01:44,555
+actuales de los modelos para todos
+los puntos en el espacio de atributos.
+
+33
+00:01:45,335 --> 00:01:47,910
+También pueden ver la pérdida
+actual de entrenamiento.
+
+34
+00:01:48,270 --> 00:01:51,690
+El color también
+se usa para representar valores.
+
+35
+00:01:52,950 --> 00:01:56,615
+La barra de control superior incluye
+botones para restablecer el entrenamiento
+
+36
+00:01:56,615 --> 00:01:59,155
+comenzarlo y dar un solo paso.
+
+37
+00:01:59,155 --> 00:02:02,175
+También hay un menú
+desplegable para la tasa de aprendizaje.
+
+38
+00:02:02,765 --> 00:02:04,865
+En la columna de datos,
+se pueden seleccionar
+
+39
+00:02:04,865 --> 00:02:07,745
+diferentes conjuntos de datos
+y controlar el tamaño del lote.
+
+40
+00:02:08,295 --> 00:02:11,740
+Comencemos por entrenar
+un modelo lineal para clasificar datos.
+
+41
+00:02:12,090 --> 00:02:15,750
+Si hacen clic en este vínculo,
+verán una ventana de TensorFlow Playground
+
+42
+00:02:15,750 --> 00:02:19,840
+con lo esencial; no se preocupen
+por las capas ocultas en este momento.
+
+43
+00:02:20,950 --> 00:02:24,885
+En esta configuración de la herramienta,
+el modelo acepta un vector de atributos
+
+44
+00:02:24,885 --> 00:02:27,230
+calcula un producto
+escalar con un factor de peso
+
+45
+00:02:27,230 --> 00:02:29,335
+agrega un término de la ordenada al origen
+
+46
+00:02:29,335 --> 00:02:32,430
+y usa el signo de suma
+para construir el límite de decisión.
+
+47
+00:02:32,970 --> 00:02:35,425
+Por lo tanto, pueden pensar
+en esta configuración
+
+48
+00:02:35,425 --> 00:02:36,915
+como un modelo lineal.
+
+49
+00:02:38,365 --> 00:02:40,880
+Comenzaremos con un modelo
+que intentará clasificar
+
+50
+00:02:40,880 --> 00:02:43,845
+los datos de dos clústeres distintos.
+
+51
+00:02:45,705 --> 00:02:49,055
+Hagan clic en el botón Paso,
+que está a la derecha del botón Reproducir
+
+52
+00:02:49,055 --> 00:02:52,060
+y observen todo
+lo que cambia en la interfaz.
+
+53
+00:02:52,430 --> 00:02:54,605
+La cantidad de ciclos aumenta en 1
+
+54
+00:02:54,605 --> 00:02:57,730
+las líneas que representan
+los pesos cambian de color y de tamaño
+
+55
+00:02:57,730 --> 00:03:00,455
+el valor actual
+de la función de pérdida cambia
+
+56
+00:03:00,455 --> 00:03:03,070
+el gráfico de pérdida
+muestra una pendiente hacia abajo
+
+57
+00:03:03,070 --> 00:03:06,495
+y el límite de decisión
+de salida también cambia.
+
+58
+00:03:07,925 --> 00:03:10,605
+Muevan el mouse
+sobre la línea que representa el peso 1
+
+59
+00:03:10,605 --> 00:03:13,390
+y podrán ver el valor de ese peso.
+
+60
+00:03:15,360 --> 00:03:17,975
+Hagan clic en Reproducir
+para reanudar el entrenamiento
+
+61
+00:03:17,975 --> 00:03:21,595
+pero pausen justo después
+de que la pérdida sea inferior a 0.002
+
+62
+00:03:21,595 --> 00:03:24,470
+lo que debería ocurrir
+antes de los 200 ciclos.
+
+63
+00:03:25,050 --> 00:03:27,955
+Felicitaciones,
+entrenaron su primer modelo.
+
+64
+00:03:30,495 --> 00:03:33,350
+Ahora, agreguemos algo de complejidad.
+
+65
+00:03:34,040 --> 00:03:38,720
+Primero, veamos cómo tres diferentes
+tasas de aprendizaje afectan al modelo.
+
+66
+00:03:39,120 --> 00:03:41,840
+Recuerden que la tasa
+de aprendizaje es el hiperparámetro
+
+67
+00:03:41,840 --> 00:03:44,020
+que establecemos antes del entrenamiento
+
+68
+00:03:44,020 --> 00:03:46,600
+y que se multiplica
+por la derivada para determinar
+
+69
+00:03:46,600 --> 00:03:50,215
+cuánto cambiamos los pesos
+en cada iteración de nuestro bucle.
+
+70
+00:03:52,005 --> 00:03:56,100
+Sigan este vínculo para entrenar
+con una tasa de aprendizaje pequeña.
+
+71
+00:03:56,100 --> 00:03:59,195
+Esperen hasta que
+la pérdida alcance los 100 ciclos
+
+72
+00:03:59,195 --> 00:04:01,765
+lo que debería
+ocurrir después de dos segundos
+
+73
+00:04:01,765 --> 00:04:03,535
+y luego pausen el modelo.
+
+74
+00:04:05,675 --> 00:04:08,280
+¿Cuál es la tendencia de pérdida actual?
+
+75
+00:04:09,760 --> 00:04:12,500
+Y ¿cuáles son los pesos aprendidos?
+
+76
+00:04:16,160 --> 00:04:20,800
+Aumenten la tasa de aprendizaje
+a 0.001, reinicien el entrenamiento
+
+77
+00:04:20,800 --> 00:04:23,575
+y vuelvan a detenerse
+cerca de los 100 ciclos.
+
+78
+00:04:24,645 --> 00:04:26,375
+¿Cuál es la pérdida?
+
+79
+00:04:27,315 --> 00:04:29,900
+Debería ser mucho menor esta vez.
+
+80
+00:04:30,570 --> 00:04:33,130
+Observen el valor para el peso 1.
+
+81
+00:04:36,200 --> 00:04:38,525
+Ahora,
+aumenten la tasa de aprendizaje a 0.1
+
+82
+00:04:38,525 --> 00:04:42,300
+reinicien el entrenamiento del modelo
+y vuelvan a entrenar por 100 ciclos.
+
+83
+00:04:42,630 --> 00:04:45,135
+¿Qué tan rápido cayó
+la curva de pérdida esta vez?
+
+84
+00:04:46,115 --> 00:04:48,130
+Debería haber caído muy rápido.
+
+85
+00:04:48,890 --> 00:04:51,310
+Bien, reunamos estas observaciones
+
+86
+00:04:51,310 --> 00:04:54,850
+y tratemos de explicarlas
+con lo que aprendimos sobre optimización.
+
+87
+00:04:56,620 --> 00:04:58,410
+Aumenten la tasa de aprendizaje a 10
+
+88
+00:04:58,410 --> 00:05:00,170
+reinicien el entrenamiento del modelo
+
+89
+00:05:00,170 --> 00:05:03,075
+y den un solo paso con el botón Paso.
+
+90
+00:05:03,735 --> 00:05:05,975
+Observen la magnitud del peso.
+
+91
+00:05:06,955 --> 00:05:10,115
+Ahora, continúen con el entrenamiento
+hasta los 100 ciclos.
+
+92
+00:05:11,035 --> 00:05:13,780
+¿Qué tan rápido cayó la curva esta vez?
+
+93
+00:05:14,210 --> 00:05:16,720
+Debe haber caído precipitadamente.
+
+94
+00:05:17,840 --> 00:05:20,410
+Reunamos estas observaciones
+
+95
+00:05:20,410 --> 00:05:23,845
+y veamos si podemos explicarlas
+con lo que aprendimos sobre optimización.
+
+96
+00:05:24,595 --> 00:05:27,800
+En esta tabla,
+se muestran los resultados que obtuve.
+
+97
+00:05:27,800 --> 00:05:31,020
+Es posible que sus resultados
+se vean diferentes, no hay problema.
+
+98
+00:05:31,470 --> 00:05:34,330
+Se ven diferentes
+a mis resultados por la misma razón
+
+99
+00:05:34,330 --> 00:05:37,110
+que se ven diferentes
+si vuelven a ejecutar el experimento.
+
+100
+00:05:37,440 --> 00:05:40,620
+TensorFlow Playground
+inicia los pesos al azar
+
+101
+00:05:40,620 --> 00:05:45,070
+y, debido a ello, nuestra búsqueda
+comienza en una posición aleatoria.
+
+102
+00:05:46,310 --> 00:05:48,945
+Hablemos sobre la columna Peso1 (Weight1).
+
+103
+00:05:49,615 --> 00:05:53,545
+Observen cómo aumenta la magnitud
+de los pesos cuando aumentan las tasas.
+
+104
+00:05:53,545 --> 00:05:55,865
+¿Por qué creen que ocurre esto?
+
+105
+00:05:57,435 --> 00:06:00,520
+Es porque el modelo
+está dando pasos más grandes.
+
+106
+00:06:00,520 --> 00:06:02,790
+De hecho, cuando la tasa
+de aprendizaje era 10
+
+107
+00:06:02,790 --> 00:06:05,715
+el primer paso
+cambió drásticamente los pesos.
+
+108
+00:06:06,725 --> 00:06:09,800
+Hablemos de la columna
+de pérdida con el tiempo (Loss Over Time).
+
+109
+00:06:09,800 --> 00:06:11,850
+A medida que aumenta
+la tasa de aprendizaje
+
+110
+00:06:11,850 --> 00:06:14,005
+la curva de pérdida
+se vuelve más pronunciada.
+
+111
+00:06:14,005 --> 00:06:18,370
+Este es el mismo efecto que vimos
+antes, desde una perspectiva diferente.

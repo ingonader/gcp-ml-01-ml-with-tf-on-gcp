@@ -1,0 +1,33 @@
+Tomemos unos minutos para analizar
+cómo supervisamos nuestros trabajos. Cuando envía un trabajo para su
+ejecución en Cloud Machine Learning Engine hay varias formas de revisarlo. La más sencilla es ver su estado actual. Así sabrá si está pendiente,
+en ejecución o si ya terminó. Por supuesto,
+si durante la ejecución desea revisar las últimas entradas del trabajo también puede hacerlo con gcloud. Finalmente, si envía
+muchos trabajos con ejecución en paralelo pruebe la capacidad de gcloud
+para enumerar y filtrar trabajos. La consola web de GCP tiene
+una gran IU para supervisar sus trabajos. Puede ver exactamente cómo se invocaron revisar sus registros y ver
+su consumo de CPU y memoria. Revisar los registros ayuda a depurar
+problemas técnicos, como una excepción pero no es la herramienta adecuada
+para investigar el rendimiento del AA. TensorBoard
+es la herramienta indicada para ello. Para usarla, su trabajo debe guardar
+datos de resumen en Google Cloud Storage. Cuando inicie TensorBoard,
+simplemente proporcione ese directorio. Incluso puede manejar
+varios trabajos por carpeta. Ahora que tenemos un modelo
+veamos qué podemos hacer con él. Cuando finalice nuestro
+trabajo de entrenamiento tendremos un modelo de TensorFlow
+preparado para realizar predicciones. Cloud ML Engine ofrece una
+gran infraestructura para eso. CMLE crea
+una aplicación web lista para producción a partir de su modelo y ofrece un servicio por lotes para las predicciones
+menos sensibles a latencia. Como ambas son API de REST podrá realizar
+inferencias escalables y seguras en el lenguaje
+en el que desee escribir el cliente. Para enviar su artefacto
+de modelo de TF a la nube necesitamos crear
+un recurso de inversión de modelo de CMLE. El archivo de modelo TF entrenado
+corresponde a una versión específica. En CMLE, un modelo es un grupo de estas versiones que además
+tiene una versión predeterminada. Esta capa extra
+de abstracción y agrupación nos permite migrar tráfico
+desde una versión de modelo TF a otra. Solo tiene que cambiar la
+versión predeterminada del modelo. Este es un ejemplo sencillo de cómo usar el modelo implementado de forma remota
+para predicciones con una llamada REST. La predicción en línea de CMLE
+es un sistema sin servidores así que no tiene que pensar
+en la asignación de recursos. El sistema se escala automáticamente.

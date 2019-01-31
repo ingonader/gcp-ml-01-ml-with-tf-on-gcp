@@ -1,0 +1,354 @@
+1
+00:00:00,430 --> 00:00:03,497
+Précédemment, nous avons entraîné
+des modèles dans un navigateur
+
+2
+00:00:03,497 --> 00:00:05,250
+à l'aide de la descente de gradient.
+
+3
+00:00:05,250 --> 00:00:09,065
+Les modèles que nous avons créés ont appris
+des relations complexes non linéaires
+
+4
+00:00:09,065 --> 00:00:11,825
+en se servant d'une hiérarchie
+de caractéristiques apprise.
+
+5
+00:00:11,825 --> 00:00:15,010
+Or, nous avons vu à la fin de la section
+que notre approche actuelle
+
+6
+00:00:15,010 --> 00:00:18,035
+présente des défauts qui se traduisent
+par plusieurs problèmes :
+
+7
+00:00:18,035 --> 00:00:22,390
+la longue durée des entraînements, les minima
+sous-optimaux et les minima inappropriés.
+
+8
+00:00:22,390 --> 00:00:23,390
+Dans cette section,
+
+9
+00:00:23,390 --> 00:00:26,330
+nous verrons ce que sont exactement
+les minima inappropriés,
+
+10
+00:00:26,330 --> 00:00:27,477
+pourquoi ils existent,
+
+11
+00:00:27,477 --> 00:00:31,535
+et comment les métriques de performances
+nous aident à obtenir de meilleurs résultats.
+
+12
+00:00:31,535 --> 00:00:34,405
+Alors, que sont les minima inappropriés ?
+
+13
+00:00:34,405 --> 00:00:37,422
+Vous pouvez les voir comme des points
+de l'espace des paramètres
+
+14
+00:00:37,422 --> 00:00:38,870
+correspondant à des stratégies
+
+15
+00:00:38,870 --> 00:00:41,520
+qui ne peuvent pas être
+correctement généralisées,
+
+16
+00:00:41,520 --> 00:00:44,140
+ou qui ne reflètent pas
+la véritable relation modélisée,
+
+17
+00:00:44,140 --> 00:00:44,855
+ou les deux.
+
+18
+00:00:44,855 --> 00:00:46,710
+Supposons que nous entraînons un modèle
+
+19
+00:00:46,710 --> 00:00:49,275
+devant prédire si une place
+de stationnement est libre
+
+20
+00:00:49,275 --> 00:00:50,820
+à partir d'une image du parking.
+
+21
+00:00:50,820 --> 00:00:52,192
+Une stratégie inappropriée
+
+22
+00:00:52,192 --> 00:00:56,725
+consisterait à simplement prédire
+que toutes les places sont occupées.
+
+23
+00:00:56,725 --> 00:01:00,915
+Avec un ensemble de données composé d'autant
+d'exemples positifs que d'exemples négatifs,
+
+24
+00:01:00,915 --> 00:01:04,910
+ce type de stratégie serait systématiquement
+éliminé par le processus d'optimisation.
+
+25
+00:01:04,910 --> 00:01:07,830
+Toutefois, lorsque les ensembles
+de données sont asymétriques,
+
+26
+00:01:07,830 --> 00:01:10,655
+et contiennent plus d'éléments
+d'une classe que d'une autre,
+
+27
+00:01:10,655 --> 00:01:13,305
+ce type de stratégie peut s'avérer
+intéressant.
+
+28
+00:01:13,305 --> 00:01:14,687
+Une stratégie de ce genre
+
+29
+00:01:14,687 --> 00:01:17,230
+n'essaie pas de comprendre
+la véritable relation entre
+
+30
+00:01:17,230 --> 00:01:19,540
+les caractéristiques et l'étiquette,
+
+31
+00:01:19,540 --> 00:01:23,410
+que l'on s'attendrait à être liée aux
+caractéristiques visuelles d'une place vide.
+
+32
+00:01:24,035 --> 00:01:26,860
+Par conséquent, elle ne pourrait pas
+être bien généralisée
+
+33
+00:01:26,860 --> 00:01:28,860
+afin de s'appliquer à de nouveaux parkings
+
+34
+00:01:28,860 --> 00:01:31,457
+pour lesquels la relation
+sous-jacente serait la même,
+
+35
+00:01:31,457 --> 00:01:33,395
+mais pas la proportion de places libres.
+
+36
+00:01:33,395 --> 00:01:36,280
+Il est tentant d'envisager l'existence
+de minima inappropriés
+
+37
+00:01:36,280 --> 00:01:38,710
+comme un problème
+affectant notre fonction de perte.
+
+38
+00:01:38,710 --> 00:01:41,625
+Si seulement nous disposions
+de la fonction de perte parfaite,
+
+39
+00:01:41,625 --> 00:01:45,115
+qui favoriserait les stratégies optimales,
+et pénaliserait les mauvaises,
+
+40
+00:01:45,115 --> 00:01:46,335
+tout serait plus simple.
+
+41
+00:01:46,335 --> 00:01:49,250
+C'est malheureusement impossible.
+
+42
+00:01:49,250 --> 00:01:52,500
+Il y aura toujours un écart entre
+les métriques qui nous intéressent
+
+43
+00:01:52,500 --> 00:01:55,700
+et celles qui fonctionnent bien
+avec la descente de gradient.
+
+44
+00:01:55,700 --> 00:01:56,500
+Par exemple,
+
+45
+00:01:56,500 --> 00:02:00,705
+supposons que nous soyons toujours
+en train de classifier des places de parking.
+
+46
+00:02:00,705 --> 00:02:02,707
+Une fonction de perte apparemment parfaite
+
+47
+00:02:02,707 --> 00:02:05,160
+minimiserait le nombre
+de prédictions incorrectes.
+
+48
+00:02:05,160 --> 00:02:08,505
+Toutefois, cette fonction serait segmentée,
+
+49
+00:02:08,505 --> 00:02:11,140
+c'est-à-dire que la plage de valeurs
+qu'elle accepterait
+
+50
+00:02:11,140 --> 00:02:13,615
+serait constituée d'entiers,
+et non de nombres réels.
+
+51
+00:02:13,615 --> 00:02:15,555
+Et étonnamment, ceci est problématique.
+
+52
+00:02:15,555 --> 00:02:18,800
+Le problème se résume à une question
+de différentiabilité.
+
+53
+00:02:18,800 --> 00:02:22,595
+La descente de gradient applique des
+modifications incrémentielles à nos poids.
+
+54
+00:02:22,595 --> 00:02:26,780
+Il faut donc pouvoir différencier
+les poids par rapport à la perte.
+
+55
+00:02:26,780 --> 00:02:30,400
+Toutefois, les fonctions segmentées
+présentent des lacunes dans leurs plages.
+
+56
+00:02:30,400 --> 00:02:32,640
+Même si TensorFlow
+peut les différencier,
+
+57
+00:02:32,640 --> 00:02:35,420
+la surface de perte obtenue
+comporterait des discontinuités
+
+58
+00:02:35,420 --> 00:02:38,065
+qui en compliqueraient le balayage.
+
+59
+00:02:38,065 --> 00:02:40,690
+Nous devons donc recadrer le problème.
+
+60
+00:02:40,690 --> 00:02:44,160
+Au lieu de chercher la fonction de perte
+parfaite pendant l'entraînement,
+
+61
+00:02:44,160 --> 00:02:46,467
+nous allons utiliser
+un nouveau type de métrique
+
+62
+00:02:46,467 --> 00:02:48,075
+une fois l'entraînement terminé.
+
+63
+00:02:48,075 --> 00:02:50,275
+Il va nous permettre de rejeter les modèles
+
+64
+00:02:50,275 --> 00:02:54,225
+qui présentent systématiquement
+des minima inappropriés.
+
+65
+00:02:54,225 --> 00:02:59,160
+Les métriques de ce type
+sont appelées métriques de performances.
+
+66
+00:02:59,160 --> 00:03:02,750
+Elles présentent deux avantages
+par rapport aux fonctions de perte.
+
+67
+00:03:02,750 --> 00:03:06,415
+Tout d'abord, elles sont plus faciles
+à comprendre, car il s'agit généralement
+
+68
+00:03:06,415 --> 00:03:09,520
+de combinaisons de statistiques
+quantifiables.
+
+69
+00:03:09,520 --> 00:03:14,020
+Ensuite, elles sont directement liées
+aux objectifs des entreprises.
+
+70
+00:03:14,020 --> 00:03:17,605
+Par contre, même si la perte et
+l'objectif visé sont souvent en accord,
+
+71
+00:03:17,605 --> 00:03:21,720
+ce n'est pas systématiquement le cas.
+
+72
+00:03:22,275 --> 00:03:24,445
+Il sera parfois possible
+de réduire la perte,
+
+73
+00:03:24,445 --> 00:03:27,610
+ou de progresser quelque peu
+en direction de l'objectif.
+
+74
+00:03:27,610 --> 00:03:30,655
+Nous allons voir trois métriques
+de performances,
+
+75
+00:03:30,655 --> 00:03:33,790
+les matrices de confusion,
+la précision et le rappel,
+
+76
+00:03:33,790 --> 00:03:35,130
+et quand les utiliser.

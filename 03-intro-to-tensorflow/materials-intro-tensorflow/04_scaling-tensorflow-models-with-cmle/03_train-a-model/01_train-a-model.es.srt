@@ -1,0 +1,218 @@
+1
+00:00:00,305 --> 00:00:04,425
+Ahora veamos cómo entrenar
+un modelo en Machine Learning Engine.
+
+2
+00:00:04,425 --> 00:00:07,520
+Antes de comenzar
+el entrenamiento, haga lo siguiente.
+
+3
+00:00:07,520 --> 00:00:10,240
+Reúna y prepare
+sus datos de entrenamiento.
+
+4
+00:00:10,240 --> 00:00:13,545
+Límpielos, divídalos, diseñe funciones
+y haga procesamiento previo.
+
+5
+00:00:13,545 --> 00:00:16,210
+Segundo, coloque
+esos datos de entrenamiento
+
+6
+00:00:16,210 --> 00:00:20,955
+en una fuente en línea
+accesible para CMLE, como Cloud Storage.
+
+7
+00:00:21,305 --> 00:00:23,820
+Cuando se envían trabajos
+de entrenamiento a CMLE
+
+8
+00:00:23,820 --> 00:00:29,910
+es común dividir la mayoría de la lógica
+en los archivos task.py y model.py.
+
+9
+00:00:29,910 --> 00:00:34,310
+Task.py es el punto de entrada
+a su código que usará CMLE.
+
+10
+00:00:34,310 --> 00:00:36,555
+Contiene detalles del nivel de trabajo
+
+11
+00:00:36,555 --> 00:00:40,000
+de cómo pasar argumentos
+de línea de comandos, por cuánto ejecutar
+
+12
+00:00:40,000 --> 00:00:41,490
+dónde escribir las entradas
+
+13
+00:00:41,490 --> 00:00:44,230
+o cómo interactuar
+con el ajuste de hiperparámetros.
+
+14
+00:00:44,430 --> 00:00:46,145
+Para realizar el AA básico
+
+15
+00:00:46,145 --> 00:00:48,750
+task.py invocará a model.py.
+
+16
+00:00:48,750 --> 00:00:52,275
+Model.py se enfoca más
+en las tareas básicas del AA
+
+17
+00:00:52,275 --> 00:00:55,030
+como la obtención de datos,
+la definición de las funciones
+
+18
+00:00:55,030 --> 00:00:57,030
+la configuración de la firma del servicio
+
+19
+00:00:57,030 --> 00:00:59,960
+y, por supuesto, el bucle
+de entrenamiento y evaluación en sí.
+
+20
+00:00:59,960 --> 00:01:03,630
+Siempre que compartamos código
+entre computadoras, hay que empaquetarlo.
+
+21
+00:01:03,630 --> 00:01:07,050
+Lo mismo pasa cuando enviamos
+un modelo a CMLE para su entrenamiento.
+
+22
+00:01:07,050 --> 00:01:10,144
+TensorFlow,
+y en especial Python, requieren
+
+23
+00:01:10,144 --> 00:01:13,605
+una estructura de paquete estándar
+y muy específica, que se muestra aquí.
+
+24
+00:01:13,605 --> 00:01:18,465
+Es recomendable probar localmente
+que el empaquetado funcione correctamente.
+
+25
+00:01:18,465 --> 00:01:21,480
+Intente llamar directamente a python-m
+
+26
+00:01:21,480 --> 00:01:24,270
+para revisar que todas
+las importaciones estén bien.
+
+27
+00:01:24,270 --> 00:01:28,380
+A continuación, usaremos gcloud
+para una prueba local de nuestro código.
+
+28
+00:01:28,380 --> 00:01:32,160
+Esto realizará pruebas de estado rápidas
+para revisar la estructura del paquete.
+
+29
+00:01:32,160 --> 00:01:37,585
+Luego, podemos enviar la tarea a la nube
+mediante un trabajo de entrenamiento.
+
+30
+00:01:38,075 --> 00:01:40,370
+Los argumentos clave
+de la línea de comandos son
+
+31
+00:01:40,370 --> 00:01:43,685
+package-path,
+para especificar la ubicación del código
+
+32
+00:01:43,685 --> 00:01:48,390
+module-name, para especificar
+los archivos del paquete que se ejecutarán
+
+33
+00:01:48,390 --> 00:01:53,615
+y scale-tier, para especificar el tipo
+de hardware en el que ejecutará el código.
+
+34
+00:01:53,615 --> 00:01:58,215
+Puede especificar scale-tier=BASIC
+para ejecutarlo en una máquina.
+
+35
+00:01:58,215 --> 00:02:01,590
+Use =STANDARD para ejecutarlo
+en un clúster relativamente pequeño.
+
+36
+00:02:01,590 --> 00:02:05,330
+Con =BASIC_GPU,
+se ejecuta en una sola GPU.
+
+37
+00:02:05,505 --> 00:02:07,200
+¿Y si quiere usar una TPU?
+
+38
+00:02:07,200 --> 00:02:10,875
+En ese caso, escriba scale-tier=BASIC_TPU.
+
+39
+00:02:10,875 --> 00:02:13,155
+También puede definir
+niveles personalizados
+
+40
+00:02:13,155 --> 00:02:15,005
+y definir cada tipo de máquina.
+
+41
+00:02:15,005 --> 00:02:17,415
+Seguimos agregando opciones de scale-tier.
+
+42
+00:02:17,415 --> 00:02:21,370
+Revise la documentación
+de CMLE para ver sus opciones actuales.
+
+43
+00:02:21,390 --> 00:02:24,860
+Un consejo: Para obtener el mejor
+rendimiento de los trabajos de AA
+
+44
+00:02:24,860 --> 00:02:28,050
+seleccione un depósito de una
+sola región en Google Cloud Storage.
+
+45
+00:02:28,050 --> 00:02:30,295
+La opción predeterminada es multirregión
+
+46
+00:02:30,295 --> 00:02:33,440
+que es mejor para la entrega web
+que para el entrenamiento de AA.

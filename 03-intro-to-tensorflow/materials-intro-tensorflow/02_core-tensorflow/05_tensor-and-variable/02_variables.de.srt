@@ -1,0 +1,609 @@
+1
+00:00:00,000 --> 00:00:04,270
+Eine Variable ist ein Tensor,
+dessen Wert initalisiert ist.
+
+2
+00:00:04,270 --> 00:00:08,165
+Der Wert wird dann geändert,
+wenn ein Programm ausgeführt wird.
+
+3
+00:00:08,165 --> 00:00:11,325
+Betrachten wir dieses Beispiel:
+
+4
+00:00:11,325 --> 00:00:14,300
+Ich habe hier die Funktion forward_pass.
+
+5
+00:00:14,300 --> 00:00:16,020
+Damit werden die Parameter
+
+6
+00:00:16,020 --> 00:00:18,880
+w und x multipliziert.
+
+7
+00:00:18,880 --> 00:00:20,585
+Es ist eine Matrizenmultiplikation,
+
+8
+00:00:20,585 --> 00:00:22,555
+da dies Tensoren sind.
+
+9
+00:00:22,555 --> 00:00:25,705
+w und x werden multipliziert.
+
+10
+00:00:25,705 --> 00:00:28,344
+In meiner Funktion train_loop
+
+11
+00:00:28,344 --> 00:00:31,544
+erstelle ich den Tensor w.
+
+12
+00:00:31,544 --> 00:00:34,870
+w ist jedoch keine Konstante
+
+13
+00:00:34,870 --> 00:00:37,725
+wie die Tensoren,
+die wir bislang besprochen haben.
+
+14
+00:00:37,725 --> 00:00:40,265
+w ist eine Variable.
+
+15
+00:00:40,265 --> 00:00:42,260
+Sein Name ist weights.
+
+16
+00:00:42,260 --> 00:00:44,430
+Seine Gestalt ist 1,2.
+
+17
+00:00:44,430 --> 00:00:47,740
+Das bedeutet, er umfasst
+eine Zeile und zwei Spalten.
+
+18
+00:00:47,740 --> 00:00:50,060
+Es ist eine 1x2-Matrix.
+
+19
+00:00:50,060 --> 00:00:54,105
+Wenn w initialisiert wird...
+Wir machen das jetzt nicht,
+
+20
+00:00:54,105 --> 00:00:58,045
+da TensorFlow ein Framework
+mit Lazy Evaluation ist.
+
+21
+00:00:58,045 --> 00:01:01,640
+Wir erstellen nur den Graphen
+und führen ihn noch nicht aus.
+
+22
+00:01:01,640 --> 00:01:04,300
+Wenn w also initialisiert wird,
+
+23
+00:01:04,300 --> 00:01:08,745
+erfolgt dies über die Funktion
+truncated_normal_initializer.
+
+24
+00:01:08,745 --> 00:01:11,410
+Dies ist eine häufig
+verwendete Initialisierungsstrategie
+
+25
+00:01:11,410 --> 00:01:14,070
+für neuronale Netze
+in TensorFlow-Programmen.
+
+26
+00:01:14,070 --> 00:01:17,280
+Eine Variable wird dabei
+mit Zufallswerten initialisiert,
+
+27
+00:01:17,280 --> 00:01:21,225
+welche jedoch nicht
+gleichmäßig verteilt sind.
+
+28
+00:01:21,225 --> 00:01:24,200
+Stattdessen gibt es
+eine Gaußsche Normalverteilung,
+
+29
+00:01:24,200 --> 00:01:27,100
+mit Erwartungswert 0 und Varianz 1.
+
+30
+00:01:27,100 --> 00:01:28,510
+Die Gaußsche Normalverteilung
+
+31
+00:01:28,510 --> 00:01:32,540
+ist jedoch sehr endlastig
+und kann zu extremen Ausreißern führen.
+
+32
+00:01:32,540 --> 00:01:34,840
+Sie ist unwahrscheinlich,
+jedoch nicht unmöglich.
+
+33
+00:01:34,840 --> 00:01:37,020
+Mit truncated_normal
+
+34
+00:01:37,020 --> 00:01:42,520
+wird das Ergebnis bei einem
+Vielfachen von Sigma gekürzt.
+
+35
+00:01:42,520 --> 00:01:46,855
+Zum Schluss legen wir fest,
+dass die Variable w trainiert werden kann.
+
+36
+00:01:46,855 --> 00:01:51,960
+Sie kann also während
+des Trainings geändert werden.
+
+37
+00:01:51,960 --> 00:01:54,100
+Der Sinn einer Variable ist natürlich,
+
+38
+00:01:54,100 --> 00:01:58,670
+dass man sie ändern kann,
+daher sind Variablen meist trainierbar.
+
+39
+00:01:58,670 --> 00:02:00,470
+Jedoch nicht immer.
+
+40
+00:02:00,470 --> 00:02:03,580
+Wir sprechen darüber
+bei der Reduktion der Modellgröße,
+
+41
+00:02:03,580 --> 00:02:06,305
+und wenn es um das Transferlernen geht.
+
+42
+00:02:06,305 --> 00:02:07,995
+Es kann also Situationen geben,
+
+43
+00:02:07,995 --> 00:02:10,795
+wo es hilfreich ist,
+einen Graphen einzufrieren,
+
+44
+00:02:10,795 --> 00:02:13,605
+damit die Variablen sich nicht ändern.
+
+45
+00:02:13,605 --> 00:02:17,025
+Das erreichen wir
+mit diesem Booleschen Flag.
+
+46
+00:02:17,025 --> 00:02:17,950
+Beachten Sie,
+
+47
+00:02:17,950 --> 00:02:21,830
+dass ich tf.get_variable
+zum Erstellen von w verwende.
+
+48
+00:02:22,480 --> 00:02:24,140
+Es gibt auch TensorFlow-Code,
+
+49
+00:02:24,140 --> 00:02:29,185
+der Variablen direkt
+mit der Funktion tf.variable erstellt.
+
+50
+00:02:29,185 --> 00:02:32,695
+Es wird nicht empfohlen,
+diesen Konstruktor zu verwenden.
+
+51
+00:02:32,695 --> 00:02:34,815
+Verwenden Sie lieber tf.get_variable.
+
+52
+00:02:34,815 --> 00:02:37,750
+In Lektion 9 werden wir sehen,
+
+53
+00:02:37,750 --> 00:02:41,010
+dass es nützlich sein kann,
+wenn man Variablen wiederverwenden
+
+54
+00:02:41,010 --> 00:02:42,985
+oder neu erstellen kann,
+
+55
+00:02:42,990 --> 00:02:45,085
+abhängig von der Situation.
+
+56
+00:02:45,085 --> 00:02:48,095
+Mit tf.get_variable ist dies möglich.
+
+57
+00:02:48,095 --> 00:02:49,580
+Meine Empfehlung wäre daher,
+
+58
+00:02:49,580 --> 00:02:53,580
+regulär tf.get_variable zu verwenden.
+
+59
+00:02:53,580 --> 00:02:57,030
+Wir führen jetzt forward_pass fünfmal aus
+
+60
+00:02:57,030 --> 00:03:02,260
+und speichern bei jeder Iteration
+das Ergebnis der Matrizenmultiplikation.
+
+61
+00:03:02,260 --> 00:03:05,510
+Nach dieser Produktberechnung
+ändern wir dann die Gewichtung.
+
+62
+00:03:05,510 --> 00:03:08,280
+Hier fügen wir 0,1 hinzu.
+
+63
+00:03:08,280 --> 00:03:10,005
+Das ist wie ein Gradientenupdate.
+
+64
+00:03:10,005 --> 00:03:13,410
+In der Praxis wählen wir
+beim Gradientenupdate natürlich aus,
+
+65
+00:03:13,410 --> 00:03:14,665
+welche Gewichte wir ändern
+
+66
+00:03:14,665 --> 00:03:15,785
+und wie wir sie ändern.
+
+67
+00:03:15,785 --> 00:03:18,105
+Da es hier nur um eine Demonstration geht,
+
+68
+00:03:18,105 --> 00:03:21,620
+füge ich den Gewichten immer 0,1 hinzu.
+
+69
+00:03:21,990 --> 00:03:28,160
+Jetzt rufen wir in der Sitzung
+train_loop auf und stellen x bereit.
+
+70
+00:03:28,350 --> 00:03:31,730
+x ist eine 2x3-Matrix.
+
+71
+00:03:31,730 --> 00:03:36,090
+Im Vorwärtsschritt
+multiplizieren wir also w mit x.
+
+72
+00:03:36,090 --> 00:03:38,075
+w ist eine 1x2-Matrix.
+
+73
+00:03:38,075 --> 00:03:44,110
+Die Multiplikation von 1x2-Matrix
+und 2x3-Matrix ergibt eine 1x3-Matrix.
+
+74
+00:03:44,110 --> 00:03:46,945
+Der Graph ist damit fertig,
+
+75
+00:03:46,945 --> 00:03:49,295
+wir müssen aber noch
+die Variablen initialisieren.
+
+76
+00:03:49,295 --> 00:03:51,260
+Das ist jedoch die Run-Phase.
+
+77
+00:03:51,260 --> 00:03:56,000
+In der Regel initialisieren wir
+alle Variablen im Graphen gleichzeitig,
+
+78
+00:03:56,000 --> 00:03:58,965
+und zwar mit global_variables_initializer.
+
+79
+00:03:58,965 --> 00:04:04,560
+Wir betrachten nun den Produktwert
+nach jedem einzelnen Schritt der Schleife,
+
+80
+00:04:04,560 --> 00:04:10,360
+und uns fällt auf, dass die 1x3-Matrix
+erwartungsgemäß jedes Mal anders ist.
+
+81
+00:04:11,220 --> 00:04:14,120
+Fassen wir nun das Gelernte zusammen:
+
+82
+00:04:14,120 --> 00:04:19,970
+Erstens, Sie erstellen
+eine Variable mit get_variable.
+
+83
+00:04:19,970 --> 00:04:24,775
+Ich habe vorhin eine Codezeile
+übersprungen, und zwar scope.
+
+84
+00:04:24,775 --> 00:04:26,564
+Wenn Sie eine Variable erstellen,
+
+85
+00:04:26,564 --> 00:04:29,425
+können Sie den Geltungsbereich festlegen.
+
+86
+00:04:29,425 --> 00:04:33,775
+Hier lege ich fest, dass die Variable
+jedes Mal wiederverwendet werden soll.
+
+87
+00:04:33,775 --> 00:04:37,245
+Es soll nicht jedes Mal
+eine neue Variable erstellt werden.
+
+88
+00:04:37,245 --> 00:04:39,990
+Ich rufe train_loop nur einmal auf,
+
+89
+00:04:39,990 --> 00:04:41,300
+darum ist es hier egal.
+
+90
+00:04:41,300 --> 00:04:43,310
+Würde ich train_loop erneut aufrufen,
+
+91
+00:04:43,310 --> 00:04:45,205
+würden die Gewichte dort fortfahren,
+
+92
+00:04:45,205 --> 00:04:46,725
+wo sie aufgehört haben.
+
+93
+00:04:46,725 --> 00:04:49,975
+Wir erstellen keine neue Variable
+und verwenden sie noch einmal.
+
+94
+00:04:49,985 --> 00:04:51,980
+Zweitens haben Sie gelernt,
+
+95
+00:04:51,980 --> 00:04:55,250
+dass Sie beim Erstellen
+einer Variable festlegen müssen,
+
+96
+00:04:55,250 --> 00:04:57,790
+wie die Variable
+initialisiert werden soll.
+
+97
+00:04:57,790 --> 00:04:59,640
+Beim Training neuronaler Netze
+
+98
+00:04:59,640 --> 00:05:03,760
+sind dies meist Zufallswerte mit
+abgeschnittener Normalverteilung.
+
+99
+00:05:03,770 --> 00:05:06,885
+Drittens: Sie verwenden die Variable
+
+100
+00:05:06,885 --> 00:05:11,240
+wie jeden anderen Tensor,
+wenn Sie den Graphen erstellen.
+
+101
+00:05:11,240 --> 00:05:13,955
+Viertens: In Ihrer Sitzung
+
+102
+00:05:13,955 --> 00:05:16,675
+müssen Sie die Variable initialisieren.
+
+103
+00:05:16,675 --> 00:05:20,030
+In der Regel initialisieren Sie
+alle Variablen gleichzeitig,
+
+104
+00:05:20,030 --> 00:05:23,165
+und zwar mit global_variables_initializer.
+
+105
+00:05:23,165 --> 00:05:25,640
+Nachdem die Variablen initialisiert sind,
+
+106
+00:05:25,640 --> 00:05:27,380
+und das ist Punkt Nummer 5,
+
+107
+00:05:27,380 --> 00:05:31,905
+können Sie jeden Tensor
+nach Wunsch bewerten.
+
+108
+00:05:32,705 --> 00:05:36,420
+Im folgenden Beispiel rufen wir
+die Trainingsschleife mit x auf.
+
+109
+00:05:36,425 --> 00:05:39,530
+x ist jedoch eine Konstante.
+
+110
+00:05:39,530 --> 00:05:41,670
+Wie realistisch ist das?
+
+111
+00:05:41,670 --> 00:05:45,290
+Würden Sie Inputwerte
+in Ihrem Programm hartcodieren?
+
+112
+00:05:45,290 --> 00:05:48,845
+Mit Platzhaltern können Sie
+Werte in den Graphen einspeisen.
+
+113
+00:05:48,845 --> 00:05:51,810
+Sie können Werte aus einer Textdatei
+
+114
+00:05:51,810 --> 00:05:53,150
+in eine Pythonliste einlesen
+
+115
+00:05:53,150 --> 00:05:56,170
+und diese Liste dann
+in den TensorFlow-Graphen eingeben.
+
+116
+00:05:56,170 --> 00:06:00,050
+a ist hier also
+ein Platzhalter für einen Skalar,
+
+117
+00:06:00,050 --> 00:06:03,380
+b ist gleich a multipliziert mit 4.
+
+118
+00:06:03,380 --> 00:06:06,680
+Wenn Sie a drucken, erhalten Sie
+den Debug-Output eines Tensors.
+
+119
+00:06:06,680 --> 00:06:08,900
+Sie lernen später,
+dass dieser spezielle Tensor
+
+120
+00:06:08,900 --> 00:06:13,760
+ein Platzhalter ist,
+der Gleitkommazahlen erfordert.
+
+121
+00:06:13,760 --> 00:06:15,595
+Wenn Sie jetzt b bewerten möchten,
+
+122
+00:06:15,595 --> 00:06:17,070
+können Sie nicht einfach sagen:
+
+123
+00:06:17,070 --> 00:06:18,290
+session.run(b).
+
+124
+00:06:18,290 --> 00:06:20,770
+Sie müssen Werte
+für die Platzhalter eingeben,
+
+125
+00:06:20,770 --> 00:06:22,340
+von denen b abhängig ist.
+
+126
+00:06:22,340 --> 00:06:25,140
+Im vorliegenden Fall
+müssen Sie eine Liste bereitstellen
+
+127
+00:06:25,140 --> 00:06:28,790
+oder ein NumPy-Array
+mit Zahlen für den Platzhalter a.
+
+128
+00:06:28,790 --> 00:06:32,375
+Dafür verwenden Sie
+feed_dict, ein Wörterbuch.
+
+129
+00:06:32,375 --> 00:06:34,850
+Ein Wörterbuch umfasst
+Schlüssel/Wert-Paare.
+
+130
+00:06:34,850 --> 00:06:37,065
+Der Schlüssel ist ein Platzhalter,
+
+131
+00:06:37,065 --> 00:06:38,785
+in diesem Fall a.
+
+132
+00:06:38,785 --> 00:06:41,655
+Der Wert ist eine Liste
+oder ein NumPy-Array.
+
+133
+00:06:41,655 --> 00:06:45,030
+In diesem Fall ist es 1,2,3.
+
+134
+00:06:45,030 --> 00:06:46,485
+Das geben wir also ein.
+
+135
+00:06:46,485 --> 00:06:48,325
+Wenn b bewertet wird,
+
+136
+00:06:48,325 --> 00:06:51,150
+erhalten wir den Wert
+für a multipliziert mit 4,
+
+137
+00:06:51,150 --> 00:06:53,800
+also 4,8,12.

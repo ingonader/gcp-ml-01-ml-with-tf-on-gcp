@@ -1,0 +1,459 @@
+1
+00:00:00,580 --> 00:00:02,480
+Ich hoffe, dass Sie im vorherigen Lab,
+
+2
+00:00:02,480 --> 00:00:04,525
+in dem Sie Code für die Berechnung
+
+3
+00:00:04,525 --> 00:00:07,105
+von einem Bereich 
+für ein Dreieck schreiben sollten,
+
+4
+00:00:07,105 --> 00:00:09,180
+nicht nur die Zellen ausgeführt,
+
+5
+00:00:09,180 --> 00:00:14,155
+sondern TensorFlow-Code
+neu geschrieben haben.
+
+6
+00:00:14,155 --> 00:00:17,290
+Wenn Sie so vorgegangen sind,
+
+7
+00:00:17,290 --> 00:00:21,440
+haben Sie sicher schnell
+Compiler- und Laufzeitfehler festgestellt
+
+8
+00:00:21,440 --> 00:00:23,385
+und sich gefragt,
+
+9
+00:00:23,385 --> 00:00:26,215
+wie Sie Fehler in einem
+TensorFlow-Programm beheben.
+
+10
+00:00:27,265 --> 00:00:29,265
+Aufgrund der Lazy Evaluation
+
+11
+00:00:29,265 --> 00:00:33,175
+ist eine Fehlerbehebung von
+TensorFlow-Programmen schwierig.
+
+12
+00:00:33,175 --> 00:00:35,075
+Fehler in Ihrem Diagramm
+
+13
+00:00:35,075 --> 00:00:39,585
+können Sie erst sehen, wenn dieser
+Teil des Diagramms ausgeführt wird.
+
+14
+00:00:40,385 --> 00:00:44,190
+Deswegen ist tf.eager hilfreich
+
+15
+00:00:44,190 --> 00:00:46,745
+beim Entwickeln von
+TensorFlow-Programmen.
+
+16
+00:00:46,745 --> 00:00:48,790
+Es ist jedoch kein Patentrezept.
+
+17
+00:00:48,790 --> 00:00:52,120
+Sie müssen Fehler in TensorFlow-
+Programmen beheben können,
+
+18
+00:00:52,120 --> 00:00:55,990
+auch wenn Sie das Programm
+interaktiv mit tf.eager entwickelt haben.
+
+19
+00:00:55,990 --> 00:01:01,105
+Wie beheben Sie Fehler in TensorFlow-
+Programmen mit verzögerten Bewertungen?
+
+20
+00:01:02,735 --> 00:01:04,610
+Fehler bei TensorFlow-Programmen
+
+21
+00:01:04,610 --> 00:01:07,350
+beheben Sie ähnlich 
+wie bei anderen Programmen.
+
+22
+00:01:07,350 --> 00:01:10,350
+Sie müssen Fehlermeldungen verstehen
+
+23
+00:01:10,350 --> 00:01:13,530
+und die Meldungen und Stacktraces nutzen,
+
+24
+00:01:13,530 --> 00:01:16,100
+um die Methode zu isolieren.
+
+25
+00:01:16,290 --> 00:01:19,769
+Wenn Sie die 
+problematische Methode isolieren,
+
+26
+00:01:19,769 --> 00:01:23,700
+können Sie die Methode selbst aufrufen.
+
+27
+00:01:23,700 --> 00:01:27,590
+Sie führen nicht das gesamte 
+TensorFlow-Programm für das Dataset aus,
+
+28
+00:01:27,590 --> 00:01:30,525
+um dies monolithisch zu beheben.
+
+29
+00:01:30,525 --> 00:01:34,720
+Stattdessen senden Sie 
+bestehende Daten an diese Methode,
+
+30
+00:01:34,720 --> 00:01:38,750
+um einen wiederholbaren Fehler
+zu erhalten, den Sie dann beheben.
+
+31
+00:01:39,350 --> 00:01:41,980
+Wie lässt sich der Fehler beheben?
+
+32
+00:01:41,980 --> 00:01:46,770
+Wir können nicht alle
+möglichen Fehler zeigen,
+
+33
+00:01:46,770 --> 00:01:50,385
+aber wir sehen uns einige
+häufige Fehlermeldungen an
+
+34
+00:01:50,385 --> 00:01:52,890
+und versuchen, diese zu beheben.
+
+35
+00:01:53,200 --> 00:01:56,410
+Sie dürfen eine Ausgabe
+von Fehlermeldungen
+
+36
+00:01:56,410 --> 00:02:00,155
+nicht einfach überfliegen.
+
+37
+00:02:00,155 --> 00:02:02,660
+Schauen Sie sich die
+Fehlermeldung genau an.
+
+38
+00:02:02,660 --> 00:02:06,490
+Sie brauchen zwei Informationen:
+
+39
+00:02:06,900 --> 00:02:09,365
+Erstens: Das Stacktrace.
+
+40
+00:02:09,365 --> 00:02:11,555
+Es ist der Aufrufstapel der Methoden
+
+41
+00:02:11,555 --> 00:02:13,910
+zur Zeit des Fehlers.
+
+42
+00:02:13,910 --> 00:02:16,345
+In diesem Beispiel sehen Sie,
+
+43
+00:02:16,345 --> 00:02:19,400
+dass die Zeile s
+gleich a plus b ist.
+
+44
+00:02:19,400 --> 00:02:23,809
+In der Methode ist eine
+Datenerfassung das Problem.
+
+45
+00:02:23,989 --> 00:02:29,245
+Der Aufrufstapel enthält auch einige
+TensorFlow-Bibliothekenmethoden.
+
+46
+00:02:29,245 --> 00:02:31,810
+Ihr Programm ruft diese Methoden auf.
+
+47
+00:02:31,810 --> 00:02:34,560
+Sie müssen sich also 
+Ihren Code genau anschauen.
+
+48
+00:02:34,560 --> 00:02:36,025
+Wenn Sie das tun,
+
+49
+00:02:36,025 --> 00:02:38,735
+suchen Sie die zweite Information:
+
+50
+00:02:38,735 --> 00:02:40,970
+Die eigentliche Fehlermeldung.
+
+51
+00:02:40,970 --> 00:02:43,650
+Hier beschreibt die Fehlermeldung
+
+52
+00:02:43,650 --> 00:02:45,750
+einen Wertefehler.
+
+53
+00:02:45,750 --> 00:02:49,085
+TensorFlow erwartet,
+dass die Dimensionen gleich sind.
+
+54
+00:02:49,085 --> 00:02:51,525
+Sie sind es aber nicht.
+
+55
+00:02:51,905 --> 00:02:54,175
+Was ist hier los?
+
+56
+00:02:54,175 --> 00:02:57,670
+Wenn Sie a und c addieren,
+
+57
+00:02:57,670 --> 00:03:03,980
+funktioniert dies nur, wenn a
+ein 2D-Tensor und c ein 2D-Tensor ist.
+
+58
+00:03:03,980 --> 00:03:06,185
+Oder: Wenn a ein 4D-Tensor ist,
+
+59
+00:03:06,185 --> 00:03:09,325
+muss c auch ein 4D-Tensor sein.
+
+60
+00:03:09,325 --> 00:03:14,475
+Hier ist entweder a oder c
+
+61
+00:03:14,475 --> 00:03:17,260
+ein 2D-Tensor in der Form 4,2
+
+62
+00:03:17,270 --> 00:03:22,530
+und der andere, vielleicht c,
+ist ein 1D-Tensor in der Form 4.
+
+63
+00:03:22,530 --> 00:03:25,240
+Da liegt das Problem.
+
+64
+00:03:25,790 --> 00:03:28,585
+Ihr Programm hat einen Fehler.
+
+65
+00:03:28,585 --> 00:03:31,420
+Vielleicht sollen beide 4,2 sein
+
+66
+00:03:31,420 --> 00:03:34,255
+oder beide 4.
+
+67
+00:03:34,255 --> 00:03:37,740
+Mit dem Aufrufstapel
+und der Fehlermeldung
+
+68
+00:03:37,740 --> 00:03:39,795
+verstehen Sie das Problem.
+
+69
+00:03:41,275 --> 00:03:44,500
+Im Aufrufstapel finden Sie die Codezeile
+
+70
+00:03:44,500 --> 00:03:46,370
+und den Namen der Methode.
+
+71
+00:03:46,370 --> 00:03:48,950
+Schauen Sie sich jetzt die Methode an.
+
+72
+00:03:48,950 --> 00:03:52,280
+Hier heißt die Methode some_method
+
+73
+00:03:52,280 --> 00:03:55,610
+und nimmt mit Tensoren
+aufgerufene Daten auf.
+
+74
+00:03:55,610 --> 00:03:58,785
+Diesen Tensor müssen Sie imitieren,
+
+75
+00:03:58,785 --> 00:04:01,405
+damit alles funktioniert.
+
+76
+00:04:01,405 --> 00:04:03,940
+Der Rest des Programms ist unwichtig.
+
+77
+00:04:03,940 --> 00:04:08,725
+Sie müssen nicht wissen, wie Daten in
+das aktuelle Programm eingelesen werden.
+
+78
+00:04:08,725 --> 00:04:11,905
+Wir rufen die Methode
+mit imitierten Daten auf.
+
+79
+00:04:11,905 --> 00:04:18,225
+Dazu erstellen Sie eine Sitzung
+und einen hartcodierten TensorArray.
+
+80
+00:04:18,225 --> 00:04:24,550
+Ich habe einen 4x3-Tensor
+namens fake_data erstellt.
+
+81
+00:04:24,960 --> 00:04:27,500
+Ich nehme fake_data
+
+82
+00:04:27,500 --> 00:04:31,560
+und übergebe ihn in
+eine Unterstrich-Methode.
+
+83
+00:04:31,560 --> 00:04:38,040
+Ich habe den Code einiger Daten auch
+mit Ausgabeanweisungen instrumentiert.
+
+84
+00:04:38,040 --> 00:04:41,245
+Das ist etwas altmodisch
+für die Fehlerbehebung,
+
+85
+00:04:41,245 --> 00:04:44,725
+aber am einfachsten, 
+um Formfehler zu finden.
+
+86
+00:04:44,725 --> 00:04:47,140
+Wir fügen zwei Dinge hinzu:
+
+87
+00:04:47,140 --> 00:04:49,940
+a und c – hier lag das Problem.
+
+88
+00:04:49,940 --> 00:04:54,315
+Ich gebe die Form a und die Form c aus.
+
+89
+00:04:54,315 --> 00:04:56,120
+Wenn ich das Programm ausführe,
+
+90
+00:04:56,120 --> 00:04:59,520
+gibt die erste Zeile 4,2 aus,
+
+91
+00:04:59,520 --> 00:05:02,229
+und die zweite Zeile gibt 4 aus.
+
+92
+00:05:02,229 --> 00:05:05,330
+So lautete die Wertefehlermeldung.
+
+93
+00:05:05,330 --> 00:05:07,745
+Was hatten Sie beabsichtigt?
+
+94
+00:05:07,745 --> 00:05:10,895
+Wollten Sie eine 4,2-
+Matrix aus c herausschneiden?
+
+95
+00:05:10,895 --> 00:05:14,485
+Oder wollten Sie einen 1D-
+Vektor für a herausschneiden?
+
+96
+00:05:14,485 --> 00:05:17,370
+Was immer Sie beabsichtigt hatten,
+
+97
+00:05:17,370 --> 00:05:18,880
+müssen Sie tun.
+
+98
+00:05:18,880 --> 00:05:20,616
+Wenn ich das Programm ausführe,
+
+99
+00:05:20,616 --> 00:05:23,866
+gibt die erste Zeile 4,2 aus,
+
+100
+00:05:23,866 --> 00:05:26,686
+und die zweite Zeile gibt 4 aus.
+
+101
+00:05:26,686 --> 00:05:29,466
+So lautete die Wertefehlermeldung.
+
+102
+00:05:29,466 --> 00:05:31,976
+Was hatten Sie beabsichtigt?
+
+103
+00:05:31,976 --> 00:05:35,966
+Wollten Sie eine 4,2-
+Matrix aus c herausschneiden?
+
+104
+00:05:35,966 --> 00:05:39,433
+Oder wollten Sie einen 1D-
+Vektor für a herausschneiden?
+
+105
+00:05:39,433 --> 00:05:42,063
+Was immer Sie beabsichtigt hatten,...

@@ -1,0 +1,84 @@
+Schauen wir uns unser erstes
+Code-Lab zu Estimators an. Damit wir anfangen können,
+müssen wir die Code-Lab-Dateien finden. Machen wir das gemeinsam. Gehen Sie auf cloud.google.com/console und
+melden Sie sich mit Ihrem Lab-Konto an. Das mache ich auch. Wählen Sie jetzt ein Projekt aus. Manchmal ist es
+bereits für Sie ausgewählt. Öffnen Sie die Cloud Shell
+über dieses Symbol hier. In der Cloud Shell
+geben wir "datalab create" ein. Nennen wir unsere
+Data Lab-Instanz "mylab". Wir erstellen sie
+in der Zone "us-central1-a". Damit wird unsere
+erste Data Lab-Instanz erstellt. Beim ersten Mal dauert es eine Weile. Beim nächsten Mal müssen Sie
+die Daten der Instanz nicht neu erstellen. Verbinden Sie sich einfach wieder,
+indem Sie "datalab connect" und den Instanznamen
+eingeben, in meinem Fall "mylab". Wählen Sie jetzt
+diese Web-Vorschau-Schaltfläche. Ändern Sie den Port zu 8081.
+Diesen verwendet Data Lab. Klicken Sie dann auf "preview". Das öffnet ein
+vertrautes Notebook-Interface. Hier müssen wir noch
+den Code von GitHub abrufen. Also öffnen wir ein Notebook,
+um Bash-Befehle eingeben zu können. %bash. Wir werden außerdem
+unser Code-Lab-Repository mit dem Befehl "git clone" in
+das lokale Verzeichnis kopieren. Sobald das abgeschlossen ist, wird das lokale Verzeichnis angezeigt. Es kann losgehen. Es heißt "training-data-analyst", und dort suchen Sie das Verzeichnis "courses", dann "machine_learning" und "deepdive". Dann "tensorflow". Unser erstes Lab ist "b_estimator.ipynb". In diesem Beispiel verwenden wir Pandas,
+um unsere Daten aus CSV-Dateien zu lesen, die Informationen
+über Taxifahrten enthalten. Abholort, Absetzort und
+die Anzahl der Fahrgäste. Wir werden unser Modell trainieren,
+um den Taxifahrpreis vorherzusagen. Schauen wir es uns an. Zuerst definieren wir hier unsere
+Spaltennamen: fare amount, pickuplon, pickuplat und so weiter. Wir verwenden Pandas,
+um diese Daten aus CSV-Dateien zu lesen. Ein Dataset für Trainingsdaten,
+eines für Validierungsdaten. Als nächstes nutzen wir die in Estimators eingebaute Funktionalität, um aus
+Pandas eine Eingabefunktion zu erstellen. Sie heißt
+tf.estimators.inputs.pandas_input_fn. Mit der Funktion können
+wir hier die Features als x und hier die
+Ziellabels als y angeben. Sie nimmt auch alle Standardeinstellungen
+für ein Trainingsdataset vor, die Batchgröße, die Anzahl
+der Epochen und auch das Mischen mit der "queue_capacity" hier,
+die einfach der Zwischenspeicher der Zufallswarteschlange ist. Starten wir es einmal. Als Nächstes erstellen
+wir unsere Featurespalten. Alle sind numerische Spalten. Wir rufen also für jede
+tf.feature_column.numeric_column auf. Die Featurespaltenliste teilt
+dem Modell mit, wie die Daten in den Eingabevektor geschrieben werden. Das Modell wird genau hier instanziiert. Wir übergeben ihm hier
+die Featurespaltenliste und ein Verzeichnis, in das alle
+Ausgabedaten geschrieben werden. Wir trainieren das Modell durch Aufruf der Funktion "train" und
+fügen die Funktion zur Dateneingabe ein. Die Funktionen "train" und "input_fn". Diese holt die Daten aus dem
+Pandas-Dataframe in unser Modell. Das Modell läuft nun für zehn Schritte. Die Trainingsprotokolle finden Sie hier. Es ist fertig und damit trainiert. Wie gut ist es? Testen wir das mit
+unserem Validierungsdataset. Dafür rufen wir
+"model.evaluate" hier auf. Diesmal fügen wir
+die Dateneingabefunktion ein, die die Daten aus dem Validierungs-
+Dataframe "df_valid" von Pandas holt. Also fügen wir es hier ein. Damit erhalten wir unsere Ergebnisse. Der endgültige RMSE, der 
+Root-Mean-Square-Error, beträgt 10 $. 10 $ ist für einen
+Taxifahrpreis eine große Abweichung. Und weit von der vorherigen
+Benchmark von 6 $ entfernt. Das verbessern wir später. Jetzt haben
+wir erstmal einen funktionierenden Code. Mal sehen, ob wir dieses Modell
+für Vorhersagen verwenden können. Wenn wir das Modell
+erneut instanziieren, sucht es nach einem Checkpoint im
+Modellverzeichnis und lädt von dort neu. Da wir das Modell gerade trainiert
+haben, hat es jetzt einen Checkpoint und ist bereit für Vorhersagen. Wir instanziieren es hier und
+übergeben ihm dasselbe Ausgabeverzeichnis. Die hier aufgerufene Vorhersagefunktion
+gibt einen Python-Generator zurück. Wir rufen ihn in einer Schleife auf,
+um Preisvorhersagen zu bekommen. Genau hier, und Sie sehen
+die Preisvorhersagen hier. Vielleicht erklärt das,
+warum der RMSE so hoch war. Das Modell sagt im Grunde
+für jede Fahrt den gleichen Betrag voraus. Würde ein komplexeres Modell helfen? Probieren wir es mit einem 
+neuronalen Deep-Learning-Netzwerk. Wir lassen alles so wie es ist,
+Featurespalten, Eingabefunktionen, und haben das Modell von einem
+linearen Regressor zu einen DNN-Regressor mit drei versteckten Schichten geändert. Machen wir das so. Wir instanziieren hier den
+DNN-Regressor und konfigurieren hier die versteckten Schichten. Also 32 Knoten in der ersten, 8 Knoten
+in der zweiten, 2 Knoten in der letzten. Trainieren wir es. Das Training erfolgt
+wieder für zehn Epochen. Am Ende rufen wir
+die Funktion model.predict über den Helfer print_rmse auf. Das Training läuft und läuft. Jetzt kommt die Validierung. Und der RMSE des
+Validierungsdataset ist jetzt 11 $. Das ist immer noch schlecht. Keines der beiden Modelle
+übertrifft unser Benchmark-Modell. Wieso? Wir verwenden zwar
+TensorFlow für maschinelles Lernen, wir nutzen es
+aber noch nicht gut genug. Darum geht es im Rest dieses Kurses. Wenn wir aber zwischen den
+beiden Modellen wählen müssten, würden wir das mit dem
+geringsten Validierungsfehler wählen. Letztlich würden wir den RMSE der
+Testdaten am gewählten Modell messen. Der finale RMSE kann als
+objektive Leistung des besten Modells veröffentlicht werden. Das ist das Standardverfahren der
+Data Science: Training, Validierung und Test mit jeweils separatem Dataset. Versuchen wir es mit
+unserem Benchmark-Dataset. Der RMSE für das
+Benchmark-Dataset beträgt 9,41. Und jetzt ist der RMSE des
+Benchmark-Datasets 10,50 $. Dies ist nicht nur viel mehr als unser
+ursprünglicher Benchmarkwert von 6 $. Er trifft nicht einmal annähernd
+den entfernungsbasierten RMSE von 8 $. Sie haben aber nun gelernt,
+ein TensorFlow-Modell zu schreiben. Es fehlen nur noch einige die Dinge,
+um Ihr Modell zu verbessern und es leistungsstark zu machen. Damit beschäftigen wir 
+uns in den nächsten Kapiteln. In diesem Kapitel bereiten wir
+das TensorFlow-Modell jedoch auf diese Verbesserungen vor.

@@ -1,0 +1,604 @@
+1
+00:00:00,000 --> 00:00:01,670
+Vamos começar pela generalização.
+
+2
+00:00:01,670 --> 00:00:05,289
+Ela nos ajuda a saber
+quando o modelo de ML mais preciso
+
+3
+00:00:05,289 --> 00:00:07,414
+nem sempre é a melhor escolha.
+
+4
+00:00:08,774 --> 00:00:09,619
+Mais uma vez,
+
+5
+00:00:09,619 --> 00:00:12,085
+veremos o conhecido
+conjunto de dados de natalidade.
+
+6
+00:00:12,085 --> 00:00:14,310
+Desta vez, usaremos
+o ganho de peso da mãe
+
+7
+00:00:14,310 --> 00:00:17,005
+no eixo X para prever
+a duração da gravidez
+
+8
+00:00:17,005 --> 00:00:18,480
+no eixo Y.
+
+9
+00:00:19,070 --> 00:00:21,560
+O que você nota sobre
+o padrão apresentado nos dados?
+
+10
+00:00:22,530 --> 00:00:24,400
+A correlação
+parece muito clara.
+
+11
+00:00:24,400 --> 00:00:27,220
+Quanto maior o peso,
+mais avançada a gestação.
+
+12
+00:00:27,220 --> 00:00:29,775
+E isso faz sentido, 
+porque o bebê está crescendo.
+
+13
+00:00:32,105 --> 00:00:34,745
+Para moldar esse comportamento
+e provar uma correlação,
+
+14
+00:00:34,745 --> 00:00:38,060
+qual modelo você
+normalmente chamaria primeiro?
+
+15
+00:00:38,730 --> 00:00:40,680
+Se você disse modelo
+de regressão linear,
+
+16
+00:00:40,680 --> 00:00:41,595
+acertou em cheio.
+
+17
+00:00:42,125 --> 00:00:44,690
+Como já resolvemos os
+problemas de regressão,
+
+18
+00:00:44,690 --> 00:00:46,875
+a métrica de perda
+que você quer otimizar
+
+19
+00:00:46,875 --> 00:00:49,140
+costuma ser 
+o erro quadrático médio (MSE)
+
+20
+00:00:49,140 --> 00:00:52,780
+ou a raiz do erro 
+quadrático médio (RMSE).
+
+21
+00:00:54,510 --> 00:00:59,295
+O MSE diz o quanto uma linha de regressão
+está perto de seu conjunto de pontos.
+
+22
+00:00:59,295 --> 00:01:03,680
+Ele faz isso medindo as distâncias entre 
+os pontos e a linha de regressão real.
+
+23
+00:01:03,680 --> 00:01:07,355
+E essas distâncias são
+os erros elevados ao quadrado.
+
+24
+00:01:07,355 --> 00:01:10,615
+E esse cálculo é necessário para
+remover quaisquer sinais negativos.
+
+25
+00:01:10,615 --> 00:01:15,265
+E o MSE também dá mais peso
+a essas diferenças maiores da linha.
+
+26
+00:01:15,265 --> 00:01:21,080
+Calcular a raiz quadrada do MSE
+gera a RMSE que é a distância média
+
+27
+00:01:21,080 --> 00:01:25,405
+de um ponto de dados da linha ajustada
+medida ao longo de uma linha vertical.
+
+28
+00:01:25,405 --> 00:01:29,740
+A RMSE é interpretada diretamente em 
+termos das unidades de medida no eixo Y.
+
+29
+00:01:29,740 --> 00:01:33,575
+Então, é uma medida de adequação 
+e não um coeficiente de correlação.
+
+30
+00:01:34,455 --> 00:01:35,890
+Nas duas medidas de erro,
+
+31
+00:01:35,890 --> 00:01:38,680
+um valor mais baixo indica um
+modelo com melhor desempenho
+
+32
+00:01:38,680 --> 00:01:41,900
+e quanto mais próximo
+o erro estiver de zero, melhor.
+
+33
+00:01:43,070 --> 00:01:45,435
+Aqui, estamos usando
+um modelo de regressão linear
+
+34
+00:01:45,435 --> 00:01:49,465
+que apenas desenha a linha de melhor
+ajuste para minimizar o erro.
+
+35
+00:01:49,465 --> 00:01:53,115
+Nossa RMSE final é 2,224.
+
+36
+00:01:53,115 --> 00:01:56,215
+E, no nosso caso,
+isso é muito bom!
+
+37
+00:01:58,305 --> 00:01:59,935
+Ok, mas veja isto.
+
+38
+00:01:59,935 --> 00:02:01,845
+E se você usasse um
+modelo mais complexo?
+
+39
+00:02:01,845 --> 00:02:04,700
+Esse modelo poderia ter
+mais parâmetros livres.
+
+40
+00:02:04,700 --> 00:02:07,135
+Tais parâmetros
+permitem que capturemos
+
+41
+00:02:07,135 --> 00:02:10,050
+todos os rabiscos nesse conjunto
+de dados, como você pode ver.
+
+42
+00:02:10,630 --> 00:02:13,820
+Ao reduzir nossa RMSE
+em direção a zero,
+
+43
+00:02:13,820 --> 00:02:15,820
+o modelo fica
+totalmente preciso.
+
+44
+00:02:15,820 --> 00:02:16,935
+Tudo certo?
+
+45
+00:02:16,935 --> 00:02:18,260
+Este é o melhor modelo?
+
+46
+00:02:18,260 --> 00:02:19,815
+Podemos colocá-lo
+em produção?
+
+47
+00:02:19,815 --> 00:02:24,885
+Talvez você pense que há
+algo de suspeito no modelo número 2.
+
+48
+00:02:24,885 --> 00:02:26,590
+Mas como podemos afirmar isso?
+
+49
+00:02:26,590 --> 00:02:30,160
+Em ML, muitas vezes temos
+muitos dados e nenhuma intuição.
+
+50
+00:02:30,160 --> 00:02:34,235
+Uma rede neural com 8 nodes
+é melhor do que uma com 12?
+
+51
+00:02:34,235 --> 00:02:37,050
+A rede com 16 nodes tem uma RMSE menor.
+
+52
+00:02:37,050 --> 00:02:38,755
+Devemos escolher essa rede?
+
+53
+00:02:38,755 --> 00:02:42,460
+O exemplo mostrado pode ser
+um polinômio da centésima ordem
+
+54
+00:02:42,460 --> 00:02:44,905
+ou uma rede neural
+com centenas de nodes.
+
+55
+00:02:44,905 --> 00:02:46,750
+Conforme visto no exemplo de espiral,
+
+56
+00:02:46,750 --> 00:02:48,775
+no fim da última aula
+sobre otimização,
+
+57
+00:02:48,775 --> 00:02:52,765
+um modelo mais complexo tem
+mais parâmetros a serem otimizados.
+
+58
+00:02:52,765 --> 00:02:55,740
+Os modelos ajudam a ajustar
+dados mais complexos como a espiral
+
+59
+00:02:55,740 --> 00:02:59,840
+e a memorizar
+conjuntos menores e mais simples.
+
+60
+00:02:59,840 --> 00:03:02,510
+Em que ponto
+dizemos a um modelo:
+
+61
+00:03:02,510 --> 00:03:04,070
+pare de treinar,
+
+62
+00:03:04,070 --> 00:03:06,045
+você está memorizando 
+o conjunto de dados
+
+63
+00:03:06,045 --> 00:03:07,450
+e talvez se ajustando demais?
+
+64
+00:03:08,360 --> 00:03:11,840
+Uma das melhores maneiras de avaliar
+a qualidade de um modelo é ver
+
+65
+00:03:11,840 --> 00:03:15,190
+o desempenho dele com
+um conjunto de dados novo.
+
+66
+00:03:15,190 --> 00:03:20,715
+Depois, podemos ver se esse modelo
+generaliza bem nos novos pontos de dados.
+
+67
+00:03:20,715 --> 00:03:23,640
+É um bom representante para a
+produção de dados do mundo real.
+
+68
+00:03:24,150 --> 00:03:26,500
+Voltemos ao modelo de regressão linear
+
+69
+00:03:26,500 --> 00:03:29,590
+e aos modelos de rede neural
+para ver como eles estão se saindo.
+
+70
+00:03:30,350 --> 00:03:32,885
+O modelo de regressão linear
+nos novos pontos de dados
+
+71
+00:03:32,885 --> 00:03:34,440
+está generalizando muito bem.
+
+72
+00:03:34,440 --> 00:03:37,360
+Nossa RMSE é comparável
+com a que vimos antes
+
+73
+00:03:37,360 --> 00:03:39,925
+e, neste caso, não
+ter surpresas é bom.
+
+74
+00:03:39,925 --> 00:03:45,150
+Queremos um desempenho consistente
+nos modelos em treinamento e validação.
+
+75
+00:03:45,150 --> 00:03:48,670
+Se olharmos de novo o modelo 2,
+veremos que ele não generaliza bem
+
+76
+00:03:48,670 --> 00:03:50,250
+no novo design de treinamento,
+
+77
+00:03:50,250 --> 00:03:51,580
+e isso é muito preocupante.
+
+78
+00:03:51,580 --> 00:03:54,770
+A RMSE pulou
+de 0 para 3,2.
+
+79
+00:03:54,770 --> 00:03:57,210
+Isso é problemático e
+indica que o modelo
+
+80
+00:03:57,210 --> 00:03:58,630
+está se autoajustando demais
+
+81
+00:03:58,630 --> 00:04:00,730
+nos dados de
+treinamento fornecidos
+
+82
+00:04:00,730 --> 00:04:05,385
+e que ele provou ser muito frágil ou
+não generalizável em dados novos.
+
+83
+00:04:05,385 --> 00:04:07,000
+Talvez você se pergunte:
+
+84
+00:04:07,000 --> 00:04:09,525
+como saber se meu modelo
+não está se ajustando demais?
+
+85
+00:04:09,525 --> 00:04:11,510
+Como saber a hora
+de parar o treinamento?
+
+86
+00:04:11,510 --> 00:04:13,445
+E a resposta é muito simples.
+
+87
+00:04:13,445 --> 00:04:16,080
+Nós dividiremos os seus dados.
+
+88
+00:04:16,080 --> 00:04:21,195
+Ao dividir o conjunto de dados original em
+grupos isolados e separados,
+
+89
+00:04:21,195 --> 00:04:23,357
+você pode reprogramar seu modelo,
+
+90
+00:04:23,357 --> 00:04:25,930
+treiná-lo no conjunto
+de dados de treinamento
+
+91
+00:04:25,930 --> 00:04:27,780
+e comparar o desempenho dele
+
+92
+00:04:27,780 --> 00:04:31,445
+em relação a um
+conjunto de dados de validação separado.
+
+93
+00:04:31,445 --> 00:04:33,255
+E os modelos que generalizaram bem
+
+94
+00:04:33,255 --> 00:04:38,055
+terão métricas de perda ou valores de erro
+similares no treinamento e na validação.
+
+95
+00:04:38,055 --> 00:04:39,740
+Assim que notar
+que os modelos não
+
+96
+00:04:39,740 --> 00:04:40,855
+têm um bom desempenho
+
+97
+00:04:40,855 --> 00:04:42,960
+em relação ao conjunto
+de dados de validação,
+
+98
+00:04:42,960 --> 00:04:44,885
+como se as métricas de perda
+aumentassem,
+
+99
+00:04:44,885 --> 00:04:46,560
+é hora de parar.
+
+100
+00:04:47,890 --> 00:04:49,960
+O treinamento e a avaliação
+de modelos de ML
+
+101
+00:04:49,960 --> 00:04:51,380
+tentam encontrar o modelo
+
+102
+00:04:51,380 --> 00:04:53,410
+e os parâmetros
+certos e generalizáveis que
+
+103
+00:04:53,410 --> 00:04:56,555
+se ajustem ao seu conjunto de dados
+de treinamento sem memorização.
+
+104
+00:04:56,555 --> 00:04:57,832
+Como você vê aqui,
+
+105
+00:04:57,832 --> 00:04:59,960
+temos um modelo
+linear muito simples
+
+106
+00:04:59,960 --> 00:05:02,940
+que não se ajusta aos
+relacionamentos verdadeiros com os dados.
+
+107
+00:05:02,940 --> 00:05:05,390
+O resultado ruim é quase
+notado visualmente. Certo?
+
+108
+00:05:05,390 --> 00:05:08,190
+Há alguns pontos fora da
+forma dessa linha de tendência.
+
+109
+00:05:08,190 --> 00:05:10,330
+Chamamos isso de subajuste.
+
+110
+00:05:10,330 --> 00:05:13,020
+No extremo oposto do espectro,
+
+111
+00:05:13,020 --> 00:05:15,485
+está o sobreajuste 
+que é um pouco mais perigoso,
+
+112
+00:05:15,485 --> 00:05:16,530
+como já falamos.
+
+113
+00:05:16,530 --> 00:05:18,230
+Isso é mostrado na extrema direita.
+
+114
+00:05:18,230 --> 00:05:21,250
+Aumentamos muito a 
+complexidade do modelo linear
+
+115
+00:05:21,250 --> 00:05:23,575
+interpretado para
+a enésima ordem polinomial
+
+116
+00:05:23,575 --> 00:05:25,600
+que parece ajudar o modelo
+
+117
+00:05:25,600 --> 00:05:28,510
+e ajustar os dados e todos
+os rabiscos mencionados antes.
+
+118
+00:05:28,510 --> 00:05:31,380
+É aí que o seu conjunto de dados
+de avaliação entra em cena.
+
+119
+00:05:31,380 --> 00:05:34,625
+Você determina se os parâmetros
+do modelo geram um sobreajuste.
+
+120
+00:05:34,625 --> 00:05:36,210
+São complexos demais?
+
+121
+00:05:36,210 --> 00:05:39,185
+E o sobreajuste ou a memorização 
+naqueles dados de treinamento
+
+122
+00:05:39,185 --> 00:05:41,310
+podem ser piores do que
+um modelo que apenas
+
+123
+00:05:41,310 --> 00:05:42,512
+se ajusta aos dados.
+
+124
+00:05:42,512 --> 00:05:44,555
+Às vezes você só
+descobre na produção,
+
+125
+00:05:44,555 --> 00:05:46,142
+foi o que validamos.
+
+126
+00:05:46,142 --> 00:05:48,831
+O nível certo de
+complexidade do modelo
+
+127
+00:05:48,831 --> 00:05:51,615
+fica entre o subajuste e o sobreajuste.
+
+128
+00:05:52,305 --> 00:05:55,140
+Vejamos como usar nosso
+conjunto de dados de validação
+
+129
+00:05:55,140 --> 00:05:58,850
+para saber quando parar
+de treinar e evitar o sobreajuste.

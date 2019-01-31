@@ -1,0 +1,82 @@
+Como você viu,
+dividir conjuntos de dados permite testar a modelagem
+no conjunto de dados simulados de uso real ao usar um subconjunto
+de dados de treinamento. Mas como saber onde dividir
+o conjunto de dados original? E se o conjunto de dados for enorme? É necessário treinar e
+testar em cada ponto de dados? No exemplo desta lição, ensinarei você a
+dividir os dados de maneira repetível usando o Google Big Query
+e a evitar as dificuldades mais comuns. Você colocará isso em prática
+no próximo laboratório. Vamos lá! Antes de dividirmos os conjuntos de dados, precisamos arrumar um. Neste exemplo, usaremos os dados da agência de estatísticas de 
+transportes dos EUA sobre linhas aéreas. O Google disponibilizou
+esses dados aos usuários no Big Query, no conjunto
+airlineontimedata.flights. Esse conjunto de dados
+rastreia atrasos em chegadas e partidas de até 70 milhões de voos. Vamos ver como separar
+uma amostra para treinamento, validação e testagem dos dados do conjunto de maneira repetível e uniforme. O SQL, 
+a linguagem de consulta estruturada, e o Big Query,
+por ser onde se executa o SQL, têm a função RAND, que gera um valor entre zero e um. Você pode receber 80% dos dados
+do conjunto aplicando a cláusula WHERE, como mostramos aqui. Repare que há alguns problemas. Pense se este processo será repetível se algum colega quiser refazer seu experimento com os mesmos 
+80% de dados de treinamento que você usou. Pense que 
+o conjunto abrange 70 milhões de voos. Seu colega receberia
+os mesmos 56 milhões de voos ou seriam voos diferentes
+do mesmo conjunto de dados? Bem, precisamos de uma forma
+mais precisa de saber que dados pertencem a que intervalo:
+treinamento, validação ou testagem. Isso permitirá repetir os experimentos usando os mesmos dados para cada intervalo. Como você talvez tenha percebido, uma função random simples escolhe um novo conjunto de cinco linhas aleatórias a cada consulta executada. Desse modo, é muito difícil, quase impossível, identificar e dividir os 20% de dados restantes para
+os intervalos de validação e testagem. O conjunto de dados
+também pode ser reordenado, o que cria
+um viés na amostra. Incluir uma cláusula ORDER BY vai gerar novos problemas em ações como aplicar
+gradiente descendente em minilote. Para aprendizado de máquina, você precisa poder
+criar amostras de dados repetíveis. Para fazer isso, 
+você pode usar os últimos dígitos da função hash no campo usado 
+para dividir ou intervalar seus dados. A função fica
+disponível publicamente como FARM_FINGERPRINT no BigQuery. Essa função pega um valor, 
+como 10/12/2018, e transforma-o em 
+uma longa string de dígitos. Este valor de hash será idêntico para todos os valores
+10/12/2018 no conjunto. Se você está criando um algoritmo
+de ML para prever atrasos na chegada, pode ser necessário
+dividir os dados por data e criar um conjunto de dados de treinamento
+com aproximadamente 80% dos dias. Eles serão repetíveis porque a função FARM_FINGERPRINT retornará o mesmo valor toda vez
+que uma data for especificada. Você pode ter certeza
+de que receberá exata ou aproximadamente
+os mesmos 80% todas as vezes. Se você dividir os dados
+por aeroporto de chegada e definir 80% de aeroportos
+no conjunto de treinamento enquanto o resto é testado e validado, você precisaria usar
+a função hash no aeroporto de chegada. Considerando-se esta consulta, como você separaria
+uma nova amostra de 10% para avaliação? Você teria que mudar o
+< 8 para = 8 para testagem de dados ou = 8 para = 9 e receber uma nova
+amostra de 10% para avaliação ou testagem. Desta maneira, dividimos intervalos. Se quisermos prever atrasos
+com base em companhias aéreas, horário, clima
+e características do aeroporto, como o número de pistas que ele tem. Em que campos
+vamos dividir o conjunto? Dia? Aeroporto? Nome da companhia? É possível dividir os seus dados nestes conjuntos válidos,
+mas saiba que isso pode ser estressante. Por exemplo, se você quer
+dividir por data para prever atrasos de chegada, mas seu conjunto
+só tem informações sobre dois dias, você não terá
+uma divisão mais granular que 50%. Lembre-se de que hash é 
+uma função que retorna apenas um valor. Você não terá uma precisão
+de 80% com apenas dois dias. Vamos analisar cada uma das opções. Podemos intervalar ou gerar
+hash e dividir por data? OK, pode ser.
+Mas, lembre-se de que você não poderá prever com base em fatores como feriados, como Natal e Ano Novo. Ou seja, sua previsão não pode ser
+motivada por fatores que dependem da data, porque a forma como
+você intervalou não permitirá. OK. E se gerarmos hash e
+dividirmos pelo nome dos aeroportos? Tudo bem, desde que
+seja bem distribuído e tenha ruído. Você não poderá mais fazer
+previsões específicas para o aeroporto. Por exemplo, voos saindo
+do JFK às 17h sempre se atrasam. Você não poderá usar JFK porque
+a divisão foi feita com base no aeroporto. E se fizer o mesmo
+processo com base na companhia? Se houver somente 11 companhias,
+e você quiser dividir os dados, esse número não será suficiente
+para fazer uma divisão mais refinada. Por isso, em vez de 80%, você terá uma precisão de 60%,
+o que pode não ser suficiente para você. Para começar o desenvolvimento de ML, é recomendável desenvolver o código
+do TensorFlow em um subconjunto pequeno. Depois, escalonar na nuvem
+para a produtização. Se você estiver
+desenvolvendo um aplicativo de ML, a cada mudança você precisará
+executar novamente o aplicativo. Se você usar o conjunto inteiro, isso poderá demorar muito tempo. São petabytes de dados, seria
+impossível desenvolver softwares assim. O ideal é ter um conjunto
+de dados pequeno para executar o código, depurar e executar novamente com rapidez. Assim que o aplicativo estiver funcionando, você poderá executar o código
+no conjunto inteiro quantas vezes quiser. É como desenvolver um protótipo. Agora, vamos aprender
+a separar um subconjunto uniforme de dados sobre companhias aéreas. Criamos os intervalos, mas queremos menos dados. Os dados de voos têm 70 milhões de linhas. Você precisa de um conjunto menor, com um milhão de voos,
+e precisa que sejam repetíveis. Como escolher uma das 70 linhas de dados
+e depois 80% dos dados para o treinamento? Você não pode escolher um entre os
+70, e depois um entre os 10 resultantes. Você sabe o porquê? Se você está
+lidando com números divisíveis por 70, claro que eles serão divisíveis por 10. Esta segunda operação modular
+é inútil. Agora, vamos fazer uma breve
+demonstração e ver o que isso significa.

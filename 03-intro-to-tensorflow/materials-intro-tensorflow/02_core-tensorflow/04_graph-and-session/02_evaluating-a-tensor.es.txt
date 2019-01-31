@@ -1,0 +1,19 @@
+Puede llamar a sess.run z o z.eval para evaluar z en el contexto
+de la sesión predeterminada. z.eval es solo un acceso directo y a menudo lo verá en el código. Es lo mismo que llamar a run
+en la sesión predeterminada. Si bien puede llamar
+a sess.run y pasar un solo tensor también puede pasar
+una lista de tensores para evaluar. TensorFlow decidirá qué partes del gráfico debe evaluar
+y realizará la evaluación. A cada tensor de entrada corresponde un arreglo de NumPy
+en la salida. Puesto que pasamos z1 y z3 obtenemos dos matrices
+de NumPy que llamaré a1 y a3. Note que el código también muestra
+que no hace falta escribir tf.add(x, y). Puede simplemente decir x + y porque las operaciones aritméticas
+comunes ya están cargadas. Hace poco mencioné tf.eager brevemente. Por lo general, los programas de TensorFlow
+usan la evaluación reactiva y es lo que le recomiendo
+para escribir código de producción. Sin embargo,
+durante el desarrollo o la depuración puede ser conveniente
+que el código se ejecute de inmediato en lugar de en forma reactiva. Por eso, aquí muestro cómo usar tf.eager. Importe tf.eager
+y habilite con enable_eager_execution. Asegúrese de hacerlo solo una vez. Por lo general, se hace
+al inicio de la función principal. En este caso, creo dos tensores, x y y y uso print en (x - y). Si no estuviera en modo proactivo ¿qué se mostraría? Solo la salida del depurador del tensor. Esto hubiera incluido el nombre único
+asignado por el sistema para el nodo del DAG con la forma y el tipo de dato del valor
+que se mostrará cuando se ejecute el DAG. Sin embargo, como usamos el modo proactivo no necesitamos esperar a sess.run
+para obtener el resultado de la resta. Por eso, cuando ejecuto (x - y) se ve la lista [2, 3, 4].

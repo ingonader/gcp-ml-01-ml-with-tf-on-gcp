@@ -1,0 +1,203 @@
+1
+00:00:00,000 --> 00:00:04,740
+Tomemos unos minutos para analizar
+cómo supervisamos nuestros trabajos.
+
+2
+00:00:04,740 --> 00:00:08,655
+Cuando envía un trabajo para su
+ejecución en Cloud Machine Learning Engine
+
+3
+00:00:08,655 --> 00:00:10,935
+hay varias formas de revisarlo.
+
+4
+00:00:10,935 --> 00:00:13,620
+La más sencilla es ver su estado actual.
+
+5
+00:00:13,620 --> 00:00:16,965
+Así sabrá si está pendiente,
+en ejecución o si ya terminó.
+
+6
+00:00:16,965 --> 00:00:19,130
+Por supuesto,
+si durante la ejecución desea
+
+7
+00:00:19,130 --> 00:00:21,600
+revisar las últimas entradas del trabajo
+
+8
+00:00:21,600 --> 00:00:23,530
+también puede hacerlo con gcloud.
+
+9
+00:00:23,530 --> 00:00:26,745
+Finalmente, si envía
+muchos trabajos con ejecución en paralelo
+
+10
+00:00:26,745 --> 00:00:30,230
+pruebe la capacidad de gcloud
+para enumerar y filtrar trabajos.
+
+11
+00:00:31,760 --> 00:00:35,980
+La consola web de GCP tiene
+una gran IU para supervisar sus trabajos.
+
+12
+00:00:35,980 --> 00:00:38,300
+Puede ver exactamente cómo se invocaron
+
+13
+00:00:38,300 --> 00:00:41,920
+revisar sus registros y ver
+su consumo de CPU y memoria.
+
+14
+00:00:41,920 --> 00:00:46,120
+Revisar los registros ayuda a depurar
+problemas técnicos, como una excepción
+
+15
+00:00:46,120 --> 00:00:49,615
+pero no es la herramienta adecuada
+para investigar el rendimiento del AA.
+
+16
+00:00:49,615 --> 00:00:52,150
+TensorBoard
+es la herramienta indicada para ello.
+
+17
+00:00:52,150 --> 00:00:56,845
+Para usarla, su trabajo debe guardar
+datos de resumen en Google Cloud Storage.
+
+18
+00:00:56,845 --> 00:01:00,585
+Cuando inicie TensorBoard,
+simplemente proporcione ese directorio.
+
+19
+00:01:00,780 --> 00:01:03,427
+Incluso puede manejar
+varios trabajos por carpeta.
+
+20
+00:01:03,535 --> 00:01:07,040
+Ahora que tenemos un modelo
+veamos qué podemos hacer con él.
+
+21
+00:01:07,140 --> 00:01:09,420
+Cuando finalice nuestro
+trabajo de entrenamiento
+
+22
+00:01:09,420 --> 00:01:12,760
+tendremos un modelo de TensorFlow
+preparado para realizar predicciones.
+
+23
+00:01:12,760 --> 00:01:16,090
+Cloud ML Engine ofrece una
+gran infraestructura para eso.
+
+24
+00:01:16,090 --> 00:01:19,260
+CMLE crea
+una aplicación web lista para producción
+
+25
+00:01:19,260 --> 00:01:20,260
+a partir de su modelo
+
+26
+00:01:20,260 --> 00:01:21,825
+y ofrece un servicio por lotes
+
+27
+00:01:21,825 --> 00:01:24,325
+para las predicciones
+menos sensibles a latencia.
+
+28
+00:01:24,325 --> 00:01:26,530
+Como ambas son API de REST
+
+29
+00:01:26,530 --> 00:01:29,460
+podrá realizar
+inferencias escalables y seguras
+
+30
+00:01:29,460 --> 00:01:32,390
+en el lenguaje
+en el que desee escribir el cliente.
+
+31
+00:01:34,310 --> 00:01:37,710
+Para enviar su artefacto
+de modelo de TF a la nube
+
+32
+00:01:37,710 --> 00:01:41,535
+necesitamos crear
+un recurso de inversión de modelo de CMLE.
+
+33
+00:01:41,535 --> 00:01:47,065
+El archivo de modelo TF entrenado
+corresponde a una versión específica.
+
+34
+00:01:47,065 --> 00:01:49,790
+En CMLE, un modelo es un grupo
+
+35
+00:01:49,790 --> 00:01:52,910
+de estas versiones que además
+tiene una versión predeterminada.
+
+36
+00:01:52,910 --> 00:01:56,360
+Esta capa extra
+de abstracción y agrupación nos permite
+
+37
+00:01:56,360 --> 00:02:00,605
+migrar tráfico
+desde una versión de modelo TF a otra.
+
+38
+00:02:00,605 --> 00:02:04,180
+Solo tiene que cambiar la
+versión predeterminada del modelo.
+
+39
+00:02:05,410 --> 00:02:07,650
+Este es un ejemplo sencillo de cómo usar
+
+40
+00:02:07,650 --> 00:02:11,405
+el modelo implementado de forma remota
+para predicciones con una llamada REST.
+
+41
+00:02:11,405 --> 00:02:15,350
+La predicción en línea de CMLE
+es un sistema sin servidores
+
+42
+00:02:15,350 --> 00:02:18,345
+así que no tiene que pensar
+en la asignación de recursos.
+
+43
+00:02:18,345 --> 00:02:20,490
+El sistema se escala automáticamente.

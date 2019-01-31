@@ -1,0 +1,58 @@
+In the previous section, we framed optimization as
+a search in parameter space. And then introduced the loss functions
+as a way to compare these points. So how do you take a loss function and
+turn it into a search strategy? That's where Gradient Descent comes in. Gradient Descent refers to the process
+of walking down the surface formed by using our loss function on
+all the points in parameter space. And that surface might
+actually look a lot like this. Of course, this is what you would
+see with perfect information, i.e. with complete knowledge of the graph. In actuality, we'll only know loss values
+at the points in parameter space where we've evaluated our loss function. Or in this case just the two points in
+the red bounded box that I've shown here. Somehow though, we'll still need to make
+a decision about where to go next to find the minimum anyway. It turns out that the problem of finding
+the bottom can be decomposed into two different and important questions. Which direction should I head? And how far away should I step? For now though,
+let's make a simplifying assumption, and use a fixed size step only. This leads us to a very simple algorithm. While the loss is greater than a tiny
+constant, compute the direction. And then for each parameter in the model,
+set its value to be the old value plus the product of the step size and
+the direction. Then finally re-compute the loss. You can think of a loss surface
+as a topographic or contour map. Every line represents a specific depth. The closer the lines are together,
+the steeper the surface is at that point. The algorithm takes steps which
+I have represented here as dots. In this case,
+the algorithm started at the top edge and worked its way down toward
+the minimum in the middle. Note how the algorithm takes fixed size
+steps in the direction of the minimum. Putting side direction for the moment. If your step size is too small,
+your training might take forever. You are guaranteed to find the minimum,
+though. And I've used the word the because for the moment we're going to
+assume that there is only one. However, in the future there
+might be more than one, and we'll talk about how to
+deal with this issue later. If your step size is too big, you might either bounce from wall
+to wall of your loss surface or bounce out of the valley entirely and into
+an entirely new part of the loss surface. Because of this,
+when the step size is too big, the process is not guaranteed to converge. If your step size is just right,
+well then you're all set. But whatever this value is for step size, it's unlikely to be just as
+good on a different problem. Note that the step size which seemed
+to work on the left-hand curve fails miserably on the righthand curve. One size really does not fit all models. So how should we vary step size? Thankfully, the slope or the rate at which
+the curve is changing gives us a decent sense of how far to step and
+the direction at the same time. Look at the bottom subplot
+showing the value of the slope at various points along
+the weight loss curve. Note that where the values are bigger we
+are generally farther away from the bottom than where the slope is small. Note also that where the slope is negative
+the bottom on the top chart is to the right, and where the slope is positive the bottom
+on the top chart is to the left. Here's another example. Look at point B, does it have
+a positive or a negative slope? Point B has a positive slope, which
+tells us to go left to find the minimum. Note that the slope is steep,
+which means we need to take a big step. Take a look at point C
+in the loss surface. Does it have a positive or
+a negative slope? How steep is it? Point C has a positive slope again,
+which means we still need to travel left. Here the slope is much more gradual. So we're actually going to
+take smaller steps so we don't accidentally
+step over the minimum. Now we've replaced our constant step size
+and our call to compute direction with a single call to our new
+function computeDerivative. And updated our for loop for updating the model's parameters to set
+each parameter to be its old value minus the partial derivative of that
+parameter with respect to the loss. So are we done yet? We seem to have found a way to
+take steps in the right direction with the appropriate step size. What could go wrong? Well, empirical performance. It turns out that with respect to the set
+of problems that ML researchers have worked on, which is to say, the set of loss surfaces on which we've
+applied this procedure, our basic algorithm often either takes too long,
+finds suboptimal minima or doesn't finish. And to be clear, this doesn't mean
+that our algorithm doesn't work, it simply means we tend not to encounter
+the sorts of problems where it excels.

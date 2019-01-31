@@ -1,0 +1,577 @@
+1
+00:00:00,720 --> 00:00:04,115
+In der Praxis kommt es häufig vor,
+
+2
+00:00:04,115 --> 00:00:06,685
+dass man einen fertigen
+Modellcode erneut ausführt
+
+3
+00:00:06,685 --> 00:00:10,910
+und erwartet, dass er dasselbe Ergebnis 
+erbringt, was aber nicht eintritt.
+
+4
+00:00:10,910 --> 00:00:15,025
+Programmierer sind daran gewöhnt,
+in vorbestimmten Umgebungen zu arbeiten.
+
+5
+00:00:15,025 --> 00:00:18,015
+Im ML ist das teilweise nicht so.
+
+6
+00:00:18,015 --> 00:00:20,870
+Viele Modelle erzeugen
+bei der zweiten Ausführung
+
+7
+00:00:20,870 --> 00:00:24,225
+abweichende Parameter. 
+Selbst mit denselben Hyperparametern
+
+8
+00:00:24,225 --> 00:00:27,475
+kann das Ergebnis völlig anders ausfallen.
+
+9
+00:00:27,475 --> 00:00:30,120
+Dies wirkt im ersten Moment befremdlich.
+
+10
+00:00:30,120 --> 00:00:32,600
+Suchen wir nicht nach
+den bestmöglichen Parametern?
+
+11
+00:00:32,600 --> 00:00:35,410
+Bedeutet das, dass der 
+Gradientenabstieg nicht funktioniert
+
+12
+00:00:35,410 --> 00:00:37,360
+oder falsch umgesetzt wurde?
+
+13
+00:00:37,360 --> 00:00:40,740
+Nicht unbedingt. Es kann bedeuten, dass
+
+14
+00:00:40,740 --> 00:00:44,010
+wir statt einer 
+Verlustoberfläche wie links im Bild
+
+15
+00:00:44,010 --> 00:00:47,585
+Verlustoberflächen 
+wie rechts im Bild untersuchen.
+
+16
+00:00:47,585 --> 00:00:51,465
+Beachten Sie, dass die Verlustoberfläche 
+links einen einzigen Boden hat,
+
+17
+00:00:51,465 --> 00:00:53,920
+während die rechte mehrere hat.
+
+18
+00:00:53,920 --> 00:00:57,475
+Der formale Name für 
+diese Eigenschaft ist Konvexität.
+
+19
+00:00:57,475 --> 00:01:02,115
+Links haben wir 
+eine konvexe Fläche, rechts nicht.
+
+20
+00:01:03,015 --> 00:01:07,490
+Warum hat die Verlustoberfläche 
+eines ML-Modells mehr als ein Minimum?
+
+21
+00:01:07,490 --> 00:01:11,050
+Es bedeutet, dass es eine 
+Reihe von Punkten im Parameterraum gibt,
+
+22
+00:01:11,050 --> 00:01:13,340
+die vollständig oder fast äquivalent sind.
+
+23
+00:01:13,340 --> 00:01:15,850
+Also Einstellungen für 
+unsere Parameter, die Modelle
+
+24
+00:01:15,850 --> 00:01:18,395
+mit derselben Vorhersagekraft erzeugen.
+
+25
+00:01:18,395 --> 00:01:20,370
+Wir gehen später noch darauf ein,
+
+26
+00:01:20,370 --> 00:01:22,325
+wenn wir neuronale Netzwerke besprechen,
+
+27
+00:01:22,325 --> 00:01:24,575
+denn diese sind ein 
+gutes Beispiel dafür.
+
+28
+00:01:24,575 --> 00:01:26,640
+Das muss jetzt 
+noch nicht ganz klar sein.
+
+29
+00:01:26,640 --> 00:01:29,180
+Merken Sie sich im Moment nur,
+
+30
+00:01:29,180 --> 00:01:33,025
+dass Verlustdienste je nach Anzahl 
+der vorhandenen Minima variieren.
+
+31
+00:01:33,025 --> 00:01:36,560
+Manchmal ist schnell 
+einfach nicht schnell genug.
+
+32
+00:01:36,560 --> 00:01:39,660
+Niemand wartet gerne 
+auf den Abschluss des Modelltrainings.
+
+33
+00:01:39,660 --> 00:01:43,120
+Gibt es eine Möglichkeit, 
+das Modelltraining zu beschleunigen?
+
+34
+00:01:43,120 --> 00:01:46,045
+Ja. Aber um die 
+verfügbaren Optionen zu verstehen,
+
+35
+00:01:46,045 --> 00:01:48,020
+muss man die übergeordneten Schritte
+
+36
+00:01:48,020 --> 00:01:51,005
+des Algorithmus betrachten, 
+und was daran Zeit kostet.
+
+37
+00:01:51,005 --> 00:01:55,675
+Hier sehen Sie die drei Hauptschritte, 
+die unser Algorithmus durchlaufen muss.
+
+38
+00:01:55,675 --> 00:01:58,245
+Wenn wir eine Ableitung berechnen,
+
+39
+00:01:58,245 --> 00:02:00,500
+sind die Kosten 
+der Berechnung proportional zur
+
+40
+00:02:00,500 --> 00:02:03,235
+Anzahl der Datenpunkte
+in unserer Verlustfunktion
+
+41
+00:02:03,235 --> 00:02:06,315
+sowie zur Anzahl der 
+Parameter in unserem Modell.
+
+42
+00:02:06,315 --> 00:02:11,855
+In der Praxis können Modelle Dutzende 
+bis zu Hunderte Millionen Parameter haben.
+
+43
+00:02:11,855 --> 00:02:17,640
+Genauso können Datensätze einige Tausend
+oder Hunderte Milliarden Punkte haben.
+
+44
+00:02:17,640 --> 00:02:20,670
+Bei der Aktualisierung der Modellparameter
+
+45
+00:02:20,670 --> 00:02:22,850
+geschieht das einmal pro Schleife,
+
+46
+00:02:22,850 --> 00:02:26,605
+wobei die Kosten allein von der 
+Parameteranzahl im Modell abhängen.
+
+47
+00:02:26,605 --> 00:02:31,890
+Die Aktualisierungskosten sind verglichen 
+mit den anderen Schritten oft gering.
+
+48
+00:02:31,890 --> 00:02:34,810
+Abschließend wird der Verlust gemessen.
+
+49
+00:02:34,810 --> 00:02:39,220
+Wie lange dieser Schritt dauert, hängt
+von der Anzahl der Datenpunkte im Set ab,
+
+50
+00:02:39,220 --> 00:02:43,445
+das wir zur Verlustmessung einsetzen,
+und von der Komplexität des Modells.
+
+51
+00:02:43,445 --> 00:02:47,415
+Überraschend ist, dass 
+dieser Ablauf zwar eine Schleife hat,
+
+52
+00:02:47,415 --> 00:02:50,695
+die Verlustmessung aber trotzdem 
+in jedem Durchgang erfolgen muss.
+
+53
+00:02:50,695 --> 00:02:55,525
+Das liegt an den meist inkrementellen
+Änderungen in der Verlustfunktion.
+
+54
+00:02:56,495 --> 00:03:00,370
+Was können wir ändern,
+um die Trainingszeit zu verkürzen?
+
+55
+00:03:00,370 --> 00:03:04,280
+In der Regel steht die Anzahl der 
+betroffenen Parameter eines Modells fest.
+
+56
+00:03:04,280 --> 00:03:09,450
+Wie man das variieren kann, sehen wir
+später im Modul zur Regularisierung.
+
+57
+00:03:09,450 --> 00:03:12,480
+Außerdem mag es verlockend sein,
+
+58
+00:03:12,480 --> 00:03:15,345
+die Anzahl der Datenpunkte zur 
+Verlustmessung zu reduzieren,
+
+59
+00:03:15,345 --> 00:03:18,270
+aber das ist nicht empfehlenswert.
+
+60
+00:03:18,270 --> 00:03:22,630
+Stattdessen gibt es zwei Hauptansätze
+für eine kürzere Trainingszeit.
+
+61
+00:03:22,630 --> 00:03:25,770
+Die Anzahl der Datenpunkte, 
+für die die Ableitung berechnet wird,
+
+62
+00:03:25,770 --> 00:03:28,600
+und die Häufigkeit, 
+mit der wir den Verlust messen.
+
+63
+00:03:28,600 --> 00:03:32,270
+Einer der Ansätze, um das Modelltraining 
+zu beschleunigen, ist wie gesagt
+
+64
+00:03:32,270 --> 00:03:35,595
+die Anzahl der Datenpunkte, 
+für die wir die Ableitung berechnen.
+
+65
+00:03:35,595 --> 00:03:38,750
+Denken Sie daran: Die Ableitung 
+stammt von der Verlustfunktion,
+
+66
+00:03:38,750 --> 00:03:42,800
+die Verlustfunktion setzt die Fehlersumme
+einer Anzahl von Vorhersagen zusammen.
+
+67
+00:03:42,800 --> 00:03:46,420
+Diese Methode reduziert also
+die Anzahl der Datenpunkte,
+
+68
+00:03:46,420 --> 00:03:50,470
+die in jeder Iteration des Algorithmus 
+in die Verlustfunktion eingespeist wird.
+
+69
+00:03:50,470 --> 00:03:54,245
+Denken Sie einen Moment darüber nach, 
+warum das doch funktionieren könnte.
+
+70
+00:03:55,715 --> 00:03:58,050
+Es könnte deshalb funktionieren,
+
+71
+00:03:58,050 --> 00:04:00,870
+weil es möglich ist, 
+Proben aus den Trainingsdaten
+
+72
+00:04:00,870 --> 00:04:04,475
+zu entnehmen, die sich 
+im Durchschnitt gegenseitig ausgleichen.
+
+73
+00:04:04,475 --> 00:04:09,410
+Die Fallstricke der Probennahme und wie 
+man sie umgeht, ist Thema späterer Module.
+
+74
+00:04:09,410 --> 00:04:11,360
+Merken Sie sich für den Moment,
+
+75
+00:04:11,360 --> 00:04:14,320
+dass die Probenstrategie 
+mit einheitlicher Wahrscheinlichkeit
+
+76
+00:04:14,320 --> 00:04:15,690
+aus dem Trainingssatz wählt.
+
+77
+00:04:15,690 --> 00:04:19,050
+Jede Instanz 
+im Trainingssatz hat die gleiche Chance,
+
+78
+00:04:19,050 --> 00:04:20,800
+vom Modell erfasst zu werden.
+
+79
+00:04:20,800 --> 00:04:24,580
+In ML wird diese Praxis der Probenahme aus
+
+80
+00:04:24,580 --> 00:04:27,725
+dem Trainingset während 
+des Trainings Mini-Batching genannt,
+
+81
+00:04:27,725 --> 00:04:32,175
+und diese Variante des Gradientenabstiegs 
+als Mini-Batch-Gradientenabstieg.
+
+82
+00:04:32,175 --> 00:04:36,100
+Die Proben selbst
+werden als Batches bezeichnet.
+
+83
+00:04:36,100 --> 00:04:41,230
+Der Mini-Batch-Gradientenabstieg hat 
+den Vorteil, dass er weniger Zeit kostet,
+
+84
+00:04:41,230 --> 00:04:45,660
+weniger Speicher braucht 
+und einfach zu parallelisieren ist.
+
+85
+00:04:45,660 --> 00:04:51,315
+Kurz am Rande: Vielleicht haben Sie den
+Begriff Batch-Gradientenabstieg gehört.
+
+86
+00:04:51,315 --> 00:04:54,585
+Hier bezieht sich 
+"Batch" auf "Batch-Verarbeitung".
+
+87
+00:04:54,585 --> 00:04:58,420
+Der Batch-Gradientenabstieg berechnet 
+also den Gradienten für das ganze Dataset.
+
+88
+00:04:58,420 --> 00:05:02,440
+Das ist etwas völlig anderes 
+als der Mini-Batch-Gradientenabstieg,
+
+89
+00:05:02,440 --> 00:05:06,100
+um den es hier geht.
+
+90
+00:05:06,100 --> 00:05:10,845
+Verwirrend ist, dass die Mini-Batch-Größe 
+oft nur Batch-Größe genannt wird.
+
+91
+00:05:10,845 --> 00:05:12,700
+So wird sie bei TensorFlow genannt.
+
+92
+00:05:12,700 --> 00:05:15,115
+Daher nennen wir sie auch so.
+
+93
+00:05:15,115 --> 00:05:17,415
+Wenn also ab
+jetzt in diesem Kurs
+
+94
+00:05:17,415 --> 00:05:18,940
+der Begriff "Batch-Größe" fällt,
+
+95
+00:05:18,940 --> 00:05:23,740
+bezieht sich das auf die Probengröße 
+für den Mini-Batch-Gradientenabstieg.
+
+96
+00:05:23,740 --> 00:05:26,835
+Wie groß sollten also 
+diese Mini-Batches sein?
+
+97
+00:05:26,835 --> 00:05:28,620
+Ebenso wie die Lernrate
+
+98
+00:05:28,620 --> 00:05:30,880
+ist die Batch-Größe ein Hyperparameter.
+
+99
+00:05:30,880 --> 00:05:33,330
+Als solcher ist 
+der optimale Wert problemabhängig
+
+100
+00:05:33,330 --> 00:05:36,310
+und wird durch 
+Hyperparameter-Tuning ermittelt.
+
+101
+00:05:36,310 --> 00:05:37,995
+Darüber sprechen wir später.
+
+102
+00:05:37,995 --> 00:05:42,320
+Die Batch-Größe liegt meist 
+zwischen 10 und 100 Beispielen.
+
+103
+00:05:42,320 --> 00:05:44,470
+Genauso wie die Lernrate
+
+104
+00:05:44,470 --> 00:05:47,405
+ist die Batch-Größe ein Hyperparameter.
+
+105
+00:05:47,405 --> 00:05:49,840
+Als solcher ist der
+optimale Wert problemabhängig
+
+106
+00:05:49,840 --> 00:05:52,160
+und wird durch 
+Hyperparameter-Tuning ermittelt.
+
+107
+00:05:52,160 --> 00:05:53,970
+Darüber sprechen wir später.
+
+108
+00:05:53,970 --> 00:05:58,275
+Die Batch-Größe liegt meist 
+zwischen 10 und 1.000 Beispielen.
+
+109
+00:05:58,275 --> 00:06:01,525
+Der andere Weg, auf dem wir 
+das Modelltraining beschleunigen können,
+
+110
+00:06:01,525 --> 00:06:04,325
+ist die Häufigkeit, 
+mit der wir den Verlust messen.
+
+111
+00:06:04,325 --> 00:06:09,065
+Bedenken Sie, dass man zwar den Verlust an
+einer Teilmenge der Daten messen könnte,
+
+112
+00:06:09,065 --> 00:06:11,240
+das wäre aber keine gute Idee.
+
+113
+00:06:11,240 --> 00:06:13,740
+Die Implementierung ist einfach.
+
+114
+00:06:13,740 --> 00:06:15,105
+Wir führen eine Logik ein,
+
+115
+00:06:15,105 --> 00:06:19,695
+mit der die teure Berechnung der
+Verlustfunktion seltener ausgewertet wird.
+
+116
+00:06:19,695 --> 00:06:23,305
+Beliebte Strategien für die zum
+Update vorbereitete Verlustfunktion
+
+117
+00:06:23,305 --> 00:06:25,435
+basieren auf der Zeit und den Schritten.
+
+118
+00:06:25,435 --> 00:06:28,295
+Beispielsweise einmal alle 1.000 Schritte
+
+119
+00:06:28,295 --> 00:06:30,525
+oder einmal alle 30 Minuten.
+
+120
+00:06:30,525 --> 00:06:32,900
+Durch weniger häufige Messungen
+
+121
+00:06:32,900 --> 00:06:35,385
+des Verlusts und die
+Verwendung von Mini-Batching
+
+122
+00:06:35,385 --> 00:06:39,260
+Haben wir begonnen, die beiden Hauptteile 
+des Modelltrainings zu entkoppeln.
+
+123
+00:06:39,260 --> 00:06:41,100
+Das Ändern der Modellparameter
+
+124
+00:06:41,100 --> 00:06:44,000
+und das Überprüfen, 
+ob die Änderungen richtig waren.

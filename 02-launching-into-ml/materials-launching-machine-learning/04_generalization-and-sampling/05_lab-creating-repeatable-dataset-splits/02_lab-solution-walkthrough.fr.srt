@@ -1,0 +1,794 @@
+1
+00:00:00,000 --> 00:00:03,245
+Donc voici l'atelier
+sur la répartition reproductible.
+
+2
+00:00:03,245 --> 00:00:05,980
+Si vous n'avez pas
+encore suivi cet atelier
+
+3
+00:00:05,980 --> 00:00:08,440
+et essayé,
+je vous recommande de le faire,
+
+4
+00:00:08,440 --> 00:00:11,035
+puis revenez et regardez cette vidéo.
+
+5
+00:00:11,235 --> 00:00:12,620
+Commençons.
+
+6
+00:00:12,620 --> 00:00:18,115
+Nous cherchons à prédire
+le retard à l'arrivée d'un avion
+
+7
+00:00:18,115 --> 00:00:20,295
+dont le départ a été retardé,
+
+8
+00:00:20,295 --> 00:00:24,010
+et quelle est la relation entre eux
+en fonction des différents aéroports,
+
+9
+00:00:24,010 --> 00:00:25,865
+les aéroports de départ et d'arrivée.
+
+10
+00:00:25,865 --> 00:00:28,680
+Prenons un vol venant de New York
+qui a 30 minutes de retard
+
+11
+00:00:28,680 --> 00:00:29,830
+et qui va à Los Angeles,
+
+12
+00:00:29,830 --> 00:00:31,845
+sera-t-il en retard à l'arrivée ?
+
+13
+00:00:32,005 --> 00:00:35,320
+Nous voulons prédire cette relation.
+
+14
+00:00:35,490 --> 00:00:38,510
+Pour obtenir cette relation
+ou le modèle de cette relation,
+
+15
+00:00:38,510 --> 00:00:39,990
+nous avons cette formule-ci,
+
+16
+00:00:39,990 --> 00:00:41,485
+notre bloc-notes Cloud Datalab.
+
+17
+00:00:41,485 --> 00:00:44,640
+C'est le retard à l'arrivée
+égal à un paramètre, alpha,
+
+18
+00:00:44,640 --> 00:00:47,240
+multiplié par le retard au départ.
+
+19
+00:00:48,210 --> 00:00:49,640
+Pour estimer l'alpha,
+
+20
+00:00:49,640 --> 00:00:50,735
+voici la formule.
+
+21
+00:00:50,735 --> 00:00:56,180
+Nous voulons ajouter
+des informations sur le retard au départ,
+
+22
+00:00:56,180 --> 00:01:00,250
+et prédire s'il y aura
+un retard à l'arrivée.
+
+23
+00:01:00,250 --> 00:01:02,050
+Avant cette modélisation de données,
+
+24
+00:01:02,050 --> 00:01:06,280
+nous devons créer nos environnements
+de test et de validation pour le modèle.
+
+25
+00:01:06,660 --> 00:01:08,675
+Puisqu'il s'agit d'un grand ensemble,
+
+26
+00:01:08,675 --> 00:01:10,105
+nous allons utiliser BigQuery,
+
+27
+00:01:10,105 --> 00:01:12,410
+en l'appelant depuis Cloud DataLab.
+
+28
+00:01:13,040 --> 00:01:18,290
+Nous allons créer une paire
+d'aéroports de départ et d'arrivée,
+
+29
+00:01:18,740 --> 00:01:21,680
+pour voir s'il y a une corrélation forte
+
+30
+00:01:21,680 --> 00:01:23,135
+pour cet aéroport particulier,
+
+31
+00:01:23,765 --> 00:01:26,260
+cette étape particulière,
+
+32
+00:01:26,530 --> 00:01:28,320
+s'il va y avoir du retard à l'arrivée
+
+33
+00:01:28,320 --> 00:01:31,530
+si le départ a été retardé.
+
+34
+00:01:31,730 --> 00:01:33,560
+Pour ce bloc-notes,
+
+35
+00:01:33,560 --> 00:01:36,000
+nous allons nous intéresser
+à Denver et Los Angeles.
+
+36
+00:01:36,000 --> 00:01:39,530
+Tout ceci est le contexte de l'atelier,
+c'est très important
+
+37
+00:01:39,530 --> 00:01:41,245
+pour comprendre ce que nous faisons.
+
+38
+00:01:41,245 --> 00:01:44,010
+Nous avons besoin d'un échantillon
+de données reproductible
+
+39
+00:01:44,010 --> 00:01:45,720
+créé dans BigQuery.
+
+40
+00:01:46,010 --> 00:01:48,995
+Voyons d'abord
+ce que vous ne devez pas faire,
+
+41
+00:01:48,995 --> 00:01:51,730
+et si vous voyez ce code
+ou cet échantillon random naïf
+
+42
+00:01:51,730 --> 00:01:53,965
+dans votre bloc-notes
+ou celui de vos collègues,
+
+43
+00:01:53,965 --> 00:01:55,415
+vous pouvez le montrer et dire
+
+44
+00:01:55,415 --> 00:01:57,375
+"Si je veux exécuter votre code,
+
+45
+00:01:57,375 --> 00:02:00,620
+je n'obtiendrai pas forcément
+les mêmes résultats que dans ce cours".
+
+46
+00:02:00,770 --> 00:02:03,580
+Penchons-nous d'abord
+sur cette répartition random naïve.
+
+47
+00:02:04,000 --> 00:02:06,490
+Exécutons ce code.
+
+48
+00:02:07,330 --> 00:02:09,095
+Je l'ai déjà exécuté et j'ai remarqué
+
+49
+00:02:09,095 --> 00:02:12,285
+que l'alpha est hautement corrélé,
+
+50
+00:02:12,285 --> 00:02:16,160
+0,97 pour entre Denver et Los Angeles.
+
+51
+00:02:16,450 --> 00:02:18,640
+Je vais l'exécuter jusqu'à cette cellule.
+
+52
+00:02:21,550 --> 00:02:24,530
+Cherchons le coefficient.
+
+53
+00:02:25,870 --> 00:02:28,185
+Les trois derniers chiffres
+sont 7, 8 et 4.
+
+54
+00:02:28,335 --> 00:02:29,850
+Pour que ce soit reproductible,
+
+55
+00:02:29,850 --> 00:02:32,045
+si je faisais à nouveau la même chose,
+
+56
+00:02:32,045 --> 00:02:33,270
+que se passerait-il ?
+
+57
+00:02:35,740 --> 00:02:39,270
+Vais-je obtenir 7, 8 et 4 ?
+Non, j'obtiens 9, 1 et 9.
+
+58
+00:02:39,400 --> 00:02:45,730
+Je n'ai rien changé ni fait d'entraînement
+ou quelque chose du même genre,
+
+59
+00:02:45,730 --> 00:02:48,825
+cela devrait donc
+être les mêmes données, n'est-ce pas ?
+
+60
+00:02:48,825 --> 00:02:51,530
+Vous pouvez voir à la ligne 7 du code,
+
+61
+00:02:51,530 --> 00:02:54,680
+vous sélectionnez cette fonction Random
+comme champ de répartition.
+
+62
+00:02:54,920 --> 00:02:57,805
+Chaque fois que j'exécute ceci
+comme vu dans le cours,
+
+63
+00:02:57,805 --> 00:03:01,300
+la fonction Random applique
+un chiffre différent entre 0 et 1.
+
+64
+00:03:01,300 --> 00:03:03,955
+Ce n'est donc pas forcément reproductible.
+
+65
+00:03:04,345 --> 00:03:07,110
+Faisons mieux.
+
+66
+00:03:10,720 --> 00:03:14,210
+Random est exécutée chaque fois
+qu'une ligne est exécutée dans BigQuery.
+
+67
+00:03:14,820 --> 00:03:19,570
+Je vais vous expliquer
+cela plus clairement.
+
+68
+00:03:20,410 --> 00:03:23,165
+Si vous utilisez ceci
+pour votre métrique de perte,
+
+69
+00:03:23,165 --> 00:03:26,370
+la RMSE entre le retard à l'arrivée
+et le retard au départ,
+
+70
+00:03:27,240 --> 00:03:31,560
+et divisez ceci en différents ensembles
+pour l'entraînement et l'évaluation...
+
+71
+00:03:32,020 --> 00:03:36,300
+Disons que cela a été fait
+immédiatement pour chaque enregistrement,
+
+72
+00:03:36,300 --> 00:03:38,680
+random < 0,8 pour tous,
+
+73
+00:03:38,680 --> 00:03:41,500
+voyons si nous obtenons la même RMSE.
+
+74
+00:03:42,130 --> 00:03:43,960
+Je vais exécuter cette cellule.
+
+75
+00:03:49,790 --> 00:03:56,005
+Nous obtenons 13,098 pour l'entraînement
+et 13,027 pour l'évaluation.
+
+76
+00:03:56,295 --> 00:03:58,960
+C'est donc assez cohérent,
+
+77
+00:03:58,960 --> 00:04:01,890
+mais voyons si c'est reproductible
+si je fais la même chose.
+
+78
+00:04:02,370 --> 00:04:04,630
+Nous voulons 13,098 pour l'entraînement.
+
+79
+00:04:08,570 --> 00:04:10,670
+Comme vous le voyez ici,
+pour l'entraînement,
+
+80
+00:04:10,670 --> 00:04:13,410
+nous obtenons 13,089,
+
+81
+00:04:14,010 --> 00:04:15,870
+ce qui est différent du 98 d'avant,
+
+82
+00:04:15,870 --> 00:04:17,530
+et 13,063.
+
+83
+00:04:17,640 --> 00:04:21,629
+Même si nous exécutons
+exactement le même code,
+
+84
+00:04:22,029 --> 00:04:23,860
+on obtient une RMSE différente.
+
+85
+00:04:23,920 --> 00:04:24,980
+Et le coupable ici,
+
+86
+00:04:24,980 --> 00:04:27,465
+et nombre d'entre vous
+doivent déjà le crier,
+
+87
+00:04:27,465 --> 00:04:29,880
+c'est la fonction random.
+
+88
+00:04:29,880 --> 00:04:33,595
+Diviser au hasard pour l'entraînement
+et l'évaluation ne fonctionne pas.
+
+89
+00:04:33,805 --> 00:04:37,970
+Vous vous demandez
+peut-être comment faire.
+
+90
+00:04:37,970 --> 00:04:41,255
+Si je configure toutes mes données
+pour l'entraînement et l'évaluation
+
+91
+00:04:41,255 --> 00:04:42,825
+avec la fonction random une fois,
+
+92
+00:04:42,825 --> 00:04:46,005
+et que je les ai
+correctement divisées en 80 et 20 %,
+
+93
+00:04:46,365 --> 00:04:48,650
+pourquoi cela change-t-il sans arrêt ?
+
+94
+00:04:48,650 --> 00:04:52,820
+Comment ne pas exécuter
+random à chaque fois ?
+
+95
+00:04:52,950 --> 00:04:56,605
+Nous devons réfléchir autrement.
+
+96
+00:04:56,935 --> 00:05:00,695
+Voici un autre exemple où vous avez
+l'entraînement sur la fonction random,
+
+97
+00:05:00,695 --> 00:05:02,180
+et vous faites cela en premier.
+
+98
+00:05:02,180 --> 00:05:03,720
+C'est un peu une sous-requête,
+
+99
+00:05:04,800 --> 00:05:07,800
+ou vous avez l'entraînement
+et l'évaluation, et vous les divisez
+
+100
+00:05:08,270 --> 00:05:11,195
+en sous-ensembles de données.
+
+101
+00:05:12,155 --> 00:05:14,790
+Puis vous exécutez ces requêtes,
+mais vous voyez ici
+
+102
+00:05:14,790 --> 00:05:16,750
+que nous obtenons le même problème.
+
+103
+00:05:17,060 --> 00:05:21,090
+La RMSE est de 13,037.
+
+104
+00:05:21,090 --> 00:05:24,010
+Les vôtres sont probablement différentes.
+
+105
+00:05:24,030 --> 00:05:25,575
+C'est pour l'évaluation.
+
+106
+00:05:27,835 --> 00:05:31,960
+Je vais cliquer ici
+et exécuter jusqu'à cette cellule,
+
+107
+00:05:31,960 --> 00:05:33,820
+ce qui va à nouveau exécuter tout cela.
+
+108
+00:05:35,890 --> 00:05:37,475
+Et dès que l'exécution est finie,
+
+109
+00:05:37,475 --> 00:05:41,320
+nous voulons 13,037,
+
+110
+00:05:44,930 --> 00:05:46,690
+nous attendons la fin de l'exécution.
+
+111
+00:05:47,800 --> 00:05:49,445
+Nous obtenons 13,087,
+
+112
+00:05:49,445 --> 00:05:52,540
+l'alpha est différent,
+je crois que c'était 0,977 avant.
+
+113
+00:05:52,540 --> 00:05:57,245
+Si vous utilisez la fonction random
+n'importe où dans votre code BigQuery,
+
+114
+00:05:57,245 --> 00:06:01,065
+vos données vont automatiquement changer.
+
+115
+00:06:01,575 --> 00:06:04,240
+Comment donc ne plus utiliser random ?
+
+116
+00:06:04,240 --> 00:06:05,515
+Au lieu d'utiliser random,
+
+117
+00:06:05,515 --> 00:06:07,930
+on utilise la fonction de hachage.
+
+118
+00:06:07,930 --> 00:06:09,680
+C'est ce que vous allez voir ici.
+
+119
+00:06:10,000 --> 00:06:14,120
+Nous voulons diviser dans la clause Where
+
+120
+00:06:14,120 --> 00:06:16,690
+au lieu d'utiliser
+une fonction random "< 0,8".
+
+121
+00:06:16,690 --> 00:06:20,685
+Nous allons hacher la date.
+
+122
+00:06:20,685 --> 00:06:21,930
+La date ne va pas changer.
+
+123
+00:06:21,930 --> 00:06:25,630
+La date va être la même
+que dans votre ensemble d'entraînement.
+
+124
+00:06:25,630 --> 00:06:27,270
+Puis chercher le reste.
+
+125
+00:06:27,270 --> 00:06:29,830
+Et si cela appartient
+à une catégorie particulière,
+
+126
+00:06:29,830 --> 00:06:31,040
+dans ce cas particulier,
+
+127
+00:06:31,040 --> 00:06:33,230
+on veut tout ce qui est inférieur à 8,
+
+128
+00:06:33,230 --> 00:06:36,330
+et les placer
+dans notre bucket d'entraînement.
+
+129
+00:06:36,330 --> 00:06:37,980
+C'est une répartition à 80 %,
+
+130
+00:06:37,980 --> 00:06:40,560
+et cela sera probablement
+utilisé pour l'entraînement.
+
+131
+00:06:40,560 --> 00:06:43,640
+Nous avons 0,975,
+
+132
+00:06:43,640 --> 00:06:45,980
+et prenons la fin, c'est 403.
+
+133
+00:06:46,550 --> 00:06:47,785
+Exécutons ceci.
+
+134
+00:06:49,385 --> 00:06:50,815
+Et voyons ce que l'on obtient.
+
+135
+00:06:50,825 --> 00:06:54,145
+À la fin, on obtient aussi 403.
+
+136
+00:06:54,145 --> 00:06:56,000
+Cette opération est donc reproductible.
+
+137
+00:06:56,000 --> 00:06:57,340
+C'est intuitivement logique.
+
+138
+00:06:57,340 --> 00:07:01,655
+Aucune fonction ne change
+lorsque vous exécutez ce code.
+
+139
+00:07:02,625 --> 00:07:06,340
+Nous pouvons ajouter un peu de SQL,
+
+140
+00:07:06,340 --> 00:07:08,095
+et calculer la RMSE.
+
+141
+00:07:10,605 --> 00:07:12,375
+La RMSE au lieu du SQL, à nouveau,
+
+142
+00:07:12,375 --> 00:07:17,100
+on prend la moyenne de la fonction
+dont nous avons parlé,
+
+143
+00:07:17,350 --> 00:07:19,175
+et on prend la racine carrée en haut,
+
+144
+00:07:19,655 --> 00:07:24,520
+et votre ensemble de données
+d'entraînement est 13,16072.
+
+145
+00:07:25,140 --> 00:07:34,780
+On obtient ce même résultat
+à chaque exécution.
+
+146
+00:07:35,160 --> 00:07:36,380
+Qu'avez-vous appris ?
+
+147
+00:07:37,430 --> 00:07:42,565
+À chaque fois que vous créez
+un échantillon de données reproductible,
+
+148
+00:07:42,565 --> 00:07:44,565
+vous devez utiliser
+une fonction de hachage
+
+149
+00:07:44,565 --> 00:07:46,670
+au lieu d'un échantillon random naïf.
+
+150
+00:07:46,670 --> 00:07:50,440
+Même si vous faites quelque chose
+d'assez sophistiqué comme ici,
+
+151
+00:07:50,440 --> 00:07:53,955
+mais tout aussi dangereux
+que de préséparer vos données
+
+152
+00:07:53,955 --> 00:07:55,670
+pour l'entraînement et l'évaluation,
+
+153
+00:07:55,670 --> 00:07:57,590
+disons que vous vouliez sculpter cela,
+
+154
+00:07:57,590 --> 00:07:59,050
+que vous vouliez créer,
+
+155
+00:07:59,050 --> 00:08:00,100
+vous pourriez demander
+
+156
+00:08:00,100 --> 00:08:02,820
+"Si j'avais fait cela,
+exécuté ce code une fois
+
+157
+00:08:02,820 --> 00:08:06,530
+et stocké les résultats dans deux tables,
+pour l'entraînement et l'évaluation,
+
+158
+00:08:06,530 --> 00:08:08,290
+puis utilisé celles-ci immédiatement,
+
+159
+00:08:08,290 --> 00:08:11,060
+c'est génial,
+car vous ne l'avez fait qu'une fois,
+
+160
+00:08:11,060 --> 00:08:13,340
+et vous avez fait une répartition 80/20.
+
+161
+00:08:13,340 --> 00:08:15,485
+Et si vous recevez d'autres données ?
+
+162
+00:08:15,485 --> 00:08:18,780
+Et si quelqu'un veut répéter
+votre analyse avec l'ensemble d'origine ?
+
+163
+00:08:18,880 --> 00:08:23,660
+Ce n'est parce que vous avez créé
+cette répartition de données une fois,
+
+164
+00:08:23,660 --> 00:08:26,120
+que vous allez pouvoir la reproduire,
+
+165
+00:08:26,120 --> 00:08:28,700
+en particulier
+si votre ensemble s'agrandit ou diminue,
+
+166
+00:08:28,700 --> 00:08:31,600
+ou pour faire
+une autre répartition que 80/20.
+
+167
+00:08:31,600 --> 00:08:33,550
+C'est bien plus flexible et reproductible
+
+168
+00:08:33,550 --> 00:08:36,400
+d'utiliser un champ
+pour grouper et hacher vos données.
+
+169
+00:08:36,400 --> 00:08:37,645
+Vous pouvez le voir ici.
+
+170
+00:08:37,645 --> 00:08:39,630
+Entraînez-vous à tout cela,
+
+171
+00:08:39,630 --> 00:08:42,990
+car ce sont des étapes fondamentales
+
+172
+00:08:42,990 --> 00:08:45,640
+que vous devez faire
+avant d'exécuter des modèles de ML.
+
+173
+00:08:45,640 --> 00:08:47,550
+Et cela crée ces buckets de données
+
+174
+00:08:47,550 --> 00:08:50,450
+à partir desquels votre modèle
+peut apprendre, valider,
+
+175
+00:08:50,450 --> 00:08:53,300
+puis prendre la décision
+avec les données de test
+
+176
+00:08:53,300 --> 00:08:55,450
+de passer votre modèle en production.
+
+177
+00:08:55,690 --> 00:08:56,695
+Voilà, c'est fini.
+
+178
+00:08:56,695 --> 00:08:59,450
+Pour finir,
+nous allons parler de l'équipement,
+
+179
+00:08:59,450 --> 00:09:04,975
+puis faire un atelier complet
+pour prédire le tarif d'un taxi.
+
+180
+00:09:04,975 --> 00:09:05,850
+À bientôt.

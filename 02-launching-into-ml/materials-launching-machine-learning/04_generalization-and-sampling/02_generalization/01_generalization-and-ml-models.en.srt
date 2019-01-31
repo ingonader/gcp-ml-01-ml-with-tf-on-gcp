@@ -1,0 +1,455 @@
+1
+00:00:00,000 --> 00:00:01,780
+Let's first address generalization,
+
+2
+00:00:01,780 --> 00:00:03,970
+which help us answer the question about when
+
+3
+00:00:03,970 --> 00:00:08,065
+the most accurate ML model is not always your best choice?
+
+4
+00:00:08,065 --> 00:00:12,135
+Once again here we find ourselves with the familiar natality dataset,
+
+5
+00:00:12,135 --> 00:00:14,310
+but this time we're going to use the mother's weight gain on
+
+6
+00:00:14,310 --> 00:00:17,235
+the X-axis to predict the duration of the pregnancy,
+
+7
+00:00:17,235 --> 00:00:18,820
+there on the Y-axis.
+
+8
+00:00:18,820 --> 00:00:21,490
+What do you observe about the pattern that you see in the data?
+
+9
+00:00:21,490 --> 00:00:24,470
+It looks very strongly correlated,
+
+10
+00:00:24,470 --> 00:00:27,350
+the more weight gained, the longer the duration of the pregnancy,
+
+11
+00:00:27,350 --> 00:00:30,845
+which intuitively kind of makes sense as the baby is growing.
+
+12
+00:00:30,845 --> 00:00:34,785
+To model this behavior and prove a correlation,
+
+13
+00:00:34,785 --> 00:00:38,410
+what model would you typically want to call on first?
+
+14
+00:00:38,410 --> 00:00:40,330
+If you said a linear regression model,
+
+15
+00:00:40,330 --> 00:00:41,835
+you are exactly correct.
+
+16
+00:00:41,835 --> 00:00:44,600
+So, as we covered for regression problems,
+
+17
+00:00:44,600 --> 00:00:46,875
+the loss metric that you want to optimize for,
+
+18
+00:00:46,875 --> 00:00:49,140
+is typically mean squared error,
+
+19
+00:00:49,140 --> 00:00:53,570
+MSE or RMSE, the root mean squared error.
+
+20
+00:00:53,570 --> 00:00:59,295
+Mean squared error tells us how close a regression line is to the set of points from it.
+
+21
+00:00:59,295 --> 00:01:03,680
+It does this by taking those distances from the points to the actual regression line.
+
+22
+00:01:03,680 --> 00:01:07,355
+And those distances are called the errors and then it squares them.
+
+23
+00:01:07,355 --> 00:01:10,615
+And the squaring is necessary to remove any negative signs.
+
+24
+00:01:10,615 --> 00:01:15,265
+And MSE also gives more weight to those larger differences from the line.
+
+25
+00:01:15,265 --> 00:01:20,290
+Taking the square root of the MSE gives us the RMSE which is simply the distance
+
+26
+00:01:20,290 --> 00:01:25,405
+on average of a data point from the fitted line measured along a vertical line.
+
+27
+00:01:25,405 --> 00:01:29,740
+The RMSE is directly interpreted in terms of the measurement units on the Y-axis.
+
+28
+00:01:29,740 --> 00:01:34,155
+So, it's a better measure of goodness of fit than a correlation coefficient.
+
+29
+00:01:34,155 --> 00:01:35,890
+Now, for both error measures,
+
+30
+00:01:35,890 --> 00:01:38,680
+a lower value indicates a better performing model,
+
+31
+00:01:38,680 --> 00:01:42,390
+and the closer the error is to zero the better.
+
+32
+00:01:42,390 --> 00:01:45,145
+Here, we're using a linear regression model,
+
+33
+00:01:45,145 --> 00:01:49,465
+which simply draws that line of best fit to minimize the error.
+
+34
+00:01:49,465 --> 00:01:53,095
+Our final RMSE is 2.224.
+
+35
+00:01:53,095 --> 00:01:57,205
+And let's say for our problem, that's pretty good.
+
+36
+00:01:57,205 --> 00:01:59,935
+All right, but look at this.
+
+37
+00:01:59,935 --> 00:02:02,005
+What if you used a more complex model?
+
+38
+00:02:02,005 --> 00:02:04,950
+A more complex model could have more free parameters.
+
+39
+00:02:04,950 --> 00:02:07,135
+In this case, these free parameters let us capture
+
+40
+00:02:07,135 --> 00:02:10,090
+every single squiggle in that dataset as you see there.
+
+41
+00:02:10,090 --> 00:02:13,820
+While we reduce our RMSE all the way down to zero,
+
+42
+00:02:13,820 --> 00:02:15,660
+the model is now perfectly accurate.
+
+43
+00:02:15,660 --> 00:02:16,935
+Are we done?
+
+44
+00:02:16,935 --> 00:02:18,260
+Is this the best model?
+
+45
+00:02:18,260 --> 00:02:19,815
+Can we productionalize this?
+
+46
+00:02:19,815 --> 00:02:24,885
+Well, people and you might feel there's something fishy going on with model number two.
+
+47
+00:02:24,885 --> 00:02:27,190
+But how can we tell? In ML,
+
+48
+00:02:27,190 --> 00:02:30,160
+we often have lots of data and no such intuition.
+
+49
+00:02:30,160 --> 00:02:34,265
+Is a neural network with eight nodes better than a neural network with 12 nodes?
+
+50
+00:02:34,265 --> 00:02:38,455
+We have a lower RMSE for one with 16 nodes. Should we pick that one?
+
+51
+00:02:38,455 --> 00:02:41,400
+Example here that you see might be a polynomial of
+
+52
+00:02:41,400 --> 00:02:44,905
+the hundredth order or a neural network with hundreds of nodes.
+
+53
+00:02:44,905 --> 00:02:46,750
+As you saw in the spiral example,
+
+54
+00:02:46,750 --> 00:02:48,805
+at the end of the last lecture on optimization,
+
+55
+00:02:48,805 --> 00:02:52,765
+a more complex model has more of these parameters that can be optimized.
+
+56
+00:02:52,765 --> 00:02:55,780
+Models can help fit more complex data like a spiral,
+
+57
+00:02:55,780 --> 00:02:59,870
+it also might help it memorize simpler smaller datasets.
+
+58
+00:02:59,870 --> 00:03:02,550
+So, at what point do we say to a model,
+
+59
+00:03:02,550 --> 00:03:07,700
+stop training you're memorizing the dataset and possibly overfitting?
+
+60
+00:03:07,700 --> 00:03:11,840
+Now, one of the best ways to assess the quality of a model is to see how
+
+61
+00:03:11,840 --> 00:03:15,380
+it performs well against a new dataset that it hasn't seen before.
+
+62
+00:03:15,380 --> 00:03:20,905
+Then we can determine whether or not that model generalizes well across new data points.
+
+63
+00:03:20,905 --> 00:03:23,640
+It's a good proxy for production of real world data.
+
+64
+00:03:23,640 --> 00:03:26,500
+So, let's check back on the linear regression model and
+
+65
+00:03:26,500 --> 00:03:29,970
+the neural network models and see how they're doing now.
+
+66
+00:03:29,970 --> 00:03:32,885
+Our linear regression model on these new data points,
+
+67
+00:03:32,885 --> 00:03:34,430
+is generalizing pretty well.
+
+68
+00:03:34,430 --> 00:03:36,600
+Our RMSE is comparable to what we saw
+
+69
+00:03:36,600 --> 00:03:39,925
+before and in this case no surprises is a good thing.
+
+70
+00:03:39,925 --> 00:03:45,380
+We want consistent performance out of our models across training and validation.
+
+71
+00:03:45,380 --> 00:03:48,920
+So, looking back at model two, we can see that it doesn't generalize well at all,
+
+72
+00:03:48,920 --> 00:03:51,580
+on the new training design and this is really alarming.
+
+73
+00:03:51,580 --> 00:03:54,770
+The RMSE jumped from 0 to 3.2,
+
+74
+00:03:54,770 --> 00:03:57,380
+which is a huge problem and indicates that the model was
+
+75
+00:03:57,380 --> 00:03:59,880
+completely overfitting itself on the training data set that
+
+76
+00:03:59,880 --> 00:04:05,425
+it was provided and that proved to be too brittle or not generalizable to new data.
+
+77
+00:04:05,425 --> 00:04:09,335
+Now, you may be asking, how can I make sure that my model is not overfitting?
+
+78
+00:04:09,335 --> 00:04:11,660
+How do I know when to stop training?
+
+79
+00:04:11,660 --> 00:04:13,445
+And the answer is surprisingly simple,
+
+80
+00:04:13,445 --> 00:04:16,300
+we are going to split your data.
+
+81
+00:04:16,300 --> 00:04:21,385
+Now, by dividing your original dataset into completely separated and isolated groups,
+
+82
+00:04:21,385 --> 00:04:24,030
+you can either retrain your model and train it
+
+83
+00:04:24,030 --> 00:04:26,560
+on the training dataset and then once you're done with training,
+
+84
+00:04:26,560 --> 00:04:31,445
+compare its performance against an independent siloed validation dataset.
+
+85
+00:04:31,445 --> 00:04:33,255
+And models that generalized well,
+
+86
+00:04:33,255 --> 00:04:38,175
+we'll have similar loss metrics or error values across training and validation.
+
+87
+00:04:38,175 --> 00:04:40,130
+And as soon as you start seeing your models not
+
+88
+00:04:40,130 --> 00:04:42,315
+perform well against your validation data set,
+
+89
+00:04:42,315 --> 00:04:44,885
+like if your loss metrics start to increase or creep up,
+
+90
+00:04:44,885 --> 00:04:47,200
+it's time to stop.
+
+91
+00:04:47,200 --> 00:04:50,740
+Training and evaluating ML models experiment with finding
+
+92
+00:04:50,740 --> 00:04:52,380
+the right generalizable model and
+
+93
+00:04:52,380 --> 00:04:56,465
+model parameters that fit your training dataset without memorizing.
+
+94
+00:04:56,465 --> 00:04:58,160
+As you see here, we have
+
+95
+00:04:58,160 --> 00:05:02,100
+an overly simplistic linear model that doesn't fit the relationships true to the data.
+
+96
+00:05:02,100 --> 00:05:04,800
+You can see how bad it is almost visually.
+
+97
+00:05:04,800 --> 00:05:08,380
+Right? There's quite a few points outside the shape of that trend line.
+
+98
+00:05:08,380 --> 00:05:10,550
+This is called underfitting.
+
+99
+00:05:10,550 --> 00:05:13,630
+On the opposite end of the spectrum and slightly
+
+100
+00:05:13,630 --> 00:05:16,330
+even more dangerous is overfitting as we talked about.
+
+101
+00:05:16,330 --> 00:05:18,430
+This is shown on the right extreme.
+
+102
+00:05:18,430 --> 00:05:21,980
+Here we've greatly increased the complexity of our linear model interpreted to
+
+103
+00:05:21,980 --> 00:05:24,760
+an nth order polynomial which seems to help
+
+104
+00:05:24,760 --> 00:05:28,670
+the model and fit the data and all of the squiggles that we were talking about earlier.
+
+105
+00:05:28,670 --> 00:05:31,645
+So, this is where your evaluation dataset comes into play,
+
+106
+00:05:31,645 --> 00:05:34,805
+and you're going to determine if the model parameters are leading to overfitting.
+
+107
+00:05:34,805 --> 00:05:36,245
+Is it too complex?
+
+108
+00:05:36,245 --> 00:05:39,010
+And overfitting or memorized in that training dataset can be often
+
+109
+00:05:39,010 --> 00:05:42,445
+far worse than having a model that only adequately fits your data.
+
+110
+00:05:42,445 --> 00:05:44,470
+Sometimes you might not know until production,
+
+111
+00:05:44,470 --> 00:05:45,905
+that's what we validated.
+
+112
+00:05:45,905 --> 00:05:51,490
+Somewhere in between an underfit and an overfit is the right level of model complexity.
+
+113
+00:05:51,490 --> 00:05:55,030
+So, let's look at how we are going to use our validation dataset
+
+114
+00:05:55,030 --> 00:05:59,700
+to help us know when to stop training and to prevent overfitting.

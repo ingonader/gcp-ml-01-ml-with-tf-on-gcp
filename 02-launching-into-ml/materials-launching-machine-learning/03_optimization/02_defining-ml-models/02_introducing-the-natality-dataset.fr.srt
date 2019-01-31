@@ -1,0 +1,489 @@
+1
+00:00:00,760 --> 00:00:02,130
+Les bébés nous sont chers.
+
+2
+00:00:02,770 --> 00:00:05,770
+Certains nécessitent des soins urgents
+dès leur naissance.
+
+3
+00:00:06,710 --> 00:00:10,150
+Les médecins spécialisés
+sont cependant rares.
+
+4
+00:00:11,180 --> 00:00:14,630
+Dans un monde parfait, on saurait
+précisément où envoyer ces médecins,
+
+5
+00:00:14,630 --> 00:00:17,060
+pour qu'ils soignent ces bébés malades.
+
+6
+00:00:17,550 --> 00:00:19,661
+Malheureusement, ce monde n'existe pas.
+
+7
+00:00:21,228 --> 00:00:23,830
+Comment le ML peut-il résoudre ce problème ?
+
+8
+00:00:24,310 --> 00:00:28,350
+Si on pouvait identifier les bébés
+à risque avant leur naissance,
+
+9
+00:00:28,350 --> 00:00:30,950
+on pourrait garantir
+la disponibilité des médecins.
+
+10
+00:00:32,290 --> 00:00:35,256
+Pour faire des prédictions
+avant la naissance d'un bébé,
+
+11
+00:00:35,256 --> 00:00:38,912
+quelle caractéristique pouvons-nous
+utiliser dans notre modèle ?
+
+12
+00:00:39,872 --> 00:00:43,785
+L'âge de la mère, l'heure de naissance,
+le poids du bébé ?
+
+13
+00:00:46,017 --> 00:00:49,138
+Pour faire des prédictions
+avant la naissance d'un bébé,
+
+14
+00:00:49,138 --> 00:00:51,847
+quelle étiquette pouvons-nous
+utiliser dans notre modèle ?
+
+15
+00:00:53,330 --> 00:00:57,397
+L'âge de la mère, l'heure de naissance,
+le poids du bébé ?
+
+16
+00:00:57,917 --> 00:01:01,053
+Vous ne devez pas forcément connaître
+les réponses à ces questions,
+
+17
+00:01:01,053 --> 00:01:03,170
+qui sont vraiment spécifiques.
+
+18
+00:01:04,340 --> 00:01:08,250
+Mais, vous devez savoir
+si ces informations sont disponibles
+
+19
+00:01:08,250 --> 00:01:11,160
+au moment où nous souhaitons
+faire des prédictions.
+
+20
+00:01:12,050 --> 00:01:17,090
+Dans cet exemple, on ne peut pas
+connaître l'heure de naissance à l'avance,
+
+21
+00:01:17,090 --> 00:01:18,770
+donc cette donnée est inutilisable.
+
+22
+00:01:19,980 --> 00:01:23,520
+Le poids est un très bon
+indicateur de la santé d'un bébé.
+
+23
+00:01:25,490 --> 00:01:29,710
+L'âge de la mère est facile à connaître,
+et permet de prédire le poids du bébé.
+
+24
+00:01:31,090 --> 00:01:34,030
+Voilà donc un bon exemple pour le ML,
+
+25
+00:01:34,030 --> 00:01:38,734
+car il existe un besoin réel d'obtenir
+rapidement des données permettant
+
+26
+00:01:38,734 --> 00:01:41,987
+d'assurer la santé du bébé,
+et qui semblent être prédictibles.
+
+27
+00:01:43,467 --> 00:01:46,229
+Si nous choisissons le poids du bébé
+comme étiquette,
+
+28
+00:01:46,229 --> 00:01:48,570
+quel type de problème de ML
+devons-nous résoudre ?
+
+29
+00:01:49,650 --> 00:01:52,920
+Rappelez-vous que le poids du bébé
+est une valeur continue.
+
+30
+00:01:53,310 --> 00:01:56,140
+Pour l'instant, traitons le problème
+en tant que régression.
+
+31
+00:01:56,270 --> 00:01:59,780
+Pour simplifier, utilisons l'âge de la mère
+comme caractéristique,
+
+32
+00:01:59,780 --> 00:02:01,519
+et le poids du bébé comme étiquette.
+
+33
+00:02:02,240 --> 00:02:05,590
+Ces données sont issues de l'ensemble
+de données de natalité
+
+34
+00:02:05,590 --> 00:02:08,870
+collectées par le gouvernement
+des États-Unis.
+
+35
+00:02:09,919 --> 00:02:12,680
+Il est disponible
+publiquement dans BigQuery.
+
+36
+00:02:14,000 --> 00:02:17,830
+Pour modéliser des données, il faut
+souvent commencer par les examiner
+
+37
+00:02:17,830 --> 00:02:20,969
+afin d'isoler les indicateurs du bruit.
+
+38
+00:02:22,130 --> 00:02:25,124
+J'ai représenté le poids du bébé
+en fonction de l'âge de la mère
+
+39
+00:02:25,124 --> 00:02:26,451
+dans un graphique en nuage.
+
+40
+00:02:28,122 --> 00:02:31,362
+Ce type de graphique est généralement
+créé à partir d'échantillons
+
+41
+00:02:31,362 --> 00:02:33,270
+de grands ensembles de données.
+
+42
+00:02:33,560 --> 00:02:35,080
+Pourquoi des échantillons ?
+
+43
+00:02:35,640 --> 00:02:39,610
+Il est tout d'abord impossible de
+créer ces graphiques avec trop de données.
+
+44
+00:02:40,000 --> 00:02:44,570
+En outre, ils sont difficiles à interpréter
+s'ils présentent beaucoup de données.
+
+45
+00:02:46,180 --> 00:02:48,830
+Notez qu'il semble y avoir
+une petite relation positive
+
+46
+00:02:48,830 --> 00:02:50,880
+entre l'âge de la mère et le poids du bébé.
+
+47
+00:02:51,260 --> 00:02:54,310
+Voici un autre type de graphique
+qui utilise les mêmes variables.
+
+48
+00:02:54,370 --> 00:02:58,330
+Contrairement à un nuage de points qui
+représente les données de façon individuelle,
+
+49
+00:02:58,330 --> 00:03:01,710
+celui-ci les représente en groupes,
+plus précisément en quantiles.
+
+50
+00:03:02,860 --> 00:03:05,815
+On doit donc disposer d'un échantillon
+pour créer ce graphique,
+
+51
+00:03:05,815 --> 00:03:08,904
+qui sera forcément représentatif.
+
+52
+00:03:09,800 --> 00:03:12,764
+De plus, les résultats sont reproductibles,
+
+53
+00:03:12,764 --> 00:03:15,075
+et le processus est parallélisable.
+
+54
+00:03:15,560 --> 00:03:20,630
+Ce graphique analyse
+22 Go de données, en quelques secondes.
+
+55
+00:03:21,310 --> 00:03:23,898
+On verra plus tard comment
+créer ce type de graphiques.
+
+56
+00:03:26,305 --> 00:03:29,520
+Constatez-vous un lien entre les données
+dans ce graphique ?
+
+57
+00:03:31,188 --> 00:03:34,293
+Un élément qui était invisible
+dans le nuage de points se dégage.
+
+58
+00:03:34,743 --> 00:03:38,808
+Le poids du bébé atteint la valeur maximale
+lorsque les mères ont environ 30 ans,
+
+59
+00:03:38,808 --> 00:03:41,344
+et diminue quand elles sont
+plus âgées ou plus jeunes.
+
+60
+00:03:41,894 --> 00:03:43,990
+Ceci indique une relation non linéaire,
+
+61
+00:03:43,990 --> 00:03:47,320
+qui n’apparaissait pas
+dans notre nuage de points.
+
+62
+00:03:47,320 --> 00:03:48,570
+C'est mauvais signe,
+
+63
+00:03:48,570 --> 00:03:52,050
+car nous voulions utiliser
+un modèle linéaire pour cette relation.
+
+64
+00:03:53,060 --> 00:03:57,450
+Le fait de vouloir utiliser un modèle
+linéaire pour une fonction non linéaire
+
+65
+00:03:57,450 --> 00:03:59,869
+est un exemple parfait
+de sous-apprentissage.
+
+66
+00:04:00,750 --> 00:04:03,980
+Pourquoi n'utilisons-nous pas
+un type de modèle plus complexe ?
+
+67
+00:04:04,400 --> 00:04:06,850
+Pour des raisons pédagogiques.
+
+68
+00:04:07,350 --> 00:04:11,360
+Le choix des modèles et le concept de
+surapprentissage seront abordés plus tard.
+
+69
+00:04:11,870 --> 00:04:15,681
+Pour résumer, les risques sont
+proportionnels à la complexité du modèle.
+
+70
+00:04:16,241 --> 00:04:20,411
+Il y a donc une petite relation positive
+entre l'âge de la mère et le poids du bébé.
+
+71
+00:04:21,024 --> 00:04:23,176
+On va la modéliser avec une droite.
+
+72
+00:04:24,586 --> 00:04:28,539
+Comme on utilise un modèle linéaire,
+notre première intuition se traduit par
+
+73
+00:04:28,539 --> 00:04:31,650
+une droite vers le haut
+avec une ordonnée à l'origine positive.
+
+74
+00:04:32,340 --> 00:04:34,960
+On a choisi cette droite à vue de nez.
+
+75
+00:04:34,990 --> 00:04:37,910
+Mais ne devrait-elle pas être située
+plus haut ou plus bas ?
+
+76
+00:04:38,760 --> 00:04:40,489
+Se trouve-t-elle au bon endroit ?
+
+77
+00:04:42,400 --> 00:04:45,452
+Est-elle plus précise
+que cette autre droite ?
+
+78
+00:04:49,191 --> 00:04:53,198
+Si vous avez étudié les statistiques,
+vous vous rappelez sans doute
+
+79
+00:04:53,198 --> 00:04:57,002
+comment déterminer les poids optimaux
+avec la régression par les moindres carrés.
+
+80
+00:04:57,232 --> 00:05:01,346
+Elle permet en effet de déterminer de manière
+analytique les poids les plus précis
+
+81
+00:05:01,346 --> 00:05:02,744
+dans des modèles linéaires.
+
+82
+00:05:03,790 --> 00:05:07,590
+Mais, ces solutions ne fonctionnent
+qu'à une certaine échelle.
+
+83
+00:05:08,060 --> 00:05:10,320
+Les très grands ensembles de données
+
+84
+00:05:10,320 --> 00:05:14,000
+nécessitent trop de puissance de calcul
+pour résoudre le problème.
+
+85
+00:05:15,790 --> 00:05:19,380
+Alors que faire si le problème est
+insoluble de manière analytique ?
+
+86
+00:05:19,840 --> 00:05:21,815
+Il faut utiliser la descente de gradient.
+
+87
+00:05:23,792 --> 00:05:27,950
+Envisageons l'optimisation comme
+une recherche dans un espace de paramètres.
+
+88
+00:05:28,790 --> 00:05:32,630
+Notre modèle linéaire compte
+deux paramètres : une valeur de poids,
+
+89
+00:05:32,630 --> 00:05:33,860
+et une valeur de biais.
+
+90
+00:05:34,300 --> 00:05:38,270
+Comme ce sont deux valeurs réelles, on
+peut représenter toutes les combinaisons
+
+91
+00:05:38,270 --> 00:05:41,899
+de valeurs de ces paramètres sous forme
+de points dans un espace en 2D.
+
+92
+00:05:43,280 --> 00:05:45,710
+N'oubliez pas que
+nous cherchons la valeur optimale.
+
+93
+00:05:46,950 --> 00:05:49,650
+Comment comparer
+la qualité d'un point à celle d'un autre
+
+94
+00:05:49,650 --> 00:05:51,060
+dans l'espace de paramètres ?
+
+95
+00:05:51,650 --> 00:05:54,220
+Il faut d'abord reformuler le problème.
+
+96
+00:05:54,470 --> 00:05:55,940
+Les espaces d'entrée,
+
+97
+00:05:55,940 --> 00:05:59,360
+qui contiennent les données,
+sont souvent infinis.
+
+98
+00:05:59,360 --> 00:06:03,270
+Il est donc impossible d'y évaluer les
+paramètres pour chaque point.
+
+99
+00:06:04,410 --> 00:06:08,880
+En général, on estime ces calculs
+en fonction des données disponibles,
+
+100
+00:06:08,880 --> 00:06:11,410
+c'est-à-dire nos données d'apprentissage.
+
+101
+00:06:11,960 --> 00:06:16,040
+On effectue alors une généralisation
+en se basant sur la qualité d'une prédiction
+
+102
+00:06:16,040 --> 00:06:19,430
+pour un point de données unique,
+qui est l'erreur de cette prédiction,
+
+103
+00:06:19,430 --> 00:06:23,400
+pour obtenir un nombre représentatif
+de la qualité d'un groupe de prédictions.
+
+104
+00:06:23,920 --> 00:06:27,040
+Pour ce faire, on utilise
+des fonctions de perte.

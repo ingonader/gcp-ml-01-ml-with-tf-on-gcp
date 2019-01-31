@@ -1,0 +1,187 @@
+1
+00:00:00,000 --> 00:00:04,425
+Now. Let's look at how training the model machine learning engine works.
+
+2
+00:00:04,425 --> 00:00:05,760
+Before you begin training,
+
+3
+00:00:05,760 --> 00:00:07,575
+though, be sure to, one,
+
+4
+00:00:07,575 --> 00:00:09,800
+gather and prepare your training data,
+
+5
+00:00:09,800 --> 00:00:13,545
+clean, split, engineer features pre-processed features.
+
+6
+00:00:13,545 --> 00:00:17,080
+And two, put that training data in an online source that
+
+7
+00:00:17,080 --> 00:00:20,955
+Cloud Machine Learning Engine can access for example, Cloud storage.
+
+8
+00:00:20,955 --> 00:00:23,820
+When sending training jobs to Cloud Machine Learning Engine,
+
+9
+00:00:23,820 --> 00:00:29,910
+it's common to split most of the logic into a task.py file and a model.py file.
+
+10
+00:00:29,910 --> 00:00:33,150
+Task.py is the entry point to your code that
+
+11
+00:00:33,150 --> 00:00:36,555
+seemingly will start in those job level details like,
+
+12
+00:00:36,555 --> 00:00:39,600
+how to press command line arguments, how long to run,
+
+13
+00:00:39,600 --> 00:00:40,980
+where to write the outputs,
+
+14
+00:00:40,980 --> 00:00:43,920
+how to interface with hyper parameter tuning, and so on.
+
+15
+00:00:43,920 --> 00:00:45,765
+To do the core ML,
+
+16
+00:00:45,765 --> 00:00:48,750
+task.py will then invoke model.py.
+
+17
+00:00:48,750 --> 00:00:53,655
+Model.py focuses more on the core ML tasks like fetching the data,
+
+18
+00:00:53,655 --> 00:00:56,940
+defining the features, configuring the service signature,
+
+19
+00:00:56,940 --> 00:00:59,400
+and of course, the actual train and eval loop.
+
+20
+00:00:59,400 --> 00:01:03,630
+Sharing code between computers always involves some type of packaging.
+
+21
+00:01:03,630 --> 00:01:07,050
+Sending a model to CMLE for training is no different.
+
+22
+00:01:07,050 --> 00:01:09,644
+Tensor flow, and python in particular,
+
+23
+00:01:09,644 --> 00:01:13,605
+require very specific with standardized package and structure shown here.
+
+24
+00:01:13,605 --> 00:01:18,465
+It's a great practice to do a quick local test that your packaging works as expected.
+
+25
+00:01:18,465 --> 00:01:21,480
+Try calling it directly with Python -m,
+
+26
+00:01:21,480 --> 00:01:24,270
+to check all the imports are in good shape.
+
+27
+00:01:24,270 --> 00:01:28,380
+Next, let's use the GCloud to locally test our code.
+
+28
+00:01:28,380 --> 00:01:32,020
+This will do some quick sanity checks that our packaged structure is correct.
+
+29
+00:01:32,020 --> 00:01:37,575
+When satisfied, we can submit a training job to send the task to cloud to scale out.
+
+30
+00:01:37,575 --> 00:01:41,430
+The key command line adds here are package path,
+
+31
+00:01:41,430 --> 00:01:45,165
+to specify where the code is located, the module name,
+
+32
+00:01:45,165 --> 00:01:48,390
+to specify which of the files in the package to execute,
+
+33
+00:01:48,390 --> 00:01:53,615
+and scale tier, to specify what kind of hardware you want the code to be executed on.
+
+34
+00:01:53,615 --> 00:01:58,215
+You would specify scale tier equals basic to run one machine,
+
+35
+00:01:58,215 --> 00:02:01,590
+scale two equals standard to run a smallish cluster.
+
+36
+00:02:01,590 --> 00:02:03,900
+Scale two equals basic GPU,
+
+37
+00:02:03,900 --> 00:02:05,505
+to run on a single GPU.
+
+38
+00:02:05,505 --> 00:02:07,200
+You want to run on a tpu?
+
+39
+00:02:07,200 --> 00:02:10,875
+You guessed it. Scale three equals basic TPU.
+
+40
+00:02:10,875 --> 00:02:15,205
+You can also specify custom tiers and define each machine type.
+
+41
+00:02:15,205 --> 00:02:17,315
+The scale tiers keep expanding.
+
+42
+00:02:17,315 --> 00:02:21,375
+Look up the Cloud Machine Learning Engine documentation for all your current options.
+
+43
+00:02:21,375 --> 00:02:22,760
+Just a pro tip here,
+
+44
+00:02:22,760 --> 00:02:24,850
+to get the best performance for ML jobs,
+
+45
+00:02:24,850 --> 00:02:28,380
+make sure you select a single-region bucket in Google Cloud storage.
+
+46
+00:02:28,380 --> 00:02:30,345
+The default is multi-region,
+
+47
+00:02:30,345 --> 00:02:33,440
+which is better suited for web serving than ML training.

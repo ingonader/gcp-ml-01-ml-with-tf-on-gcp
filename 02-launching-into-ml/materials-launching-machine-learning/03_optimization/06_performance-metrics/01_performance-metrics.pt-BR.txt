@@ -1,0 +1,45 @@
+Na seção anterior, treinamos modelos
+no navegador usando o gradiente descendente. Os modelos que criamos
+aprenderam relações não lineares complexas usando uma hierarquia
+de características aprendida. No entanto, descobrimos no final da seção que a nossa abordagem
+atual tem alguns problemas cujas consequências incluem
+tempos longos de treinamento, mínimo não ideal e mínimo inadequado. Nesta seção, aprenderemos
+o que é um mínimo inadequado, porque ele existe e como as métricas de
+desempenho ajudam a ter resultados melhores. O que é um mínimo inadequado? Pense nele como pontos em
+parâmetro-espaço que revelam as estratégias que não generalizarão bem, que não refletem a relação verdadeira
+sendo modelada ou de ambos os tipos. Por exemplo, imagine que
+estamos treinando um modelo para prever se uma vaga de estacionamento
+está vazia a partir de uma imagem. Uma estratégia inadequada seria simplesmente
+prever que todas as vagas estão ocupadas. Com um conjunto de dados com número
+igual de exemplos positivos e negativos, tal estratégia nunca sobreviveria
+ao processo de otimização. No entanto, quando os conjuntos
+de dados são desequilibrados e contêm muito mais exemplos
+de uma classe do que de outra, as estratégias desse tipo
+podem se tornar muito mais atraentes. Esse tipo de estratégia não se esforça
+em entender a verdadeira relação entre as características e o rótulo, que seria algo relacionado com as características visuais
+de uma vaga vazia. Por isso, ela não generaliza bem ao analisar outros estacionamentos
+cuja relação subjacente é a mesma, mas a proporção de vagas vazias é diferente. É tentador pensar que a existência de um mínimo inadequado resulta
+de um problema na função de perda. Se tivéssemos uma função de perda perfeita,
+que recompensasse as melhores estratégias e penalizasse as que não funcionam, a vida seria maravilhosa. Infelizmente, isso não é possível. Sempre haverá uma lacuna
+entre as métricas que nos interessam e aquelas que funcionam bem
+com o gradiente descendente. Por exemplo, vamos supor que continuamos
+a classificar vagas de estacionamento. Uma função de perda aparentemente perfeita
+minimizaria o número de previsões incorretas. No entanto, essa função de perda
+seria uma função por partes, ou seja, o intervalo de valores que
+ela aceita seria de números inteiros, e não de números reais. Curiosamente, isso é problemático. O problema resume-se
+à diferenciabilidade. O gradiente descendente faz
+alterações incrementais nos pesos. Isso requer a diferenciação
+dos pesos com relação à perda. No entanto, as funções por partes
+têm lacunas nos intervalos. Ainda que o TensorFlow
+seja capaz de diferenciá-los, a superfície de perda
+resultante terá descontinuidades que dificultará muito a análise. Então, precisamos reestruturar o problema. Em vez de procurar uma função
+de perda perfeita durante o treinamento, usaremos um tipo novo de métrica
+após a conclusão do treinamento. Esse tipo novo de métrica
+permitirá rejeitar os modelos que se resolveram em mínimos inadequados. Essas métricas são chamadas
+de métricas de desempenho. As métricas de desempenho têm duas
+vantagens com relação às funções de perda. Primeiro, elas são mais fáceis de entender. Isso porque elas geralmente são combinações
+simples de estatísticas contáveis. Segundo, as métricas de desempenho estão
+conectadas diretamente às metas de negócios. Esse é um ponto problemático, mas se resume ao fato de que,
+apesar de a perda e a meta de negócios desejada
+muitas vezes coincidirem, isso nem sempre é acontece. Às vezes, será possível reduzir a perda ou progredir pouco em
+direção à meta de negócios. Analisaremos três métricas de desempenho, matrizes de confusão, precisão e revocação, e quando devemos usá-las.

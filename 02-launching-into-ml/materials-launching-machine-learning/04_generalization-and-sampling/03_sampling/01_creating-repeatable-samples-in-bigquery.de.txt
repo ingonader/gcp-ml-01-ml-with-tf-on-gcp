@@ -1,0 +1,94 @@
+Gerade haben Sie gelernt, 
+dass Sie durch Aufteilen der Daten Ihr Modell anhand eines 
+simulierten realen Datasets testen können, indem Sie ein 
+Data-Subset beim Training aussparen. Aber woher weiß man, wo man 
+das ursprüngliche Dataset teilen muss? Was ist, wenn das Dataset riesengroß ist? Müssen wir jeden einzelnen 
+Datenpunkt trainieren und testen? In dieser Lektion zum Sampling zeige ich Ihnen, 
+wie genau Sie Ihre Daten auf wiederholbare Weise
+mit Google BigQuery aufteilen und welche Fehlerquellen
+vermieden werden sollten. Das können Sie dann 
+im nächsten Lab üben. Fangen wir an. Bevor wir über
+das Aufteilen von Datasets sprechen, müssen wir 
+ein passendes Dataset finden. In diesem Beispiel verwenden wir Daten zur Termintreue
+von Fluggesellschaften des US-amerikanischen
+Bureau of Transportation Statistics. Google hat diese öffentlichen 
+Daten für alle Nutzer in BigQuery zugänglich gemacht als
+airlineontimedata.flightsdataset. Dieses Dataset hat
+die Ankunfts- und Abflugsverspätungen und eine neue Reihenfolge 
+von 70 Millionen Flügen aufgezeichnet. Wie können wir effektiv Trainings-, Validierungs- und Testdaten aus diesem Dataset einheitlich und reproduzierbar auswählen? SQL, oder Structured Query Language, und damit BigQuery, wo SQL ausgeführt wird, besitzt die Funktion "Rand", die einen Wert 
+zwischen 0 und 1 generiert. Sie können einfach
+80 Prozent Ihres Datasets erhalten, indem Sie eine einfache 
+SQL WHERE-Klausel anwenden. Sie werden sicher 
+einige Probleme dabei erkennen. Überlegen Sie, 
+ob dieser Prozess wiederholbar sein wird, 
+wenn ein Kollege Ihr Experiment mit denselben 80 Prozent
+des Trainingsdatasets wiederholen würde. Angenommen, das Dataset ist auf 70 Millionen Flüge eingestellt,
+würde er dieselben 56 Millionen Flüge bzw. 80 Prozent 
+des Datasets wie Sie erhalten? Wir müssen wissen, welche Daten in welchen Bucket gehören – 
+Training, Validierung oder Testen. Damit können wir und unsere 
+Kollegen unsere Experimente wiederholen und dabei dieselben Daten 
+für jeden Bucket verwenden. Sie ahnen vielleicht, dass eine simple Random-Funktion einfach fünf beliebig
+ausgewählte Zeilen nehmen würde, und das bei jedem Ausführen der Abfrage. Damit ist es extrem schwer, fast unmöglich, 
+die restlichen 20 Prozent Ihrer Daten für die Validierungs-
+und Test-Buckets aufzuteilen. Zusätzlich dazu
+ist das Dataset vielleicht sortiert, was Ihre Stichprobe verzerren könnte. Und bloß ein Order-by einzufügen kann auch zu Problemen führen, 
+z. B. beim Mini-Batch-Gradientenabstieg. Beim Machine Learning 
+müssen Sie grundsätzlich in der Lage sein, diese reproduzierbaren 
+Datenstichproben zu erstellen. Eine Möglichkeit dafür ist, die letzten 
+paar Ziffern einer Hash-Funktion auf dem Feld zu verwenden, 
+auf dem Sie Ihre Daten aufteilen. Eine öffentlich zugängliche Hash-Funktion in BigQuery heißt Farm Fingerprint. Farm Fingerprint nimmt 
+einen Wert wie "10. Dezember 2018" und wandelt ihn 
+in eine lange Ziffernreihe um. Dieser Hash-Wert ist dann für jeden anderen 
+"10. Dezember 2018"-Wert im Dataset gleich. Wenn Sie einen Algorithmus zur 
+Vorhersage von Verspätungen erstellen, können Sie Ihre Daten nach Datum aufteilen und ca. 80 Prozent 
+der Tage in das Trainings-Dataset stecken. Das ist tatsächlich reproduzierbar, denn die "Farm Fingerprint"-
+Funktion gibt exakt denselben Wert zurück, wenn sie auf 
+ein spezielles Datum ausgerichtet ist. Sie werden immer genau die 80 Prozent, oder in etwa
+die 80 Prozent der Daten erhalten. Wenn Sie Ihre Daten 
+nach Ankunftsflughafen aufteilen und 80 Prozent
+der Flughäfen im Trainingsdataset und der Rest in den Test-
+und Validierungs-Datasets sind, wenden Sie die Hash-Funktion
+stattdessen nach Ankunftsflughafen an. Sehen wir uns diese Abfrage an: Wie würden Sie
+eine neue 10-Prozent-Stichprobe für die Evaluierung erstellen? Sie ändern das "kleiner 8" 
+in "gleich 8" für Testdaten oder in "gleich 8" oder "gleich 9" für weitere
+10 Prozent zum Evaluieren oder Testen um. So sollten Sie also die Buckets aufteilen. Angenommen, es soll eine Vorhersage 
+der Verspätungen nach Fluggesellschaft, Tageszeit, Wetter
+und Flughafeneigenschaften, wie Anzahl 
+der Start-/Landebahnen, getroffen werden. Wonach sollte 
+man die Daten aufteilen? Datum? Flughafen? Fluggesellschaft? Sie sollten Ihre Daten
+immer nach einem Faktor aufteilen, auf den Sie verzichten können. Zum Beispiel, 
+wenn Sie Ankunftsverspätungen vorhersagen wollen und Ihr Dataset 
+nur über Daten von zwei Tagen verfügt, wird die Aufteilung 
+nicht detaillierter als 50-50. Die Hash-Funktion ist
+einseitig und gibt nur einen Wert aus. Sie werden mit zwei Daten
+keine 80-20-Aufteilung erhalten. Sehen wir uns 
+diese Optionen einzeln an. Was passiert, 
+wenn wir nach Datum aufteilen? Schön und gut. Aber in diesem Fall 
+können Sie keine Vorhersagen anhand von Faktoren
+wie Feiertagen machen, z. B. Weihnachten oder Thanksgiving. Die Primärfaktoren in Ihrer Vorhersage
+sollten nichts mit dem Datum zu tun haben, da Sie damit die Buckets erstellt haben. Und wenn wir nach Flughafen aufteilen? Das ist in Ordnung, 
+solange die Daten gut verteilt sind. Dann können Sie nicht
+nach flughafenspezifischen Faktoren vorhersagen, wie "Flüge vom Flughafen JFK
+um 17:00 Uhr haben immer Verspätung". Dieser Flughafen 
+kann nicht verwendet werden, weil danach aufgeteilt wurde. Und wenn wir nach 
+Fluggesellschaft aufteilen? Es gibt ja nur elf Fluggesellschaften
+und wenn Sie Ihre Daten aufteilen möchten, ist es immer noch nicht segmentiert genug, um eine präzise Aufteilung zu erhalten. Statt einer 80-20-Aufteilung
+erhalten Sie nur eine 60-40-Aufteilung, was Ihnen vielleicht nicht reicht. Wenn Sie mit ML-Entwicklung anfangen, sollten Sie Ihren Tensorflow-Code
+mit einem kleinen Data-Subset entwickeln. Später können Sie es 
+zur Produktionalisierung auf die Cloud erweitern. Wenn Sie eine ML-Anwendung entwickeln, müssen Sie sie bei jeder
+Veränderung die Anwendung neu ausführen. Wenn Sie das ganze Dataset verwenden, könnte das Stunden 
+oder sogar Tage dauern. Es geht um mehrere Petabyte Daten. 
+So können Sie keine Software entwickeln. Sie brauchen ein kleines Dataset, 
+damit Sie Ihren Code schnell ausführen, Fehler beheben 
+und neu ausführen können. Sobald die 
+Anwendung ordentlich funktioniert, können Sie sie ein- oder mehrmals 
+auf dem ganzen Dataset ausführen, so wie beim Prototyping. Als Nächstes sehen wir, 
+wie man ein kleineres Subset des Flug-Datasets 
+einheitlich sampeln kann. Wir haben die Buckets erstellt,
+brauchen jetzt aber weniger Daten. Die Flugdaten 
+bestehen aus 70 Millionen Zeilen. Sie benötigen ein kleineres Dataset, etwa aus einer Million Flügen,
+das reproduzierbar sein muss. Wie wählen Sie einen aus 70 Flügen und 
+dann 80 Prozent davon zum Training aus? Man kann nicht einen
+aus 70 und dann einen aus zehn auswählen. Warum nicht? Wenn Sie Zahlen 
+auswählen, die durch 70 teilbar sind, sind sie natürlich auch durch zehn teilbar. Der zweite Modulvorgang ist hier also überflüssig. Wir machen eine kurze Demo,
+damit Sie sehen, was damit gemeint ist.

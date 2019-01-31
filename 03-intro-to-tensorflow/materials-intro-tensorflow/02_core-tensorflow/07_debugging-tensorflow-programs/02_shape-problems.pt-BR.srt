@@ -1,0 +1,260 @@
+1
+00:00:00,000 --> 00:00:01,920
+Nas próximas lições,
+
+2
+00:00:01,920 --> 00:00:04,995
+vamos ver maneiras
+de resolver problemas comuns.
+
+3
+00:00:04,995 --> 00:00:09,150
+Começaremos com erros de forma e depois
+examinaremos uma variante
+
+4
+00:00:09,150 --> 00:00:13,285
+de erros de forma relacionados
+à incompatibilidade escalar/vetor
+
+5
+00:00:13,285 --> 00:00:17,520
+e, por fim, examinaremos
+problemas de tipo de dados.
+
+6
+00:00:18,320 --> 00:00:22,880
+Analisamos este código na aula anterior
+e dissemos que a razão pela qual a soma
+
+7
+00:00:22,880 --> 00:00:28,145
+falhou é que tanto a quanto c precisavam
+ter a mesma forma.
+
+8
+00:00:28,145 --> 00:00:32,870
+Qual das duas formas está correta depende
+de qual é a intenção.
+
+9
+00:00:32,870 --> 00:00:38,250
+Nesse caso, o método estava tentando
+pegar a matriz 4x3 original
+
+10
+00:00:38,250 --> 00:00:41,775
+e fazer janelas deslizantes
+de tamanho constante.
+
+11
+00:00:41,775 --> 00:00:45,700
+Essas janelas deslizantes
+precisavam ser 4x2.
+
+12
+00:00:45,700 --> 00:00:49,040
+Então, a estava correto,
+mas c estava errado.
+
+13
+00:00:49,040 --> 00:00:54,255
+Como você faria c também ficar 4, 2?
+
+14
+00:00:55,955 --> 00:01:01,340
+Você pode fazer c deixar de cortar
+todas as linhas e apenas a coluna 1
+
+15
+00:01:01,340 --> 00:01:06,135
+para cortar todas as linhas,
+mas com as colunas 1 e 2.
+
+16
+00:01:06,135 --> 00:01:08,530
+Lembre-se de que, em intervalos do Python,
+
+17
+00:01:08,530 --> 00:01:11,905
+o primeiro número é incluído,
+mas o último não.
+
+18
+00:01:11,905 --> 00:01:18,030
+Então, a recebe a coluna 0 e 1
+e c as colunas 1 e 3,
+
+19
+00:01:18,030 --> 00:01:21,295
+cortando janelas
+de duas colunas por vez.
+
+20
+00:01:21,295 --> 00:01:25,365
+Agora, quando executamos o programa,
+tudo funciona corretamente.
+
+21
+00:01:26,405 --> 00:01:31,250
+Problemas de forma também podem acontecer
+devido ao tamanho do lote.
+
+22
+00:01:31,250 --> 00:01:34,895
+Lembre-se que, quando eu estava falando
+sobre formas de tensores,
+
+23
+00:01:34,895 --> 00:01:39,875
+disse que às vezes uma ou mais dimensões
+poderiam ter comprimento variável.
+
+24
+00:01:39,875 --> 00:01:43,510
+Uma razão comum para
+tensores de comprimento variável
+
+25
+00:01:43,510 --> 00:01:46,965
+é quando você está escrevendo
+um programa que lida com lotes.
+
+26
+00:01:46,965 --> 00:01:49,970
+Os lotes geralmente são do mesmo tamanho.
+
+27
+00:01:49,970 --> 00:01:53,285
+Por exemplo, 64 exemplos de cada vez,
+
+28
+00:01:53,285 --> 00:01:56,725
+exceto quando chega
+ao final do arquivo de entrada.
+
+29
+00:01:56,725 --> 00:01:58,459
+No entanto, nesse momento,
+
+30
+00:01:58,459 --> 00:02:02,690
+você pode não ter 64 exemplos
+para preencher o lote e, portanto,
+
+31
+00:02:02,690 --> 00:02:07,515
+pode criar um tensor que contém
+apenas 42 exemplos.
+
+32
+00:02:07,515 --> 00:02:11,190
+Essa é a razão pela qual
+o formato do marcador X
+
+33
+00:02:11,190 --> 00:02:14,640
+no código é none
+para a primeira dimensão.
+
+34
+00:02:14,640 --> 00:02:17,275
+None significa
+que há um comprimento variável.
+
+35
+00:02:17,275 --> 00:02:20,150
+Se você imprimir o valor de X,
+
+36
+00:02:20,150 --> 00:02:25,635
+terá a saída de depuração do tensor,
+que informa que esse é um tensor 2D.
+
+37
+00:02:25,635 --> 00:02:28,375
+É "?, 3".
+
+38
+00:02:28,375 --> 00:02:35,330
+Isso significa que a matriz sempre tem
+3 colunas, mas o número de linhas varia.
+
+39
+00:02:35,330 --> 00:02:38,715
+Agora, quando você tenta
+fornecer dados falsos,
+
+40
+00:02:38,715 --> 00:02:41,320
+qual é a forma deles?
+
+41
+00:02:41,320 --> 00:02:43,355
+É um tensor 1D.
+
+42
+00:02:43,355 --> 00:02:45,635
+Ele tem três elementos, com certeza,
+
+43
+00:02:45,635 --> 00:02:50,475
+mas é 1D. Porém, o marcador
+quer uma matriz 2D.
+
+44
+00:02:50,475 --> 00:02:54,730
+Você pode ter qualquer número de linhas,
+e uma linha é aceitável,
+
+45
+00:02:54,730 --> 00:02:57,450
+mas você precisa torná-la uma matriz 2D.
+
+46
+00:02:57,450 --> 00:02:59,820
+Então, como você resolve esse problema?
+
+47
+00:02:59,820 --> 00:03:03,595
+Não é tão simples
+quanto corrigir o corte, não é?
+
+48
+00:03:04,705 --> 00:03:08,170
+A resposta é que você precisa
+mudar a forma.
+
+49
+00:03:08,170 --> 00:03:12,635
+A coerção de forma pode ser feita
+com estes métodos.
+
+50
+00:03:12,635 --> 00:03:15,480
+Já vimos o tf.reshape().
+
+51
+00:03:15,480 --> 00:03:18,940
+Ele pega os números que você tem
+e os coloca em uma forma diferente,
+
+52
+00:03:18,940 --> 00:03:20,990
+e é isso que precisamos
+para esse problema.
+
+53
+00:03:20,990 --> 00:03:23,930
+Temos três números,
+e isso é o suficiente,
+
+54
+00:03:23,930 --> 00:03:28,475
+mas temos um tensor 1D
+e precisamos dele em um tensor 2D.
+
+55
+00:03:28,464 --> 00:03:31,679
+Podemos fazer uma reformulação
+e enviar junto.

@@ -1,0 +1,39 @@
+In den vorherigen Kursen haben wir uns Fehlermeldungen
+in TensorFlow-Programmen angesehen, die fehlgeschlagene Methode isoliert und fiktive Daten eingespeist,
+um den Fehler zu erkennen und zu beheben. Manchmal sind die Probleme
+aber schwieriger zu erkennen. Sie treten nur in
+bestimmten Fällen auf. Möglicherweise erkennen Sie nicht, warum fünf, sechs oder
+sieben Batches einwandfrei funktionieren, plötzlich ein Fehler auftritt und dann alles wieder
+einwandfrei funktioniert. Fehler können mit bestimmten
+Eingabewerten oder Bedingungen der Durchführung zusammenhängen. In solchen Fällen müssen Sie Fehler
+im gesamten Programm beheben. Dafür gibt es drei Methoden. Mit tf.Print() können Tensor-Werte ausgegeben werden, wenn bestimmte Bedingungen gegeben sind. Den interaktiven Debugger tfdbg
+können Sie von einem Terminal ausführen und an eine lokale oder Remote-
+TensorFlow-Sitzung anhängen. TensorBoard ist 
+ein visuelles Monitoringtool. Damit können wir
+uns das Tag anschauen, aber es gibt weitere Möglichkeiten
+zur Fehlerbehebung mit TensorBoard. Sie können sich Bewertungsmesswerte, Überanpassungen, tote Ebenen ansehen und so weiter. Es ist eine übergeordnete 
+Fehlerbehebung von neuronalen Netzwerken. Wir sehen uns TensorBoard etwas später an. Hier wollte ich nur daran erinnern,
+dass TensorBoard ein leistungsstarkes Fehlerbehebungstool ist. Es sollte erwähnt werden, dass die Standardebene für das Logging
+von TensorFlow-Programmen "warn" ist. Es läuft still. Mit dem Loglevel "info" sehen Sie weitere
+Lognachrichten beim TensorFlow-Training. Sie ändern die Logebene mit tf.logging und stellen den Ausführlichkeitsgrad ein. Die Ebenen sind: "debug", "info", 
+"warn", "error" und "fatal". In dieser Reihenfolge. "debug" ist am ausführlichsten, und "fatal" ist am stillsten, "info" wird für die Entwicklung genutzt und "warn" für die Produktion. Mit einem Befehlszeilenparameter
+können Sie zwischen ihnen wechseln. Mit tf.Print können bestimmte
+Tensor-Werte geloggt werden. Möglicherweise teilen Sie a durch b und erhalten NaN 
+(keine Zahl) in der Ausgabe. Sie möchten den Wert von a und b
+erhalten, um das Problem zu finden. Wenn Sie a ausgeben, erhalten Sie nur
+die Fehlerausgabe des Tensors, aber nicht seinen Wert.
+Das ist die verzögerte Durchführung. Sie müssen einen Tensor bewerten, um den Wert zu erhalten, also geben Sie 
+den Wert von A nicht jedes Mal aus. Hier ist print_ab ein Tensor,
+der s umschließt und a und b ausgibt. Ich ersetze s im Diagramm durch print_ab nur für Batches, bei denen s NaN ist, Also werden nur diese Dinge ausgegeben. Dies muss in einem 
+Standalone-Programm passieren, weil Datalab 
+die TensorFlow-Lognachrichten nutzt. Ich umgehe das, indem ich den Code
+in eine Datei schreibe und dann ausführe. Sie verwenden tf.Print meist
+für laufende TensorFlow-Programme, um seltene Fehler zu erkennen und alles in Logs zu erfassen. Ein super Trick! TensorFlow hat auch einen dynamischen interaktiven Debugger: tf_debug. Sie führen ihn von der Befehlszeile aus. Sie führen das TensorFlow-Programm
+vom Terminal als Standalone-Programm aus. Beim Ausführen fügen Sie das
+Befehlszeilen-Flag --debug hinzu. Damit können Sie auch remote ausgeführte
+TensorFlow-Programme beheben, d. h. Sie können es an
+das Programm anhängen. Es gibt auch Tricks 
+zum Beheben von Fehlern in Programmen für Experimente und Schätzungen. Wenn ein Programm startet,
+können Sie mit einem Debugger schrittweise durch den Code gehen, Breakpoints setzen, usw. Wenn Sie schon einen interaktiven Debugger für andere Sprachen
+oder Umgebungen genutzt haben, kennen Sie bereits 
+Begriffe wie Breakpoint usw.

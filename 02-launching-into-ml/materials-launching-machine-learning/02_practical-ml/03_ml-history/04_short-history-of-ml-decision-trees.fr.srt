@@ -1,0 +1,500 @@
+1
+00:00:00,260 --> 00:00:03,825
+Les algorithmes d'arbres,
+comme ID3 et C4.5,
+
+2
+00:00:03,825 --> 00:00:05,890
+ont été inventés dans les années 80 et 90.
+
+3
+00:00:06,080 --> 00:00:09,175
+Ils sont efficaces pour certains problèmes
+de régression linéaire,
+
+4
+00:00:09,175 --> 00:00:11,300
+et sont très faciles à interpréter.
+
+5
+00:00:11,560 --> 00:00:15,645
+Trouver la bonne répartition lors de
+la création d'arbres est un problème NP.
+
+6
+00:00:15,755 --> 00:00:18,260
+Des algorithmes gloutons
+ont donc été utilisés
+
+7
+00:00:18,260 --> 00:00:21,560
+pour construire des arbres
+aussi optimaux que possible.
+
+8
+00:00:22,230 --> 00:00:24,900
+Ils créent une surface de décision
+linéaire par morceaux,
+
+9
+00:00:24,900 --> 00:00:27,325
+soit ce qu'une couche ReLu génère.
+
+10
+00:00:27,735 --> 00:00:30,695
+Mais, avec les réseaux de
+neurones profonds ou DNN,
+
+11
+00:00:30,695 --> 00:00:34,885
+chaque couche réelle est combinée pour
+une surface de décision en hyperplan,
+
+12
+00:00:34,885 --> 00:00:36,615
+ce qui peut être bien plus efficace.
+
+13
+00:00:37,005 --> 00:00:40,620
+Pourquoi les DNN peuvent-ils être plus
+efficaces que les arbres de décision ?
+
+14
+00:00:40,700 --> 00:00:43,005
+Commençons par
+les arbres de décision.
+
+15
+00:00:43,845 --> 00:00:47,820
+Ce sont certains des algorithmes
+de machine learning les plus intuitifs.
+
+16
+00:00:47,890 --> 00:00:51,495
+Ils peuvent être utilisés
+pour la classification et la régression.
+
+17
+00:00:51,875 --> 00:00:53,640
+Si vous avez un ensemble de données,
+
+18
+00:00:53,640 --> 00:00:56,915
+dont vous voulez déterminer
+la répartition dans des buckets,
+
+19
+00:00:57,155 --> 00:01:00,520
+vous devez commencer par
+trouver des questions pertinentes
+
+20
+00:01:00,520 --> 00:01:01,900
+pour interroger les données.
+
+21
+00:01:02,280 --> 00:01:04,200
+Prenons un exemple.
+
+22
+00:01:05,040 --> 00:01:10,350
+Nous devons prédire qui a survécu
+ou péri lors du naufrage du Titanic.
+
+23
+00:01:11,010 --> 00:01:13,915
+Les passagers venaient de tous milieux,
+
+24
+00:01:13,915 --> 00:01:16,405
+de différentes éducations,
+de divers contextes, etc.
+
+25
+00:01:16,565 --> 00:01:20,880
+On doit trouver si certaines de ces
+caractéristiques peuvent séparer
+
+26
+00:01:20,880 --> 00:01:25,180
+les données de manière à prédire
+avec précision les survivants.
+
+27
+00:01:26,220 --> 00:01:30,065
+La première caractéristique à examiner
+peut être le sexe des passagers.
+
+28
+00:01:30,225 --> 00:01:33,675
+La question peut donc être
+"Le passager est-il un homme ?".
+
+29
+00:01:33,955 --> 00:01:37,300
+Je répartis donc les données dans
+deux buckets, un pour les hommes
+
+30
+00:01:37,300 --> 00:01:39,100
+et un pour les autres passagers.
+
+31
+00:01:39,460 --> 00:01:42,140
+64 % des données se retrouvent
+dans le bucket des hommes,
+
+32
+00:01:42,140 --> 00:01:44,125
+et 36 % dans l'autre.
+
+33
+00:01:44,415 --> 00:01:47,175
+Continuons avec la partition
+du bucket des hommes.
+
+34
+00:01:47,875 --> 00:01:52,155
+Une autre question peut être dans quelle
+classe chaque passager voyageait-il ?
+
+35
+00:01:52,315 --> 00:01:56,620
+Notre partitionnement révèle que
+14 % des passagers étaient des hommes
+
+36
+00:01:56,620 --> 00:01:58,430
+de la classe la plus basse,
+
+37
+00:01:58,670 --> 00:02:00,980
+et que 50 % des passagers
+étaient des hommes
+
+38
+00:02:00,980 --> 00:02:02,880
+dans les deux classes les plus hautes.
+
+39
+00:02:03,500 --> 00:02:07,560
+Le même partitionnement peut s'appliquer
+à la branche des femmes de l'arbre.
+
+40
+00:02:07,730 --> 00:02:09,015
+Prenons du recul.
+
+41
+00:02:09,015 --> 00:02:12,835
+L'algorithme de création de l'arbre de
+décision peut facilement séparer les sexes
+
+42
+00:02:12,835 --> 00:02:16,855
+dans deux branches,
+car il n'y a que deux valeurs possibles.
+
+43
+00:02:17,015 --> 00:02:20,010
+Mais comment a-t-il choisi
+de séparer les passagers par classes,
+
+44
+00:02:20,010 --> 00:02:22,030
+avec une branche d'une classe à gauche,
+
+45
+00:02:22,030 --> 00:02:24,555
+et une branche de deux classes à droite.
+
+46
+00:02:25,305 --> 00:02:30,330
+P. ex., avec l'arbre de classification
+et de régression ou algorithme CART,
+
+47
+00:02:30,330 --> 00:02:34,280
+l'algorithme détermine
+quel couple caractéristique-seuil
+
+48
+00:02:34,280 --> 00:02:37,150
+produira des sous-ensembles
+optimaux lors de la séparation.
+
+49
+00:02:38,040 --> 00:02:41,960
+Dans les arbres de classification,
+on peut utiliser l'indice d'impureté Gini,
+
+50
+00:02:41,960 --> 00:02:43,625
+mais aussi l'entropie.
+
+51
+00:02:44,035 --> 00:02:45,850
+Après avoir séparé les données,
+
+52
+00:02:45,850 --> 00:02:48,495
+il recherche un autre couple
+caractéristique-seuil,
+
+53
+00:02:48,495 --> 00:02:50,455
+et sépare les données
+en fonction.
+
+54
+00:02:51,195 --> 00:02:53,860
+Ce processus continue de façon récurrente,
+
+55
+00:02:53,860 --> 00:02:57,015
+jusqu'à ce que la profondeur maximale
+de l'arbre soit atteinte,
+
+56
+00:02:57,015 --> 00:03:00,290
+ou lorsque plus aucune séparation
+ne permet de réduire l'impureté.
+
+57
+00:03:00,570 --> 00:03:04,385
+Dans les arbres de régression, l'erreur
+quadratique moyenne est souvent utilisée.
+
+58
+00:03:04,875 --> 00:03:08,705
+Savez-vous comment les données sont
+séparées dans deux sous-ensembles ?
+
+59
+00:03:09,355 --> 00:03:12,820
+Chaque séparateur est
+un classifieur linéaire binaire
+
+60
+00:03:12,970 --> 00:03:17,135
+qui trouve un hyperplan séparant
+une variable à une certaine valeur,
+
+61
+00:03:17,135 --> 00:03:20,130
+qui correspond au seuil défini
+pour réduire le nombre de membres
+
+62
+00:03:20,130 --> 00:03:23,655
+d'une classe se retrouvant du côté
+de l'autre classe de l'hyperplan.
+
+63
+00:03:24,055 --> 00:03:26,830
+La création récurrente de
+ces hyperplans dans un arbre
+
+64
+00:03:26,830 --> 00:03:30,615
+est semblable aux couches du classifieur
+linéaire dans un réseau de neurones.
+
+65
+00:03:30,895 --> 00:03:32,595
+Très intéressant, non ?
+
+66
+00:03:32,685 --> 00:03:35,270
+Vous savez désormais construire
+des arbres de décision.
+
+67
+00:03:35,270 --> 00:03:37,720
+Passons donc au développement de celui-ci.
+
+68
+00:03:38,230 --> 00:03:41,765
+On peut peut-être séparer les données
+en fonction d'une tranche d'âge
+
+69
+00:03:41,765 --> 00:03:43,510
+pour ce problème de classification.
+
+70
+00:03:43,670 --> 00:03:47,525
+Par exemple, les passagers
+avaient-ils plus de 17 ans et demi ?
+
+71
+00:03:48,025 --> 00:03:50,940
+La branche la plus basse
+de la branche parente des hommes
+
+72
+00:03:50,940 --> 00:03:54,715
+indique désormais que 13 %
+des passagers avaient 18 ans ou plus,
+
+73
+00:03:54,715 --> 00:03:56,745
+et que seulement 1 % étaient plus jeunes.
+
+74
+00:03:57,345 --> 00:03:59,680
+En examinant les classes
+associées à chaque nœud,
+
+75
+00:03:59,680 --> 00:04:04,325
+seule celle-ci de la branche
+des hommes est classée "survivant".
+
+76
+00:04:04,605 --> 00:04:06,180
+On peut augmenter la profondeur,
+
+77
+00:04:06,180 --> 00:04:09,970
+ou choisir d'autres caractéristiques
+pour développer l'arbre
+
+78
+00:04:09,970 --> 00:04:14,190
+jusqu'à ce que chaque nœud ne contienne
+que des passagers ayant survécu ou péri.
+
+79
+00:04:15,080 --> 00:04:18,000
+Cependant, ce modèle pose
+certains problèmes,
+
+80
+00:04:18,000 --> 00:04:19,769
+car les données sont juste mémorisées
+
+81
+00:04:19,769 --> 00:04:21,824
+et l'arbre adapté en conséquence.
+
+82
+00:04:22,154 --> 00:04:25,785
+En pratique, le modèle doit être
+généralisé pour de nouvelles données.
+
+83
+00:04:25,785 --> 00:04:28,330
+Or, un modèle qui a mémorisé
+l'ensemble d'entraînement
+
+84
+00:04:28,330 --> 00:04:30,625
+ne fonctionnera pas bien
+avec d'autres données.
+
+85
+00:04:31,415 --> 00:04:33,440
+Des méthodes peuvent corriger ce problème,
+
+86
+00:04:33,440 --> 00:04:36,190
+comme définir le nombre minimum
+d'échantillons par nœud,
+
+87
+00:04:36,190 --> 00:04:37,975
+le nombre maximum de nœuds
+
+88
+00:04:37,975 --> 00:04:39,935
+ou le nombre maximum de caractéristiques.
+
+89
+00:04:40,035 --> 00:04:41,820
+Vous pouvez aussi construire l'arbre,
+
+90
+00:04:41,820 --> 00:04:43,955
+puis élaguer les nœuds inutiles.
+
+91
+00:04:44,355 --> 00:04:46,210
+Pour tirer pleinement parti des arbres,
+
+92
+00:04:46,210 --> 00:04:48,410
+il vaut mieux les regrouper en forêts,
+
+93
+00:04:48,410 --> 00:04:50,310
+concept que nous aborderons bientôt.
+
+94
+00:04:51,330 --> 00:04:53,560
+Dans un arbre de classification,
+
+95
+00:04:53,560 --> 00:04:56,245
+que comprend chaque décision ou nœud ?
+
+96
+00:04:59,065 --> 00:05:02,760
+La bonne réponse est un classifieur
+linéaire d'une caractéristique.
+
+97
+00:05:02,910 --> 00:05:05,160
+À chaque nœud de l'arbre,
+
+98
+00:05:05,160 --> 00:05:08,140
+l'algorithme choisit
+un couple caractéristique-seuil
+
+99
+00:05:08,140 --> 00:05:10,450
+pour séparer les données
+en deux ensembles,
+
+100
+00:05:10,450 --> 00:05:12,165
+et ce de manière récurrente.
+
+101
+00:05:12,585 --> 00:05:14,550
+Plusieurs caractéristiques sont séparées,
+
+102
+00:05:14,550 --> 00:05:17,380
+si vous définissez une profondeur
+maximale supérieure à 1,
+
+103
+00:05:17,380 --> 00:05:19,570
+mais une seule caractéristique par nœud.
+
+104
+00:05:19,980 --> 00:05:23,415
+Le classifieur linéaire de toutes
+les caractéristiques est incorrect,
+
+105
+00:05:23,415 --> 00:05:26,055
+car chaque nœud sépare
+une caractéristique à la fois.
+
+106
+00:05:26,815 --> 00:05:29,030
+Les minimiseurs de l'erreur
+quadratique moyenne
+
+107
+00:05:29,030 --> 00:05:31,550
+et de la distance euclidienne
+sont presque similaires,
+
+108
+00:05:31,550 --> 00:05:34,180
+et utilisés pour la régression,
+pas la classification.

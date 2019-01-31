@@ -1,0 +1,77 @@
+Fangen wir mit 
+der Generalisierung an, um zu erfahren, 
+wann das genaueste ML-Modell nicht unbedingt die beste Wahl ist. Hier finden wir das typische
+Modell zur Geburtenrate wieder, bei dem mit der 
+Gewichtszunahme der Mutter auf der X-Achse 
+die Dauer der Schwangerschaft auf der Y-Achse vorausgesagt wird. Welches Muster erkennen Sie in den Daten? Es scheint eine 
+starke Korrelation zu geben: Je größer die Gewichtszunahme,
+desto länger die Schwangerschaft. Intuitiv ergibt das Sinn, 
+da das Baby stetig wächst. Welches Modell 
+würden Sie zuerst verwenden, um dieses Verhalten abzubilden 
+und eine Korrelation nachzuweisen? Mit einem linearen Regressionsmodell – ganz genau. Wie bei Regressionsproblemen besprochen ist der Verlustwert,
+den Sie optimieren sollten, in der Regel der Mean Square Error (MSE) oder RMSE, der Root Mean Square Error. Mean Square Error zeigt die Abweichung der
+Regressionslinie von den einzelnen Punkten, indem er die Distanz zwischen
+Punkten und Regressionslinie misst. Diese Distanzen sind die "Errors", 
+die anschließend quadriert werden. Dieser Schritt ist notwenig, 
+um negative Vorzeichen zu beseitigen. MSE hebt die größeren Abweichungen
+von der Linie besonders hervor. Die Wurzel aus dem MSE ergibt den RMSE,
+also die durchschnittliche Distanz eines Datenpunkts von der angepassten Linie,
+gemessen entlang einer vertikalen Linie. Der RMSE wird anhand von Messeinheiten 
+auf der Y-Achse interpretiert. Damit ist er ein besseres Maß der 
+Güte als ein Korrelationskoeffizient. Für beide Fehlermaße gilt: Je kleiner der Wert, 
+desto besser die Leistung des Modells und je näher der 
+Fehler am Nullwert, desto besser. Hier verwenden wir ein 
+lineares Regressionsmodell, um eine Anpassungslinie zu
+ziehen und den Fehler zu minimieren. Der endgültige RMSE beträgt 2,224. Für unser Problem 
+ist das schon ziemlich gut. Aber was passiert, wenn wir ein komplexeres Modell verwenden? Ein komplexeres Modell 
+könnte mehr freie Parameter haben. Mit freien Parametern 
+können wir jede kleine Abweichung im Dataset aufzeichnen. Wenn wir den RMSE bis auf null reduzieren, ist das Modell absolut präzise. Sind wir jetzt fertig? Ist dies das beste Modell? Kann es in die Produktion gehen? Sie werden vielleicht ein 
+Problem beim zweiten Modell sehen. Aber wie können wir
+sicher sein? Beim ML verwendet man viele Daten und wenig Intuition. Ist ein neuronales Netzwerk mit acht
+Knoten besser als eines mit zwölf Knoten? Das Netzwerk mit 16 Knoten hat einen
+geringeren RMSE. Ist das das richtige? Dieses Beispiel könnte 
+ein Polynomial hundertsten Grades oder ein neuronales
+Netzwerk mit Hunderten von Knoten sein. Wie beim Spiral-Beispiel am Ende des letzten Kurses zu Optimierung besprochen, hat ein komplexeres Modell mehr 
+Parameter, die optimiert werden können. Modelle können mit komplexeren 
+Daten wie einer Spirale umgehen, aber auch kleinere, 
+einfachere Datasets speichern. Wann soll das Modell das Training beenden, weil das Dataset gespeichert
+und eventuell sogar überangepasst wird? Die Qualität eines
+Modells lässt sich gut bewerten, indem man prüft, ob es mit einem neuen, 
+unbekannten Dataset gut funktioniert. So wissen wir, ob das Modell 
+mit neuen Datenpunkten gut generalisiert. Das kann das Generieren 
+von realen Daten ersetzen. Sehen wir uns wieder 
+das lineare Regressionsmodell und die Modelle mit 
+den neuronalen Netzwerken an. Das lineare Regressionsmodell 
+generalisiert ziemlich gut mit den neuen Datenpunkten. Der RMSE ist so
+ähnlich wie im Beispiel davor, was in diesem Fall sehr gut ist. Modelle sollten bei Training und 
+Validierung konsistente Leistung erzielen. Wir sehen, dass das zweite 
+Modell überhaupt nicht gut mit dem neuen 
+Trainingsdesign generalisiert. Der RMSE ist von 0 auf 3,2 angestiegen. Das ist sehr 
+problematisch und zeigt, dass sich das Modell 
+an das Trainingsdataset überangepasst hat und mit neuen Daten nicht 
+belastbar oder generalisierbar war. Wie kann man dafür sorgen, 
+dass sich das Modell nicht überanpasst? Wann sollte das Training beendet werden? Die Antwort ist überraschend einfach: Die Daten müssen aufgeteilt werden. Indem Sie das Dataset in
+separate Gruppen aufteilen, können Sie Ihr Modell entweder 
+neu trainieren und dann mit dem Trainings-Dataset trainieren 
+und die Leistung mit einem unabhängigen, im Silo gespeicherten
+Validierungsdataset zu vergleichen. Modelle, die gut generalisieren, haben ähnliche Verlust- und 
+Fehlerwerte beim Training und Validieren. Sobald Ihre Modelle mit dem Validierungsdataset 
+schlechter funktionieren, z. B. wenn
+die Verlustwerte langsam ansteigen, sollten Sie abbrechen. Trainieren und Auswerten von Modellen
+bedeutet, das richtige generalisierbare Modell und zudem 
+Modellparameter zu finden, die ohne Speicherung
+an Ihr Trainingsdataset angepasst sind. Hier sehen Sie ein vereinfachtes Linearmodell, das nicht an die 
+Beziehungen in den Daten angepasst ist. Das können Sie 
+mit bloßem Auge erkennen. Sie sehen, dass viele 
+Punkte außerhalb der Trendlinie liegen. Das wird als Unteranpassung bezeichnet. Am anderen Ende des Spektrums und noch gefährlicher ist Überanpassung. Dies wird am rechten Extrem gezeigt. Die Komplexität 
+des Linearmodells wurde vergrößert. Es wird anhand eines 
+Polynomials n-ten Grades interpretiert. Das hilft dem Modell, sich an die Daten
+und kleinen Abweichungen anzupassen. Hier kommt 
+das Evaluierungsdataset ins Spiel. Sie können bestimmen, 
+ob die Parameter zu Überanpassung führen. Ist es zu komplex? Überanpassung oder 
+gespeicherte Daten im Trainings-Dataset sind schlimmer als ein Modell,
+das mittelmäßig an Daten angepasst ist. Manchmal wissen Sie 
+erst bei der Produktion, was genau validiert wurde. Das richtige Maß an Modellkomplexität
+liegt zwischen Unter- und Überanpassung. Sehen wir uns an, wie wir 
+mit dem Validierungs-Dataset erkennen, wann wir das Training beenden sollten,
+um eine Überanpassung zu verhindern.

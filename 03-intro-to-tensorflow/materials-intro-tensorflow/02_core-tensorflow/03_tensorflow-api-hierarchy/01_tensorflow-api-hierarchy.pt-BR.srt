@@ -1,0 +1,342 @@
+1
+00:00:00,770 --> 00:00:02,314
+Nas aulas anteriores,
+
+2
+00:00:02,314 --> 00:00:05,230
+falamos sobre o que é o TensorFlow.
+
+3
+00:00:05,230 --> 00:00:10,165
+Agora, vamos começar a observar
+a hierarquia das APIs do TensorFlow.
+
+4
+00:00:10,165 --> 00:00:12,820
+Como a maioria
+das bibliotecas de software,
+
+5
+00:00:12,820 --> 00:00:16,510
+o TensorFlow tem várias
+camadas de abstração.
+
+6
+00:00:16,510 --> 00:00:18,905
+O menor nível de abstração
+
+7
+00:00:18,905 --> 00:00:23,655
+é uma camada implementada para atingir
+diferentes plataformas de hardware.
+
+8
+00:00:23,655 --> 00:00:26,155
+A menos que sua empresa produza hardware,
+
+9
+00:00:26,155 --> 00:00:29,265
+é improvável que você faça muito
+nesse nível.
+
+10
+00:00:29,265 --> 00:00:33,900
+O próximo nível é
+uma API do TensorFlow para C++.
+
+11
+00:00:33,900 --> 00:00:37,185
+É assim que você pode escrever um app
+personalizado do TensorFlow.
+
+12
+00:00:37,185 --> 00:00:40,590
+Você implementará uma função
+que quer em C++
+
+13
+00:00:40,590 --> 00:00:43,815
+e a registrará como
+uma operação do TensorFlow.
+
+14
+00:00:43,815 --> 00:00:47,505
+Veja a documentação do TensorFlow sobre
+como ampliar um app.
+
+15
+00:00:47,505 --> 00:00:52,110
+O TensorFlow então lhe dará um wrapper
+em Python que você pode usar,
+
+16
+00:00:52,110 --> 00:00:55,275
+exatamente como faria
+com uma função existente.
+
+17
+00:00:55,275 --> 00:00:57,235
+No entanto, nesta especialização,
+
+18
+00:00:57,235 --> 00:01:00,215
+vamos supor que você
+não é um pesquisador de ML,
+
+19
+00:01:00,215 --> 00:01:02,670
+então você não precisa fazer isso,
+
+20
+00:01:02,670 --> 00:01:05,880
+mas, se precisasse implementar
+seu próprio app personalizado,
+
+21
+00:01:05,880 --> 00:01:07,820
+você faria isso em C++,
+
+22
+00:01:07,820 --> 00:01:09,135
+e não é muito difícil.
+
+23
+00:01:09,135 --> 00:01:11,610
+O TensorFlow é extensível dessa maneira.
+
+24
+00:01:11,610 --> 00:01:14,455
+A API Python principal, o próximo nível,
+
+25
+00:01:14,455 --> 00:01:18,540
+contém grande parte
+do código de processamento numérico:
+
+26
+00:01:18,540 --> 00:01:24,030
+somar, subtrair, dividir,
+multiplicar matrizes etc.
+
+27
+00:01:24,030 --> 00:01:26,805
+Criar variáveis e tensores,
+
+28
+00:01:26,805 --> 00:01:29,895
+conseguir a forma,
+todas as dimensões de um tensor,
+
+29
+00:01:29,895 --> 00:01:33,900
+todo esse material de processamento
+numérico básico principal
+
+30
+00:01:33,900 --> 00:01:36,205
+está na API Python.
+
+31
+00:01:36,205 --> 00:01:39,990
+Então, há um conjunto de
+módulos Python que têm
+
+32
+00:01:39,990 --> 00:01:45,140
+representação de alto nível de componentes
+úteis de rede neural.
+
+33
+00:01:45,140 --> 00:01:49,110
+Por exemplo, uma maneira de criar uma
+nova camada de neurônios ocultos,
+
+34
+00:01:49,110 --> 00:01:51,315
+com uma função de ativação ReLU,
+
+35
+00:01:51,315 --> 00:01:53,265
+está em tf.layers.
+
+36
+00:01:53,265 --> 00:01:57,810
+Uma maneira de calcular o erro quadrático
+médio dos dados à medida que chegam:
+
+37
+00:01:57,810 --> 00:01:59,515
+Tf.metrics.
+
+38
+00:01:59,515 --> 00:02:02,515
+Uma maneira de computar a
+entropia cruzada com logits.
+
+39
+00:02:02,515 --> 00:02:05,550
+Este é um problema comum
+de classificação de medição de perda.
+
+40
+00:02:05,550 --> 00:02:07,570
+Entropia cruzada com logits?
+
+41
+00:02:07,570 --> 00:02:09,155
+Está em tf.losses.
+
+42
+00:02:09,155 --> 00:02:13,125
+Estes modelos fornecem componentes
+que são úteis
+
+43
+00:02:13,125 --> 00:02:16,410
+na criação de modelos NN personalizados.
+
+44
+00:02:16,410 --> 00:02:20,265
+Por que eu enfatizo
+personalizados?
+
+45
+00:02:20,265 --> 00:02:22,150
+Como muitas vezes,
+
+46
+00:02:22,150 --> 00:02:24,915
+você não precisa de um
+modelo de rede neural personalizado,
+
+47
+00:02:24,915 --> 00:02:30,630
+muitas vezes está contente em seguir
+um modo relativamente padrão de treino,
+
+48
+00:02:30,630 --> 00:02:32,640
+avaliação e veiculação de modelos.
+
+49
+00:02:32,640 --> 00:02:35,240
+Você não precisa personalizar
+a maneira como treina,
+
+50
+00:02:35,240 --> 00:02:38,955
+você usará um dos otimizadores
+de gradiente descendente da família
+
+51
+00:02:38,955 --> 00:02:41,040
+e fará retropropagação das ponderações
+
+52
+00:02:41,040 --> 00:02:42,930
+de modo iterativo.
+
+53
+00:02:42,930 --> 00:02:46,320
+Nesse caso, não escreva um loop de sessão
+de baixo nível.
+
+54
+00:02:46,320 --> 00:02:48,920
+Apenas use um Estimator.
+
+55
+00:02:48,920 --> 00:02:54,685
+O Estimator é
+a API de alto nível do TensorFlow.
+
+56
+00:02:54,685 --> 00:02:57,300
+Ela sabe como fazer treino distribuído,
+
+57
+00:02:57,300 --> 00:03:01,225
+como avaliar, como criar
+um ponto de verificação,
+
+58
+00:03:01,225 --> 00:03:02,745
+como salvar um modelo,
+
+59
+00:03:02,745 --> 00:03:04,450
+como configurá-lo para veiculação.
+
+60
+00:03:04,450 --> 00:03:07,565
+Tudo é feito
+de uma maneira lógica,
+
+61
+00:03:07,565 --> 00:03:11,085
+que se encaixa na maioria dos modelos
+de aprendizado de máquina e produção.
+
+62
+00:03:11,085 --> 00:03:14,930
+Então, caso veja exemplos
+de código do TensorFlow na Internet
+
+63
+00:03:14,930 --> 00:03:17,625
+que não usem a API Estimator,
+
+64
+00:03:17,625 --> 00:03:19,320
+simplesmente ignore esse código,
+
+65
+00:03:19,320 --> 00:03:22,370
+vá embora, não vale a pena.
+
+66
+00:03:22,370 --> 00:03:24,810
+Você terá que escrever
+um monte de código para fazer
+
+67
+00:03:24,810 --> 00:03:28,185
+posicionamento do dispositivo e
+distribuição e gerenciamento de memória.
+
+68
+00:03:28,185 --> 00:03:30,140
+Deixe o Estimator fazer isso por você.
+
+69
+00:03:30,140 --> 00:03:34,340
+Então, esses são
+os níveis de abstração do TensorFlow.
+
+70
+00:03:34,340 --> 00:03:38,475
+O Cloud ML Engine
+é ortogonal a essa hierarquia.
+
+71
+00:03:38,475 --> 00:03:43,075
+Não importa o nível de abstração em que
+você escreve o código do TensorFlow,
+
+72
+00:03:43,075 --> 00:03:46,040
+o CMLE oferece um serviço gerenciado.
+
+73
+00:03:46,040 --> 00:03:48,665
+É o TensorFlow hospedado.
+
+74
+00:03:48,665 --> 00:03:53,650
+Portanto, você pode executar o TensorFlow
+na nuvem em um cluster de máquinas
+
+75
+00:03:53,650 --> 00:03:58,750
+sem precisar instalar nenhum software
+ou gerenciar nenhum servidor.

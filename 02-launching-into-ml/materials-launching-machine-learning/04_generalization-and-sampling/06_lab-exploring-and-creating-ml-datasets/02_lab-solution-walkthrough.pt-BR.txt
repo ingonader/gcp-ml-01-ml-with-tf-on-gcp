@@ -1,0 +1,251 @@
+Este é o último laboratório do módulo
+sobre generalização e amostragem. Ele é bastante abrangente. Portanto, é normal levar mais tempo
+para trabalhar e concluir todas as etapas. Vejamos o passo a passo da solução. Se você ainda não tiver tentado,
+use o notebook de dados, o notebook IPython e execute o
+código que vê nas células. Depois, volte a este vídeo
+com o passo a passo. Aos que me acompanham, vamos
+em frente e vejamos o que temos aqui. Extraí os dados do notebook
+de estimativa de táxi do Google Cloud. Nosso objetivo é explorar os dados. Vocês se lembram das três etapas? Precisamos explorar os dados, precisamos criar aqueles
+conjuntos de dados. Portanto, agora você está realmente
+entendendo como lidar com essas funções além daquelas três etapas: o conjunto
+de dados de treinamento, avaliação e teste. E o último ponto que talvez
+você ainda não tenha visto é como criar um benchmark. Podemos voltar nisso mais tarde, quando você souber mais
+sobre aprendizado de máquina e trocar o modelo simplista por
+algo mais avançado mais tarde, como criar uma rede neural
+profunda com o TensorFlow. Antes disso, precisamos começar
+do zero e percorrer todo o caminho desde o começo. A primeira coisa que precisamos
+fazer é conseguir a amostra dos dados. O bom do BigQuery é que
+ele tem muitos conjuntos de dados públicos. E, assim como os dados de voos,
+os dados de táxi também estão disponíveis. Extrairemos todas as tarifas de
+táxi para a cidade de Nova York. E isso está neste conjunto de dados públicos
+e nos campos que vamos verificar. Aqui entra um pouco de 
+engenharia de recursos para elaborar o que vamos explorar
+e, no fim, criar nosso modelo. Se você quiser pensar sobre
+o problema da previsão da tarifa de táxi, quais seriam seus pontos de interesse? Provavelmente, você vai querer
+saber onde as corridas começaram, a latitude e longitude exatas
+dos pontos de início e fim da corrida e quantas pessoas estavam no táxi. Talvez haja várias tarifas diferentes
+ou uma estrutura de valores justa, que considere o número de passageiros, a distância da corrida ou
+o que acontece ao cruzar uma ponte. Esse é o valor total: a soma do valor
+da tarifa mais gorjetas e despesas opcionais. É assim que chegamos a esse valor. Veremos quais desses fatores contribuem para determinar a tarifa final da corrida, antes mesmo de você entrar no táxi. Antes de tudo,
+precisamos obter os dados. Como se vê aqui, para obter
+os dados no Cloud Datalab, chamaremos uma consulta
+do BigQuery a partir da amostra. Você tem as viagens
+de táxi na cidade de Nova York e extraiu todos os campos
+que acabei de mencionar. Agora, vejamos uma parte
+pequena dos dados. Usaremos uma amostra de 1%, assim como fizemos
+com os dados de voos no último laboratório. Usaremos apenas
+um pequeno subconjunto da cidade aqui. Aqui está a consulta inicial. Queremos usar 100.000 registros. Na verdade, temos
+100.000 opções de registros para escolher. Vamos ver se conseguimos ficar com
+apenas 10.000 corridas desse conjunto. Ok. Definimos parâmetros para a consulta SQL. Você pode definir parâmetros
+da mesma forma que substitui strings, certo? A consulta consiste
+em pegar a consulta de dados brutos, já que os especificamos como brutos, e substituir todos os n.
+Assim, conseguimos um registro. Faça a amostra de cada n, e depois o tamanho total,
+que é de 100.000 registros. Depois, você imprimirá a
+consulta e a executará. Esta é a consulta, estamos separando uma amostra
+em que o resto da operação é 1. E agora estamos
+com apenas 10.000 corridas de táxi. Fizemos essa nova amostragem porque não
+queremos pegar os primeiros 1.000 registros. Eles podem estar ordenados,
+e isso causaria um viés nos dados. Neste caso, elas podem ter sido
+ordenadas pelas corridas mais recentes. Se você começar a explorar as
+3.000 corridas mais recentes, por exemplo, os resultados podem ser influenciados por uma mudança, aumento
+ou diminuição recente na tarifa que talvez você não percebesse
+se olhasse apenas esses registros. Chamamos isso de viés de recência. Fizemos a
+amostragem de maneira eficiente, e este é o nosso resultado. E nós ainda não fizemos nada. Este é apenas
+o campo retornado dos conjuntos de dados. Na próxima etapa,
+começaremos a explorá-los. Veja que temos o número de passageiros, de 1 a 5 aqui, e alguns dos exemplos. Há também a distância percorrida. Muitos dados interessantes. A distância será zero se ela for
+calculada em milhas. Isso parece um pouco estranho. Podemos esperar pedágios zerados, tarifas de US$ 2,50
+e o valor total de US$ 2,50. Ok. Os dados são interessantes. Vejamos se é possível explorá-los
+um pouco mais rápido. A melhor maneira de fazer isso é
+criar uma visualização dos dados. Muitas vezes, no aprendizado de máquina, criamos gráficos de dispersão
+e verificamos alguns pontos. Aqui, plotamos a distância
+da viagem em relação ao valor da tarifa. Você deve estar pensando "quanto maior a corrida,
+maior a tarifa no taxímetro". Aqui vemos que quanto maior a corrida... Mesmo que a distância da corrida seja 40, você verá um valor
+de tarifa geral alto de US$ 100,00. Mas é possível notar dois desvios, talvez duas anomalias estranhas
+nos dados exibidos aqui. Há inúmeras corridas muito curtas,
+e mesmo corridas que poderiam ser zero por estarem bem nesta linha. Isso é uma anomalia.
+Precisamos removê-la do conjunto de dados. Não existe uma corrida sem um destino,
+talvez o passageiro tenha sido expulso. Você deve olhar os pontos
+que estão no zero nesta linha. E talvez para os pontos que formam
+esta linha que cresce na diagonal. Parece uma linha, mas, na verdade,
+são muitos pontos coletados nessa linha. Isso se deve à natureza dos dados. É interessante porque em Nova York
+quando você sai do aeroporto JFK, você pode pegar um táxi com valor fixo
+para qualquer lugar de Manhattan. Isso representa uma tarifa fixa. Por isso, a distância percorrida
+já estará definida naquele momento. E é por isso que é fácil modelar
+este caso, que é representado por uma linha. Mas não queremos prever
+apenas as corridas que saem do JFK, queremos prever as corridas de
+qualquer lugar de Nova York. Interessante, não? Vejamos algumas formas de
+pré-processar e limpar os dados antes de agrupá-los nos conjuntos
+de dados de treinamento, validação e teste. Você não quer passar para as divisões
+de conjuntos sem limpar os dados antes. O lixo que chega tem que sair. Se você dividir dados ruins,
+terá modelos ruins como resultado. Não vai conseguir reproduzir um
+modelo de comportamento do mundo real. A regra geral é que
+todos os dados estão sujos. Limpe-os e garanta que estão
+corretos antes de integrá-los ao modelo. Seu modelo quer dados
+de alta qualidade. É disso que ele gosta. Vamos observar algumas corridas. Vejamos agora algumas
+das corridas que cruzaram pontes. Elas têm pedágio maior que zero. Em um determinado dia,
+olhamos a hora de início da corrida. Neste exemplo, estamos em 20/05/2014. É interessante notar valores de
+longitude ou latitude de partida iguais a 0. Obviamente, trata-se
+de dados errados ou sujos. Precisamos remover dados
+que representam locais de partida inválidos. Você precisa de um conjunto
+de dados que faça sentido e que não tenha registros muito estranhos. Outro ponto que se pode
+notar aqui é o valor total, em nenhum momento falamos
+das colunas disponíveis para nós, o que o cliente usa como gorjeta ou qualquer valor em dinheiro
+como uma gorjeta que não está registrada. Portanto, para os fins do nosso modelo, como não temos essa informação
+e as gorjetas são opcionais, elas não são levadas em conta na tarifa. Não vamos prever isso. Agora, nós vamos definir o novo valor total como o valor total da distância percorrida
+acrescido de quaisquer pedágios. Neste exemplo específico, o valor de US$ 8,50 refere-se
+à distância percorrida, que é de 2,22, o valor de US$ 5,33 refere-se
+ao pedágio da ponte atravessada. Vamos recalcular isso
+somando os dois valores. Este será o valor total. Sem considerar gorjetas. Certo. Uma função interessante que você
+pode aplicar é a .describe. Ela permite que você
+conheça alguns dos limites ou intervalos de dados
+para as suas colunas. É muito útil em estatística. Vamos conferir os valores mínimo e máximo. Caso eles não estejam claros para a longitude ou latitude
+do local de partida quando era zero, você pode ver que o
+valor máximo é zero e valor mínimo é zero. Agora você pode começar a
+ver coisas muito estranhas. Uma que salta logo aos olhos é que, há um valor mínimo de corrida, que é -10. É impossível haver uma tarifa negativa. O motorista não paga a alguém
+para entrar no carro, e sim o passageiro. Vamos procurar agora alguns dados... vamos ver o número máximo de passageiros. Felizmente, aqui são seis. Se esse número fosse 12,
+não se trataria de um táxi, mas de um ônibus. Isso também vai aparecer. Aos poucos, estamos concentrando,
+reduzindo e limpando o conjunto com um exercício de pré-processamento. Estamos nos preparando
+para dividi-lo em três intervalos, para, então, criar um benchmark
+simples que será superado mais tarde. Ok. O processo de entender
+os dados pode demorar semanas. Se você não conhecer ou não for
+um especialista no assunto dos conjuntos, você estará diante de centenas
+de colunas ou bilhões de registros. Nesse caso, converse com
+um especialista nos dados. Você precisa entender e visualizar
+que relacionamentos estão presentes ali. Use visualizações diferentes
+e funções estatísticas mesmo antes de entrar
+no aprendizado de máquina. Você precisa entender
+o que acontece nos dados. Ainda que tenhamos levado apenas
+cinco minutos para fazer a exploração do ML, entender os conjuntos de dados
+pode levar semanas ou meses. Vamos analisar algumas
+corridas específicas. Aqui estamos plotando essas,
+que são muito interessantes, você pode ver as corridas
+em que temos a latitude e a longitude. Estas são as linhas das corridas. Veja que as linhas mais longas
+normalmente incluem um pedágio. Intuitivamente, isso faz sentido. Se você está atravessando uma ponte,
+a distância percorrida pode ser maior. Dificilmente alguém vai
+entrar no táxi no começo da ponte, atravessá-la e encerrar
+a viagem logo após o fim da ponte. Esse é um bom insight. Ok. Veja como limparemos
+todos esses dados. Estes são os cinco insights
+sobre os quais conversamos antes. Nós especificamos que as 
+longitudes e latitudes da cidade de Nova York devem estar entre -74 e 41. Não é possível
+que o valor de passageiro seja zero. Da mesma forma, há um
+limite máximo de passageiros, mas atenha-se ao parâmetro
+que impede uma corrida sem passageiro. E, como conversamos sobre as gorjetas, recalcularemos o valor total considerando apenas o valor da tarifa e os
+pedágios conforme visto aqui. Feito isso, saberemos os
+locais de partida e chegada, mas não a distância da corrida. Essa é uma dificuldade
+que muitas pessoas encontram ao criar conjuntos de dados de treinamento
+para modelos de aprendizado de máquina. A distância não é conhecida e se
+não for descoberta no tempo de produção não será treinável. Portanto, você não pode especular
+que a distância era de 5 ou 5,5 milhas. Digamos que tenha custado US$ 1 por milha. Portanto, um modelo simplista fácil
+mostra que a viagem final custará US$ 5,50. Digamos que eu tenha pedido um táxi. Logo em seguida, o modelo pergunta: "Ok, legal. Por quanto tempo você viajou?" E você diz:
+"mas eu ainda não entrei no táxi". É como querer adivinhar o futuro. Não é possível antecipar,
+treinar em dados que ainda não existem. É daí que estamos retirando os dados, do conjunto de dados de recursos. Esta é uma questão importante. Pense nos dados que existem, se eles continuarão a existir
+quando você colocar isso em produção. Aqui vemos muitos filtros de cláusula
+WHERE para a consulta do BigQuery. Estamos recalculando o valor da tarifa. Temos as colunas
+diferentes como se vê aqui. Estamos renomeando-as
+com aliases e criando esta função que indica que isto será
+uma consulta parametrizada com que faremos amostragem
+entre esses intervalos específicos. Estes são todos os nossos filtros,
+como falamos um pouco antes. Aqui estão nossos operadores de módulo 
+nas funções hash FARM_FINGERPRINT. Estamos gerando hash em pickup_datetime, e isso significa que haverá uma perda
+nas mensagens em que você aplica hash. Abriremos mão de pickup_datetime
+para que essa coluna seja usada para criar as barreiras
+entre esses intervalos. Treinamento, avaliação e teste. Estamos dizendo que o horário
+não interfere na previsão da tarifa. Criamos uma consulta
+que pode ser parametrizada. Digamos que isso fosse no treinamento, o que você pode pensar que aconteceria
+se eu processasse esta consulta 3 vezes? Você criará três conjuntos de dados: treinamento, avaliação e teste. Se estamos no treinamento, queremos 70% dos dados, uma subamostra entre 0 e 70. Como se vê aqui, sample_between é a
+consulta criada antes de a,b. E a,b se conectam a a e b aqui. Isso funciona no operador
+de módulo que você vê a cada fim. No treinamento, aquela validação
+de 70% fica entre 70 e 85 menos esses 2. Ou seja, é um adicional dos últimos 15% do
+conjunto de dados de treinamento disponível. Isso significa que seu teste
+terá de 85% a 100% dos dados. Ok. Tudo pronto para ser executado. Veja como seria
+uma consulta se a executássemos. E agora vamos especificar o local
+em que os resultados serão armazenados. Basicamente, precisamos de alguns
+arquivos CSV ou algum outro formato que permita que o aprendizado
+de máquina entenda e acesse esses dados. Para isso, temos que criar uma função
+para gerar esses CSVs. Neste caso específico,
+o treinamento é local. Portanto, armazenaremos
+e criaremos esses CSVs no Datalab. Em módulos futuros, quando
+você entender melhor o mecanismo de ML, você pode usar outra
+etapa escalável com mais prototipagem. Aqui tentaremos fazer tudo
+localmente no Cloud Datalab. Mas você vê que pode haver
+referência direta aos dados na consulta além de nas lojas e nos intervalos
+de armazenamento do Google Cloud. Ok. Estes são os CSVs que estamos criando. Agora, precisamos que o valor da tarifa
+seja excluído e atualizado com o novo. Estes são os recursos que despejamos. É praticamente tudo que foi
+incluído na consulta anterior. E aqui está o loop importante. Para a introdução gradual
+a treino, validação e teste, invoque essa consulta
+na amostra de 100.000. Em seguida, execute
+a consulta do BigQuery. Depois, retorne
+os resultados a um dataframe com que possamos interagir e operar. Com esses resultados, armazenamos aquele
+dataframe com um prefixo táxi-{}, e esse será o nome
+do seu conjunto de dados. É como táxi-treino, táxi-validação,
+táxi-teste no armazenamento dos CSVs. É isso que acontece aqui. Confie, mas verifique. É preciso ter certeza de que
+os conjuntos de dados existem. Fazemos um ls simples nos nossos arquivos, e vemos que há 58.000 corridas
+de táxi no conjunto de dados de teste, 400.000 corridas no treinamento e 100.000 na validação. Isso reflete a divisão que fizemos antes. 70, 15 e 15. Se você está se perguntando por que o teste
+e a validação poderiam ser diferentes, isso se deve à distribuição dos dados. E a distribuição pode não ser normal. Se você tiver muitas datas próximas e
+gerar hash em um dia como 01/01/2018, o resultado retornado será o mesmo. Os dados não são
+ruidosos o suficiente. Mesmo que você estipule 70, 15, 15, o hash será gerado em blocos porque talvez tenham ocorrido
+muitas corridas de táxi no Ano Novo e elas precisaram ser agrupadas
+em intervalos diferentes, certo? Elas não podem estar nos dois porque não é possível dividir uma única data quando se gera hash
+em dois lugares diferentes. Vejamos as divisões. Agora que temos todos os dados prontos
+nestes três intervalos separados, é hora de começar a criar
+o que chamo de modelo fictício. Este é o seu benchmark. Se você tivesse uma simples intuição
+sobre o valor da corrida do táxi... Sem considerar o clima,
+se você está saindo de um aeroporto, etc. Todas essas percepções
+e recursos mais complexos que você pode aplicar a um
+modelo avançado serão usados depois,
+quando aprendermos o TensorFlow e a fazer engenharia
+de recursos corretamente. Agora queremos criar um modelo simples que supere o RMSE e a métrica de perda
+do modelo que usamos como benchmark. Como será esse modelo simples? Vamos dar uma olhada. Antes de tudo, precisaremos
+prever a distância da corrida. Um modelo simples fará isso. Ele também pegará o valor
+total da tarifa e o dividirá pela distância. Usaremos uma taxa por milha,
+quilômetro ou algo semelhante. Depois, com base no conjunto
+de dados de treinamento que conhecemos, no conjunto de dados marcados, no fim das contas, nós
+saberemos o valor da tarifa. É assim que podemos calcular
+a métrica de perda dos dados. E usaremos o RMSE porque
+temos um modelo linear bem flutuante. Veja como fazemos isso. Definiremos algumas funções
+diferentes para medir as distâncias entre as latitudes e longitudes
+dos pontos de partida e chegada. Estimaremos esta distância e descobrir
+a distância que o táxi percorreu. Nós temos esta informação no treinamento,
+mas, como estamos fazendo a previsão, não podemos usar aquelas colunas. Faremos uma nova previsão. Em seguida, calcula-se o valor de RMSE
+como se vê na equação listada. Depois, vamos imprimir
+e analisar nossos recursos no modelo. Na verdade, queremos prever nossa meta. Estamos prevendo o valor da tarifa. Vamos listar os recursos, depois, definir nossos dataframes
+para treinamento, validação e teste. Aqueles três conjuntos de dados. Por fim, faremos o treinamento. Treinaremos um modelo simples
+que faz a previsão do valor da tarifa como a divisão da média
+pela taxa que estávamos calculando, que é a média dos custos. Algo como uma corrida de 10 dólares
+dividida pela média da distância percorrida. A linha 28 é a única
+em que há algum tipo de modelagem. Já gastamos de 15 a 20 minutos
+na demonstração deste laboratório e a linha 28 é a única em que
+fazemos a previsão ou modelagem. Levamos esse tempo para criar, limpar
+e pré-processar os conjuntos de dados, definir a configuração dos CSVs para
+ingestão do modelo e facilitar o trabalho e finalmente ter esse modelo como
+benchmark para o desempenho futuro. Esse índice de 99% de exploração,
+limpeza e criação de novos conjuntos que estabelece os benchmarks de 99
+para 1% do modelo real vai mudar à medida que começarmos
+a pensar na criação de modelos, em como criar modelos mais sofisticados
+e fazer engenharia de recursos no futuro. Neste momento, este pode
+ser o nosso benchmark. Esta é a taxa por quilômetro
+a que chegamos, no fim das contas. Temos uma taxa de US$ 2,60 por quilômetro. E aqui estão os valores de RMSE. Temos uma métrica de perda
+de treinamento de 7,45 e validação de 9,35. Quando testamos, ficamos surpresos em ver
+que foi o melhor de todos os três: 5,44. Agora, de qualquer forma,
+este é o nosso benchmark. De modo geral, pode-se dizer que a tarifa
+do táxi custará US$ 2,61 por quilômetro independentemente de destino, trânsito,
+destino em Manhattan, além de desconsiderar pedágios nas pontes. Não temos parâmetros aqui para saber
+se você vai passar por uma ponte. O horário também não é considerado. Portanto, com relação a todos
+esses fatores em que você estava pensando, não é possível aplicar
+uma codificação rígida a 2,6 x kms. Toda a intuição que desenvolvermos
+em modelos mais sofisticados, no fim das contas, funcionará muito melhor
+com outros insights avançados que tivermos. Voltaremos a isso no futuro
+e melhoraremos o 5,44. Este é seu valor de RMSE
+de benchmark a ser melhorado. No fim, o valor de RMSE, se pegarmos 5,44 vezes a taxa atual, chegaremos a 9,... Na verdade, isto é um pouquinho diferente. Este é o 5,44 para este
+conjunto de dados aqui. E talvez você tenha uma
+resposta um pouco diferente. Ok. Agora chegamos ao fim do laboratório. Eu incentivo você a continuar
+fazendo os cursos da especialização. Agora que você começou,
+não pode parar aqui. Agora que você aprendeu
+a obter, limpar e ajustar os dados, além de criar o modelo de benchmark,
+você não pode parar por aqui. Você está pronto para criar
+modelos mais sofisticados e programar usando todos os recursos interessantes que o modelo pode oferecer para
+obter insights mais elaborados e superar este modelo
+com este valor de RMSE. Acompanhe os próximos cursos sobre
+TensorFlow e aprenda a superar esse valor. Fique à vontade, você tem três
+tentativas para completar este laboratório. Repita e edite os códigos o quanto
+quiser usando os notebooks do Datalab. Até a próxima. Bom trabalho.

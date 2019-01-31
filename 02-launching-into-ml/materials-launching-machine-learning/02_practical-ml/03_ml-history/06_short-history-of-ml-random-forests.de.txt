@@ -1,0 +1,67 @@
+In den letzten Jahrzehnten der 2000er verfügte die ML-Forschung über die
+Rechenleistung zum Kombinieren und Vereinen von Ergebnissen aus vielen
+Modellen in einer Ensemblemethode. Wenn die Fehler für eine Menge einfacher
+schwacher Klassifikatoren unabhängig sind, würden sie zusammen einen
+starken Klassifikator bilden. DNN nähert sich daran
+durch Dropout-Schichten an, die zur Regularisierung des Modells
+dienen und Überanpassung vermeiden. Dies lässt sich durch zufälliges 
+Ausschalten von Neuronen im Netz simulieren, mit einer gewissen
+Wahrscheinlichkeit je Vorwärtsschritt, wodurch im Grunde jedes Mal
+ein neues Netz erstellt wird. Oft lassen sich komplexe Fragen besser
+durch die zusammengefassten Antworten vieler tausend Personen
+beantworten als von nur einer Person. Das nennt man die Intelligenz der Masse. Das gilt auch für maschinelles Lernen. Die Kombination der Ergebnisse vieler
+Prädiktoren, entweder Klassifikatoren oder Regressoren, ist normalerweise
+besser als das beste Einzelmodell. Diese Gruppe von Prädiktoren ist ein
+Ensemble, das in derartiger Kombination zum Ensemble Learning führt. Der Algorithmus, der dieses Lernen
+durchführt, ist eine Ensemblemethode. Eine der beliebtesten Arten des Ensemble
+Learning ist der Random Forest. Anstatt einen Entscheidungsbaum aus
+dem gesamten Trainingsdatensatz zu bauen, können wir eine Gruppe
+von Entscheidungsbäumen mit je einer zufälligen
+Teilgruppe der Trainingsdaten haben. Da sie nicht den gesamten
+Datensatz gesehen haben, können sie auch nicht alles speichern. Sobald alle Bäume mit
+Teilmengen der Daten trainiert sind, sind wir bereit für den wichtigsten und
+wertvollsten Teil des ML: Vorhersagen. Dazu werden Testbeispiele durch jeden
+Baum im Wald geschickt und die Ergebnisse werden dann
+zusammengefasst. Bei Klassifikation kann es zu einer
+Mehrheitsentscheidung aus allen Bäumen kommen, die zur
+abschließenden Ausgabeklasse wird. Bei Regression kann es eine Summe der
+Werte sein, wie etwa Mittelwert, Maximum, Median usw. Zur besseren Generalisierung wählen
+wir zufällig Beispiele und/oder Merkmale. Wir nennen die Stichprobennahme
+mit Zurücklegen "Bagging", kurz für Bootstrap aggregating, und ohne Zurücklegen "Pasting". Jeder einzelne Prädiktor hat
+eine höhere Verzerrung, da er an einem Teilsatz anstatt dem
+ganzen Dataset trainiert wurde, aber die Aggregation reduziert
+sowohl Verzerrung als auch Varianz. Deshalb hat das Ensemble oft eine ähnliche Verzerrung wie ein einzelner
+Prädiktor am ganzen Trainingssatz, aber eine geringere Varianz. Eine tolle Validierungsmethode
+für den Generalisierungsfehler ist die Verwendung der
+Out-of-Bag-Daten, anstatt einen separaten Satz vor dem Lernen
+aus dem Dataset ziehen zu müssen. Es erinnert an k-fache
+Validierung mit zufälligen Holdouts. Zufällige Teilräume entstehen, wenn
+wir Stichproben der Merkmale nehmen und wenn wir auch zufällige Beispiele
+ziehen, heißt das zufällige Patches. Adaptives Boosting oder AdaBoost im
+Gradientenboosting, sind Beispiele für Boosting, wobei wir mehrere schwache
+Klassifikatoren zu einem starken vereinen. Dazu werden alle
+Klassifikatoren der Reihe nach trainiert, um etwaige Probleme des
+vorherigen Klassifikators zu korrigieren. Für Boosting-Bäume gilt: Je mehr
+Bäume ins Ensemble aufgenommen werden, desto besser ist meistens die Vorhersage. Fügen wir deshalb unendlich
+viele Bäume hinzu? Natürlich nicht. Wir können unseren Validierungssatz
+zum frühen Stoppen nutzen, damit wir keine Überanpassung
+unserer Trainingsdaten aufgrund zu vieler Bäume auslösen. Zum Schluss, genau wie bei
+neuronalen Netzen, können wir Stacking anwenden, wobei Metaklassifikatoren lernen, was mit
+den Vorhersagen des Ensembles zu tun ist, die ihrerseits in Meta-Metaklassifikatoren
+gepackt werden können usw. Das Teilkomponenten-Stacking und die
+Wiederverwendung in DNN sehen wir gleich. Was trifft wahrscheinlich nicht auf Random Forests im Vergleich zu
+einzelnen Entscheidungsbäumen zu? Die richtige Antwort ist: Es
+trifft wahrscheinlich nicht zu, dass Random Forests optisch
+einfacher zu interpretieren sind. Ähnlich wie neuronale Netze wird es mit steigender Anzahl
+von Komplexitätsschichten des Modells schwieriger, es zu
+verstehen und zu erklären. Ein Random Forest ist in der Regel
+komplexer als nur ein Entscheidungsbaum und dadurch optisch
+schwieriger interpretierbar. Die übrigen drei Aussagen
+treffen wahrscheinlich zu. Random Forests sind besser generalisierbar
+durch Bagging und Subspacing, und durch ein Abstimmsystem bei Klassifikation
+bzw. durch Aggregation bei Regression bringt der Wald in der Regel eine viel
+bessere Leistung als ein Einzelbaum. Durch die zufällige Nahme
+von Stichproben bei Random Forests ist die Verzerrung geringer
+als bei einem Einzelbaum, aber auch die Varianz,
+was wie gesagt normalerweise eine bessere
+Generalisierbarkeit bedeutet.

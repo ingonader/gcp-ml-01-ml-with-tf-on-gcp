@@ -1,0 +1,81 @@
+Los algoritmos de árbol, como ID3 y C4.5 se inventaron
+en las décadas de los 80 y 90. Funcionan mejor con ciertos tipos
+de problemas de regresión lineal y para los humanos
+es fácil interpretarlos. Encontrar la división óptima
+cuando se crean los árboles es un problema NP-complejo. Por lo tanto,
+se usaron algoritmos voraces para crear árboles
+lo más cercanos posible a lo óptimo. Crean una superficie lineal
+de decisión por partes que es básicamente
+lo que proporciona una capa de ReLU. Pero con DNN o redes neuronales profundas,
+cada capa de ReLU se combina para formar una superficie de decisión hiperplana,
+que puede ser mucho más poderosa. Les pregunto, ¿por qué las DNN
+son mejores que los árboles de decisión? Primero, hablemos
+de los árboles de decisión. Los árboles de decisión son los algoritmos
+de aprendizaje automático más intuitivos. Se pueden usar tanto para la clasificación
+como para la regresión. Imaginen que tienen un conjunto de datos y quieren determinar cómo se dividen
+los datos en diferentes depósitos. Lo primero que deben hacer
+es pensar en preguntas interesantes para consultar el conjunto de datos. Veamos un ejemplo. Tenemos el conocido problema
+de predecir quiénes murieron en la catástrofe del Titanic,
+o sobrevivieron. Había toda clase de personas,
+de diferentes orígenes, situaciones, etc. Queremos saber si alguno
+de esos atributos posibles pueden particionar mis datos de manera que podamos predecir
+con gran exactitud quiénes sobrevivieron. Un primer atributo
+podría ser el género del pasajero. Entonces, podría preguntar:
+¿es el género masculino? Entonces, divido los datos
+para que los varones estén en un depósito y las otras personas en otro. El 64% de los datos
+se fueron al depósito de los varones y el 36% al otro. Continuemos con la partición
+del depósito de los varones por ahora. Otra pregunta que podría hacer
+es en qué clase estaba cada pasajero. Luego de la partición,
+el 14% ahora son varones de la clase más baja mientras que el 50% son varones
+de las dos clases más altas. El mismo tipo de partición podría
+continuar en la rama femenina del árbol. Si lo analizamos,
+dividir los géneros en dos ramas para el desarrollo del árbol de decisión
+es una forma de hacerlo porque solo hay dos valores posibles. Pero, ¿cómo decidió dividir
+las clases de los pasajeros en una rama de clase a la izquierda
+y dos ramas de clases a la derecha? Por ejemplo, en el árbol de clasificación
+y regresión simple, o algoritmo CART, el algoritmo trata de elegir un par
+compuesto por un atributo y un umbral que, cuando se dividan,
+producirán los subconjuntos más puros. En los árboles de clasificación,
+una métrica común es la impureza de Gini,
+pero también la entropía. Una vez que encuentra una buena división,
+busca otro par umbral-atributo y también lo divide en subconjuntos. Este proceso continúa
+recursivamente hasta alcanzar la profundidad máxima
+configurada del árbol o hasta que no existan más divisiones
+para reducir la impureza. En los árboles de regresión,
+el error cuadrático medio es una métrica común de división. ¿Suena familiar la forma cómo se elige
+dividir los datos en dos subconjuntos? Cada división es básicamente
+un clasificador lineal binario que encuentra un hiperplano
+que corta la dimensión de un atributo en cierto valor,
+que es el umbral escogido para minimizar los miembros de la clase
+que se sitúan en el lado de las otras clases en el hiperplano. Crear estos hiperplanos recursivamente
+en un árbol es análogo a las capas de nodos de clasificadores lineales
+en una red neuronal. Muy interesante. Ahora que sabemos cómo se crean
+los árboles de decisión, desarrollemos este árbol un poco más. Tal vez haya un umbral de edad
+que me ayudaría a dividir mis datos en este problema de clasificación. Podría preguntar: ¿es la edad
+mayor que 17 años y medio? Si analizo la rama de la clase más baja
+de la rama superior de varones, 13% de los pasajeros
+tenían 18 años o más, mientras que solo 1% eran más jóvenes. Si analizo las clases
+asociadas con cada nodo, por el momento,
+solo esta en la rama de varones se clasifica como de sobrevivientes. Podemos extender la profundidad
+y elegir diferentes atributos para seguir expandiendo el árbol
+hasta que cada nodo tenga solo pasajeros que sobrevivieron o murieron. No obstante, esto es un problema,
+porque básicamente estoy memorizando mis datos y ajustando el árbol
+perfectamente a ellos. En la práctica, debemos generalizarlo
+a nuevos datos y un modelo que memorizó
+el conjunto de datos de entrenamiento probablemente no funcionará
+muy bien fuera de él. Hay algunos métodos para regularizarlo,
+como citar el número mínimo de muestras por nodo hoja,
+un máximo de nodos hoja o una cantidad máxima de atributos. También pueden crear un árbol completo
+y podar los nodos innecesarios. Para aprovechar al máximo
+los árboles, lo mejor es combinarlos en bosques,
+de los que hablaremos pronto. En un árbol de decisión de clasificación,
+¿en qué consiste cada decisión o nodo? La respuesta correcta es:
+C. Clasificador lineal de un atributo. Recuerden que, en cada nodo en el árbol,
+el algoritmo elige un par compuesto por un atributo y un umbral
+para dividir los datos en dos subconjuntos y continua el proceso recursivamente. Muchos atributos se dividen,
+suponiendo que se configuró una profundidad máxima mayor que uno,
+pero solo un atributo por profundidad a la vez. A. Clasificador lineal
+de todos los atributos es incorrecto, porque cada nodo
+divide solo un atributo a la vez. B. Minimizador del error cuadrático medio y D. Minimizador
+de la distancia euclidiana son prácticamente lo mismo
+y se usan en la regresión no en la clasificación.

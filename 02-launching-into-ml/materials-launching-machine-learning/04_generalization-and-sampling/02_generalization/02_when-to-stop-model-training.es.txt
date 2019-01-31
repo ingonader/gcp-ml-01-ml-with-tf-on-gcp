@@ -1,0 +1,86 @@
+Además de ayudarlos a elegir
+entre dos modelos de AA diferentes es decir, ¿debo usar regresión lineal
+o una red neuronal? también pueden usar su conjunto
+de datos de validación para ajustar los hiperparámetros
+de un único modelo. Si recuerdan,
+esos hiperparámetros se configuran antes del entrenamiento. Este proceso de ajuste
+se logra mediante ejecuciones sucesivas de entrenamientos y, luego,
+la comparación de esas ejecuciones con el conjunto de datos
+de validación independiente para verificar si hay sobreajuste. Así se usará su conjunto de validación
+durante el entrenamiento. Como vieron durante la optimización,
+el entrenamiento del modelo es cuando se comienzan
+a calcular los pesos aleatorios la derivada,
+la dirección de la curva de pérdida del descenso de gradientes,
+se minimiza la métrica de pérdida y se repite. De manera periódica,
+deben evaluar el rendimiento del modelo con los datos no vistos
+durante el entrenamiento que es cuando usamos el conjunto
+de datos de validación. Luego de completar un entrenamiento validen los resultados de este modelo
+con el conjunto de validación para verificar si esos parámetros sirven
+o si pueden ajustarlos un poco más. Si no hay una divergencia significativa
+entre las métricas de pérdida del entrenamiento y las de la validación podríamos optimizar
+nuestros hiperparámetros un poco más. Una vez que las métricas de pérdida
+del modelo se han optimizado lo suficiente con el conjunto
+de datos de validación cuando comiencen
+a ver la divergencia, y confirmen que el modelo no se está sobreajustando,
+es cuando nos detenemos y podemos decir que nuestro modelo
+está ajustado, listo para producción. Pueden usar un bucle similar a este
+para descubrir qué parámetros usar en sus modelos individuales,
+como hicimos con los hiperparámetros que configuramos antes del entrenamiento.
+Por ejemplo, las capas de una red o la cantidad de nodos que deberían usar. Básicamente, entrenarán
+con una configuración, como seis nodos en su red neuronal
+y luego entrenarán con otra. Luego,
+evaluarán cuál tiene mejor rendimiento. con el conjunto de datos de validación. Terminarán eligiendo una configuración
+de modelo que genere menos pérdida en el conjunto de datos de validación
+y no la configuración que genere menos pérdida
+en el conjunto de entrenamiento. Más adelante en esta especialización
+les mostraremos cómo Cloud ML Engine puede realizar
+una búsqueda bayesiana corta en el espacio de hiperparámetros,
+de modo que no tengan que hacer este tipo de experimentación
+un hiperparámetro a la vez. Cloud Machine Learning Engine
+puede ayudarnos a realizar este tipo de experimentación de forma paralela
+con una estrategia optimizada diferente. Una vez que terminen el entrenamiento,
+deben compartir con su jefe cómo le está yendo a su modelo. ¿Qué conjunto de datos
+usarán para la decisión final sobre la evaluación? ¿Pueden simplemente informar
+la pérdida o el error en su conjunto de validación? ¿Incluso
+si es coherente con el de entrenamiento? En realidad, no pueden. ¿Por qué? Porque usaron su conjunto de datos
+de validación para decidir cuándo detener el entrenamiento. Ya no es independiente.
+El modelo ya lo vio. ¿Qué deben hacer? Deben dividir sus datos en tres partes:
+entrenamiento, validación y un nuevo grupo aislado
+completamente llamado "prueba". Una vez que su modelo
+se entrenó y validó pueden ejecutarlo solo una vez
+con el conjunto independiente de datos de prueba. Y esa es la métrica de pérdida
+que informarán a su jefe. Y es la métrica de pérdida que,
+en su conjunto de datos de prueba decide si deben usar
+este modelo en producción. ¿Qué pasa si el modelo falla
+con el conjunto de prueba a pesar de que pasó la validación? Quiere decir que no pueden
+probar de nuevo el mismo modelo de AA y tendrán que entrenar
+un nuevo modelo de AA o volver atrás
+y recolectar más muestras de datos para proporcionar nuevos datos
+al modelo de AA. Si bien este es un buen enfoque,
+hay un pequeño problema. A nadie le gusta desperdiciar datos y parece que eso pasa
+con los datos de prueba. Solo los estoy usando una vez;
+están retenidos. ¿No podrían usar todos los datos
+en el entrenamiento y aun así obtener una indicación razonable
+del rendimiento que tendrá el modelo? La respuesta es sí. La diferencia entre estos dos métodos
+es que harán la división de entrenamiento y validación muchas veces. Entrenar y luego calcular la pérdida
+en el conjunto de datos de validación teniendo en cuenta que este conjunto
+podría consistir en puntos no usados en el entrenamiento la primera vez.
+Luego, dividir los datos de nuevo. Los datos de entrenamiento
+podrían incluir puntos usados en la validación original
+en esa primera ejecución pero están realizando
+iteraciones múltiples. Finalmente, luego de unas veces
+de hacer esta mezcla se obtiene el promedio de las métricas
+de pérdida de la validación general. Y obtendrán una desviación estándar
+de las pérdidas de la validación los ayudará a analizar la dispersión
+y decidir la cifra final. Este proceso se llama
+bootstrapping o validación cruzada. Lo bueno es que pueden usar
+todos los datos pero deben entrenar muchas veces
+porque crearán muchas divisiones. Al final,
+esto es lo que deben recordar. Si tienen muchos datos,
+usen el enfoque del conjunto de datos de prueba completamente
+independiente y retenido que significará la decisión
+de usarlo o no. Si no tienen tantos datos,
+usen la validación cruzada. ¿Cómo dividir estos grandes
+conjuntos de datos en estos grupos
+aislados de los que hablamos? Ese es el tema de nuestra siguiente
+lección: el muestreo.

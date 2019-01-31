@@ -1,0 +1,31 @@
+Während der nächsten Kurse sehen wir uns an, wie wir
+häufige Probleme lösen können. Wir beginnen mit Formfehlern und sehen uns dann
+eine Variante von Formfehlern mit einer fehlenden 
+Übereinstimmung von Skalar-Vektoren an. Zuletzt schauen wir uns 
+Probleme mit Datentypen an. Diesen Code haben wir
+im vorherigen Kurs gesehen. Die Addition ist fehlgeschlagen, 
+da a und c die gleiche Form haben müssen. Welche der beiden Formen richtig ist,
+ist von der Rolle des Codes abhängig. Hier versuchte die Methode, die ursprüngliche 
+4x3-Matrix zu nehmen und fließende Fenster einer 
+konstanten Größe zu erstellen. Diese fließenden Fenster mussten 4 mal 2 sein. Also war a richtig, aber c war falsch. Wie erhalten Sie c auch als 4,2? Sie könnten c von einer 
+Segmentierung aller Zeilen und Spalte 1 auf eine Segmentierung aller Zeilen ändern aber die Spalten 1 und 2 erhalten. Erinnern Sie sich: Im Python-Bereich
+ist die erste Zahl eingeschlossen, aber die zweite Zahl nicht. Damit erhält a die Spalte 0 und 1, und c erhält die Spalten 1 und 3. Damit werden Fenster 
+jedes Mal in zwei Spalten segmentiert. Wenn wir das Programm jetzt ausführen, funktioniert es richtig. Formfehler entstehen
+auch aufgrund von Batchgröße. Als ich von Tensor-Formen sprach, erwähnte ich, dass manchmal
+eine oder mehrere Dimensionen eine variable Länge haben. Häufig sehen Sie 
+Tensoren mit variabler Länge, wenn Sie ein Programm
+für Batches schreiben. Batches haben in der Regel dieselbe Größe, z. B. jedes Mal 64 Beispiele, außer wenn wir ans Ende
+der Eingabedatei kommen. Hier haben Sie möglicherweise keine 64 Beispiele für den Batch und erstellen einen 
+Tensor mit nur 42 Beispielen. Die Form des Platzhalters x im Code ist daher für die erste Dimension "None". "None" bedeutet,
+dass es eine variable Länge gibt. Wenn Sie den Wert x ausgeben, erhalten Sie die Ausgabe zur
+Fehlerbehebung für den 2D-Tensor. Das ist ?,3. Die Matrix hat also immer drei Spalten,
+aber die Anzahl der Reihen kann variieren. Wenn Sie jetzt versuchen,
+fiktive Daten einzuspeisen, haben Ihre fiktiven Daten die Form eines 1D-Tensor. Er hat drei Elemente, aber ist 1D. Der Platzhalter erwartet
+hingegen eine 2D-Matrix. Sie können beliebig viele 
+Zeilen oder eine Zeile haben, aber Sie müssen eine 2D-Matrix haben. Wie beheben Sie dieses Problem? Sie können nicht einfach
+Ihre Segmentierung ändern. Stattdessen müssen Sie die Form ändern Mit diesen Methoden
+können Sie die Form gestalten. Wir haben schon 
+tf.reshape gesehen. Hiermit werden Ihre Zahlen
+in eine andere Form geändert. Genau das brauchen wir für dieses Problem. Wir haben drei Zahlen, die ausreichend sind, aber wir haben einen 1D-Tensor
+und brauchen einen 2D-Tensor. Wir können diesen 
+mit "reshape" ändern und mitsenden.

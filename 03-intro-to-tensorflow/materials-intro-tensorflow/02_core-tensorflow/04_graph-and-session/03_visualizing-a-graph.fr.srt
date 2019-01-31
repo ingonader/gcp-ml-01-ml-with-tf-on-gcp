@@ -1,0 +1,251 @@
+1
+00:00:00,000 --> 00:00:01,427
+Jusqu'à présent, nous avons vu
+
+2
+00:00:01,427 --> 00:00:04,185
+comment écrire un graphe,
+et comment l'exécuter.
+
+3
+00:00:04,185 --> 00:00:06,020
+Mais de temps en temps,
+
+4
+00:00:06,020 --> 00:00:08,229
+vous voulez visualiser le graphe.
+
+5
+00:00:08,229 --> 00:00:10,155
+Vous voulez voir les opérations,
+
+6
+00:00:10,155 --> 00:00:12,880
+les données qui y sont chargées, etc.
+
+7
+00:00:12,880 --> 00:00:17,320
+Vous pourriez également souhaiter voir
+l'architecture de vos réseaux de neurones.
+
+8
+00:00:17,320 --> 00:00:22,580
+Pour écrire le graphe,
+utilisez un tf.summary.FileWriter.
+
+9
+00:00:22,580 --> 00:00:27,275
+Vous vous en servez donc
+pour écrire le graphe de la session.
+
+10
+00:00:27,775 --> 00:00:30,065
+Si vous avez l'intention
+de visualiser le graphe,
+
+11
+00:00:30,065 --> 00:00:33,965
+vous ne souhaitez probablement pas avoir
+de noms de Tensors générés automatiquement
+
+12
+00:00:33,965 --> 00:00:36,775
+(comme par exemple le Add_7
+que nous avons vu précédemment).
+
+13
+00:00:36,775 --> 00:00:40,010
+Donc, si vous écrivez le graphe
+avec pour intention de le visualiser,
+
+14
+00:00:40,010 --> 00:00:43,360
+veillez à nommer vos Tensors
+de données et vos opérations.
+
+15
+00:00:44,250 --> 00:00:47,330
+Lorsque vous exécutez
+ce programme après avoir fait cela,
+
+16
+00:00:47,330 --> 00:00:50,545
+vous obtenez un nouveau répertoire
+appelé "summaries".
+
+17
+00:00:50,545 --> 00:00:51,630
+Il est intitulé ainsi,
+
+18
+00:00:51,630 --> 00:00:57,720
+car ce nom a été spécifié comme
+premier argument de tf.summary.FileWriter.
+
+19
+00:00:57,720 --> 00:01:00,150
+Vous pouvez l'appeler
+comme vous le souhaitez.
+
+20
+00:01:00,150 --> 00:01:05,065
+Et ce répertoire contient un fichier
+qui contient lui-même un graphe.
+
+21
+00:01:05,065 --> 00:01:08,090
+Le graphe est dans
+un format binaire documenté,
+
+22
+00:01:08,090 --> 00:01:10,235
+et n'est pas véritablement lisible.
+
+23
+00:01:10,235 --> 00:01:13,955
+Comment pouvez-vous améliorer l'apparence
+du contenu de ce fichier de sortie ?
+
+24
+00:01:14,715 --> 00:01:16,400
+Pour visualiser le graphe,
+
+25
+00:01:16,400 --> 00:01:19,215
+vous pouvez utiliser un programme
+qui s'appelle TensorBoard.
+
+26
+00:01:19,215 --> 00:01:21,670
+Il est fourni
+avec la distribution TensorFlow,
+
+27
+00:01:21,670 --> 00:01:24,035
+et peut donc être appelé
+à partir de Datalab.
+
+28
+00:01:24,035 --> 00:01:27,900
+Voici le code Python grâce auquel
+vous pouvez appeler TensorBoard
+
+29
+00:01:27,900 --> 00:01:31,645
+en le faisant pointer sur le répertoire
+de premier niveau appelé "summaries".
+
+30
+00:01:31,645 --> 00:01:34,450
+Servez-vous ensuite
+de l'interface utilisateur qui s'affiche
+
+31
+00:01:34,450 --> 00:01:36,275
+pour accéder à la section des graphes
+
+32
+00:01:36,275 --> 00:01:39,510
+dans laquelle vous verrez
+une représentation visuelle de votre graphe
+
+33
+00:01:39,510 --> 00:01:45,710
+avec x, y, z1, z2, z3
+et les opérations qui les connectent.
+
+34
+00:01:45,710 --> 00:01:48,000
+Vous pouvez faire plus
+que cela avec TensorBoard,
+
+35
+00:01:48,000 --> 00:01:51,332
+et vous pourrez vous amuser avec cet outil
+au cours du prochain atelier
+
+36
+00:01:51,332 --> 00:01:53,955
+et dans le cadre d'autres ateliers
+de la spécialisation.
+
+37
+00:01:54,615 --> 00:01:58,565
+Étant donné que nous avons tendance
+à développer des modèles de ML dans Datalab,
+
+38
+00:01:58,565 --> 00:02:03,860
+il est très pratique de pouvoir lancer
+TensorBoard directement depuis Datalab.
+
+39
+00:02:03,860 --> 00:02:05,200
+Mais il peut parfois arriver
+
+40
+00:02:05,200 --> 00:02:09,575
+que vous lanciez une tâche d'entraînement
+susceptible de durer plusieurs heures,
+
+41
+00:02:09,575 --> 00:02:12,240
+et que vous voulez surveiller.
+
+42
+00:02:12,240 --> 00:02:16,470
+Vous n'avez pas besoin d'utiliser Datalab
+pour lancer TensorBoard.
+
+43
+00:02:17,070 --> 00:02:20,695
+Vous vous souvenez que j'ai dit
+que TensorBoard est fourni avec TensorFlow ?
+
+44
+00:02:20,695 --> 00:02:24,570
+Il se trouve que TensorFlow
+est également installé dans Cloud Shell.
+
+45
+00:02:24,570 --> 00:02:26,622
+Et bien que Cloud Shell manque de puissance
+
+46
+00:02:26,622 --> 00:02:29,625
+pour l'exécution de véritables tâches
+de machine learning,
+
+47
+00:02:29,625 --> 00:02:32,435
+il est assez puissant pour permettre
+d'exécuter TensorBoard.
+
+48
+00:02:32,435 --> 00:02:34,765
+Vous disposez ici de
+la procédure grâce à laquelle
+
+49
+00:02:34,765 --> 00:02:37,385
+vous pouvez lancer TensorBoard
+à partir de Cloud Shell
+
+50
+00:02:37,385 --> 00:02:39,860
+en le faisant pointer
+sur le répertoire de sortie
+
+51
+00:02:39,860 --> 00:02:42,000
+d'un modèle hébergé
+sur Google Cloud Storage.
+
+52
+00:02:42,000 --> 00:02:44,140
+Vous trouverez
+de la documentation à ce sujet
+
+53
+00:02:44,140 --> 00:02:46,090
+sur le site Web indiqué dans cette vidéo.

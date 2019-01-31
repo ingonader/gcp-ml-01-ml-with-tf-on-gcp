@@ -1,0 +1,88 @@
+Comme nous l'avons vu,
+les modèles sont des fonctions mathématiques avec des paramètres et des hyperparamètres. On a aussi abordé les paramètres
+de modèles linéaires. On a vu que
+les méthodes analytiques pour trouver les paramètres optimaux
+ne sont pas évolutives, et qu'il est possible
+d'optimiser nos paramètres via une recherche
+dans l'espace de paramètres. Pour comparer des points, on a besoin de critères de mesure. On va maintenant étudier
+les fonctions de perte. Elles traduisent la qualité des prédictions
+pour un groupe de points de données issu de notre ensemble d'apprentissage.
+Puis, elle les arrange en nombre individuel pour évaluer la qualité des paramètres
+actuels du modèle. Pour mesurer la qualité d'une prédiction
+au niveau d'un point unique, il suffit d'examiner la différence de signe
+entre la prédiction et la valeur réelle. Cette différence s'appelle l'erreur. Comment regrouper
+plusieurs valeurs d'erreur ? Le plus simple est d'en faire la somme. Or, si on utilise une fonction
+de somme pour définir nos termes, les erreurs de signe opposé s'annuleront
+dans le modèle obtenu. Notre modèle doit être capable de gérer
+des données contradictoires, mais un modèle qui répartit les différences par erreurs
+positives et négatives n'est pas idéal. Il est préférable d'opter pour
+un modèle où les prédictions correspondent à l'étiquette pour
+tous les points de l'ensemble de données, plutôt qu'un modèle dans
+lequel les erreurs positives et négatives s'annulent. On peut essayer de calculer la somme
+des valeurs absolues de l'erreur, mais cette méthode présente
+d'autres problèmes que nous décrirons bientôt. L'erreur quadratique moyenne
+est souvent utilisée à la place. L'erreur quadratique moyenne
+(ou MSE) se calcule à partir des termes d'erreur
+issus de l'ensemble de données. On les met au carré pour
+éliminer les valeurs négatives, puis on calcule la moyenne des carrés. MSE est une fonction
+de perte tout à fait valide, mais elle présente un problème. Si les erreurs sont exprimées en kilos, en kilomètres ou en euros, les mettre au carré donnera comme résultat des kilos, des kilomètres ou des euros
+au carré, ce qui peut compliquer
+l'interprétation globale. On calcule plutôt la racine carrée du MSE
+pour obtenir un résultat cohérent. RMSE est la racine carrée
+de l'erreur quadratique moyenne. Plus elle est élevée, moins bonne est la qualité
+des prédictions. L'objectif est donc de réduire la RMSE. Il faut ajouter un symbole de chapeau "^" au dessus du Y représentant
+la prédiction du modèle, et utiliser un Y normal pour
+représenter l'étiquette. Cette métrique nous permet de comparer
+deux points dans l'espace de paramètres, afin d'encoder les valeurs de paramètres
+actuelles dans notre modèle linéaire. Voici deux nuages de points
+et droites de régression pour le poids des bébés en fonction de
+l'âge des mères au-dessus de 39 ans. Il est très difficile
+d'identifier visuellement la droite la plus adaptée
+aux données sous-jacentes. C'est là que nos métriques de perte entrent
+en jeu pour trouver le meilleur modèle. Le modèle de gauche a une RMSE de 0,145, tandis que celui de droite
+a une RMSE de 0,149. Les fonctions de perte indiquent
+que les valeurs de poids et de biais à gauche sont plus efficaces
+que celles du tableau de droite. Bien que la RMSE soit utile
+pour les problèmes de régression linéaire, elle n'est pas adaptée
+à la classification. Dans les problèmes de classification,
+l'étiquette est une variable catégorielle. Si on utilise la RMSE
+pour la classification, cela pose un problème de représentation
+des variables catégorielles dans le modèle. Comme nous l'avons vu, les variables catégorielles sont souvent
+représentées comme des entiers binaires. Pour comprendre pourquoi
+cela pose un problème, observons ces courbes de perte. L'axe des abscisses
+représente la prédiction, et l'axe des ordonnées représente la perte,
+en fonction de cette prédiction. La couleur s'applique à l'étiquette. Le vert signifie que l'étiquette vaut 1, le bleu qu'elle vaut 0. Quel est le problème de cette courbe ? Contrairement à notre idée,
+elle ne pénalise pas assez sévèrement les prédictions de très mauvaise qualité. Notez qu'une prédiction de 1, lorsque la cible est 0, est au moins trois fois plus mauvaise
+qu'une prédiction de 0,5 pour la même cible. Il faut donc remplacer la RMSE par une nouvelle fonction de perte,
+qui applique une pénalité suffisamment sévère pour
+les problèmes de classification. L'une des fonctions de perte
+les plus utilisées pour la classification est l'entropie croisée,
+ou perte logarithmique. Ce graphique est semblable
+à celui de la dernière diapositive. Au lieu de présenter la perte pour la RMSE, il affiche celle d'une nouvelle
+fonction de perte : l'entropie croisée. Contrairement à la RMSE, l'entropie croisée pénalise très sévèrement
+les mauvaises prédictions, même dans ce domaine limité. Prenons un exemple pour mieux comprendre
+le fonctionnement de la formule. La formule de cette fonction
+compte deux termes différents. Un seul est utilisé pour calculer
+la perte d'un point de données spécifique. Le premier est utilisé
+pour les exemples positifs, où l'étiquette Y vaut 1. Le deuxième est utilisé
+lorsque l'étiquette vaut 0. Voici un tableau présentant
+les étiquettes et les prédictions pour deux photos dans
+une tâche de classification d'images. L'étiquette indique si la photo
+comporte ou non un visage humain. Le modèle semble être efficace. La prédiction a une valeur
+bien supérieure dans l'exemple du haut que dans celui du bas. Examinons la fonction en pratique. En raison de la structure
+de la fonction de perte, le terme négatif du premier exemple et le terme positif
+du deuxième exemple s'annulent. Si l'on considère les prédictions
+de 0,7 et 0,2 pour deux points de données avec
+des étiquettes de 1 et 0, la perte d'entropie croisée correspond
+au terme positif du premier point de données plus le terme négatif
+du deuxième point de données multiplié par -0,5. Le résultat est 0,13. Que se passe-t-il
+en cas de mauvaise prédiction ? L'exemple négatif semble
+ici avoir été mal classé, ce qui a entraîné
+l'augmentation de la perte. C'est logique,
+car le but est de minimiser la perte. Vous savez maintenant comparer
+deux points dans l'espace de paramètres, avec la RMSE pour la régression,
+ou l'entropie croisée pour la classification. N'oubliez pas que l'objectif est de
+trouver le meilleur groupe de paramètres ou le meilleur point
+dans l'espace de paramètres. Comment utiliser la comparaison
+de deux groupes de paramètres pour créer une stratégie de recherche ? Nous allons le voir
+dans la section suivante.

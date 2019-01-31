@@ -1,0 +1,309 @@
+1
+00:00:01,110 --> 00:00:05,370
+In the previous few lessons, we talked
+about how you can debug a TensorFlow
+
+2
+00:00:05,370 --> 00:00:10,110
+program by looking at the error message,
+isolating the method in question,
+
+3
+00:00:10,110 --> 00:00:15,370
+feeding it fake data, and then fixing the
+error once we understand what's going on.
+
+4
+00:00:15,370 --> 00:00:18,770
+Sometimes, though,
+the problems are more subtle.
+
+5
+00:00:18,770 --> 00:00:22,900
+They only happen when
+specific things happen.
+
+6
+00:00:22,900 --> 00:00:26,990
+And you may not be able to identify
+why things are working for five, six,
+
+7
+00:00:26,990 --> 00:00:30,409
+seven batches, and
+then all of a sudden you get an error, and
+
+8
+00:00:30,409 --> 00:00:32,860
+then things will go back to normal.
+
+9
+00:00:32,860 --> 00:00:36,160
+In other words,
+when the errors are associated with some
+
+10
+00:00:36,160 --> 00:00:40,850
+specific input value or
+condition of the execution system.
+
+11
+00:00:41,860 --> 00:00:46,767
+At that point, you need to debug
+the full-blown program, and
+
+12
+00:00:46,767 --> 00:00:49,552
+there are three methods to do this.
+
+13
+00:00:49,552 --> 00:00:53,904
+tf.Print() is a way to print
+out the values of tensors when
+
+14
+00:00:53,904 --> 00:00:56,135
+specific conditions are met.
+
+15
+00:00:56,135 --> 00:01:00,581
+tfdbg is an interactive debugger
+that you can run from a terminal and
+
+16
+00:01:00,581 --> 00:01:03,780
+attach to a local or
+remote TensorFlow session.
+
+17
+00:01:04,780 --> 00:01:08,130
+TensorBoard is a visual monitoring tool.
+
+18
+00:01:08,130 --> 00:01:11,350
+We talked about this as a way
+to look at the tag, but
+
+19
+00:01:11,350 --> 00:01:14,830
+there's more kinds of troubleshooting
+that you can do with TensorBoard.
+
+20
+00:01:14,830 --> 00:01:18,120
+You can look at evaluation metrics,
+look for over-fitting,
+
+21
+00:01:18,120 --> 00:01:20,170
+layers that are dead, etc.
+
+22
+00:01:20,170 --> 00:01:23,274
+Higher level debugging of neural networks,
+in other words.
+
+23
+00:01:23,274 --> 00:01:27,183
+We look at TensorBoard in a future
+chapter of this course, ubt for
+
+24
+00:01:27,183 --> 00:01:30,451
+now I just wanted to drop in
+a placeholder so you know and
+
+25
+00:01:30,451 --> 00:01:34,732
+you keep in mind that TensorBoard
+is a powerful troubleshooting tool.
+
+26
+00:01:34,732 --> 00:01:38,571
+One sort of of silly thing but
+worth mentioning,
+
+27
+00:01:38,571 --> 00:01:44,230
+the default level in terms of logging for
+TensorFlow programs is WARN.
+
+28
+00:01:44,230 --> 00:01:46,390
+So it runs sort of quiet.
+
+29
+00:01:46,390 --> 00:01:52,550
+Change the log level to INFO to see many
+more log messages as TensorFlow trains.
+
+30
+00:01:52,550 --> 00:01:55,970
+You can change the log level
+by using tf.logging and
+
+31
+00:01:55,970 --> 00:01:57,980
+setting the verbosity level.
+
+32
+00:01:57,980 --> 00:02:04,060
+The levels are debug, info, warn,
+error, and fatal, in that order.
+
+33
+00:02:04,060 --> 00:02:09,600
+Debug is the most verbose, and
+fatal is the most quiet, info
+
+34
+00:02:09,600 --> 00:02:15,240
+is what I tend to use in development, and
+warn is what I tend to use in production.
+
+35
+00:02:15,240 --> 00:02:19,105
+Of course, you can set up a command line
+parameter to switch from one to the other.
+
+36
+00:02:19,105 --> 00:02:24,540
+tf.Print can be used to log
+specific tensor values.
+
+37
+00:02:25,550 --> 00:02:30,450
+Perhaps you're dividing a by b and
+you're getting NAN, not a number,
+
+38
+00:02:30,450 --> 00:02:32,560
+NAN, in the output and
+
+39
+00:02:32,560 --> 00:02:37,720
+you want to figure out the value of a and
+the value of b that's causing the problem.
+
+40
+00:02:37,720 --> 00:02:40,921
+Well, if you print a, you would only
+get the debug output of the tensor,
+
+41
+00:02:40,921 --> 00:02:42,800
+you won't get its value.
+
+42
+00:02:42,800 --> 00:02:47,860
+Lazy execution, remember, you have to
+evaluate a tensor to get its value, so
+
+43
+00:02:47,860 --> 00:02:52,130
+you don't want to print the value
+of a every single time.
+
+44
+00:02:52,130 --> 00:02:59,610
+The idea here is a print_ab is a tensor,
+it wraps s and prints out a and b.
+
+45
+00:03:00,770 --> 00:03:08,860
+I then replace s in the graph by print_ab
+only for those batches where s is NAN.
+
+46
+00:03:08,860 --> 00:03:11,200
+Ergo, only those things get printed.
+
+47
+00:03:12,220 --> 00:03:14,370
+This has to be done in
+a standalone program,
+
+48
+00:03:14,370 --> 00:03:17,658
+because Datalab consumes the tensor for
+log messages.
+
+49
+00:03:17,658 --> 00:03:21,670
+Hence my workaround of writing the code
+to a file and then running it.
+
+50
+00:03:23,010 --> 00:03:26,780
+You tend to use tf.Print on
+running TensorFlow programs
+
+51
+00:03:26,780 --> 00:03:31,570
+to diagnose rare errors, and
+make sure to capture things in the logs.
+
+52
+00:03:31,570 --> 00:03:32,320
+It's a neat trick.
+
+53
+00:03:34,490 --> 00:03:39,960
+TensorFlow also has a dynamic
+interactive debugger called tf_debug.
+
+54
+00:03:39,960 --> 00:03:41,720
+You run it from the command line.
+
+55
+00:03:41,720 --> 00:03:45,990
+So you run the TensorFlow program from
+a terminal as a standalone program.
+
+56
+00:03:45,990 --> 00:03:51,270
+And then when you run it, you would
+add the command line flag --debug.
+
+57
+00:03:51,270 --> 00:03:55,270
+This is also helpful to debug
+remotely running TensorFlow programs,
+
+58
+00:03:55,270 --> 00:03:57,870
+in other words,
+you can attach to the program.
+
+59
+00:03:57,870 --> 00:04:01,867
+There are also special debug hooks for
+debugging experiment and
+
+60
+00:04:01,867 --> 00:04:03,760
+estimator programs.
+
+61
+00:04:03,760 --> 00:04:08,250
+And once a program starts, you can use
+a debugger to step through the code,
+
+62
+00:04:08,250 --> 00:04:09,430
+set break points, etc.
+
+63
+00:04:10,510 --> 00:04:12,930
+If you've ever used
+an interactive debugger for
+
+64
+00:04:12,930 --> 00:04:17,240
+any other language or environment,
+the terminology, steps, break points,
+
+65
+00:04:17,240 --> 00:04:19,400
+etc., they should all be pretty familiar.

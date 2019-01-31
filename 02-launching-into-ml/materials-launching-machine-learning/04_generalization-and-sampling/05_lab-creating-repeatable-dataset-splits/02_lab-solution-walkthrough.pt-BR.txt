@@ -1,0 +1,88 @@
+Vamos começar o laboratório 
+sobre divisões repetíveis. Se ainda não tiver visto
+nem testado este laboratório, recomendo fazer agora. Volte e veja este vídeo 
+com as instruções para solução. Vamos lá. Nosso objetivo é prever o atraso na chegada de um voo
+já atrasado na partida e qual é essa relação dependendo 
+dos diferentes aeroportos, como os de chegada e de partida. Se um voo saindo de Nova York 
+estiver 30 minutos atrasado a caminho de Los Angeles, ele também sofrerá atraso na chegada? Por fim, nosso objetivo 
+é prever essa relação. Então, para chegar a essa relação 
+ou ao modelo dessa relação, temos a seguinte fórmula no notebook do DataLab. E esse atraso na chegada é igual 
+ao parâmetro assim como seu alfa multiplicado pelo atraso na partida. E para estimar o alfa, veja aqui a fórmula. Então, o que estamos
+tentando fazer é coletar várias informações de atraso na partida. E, assim, prever se isso causará ou não 
+atraso na chegada. Mas antes dessa remodelagem de máquina, precisamos configurar nossos ambientes 
+de teste e validação para nosso modelo. Para isso, por ser um
+conjunto de dados grande, usaremos o Google Big Query, chamando-o pelo Cloud DataLab. Agora, precisaremos criar um par
+de aeroportos de chegada e partida, para poder ver se há uma correlação forte com 
+esse aeroporto específico, esse trecho específico, por assim dizer, e se você atrasará ou não uma chegada se partir depois do horário esperado. E, para esse objetivo, analisaremos apenas Denver e Los Angeles. Esse é o contexto deste laboratório. É importante entender 
+o que queremos fazer. Precisamos de uma amostra 
+de conjunto de dados repetível criada no Big Query para isso. Primeiro, vamos falar das várias maneiras
+como você não deve fazer isso. E se você vir este código ou 
+amostragem aleatória simples no seu notebook ou 
+no de algum colega, diga: "Se eu quisesse executar seu código, talvez não tivesse os mesmos resultados 
+vistos na apresentação". Vejamos primeiro 
+a divisão aleatória simples. Vamos seguir em frente 
+e executar este código. Já o executei e observei que o alfa apresentado é 
+altamente correlacionado: 0.97 entre Denver e Los Angeles. Executarei esta célula. E vamos ver o coeficiente resultante. Os três últimos números são 784. E, para tornar repetível, se eu fizer tudo igual novamente, o que você acha que acontecerá? Terei 784? Não, terei 919. Eu não mudei nada nem tive qualquer treinamento 
+ou nada parecido ainda, o resultado que eu espero 
+são os mesmos dados, certo? Você pode ver aqui no código da linha sete que está selecionando esta 
+função aleatória como campo de divisão. Sempre que executar isso 
+da mesma maneira que na apresentação, o item aleatório está aplicando 
+um número diferente entre zero e um. Você terá uma divisão,
+e ela não será repetível. Vamos escalonar isso um pouco melhor. Esse item aleatório sempre é executado
+quando uma linha é executada no Big Query. Vamos tornar isso aqui 
+um pouco mais óbvio. Você realmente usará isso 
+para suas métricas de perda, a raiz do erro quadrático médio entre 
+atraso na chegada e atraso na partida, e a dividirá nos vários conjuntos de dados
+como treino e avaliação. Digamos que isso
+tenha sido feito imediatamente para cada registro individual, você criou essa divisão aleatória 
+menor que 0.8 para todos. Vamos ver se conseguimos a mesma RMSE. Apenas executarei esta célula de código. E a RMSE, temos 13.098 para treinamento 
+e 13.027 para avaliação. Isso é relativamente consistente, mas vejamos se será repetível 
+se eu fizer o mesmo de novo. 13.098 é o número que esperamos 
+para treinamento. E, como você pode ver aqui,
+no treinamento, tivemos 13.089, que é diferente dos 98 
+que vimos antes, e 13.063. Então, em segundo plano, mesmo executando 
+o mesmo código, temos resultados diferentes para sua RMSE. E, novamente, a culpada aqui, já que muitos devem estar preocupados, é a função aleatória
+que estamos fazendo aqui. Até a divisão aleatória no treinamento 
+e na avaliação não funcionará. Você deve estar pensando: "Como vou fazer isso corretamente?" Defini todos os dados em treinamento 
+e avaliação com função aleatória uma vez e tenho uma divisão correta, 
+como 80% e 20%, por que ela está mudando constantemente? Como fazer mais apenas executando 
+a função aleatória todas as vezes?" É aí que precisamos mudar totalmente 
+a nossa mentalidade. Veja outro exemplo em que você tem o treinamento em aleatório. E você faz isso primeiro. Você tem algumas subconsultas. Ou tem treinamento e avaliação, 
+e está dividindo isso em treinamento e avaliação 
+como um subconjunto de dados. Depois, você executa as consultas também, mas veja aqui, você pode ter o mesmo problema, em que
+a RMSE é 13.037 em minha execução, que provavelmente também 
+será diferente da sua execução. Isso na avaliação. Vou clicar aqui e executar esta célula, que vai executar novamente tudo até aqui. Quando a execução terminar, o resultado esperado é 13.037. Estamos aguardando a execução. Temos 13.087, o alfa está diferente, 
+acho que era 0.977 antes. Se estiver usando o aleatório em qualquer 
+local dentro de seu código do Big Query e executar isso, seus dados 
+serão alterados automaticamente. Então, como escapamos 
+desses usos aleatórios que mencionamos? Em vez de usar aleatório, usamos a função hash 
+que mostramos antes e é exatamente isso que você verá aqui. O que nós queremos fazer é dividir dentro da cláusula "where", em vez de fazer uma função
+aleatória menor que 0.8. O que estamos usando agora é um hash na data. A data não mudará. Ela basicamente será a que estiver 
+em seu conjunto de dados de treinamento. Então, procure o restante. E se cairá em uma categoria específica. Neste caso, queremos considerar tudo 
+que seja menor que oito e enviar ao nosso 
+repositório de treinamento. Essa é uma divisão de 80% e provavelmente é a que 
+será usada para treinamento. Temos então 0.975, vamos olhar diretamente para o final, que é 403. Vamos continuar a execução. E vejamos o resultado. Lá no final,
+vemos 403 novamente. Esta é a maneira repetível de fazer isso. E intuitivamente faz sentido. Não há funções que
+sejam alteradas em segundo plano enquanto você executa esse código. Agora, o que podemos fazer é pegar isso e adicionar um pouco mais de SQL 
+e criar uma raiz do erro quadrático médio. A raiz do erro quadrático médio 
+em vez de SQL, novamente, está apenas considerando a média 
+dessa função que você viu antes, e levando essa raiz quadrada até o início, e seu conjunto de dados 
+de treinamento é 13.16072. Então, 13.160712 será 
+exatamente o mesmo resultado sempre que você executar isto. O que você aprendeu aqui? Praticamente, sempre que estiver criando 
+uma amostra de dados repetível aqui, precisará usar uma função hash, 
+em vez de uma amostra aleatória simples. Inclusive fazendo algo parecido
+ com o que viu aqui que é um pouco mais sofisticado, mas ainda tão perigoso quanto pré-separar seus dados dentro 
+de treinamento e avaliação. Se quiser montar isso diretamente, digamos que você queira criar, talvez você pergunte: "Evan, se eu realmente fizer isso, executar uma vez e guardar os resultados 
+em duas tabelas para treinamento e avaliação, e usá-las imediatamente?" Ótimo, pois você fez isso apenas uma vez e poderá fazer uma divisão 80-20. Mas o que acontece se tiver 
+mais dados no futuro? E se alguém quiser repetir 
+a análise no conjunto de dados original? Só porque você criou essa única divisão 
+codificada de dados na proporção 80-20 não quer dizer que não 
+repetirá isso nunca mais no futuro, em especial se o conjunto 
+expandir ou contrair ou se você desejar fazer 
+uma divisão diferente de 80-20. É mais flexível e mais repetível
+usar um campo para fazer intervalo e hash dos dados. E você vê isso aqui. Assim você fica acostumado com essa prática, 
+porque ela será fundamental e a base inicial necessária antes de executar o modelo de 
+aprendizado de máquina. É a criação de intervalos de dados 
+com os quais os modelos poderão aprender, validar e, também, tomar decisões com dados de testes para usar o modelo 
+de aprendizado de máquina. Muito bem, é isso. O que vamos fazer no final é abordar mais material 
+e fazer em um laboratório completo, prevendo a tarifa de corridas de táxi. Até lá!

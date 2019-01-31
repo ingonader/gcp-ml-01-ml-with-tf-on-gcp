@@ -1,0 +1,556 @@
+1
+00:00:00,550 --> 00:00:04,145
+Ya vimos cómo se puede ejecutar
+un modelo lineal en el conjunto de datos.
+
+2
+00:00:04,145 --> 00:00:07,070
+Veamos cómo lo hace una red neuronal.
+
+3
+00:00:07,760 --> 00:00:09,920
+Pero antes de hacerlo, necesitamos revisar
+
+4
+00:00:09,920 --> 00:00:13,025
+unas funciones adicionales
+que habilité en TensorFlow Playground.
+
+5
+00:00:13,495 --> 00:00:15,620
+Lo primero que habilité es la activación.
+
+6
+00:00:15,960 --> 00:00:18,610
+La activación se refiere
+a la función de activación.
+
+7
+00:00:18,610 --> 00:00:21,015
+La analizaremos en el curso Cinco
+
+8
+00:00:21,015 --> 00:00:22,775
+sobre el arte y la ciencia del AA.
+
+9
+00:00:23,045 --> 00:00:25,370
+Por ahora,
+lo más importante es que la opción
+
+10
+00:00:25,370 --> 00:00:28,115
+de la función de activación
+separa los modelos lineales
+
+11
+00:00:28,115 --> 00:00:29,635
+de las redes neuronales.
+
+12
+00:00:29,635 --> 00:00:31,255
+Antes, sin que lo sepan
+
+13
+00:00:31,255 --> 00:00:34,110
+la función de activación
+estaba establecida como lineal.
+
+14
+00:00:35,180 --> 00:00:38,935
+La segunda función adicional
+que habilité es la de capas ocultas.
+
+15
+00:00:38,935 --> 00:00:41,660
+Esta función
+les permite cambiar la cantidad
+
+16
+00:00:41,660 --> 00:00:45,240
+de capas ocultas y la cantidad
+de neuronas en cada capa oculta.
+
+17
+00:00:45,780 --> 00:00:47,990
+Pueden considerarla
+como cambiar la cantidad
+
+18
+00:00:47,990 --> 00:00:51,185
+de transformaciones
+que realiza la red en sus datos.
+
+19
+00:00:51,395 --> 00:00:53,685
+Cada neurona de las capas ocultas
+
+20
+00:00:53,685 --> 00:00:56,430
+recibe todo
+el resultado de la capa que la precede
+
+21
+00:00:56,430 --> 00:01:01,860
+transforma la entrada y pasa la salida
+a todas las neuronas de la capa posterior.
+
+22
+00:01:02,290 --> 00:01:05,160
+La forma abreviada
+para describir la cantidad de neuronas
+
+23
+00:01:05,160 --> 00:01:09,285
+y cómo se pasan información
+entre sí es la arquitectura de la red.
+
+24
+00:01:09,285 --> 00:01:11,630
+También habilité el tamaño del lote
+
+25
+00:01:11,630 --> 00:01:14,870
+que usaremos pronto en un experimento.
+
+26
+00:01:15,660 --> 00:01:20,380
+Sigan el vínculo y entrenen un modelo
+que clasifique este conjunto de datos.
+
+27
+00:01:20,380 --> 00:01:23,680
+Pero en lugar
+de agregar atributos no lineales
+
+28
+00:01:23,680 --> 00:01:27,995
+traten de mejorar el rendimiento
+cambiando la arquitectura de la red.
+
+29
+00:01:27,995 --> 00:01:32,550
+Aún no explico cómo funciona
+una red neuronal, así que no se preocupen.
+
+30
+00:01:32,550 --> 00:01:34,950
+Por ahora, diviértanse con la interfaz
+
+31
+00:01:34,950 --> 00:01:37,930
+hasta que tengan una red
+que se desempeñe lo bastante bien.
+
+32
+00:01:42,020 --> 00:01:45,620
+A estas alturas, deberían tener
+un modelo que se desempeñe bien
+
+33
+00:01:45,620 --> 00:01:49,905
+y un polígono en la región
+azul de la columna de salida.
+
+34
+00:01:50,355 --> 00:01:54,785
+Veamos esto para tener
+una idea de cómo puede hacerlo el modelo.
+
+35
+00:01:56,245 --> 00:01:59,615
+Fíjense otra vez
+en las neuronas de la primera capa oculta.
+
+36
+00:01:59,615 --> 00:02:01,395
+Cuando me desplazo por ellas
+
+37
+00:02:01,395 --> 00:02:05,050
+la casilla cambia
+para reflejar lo que aprendió la neurona.
+
+38
+00:02:05,050 --> 00:02:09,265
+Pueden leer estas neuronas
+igual que los atributos y la salida.
+
+39
+00:02:09,265 --> 00:02:14,200
+Los valores de los atributos
+X1 y X2 se codifican en el cuadrado.
+
+40
+00:02:14,200 --> 00:02:17,050
+Y el color indica el valor que generará
+
+41
+00:02:17,050 --> 00:02:20,205
+esta neurona
+para esa combinación de X1 y X2.
+
+42
+00:02:20,985 --> 00:02:23,725
+Cuando me desplazo
+en orden por los cuadrados
+
+43
+00:02:23,725 --> 00:02:27,985
+imagino cómo se verían superpuestos.
+
+44
+00:02:27,985 --> 00:02:30,860
+El azul sobre el azul se vuelve más azul
+
+45
+00:02:30,860 --> 00:02:33,465
+el azul sobre el blanco es un azul claro
+
+46
+00:02:33,465 --> 00:02:36,300
+y el azul sobre el naranja sería blanco.
+
+47
+00:02:37,520 --> 00:02:40,180
+Deberían comenzar a ver cómo cada neurona
+
+48
+00:02:40,180 --> 00:02:42,615
+participa en el límite
+de decisión del modelo
+
+49
+00:02:42,615 --> 00:02:46,155
+cómo la forma del resultado
+es una función de las capas ocultas.
+
+50
+00:02:46,155 --> 00:02:50,625
+Por ejemplo, esta neurona aporta
+este borde al límite de decisión
+
+51
+00:02:50,625 --> 00:02:53,475
+mientras que
+esta otra aporta este borde.
+
+52
+00:02:54,895 --> 00:02:57,580
+Ahora, según su conocimiento de geometría
+
+53
+00:02:57,580 --> 00:02:59,280
+¿qué tan pequeña creen que podrían
+
+54
+00:02:59,280 --> 00:03:02,115
+hacer esta red
+sin sacrificar su rendimiento?
+
+55
+00:03:02,115 --> 00:03:05,340
+Para darles una pista,
+¿cuál es la forma más sencilla que podrían
+
+56
+00:03:05,340 --> 00:03:09,035
+dibujar alrededor de los puntos
+azules para llevar a cabo el trabajo?
+
+57
+00:03:09,035 --> 00:03:13,245
+Prueben en TensorFlow Playground
+y descubran si su intuición es correcta.
+
+58
+00:03:14,925 --> 00:03:18,220
+Vimos cómo el resultado
+de las neuronas en la primera capa oculta
+
+59
+00:03:18,220 --> 00:03:21,465
+de la red se puede usar
+para crear el límite de decisión.
+
+60
+00:03:21,465 --> 00:03:23,565
+¿Y qué pasa con las otras capas?
+
+61
+00:03:23,565 --> 00:03:28,120
+¿En qué se diferencia una red neuronal
+con una capa oculta de otra con muchas?
+
+62
+00:03:29,320 --> 00:03:31,200
+Hagan clic en el vínculo para entrenar
+
+63
+00:03:31,200 --> 00:03:34,570
+una red neuronal y clasificar
+este conjunto de datos en espiral.
+
+64
+00:03:34,570 --> 00:03:37,450
+Aprovechemos esta
+oportunidad para comprender
+
+65
+00:03:37,450 --> 00:03:40,430
+cómo el tamaño del lote
+influye en el descenso de gradientes.
+
+66
+00:03:40,430 --> 00:03:43,780
+Configuren el parámetro
+de tamaño del lote en 1 y experimenten
+
+67
+00:03:43,780 --> 00:03:47,615
+con las arquitecturas de redes
+neuronales hasta encontrar una que sirva.
+
+68
+00:03:48,495 --> 00:03:50,990
+Entrenen su modelo por 300 ciclos
+
+69
+00:03:50,990 --> 00:03:54,130
+y pausen para tomar notas
+de la curva de pérdida.
+
+70
+00:03:54,770 --> 00:03:59,005
+Establezcan el parámetro de tamaño de lote
+en 10 y reinicien el entrenamiento.
+
+71
+00:03:59,495 --> 00:04:01,615
+Entrenen su modelo por 300 ciclos
+
+72
+00:04:01,615 --> 00:04:05,225
+y pausen para tomar nota
+de la curva de pérdida.
+
+73
+00:04:06,730 --> 00:04:10,985
+Finalmente, háganlo una vez más,
+pero con un tamaño de lote igual a 30.
+
+74
+00:04:12,335 --> 00:04:14,770
+¿Qué observaron y cómo podemos
+
+75
+00:04:14,770 --> 00:04:17,349
+darles sentido a estas observaciones?
+
+76
+00:04:18,449 --> 00:04:19,880
+Lo que deberían haber visto
+
+77
+00:04:19,880 --> 00:04:23,530
+es que hay diferencias claras
+en la fluidez de las curvas de pérdida.
+
+78
+00:04:23,530 --> 00:04:25,590
+A medida que aumenta el tamaño del lote
+
+79
+00:04:25,590 --> 00:04:29,345
+también lo hace la fluidez. ¿Por qué?
+
+80
+00:04:29,345 --> 00:04:32,610
+Piensen cómo el tamaño del lote
+influye en el descenso de gradientes.
+
+81
+00:04:32,610 --> 00:04:34,440
+Cuando el tamaño de lote es pequeño
+
+82
+00:04:34,440 --> 00:04:36,600
+el modelo actualiza sus parámetros
+
+83
+00:04:36,600 --> 00:04:39,455
+basándose en la pérdida de un ejemplo.
+
+84
+00:04:40,045 --> 00:04:43,465
+Sin embargo, los ejemplos
+varían y ahí radica el problema.
+
+85
+00:04:43,465 --> 00:04:45,760
+A medida que aumenta el tamaño del lote
+
+86
+00:04:45,760 --> 00:04:50,925
+el ruido de los puntos
+de datos aparece y forma una señal clara.
+
+87
+00:04:51,885 --> 00:04:55,160
+Algo que no deberían concluir
+a partir de estas observaciones
+
+88
+00:04:55,160 --> 00:04:59,865
+es que los cambios en el tamaño del lote
+influirán en la tasa de convergencia.
+
+89
+00:04:59,865 --> 00:05:03,120
+Tal como la tasa de aprendizaje,
+el tamaño óptimo de lote depende
+
+90
+00:05:03,120 --> 00:05:06,535
+del problema y se encuentra
+con el ajuste de hiperpárametros.
+
+91
+00:05:09,345 --> 00:05:13,575
+Sus modelos ya deben haber terminado
+el entrenamiento y se deberían ver así.
+
+92
+00:05:14,075 --> 00:05:16,720
+Lo primero que
+se debe destacar es la relación
+
+93
+00:05:16,720 --> 00:05:19,535
+entre la primera capa
+oculta y las que vienen después.
+
+94
+00:05:20,165 --> 00:05:23,170
+Debería ser evidente que,
+aunque las salidas de las neuronas
+
+95
+00:05:23,170 --> 00:05:26,180
+en la primera capa
+oculta eran básicamente líneas.
+
+96
+00:05:26,180 --> 00:05:29,775
+Las capas ocultas posteriores
+tuvieron salidas mucho más complejas.
+
+97
+00:05:30,435 --> 00:05:34,050
+Estas capas posteriores
+se complementaron con las que venían antes
+
+98
+00:05:34,050 --> 00:05:38,125
+casi de la misma forma en que
+apilamos los resultados de la capa oculta.
+
+99
+00:05:38,785 --> 00:05:43,050
+Piensen en la red neuronal
+como una jerarquía de atributos.
+
+100
+00:05:44,830 --> 00:05:47,210
+La idea de tomar entradas
+
+101
+00:05:47,210 --> 00:05:50,810
+y transformarlas en formas
+complejas antes de clasificarlas
+
+102
+00:05:50,810 --> 00:05:53,250
+es típica de las redes
+neuronales y representa
+
+103
+00:05:53,250 --> 00:05:57,015
+una diferencia importante del enfoque
+que se usa en el aprendizaje automático.
+
+104
+00:05:57,515 --> 00:06:02,690
+Antes de esto, los científicos de datos
+se dedicaban a la ingeniería de atributos.
+
+105
+00:06:02,690 --> 00:06:06,910
+Ahora, es el mismo modelo
+el encargado de algunas responsabilidades
+
+106
+00:06:06,910 --> 00:06:11,155
+y pueden pensar en las capas como
+parte de una ingeniería de atributos.
+
+107
+00:06:12,295 --> 00:06:16,125
+Lo siguiente que destacaremos serán
+las cosas extrañas que aprendió el modelo.
+
+108
+00:06:17,125 --> 00:06:20,020
+El modelo parece haber
+interpretado la ausencia de puntos
+
+109
+00:06:20,020 --> 00:06:23,545
+naranjas en estas dos regiones
+como evidencia para respaldar lo azul.
+
+110
+00:06:23,545 --> 00:06:26,940
+A este tipo de errores donde
+el modelo interpreta el ruido
+
+111
+00:06:26,940 --> 00:06:29,725
+en el conjunto de datos
+se lo conoce como sobreajuste.
+
+112
+00:06:29,725 --> 00:06:32,300
+Y puede ocurrir cuando el modelo
+
+113
+00:06:32,300 --> 00:06:35,215
+tiene más poder de decisión
+que el necesario para el problema.
+
+114
+00:06:35,635 --> 00:06:39,065
+Cuando los modelos sobreajustan,
+no generalizan bien y esto significa
+
+115
+00:06:39,065 --> 00:06:43,245
+que no funcionarán bien con datos nuevos,
+que no tendrán el mismo patrón de ruido
+
+116
+00:06:43,245 --> 00:06:46,235
+aun cuando permanezca la señal subyacente.
+
+117
+00:06:46,235 --> 00:06:48,145
+¿Cómo podemos combatir eso?
+
+118
+00:06:48,145 --> 00:06:49,780
+Para saber la respuesta, participe
+
+119
+00:06:49,780 --> 00:06:52,590
+en la siguiente clase
+sobre generalización y muestreo.

@@ -1,0 +1,73 @@
+Na seção anterior, definimos modelos como funções matemáticas
+que usam parâmetros e hiperparâmetros e apresentamos os parâmetros
+para modelos lineares. Depois, vimos que os
+métodos analíticos para encontrar o melhor conjunto de parâmetros
+do modelo não geram escalonamento e também vimos
+como podemos otimizar os parâmetros, com a pesquisa em parâmetro-espaço, 
+por exemplo. Para comparar dois pontos, precisaremos de uma medida. Nesta seção, falaremos sobre
+funções de perda que aproveitam a qualidade das previsões de um grupo
+de pontos de dados do conjunto de treinamento e as transformam em um único número, que usamos para estimar a qualidade
+dos parâmetros atuais do modelo. Uma das medidas da qualidade da previsão
+em um único ponto é a diferença de sinal entre a previsão e o valor verdadeiro. Essa diferença é chamada de erro. Como podemos colocar
+vários valores de erro juntos? A maneira mais simples
+é compô-los como uma soma. No entanto, se usássemos a função
+de soma para compor termos de erro, os de sinais opostos cancelariam
+uns aos outros no modelo resultante. O nosso modelo precisa lidar
+com a evidência contraditória, então, um modelo que faz uma média entre os erros positivos e os negativos não é uma solução perfeita. Então, queremos reservar
+essa designação para um modelo em que as previsões correspondam ao rótulo
+de todos os pontos no conjunto de dados, e não para um modelo
+que produz erros sinalizados que cancelam uns aos outros. A soma dos valores absolutos de erro
+parece ser uma alternativa aceitável, mas também há problemas
+com esse método de compor dados, que mencionaremos em breve. Em vez disso, geralmente usamos
+o que chamamos de erro quadrático médio. O erro quadrático médio, ou SME, é calculado com o conjunto de termos de erro
+do conjunto de dados. Pegamos as raízes quadradas dos erros
+para eliminar os valores negativos e calculamos a média delas. O MSE é uma função de perda
+perfeitamente válida, mas tem um problema. Os erros podem ser em libras, quilômetros ou dólares, mas o erro quadrado será
+em libras quadradas, quilômetros quadrados ou
+dólares quadrados. Isso pode dificultar a interpretação do MSE. Então, pegamos a raiz quadrada do MSE
+para ter unidades que podemos entender. RMSE é a raiz do erro quadrático médio. Quanto maior for o valor de RMSE, pior será a qualidade das previsões. Então, o que queremos fazer
+é minimizar o valor de RMSE. Como notação, usamos um Y com acento circunflexo
+para representar a previsão do modelo e um Y puro para representar o rótulo. Agora temos uma métrica para
+comparar dois pontos em parâmetro-espaço, que é como codificamos os valores
+de parâmetro atuais no modelo linear. Veja esses dois gráficos de dispersão
+e as linhas de regressão que correspondem ao peso do bebê
+versus a idade da mãe acima de 39 anos. Pode ser muito difícil identificar qual linha é mais adequada
+aos dados subjacentes. É aí que as métricas de perda
+ajudam a escolher o melhor modelo. O modelo à esquerda tem RMSE de 0,145 e o modelo à direita tem RMSE de 0,149. Portanto, as funções de perda indicam que os valores de peso e a tendência à esquerda são melhores do que os à direita. RMSE funciona bem
+para problemas de regressão linear, mas não funciona
+como uma função de perda para classificação. Problemas de classificação são aqueles
+cujo rótulo é uma variável categórica. O problema de usar RMSE para classificação está relacionado com a representação
+dessas variáveis categóricas no modelo. Como falamos anteriormente, muitas vezes, as variáveis categóricas são
+representadas como números inteiros binários. Para ter uma ideia de por que
+isso é um problema, veja as curvas de perda que reproduzimos. O domínio no eixo x representa a previsão e o intervalo no eixo y
+representa a perda, conforme a previsão. A cor simboliza o rótulo. Verde indica que o rótulo é um e azul indica que o rótulo é zero. O que há de errado com essa curva? O problema é que ela não captura
+a nossa crença intuitiva de que as piores previsões devam
+ser penalizadas mais rigidamente. Observe como a previsão de um, quando o valor desejado é zero, é quase três vezes pior do que uma previsão
+de 0,5 para o mesmo valor desejado. Então, em vez de RMSE, precisamos de uma função de perda nova. Uma que penalize de acordo com as nossas
+intuições sobre problemas de classificação. Uma das funções de perda mais usadas para problemas de classificação
+é a entropia cruzada, ou perda logarítmica. Temos aqui um gráfico
+semelhante ao do slide anterior, mas que, em vez de mostrar a perda de RMSE, mostra o valor de uma nova função de perda
+chamada entropia cruzada. Observe que, ao contrário da RMSE, a entropia cruzada
+penaliza rigidamente as previsões ruins, mesmo neste domínio limitado. Vamos analisar um exemplo
+para entender como a fórmula funciona. A fórmula da entropia cruzada
+se resume a dois termos diferentes. Somente um deles está envolvido
+na perda de um determinado ponto de dados. O primeiro termo está envolvido
+em exemplos positivos, ou seja, aqueles em que
+o rótulo Y é igual a um. O segundo termo entra em cena
+quando o rótulo é zero. Temos aqui uma tabela
+que mostra ambos os rótulos, além das previsões para duas fotos
+em uma tarefa de classificação de imagens. O rótulo codifica se a foto
+representa uma figura humana. Parece que o modelo está funcionando bem. A previsão é muito maior
+para o exemplo de cima, em comparação com o exemplo de baixo. Vamos ver como a função funciona. Devido à maneira como
+a função de perda foi construída, tanto o termo negativo do primeiro exemplo quanto o termo positivo
+do segundo exemplo são descartados. Então,
+de acordo com as predições de 0,7 e 0,2, para os dois pontos de dados
+com rótulos um e zero, a perda de entropia cruzada é, efetivamente, o termo positivo do primeiro ponto de dados mais o termo negativo
+do segundo ponto de dados multiplicado por -0,5. O resultado é 0,13. O que acontece quando
+o modelo não faz uma previsão boa? Aqui, parece que o exemplo negativo foi
+classificado incorretamente. Como resultado, o valor da perda aumentou. Isso faz sentido porque
+estamos tentando minimizar a perda. Agora sabemos como comparar
+dois pontos em parâmetro-espaço, seja usando RMSE para regressão
+ou entropia cruzada para classificação. Nosso objetivo é encontrar
+o melhor conjunto de parâmetros ou o melhor ponto em parâmetro-espaço. Como podemos usar o que sabemos sobre como comparar dois conjuntos de parâmetros
+e criar uma estratégia de pesquisa? Isso é o que faremos na próxima seção.

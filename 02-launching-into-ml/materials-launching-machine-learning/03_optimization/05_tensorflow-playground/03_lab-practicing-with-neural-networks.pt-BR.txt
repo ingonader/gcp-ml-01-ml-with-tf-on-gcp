@@ -1,0 +1,90 @@
+Já vimos o desempenho de um
+modelo linear nesse conjuntos de dados. Vamos ver como é o
+desempenho de uma rede neural. No entanto, antes precisamos
+revisar alguns recursos adicionais que ativei no TensorFlow Playground. O primeiro é o Activation. Activation diz respeito à função de ativação. Falaremos sobre esse assunto
+com mais detalhes no quinto curso, “The Art and Science of ML”. Por enquanto, o ponto crucial é que a escolha da função de ativação é o que
+separa os modelos lineares das redes neurais. Antes, sem que você soubesse, a função de ativação
+estava definida como linear. O segundo recurso adicional
+que ativei foi Hidden Layers. Esse recurso permite alterar o número de camadas ocultas e o número
+de neurônios em cada camada oculta. Pense nisso como uma alteração no número de transformações que
+a rede realiza nos dados. Cada neurônio em cada
+camada oculta recebe todas as saídas da camada antecedente,
+transforma essas entradas e passa as saídas para todos
+os neurônios na camada subsequente. A maneira abreviada
+de descrever o número de neurônios e como eles passam informações
+é a arquitetura da rede. Também ativei Batch size, que usaremos em um
+experimento daqui a pouco. Acesse o link no slide e treine um modelo
+que possa classificar esse conjunto de dados. Mas, em vez de introduzir
+características não lineares, tente melhorar o desempenho
+apenas alterando a arquitetura da rede. Sei que ainda não expliquei como uma rede
+neural funciona, e isso não tem problema. Por enquanto, apenas brinque
+um pouco com a interface até configurar uma rede que
+tenha um desempenho adequado. Agora, você deve ter um
+modelo que funcione bem e o formato da região azul da
+coluna de saídas deve ser um polígono. Vamos examiná-lo para ter
+uma noção de como o modelo faz isso. Observe novamente os neurônios
+na primeira camada oculta. Quando passo o mouse
+sobre cada um deles, a caixa de saída muda para
+mostrar o que o neurônio aprendeu. Podemos ler esses neurônios do mesmo
+modo como lemos as características e a saída. Os valores das características x1 e x2 são
+codificados na posição dentro do quadrado. A cor indica o valor
+que o neurônio resultará para a combinação de x1 e x2. Ao passar o mouse sobre
+cada quadrados em sequência, imagine como seria a aparência
+se eles estivessem sobrepostos. Azul sobre azul resulta
+em um azul mais forte, azul sobre branco resulta em azul claro e azul sobre laranja resulta em branco. O que você deve observar é como cada neurônio participa
+no limite de decisão do modelo, como o formato da saída é
+uma função das camadas ocultas. Por exemplo, este neurônio contribui
+com esta borda no limite de decisão, enquanto este neurônio
+contribui com esta borda. Baseado em seu conhecimento em geometria, o quanto você poderia reduzir essa rede e ainda conseguir um
+desempenho adequado? Uma dica: qual é o formato mais simples que podemos desenhar em torno dos
+pontos azuis e ainda dar conta do recado? Teste no TenserFlow Playground
+e veja se sua intuição está correta. Já vimos como a saída dos
+neurônios na primeira camada oculta da rede pode ser usada
+para compor o limite de decisão. E quanto às outras camadas? Qual é a diferença entre uma rede neural
+com uma camada oculta e outra com muitas? Clique no link abaixo e
+comece a treinar uma rede neural para classificar este
+conjunto de dados em espiral. Vamos aproveitar a
+oportunidade para entender mais sobre como o tamanho do lote
+afeta o gradiente descendente. Defina o parâmetro
+de tamanho de lote como 1 e teste arquiteturas diferentes da
+rede neural até encontrar uma que funcione. Depois, treine o modelo por 300 épocas
+e pause para observar a última curva. Agora, defina o parâmetro de tamanho
+de lote como 10 e reinicie o treinamento. Treine o modelo por 300 épocas e pause
+novamente para observar a curva de perda. Por fim, faça isso de novo, mas
+com tamanho de lote definido como 30. O que você observou e como
+podemos interpretar essas observações de acordo com o que sabemos? Você deve ter notado que
+há diferenças significativas na suavidade das curvas de perda. À medida que o tamanho de lote aumenta,
+também aumenta a suavidade. Por que isso ocorre? Pense em como o tamanho do lote
+afeta o gradiente descendente. Quando o tamanho do lote é pequeno,
+o modelo atualiza os parâmetros de acordo com a perda de um único exemplo. Entretanto, os exemplos
+variam e aí está o problema. Mas quando o tamanho do lote aumenta, o ruído de pontos de dados individuais são
+resolvidos e um sinal claro toma forma. O que você não deve concluir
+com base nessas observações é que alterar o tamanho do lote tem
+um efeito simples na taxa de convergência. Assim como a taxa de aprendizado,
+o tamanho de lote ideal depende do problema e pode ser encontrado
+por meio do ajuste do parâmetro. Agora, o treinamento do modelo já deve
+ter chegado ao fim e resultado em algo assim. A primeira coisa a destacar é a relação entre a primeira camada oculta
+e as camadas subsequentes. O que deve estar claro é que,
+ainda que as saídas dos neurônios na primeira camada oculta
+sejam basicamente linhas, as camadas ocultas subsequentes
+têm saídas muito mais complicadas. Essas camadas subsequentes se
+sobrepõem àquelas que vieram antes, da mesma forma que fizemos quando
+empilhamos as saídas da camada oculta. Portanto, podemos pensar na rede neural
+como uma hierarquia de características. E a ideia de selecionar entradas e transformá-las de maneiras
+complexas antes de classificá-las é típica das redes neurais. Isso é um rompimento significativo com a
+abordagem clássica do aprendizado de máquina. Antes das redes neurais, os cientistas de
+dados gastavam muito mais tempo na engenharia de características. Agora, o próprio modelo assume
+um pouco dessa responsabilidade. Você pode pensar nas camadas como
+uma forma de engenharia de características. A próxima observação a destacar é que
+o modelo aprendeu algumas coisas estranhas. Ele parece ter interpretado
+a falta de pontos laranjas nestas duas regiões como evidência
+para embasar a proeminência de azul. Chamamos esse tipo de erro,
+em que o modelo interpreta o ruído no conjunto de dados como
+algo significativo, de sobreajuste. Isso pode ocorrer quando
+o modelo tem um poder de decisão maior do que o estritamente
+necessário para o problema. Quando os modelos fazem sobreajuste,
+eles generalizam incorretamente. Isso significa que eles não
+funcionam com dados novos, que provavelmente não têm
+o mesmo padrão de ruído, ainda que o sinal
+subjacente permaneça o mesmo. Como evitamos isso? Para saber, continue conosco em nossa próxima aula
+sobre generalização e amostragem.

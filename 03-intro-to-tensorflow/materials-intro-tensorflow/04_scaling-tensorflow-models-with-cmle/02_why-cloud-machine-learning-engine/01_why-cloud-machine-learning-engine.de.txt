@@ -1,0 +1,86 @@
+Dieses Diagramm haben Sie bereits gesehen. TensorFlow kann
+auf diverser Hardware laufen. Sie können es auf einer
+untergeordneten C++ API programmieren, doch werden Sie wie in diesem Kurs
+wohl eher die Python API verwenden. Sie kennen bereits teilweise
+die verschiedenen Abstraktionsebenen für verteiltes Training. Aber führen Sie wirklich verteiltes Training 
+in großem Maßstab in der Produktion aus? Sehen wir uns dazu
+die Cloud Machine Learning Engine an. Bei ML beginnen wir normalerweise mit kleinen Datasets,
+die in den Arbeitsspeicher passen. Für solche kleinen Datasets
+reicht fast jedes ML-Framework aus. Python und viele andere Sprachen haben Statistikpakete, die Sie meist über drei
+oder vier Codezeilen einbinden können. TensorFlow Estimator hat
+eine API, die entscheiden und lernen kann, was für kleine Datasets
+einfach und gut funktioniert. Aber natürlich möchten wir
+große Produktions-Datasets verwenden. Diese passen nicht mehr
+in den Arbeitsspeicher. Dazu müssen wir
+auf komplexere Pakete hochskalieren. Unser Dataset
+passt nicht in den Arbeitsspeicher, also müssen wir im Training
+wohl viele Durchläufe damit durchführen. Das funktioniert zwar
+mit einem einzelnen Computer, ist aber nicht ideal. Möchten Sie Wochen warten,
+um zu sehen, ob das Training konvergiert? Wir müssen das Training
+auf viele Computer verteilen. Bei MapReduce
+mit parallelen Vorgängen ist das einfach. Algorithmen wie
+die Gradientenverfahrensoptimierung sind da schwieriger. Wir benötigen Parameterserver
+zur Unterstützung vieler Training-Worker. Die Parameterserver bilden
+eine Art gemeinsamen Arbeitsspeicher. Jeder Trainer lernt dann von den anderen. Es ist verlockend,
+verteiltes Lernen zu vermeiden, indem nur ein riesiger Computer
+mit vielen GPUs verwendet wird. Das ist am Ende aber kurzsichtig, da Datasets oft schneller wachsen
+als die Kapazitäten einzelner Computer. Die Lösung ist,
+horizontal zu skalieren, nicht vertikal. Manche versuchen,
+den Weg mit Beispieldaten zu verkürzen. Mit diesen wenigen Daten
+läuft ML auf der vorhandenen Hardware. Damit ist das Thema
+Leistung aber nicht erledigt. Alle verfügbaren Daten zu verwenden und zu planen,
+noch zehnmal mehr zu sammeln, ist oft der Unterschied
+zwischen ML mit fast magischer Leistung und ML mit schlechterer Leistung. Oft werden ML-Modelle
+in einem Bereich erstellt, in dem menschliches Fachwissen zu Rohdaten die Leistung über
+das Training hinaus erhöhen kann. Wenn ein Problem bereits bekannt ist, bringen wir dieses Fachwissen
+oft über neue Funktionen ein. Diese Funktionen folgen
+auf die Vorverarbeitung der Rohdaten. Es geht dabei
+um Skalierung, Programmierung usw. Aufgrund der Größe der Datasets müssen diese Vorgänge verteilt sein
+und in der Cloud ausgeführt werden. Bei ML müssen einige Dinge
+fast etwas willkürlich festgelegt werden: die Anzahl der Knoten, die Integration oder
+die Größe von Faltungsebenen. Wenn Ihr Modell komplexer wird, fragen Sie sich vielleicht, ob Sie
+die richtigen Werte ausgewählt haben. Sie müssen dann manuell oder automatisch nach möglicherweise
+besseren Hyperparametern suchen. Offensichtliche Hyperparameter sind
+die Anzahl der Ebenen und Knoten. In diesem Kurs sehen Sie jedoch, dass auch
+in der Vorverarbeitung Potenzial steckt, wie die Bucket-Anzahl, die auch als Hyperparameter dienen kann. Bisher haben wir
+über das Training gesprochen. Aber wenn uns das trainierte Modell
+keine Inferenz erlaubt, ist es nutzlos. Wir möchten und können oft unser ML-Modell
+nicht direkt in die Anwendung integrieren, die Vorhersagefunktionen benötigt. Wir können stattdessen das Modell
+in einen eigenen Mikrodienst kapseln und andere Mikrodienste
+mit ihm kommunizieren lassen wie mit einer beliebigen Web-App. Sie sind jetzt an dem Punkt,
+an dem Sie Ihr Modell aktualisieren und testen können, ohne
+die zentrale Anwendungslogik zu ändern. Sie ändern nur den Mikrodienst. Wie stellen Sie die nötige Hardware für den Modellbetrieb bereit? Gute Systeme skalieren automatisch, um immer die benötigte
+Maschinenanzahl bereitzustellen. In der Cloud können wir
+auf null Maschinen skalieren oder auf so viele,
+wie wir aufgrund der Anfragen benötigen. Ich möchte Ihnen
+zukünftigen Kummer ersparen. Wir haben doch die Vorverarbeitung
+der Beispiele vor dem Training behandelt. Passen Sie auf: Sie müssen dieselbe Vorverarbeitung
+auch für das Vorhersagemodell leisten. Außer der Vorverarbeitung
+gibt es mehrere Möglichkeiten, wie Ihr trainiertes Modell
+sich vom Vorhersagemodell unterscheidet. Ein Standard
+wie die Cloud Machine Learning Engine kann diese Probleme beheben. Es wird wenig darüber gesprochen, aber Ihre Vorhersageeingaben
+unterscheiden sich häufig systematisch von den Trainingseingaben. Dies ist meist schwierig zu erkennen. Vielleicht hat sich
+ein Mittelwert verschoben oder die Varianz zugenommen. Wir bezeichnen das als Abweichung 
+zwischen Training und Bereitstellung. Dazu ist eine fortlaufende Datensammlung
+und wiederholte Untersuchung erforderlich. Die Verwendung
+von purem TensorFlow kann schwierig sein: Treiber installieren,
+richtige Maschinen finden, Abfolge der Vorgänge
+in der Vorverarbeitung nachverfolgen, Parameter skalieren usw. Google Cloud kann hier helfen. Wir bieten mehrere Big Data-Dienste. Heute geht es aber um
+die Cloud Machine Learning Engine oder kurz CMLE. Mit CMLE erhalten Sie
+die Maschinen, wenn Sie sie benötigen. Das vereinfacht die Buchführung und Sie verwenden wirklich
+Ihr trainiertes Modell für die Vorhersage. Der sehr skalierbare Dienst 
+erleichtert verteiltes Training und die Bereitstellung. Cloud Machine Learning Engine
+unterstützt verteilte Vorverarbeitung, Start von Paramaterservern und die Optimierung von Hyperparametern. Das ML-Modell ist für Vorhersagen über eine REST-API verfügbar und umfasst die Funktionserstellung bei der Vorverarbeitung. Der Clientcode muss daher
+nur noch die Eingabevariablen liefern, also das, was Sie aus
+Log-Dateien, Sensoren, Datenbanken usw. sammeln, und die Vorhersage abrufen. CMLE skaliert Ihren Dienst auf so vielen Maschinen, wie Sie
+für die Anfragen pro Sekunde benötigen. Und das ist wichtig. Denn auf die Leistung kommt es 
+sowohl bei der Ausführung des Trainings als auch der Vorhersage an. Es ist relativ günstig,
+ein TensorFlow-Modell zu berechnen. Die vielen Vorhersagen
+aus dem ML-Modell bilden den echten Wert. Notebooks wie das Google Cloud Datalab
+oder Kaggle Kernels sind ein guter Start und helfen Ihnen,
+Ihr Modell schnell zu entwickeln. Mit Notebooks
+können Sie Daten interaktiv sichten, um Funktionen zu finden und zu testen und sogar große Trainings durchzuführen. Auf der Oberfläche sind Code, Ergebnisse und Dokumente
+für Menschen lesbar kombiniert. Und da Sie in der Cloud sind, haben Sie Zugriff auf Anleitungen, können 
+Inhalte freigeben und zusammenarbeiten. Datalab verschafft uns einen Startvorteil und erleichtert den Übergang
+bei der Skalierung unserer Berechnungen mit verschiedenen Google Cloud-Diensten. In diesem Beispiel starten wir
+einen Apache Beam-Job in Dataflow, der auf viele VMs verteilt werden kann.

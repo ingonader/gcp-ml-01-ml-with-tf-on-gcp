@@ -1,0 +1,78 @@
+Nous avons entraîné notre modèle
+sur un ensemble de données volumineux à l'aide de l'entraînement distribué,
+et nos courbes TensorBoard sont correctes. Il est temps de passer au déploiement. C'est facile. Il suffit de quelques clics
+sur la console Cloud ML Engine pour que notre modèle d'entraînement
+s'exécute derrière une API REST en autoscaling entièrement gérée,
+prêt à accepter le trafic JSON. Vous avez dit JSON ? Le modèle ne sait pas lire JSON. Nous avons des fonctions d'entrée pour
+les données d'entraînement et de test, mais pas pour les données JSON
+en temps réel venant dans notre point
+de terminaison REST. C'est le moment d'en ajouter une. Rappelez-vous du paramètre "exporters"
+que nous avons ajouté à "EvalSpec". C'est ce qui définit un modèle complet,
+prêt pour le déploiement avec un point de contrôle
+sur des paramètres bien entraînés, mais aussi une fonction d'entrée
+supplémentaire qui effectue un mappage entre le JSON
+reçu par l'API REST et les caractéristiques
+attendues par le modèle. Il s'agit de la fonction "serving_input". Voici un point important. Les temps de diffusion et d'entraînement
+sont souvent très différents. Pour comprendre ce qu'il se passe,
+analysons tout cela en détail à nouveau. Dans TensorFlow, tout se présente
+sous la forme de graphiques. Voici le graphique de modèle produit
+lors de l'instanciation de notre modèle. C'est presque le même
+pour l'entraînement et l'inférence. Bien qu'il soit
+un peu plus simple pour l'inférence, il inclut des caractéristiques
+et produit des prédictions. Connectons une source de données
+à ses entrées. Lors de l'entraînement, cela se fait
+via la fonction "training_input". Nous utilisons l'API Dataset
+pour créer un nœud d'entrée capable de lire progressivement des fichiers CSV et d'envoyer des lots de données
+d'entraînement dans le modèle. Nous utiliserons un schéma similaire
+pour notre modèle déployé. La fonction "serving_input" nous permet
+d'ajouter un ensemble de transformations TensorFlow entre le JSON reçu
+par notre API REST et les caractéristiques attendues
+par notre modèle. Nous n'avons pas besoin
+d'analyser le JSON. ML Engine s'en charge automatiquement. En revanche, toutes les autres
+transformations doivent être écrites. On pense souvent que la fonction
+"serving_input" sera appelée sur chaque élément de données
+reçu par le point de terminaison REST. Mais ça ne fonctionne pas comme ça. Elle s'exécute une seule fois,
+lorsque le modèle est instancié, et elle produit un graphique TensorFlow
+connecté d'une part à l'analyseur JSON, et d'autre part à votre modèle. C'est vous qui choisissez
+comment transformer vos données à partir des valeurs JSON, mais pensez
+à utiliser des commandes TensorFlow afin de renvoyer
+un graphique des transformations. Quand est-ce que
+ces graphiques sont réunis ? La connexion se fait quand vous spécifiez
+la fonction "serving_input" dans votre exportateur et que vous ajoutez
+ce dernier dans "EvalSpec". L'exportateur enregistrera une version
+avec point de contrôle du modèle, avec les informations de transformation
+dans un fichier de modèle exporté prêt à être déployé. Quels points de contrôle
+sont enregistrés ? Cela dépend du type d'exportateur. Le plus simple, "LatestExporter", prend
+le dernier point de contrôle disponible. C'est l'exportateur le plus simple. On peut voir le modèle exporté
+sur disque dans le dossier "export". Nous l'avons appelé
+"pricing" dans l'API. Un sous-dossier "pricing" a donc été créé. Chaque dossier numéroté correspond
+à un modèle prêt pour le déploiement. Pour tester l'API REST, envoyez
+des données JSON au point de terminaison. Le SDK Google Cloud offre la commande
+"gcloud ml-engine predict", qui permet d'effectuer facilement des tests
+avec les données d'un fichier JSON. La syntaxe doit être un champ JSON unique
+appelé "instances", qui contient une liste d'objets JSON dans le format
+attendu par la fonction "serving_input", ici le nombre de pieds carrés
+et le type de propriété. Les instances de données de la liste
+sont automatiquement regroupées en lots, et votre fonction "serving_input" reçoit
+une liste de nombres pour les pieds carrés et une liste de chaînes
+pour le type de propriété. Voici une méthode encore plus simple
+pour tester sans rien déployer. La commande
+"gcloud ml-engine local predict" vous permet d'obtenir
+des prédictions directement depuis un modèle exporté sur disque. Vous n'avez rien à déployer. Notez le format légèrement différent
+attendu par cette commande : une liste d'objets JSON dans un fichier,
+avec un objet par ligne. Le décodage d'images JPEG
+est un autre cas d'utilisation typique de la fonction "serving_input". Si vous travaillez
+avec un modèle de traitement d'images, vous enverrez toujours des images
+compressées sur le réseau, mais votre modèle attendra toujours
+des images décompressées. La fonction "serving_input"
+peut gérer la décompression. Voici le code approprié. L'image vient directement du flux
+JSON via "tf.string", qui désigne dans la terminologie TensorFlow une chaîne
+d'octets, une liste d'octets aléatoires. Le format JPEG est un format binaire,
+et le codage Base64 est nécessaire pour le transformer en une chaîne de texte
+qui fonctionne avec JSON. TensorFlow adopte une convention JSON
+personnalisée pour marquer ainsi les chaînes binaires codées en Base64. Le nom du champ doit
+se terminer par "_bytes", et la valeur doit être
+un objet JSON appelé "b64", avec la chaîne codée
+en Base64 comme valeur. Avec cette convention, le décodage Base64
+se fait automatiquement. Vous n'avez pas à le gérer
+dans votre fonction "serving_input".

@@ -1,0 +1,97 @@
+Nous avons déjà observé les performances
+d'un modèle linéaire pour cet ensemble de données. Voyons ce qu'il en est
+avec un réseau de neurones. Nous devons d'abord examiner
+certaines fonctionnalités que j'ai ajoutées dans TensorFlow Playground. La première est l'activation.
+J'entends par là la fonction d'activation. J'en parlerai de manière plus approfondie
+dans le cours 5, qui sera consacré aux techniques de ML. Pour l'instant, il est crucial de comprendre
+que le choix de la fonction d'activation est ce qui distingue les modèles linéaires
+des réseaux de neurones. Précédemment, à votre insu, la fonction d'activation était paramétrée
+de façon à être linéaire. La deuxième fonctionnalité que j'ai ajoutée
+est celle des couches cachées. Elle vous permet de modifier
+le nombre de couches cachées, ainsi que le nombre de neurones
+de chaque couche cachée. Voyez cela comme un changement
+du nombre de transformations de vos données effectuées par le réseau. Chaque neurone de chaque couche cachée reçoit toutes les sorties de la couche
+précédente, transforme ces entrées, et transmet des sorties
+à tous les neurones de la couche suivante. La méthode la plus rapide permettant
+d'indiquer le nombre de neurones et de décrire comment ils échangent
+des informations consiste à présenter
+l'architecture du réseau. J'ai aussi activé la fonctionnalité
+de paramétrage de la taille des lots, que nous utiliserons dans l'une
+de nos prochaines expériences. Cliquez sur le lien de la diapositive,
+et essayez d'entraîner un modèle qui classifie cet ensemble de données. Plutôt que d'ajouter des caractéristiques
+non linéaires, essayez d'améliorer les performances en modifiant 
+simplement l'architecture du réseau. Je sais que nous n'avons pas encore étudié 
+le fonctionnement d'un réseau de neurones. Pour le moment, familiarisez-vous
+avec l'interface jusqu'à ce que les performances du réseau
+soient satisfaisantes. Vous devriez alors disposer d'un modèle
+qui fonctionne correctement, et la forme de la zone bleue
+de la colonne de la sortie devrait être un polygone. Approfondissons un peu pour comprendre
+comment le modèle fonctionne. Examinons à nouveau les neurones
+de la première couche cachée. Lorsque je passe la souris sur
+l'un d'entre eux, le contenu de la colonne de la sortie
+indique ce que le neurone a appris. Vous pouvez lire ces neurones comme
+vous lisez les caractéristiques et la sortie. Les valeurs des caractéristiques X1 et X2
+sont représentées par les motifs visibles dans les carrés,
+et la couleur indique la valeur de la sortie de chaque neurone
+pour cette combinaison de X1 et X2. Pendant que je passe la souris
+sur les différents carrés, commencez à imaginer le résultat
+que donnerait leur superposition. Du bleu sur du bleu donne du bleu plus foncé, du bleu sur du blanc donne du bleu clair, et du bleu sur de l'orange donne du blanc. Vous devriez commencer à voir
+comment chaque neurone contribue à l'élaboration de la frontière
+de décision du modèle, et en quoi la forme de la sortie
+est une fonction des couches cachées. Par exemple, la contribution
+de ce neurone est cette limite, et celle de ce neurone est cette limite. Compte tenu de vos connaissances
+en géométrie, jusqu'à quel point pensez-vous pouvoir réduire la taille
+de ce réseau tout en continuant à obtenir des performances acceptables ? Juste un conseil : demandez-vous
+quelle serait la forme la plus simple et la plus efficace que vous pourriez tracer
+autour des points bleus ? Faites un test dans TensorFlow Playground
+pour voir si votre intuition est correcte. Vous avez vu comment les sorties des neurones
+de la première couche cachée du réseau peuvent être utilisées pour composer
+la frontière de décision. Mais qu'en est-il des autres couches ? En quoi un réseau de neurones
+comportant une couche cachée diffère-t-il d'un réseau
+qui en contient beaucoup ? Cliquez sur le lien ci-dessous pour
+entraîner un réseau de neurones à classifier cet ensemble de données
+en forme de spirale. Profitons-en pour mieux comprendre comment la taille de lot
+affecte la descente de gradient. Sélectionnez "1" comme taille de lot, puis testez des architectures
+de réseau de neurones jusqu'à ce que vous en trouviez
+une qui semble fonctionner. Entraînez le modèle pendant 300 itérations,
+mettez le traitement en pause, et regardez la courbe de perte. Sélectionnez "10" comme taille de lot,
+puis relancez l'entraînement. Entraînez le modèle pendant 300 itérations,
+mettez le traitement en pause, et regardez à nouveau la courbe de perte. Enfin, répétez encore l'opération
+en sélectionnant "30" comme taille de lot. Qu'avez-vous observé ? Comment l'expliquez-vous
+compte tenu de ce que nous savons ? Vous devriez avoir vu
+des différences marquées au niveau de la douceur
+de la courbe de perte. Plus la taille de lot augmente,
+plus la douceur s'accentue. Pourquoi ? Pensez à l'effet de la taille de lot
+sur la descente de gradient. Lorsque cette taille est peu importante, le modèle met ses paramètres à jour
+sur la base de la perte d'un seul exemple. Cependant, les exemples varient,
+et c'est là qu'est le problème. Mais avec l'augmentation de la taille de lot, le bruit lié aux différents points
+de données s'estompe, et un signal clair commence à prendre forme. N'en concluez pas que les modifications
+de la taille de lot ont un effet simple sur le taux de convergence. Tout comme pour le taux d'apprentissage,
+la taille de lot optimale dépend du problème, et elle peut être trouvée à l'aide
+du réglage d'hyperparamètres. Votre modèle devrait maintenant
+avoir fini son entraînement, et devrait plus ou moins ressembler à ça. Le premier élément marquant est la relation entre la première couche cachée
+et les suivantes. Alors que les sorties des neurones
+de cette première couche sont essentiellement des lignes, les sorties des couches suivantes
+sont beaucoup plus complexes. Ces nouvelles couches se basent
+sur celles produites en amont, de la même manière que lorsque
+nous avons superposé les sorties de la première couche cachée. Un réseau de neurones peut donc être vu
+comme une hiérarchie de caractéristiques. Cette idée d'exploiter des entrées
+en les transformant à l'aide de traitements complexes
+pour finalement les classifier est vraiment propre
+aux réseaux de neurones. Elle diffère grandement de l'approche
+utilisée habituellement en machine learning. Avant les réseaux de neurones, les data scientists consacraient
+beaucoup plus de temps à l'extraction de caractéristiques. Désormais, le modèle se charge
+d'une partie de ce travail, et l'on peut voir les couches comme
+une forme d'extraction de caractéristiques effectuée sur elles-mêmes. Le deuxième élément marquant est
+que le modèle a appris des choses étranges. Il semble avoir interprété l'absence
+de points orange dans ces deux zones comme la preuve
+qu'elles devaient être bleues. Nous appelons "surapprentissage"
+les erreurs de ce type, qui résultent de l'interprétation
+par le modèle du bruit présent dans l'ensemble
+de données. Elles se produisent lorsque le modèle
+a plus de pouvoir décisionnel qu'il n'est nécessaire pour le problème. Lorsque des modèles surapprennent,
+ils généralisent de manière incorrecte. qui sont peu susceptibles
+d'avoir exactement le même motif de bruit, même si le signal sous-jacent
+est toujours présent. Leurs performances sont donc
+médiocres pour les nouvelles données, Comment y remédier ? Nous le verrons dans le prochain cours
+sur la généralisation et l’échantillonnage.

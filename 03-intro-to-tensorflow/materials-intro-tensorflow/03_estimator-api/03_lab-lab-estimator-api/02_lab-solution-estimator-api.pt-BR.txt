@@ -1,0 +1,83 @@
+Vamos ao nosso primeiro laboratório de
+código estimador juntos. Para começar, precisamos localizar os
+arquivos de laboratório de código. Vamos fazer juntos. Você acessa o cloud.google.com/console
+e faz login com a conta de laboratório. Eu farei isso também. Agora, você precisa
+selecionar um projeto. Às vezes, já está selecionado. Abra o Cloud Shell,
+é este ícone aqui. No Cloud Shell, vamos digitar
+"datalab create". Chamaremos a instância do
+Datalab de mylab. E vamos criá-la na zona us-central1-a. Então, isso criará nossa primeira
+instância do Datalab. Demora um pouco na primeira tentativa. Alguns minutos depois... Na próxima vez, você não precisa
+recriar os dados da instância, basta se reconectar a eles digitando
+"datalab connect" e o nome da instância. 
+Mylab, no meu caso. E agora, localize o botão de
+visualização da Web aqui. Altere a porta para 8081, que é
+a usada pelo Datalab. E clique em "Visualizar". Isso abre uma interface
+de bloco de notas familiar. A partir daqui, ainda precisamos
+conseguir o código do GitHub. Então abrimos um bloco de notas para
+digitar comandos bash nele, %bash. E clonaremos nosso repositório
+de laboratórios de código no diretório local. Assim que isso for concluído, o diretório local aparecerá aqui. Aí está. Ele é chamado de
+training-data-analyst, e ali você quer localizar
+um diretório chamado courses, depois o machine_learning,
+depois o deepdive. E TensorFlow. Nosso primeiro laboratório
+é o b_estimator.ipynb. Portanto, neste exemplo, usaremos
+o Pandas para ler dados de arquivos CSV que contêm informações
+sobre corridas de táxi. O local de partida, o destino
+e o número de passageiros. Treinaremos nosso modelo para
+prever a tarifa de táxi. Então vamos lá. Primeiro, definimos os nomes de
+coluna aqui, valor da tarifa, pickuplon, pickuplat etc. E usamos o Pandas para ler esses
+dados de arquivos CSV. Um conjunto de dados para treino,
+outro para dados de validação. Agora, usamos a funcionalidade
+incorporada nos estimadores para fazer uma função
+de entrada de nosso Pandas, chamada
+tf.estimators.inputs.pandas_input_fn. A função permite especificar
+os atributos como x aqui, e os rótulos-alvo como y aqui. Ela também lida com configurações padrão
+para um conjunto de dados de treino, o tamanho do lote, o número de épocas
+e também a reprodução aleatória com o queue_capacity, que é
+simplesmente o buffer de fila aleatório. Vamos executar este. Criamos as colunas de atributo. Todas são numéricas. Então, chamamos tf.feature_column.numeric_column
+para cada uma. A lista de colunas de atributo informa
+ao modelo como fazer o backup dos dados no vetor de entrada. O modelo é instanciado bem aqui. Damos a lista de colunas de atributo e um diretório em que todos os dados de
+saída serão gravados, aqui. Para treinar o modelo, chamamos a função de treino,
+passando na função de entrada de dados. Função treino e de entrada de dados. É esse que consegue dados do frame
+de dados do Pandas em nosso modelo. Portanto, o modelo está sendo
+executado por 10 épocas. Você vê os registros de treinamento aqui. E terminou. Foi treinado. Não é ótimo? Por que não testar em nosso
+conjunto de dados de validação? Para isso, chamamos
+avaliações de modelo aqui. Analisando, desta vez, a função
+de entrada de dados que consegue os dados do frame de dados
+do Pandas de validação df_valid. Analisamos aqui. E conseguimos nossos resultados. O erro quadrático médio (RMSE) final
+é de US$ 10. Bem, US$ 10 é um erro grande
+para uma corrida de táxi. E não está nem perto da 
+referência anterior de US$ 6. Vamos melhorar isso mais tarde, agora
+que temos um código que funciona. Vamos ver se podemos usar
+este modelo para previsões. Quando instanciamos o modelo novamente,
+ele procura por um ponto de verificação no diretório do
+modelo e se recarrega a partir dele. Como acabamos de treinar o modelo, temos
+um ponto de verificação treinado nele e ele está pronto para previsões. Instanciamos aqui, passando o
+mesmo diretório de saída. E a função de previsão, chamada
+aqui, retorna um gerador Python. Nós o chamamos em loop
+para conseguir as tarifas previstas. Bem aqui, e você vê as
+tarifas previstas aqui E talvez isso explique
+por que o RMSE era tão alto. O modelo basicamente prevê o
+mesmo valor para cada viagem. Um modelo mais complexo ajudaria? Vamos testar, usando uma boa
+rede neural profunda. Mantemos tudo como está, colunas de
+atributos e funções de entrada, e mudamos o modelo de um regressor
+linear para um regressor DNN com três camadas ocultas. Então vamos fazer isso. Instanciamos o regressor DNN aqui e
+configuramos as camadas ocultas aqui. Então, 32 nodes no primeiro, 8 nodes no
+segundo, 2 nodes no último. Vamos treinar isso. Ele treina novamente por dez épocas. E no final, chamaremos a
+função model.predict novamente deste auxiliar print_rmse. Ele está treinando. Agora está validando. E o RMSE no conjunto de dados
+de validação, desta vez, é US$ 11. Ainda é ruim. Não estamos batendo nosso modelo
+de referência com nenhum dos modelos. Por quê? Podemos estar usando o TensorFlow
+para aprendizado de máquina, mas ainda não estamos usando direito. O restante deste curso é sobre isso. Mas, se tivéssemos que
+escolher entre os dois modelos, escolheríamos aquele com
+o menor erro de validação. E, finalmente, mediríamos o RMSE nos dados
+de teste com esse modelo escolhido. Este RMSE final pode ser publicado como
+o desempenho objetivo do melhor modelo. Este é o procedimento padrão em ciência
+de dados: treinamento, validação e teste. Cada um com conjuntos
+de dados separados. Vamos tentar isso no nosso
+conjunto de dados de referência. O RMSE no conjunto de dados
+de referência é 9,41. E aí está, o RMSE no conjunto de
+dados de referência é de US$ 10,5. Isto é muito mais do que a
+referência original de US$ 6. E nem sequer bate nossas regras
+baseadas em distância, RMSE de US$ 8. Não tema! Você aprendeu a
+escrever um modelo do TensorFlow. Mas não para fazer todo o
+necessário para melhorar o modelo e fazê-lo executar. Faremos isso nos próximos capítulos. No entanto, neste capítulo, teremos
+o modelo TensorFlow pronto para essas melhorias.

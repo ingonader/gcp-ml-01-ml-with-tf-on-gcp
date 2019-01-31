@@ -1,0 +1,443 @@
+1
+00:00:00,320 --> 00:00:03,985
+So, now we've seen how gradient descent works.
+
+2
+00:00:03,985 --> 00:00:08,580
+Let's see it in action using the tool that will allow us to see in real time,
+
+3
+00:00:08,580 --> 00:00:12,065
+many of the phenomena that we've discussed.
+
+4
+00:00:12,065 --> 00:00:18,050
+TensorFlow Playground is a powerful tool for visualizing how neural networks work.
+
+5
+00:00:18,050 --> 00:00:20,080
+Now you might be saying, "Hey wait a moment,
+
+6
+00:00:20,080 --> 00:00:22,410
+we haven't actually introduced neural networks yet."
+
+7
+00:00:22,410 --> 00:00:24,925
+Don't worry, that's coming shortly.
+
+8
+00:00:24,925 --> 00:00:27,095
+For reasons that will also explain
+
+9
+00:00:27,095 --> 00:00:30,825
+the simplest neural networks are mathematically equivalent to linear models.
+
+10
+00:00:30,825 --> 00:00:34,750
+So this tool is also well suited to demonstrate what we've learned up until now.
+
+11
+00:00:34,750 --> 00:00:36,730
+We're going to use it to experimentally
+
+12
+00:00:36,730 --> 00:00:39,195
+verify the theoretical stuff we've introduced today,
+
+13
+00:00:39,195 --> 00:00:41,635
+so you can bolster your ML intuitions.
+
+14
+00:00:41,635 --> 00:00:43,720
+You'll see firsthand the impact of setting
+
+15
+00:00:43,720 --> 00:00:46,605
+the learning rate and how ML models descend gradients.
+
+16
+00:00:46,605 --> 00:00:49,010
+I also call our connections to topics that will be
+
+17
+00:00:49,010 --> 00:00:52,550
+explored in greater depth in this course and in later courses.
+
+18
+00:00:52,550 --> 00:00:55,645
+First, let's talk about the interface.
+
+19
+00:00:55,645 --> 00:00:58,095
+I have removed some of the features of the tool
+
+20
+00:00:58,095 --> 00:01:00,775
+because they relate to material we'll be covering later,
+
+21
+00:01:00,775 --> 00:01:04,275
+but there are still plenty of interesting knobs to turn.
+
+22
+00:01:04,275 --> 00:01:07,300
+First, there's the features column.
+
+23
+00:01:07,300 --> 00:01:10,190
+These are the inputs that your model sees.
+
+24
+00:01:10,190 --> 00:01:14,125
+The coloring within each feature box represents the value of each feature.
+
+25
+00:01:14,125 --> 00:01:17,550
+Orange means negative and blue means positive.
+
+26
+00:01:17,550 --> 00:01:22,310
+Then there's the hidden layers column which you can think of as where the weights are.
+
+27
+00:01:22,310 --> 00:01:27,100
+If you hover over a weight line you'll see the value of that weight.
+
+28
+00:01:27,100 --> 00:01:29,015
+As the model trains,
+
+29
+00:01:29,015 --> 00:01:31,350
+the width and opacity of these lines will
+
+30
+00:01:31,350 --> 00:01:35,750
+change to allow you to get a sense of their values quickly in aggregate.
+
+31
+00:01:35,750 --> 00:01:38,720
+Then there's the output column where you can see
+
+32
+00:01:38,720 --> 00:01:41,100
+both the training data and the models
+
+33
+00:01:41,100 --> 00:01:44,555
+current predictions for all the points in the feature space.
+
+34
+00:01:44,555 --> 00:01:47,740
+You can also see the current training loss.
+
+35
+00:01:47,740 --> 00:01:52,340
+As with the features, color is used to represent value.
+
+36
+00:01:52,340 --> 00:01:56,615
+The top control bar includes buttons for resetting training,
+
+37
+00:01:56,615 --> 00:01:59,155
+starting training, and taking a single step.
+
+38
+00:01:59,155 --> 00:02:02,175
+There's also a dropdown for the learning rate.
+
+39
+00:02:02,175 --> 00:02:07,755
+The data column allows you to select different datasets and control the batch size.
+
+40
+00:02:07,755 --> 00:02:11,740
+Let's start by training a linear model to classify some data.
+
+41
+00:02:11,740 --> 00:02:15,750
+When you click on this link, you'll be shown a TensorFlow Playground window with
+
+42
+00:02:15,750 --> 00:02:20,210
+only the bare essentials and don't worry about the hidden layers for now.
+
+43
+00:02:20,210 --> 00:02:22,825
+In this configuration of the tool,
+
+44
+00:02:22,825 --> 00:02:24,780
+the model accepts a feature vector,
+
+45
+00:02:24,780 --> 00:02:27,230
+computes a dot product with a weight factor,
+
+46
+00:02:27,230 --> 00:02:28,585
+and adds a bias term,
+
+47
+00:02:28,585 --> 00:02:32,430
+and uses the sign of a sum to construct the decision boundary.
+
+48
+00:02:32,430 --> 00:02:37,535
+Consequently, you can think of this configuration as a linear model.
+
+49
+00:02:37,535 --> 00:02:40,880
+We'll start with a model that will attempt to classify
+
+50
+00:02:40,880 --> 00:02:44,725
+data that belong to two distinct clusters.
+
+51
+00:02:44,725 --> 00:02:49,055
+Click the step button, which is to the right of the play button,
+
+52
+00:02:49,055 --> 00:02:52,060
+and note all the things that change in the interface.
+
+53
+00:02:52,060 --> 00:02:54,415
+The number of epoch goes up by one,
+
+54
+00:02:54,415 --> 00:02:57,620
+the lines representing weights change color and size,
+
+55
+00:02:57,620 --> 00:03:00,285
+the current value of the loss function changes,
+
+56
+00:03:00,285 --> 00:03:02,780
+the loss graph shows a downward slope,
+
+57
+00:03:02,780 --> 00:03:07,015
+and the output decision boundary also changes.
+
+58
+00:03:07,015 --> 00:03:10,605
+Mouse over the line representing weight one,
+
+59
+00:03:10,605 --> 00:03:14,280
+and note that you can see the value of this weight.
+
+60
+00:03:14,280 --> 00:03:17,745
+Now click the play button to resume training,
+
+61
+00:03:17,745 --> 00:03:21,595
+but pause soon after the loss drops below 0.002,
+
+62
+00:03:21,595 --> 00:03:24,470
+which should occur before 200 epochs.
+
+63
+00:03:24,470 --> 00:03:29,005
+Congrats, you just trained your first model.
+
+64
+00:03:29,005 --> 00:03:33,500
+Now let's start adding some complexity.
+
+65
+00:03:33,500 --> 00:03:38,720
+First, let's see how three different learning rates affect the model during training.
+
+66
+00:03:38,720 --> 00:03:41,700
+Remember that learning rate is our hyper parameter,
+
+67
+00:03:41,700 --> 00:03:43,910
+which is set before model training begins,
+
+68
+00:03:43,910 --> 00:03:46,600
+and which is multiplied by the derivative to determine
+
+69
+00:03:46,600 --> 00:03:50,815
+how much we change the weights at every iteration of our loop.
+
+70
+00:03:50,815 --> 00:03:56,100
+Follow this link to start training a model with a very small learning rate.
+
+71
+00:03:56,100 --> 00:03:59,195
+Wait until the loss reaches about 100 epoch,
+
+72
+00:03:59,195 --> 00:04:01,765
+which should occur only after about two seconds,
+
+73
+00:04:01,765 --> 00:04:04,495
+and then pause the model.
+
+74
+00:04:04,495 --> 00:04:08,750
+What is the current trending loss?
+
+75
+00:04:08,750 --> 00:04:13,490
+And what are the weights that have been learned?
+
+76
+00:04:14,460 --> 00:04:20,800
+Now increase the learning rate to 0.001 and restart training and once
+
+77
+00:04:20,800 --> 00:04:26,395
+again stop around 100 epochs. What is the loss?
+
+78
+00:04:26,395 --> 00:04:29,900
+It should be substantially less this time.
+
+79
+00:04:29,900 --> 00:04:34,420
+Note 2, the value for weight one.
+
+80
+00:04:34,420 --> 00:04:38,435
+Now increase the learning rate to 0.10,
+
+81
+00:04:38,435 --> 00:04:39,830
+restart the model training,
+
+82
+00:04:39,830 --> 00:04:42,185
+and again train for 100 epochs.
+
+83
+00:04:42,185 --> 00:04:45,495
+How fast did the loss curve drop this time?
+
+84
+00:04:45,495 --> 00:04:48,280
+It should have dropped very quickly.
+
+85
+00:04:48,280 --> 00:04:51,510
+Okay, so let's put these observations together and see
+
+86
+00:04:51,510 --> 00:04:55,370
+if we can explain them using what we've learned about optimization.
+
+87
+00:04:55,370 --> 00:04:58,410
+Now increase the learning rate to 10,
+
+88
+00:04:58,410 --> 00:04:59,870
+restart the model training,
+
+89
+00:04:59,870 --> 00:05:03,305
+and first take a single step using the step button.
+
+90
+00:05:03,305 --> 00:05:06,285
+Note the magnitude of the weight.
+
+91
+00:05:06,285 --> 00:05:10,185
+Now continue training up until 100 epochs.
+
+92
+00:05:10,185 --> 00:05:13,780
+How fast did the loss curve drop this time?
+
+93
+00:05:13,780 --> 00:05:16,920
+It should have dropped precipitously.
+
+94
+00:05:16,920 --> 00:05:20,410
+Okay, so let's put these observations together and
+
+95
+00:05:20,410 --> 00:05:23,965
+see if we can explain them using what we've learned about optimization.
+
+96
+00:05:23,965 --> 00:05:27,800
+Here, I've made a table showing the results that I got.
+
+97
+00:05:27,800 --> 00:05:31,020
+Your results may look slightly different, and that's okay.
+
+98
+00:05:31,020 --> 00:05:33,820
+The reason that they may look different from mine is
+
+99
+00:05:33,820 --> 00:05:37,110
+the same reason that they may look different if you rerun the experiment.
+
+100
+00:05:37,110 --> 00:05:40,620
+TensorFlow Playground randomly initializes the weights,
+
+101
+00:05:40,620 --> 00:05:45,530
+and this means that our search starts off in a random position each time we do it.
+
+102
+00:05:45,530 --> 00:05:48,945
+Let's talk about the weight one column.
+
+103
+00:05:48,945 --> 00:05:53,545
+Note how the magnitude of the weights increased as the learning rates increase.
+
+104
+00:05:53,545 --> 00:05:56,265
+Why do you think that is?
+
+105
+00:05:56,265 --> 00:06:00,380
+This is because the model is taking bigger steps.
+
+106
+00:06:00,380 --> 00:06:02,790
+In fact, when the learning rate was 10,
+
+107
+00:06:02,790 --> 00:06:06,035
+the first step changed the weights dramatically.
+
+108
+00:06:06,035 --> 00:06:09,760
+Let's talk about the loss over time column.
+
+109
+00:06:09,760 --> 00:06:11,850
+As the learning rate increased,
+
+110
+00:06:11,850 --> 00:06:13,745
+the loss curve steepened.
+
+111
+00:06:13,745 --> 00:06:18,780
+This is the same effect as we observed earlier just through a different lens.

@@ -1,0 +1,48 @@
+Je suis dans le dépôt GitHub du cours, et dans 03_tensorflow, ce qui correspond à notre chapitre. Je vais maintenant ouvrir debug_demo. Et nous allons voir
+quelques-unes des choses dont j'ai parlé dans ce chapitre. Je vais donc importer TensorFlow. Et voici le premier exemple
+que nous avons vu. Nous avions effectué une scission
+pour récupérer toutes les lignes de data, et nous récupérions deux des colonnes. Et pour c, nous récupérions
+toutes les lignes, mais seulement une colonne. Et donc maintenant,
+si nous additionnons a et c, nous devrions avoir une erreur de forme. Et tel est bien le cas. Et tout en bas de la trace de la pile, nous avons le message d'erreur,
+qui nous signale l'erreur de valeur. Les dimensions doivent être égales,
+mais ne le sont pas (2 et 4). La première est un Tensor 2D de forme 4, 2,
+et la deuxième un Tensor 1D de forme 4. Et si l'on remonte dans la trace de la pile, nous voyons cette ligne :
+common_shapes.pyc (Python). Ce n'est pas à nous.
+C'est dans TensorFlow. Nous pouvons donc l'ignorer. Celle-ci est aussi dans TensorFlow,
+et nous pouvons donc l'ignorer. Comme celle-ci. Celle-ci est également
+dans TensorFlow. Encore une. Nous pouvons ignorer toutes ces lignes. Je continue donc
+à faire défiler la trace de la pile jusqu'à ce que je trouve quelque chose
+qui figure dans mon code. Et là je trouve some_method
+qui est dans mon code. Et voici la méthode s
+qui est égale à a + c. Une flèche indique que c'est là
+que se situe le problème. Et ce code est bien sûr
+appelé depuis sess.run, mais nous allons ignorer cette indication
+puisque le problème est ici : s = a + c. Donc, regardons cela en nous demandant
+d'où peut venir l'erreur de valeur. Et si nous continuons à remonter,
+nous voyons ici s = a + c. C'est là qu'est le problème. Nous savons que, selon
+les règles de l'algèbre linéaire, deux choses que l'on ajoute
+(ici, deux Tensors) doivent être exactement de même forme
+pour que cela fonctionne. Nous pouvons donc maintenant
+essayer de corriger le code. Donc, dans ce cas,
+je vais créer des données fictives. Je transmets mes données fictives, que voici. Quelle est la forme ici ?
+C'est une matrice 4, 3. Je transmets les données, puis je récupère
+et j'affiche les formes de a et de c. Et si maintenant j'exécute cette cellule... Si j'exécute cette cellule, j'obtiens la forme de a qui est 4, 2,
+et celle de c qui est 4. Et là, je sais d'où venait le problème. La question est donc maintenant
+de savoir comment y remédier. Et la façon d'y remédier consiste à veiller
+à ce que a et c soient de même forme. Donc, je peux utiliser
+0:2 pour a, et 1:3 ici. En d'autres termes, c'est la fenêtre
+glissante, avec un pas de 1 à chaque fois. Vous en saurez plus sur cette notion de "pas"
+lorsqu'il sera question des images. Le pas est donc de 1,
+et la taille de la fenêtre de 2. C'est exactement à ce que je fais. Et si je lance l'exécution,
+tout devrait fonctionner. Et j'obtiens la somme, qui est
+le résultat de la fenêtre glissante. Nous avons donc vu
+l'essentiel de la procédure que vous devez suivre
+pour déboguer votre code. Lisez la trace de la pile. Lisez le message d'erreur. Localisez le problème et corrigez-le. Assurez-vous que le code fonctionne
+avec vos données fictives, puis faites un test avec l'intégralité
+de votre ensemble de données, et tout devrait normalement fonctionner. Nous avons aussi vu les erreurs de type, et la procédure à suivre
+est exactement la même. Dans ce cas, j'ajoute a et b. a est un tableau
+de nombres à virgule flottante, et b un tableau de nombres entiers. Cela ne va pas fonctionner. Je vais donc regarder la trace de la pile,
+consulter le message d'erreur, et voir que pour remédier au problème,
+une solution peut consister à faire un cast pour convertir b qui n'était à l'origine
+qu'un tableau de nombres entiers. Nous allons faire le cast, et tout
+fonctionnera normalement. C'est l'idée de base ici.

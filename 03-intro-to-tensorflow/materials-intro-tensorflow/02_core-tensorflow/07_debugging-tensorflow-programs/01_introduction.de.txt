@@ -1,0 +1,41 @@
+Ich hoffe, dass Sie im vorherigen Lab, in dem Sie Code für die Berechnung von einem Bereich 
+für ein Dreieck schreiben sollten, nicht nur die Zellen ausgeführt, sondern TensorFlow-Code
+neu geschrieben haben. Wenn Sie so vorgegangen sind, haben Sie sicher schnell
+Compiler- und Laufzeitfehler festgestellt und sich gefragt, wie Sie Fehler in einem
+TensorFlow-Programm beheben. Aufgrund der Lazy Evaluation ist eine Fehlerbehebung von
+TensorFlow-Programmen schwierig. Fehler in Ihrem Diagramm können Sie erst sehen, wenn dieser
+Teil des Diagramms ausgeführt wird. Deswegen ist tf.eager hilfreich beim Entwickeln von
+TensorFlow-Programmen. Es ist jedoch kein Patentrezept. Sie müssen Fehler in TensorFlow-
+Programmen beheben können, auch wenn Sie das Programm
+interaktiv mit tf.eager entwickelt haben. Wie beheben Sie Fehler in TensorFlow-
+Programmen mit verzögerten Bewertungen? Fehler bei TensorFlow-Programmen beheben Sie ähnlich 
+wie bei anderen Programmen. Sie müssen Fehlermeldungen verstehen und die Meldungen und Stacktraces nutzen, um die Methode zu isolieren. Wenn Sie die 
+problematische Methode isolieren, können Sie die Methode selbst aufrufen. Sie führen nicht das gesamte 
+TensorFlow-Programm für das Dataset aus, um dies monolithisch zu beheben. Stattdessen senden Sie 
+bestehende Daten an diese Methode, um einen wiederholbaren Fehler
+zu erhalten, den Sie dann beheben. Wie lässt sich der Fehler beheben? Wir können nicht alle
+möglichen Fehler zeigen, aber wir sehen uns einige
+häufige Fehlermeldungen an und versuchen, diese zu beheben. Sie dürfen eine Ausgabe
+von Fehlermeldungen nicht einfach überfliegen. Schauen Sie sich die
+Fehlermeldung genau an. Sie brauchen zwei Informationen: Erstens: Das Stacktrace. Es ist der Aufrufstapel der Methoden zur Zeit des Fehlers. In diesem Beispiel sehen Sie, dass die Zeile s
+gleich a plus b ist. In der Methode ist eine
+Datenerfassung das Problem. Der Aufrufstapel enthält auch einige
+TensorFlow-Bibliothekenmethoden. Ihr Programm ruft diese Methoden auf. Sie müssen sich also 
+Ihren Code genau anschauen. Wenn Sie das tun, suchen Sie die zweite Information: Die eigentliche Fehlermeldung. Hier beschreibt die Fehlermeldung einen Wertefehler. TensorFlow erwartet,
+dass die Dimensionen gleich sind. Sie sind es aber nicht. Was ist hier los? Wenn Sie a und c addieren, funktioniert dies nur, wenn a
+ein 2D-Tensor und c ein 2D-Tensor ist. Oder: Wenn a ein 4D-Tensor ist, muss c auch ein 4D-Tensor sein. Hier ist entweder a oder c ein 2D-Tensor in der Form 4,2 und der andere, vielleicht c,
+ist ein 1D-Tensor in der Form 4. Da liegt das Problem. Ihr Programm hat einen Fehler. Vielleicht sollen beide 4,2 sein oder beide 4. Mit dem Aufrufstapel
+und der Fehlermeldung verstehen Sie das Problem. Im Aufrufstapel finden Sie die Codezeile und den Namen der Methode. Schauen Sie sich jetzt die Methode an. Hier heißt die Methode some_method und nimmt mit Tensoren
+aufgerufene Daten auf. Diesen Tensor müssen Sie imitieren, damit alles funktioniert. Der Rest des Programms ist unwichtig. Sie müssen nicht wissen, wie Daten in
+das aktuelle Programm eingelesen werden. Wir rufen die Methode
+mit imitierten Daten auf. Dazu erstellen Sie eine Sitzung
+und einen hartcodierten TensorArray. Ich habe einen 4x3-Tensor
+namens fake_data erstellt. Ich nehme fake_data und übergebe ihn in
+eine Unterstrich-Methode. Ich habe den Code einiger Daten auch
+mit Ausgabeanweisungen instrumentiert. Das ist etwas altmodisch
+für die Fehlerbehebung, aber am einfachsten, 
+um Formfehler zu finden. Wir fügen zwei Dinge hinzu: a und c – hier lag das Problem. Ich gebe die Form a und die Form c aus. Wenn ich das Programm ausführe, gibt die erste Zeile 4,2 aus, und die zweite Zeile gibt 4 aus. So lautete die Wertefehlermeldung. Was hatten Sie beabsichtigt? Wollten Sie eine 4,2-
+Matrix aus c herausschneiden? Oder wollten Sie einen 1D-
+Vektor für a herausschneiden? Was immer Sie beabsichtigt hatten, müssen Sie tun. Wenn ich das Programm ausführe, gibt die erste Zeile 4,2 aus, und die zweite Zeile gibt 4 aus. So lautete die Wertefehlermeldung. Was hatten Sie beabsichtigt? Wollten Sie eine 4,2-
+Matrix aus c herausschneiden? Oder wollten Sie einen 1D-
+Vektor für a herausschneiden? Was immer Sie beabsichtigt hatten,...

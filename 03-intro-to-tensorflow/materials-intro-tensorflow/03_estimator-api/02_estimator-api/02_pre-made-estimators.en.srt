@@ -1,0 +1,335 @@
+1
+00:00:00,000 --> 00:00:02,025
+Let's take an example.
+
+2
+00:00:02,025 --> 00:00:03,525
+How about real estate?
+
+3
+00:00:03,525 --> 00:00:05,880
+Can we predict the price of a property?
+
+4
+00:00:05,880 --> 00:00:08,160
+We must first choose our features.
+
+5
+00:00:08,160 --> 00:00:11,475
+That is the data we will be basing our predictions on.
+
+6
+00:00:11,475 --> 00:00:14,625
+Why not try and build a model that predicts the price
+
+7
+00:00:14,625 --> 00:00:18,160
+based on the size of a house or apartment?
+
+8
+00:00:18,160 --> 00:00:20,310
+Our features will be, one,
+
+9
+00:00:20,310 --> 00:00:22,410
+the square footage; and, two,
+
+10
+00:00:22,410 --> 00:00:25,225
+the category house or apartment.
+
+11
+00:00:25,225 --> 00:00:27,435
+Here's how we implement this.
+
+12
+00:00:27,435 --> 00:00:31,275
+We can use the feature column API to define our features.
+
+13
+00:00:31,275 --> 00:00:34,500
+First, a numeric column for the square footage,
+
+14
+00:00:34,500 --> 00:00:38,125
+then a categorical column for the property type.
+
+15
+00:00:38,125 --> 00:00:42,670
+Two possible categories in this simple model, house or apartment.
+
+16
+00:00:42,670 --> 00:00:46,049
+We can now instantiate a linear regressor,
+
+17
+00:00:46,049 --> 00:00:49,315
+one of the pre-made estimators for those features.
+
+18
+00:00:49,315 --> 00:00:52,230
+A regressor is a model that outputs a number,
+
+19
+00:00:52,230 --> 00:00:56,090
+in our case, the predicted sales price of the property.
+
+20
+00:00:56,090 --> 00:00:58,785
+But why do we need feature columns?
+
+21
+00:00:58,785 --> 00:01:01,335
+It's time to have a look under the hood.
+
+22
+00:01:01,335 --> 00:01:05,325
+A linear regressor is a model that works on a vector of data.
+
+23
+00:01:05,325 --> 00:01:09,540
+It computes a weighted sum of all input data elements
+
+24
+00:01:09,540 --> 00:01:14,255
+and it can be trained to adjust the weights for your problem,
+
+25
+00:01:14,255 --> 00:01:16,845
+here, predicting the sales price.
+
+26
+00:01:16,845 --> 00:01:24,225
+But how can we pack our data into the single input vector that linear regressor expect?
+
+27
+00:01:24,225 --> 00:01:29,160
+The answer is in various ways depending on what data we are packing,
+
+28
+00:01:29,160 --> 00:01:33,420
+and so that is where the feature columns API comes in handy.
+
+29
+00:01:33,420 --> 00:01:38,720
+It implements various standard ways of packing data into vector elements.
+
+30
+00:01:38,720 --> 00:01:43,090
+Here, values in our numeric column are just numbers.
+
+31
+00:01:43,090 --> 00:01:48,615
+They can get copied as they are into a single element of the input vector.
+
+32
+00:01:48,615 --> 00:01:53,745
+On the other hand, our categorical column gets one-hot-encoded.
+
+33
+00:01:53,745 --> 00:01:55,305
+We have two categories.
+
+34
+00:01:55,305 --> 00:01:57,360
+So, house will be 1,
+
+35
+00:01:57,360 --> 00:02:00,625
+0 while an apartment will become 0, 1.
+
+36
+00:02:00,625 --> 00:02:03,120
+A third category would be encoded as 0,
+
+37
+00:02:03,120 --> 00:02:05,310
+0, 1 and so on.
+
+38
+00:02:05,310 --> 00:02:10,235
+Now, the linear regressor knows how to take the features we care about,
+
+39
+00:02:10,235 --> 00:02:12,420
+pack them into its input vector,
+
+40
+00:02:12,420 --> 00:02:16,310
+and apply whatever a linear regressor does.
+
+41
+00:02:16,310 --> 00:02:22,270
+There are many more feature column types to choose from: columns for continuous values,
+
+42
+00:02:22,270 --> 00:02:23,590
+you want to bucketized,
+
+43
+00:02:23,590 --> 00:02:26,970
+word embeddings, column crosses, and so on.
+
+44
+00:02:26,970 --> 00:02:30,510
+The transformations they apply are clearly described in the [inaudible]
+
+45
+00:02:30,510 --> 00:02:33,960
+for documentation so that you always know what is going on.
+
+46
+00:02:33,960 --> 00:02:36,160
+To train the model,
+
+47
+00:02:36,160 --> 00:02:39,090
+we need to write an input function that will return
+
+48
+00:02:39,090 --> 00:02:42,690
+the features named as in the feature columns.
+
+49
+00:02:42,690 --> 00:02:46,815
+Since we are training, we also need the correct answers called labels.
+
+50
+00:02:46,815 --> 00:02:51,500
+And now, we can call the train function of our estimator,
+
+51
+00:02:51,500 --> 00:02:56,655
+which will train the model by repeating this data set 100 times.
+
+52
+00:02:56,655 --> 00:03:00,750
+We will see how batching works later but for
+
+53
+00:03:00,750 --> 00:03:04,770
+those of you who already know about the concept of batching,
+
+54
+00:03:04,770 --> 00:03:08,490
+the code as written here trains on a single batch of data
+
+55
+00:03:08,490 --> 00:03:12,705
+at each step and this batch contains the entire data set.
+
+56
+00:03:12,705 --> 00:03:16,230
+Once trained, the model can be used for the predictions.
+
+57
+00:03:16,230 --> 00:03:20,250
+We will need an input function that provides data for the prediction, here,
+
+58
+00:03:20,250 --> 00:03:24,970
+a 1500-square feet house and an 1800-square feet apartment.
+
+59
+00:03:24,970 --> 00:03:28,410
+The predict function in the estimator API returns
+
+60
+00:03:28,410 --> 00:03:32,730
+a python generator which you can use to iterate through the predictions.
+
+61
+00:03:32,730 --> 00:03:37,065
+Here is a summary of the estimator API so far.
+
+62
+00:03:37,065 --> 00:03:43,175
+We used feature columns to get our data into a shape our model can understand.
+
+63
+00:03:43,175 --> 00:03:48,270
+We instantiated a linear regressor based on these feature columns,
+
+64
+00:03:48,270 --> 00:03:52,545
+we called train, to train the model for 100 steps.
+
+65
+00:03:52,545 --> 00:03:57,850
+Training data is provided through a data input function, we called predict,
+
+66
+00:03:57,850 --> 00:04:00,330
+to get predictions and the data for
+
+67
+00:04:00,330 --> 00:04:03,760
+that was again provided through a data input function.
+
+68
+00:04:03,760 --> 00:04:08,200
+We will get to those in more detail later in this course.
+
+69
+00:04:08,200 --> 00:04:10,505
+To use a different pre-made estimator,
+
+70
+00:04:10,505 --> 00:04:15,330
+just change the class name and supply the appropriate configuration parameters.
+
+71
+00:04:15,330 --> 00:04:18,330
+For example, here, we could use a dense neural network,
+
+72
+00:04:18,330 --> 00:04:21,000
+a regressor, with two hidden layers.
+
+73
+00:04:21,000 --> 00:04:23,155
+The first one has three neurons,
+
+74
+00:04:23,155 --> 00:04:24,650
+the second one only two,
+
+75
+00:04:24,650 --> 00:04:28,930
+and we end on the single neuron that predicts the property price.
+
+76
+00:04:28,930 --> 00:04:32,415
+Notice that the input vector is the same for both models.
+
+77
+00:04:32,415 --> 00:04:35,190
+We can reuse the same feature columns.
+
+78
+00:04:35,190 --> 00:04:38,430
+Here are some of the things you can adjust on
+
+79
+00:04:38,430 --> 00:04:41,840
+a dense neural network: the number and size of hidden layers,
+
+80
+00:04:41,840 --> 00:04:44,130
+the choice of activation function,
+
+81
+00:04:44,130 --> 00:04:50,025
+regularization parameters like drop out or your favorite optimizer to drive the training.
+
+82
+00:04:50,025 --> 00:04:55,175
+But most importantly, there are good defaults for almost all of them.
+
+83
+00:04:55,175 --> 00:04:56,910
+For a DNN regressor,
+
+84
+00:04:56,910 --> 00:05:00,560
+the only mandatory parameters are the hidden layers.

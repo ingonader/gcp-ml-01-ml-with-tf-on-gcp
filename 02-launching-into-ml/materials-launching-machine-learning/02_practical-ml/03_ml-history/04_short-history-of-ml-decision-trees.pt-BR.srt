@@ -1,0 +1,453 @@
+1
+00:00:00,000 --> 00:00:03,925
+Algoritmos de árvore, como ID3 e C 4.5,
+
+2
+00:00:03,925 --> 00:00:06,030
+foram inventados nas décadas de 80 e 90.
+
+3
+00:00:06,030 --> 00:00:09,075
+Eles são melhores para lidar
+com problemas na regressão linear
+
+4
+00:00:09,075 --> 00:00:11,450
+e fáceis de serem
+interpretados pelas pessoas.
+
+5
+00:00:11,450 --> 00:00:15,755
+Encontrar a divisão ideal
+ao criar árvores é um difícil problema NP.
+
+6
+00:00:15,755 --> 00:00:18,260
+Por isso, algoritmos gulosos foram usados
+
+7
+00:00:18,260 --> 00:00:21,920
+para criar árvores o mais
+próximo possível do ideal.
+
+8
+00:00:21,920 --> 00:00:24,900
+Eles produzem uma superfície
+de decisões linear por partes,
+
+9
+00:00:24,900 --> 00:00:27,535
+que é, essencialmente,
+o que a camada de ReLUs garante.
+
+10
+00:00:27,535 --> 00:00:30,695
+Mas com DNNs ou redes neurais profundas,
+
+11
+00:00:30,695 --> 00:00:34,885
+cada camada se combina criando
+uma superfície de decisão hiperplana,
+
+12
+00:00:34,885 --> 00:00:36,825
+que pode ser muito mais poderosa.
+
+13
+00:00:36,825 --> 00:00:40,640
+Mas pergunto a você por que as DNNs são
+melhores que as árvores de decisão.
+
+14
+00:00:40,640 --> 00:00:42,795
+Vamos primeiro
+falar das árvores de decisão.
+
+15
+00:00:44,315 --> 00:00:47,890
+Elas são um dos algoritmos
+de aprendizado de máquina mais intuitivos.
+
+16
+00:00:47,890 --> 00:00:51,785
+É possível usá-las na classificação e
+regressão.
+
+17
+00:00:51,785 --> 00:00:53,330
+Pense em um conjunto de dados,
+
+18
+00:00:53,330 --> 00:00:57,155
+você quer determinar como os dados são
+todos divididos em diferentes intervalos.
+
+19
+00:00:57,155 --> 00:00:58,760
+A primeira coisa a se fazer é
+
+20
+00:00:58,760 --> 00:01:02,080
+pensar em questões interessantes
+para consultar no conjunto de dados.
+
+21
+00:01:02,080 --> 00:01:04,560
+Vamos ver um exemplo.
+
+22
+00:01:04,560 --> 00:01:10,810
+Este é o famoso problema para
+prever sobreviventes e vítimas do Titanic.
+
+23
+00:01:10,810 --> 00:01:16,485
+Havia pessoas a bordo de diferentes
+níveis sociais, origens, situações etc.
+
+24
+00:01:16,485 --> 00:01:20,740
+Então vamos analisar se alguma dessas
+características pode particionar os dados
+
+25
+00:01:20,740 --> 00:01:24,900
+para prever sobreviventes
+com alta precisão.
+
+26
+00:01:26,460 --> 00:01:30,225
+A primeira hipótese de característica
+pode ser o gênero do viajante.
+
+27
+00:01:30,225 --> 00:01:33,675
+Portanto, é possível fazer
+a pergunta "é do gênero masculino?".
+
+28
+00:01:33,675 --> 00:01:37,300
+Assim, divido os dados
+colocando homens em um intervalo
+
+29
+00:01:37,300 --> 00:01:39,310
+e o restante em outro.
+
+30
+00:01:39,310 --> 00:01:44,310
+64% dos dados vão para o intervalo
+do gênero masculino, e 36% para o outro.
+
+31
+00:01:44,315 --> 00:01:47,455
+Vamos continuar na partição
+do intervalo do gênero masculino.
+
+32
+00:01:47,455 --> 00:01:52,315
+Outra pergunta a ser feita é
+sobre a classe em que o viajante estava.
+
+33
+00:01:52,315 --> 00:01:58,680
+Com o particionamento, 14% dos
+viajantes são homens da classe mais baixa,
+
+34
+00:01:58,680 --> 00:02:03,290
+enquanto 50% de todos os viajantes são
+homens e das duas classes mais superiores.
+
+35
+00:02:03,290 --> 00:02:07,730
+É possível realizar esse particionamento
+na ramificação de mulheres.
+
+36
+00:02:07,730 --> 00:02:09,145
+Voltando um pouco,
+
+37
+00:02:09,145 --> 00:02:14,305
+a árvore de decisão que cria o algoritmo
+separou o gênero em duas ramificações
+
+38
+00:02:14,305 --> 00:02:17,035
+porque há somente dois valores possíveis.
+
+39
+00:02:17,035 --> 00:02:19,640
+Mas por que ela dividiu
+a classe dos viajantes
+
+40
+00:02:19,640 --> 00:02:24,550
+em uma ramificação à esquerda
+e duas à direita?
+
+41
+00:02:25,340 --> 00:02:30,330
+Por exemplo, na árvore simples
+de classificação e regressão ou CART,
+
+42
+00:02:30,330 --> 00:02:34,280
+o algoritmo escolhe
+o par de características e limites
+
+43
+00:02:34,280 --> 00:02:37,455
+que produzirá os conjuntos
+mais puros de dados quando divididos.
+
+44
+00:02:37,455 --> 00:02:41,960
+Nas árvores de classificação, uma métrica
+de coluna a ser usada é a impureza Gini,
+
+45
+00:02:41,960 --> 00:02:43,835
+mas também há entropia.
+
+46
+00:02:43,835 --> 00:02:45,850
+Depois de realizar a divisão,
+
+47
+00:02:45,850 --> 00:02:48,495
+ela busca outro par
+de limite de características
+
+48
+00:02:48,495 --> 00:02:50,735
+e o divide em subconjuntos.
+
+49
+00:02:50,735 --> 00:02:53,440
+Esse processo se repete
+
+50
+00:02:53,440 --> 00:02:57,015
+até que a profundidade máxima
+definida da árvore seja alcançada
+
+51
+00:02:57,015 --> 00:03:00,400
+ou até que não haja
+mais divisões que reduzam a impureza.
+
+52
+00:03:00,400 --> 00:03:04,355
+Nas árvores de regressão, o erro
+quadrático médio é uma métrica comum.
+
+53
+00:03:04,355 --> 00:03:08,955
+Soa familiar essa forma de escolher
+a divisão de dados em dois subconjuntos?
+
+54
+00:03:08,955 --> 00:03:12,620
+Cada divisão é essencialmente
+um classificador linear binário
+
+55
+00:03:12,620 --> 00:03:17,135
+que encontra um hiperplano que corta
+a dimensão do recurso em algum valor,
+
+56
+00:03:17,135 --> 00:03:23,860
+sendo o limite escolhido para que
+membros de uma classe não caiam em outra.
+
+57
+00:03:23,860 --> 00:03:28,560
+Criar esses hiperplanos em uma árvore
+é similar às camadas de nodes
+
+58
+00:03:28,560 --> 00:03:30,725
+de classificador linear
+em uma rede neural.
+
+59
+00:03:30,725 --> 00:03:32,685
+Muito interessante!
+
+60
+00:03:32,685 --> 00:03:35,270
+Agora que sabemos
+como é feita a árvore de decisão,
+
+61
+00:03:35,270 --> 00:03:37,910
+vamos continuar a criá-la um pouco mais.
+
+62
+00:03:37,910 --> 00:03:40,225
+Talvez haja um limite de idade
+
+63
+00:03:40,225 --> 00:03:43,570
+que pode ajudar na divisão
+dos dados no problema de classificação.
+
+64
+00:03:43,570 --> 00:03:47,675
+Podemos perguntar
+se a idade é maior do que 17,5 anos.
+
+65
+00:03:47,675 --> 00:03:50,940
+Analisando a ramificação
+da classe mais inferior dos homens,
+
+66
+00:03:50,940 --> 00:03:54,715
+apenas 13% dos viajantes
+tinham mais de 18 anos,
+
+67
+00:03:54,715 --> 00:03:57,015
+enquanto apenas 1% era mais jovem.
+
+68
+00:03:57,015 --> 00:03:59,680
+Olhando para as classes
+associadas a cada node,
+
+69
+00:03:59,680 --> 00:04:04,495
+só esta na ramificação masculina
+é classificada como sobreviventes.
+
+70
+00:04:04,495 --> 00:04:06,180
+É possível ampliar a profundidade
+
+71
+00:04:06,180 --> 00:04:09,850
+ou escolher diferentes características
+para continuar aumentando a árvore
+
+72
+00:04:09,850 --> 00:04:14,570
+até que cada node
+tenha apenas mortos e sobreviventes.
+
+73
+00:04:14,570 --> 00:04:18,120
+No entanto, há problemas nisso
+porque, essencialmente,
+
+74
+00:04:18,120 --> 00:04:21,919
+estamos apenas memorizando dados
+e os encaixando na árvore com perfeição.
+
+75
+00:04:21,919 --> 00:04:25,815
+Na prática, vamos querer
+generalizar isso em novos dados.
+
+76
+00:04:25,815 --> 00:04:28,100
+O modelo que memorizou
+o conjunto de treinamento
+
+77
+00:04:28,100 --> 00:04:30,925
+talvez não tenha bom desempenho fora dele.
+
+78
+00:04:30,925 --> 00:04:33,090
+Há alguns métodos de regularização
+
+79
+00:04:33,090 --> 00:04:36,190
+como citar o número mínimo
+de amostras por node de folha,
+
+80
+00:04:36,190 --> 00:04:39,935
+o máximo desses nodes
+ou o total de características.
+
+81
+00:04:39,935 --> 00:04:44,220
+Também é possível criar toda a árvore
+e remover os nodes desnecessários.
+
+82
+00:04:44,220 --> 00:04:46,210
+Para aproveitar as árvores ao máximo,
+
+83
+00:04:46,210 --> 00:04:48,410
+é melhor combiná-las em florestas,
+
+84
+00:04:48,410 --> 00:04:50,700
+que abordaremos em breve.
+
+85
+00:04:50,700 --> 00:04:53,560
+Em uma árvore de classificação de decisão,
+
+86
+00:04:53,560 --> 00:04:56,295
+o que forma cada node ou decisão?
+
+87
+00:04:58,855 --> 00:05:02,910
+Resposta correta: "Classificador
+linear de uma característica".
+
+88
+00:05:02,910 --> 00:05:05,160
+Lembre-se de que, em cada node na árvore,
+
+89
+00:05:05,160 --> 00:05:10,450
+o algoritmo escolhe característica e
+limite para dividir dados em subconjuntos
+
+90
+00:05:10,450 --> 00:05:12,255
+e repete esse processo muitas vezes.
+
+91
+00:05:12,255 --> 00:05:14,550
+Muitas características são divididas,
+
+92
+00:05:14,550 --> 00:05:17,070
+supondo a profundidade
+máxima para mais de uma,
+
+93
+00:05:17,070 --> 00:05:19,840
+mas só uma por profundidade de cada vez.
+
+94
+00:05:19,840 --> 00:05:23,475
+Portanto, o classificador linear
+de todas as características é incorreto
+
+95
+00:05:23,475 --> 00:05:26,535
+porque cada node divide
+apenas uma característica por vez.
+
+96
+00:05:26,535 --> 00:05:31,730
+Redutores de erro quadrático médio
+e de distância euclidiana são o mesmo,
+
+97
+00:05:31,730 --> 00:05:34,150
+usados na regressão,
+não na classificação.

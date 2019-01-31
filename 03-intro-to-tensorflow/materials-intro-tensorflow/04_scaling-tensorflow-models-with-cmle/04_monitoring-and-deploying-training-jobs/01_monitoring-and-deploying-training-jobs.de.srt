@@ -1,0 +1,212 @@
+1
+00:00:00,720 --> 00:00:05,030
+Reden wir ein paar Minuten
+über das Monitoring von Jobs.
+
+2
+00:00:05,030 --> 00:00:06,305
+Nach dem Senden eines Jobs
+
+3
+00:00:06,305 --> 00:00:08,745
+zur Ausführung
+auf der Cloud Machine Learning Engine
+
+4
+00:00:08,745 --> 00:00:11,145
+gibt es verschiedene 
+Möglichkeiten zur Prüfung.
+
+5
+00:00:11,145 --> 00:00:13,800
+Am einfachsten ist es,
+den aktuellen Status abzurufen.
+
+6
+00:00:13,800 --> 00:00:15,465
+Sie erfahren, ob der Job ausstehend ist,
+
+7
+00:00:15,465 --> 00:00:17,405
+ausgeführt wird oder abgeschlossen ist.
+
+8
+00:00:17,405 --> 00:00:21,440
+Nach Ausführungsstart können Sie
+die letzten Log-Einträge untersuchen.
+
+9
+00:00:21,440 --> 00:00:23,910
+Auch das geht mit dem Befehl "gcloud".
+
+10
+00:00:23,910 --> 00:00:26,745
+Wenn Sie viele Jobs
+zur parallelen Ausführung senden,
+
+11
+00:00:26,745 --> 00:00:30,100
+probieren Sie die Listen-
+und Filterfunktionen von gcloud aus.
+
+12
+00:00:31,740 --> 00:00:36,110
+Über die Webkonsole der GCP
+können Sie Ihre Jobs gut überwachen.
+
+13
+00:00:36,110 --> 00:00:38,370
+Sie sehen genau,
+wie sie aufgerufen wurden,
+
+14
+00:00:38,370 --> 00:00:42,160
+können Logs prüfen und sehen,
+wie viel CPU und Speicher sie verwenden.
+
+15
+00:00:42,160 --> 00:00:43,800
+Log-Einträge helfen vielleicht,
+
+16
+00:00:43,800 --> 00:00:46,250
+technische Fehler
+wie Ausnahmen zu beheben,
+
+17
+00:00:46,250 --> 00:00:49,785
+sind aber nicht das richtige Tool,
+um die ML-Leistung zu untersuchen.
+
+18
+00:00:49,785 --> 00:00:52,350
+TensorBoard ist dagegen ein tolles Tool.
+
+19
+00:00:52,350 --> 00:00:57,215
+Lassen Sie Ihre Jobs in Cloud Storage
+zusammenfassende Daten speichern.
+
+20
+00:00:57,215 --> 00:01:00,735
+Geben Sie dann dieses Verzeichnis
+einfach beim Start von TensorBoard an.
+
+21
+00:01:00,735 --> 00:01:03,725
+Sie können sogar
+mehrere Jobs pro Ordner überwachen.
+
+22
+00:01:03,725 --> 00:01:07,460
+Sehen wir jetzt einmal,
+was wir mit unserem Modell machen können.
+
+23
+00:01:07,460 --> 00:01:09,420
+Nach Abschluss unseres Training-Jobs
+
+24
+00:01:09,420 --> 00:01:11,270
+haben wir ein TensorFlow-Modell
+
+25
+00:01:11,270 --> 00:01:13,040
+für Vorhersagen.
+
+26
+00:01:13,040 --> 00:01:16,340
+Cloud ML Engine
+bietet dazu eine gute Infrastruktur.
+
+27
+00:01:16,340 --> 00:01:20,420
+CMLE erstellt aus Ihrem Trainingsmodell
+eine einsatzbereite Web-App für Sie
+
+28
+00:01:20,420 --> 00:01:24,665
+und bietet einen Batch-Dienst für Ihre
+weniger latenzabhängigen Vorhersagen.
+
+29
+00:01:24,665 --> 00:01:26,530
+Da beide REST-APIs sind,
+
+30
+00:01:26,530 --> 00:01:29,370
+können Sie skalierbare, sichere Inferenzen
+
+31
+00:01:29,370 --> 00:01:32,900
+aus der für den jeweiligen 
+Client gewünschten Sprache erstellen.
+
+32
+00:01:34,250 --> 00:01:37,710
+Um Ihr TF-Modellartefakt
+zur Bereitstellung an die Cloud zu senden,
+
+33
+00:01:37,710 --> 00:01:41,805
+müssen wir als Ressource
+eine CMLE-Modellinversion erstellen.
+
+34
+00:01:41,805 --> 00:01:44,830
+Ihre einzelne TF-Datei
+mit trainiertem Modell
+
+35
+00:01:44,830 --> 00:01:47,305
+entspricht einer bestimmten Version.
+
+36
+00:01:47,305 --> 00:01:50,760
+Auf CMLE ist ein Modell
+eine Gruppe dieser Versionen
+
+37
+00:01:50,760 --> 00:01:53,310
+mit einer Standardversion.
+
+38
+00:01:53,310 --> 00:01:55,260
+Durch diese zusätzliche Abstraktionsebene
+
+39
+00:01:55,260 --> 00:01:59,305
+und Gruppierung
+können wir Traffic einer TF-Modellversion
+
+40
+00:01:59,305 --> 00:02:00,925
+nahtlos zur nächsten migrieren.
+
+41
+00:02:00,925 --> 00:02:04,010
+Dazu ändern wir nur
+die Standardversion des Modells.
+
+42
+00:02:05,540 --> 00:02:07,050
+Hier ist ein einfaches Beispiel
+
+43
+00:02:07,050 --> 00:02:11,755
+für die Verwendung des bereitgestellten
+Vorhersagemodells über einen REST-Aufruf.
+
+44
+00:02:11,755 --> 00:02:15,410
+Die CMLE-Onlinevorhersage
+ist ein vollständig serverloses System.
+
+45
+00:02:15,410 --> 00:02:18,345
+Sie müssen sich daher
+nicht um Ressourcenzuweisungen kümmern.
+
+46
+00:02:18,345 --> 00:02:20,740
+Ressourcen werden einfach skaliert.

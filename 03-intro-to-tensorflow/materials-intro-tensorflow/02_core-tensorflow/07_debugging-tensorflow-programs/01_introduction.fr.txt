@@ -1,0 +1,59 @@
+J'espère que, lors de l'atelier précédent, quand il vous a été demandé d'écrire du code
+pour calculer l'aire d'un triangle, vous n'avez pas seulement
+exécuté les cellules, et que vous avez essayé d'écrire
+du code TensorFlow en partant de zéro. Si vous avez procédé ainsi
+et que vous ne faites pas exception, vous avez rapidement été confrontés
+à des erreurs de compilation et d'exécution, de sorte que vous avez
+commencé à vous demander comment vous pouviez déboguer
+un programme TensorFlow. Le débogage d'un programme
+TensorFlow peut être complexe en raison du paradigme
+de l'évaluation paresseuse. Si votre graphe contient des erreurs, vous ne pourrez en avoir connaissance
+qu'après l'exécution de la partie concernée. C'est l'une des raisons pour lesquelles il a été indiqué
+que tf.eager peut être utile pour développer des programmes TensorFlow. Ce n'est toutefois pas une panacée. Vous avez toujours besoin de connaître
+la procédure de débogage de ces programmes, même si vous avez développé le programme
+de manière interactive avec tf.eager. Voyons donc comment vous pouvez
+déboguer les programmes TensorFlow lorsqu'ils utilisent l'évaluation paresseuse. Vous déboguez un programme TensorFlow
+comme n'importe quel autre programme. Vous devez apprendre
+à lire les messages d'erreur, et utiliser ces messages ainsi que les traces
+de la pile pour isoler la méthode. L'isolation de la méthode
+(problématique) a pour objectif de vous permettre d'appeler
+cette méthode isolément. Il n'est pas recommandé d'essayer
+de procéder à un débogage global en exécutant l'intégralité
+du programme TensorFlow pour l'ensemble de données. Il est préférable d'envoyer
+des données existantes à la méthode. Cela permet d'avoir une erreur reproductible
+que l'on peut essayer de corriger. Mais comment corriger l'erreur ? Même si nous ne pouvons étudier ici
+toutes les erreurs possibles, nous allons voir certains des types
+de messages d'erreur les plus courants, et je vous indiquerai comment
+remédier à ces problèmes. La première étape consiste
+à ne pas vous laisser perturber lorsque vous voyez
+une liste de messages d'erreur. Regardez attentivement chaque message. Vous devez tout particulièrement
+rechercher deux informations, la première étant la trace de la pile. Il s'agit de la pile des appels de méthodes
+de l'heure à laquelle l'erreur a été générée. Dans ce cas par exemple, vous voyez que la ligne s
+a pour fonction d'additionner a et c. Il y a un problème dans
+la méthode some_method(data). Manifestement, la pile des appels contiendra également
+de nombreuses méthodes de bibliothèques TF. Votre programme appelle ces méthodes. Vous devez donc
+vous concentrer sur votre code, et ce faisant, rechercher la deuxième information. Regardez le message d'erreur. Il indique dans ce cas qu'une erreur
+de valeur a été rencontrée. TensorFlow attend des dimensions égales. Et il se trouve qu'elles ne le sont pas. Que se passe-t-il ? Et bien, l'addition ne peut fonctionner
+que si a et c sont des Tensors 2D. Ou, si a est un Tensor 4D,
+c doit également en être un. Dans ce cas, il s'avère que
+l'un est un Tensor 2D de forme 4,2 et l'autre un Tensor 1D de forme 4. C'est donc le problème. Il y a manifestement quelque chose
+d'incorrect dans votre programme. Soit vous voulez que les deux
+soient de forme 4,2, soit vous voulez que les deux
+soient de forme 4. Mais le fait de consulter la pile des appels
+et de lire le message d'erreur vous aide à comprendre le problème. La pile des appels vous a permis
+de trouver la ligne de code et le nom de la méthode. Il vous reste à rechercher
+la méthode et à l'examiner. Ici, le nom de la méthode est some_method, et elle est associée à un Tensor appelé data. C'est le Tensor que vous devez tester pour parvenir à faire en sorte
+que tout fonctionne correctement. Oubliez le reste de votre programme. Ne vous occupez pas du mode de lecture
+des données dans le programme actuel. Nous allons appeler la méthode
+avec des données fictives. Nous devons pour cela créer une session
+et un Tensor qui soit un tableau codé en dur. Et dans ce cas, j'ai créé
+un Tensor 4,3 appelé fake_data. Vous le voyez ? Je le transmets dans some_method. Remarquez que j'ai également
+ajouté des instructions print pour certaines données du code. Cette technique de débogage
+est un peu primitive, mais c'est la plus simple pour
+diagnostiquer des erreurs de forme. Nous avons donc une addition avec a et c,
+et c'est là que se situait le problème. Je fais donc en sorte que les formes
+de a et de c soient affichées. Et lorsque j'exécute le programme, nous avons 4,2 pour la première ligne, et 4 pour la deuxième. C'est bien ce qu'indiquait
+le message d'erreur relatif à la valeur. Et maintenant, que vouliez-vous faire. Vouliez-vous scinder une matrice 4,2 pour c ? Ou vouliez-vous scinder
+un vecteur 1D pour a ? Quoi que vous vouliez faire, faites-le. Lorsque j'exécute le programme, nous avons 4,2 pour la première ligne, et 4 pour la deuxième. C'est bien ce qu'indiquait
+le message d'erreur relatif à la valeur. Et maintenant, que vouliez-vous faire. Vouliez-vous scinder une matrice 4,2 pour c ? Ou vouliez-vous scinder
+un vecteur 1D pour a ? Quoi que vous vouliez faire…

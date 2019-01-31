@@ -1,0 +1,98 @@
+Wir haben gesehen, wie ein lineares
+Modell mit diesem Dataset arbeitet. Sehen wir uns an, 
+wie ein neuronales Netzwerk funktioniert. Bevor wir das tun, müssen wir
+einige zusätzliche Funktionen überprüfen, die ich in 
+TensorFlow Playground freigeschaltet habe. Die erste ist die Aktivierung und bezieht sich
+auf die Aktivierungsfunktion. Wir werden sie ausführlicher in Kurs 5, mit dem Thema "Art and
+Science of ML", behandeln. Momentan ist allein entscheidend,
+dass die Wahl der Aktivierungsfunktion lineare Modelle von 
+neuronalen Netzwerken unterscheidet. Die Aktivierungsfunktion
+wurde zuvor, ohne Ihr Wissen, als lineare Funktion festgelegt. Die zweite, neu freigeschaltete
+Funktion, ist "verborgene Ebenen". Mit der Funktion "verborgene Ebenen" 
+können Sie die Zahl solcher Ebenen und die Zahl der Neuronen 
+pro verborgener Ebene ändern. Sie ändern praktisch
+die Anzahl der Transformationen, die das Netzwerk für 
+Ihre Daten durchführt. Jedes Neuron in jeder verborgenen Ebene empfängt die gesamte
+Ausgabe von der vorhergehenden Ebene, transformiert sie und übergibt die Ausgabe
+an alle Neuronen der folgenden Ebene. Die Kurzbeschreibung 
+der Anzahl von Neuronen und wie sie Informationen untereinander 
+weitergeben, ist die Netzwerkarchitektur. Ich habe auch
+"Batch-Größe" freigeschaltet, die wir gleich in einem
+Experiment verwenden werden. Folgen Sie dem Link auf der
+Folie und trainieren Sie ein Modell so, dass es dieses
+Dataset klassifizieren kann. Statt nichtlineare Funktionen
+einzuführen, versuchen Sie, die Leistung nur durch Ändern
+der Netzwerkarchitektur zu verbessern. Es ist OK, dass wir die Funktionsweise
+neuronaler Netze noch nicht erklärt haben. Experimentieren Sie einfach
+mit der Benutzeroberfläche, bis Sie ein Netzwerk haben,
+das einigermaßen gut funktioniert. Sie sollten jetzt ein Modell haben,
+das einigermaßen gut funktioniert, und der blaue Bereich in der
+Ausgabespalte sollte ein Polygon sein. Sehen wir uns das genauer an, um 
+ein Gespür für die Funktionsweise des Modells zu bekommen. Sehen Sie sich die Neuronen der ersten 
+verborgenen Ebene noch einmal an. Während ich mit der Maus über jedes fahre, ändert sich das Ausgabefeld 
+je nachdem, was das Neuron gelernt hat. Sie können diese Neuronen genauso
+wie Merkmale und die Ausgabe lesen. Die Werte der Merkmale X1 und X2
+sind in der Position im Rechteck codiert. Die Farbe gibt
+den Wert an, den dieses Neuron für diese Kombination
+von X1 und X2 ausgibt. Während ich mit der Maus 
+über jedes der Quadrate fahre, stellen Sie sich vor,
+wie sie übereinander aussehen würden. Blau auf Blau wird ein dunkleres Blau, Blau auf Weiß wird Hellblau und Blau auf Orange wird weiß. Sie sollten nach und nach 
+erkennen können, wie jedes Neuron an der Entscheidungsgrenze
+des Modells beteiligt ist, wie die Form der Ausgabe eine
+Funktion der verborgenen Schichten ist. Zum Beispiel trägt dieses Neuron 
+diese Kante zur Entscheidungsgrenze bei, und dieses Neuron trägt diese Kante bei. Was sagen Ihnen Ihre Geometriekenntnisse: Wie klein könnten Sie
+dieses Netzwerk aufbauen und dennoch eine 
+ordentliche Leistung erzielen? Kleiner Tipp: Welches
+ist die einfachste Form, die Sie um die blauen Punkte zeichnen
+könnten, die trotzdem funktionieren würde? Testen Sie es in TensorFlow Playground
+und prüfen Sie, ob Ihre Idee stimmt. Sie haben gesehen, wie die Ausgabe
+der Neuronen in der ersten verborgenen Netzwerkebene verwendet werden kann,
+um die Entscheidungsgrenze zu bilden. Was ist mit diesen anderen Ebenen? Wie unterscheidet sich ein 
+neuronales Netzwerk mit nur einer verborgenen
+Ebene von einem mit vielen? Klicken Sie auf den Link,
+um mit dem Training eines neuronalen Netzwerks zu beginnen
+und dieses Spiral-Dataset zu klassifizieren. Nutzen wir diese Gelegenheit,
+um mehr darüber zu erfahren, wie sich die Batch-Größe
+auf den Gradientenabstieg auswirkt. Wählen Sie "1" als Parameter für die 
+Batch-Größe und experimentieren Sie mit neuronalen Netzarchitekturen, bis
+Sie eine funktionierende gefunden haben. Trainieren Sie nun Ihr Modell
+für ca. 300 Schritte, pausieren Sie und achten Sie auf die Verlustkurve. Wählen Sie nun "10"
+als Parameter für die Batch-Größe und starten Sie das Training neu. Trainieren Sie nun Ihr Modell
+für ca. 300 Schritte, pausieren Sie und achten Sie wieder 
+auf die Verlustkurve. Wiederholen Sie alles noch
+einmal mit der Batch-Größe 30. Was haben Sie beobachtet? Wie können wir diese Beobachtungen 
+mit dem, was wir wissen, verstehen? Sie sollten gesehen haben,
+dass es deutliche Unterschiede in der Glätte der Verlustkurven gibt. Mit zunehmender Batch-Größe nahm auch die Glätte zu. 
+Woran könnte das liegen? Bedenken Sie, wie sich die Batch-Größe
+auf den Gradientenabstieg auswirkt. Wenn die Batch-Größe gering ist, führt das Modell eine
+Aktualisierung seiner Parameter auf der Basis des Verlusts
+aus einem einzelnen Beispiel durch. Beispiele variieren jedoch,
+und darin liegt das Problem. Ist die Batch-Größe jedoch höher, setzt sich das Rauschen 
+einzelner Datenpunkte ab und ein klares Signal wird erkennbar. Sie sollten aus diesen Beobachtungen
+aber nicht schließen, dass Änderungen der Batch-Größe eine einfache
+Wirkung auf die Konvergenzrate haben. Wie bei der Lernrate
+ist die optimale Batch-Größe problemabhängig und kann durch
+Hyperparameter-Tuning gefunden werden. Jetzt sollte das Modell das Training 
+beendet haben und ungefähr so aussehen. Die erste Sache, die genannt werden muss, ist die Beziehung zwischen der ersten 
+verborgenen Ebene und den folgenden. Es sollte offensichtlich sein, 
+dass die Ausgabe der Neuronen in der ersten verborgenen 
+Ebene im Grunde Linien darstellt. Nachfolgende verborgene Ebenen
+haben eine viel kompliziertere Ausgabe. Diese nachfolgenden Ebenen
+bauen auf den vorhergehenden genauso auf wie beim Stapeln der 
+Ausgabe der verborgenen Ebene. Also können Sie sich ein
+neuronales Netzwerk als eine Hierarchie von Merkmalen vorstellen. Diese Idee, Eingaben zu nehmen, die
+dann auf komplexe Weise transformiert und schließlich klassifiziert werden, ist typisch für neuronale Netze
+und stellt eine deutliche Abkehr vom herkömmlichen Ansatz 
+beim maschinellen Lernen dar. Vor neuronalen Netzwerken verbrachte man
+viel mehr Zeit mit Feature Engineering. Jetzt übernimmt das
+Modell selbst einen Teil davon. Ebenen sind praktisch eine Form
+des selbstbezogenen Feature Engineering. Das nächste Wichtige sind einige seltsame
+Dinge, die das Modell gelernt hat. Das Modell scheint 
+das Fehlen oranger Punkte in diesen beiden Regionen als Beweis
+für ihre "Blauheit" zu interpretieren. Wir nennen Fehler, 
+bei denen das Modell Rauschen im Dataset als signifikant
+interpretiert hat, Überanpassung. Diese kann auftreten, wenn
+das Modell mehr Entscheidungskraft hat, als für das Problem erforderlich ist. Modelle mit Überanpassungen 
+verallgemeinern schlecht, was eine schlechte Leistung bei
+neuen Daten bedeutet, weil diese kaum dasselbe Rauschmuster haben, obwohl das zugrunde
+liegende Signal gleich bleiben sollte. Was tun wir dagegen? Das erfahren Sie im nächsten Kurs über Generalisierung und Stichproben.

@@ -1,0 +1,76 @@
+Entscheidungsbaum-Algorithmen wie ID3 und C4.5 wurden in den 80er-
+und 90er-Jahren erfunden. Sie sind für bestimmte Probleme
+besser als lineare Regression und sehr leicht für
+den Menschen interpretierbar. Eine optimale Aufteilung beim Erstellen
+der Bäume ist ein NP-hartes Problem, deshalb wurden
+Greedy-Algorithmen verwendet, um Bäume so nahe wie möglich
+am Optimum zu erstellen. Sie bilden schrittweise
+eine Entscheidungsfläche, die im Grunde dasselbe
+wie eine ReLU-Schicht liefert. Aber mit DNNs oder Deep Neural Networks kombinieren sich die echten Schichten zu
+einer Hyperebene als Entscheidungsebene, die viel leistungsstärker sein kann. Aber ich greife vor, weshalb DNNs
+besser als Entscheidungsbäume sein können. Betrachten wir zuerst Entscheidungsbäume. Entscheidungsbäume gehören
+zu den intuitivsten ML-Algorithmen. Sie können für Klassifikation
+und Regression verwendet werden. Nehmen wir ein Dataset. Wir möchten ermitteln, wie die Daten in
+verschiedene Mengen aufgeteilt werden. Als Erstes sollten wir uns interessante Fragen zur
+Abfrage des Datasets überlegen. Gehen wir einmal ein Beispiel durch. Hier das bekannte Problem, die Opfer und
+Überlebenden der Titanic vorherzusagen. An Bord waren Menschen
+aus allen Gesellschaftsschichten, aller Hintergründe, Lebenssituationen usw. Ich möchte sehen, ob eines dieser
+möglichen Merkmale meine Daten so aufteilen kann, dass ich sehr genau
+voraussagen kann, wer überlebte. Ein erstes mögliches Merkmal ist
+wohl das Geschlecht des Passagiers. Deshalb könnte ich fragen:
+Ist das Geschlecht männlich? Ich teile die Daten also so auf, dass
+männliche Passagiere in einen Bucket und der Rest in einen
+anderen Bucket kommen. 64 % der Daten kamen in den Bucket der männlichen
+Passagiere, 36 % in den anderen. Machen wir erst einmal mit
+der männlichen Teilmenge weiter. Ich könnte auch noch fragen, in welcher
+Klasse die einzelnen Passagiere reisten. Bei unserer Aufteilung haben wir jetzt
+14 % aller Passagiere, die männlich waren und in der 
+niedrigsten Klasse reisten, und 50 % aller Passagiere,
+die männlich waren und in den zwei höheren Klassen reisten. Dieselbe Art der Aufteilung kann im
+weiblichen Zweig fortgesetzt werden. Ich gehe einen Schritt zurück. Verständlich, dass der Algorithmus
+für den Aufbau des Entscheidungsbaums das Geschlecht in zwei Zweige aufteilt,
+da es nur zwei mögliche Werte gibt. Aber weshalb die Aufteilung der Passagierklasse in
+eine Klasse, die nach links und zwei Klassen,
+die nach rechts abzweigen? Beim einfachen Klassifikations- und
+Regressionsbaum oder CART-Algorithmus, zum Beispiel, versucht der
+Algorithmus ein Paar aus Merkmal und Schwellenwert zu wählen, das bei der
+Trennung die reinsten Teilmengen erzeugt. Bei Klassifikationsbäumen wird häufig
+die Gini-Unreinheit als Maß verwendet, aber es gibt auch Entropie. Nachdem eine gute Aufteilung erfolgt ist, wird ein weiteres
+Merkmal/Schwellenwert-Paar gesucht und ebenfalls in Untergruppen aufgeteilt. Dieser Prozess geht rekursiv weiter, bis entweder die festgelegte
+maximale Tiefe des Baums erreicht wird oder keine weiteren Aufteilungen
+die Unreinheit reduzieren können. Bei Regressionsbäumen ist die mittlere
+quadratische Abweichung ein übliches Maß. Hört sich die Entscheidung, die Daten in
+zwei Teilmengen aufzuteilen, bekannt an? Jede Aufteilung ist eigentlich nur
+ein binärer linearer Klassifikator, der eine Hyperebene findet, die entlang einer
+Merkmalsdimension bei einem Wert teilt, der als Schwellenwert
+gewählt wurde, um die Mitglieder der Klasse zu minimieren, die auf die Seite
+der Hyperebene der anderen Klassen fallen. Die rekursive Bildung
+dieser Hyperebenen in einem Baum ist analog zu Schichten von linearen
+Klassifikatorknoten in neuronalen Netzen. Sehr interessant. Jetzt, da wir wissen, wie man
+Entscheidungsbäume baut, führen wir diesen
+Baum ein wenig weiter. Vielleicht hilft ein Altersschwellenwert
+bei der Aufteilung meiner Daten für dieses Klassifikationsproblem. Ich könnte fragen,
+ob das Alter über 17,5 Jahren liegt. Im Zweig der niedrigsten
+Klasse männlicher Passagiere sind jetzt nur noch 13 % der
+Passagiere älter als 18 Jahre und nur 1 % jünger. Beim Blick auf die Klasse der
+verschiedenen Knoten sehen wir, dass nur dieser Knoten im männlichen
+Zweig als "überlebt" klassifiziert wurde. Wir könnten die Tiefe steigern und/oder andere Merkmale wählen,
+um den Baum so lange zu erweitern, bis jeder Knoten nur noch Passagiere hat,
+die überlebt haben oder gestorben sind. Das ist jedoch problematisch,
+da ich eigentlich nur meine Daten speichere und den Baum perfekt daran anpasse. In der Praxis möchten wir
+das auf neue Daten verallgemeinern und ein Modell, das die Lerndaten
+gespeichert hat, bringt wahrscheinlich
+keine sehr gute Leistung. Es gibt Methoden,
+um dies zu regeln, zum Beispiel eine Mindestanzahl Stichproben
+pro Blattknoten festlegen, eine Höchstanzahl von Blattknoten oder eine maximale Merkmalanzahl. Sie können auch den ganzen Baum bilden und dann unnötige Knoten abschneiden. Um Bäume wirklich optimal zu nutzen, sollte man sie meistens
+zu Wäldern kombinieren. Darüber reden wir sehr bald. Woraus besteht in einem
+Entscheidungs-Klassifikationsbaum jede Entscheidung bzw. jeder Knoten? Die richtige Antwort lautet:
+linearer Klassifikator eines Merkmals. Wie gesagt wählt
+der Algorithmus an jedem Knoten im Baum ein Merkmal/Schwellenwert-Paar, um
+die Daten in zwei Teilmengen aufzuteilen, und wiederholt dies rekursiv. Viele Merkmale
+werden schließlich aufgeteilt, sofern eine maximale Tiefe
+von mehr als 1 festgelegt ist, aber nur jeweils ein Merkmal pro Tiefe. Deshalb ist ein linearer
+Klassifikator aller Merkmale falsch, da jeder Knoten
+nur jeweils ein Merkmal aufteilt. Minimierung der MQA und Minimierung der euklidischen
+Distanz sind fast identisch und werden in der Regression 
+anstatt der Klassifikation verwendet.

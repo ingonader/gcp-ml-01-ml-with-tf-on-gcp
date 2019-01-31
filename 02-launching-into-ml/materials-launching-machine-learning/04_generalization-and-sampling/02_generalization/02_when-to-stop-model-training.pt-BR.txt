@@ -1,0 +1,71 @@
+Além de ajudá-lo a escolher entre
+dois modelos de ML diferentes, como a regressão linear
+ou a rede neural, você também pode usar o
+conjunto de dados de validação para ajustar os hiperparâmetros
+de um único modelo. Lembre-se:
+esses hiperparâmetros são definidos
+antes do treinamento. Esse processo de ajuste é realizado
+com treinamentos sucessivos e com a comparação 
+desses treinamentos a um conjunto de dados 
+de validação independente para verificar
+se há sobreajuste. Veja como o conjunto de validação será
+realmente usado durante o treinamento. Conforme visto durante a otimização, é no treinamento do modelo que começamos a calcular 
+pesos aleatórios e derivada, verificar a direção abaixo da curva
+de perda do gradiente descendente, a minimizar a métrica
+de perda e repetir. E, periodicamente, você quer avaliar
+o desempenho de um modelo em relação a dados que ainda não
+foram vistos em treinamento, que é onde usamos o conjunto
+de dados de validação. Depois de um treinamento completo, valide os resultados do modelo no conjunto de dados de validação e veja se os hiperparâmetros estão
+ok ou se precisam de ajuste. E, se não houver uma
+divergência significativa entre as métricas
+de perda do treinamento e as do conjunto de dados de validação, poderemos voltar e otimizar
+mais nossos hiperparâmetros. Quando as métricas de perda do
+modelo estiverem suficientemente otimizadas e forem aprovadas no
+conjunto de validação, lembre-se de começar a ver a divergência e confirmar que o modelo não
+tem sobreajuste. Nesse caso, precisamos parar, pois nosso modelo está ajustado
+e pronto para produção. Você pode usar
+um loop semelhante a esse para saber
+quais parâmetros aplicar nos seus modelos individuais como fizemos com os hiperparâmetros
+definidos antes do treinamento. Por exemplo, as camadas de uma rede ou
+o número de nodes a serem usados. Em suma, você treinará
+com uma configuração, como seis nodes na rede neural, treinará com outra e verá qual tem o melhor desempenho
+no conjunto de dados de validação. No fim, você escolherá uma
+configuração de modelo que represente uma perda menor
+no conjunto de validação e não uma perda menor
+no treinamento. Mais adiante, mostraremos como 
+o Cloud ML Engine pode fazer uma rápida pesquisa bayesiana
+com um espaço de hiperparâmetro para que você não precise testar
+um hiperparâmetro por vez. O Cloud ML Engine pode
+ajudar neste tipo de teste de maneira paralela com uma
+estratégia otimizada diferente. Depois de fazer o treinamento, diga ao seu chefe como
+o seu modelo está funcionado. Qual conjunto de dados você
+usará para a avaliação final? Você pode apenas relatar a perda ou
+o erro no conjunto de dados de validação mesmo que ele esteja
+consistente com o de treinamento? Na verdade, não pode. Por que não? Como você usou o conjunto de
+dados de validação para decidir quando interromper o treinamento, ele não é mais independente. O modelo já o conhece. Então, o que você tem que fazer? Divida os dados em 3 partes: treinamento, validação e um novo silo
+totalmente isolado chamado teste. Depois de treinar e validar seu modelo, grave-o uma vez, apenas uma vez com o conjunto
+de dados de teste independente. Essa é a métrica de perda a ser
+informada ao seu chefe. É a métrica de perda que, no
+conjunto de dados de teste, determina se esse modelo será
+usado ou não na produção. E o que acontece se você falhar
+no conjunto de dados de teste mesmo se passar pela validação? Você não pode retestar o
+mesmo modelo de ML. Será preciso retreinar um novo modelo
+de aprendizado de máquina ou voltar para a prancheta e coletar mais amostras de dados para fornecer
+novos dados ao seu modelo de ML. Embora essa seja uma boa abordagem, há um pequeno problema. Ninguém gosta de perder dados e parece que os dados
+de teste foram perdidos. Eu os usei uma vez e descartei. Será que você não pode usar
+todos os dados no treinamento e ter uma noção
+do desempenho do modelo? Sim, você pode. O equilíbrio entre 
+esses métodos é fazer uma divisão de validação
+de treinamento muitas vezes. Treine e calcule a perda
+no conjunto de dados de validação. Lembre-se de que
+esse conjunto de validação pode ter pontos não usados no primeiro treinamento. Divida os dados de novo. Agora, os dados podem incluir alguns pontos usados na validação original, mas você está fazendo várias iterações. E depois de repetir esse
+processo algumas vezes, você tem uma média das
+métricas de perda de validação. Você terá o desvio padrão das
+perdas de validação, o que ajudará a analisar o crescimento
+e achar o número final. Esse processo é chamado de
+bootstrapping ou validação cruzada. A vantagem é usar todos os dados, mas é preciso treinar muito mais vezes porque você
+está criando mais divisões. No final, você precisa
+ter em mente o seguinte: se você tem muitos dados, use um conjunto de dados
+de teste independente, como uma decisão final. Se você não tem muitos dados, use a validação cruzada. E como você realmente divide esses grandes conjuntos de dados nos silos
+de que tanto falamos? Esse é o assunto da nossa
+próxima lição: amostragem.

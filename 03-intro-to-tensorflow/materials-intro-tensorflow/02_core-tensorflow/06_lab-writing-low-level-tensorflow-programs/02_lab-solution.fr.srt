@@ -1,0 +1,746 @@
+1
+00:00:00,000 --> 00:00:01,855
+Dans cet atelier,
+
+2
+00:00:01,855 --> 00:00:04,570
+tout comme nous l'avons fait
+lors des ateliers précédents,
+
+3
+00:00:04,570 --> 00:00:07,799
+nous accédons à la console GCP,
+
+4
+00:00:07,799 --> 00:00:10,935
+puis à Cloud Shell,
+et nous lançons Datalab.
+
+5
+00:00:10,935 --> 00:00:12,960
+Une fois dans Datalab,
+
+6
+00:00:12,960 --> 00:00:18,195
+je vais accéder au bloc-notes
+pour commencer à utiliser TensorFlow.
+
+7
+00:00:18,195 --> 00:00:20,905
+Donc, la première cellule
+de ce bloc-notes a pour fonction
+
+8
+00:00:20,905 --> 00:00:23,305
+d'importer
+des packages TensorFlow et NumPy
+
+9
+00:00:23,305 --> 00:00:25,415
+avec lesquels nous allons nous amuser.
+
+10
+00:00:25,415 --> 00:00:27,130
+Je peux donc exécuter cette cellule.
+
+11
+00:00:27,130 --> 00:00:32,145
+J'ai un message qui m'indique que j'exécute
+TensorFlow 1.4 dans cette instance.
+
+12
+00:00:32,145 --> 00:00:36,030
+Je vais maintenant vous montrer
+comment ajouter deux tableaux NumPy.
+
+13
+00:00:36,030 --> 00:00:39,800
+J'ai donc un premier tableau NumPy (a),
+et en voici un deuxième (b).
+
+14
+00:00:39,800 --> 00:00:45,650
+Et dans ce cas, j'effectue une addition
+avec np.add(a, b), puis j'affiche c.
+
+15
+00:00:45,650 --> 00:00:49,725
+Étant donné que c'est du code NumPy,
+il est intégralement évalué immédiatement.
+
+16
+00:00:49,725 --> 00:00:53,285
+Donc, lorsque je l'exécute,
+j'obtiens 8, 2, 10.
+
+17
+00:00:53,285 --> 00:00:54,730
+C'est donc ma liste.
+
+18
+00:00:54,730 --> 00:00:57,965
+Avec la syntaxe TensorFlow,
+le code équivalent nécessite deux étapes.
+
+19
+00:00:57,965 --> 00:01:00,315
+Nous allons seulement
+exécuter la première étape.
+
+20
+00:01:00,315 --> 00:01:04,040
+Et tout comme nous avons créé a en NumPy,
+
+21
+00:01:04,040 --> 00:01:08,105
+nous allons créer a avec tf.constant
+à la place de np.array.
+
+22
+00:01:08,105 --> 00:01:12,505
+Je crée donc le tableau de constantes a,
+et le tableau de constantes b.
+
+23
+00:01:12,505 --> 00:01:15,150
+J'appelle tf.add(a, b).
+
+24
+00:01:15,150 --> 00:01:19,770
+Mais cette fois, lorsque j'affiche c,
+vous ne voyez pas la liste 8, 2, 10.
+
+25
+00:01:19,770 --> 00:01:21,365
+Que voyez-vous ?
+
+26
+00:01:21,365 --> 00:01:25,015
+Vous voyez la sortie du débogage du Tensor.
+
+27
+00:01:25,015 --> 00:01:29,140
+Donc, dans ce cas, nous disons que le c
+est un résultat de l'opération add.
+
+28
+00:01:29,140 --> 00:01:32,170
+Il va contenir trois nombres
+qui seront tous des entiers.
+
+29
+00:01:32,170 --> 00:01:35,415
+C'est donc la première étape,
+qui consiste à créer le graphe.
+
+30
+00:01:35,415 --> 00:01:40,750
+Je vais maintenant essayer quelque chose
+en remplaçant par exemple 5 par 5.0.
+
+31
+00:01:40,750 --> 00:01:45,895
+A ce stade, a n'est plus
+un tableau de nombres entiers,
+
+32
+00:01:45,895 --> 00:01:49,660
+mais un tableau de nombres
+à virgule flottante.
+
+33
+00:01:49,660 --> 00:01:53,080
+Donc je continue, et je n'affiche
+pas seulement c, mais également a.
+
+34
+00:01:53,080 --> 00:01:54,745
+Vous voyez où je veux en venir.
+
+35
+00:01:54,745 --> 00:01:56,839
+Et maintenant, lorsque je lance l'exécution,
+
+36
+00:01:56,839 --> 00:02:00,180
+vous voyez que a est de type float
+(nombres à virgule flottante),
+
+37
+00:02:00,180 --> 00:02:02,935
+et que nous ne pouvons plus
+procéder à l'addition
+
+38
+00:02:02,935 --> 00:02:06,950
+parce que b est de type int
+(nombres entiers).
+
+39
+00:02:06,950 --> 00:02:08,719
+C'est pour cela qu'il y a une erreur.
+
+40
+00:02:08,719 --> 00:02:12,290
+Mais je peux également modifier ça
+pour avoir un nombre à virgule flottante.
+
+41
+00:02:12,290 --> 00:02:17,930
+Et lorsque j'exécute le code,
+je vois que c est de type float.
+
+42
+00:02:17,930 --> 00:02:19,920
+Retenez donc bien cela.
+
+43
+00:02:19,920 --> 00:02:23,160
+Je vais maintenant remettre un entier
+
+44
+00:02:23,160 --> 00:02:25,490
+pour que nous puissions
+passer à l'étape suivante.
+
+45
+00:02:25,490 --> 00:02:28,280
+Donc, dans ce cas, j'ai a et c,
+
+46
+00:02:28,280 --> 00:02:32,180
+et l'étape suivante de mon graphe
+a pour fonction d'évaluer la valeur de c,
+
+47
+00:02:32,180 --> 00:02:33,610
+et de nous donner les nombres.
+
+48
+00:02:33,610 --> 00:02:35,142
+Souvenez-vous : créer le graphe,
+
+49
+00:02:35,142 --> 00:02:36,275
+puis l'exécuter.
+
+50
+00:02:36,275 --> 00:02:39,462
+Donc, dans ce cas,
+je vais exécuter sess.run(c),
+
+51
+00:02:39,462 --> 00:02:40,800
+puis afficher le résultat.
+
+52
+00:02:40,800 --> 00:02:43,650
+Le résultat sera un tableau
+tout à fait normal.
+
+53
+00:02:43,650 --> 00:02:44,370
+Si je continue,
+
+54
+00:02:44,370 --> 00:02:46,450
+le résultat affiché est 8, 2 et 10.
+
+55
+00:02:46,450 --> 00:02:49,895
+Retenez donc que TensorFlow
+effectue une évaluation paresseuse.
+
+56
+00:02:49,895 --> 00:02:52,035
+La première étape consiste à créer le graphe,
+
+57
+00:02:52,035 --> 00:02:53,555
+et la deuxième à l'exécuter.
+
+58
+00:02:53,555 --> 00:02:54,565
+Dans ce cas,
+
+59
+00:02:54,565 --> 00:02:57,475
+tout dans mon graphe était codé en dur.
+
+60
+00:02:57,475 --> 00:03:01,800
+Normalement toutefois,
+vous aurez des espaces réservés
+
+61
+00:03:01,800 --> 00:03:05,135
+qui vous permettront de récupérer
+des informations lors de l'exécution.
+
+62
+00:03:05,135 --> 00:03:08,000
+Donc, dans mon cas, je crée a
+
+63
+00:03:08,000 --> 00:03:11,700
+afin que ce soit un espace réservé
+destiné à contenir une liste,
+
+64
+00:03:11,700 --> 00:03:14,940
+et b sera aussi un autre espace réservé
+destiné à contenir une liste.
+
+65
+00:03:14,940 --> 00:03:16,240
+J'additionne a et b.
+
+66
+00:03:16,240 --> 00:03:21,000
+Je fais en sorte que les nombres 3, 4 et 5
+soient transmis lors de l'exécution.
+
+67
+00:03:21,000 --> 00:03:22,845
+Lorsque j'exécute la session,
+
+68
+00:03:22,845 --> 00:03:28,440
+je transmets 3, 4 et 5 pour a,
+et -1, 2 et 3 pour b.
+
+69
+00:03:28,440 --> 00:03:30,580
+Et maintenant, lorsque j'affiche le résultat,
+
+70
+00:03:30,580 --> 00:03:33,815
+j'obtiens 2, 6 et 8 parce que
+3 moins 1 donne 2.
+
+71
+00:03:33,815 --> 00:03:34,630
+Mais dans ce cas,
+
+72
+00:03:34,630 --> 00:03:39,050
+souvenez-vous que
+ces trois lignes (a, b et c)
+
+73
+00:03:39,050 --> 00:03:40,530
+nous servent à créer le graphe.
+
+74
+00:03:40,530 --> 00:03:43,340
+Le reste du code sert à l'exécuter.
+
+75
+00:03:43,340 --> 00:03:46,495
+Et lors de l'exécution, des valeurs
+sont chargées dans le graphe.
+
+76
+00:03:46,495 --> 00:03:49,700
+Nous pouvons maintenant
+combiner ces deux concepts
+
+77
+00:03:49,700 --> 00:03:52,545
+afin de faire quelque chose d'utile.
+
+78
+00:03:52,545 --> 00:03:57,710
+Nous allons donc partir d'un triangle
+en indiquant les longueurs de ses côtés,
+
+79
+00:03:57,710 --> 00:04:00,480
+et demander au programme
+d'en calculer l'aire.
+
+80
+00:04:00,480 --> 00:04:02,672
+Il existe une formule
+appelée formule de Héron,
+
+81
+00:04:02,672 --> 00:04:04,625
+que vous pouvez voir ici.
+
+82
+00:04:04,625 --> 00:04:06,940
+Nous allons la mettre en œuvre
+dans TensorFlow.
+
+83
+00:04:06,940 --> 00:04:07,705
+Encore une fois,
+
+84
+00:04:07,705 --> 00:04:10,370
+TF n'est pas seulement conçu
+pour les réseaux de neurones
+
+85
+00:04:10,370 --> 00:04:12,415
+mais aussi pour la programmation numérique,
+
+86
+00:04:12,415 --> 00:04:15,400
+et peut donc servir
+à calculer l'aire d'un triangle.
+
+87
+00:04:15,400 --> 00:04:17,355
+Alors, j'ai ma méthode,
+
+88
+00:04:17,355 --> 00:04:21,470
+ma fonction permettant de calculer l'aire
+à partir des longueurs des côtés.
+
+89
+00:04:21,470 --> 00:04:22,810
+Vous devez toutefois retenir
+
+90
+00:04:22,810 --> 00:04:26,830
+que vous n'allez pas utiliser TensorFlow
+pour calculer l'aire d'un seul triangle,
+
+91
+00:04:26,830 --> 00:04:32,345
+mais afin d'effectuer ce calcul
+pour de très nombreux triangles.
+
+92
+00:04:32,345 --> 00:04:33,492
+Nous allons donc décider
+
+93
+00:04:33,492 --> 00:04:37,380
+que nous n'allons pas avoir recours
+à un seul ensemble de trois nombres,
+
+94
+00:04:37,380 --> 00:04:41,700
+mais à un très grand nombre
+d'ensembles de trois nombres.
+
+95
+00:04:41,700 --> 00:04:44,970
+Nous avons donc plusieurs triangles
+
+96
+00:04:44,970 --> 00:04:48,070
+pour lesquels nous voulons récupérer
+les longueurs des trois côtés
+
+97
+00:04:48,070 --> 00:04:49,930
+que nous allons stocker dans a, b et c.
+
+98
+00:04:49,930 --> 00:04:52,640
+Avec a, nous allons scinder sides
+(qui contient les côtés)
+
+99
+00:04:52,640 --> 00:04:54,170
+en récupérant toutes les lignes,
+
+100
+00:04:54,170 --> 00:04:57,220
+dont le nombre indique la taille
+du lot (le nombre de triangles),
+
+101
+00:04:57,220 --> 00:05:00,270
+puis nous ferons de même avec b et c
+(puisqu'il y a trois côtés).
+
+102
+00:05:00,270 --> 00:05:02,240
+La première colonne sera stockée dans a,
+
+103
+00:05:02,240 --> 00:05:04,080
+la deuxième dans b,
+
+104
+00:05:04,080 --> 00:05:06,050
+et la troisième dans c.
+
+105
+00:05:06,050 --> 00:05:09,510
+Donc, vous voyez ici le code pour
+la première colonne qui correspond à a,
+
+106
+00:05:09,510 --> 00:05:11,230
+pour la deuxième qui correspond à b,
+
+107
+00:05:11,230 --> 00:05:13,140
+et pour la troisième qui correspond à c.
+
+108
+00:05:13,140 --> 00:05:19,905
+Nous allons donc ici
+transmettre une matrice 2, 3
+
+109
+00:05:19,905 --> 00:05:21,380
+correspondant à deux triangles.
+
+110
+00:05:21,380 --> 00:05:23,345
+Chaque triangle a trois côtés.
+
+111
+00:05:23,345 --> 00:05:27,380
+Le premier ensemble de côtés
+comprend 5 et 2.3. C'est le a.
+
+112
+00:05:27,380 --> 00:05:30,315
+Il y a ensuite 3 et 4.1. C'est le b.
+
+113
+00:05:30,315 --> 00:05:34,005
+Et nous avons enfin 7.1 et 4.8. C'est le c.
+
+114
+00:05:34,005 --> 00:05:36,120
+Nous avons donc maintenant a, b et c.
+
+115
+00:05:36,120 --> 00:05:37,930
+Nous calculons la moitié du périmètre,
+
+116
+00:05:37,930 --> 00:05:40,310
+soit le total de a, b et c
+que nous divisons par 2,
+
+117
+00:05:40,310 --> 00:05:43,680
+puis nous utilisons cette formule
+pour calculer le carré de l'aire.
+
+118
+00:05:43,680 --> 00:05:47,115
+Nous calculons ensuite la racine carrée
+du résultat, que nous retournons.
+
+119
+00:05:47,115 --> 00:05:50,220
+Tout cela fait partie
+de la création du graphe.
+
+120
+00:05:50,220 --> 00:05:56,180
+Lorsque nous voulons l'exécuter,
+nous pouvons utiliser sess.run.
+
+121
+00:05:56,180 --> 00:05:56,945
+Mais cette fois,
+
+122
+00:05:56,945 --> 00:06:02,340
+je veux calculer l'aire des variables
+(ou l'aire du Tensor TensorFlow),
+
+123
+00:06:02,340 --> 00:06:05,340
+et la façon de le faire
+consiste à appeler compute_area
+
+124
+00:06:05,340 --> 00:06:07,830
+en transmettant ces valeurs.
+
+125
+00:06:07,830 --> 00:06:12,470
+Donc, si maintenant j'exécute ça,
+je vais obtenir l'aire de deux triangles :
+
+126
+00:06:12,470 --> 00:06:15,410
+deux nombres, pour deux triangles.
+
+127
+00:06:15,410 --> 00:06:18,745
+J'ai ici codé ces nombres en dur,
+mais vous pouvez préférer
+
+128
+00:06:18,745 --> 00:06:21,170
+que les valeurs soient
+chargées pendant l'exécution.
+
+129
+00:06:21,170 --> 00:06:23,605
+C'est ce que vous montre
+cette dernière partie.
+
+130
+00:06:23,605 --> 00:06:26,300
+Nous utilisons le même compute_area,
+
+131
+00:06:26,300 --> 00:06:30,290
+mais les longueurs des côtés
+sont maintenant chargées dans le graphe.
+
+132
+00:06:30,290 --> 00:06:33,150
+Donc, sides est un espace réservé
+(placeholder dans le code).
+
+133
+00:06:33,150 --> 00:06:34,880
+Nous n'utilisons plus tf.constant.
+
+134
+00:06:34,880 --> 00:06:38,555
+Et lorsque nous lançons l'exécution
+et que nous voulons évaluer l'aire,
+
+135
+00:06:38,555 --> 00:06:41,120
+nous transmettons une paire clé/valeur.
+
+136
+00:06:41,120 --> 00:06:44,565
+La clé est le nom du Tensor (sides),
+
+137
+00:06:44,565 --> 00:06:47,542
+et la valeur est maintenant le tableau 2D
+
+138
+00:06:47,542 --> 00:06:50,460
+parce que nous transmettons
+un tableau de triangles.
+
+139
+00:06:50,460 --> 00:06:55,090
+Nous pouvons donc maintenant exécuter ça,
+et nous obtenons le même résultat.
+
+140
+00:06:55,090 --> 00:06:57,935
+La dernière partie du bloc-notes
+vous montre
+
+141
+00:06:57,935 --> 00:07:00,105
+comment éviter
+cette procédure en deux étapes
+
+142
+00:07:00,105 --> 00:07:01,872
+(créer le graphe, exécuter le graphe)
+
+143
+00:07:01,872 --> 00:07:03,470
+à l'aide de tf.eager.
+
+144
+00:07:03,470 --> 00:07:09,450
+Nous appelons enable_eager_execution,
+
+145
+00:07:09,450 --> 00:07:15,460
+ce qui nous permet de faire en sorte
+qu'il n'y ait plus deux étapes.
+
+146
+00:07:15,460 --> 00:07:18,780
+Désormais, lors du processus
+de création du graphe,
+
+147
+00:07:18,780 --> 00:07:22,825
+toutes les choses que nous faisons
+font l'objet d'une évaluation immédiate.
+
+148
+00:07:22,825 --> 00:07:25,530
+Donc, dans ce cas, je crée compute_area.
+
+149
+00:07:25,530 --> 00:07:27,430
+Je procède exactement de la même façon,
+
+150
+00:07:27,430 --> 00:07:29,342
+puis j'indique area = compute_area,
+
+151
+00:07:29,342 --> 00:07:30,565
+et print area.
+
+152
+00:07:30,565 --> 00:07:33,280
+Si je n'étais pas en mode
+d'exécution "eager" (dynamique)…
+
+153
+00:07:33,280 --> 00:07:37,050
+Donc, je mets ça en commentaire pour que
+vous puissiez voir ce que je veux dire.
+
+154
+00:07:37,050 --> 00:07:38,510
+Sans le mode "eager",
+
+155
+00:07:38,510 --> 00:07:40,210
+si j'exécute print area,
+
+156
+00:07:40,210 --> 00:07:43,880
+je vais seulement obtenir
+la sortie du débogage du Tensor.
+
+157
+00:07:43,880 --> 00:07:46,230
+Voici la sortie du débogage du Tensor.
+
+158
+00:07:46,230 --> 00:07:48,610
+Je n'obtiens pas les valeurs,
+
+159
+00:07:48,610 --> 00:07:52,717
+mais seulement des informations
+sur ce que contiendra la réponse
+
+160
+00:07:52,717 --> 00:07:53,875
+pour deux triangles.
+
+161
+00:07:53,875 --> 00:08:02,010
+Si j'active maintenant le mode "eager"
+et que je lance l'exécution,
+
+162
+00:08:02,010 --> 00:08:04,475
+la sortie contient les valeurs.
+
+163
+00:08:04,475 --> 00:08:06,370
+J'appelle toujours print area.
+
+164
+00:08:06,370 --> 00:08:08,975
+Je n'ai pas appelé session.run print area.
+
+165
+00:08:08,975 --> 00:08:12,020
+Mais cette fois, j'obtiens la réponse.

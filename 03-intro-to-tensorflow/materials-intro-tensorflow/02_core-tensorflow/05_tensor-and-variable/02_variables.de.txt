@@ -1,0 +1,63 @@
+Eine Variable ist ein Tensor,
+dessen Wert initalisiert ist. Der Wert wird dann geändert,
+wenn ein Programm ausgeführt wird. Betrachten wir dieses Beispiel: Ich habe hier die Funktion forward_pass. Damit werden die Parameter w und x multipliziert. Es ist eine Matrizenmultiplikation, da dies Tensoren sind. w und x werden multipliziert. In meiner Funktion train_loop erstelle ich den Tensor w. w ist jedoch keine Konstante wie die Tensoren,
+die wir bislang besprochen haben. w ist eine Variable. Sein Name ist weights. Seine Gestalt ist 1,2. Das bedeutet, er umfasst
+eine Zeile und zwei Spalten. Es ist eine 1x2-Matrix. Wenn w initialisiert wird...
+Wir machen das jetzt nicht, da TensorFlow ein Framework
+mit Lazy Evaluation ist. Wir erstellen nur den Graphen
+und führen ihn noch nicht aus. Wenn w also initialisiert wird, erfolgt dies über die Funktion
+truncated_normal_initializer. Dies ist eine häufig
+verwendete Initialisierungsstrategie für neuronale Netze
+in TensorFlow-Programmen. Eine Variable wird dabei
+mit Zufallswerten initialisiert, welche jedoch nicht
+gleichmäßig verteilt sind. Stattdessen gibt es
+eine Gaußsche Normalverteilung, mit Erwartungswert 0 und Varianz 1. Die Gaußsche Normalverteilung ist jedoch sehr endlastig
+und kann zu extremen Ausreißern führen. Sie ist unwahrscheinlich,
+jedoch nicht unmöglich. Mit truncated_normal wird das Ergebnis bei einem
+Vielfachen von Sigma gekürzt. Zum Schluss legen wir fest,
+dass die Variable w trainiert werden kann. Sie kann also während
+des Trainings geändert werden. Der Sinn einer Variable ist natürlich, dass man sie ändern kann,
+daher sind Variablen meist trainierbar. Jedoch nicht immer. Wir sprechen darüber
+bei der Reduktion der Modellgröße, und wenn es um das Transferlernen geht. Es kann also Situationen geben, wo es hilfreich ist,
+einen Graphen einzufrieren, damit die Variablen sich nicht ändern. Das erreichen wir
+mit diesem Booleschen Flag. Beachten Sie, dass ich tf.get_variable
+zum Erstellen von w verwende. Es gibt auch TensorFlow-Code, der Variablen direkt
+mit der Funktion tf.variable erstellt. Es wird nicht empfohlen,
+diesen Konstruktor zu verwenden. Verwenden Sie lieber tf.get_variable. In Lektion 9 werden wir sehen, dass es nützlich sein kann,
+wenn man Variablen wiederverwenden oder neu erstellen kann, abhängig von der Situation. Mit tf.get_variable ist dies möglich. Meine Empfehlung wäre daher, regulär tf.get_variable zu verwenden. Wir führen jetzt forward_pass fünfmal aus und speichern bei jeder Iteration
+das Ergebnis der Matrizenmultiplikation. Nach dieser Produktberechnung
+ändern wir dann die Gewichtung. Hier fügen wir 0,1 hinzu. Das ist wie ein Gradientenupdate. In der Praxis wählen wir
+beim Gradientenupdate natürlich aus, welche Gewichte wir ändern und wie wir sie ändern. Da es hier nur um eine Demonstration geht, füge ich den Gewichten immer 0,1 hinzu. Jetzt rufen wir in der Sitzung
+train_loop auf und stellen x bereit. x ist eine 2x3-Matrix. Im Vorwärtsschritt
+multiplizieren wir also w mit x. w ist eine 1x2-Matrix. Die Multiplikation von 1x2-Matrix
+und 2x3-Matrix ergibt eine 1x3-Matrix. Der Graph ist damit fertig, wir müssen aber noch
+die Variablen initialisieren. Das ist jedoch die Run-Phase. In der Regel initialisieren wir
+alle Variablen im Graphen gleichzeitig, und zwar mit global_variables_initializer. Wir betrachten nun den Produktwert
+nach jedem einzelnen Schritt der Schleife, und uns fällt auf, dass die 1x3-Matrix
+erwartungsgemäß jedes Mal anders ist. Fassen wir nun das Gelernte zusammen: Erstens, Sie erstellen
+eine Variable mit get_variable. Ich habe vorhin eine Codezeile
+übersprungen, und zwar scope. Wenn Sie eine Variable erstellen, können Sie den Geltungsbereich festlegen. Hier lege ich fest, dass die Variable
+jedes Mal wiederverwendet werden soll. Es soll nicht jedes Mal
+eine neue Variable erstellt werden. Ich rufe train_loop nur einmal auf, darum ist es hier egal. Würde ich train_loop erneut aufrufen, würden die Gewichte dort fortfahren, wo sie aufgehört haben. Wir erstellen keine neue Variable
+und verwenden sie noch einmal. Zweitens haben Sie gelernt, dass Sie beim Erstellen
+einer Variable festlegen müssen, wie die Variable
+initialisiert werden soll. Beim Training neuronaler Netze sind dies meist Zufallswerte mit
+abgeschnittener Normalverteilung. Drittens: Sie verwenden die Variable wie jeden anderen Tensor,
+wenn Sie den Graphen erstellen. Viertens: In Ihrer Sitzung müssen Sie die Variable initialisieren. In der Regel initialisieren Sie
+alle Variablen gleichzeitig, und zwar mit global_variables_initializer. Nachdem die Variablen initialisiert sind, und das ist Punkt Nummer 5, können Sie jeden Tensor
+nach Wunsch bewerten. Im folgenden Beispiel rufen wir
+die Trainingsschleife mit x auf. x ist jedoch eine Konstante. Wie realistisch ist das? Würden Sie Inputwerte
+in Ihrem Programm hartcodieren? Mit Platzhaltern können Sie
+Werte in den Graphen einspeisen. Sie können Werte aus einer Textdatei in eine Pythonliste einlesen und diese Liste dann
+in den TensorFlow-Graphen eingeben. a ist hier also
+ein Platzhalter für einen Skalar, b ist gleich a multipliziert mit 4. Wenn Sie a drucken, erhalten Sie
+den Debug-Output eines Tensors. Sie lernen später,
+dass dieser spezielle Tensor ein Platzhalter ist,
+der Gleitkommazahlen erfordert. Wenn Sie jetzt b bewerten möchten, können Sie nicht einfach sagen: session.run(b). Sie müssen Werte
+für die Platzhalter eingeben, von denen b abhängig ist. Im vorliegenden Fall
+müssen Sie eine Liste bereitstellen oder ein NumPy-Array
+mit Zahlen für den Platzhalter a. Dafür verwenden Sie
+feed_dict, ein Wörterbuch. Ein Wörterbuch umfasst
+Schlüssel/Wert-Paare. Der Schlüssel ist ein Platzhalter, in diesem Fall a. Der Wert ist eine Liste
+oder ein NumPy-Array. In diesem Fall ist es 1,2,3. Das geben wir also ein. Wenn b bewertet wird, erhalten wir den Wert
+für a multipliziert mit 4, also 4,8,12.

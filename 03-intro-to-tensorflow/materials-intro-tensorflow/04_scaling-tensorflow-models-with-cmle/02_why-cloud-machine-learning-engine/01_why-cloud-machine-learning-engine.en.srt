@@ -1,0 +1,551 @@
+1
+00:00:00,000 --> 00:00:03,390
+Now this diagram, you've already seen before.
+
+2
+00:00:03,390 --> 00:00:05,970
+Recall the TensorFlow can run on different hardware.
+
+3
+00:00:05,970 --> 00:00:09,090
+You could program it on a low-level C++ API,
+
+4
+00:00:09,090 --> 00:00:13,065
+but more likely you'll use the Python API as we practice in this course.
+
+5
+00:00:13,065 --> 00:00:14,790
+And you've already started to see
+
+6
+00:00:14,790 --> 00:00:17,760
+the different abstraction layers for distributed training.
+
+7
+00:00:17,760 --> 00:00:21,845
+But you actually run distributed training at scale in production.
+
+8
+00:00:21,845 --> 00:00:25,630
+For that, let's introduce Cloud Machine Learning Engine.
+
+9
+00:00:25,630 --> 00:00:27,720
+When we first approach ML,
+
+10
+00:00:27,720 --> 00:00:32,490
+we typically start but do not finish with small data sets that fit in memory.
+
+11
+00:00:32,490 --> 00:00:34,065
+With these warm-up data sets,
+
+12
+00:00:34,065 --> 00:00:36,510
+pretty much any ML framework will suffice.
+
+13
+00:00:36,510 --> 00:00:39,389
+Our python and many other languages,
+
+14
+00:00:39,389 --> 00:00:41,895
+all have statistical packages that typically
+
+15
+00:00:41,895 --> 00:00:45,630
+need three or four lines of code to get you up and running.
+
+16
+00:00:45,630 --> 00:00:48,810
+TensorFlow estimator also has an API that can decide
+
+17
+00:00:48,810 --> 00:00:52,110
+learn which is easy and works great on the small data sets.
+
+18
+00:00:52,110 --> 00:00:55,994
+But of course, what we really want is to have a production,
+
+19
+00:00:55,994 --> 00:00:57,960
+enterprise size, data sets.
+
+20
+00:00:57,960 --> 00:01:00,665
+When so big, they cannot fit into memory.
+
+21
+00:01:00,665 --> 00:01:04,545
+At this point, we'll need to scale up to more sophisticated packages.
+
+22
+00:01:04,545 --> 00:01:06,930
+Now that our data set is too big to fit into memory,
+
+23
+00:01:06,930 --> 00:01:10,340
+we'll have to iterate through perhaps many time during trainings.
+
+24
+00:01:10,340 --> 00:01:12,780
+While it's possible that with a single machine,
+
+25
+00:01:12,780 --> 00:01:14,265
+it's far from ideal.
+
+26
+00:01:14,265 --> 00:01:18,570
+Can you imagine having to wait weeks just to see if training converged or not?
+
+27
+00:01:18,570 --> 00:01:22,155
+We needed to distribute training over many machines.
+
+28
+00:01:22,155 --> 00:01:26,520
+This is not as simple as mass produce where things are embarrassingly parallel.
+
+29
+00:01:26,520 --> 00:01:29,114
+Algorithms, like grading descent optimization,
+
+30
+00:01:29,114 --> 00:01:30,180
+are not so easy,
+
+31
+00:01:30,180 --> 00:01:34,725
+we'll need help from so-called parameter servers to assist a pool of training workers.
+
+32
+00:01:34,725 --> 00:01:38,185
+This parameters servers form a type of shared memory,
+
+33
+00:01:38,185 --> 00:01:40,890
+and let each trainer learn from all the others.
+
+34
+00:01:40,890 --> 00:01:44,010
+It's tempting to try to escape distributed training by
+
+35
+00:01:44,010 --> 00:01:47,340
+using a single giant machine with that of GPUs.
+
+36
+00:01:47,340 --> 00:01:50,670
+This, however, is ultimately shortsighted for most because
+
+37
+00:01:50,670 --> 00:01:54,450
+data sets often grow faster than any single machine's capabilities.
+
+38
+00:01:54,450 --> 00:01:57,765
+Scaling out, not up, solves us.
+
+39
+00:01:57,765 --> 00:02:00,870
+Another common shortcut people take is to try to sample a data.
+
+40
+00:02:00,870 --> 00:02:04,875
+So, it's small enough to do ML on the hardware they happen to have.
+
+41
+00:02:04,875 --> 00:02:08,265
+This leaves substantial performance games on the table.
+
+42
+00:02:08,265 --> 00:02:10,230
+Using all the available data,
+
+43
+00:02:10,230 --> 00:02:13,170
+and devising a plan to collect 10x more than that,
+
+44
+00:02:13,170 --> 00:02:16,350
+is often the difference between ML that performs magically,
+
+45
+00:02:16,350 --> 00:02:17,930
+and ML that doesn't.
+
+46
+00:02:17,930 --> 00:02:20,910
+Oftentimes you are building machine learning models in a domain
+
+47
+00:02:20,910 --> 00:02:23,745
+where human insights can add performance beyond training,
+
+48
+00:02:23,745 --> 00:02:25,425
+just on the raw data.
+
+49
+00:02:25,425 --> 00:02:28,650
+We typically bring this insight namely when experts already
+
+50
+00:02:28,650 --> 00:02:31,570
+know about the problem in the form of new features.
+
+51
+00:02:31,570 --> 00:02:35,175
+These features are added right after we've preprocessed the raw data.
+
+52
+00:02:35,175 --> 00:02:37,170
+You know, when we do things like scaling it,
+
+53
+00:02:37,170 --> 00:02:39,165
+and coding it, and so on.
+
+54
+00:02:39,165 --> 00:02:41,280
+And again, for the size of data sets,
+
+55
+00:02:41,280 --> 00:02:42,870
+we are really excited to work with,
+
+56
+00:02:42,870 --> 00:02:46,185
+these two things that need to be distributed and done on cloud.
+
+57
+00:02:46,185 --> 00:02:49,320
+When you do ML, you often have to pick a number of things,
+
+58
+00:02:49,320 --> 00:02:51,795
+somewhat arbitrarily, the number of nodes,
+
+59
+00:02:51,795 --> 00:02:55,050
+the embedding, the stride size of a convolutional layer.
+
+60
+00:02:55,050 --> 00:02:56,790
+As your models get more complex,
+
+61
+00:02:56,790 --> 00:02:59,790
+you're going to start to wonder whether you picked the right values,
+
+62
+00:02:59,790 --> 00:03:02,010
+either manually or automatically,
+
+63
+00:03:02,010 --> 00:03:05,130
+you'll have to do some kind of search on the hyperparameter space,
+
+64
+00:03:05,130 --> 00:03:08,205
+to see if there are better choices you could have made.
+
+65
+00:03:08,205 --> 00:03:12,200
+How many layers or how many nodes are some obvious hyperparameters.
+
+66
+00:03:12,200 --> 00:03:13,770
+But as you'll see in this course,
+
+67
+00:03:13,770 --> 00:03:16,065
+it's good to take the preprocessing nobs,
+
+68
+00:03:16,065 --> 00:03:17,535
+such as the number of buckets,
+
+69
+00:03:17,535 --> 00:03:19,790
+and treat them as hyperparameters too.
+
+70
+00:03:19,790 --> 00:03:22,440
+So far, we've just talked about training.
+
+71
+00:03:22,440 --> 00:03:25,830
+But what good is a trained model if you cannot use it for inference?
+
+72
+00:03:25,830 --> 00:03:29,550
+We don't want to and often cannot directly embed
+
+73
+00:03:29,550 --> 00:03:32,910
+our ML model into the application that needs the predicted features.
+
+74
+00:03:32,910 --> 00:03:37,290
+An excellent way to handle this is to wrap the model its own micro service,
+
+75
+00:03:37,290 --> 00:03:39,810
+and have other micro-services communicate with it,
+
+76
+00:03:39,810 --> 00:03:41,445
+just like any other web app.
+
+77
+00:03:41,445 --> 00:03:45,105
+Now you also are in this great situation where you can update your model,
+
+78
+00:03:45,105 --> 00:03:49,060
+run AP tests, all without changing your core application logic.
+
+79
+00:03:49,060 --> 00:03:50,670
+Just change the micro-servers.
+
+80
+00:03:50,670 --> 00:03:54,915
+Bu how do you provision the right amount of hardware for this model serving?
+
+81
+00:03:54,915 --> 00:03:59,460
+Great systems autoscale to provide the number of machines you need, when you need them.
+
+82
+00:03:59,460 --> 00:04:02,070
+On cloud, we can scale to zero machines
+
+83
+00:04:02,070 --> 00:04:05,250
+or as many as you need to handle beaucoup queries per second.
+
+84
+00:04:05,250 --> 00:04:07,770
+Let me try to spare you some future heartache.
+
+85
+00:04:07,770 --> 00:04:11,540
+Remember how we talked about preprocessing your examples before training?
+
+86
+00:04:11,540 --> 00:04:13,065
+Well, watch out.
+
+87
+00:04:13,065 --> 00:04:17,835
+Because you have to make sure that the same preprocessing happens at prediction time too.
+
+88
+00:04:17,835 --> 00:04:20,760
+Beyond just preprocessing, there are a variety of ways
+
+89
+00:04:20,760 --> 00:04:24,060
+your trained model could be a bit different than your prediction one.
+
+90
+00:04:24,060 --> 00:04:28,680
+But using a standard like Cloud Machine Learning Engine helps remove these issues.
+
+91
+00:04:28,680 --> 00:04:30,660
+Well it's rarely talked about,
+
+92
+00:04:30,660 --> 00:04:32,790
+your prediction inputs will commonly be
+
+93
+00:04:32,790 --> 00:04:35,700
+systematically different than the ones that training.
+
+94
+00:04:35,700 --> 00:04:38,040
+In subtle and hard to detect ways.
+
+95
+00:04:38,040 --> 00:04:40,430
+Maybe the average of some column has shifted,
+
+96
+00:04:40,430 --> 00:04:42,330
+or the variance has grown over time.
+
+97
+00:04:42,330 --> 00:04:44,100
+This is called the training settings skills,
+
+98
+00:04:44,100 --> 00:04:48,690
+and detecting it requires continued data collection and re-examination.
+
+99
+00:04:48,690 --> 00:04:51,540
+Using bare TensorFlow yourself can be a pain.
+
+100
+00:04:51,540 --> 00:04:52,965
+You have to install drivers,
+
+101
+00:04:52,965 --> 00:04:54,165
+get the right machines,
+
+102
+00:04:54,165 --> 00:04:57,645
+keep track of things like the preprocessing order of operations,
+
+103
+00:04:57,645 --> 00:05:00,015
+scaling parameters, you name it.
+
+104
+00:05:00,015 --> 00:05:01,965
+But Google Cloud can help here.
+
+105
+00:05:01,965 --> 00:05:04,155
+We offer several Big Data services.
+
+106
+00:05:04,155 --> 00:05:07,620
+But today I want to focus in on Cloud Machine Learning Engine,
+
+107
+00:05:07,620 --> 00:05:09,345
+or CMLE for short.
+
+108
+00:05:09,345 --> 00:05:12,150
+CMLE gets you the machines you need when you need them.
+
+109
+00:05:12,150 --> 00:05:14,060
+Simplifies bookkeeping and ensures that
+
+110
+00:05:14,060 --> 00:05:17,405
+the trained model is what you actually run at prediction time.
+
+111
+00:05:17,405 --> 00:05:22,385
+It's a highly scalable service and will make distributed training and serving easy.
+
+112
+00:05:22,385 --> 00:05:25,715
+Cloud Machine Learning Engine will help distribute preprocessing,
+
+113
+00:05:25,715 --> 00:05:27,030
+bring up perimeter servers,
+
+114
+00:05:27,030 --> 00:05:28,980
+and even hyperparameter tune.
+
+115
+00:05:28,980 --> 00:05:31,510
+For predictions, the ML model is accessible via
+
+116
+00:05:31,510 --> 00:05:35,610
+a rest API and includes all the preprocessing feature creation that you do.
+
+117
+00:05:35,610 --> 00:05:38,880
+So the client code can simply provide the raw input variables.
+
+118
+00:05:38,880 --> 00:05:41,320
+Exactly what you collected out of the log files,
+
+119
+00:05:41,320 --> 00:05:44,485
+sensor, database, and get back a prediction.
+
+120
+00:05:44,485 --> 00:05:48,465
+CMLE will also scale your service with as many machines as you need
+
+121
+00:05:48,465 --> 00:05:52,470
+to reach a higher number of queries per second. And this is important.
+
+122
+00:05:52,470 --> 00:05:56,955
+You need high-quality execution both at training and prediction time.
+
+123
+00:05:56,955 --> 00:06:00,270
+Computation of TensorFlow model is relatively cheap.
+
+124
+00:06:00,270 --> 00:06:05,125
+Value comes from getting lots of predictions out of your ML model.
+
+125
+00:06:05,125 --> 00:06:09,285
+Notebooks like Google Cloud's data lab or Kaggle Kernels
+
+126
+00:06:09,285 --> 00:06:13,470
+are a great way to get started and underlay quickly with developing your model.
+
+127
+00:06:13,470 --> 00:06:16,140
+Notebooks let you interactively explore the data,
+
+128
+00:06:16,140 --> 00:06:17,955
+to find and probe new features,
+
+129
+00:06:17,955 --> 00:06:20,145
+even large training in evolve jobs.
+
+130
+00:06:20,145 --> 00:06:21,990
+The interface combines code,
+
+131
+00:06:21,990 --> 00:06:25,315
+result, docs all into a human-readable format.
+
+132
+00:06:25,315 --> 00:06:26,940
+And since you're on cloud,
+
+133
+00:06:26,940 --> 00:06:31,065
+you have a great sharing and collaboration support and a rich set of tutorial.
+
+134
+00:06:31,065 --> 00:06:33,340
+Datalab gives us both a great head start,
+
+135
+00:06:33,340 --> 00:06:36,630
+and a smooth transition into scaling out our computation,
+
+136
+00:06:36,630 --> 00:06:39,240
+with a variety of Google cloud services.
+
+137
+00:06:39,240 --> 00:06:42,555
+In this example, you can see we're launching an Apache Beam job,
+
+138
+00:06:42,555 --> 00:06:47,490
+on data flow which can distribute to many, many VMs.

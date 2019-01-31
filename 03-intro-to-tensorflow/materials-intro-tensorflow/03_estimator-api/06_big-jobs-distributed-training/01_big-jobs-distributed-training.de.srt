@@ -1,0 +1,533 @@
+1
+00:00:00,000 --> 00:00:02,880
+Jetzt sprechen wir über große ML-Jobs
+
+2
+00:00:02,880 --> 00:00:06,210
+und die Vorteile von verteiltem Training.
+
+3
+00:00:06,210 --> 00:00:09,300
+Wir können den ersten Punkt
+unserer Checkliste von Problemen
+
+4
+00:00:09,300 --> 00:00:12,150
+realer Modelle abhaken
+
+5
+00:00:12,150 --> 00:00:14,765
+und zum zweiten
+übergehen, der Geschwindigkeit.
+
+6
+00:00:14,765 --> 00:00:19,970
+In der Realität trainieren
+Modelle stunden-, tage-, wochenlang.
+
+7
+00:00:19,970 --> 00:00:22,220
+Wenn die Dauer
+mehrere Wochen Training erreicht,
+
+8
+00:00:22,220 --> 00:00:24,145
+geben wir bei Google auf.
+
+9
+00:00:24,145 --> 00:00:28,125
+Die Optimierung eines Modells unter
+diesen Bedingungen ist nicht möglich.
+
+10
+00:00:28,125 --> 00:00:32,700
+Sie müssen es auf einem
+Cluster verteilen, um es zu beschleunigen.
+
+11
+00:00:32,700 --> 00:00:35,050
+Von einer Maschine auf viele umzusteigen,
+
+12
+00:00:35,050 --> 00:00:37,985
+mag sich kompliziert anhören,
+aber wie wir sehen werden,
+
+13
+00:00:37,985 --> 00:00:42,275
+verwalten die Estimator API
+und die ML-Engine den Cluster automatisch,
+
+14
+00:00:42,275 --> 00:00:44,995
+sodass die Verteilung
+ohne Setup beginnen kann.
+
+15
+00:00:44,995 --> 00:00:48,267
+Das verteilte Training
+wird mit der Funktion
+
+16
+00:00:48,267 --> 00:00:51,540
+"estimator.train_and_evaluate"
+implementiert.
+
+17
+00:00:51,540 --> 00:00:55,050
+Der Name der Funktion
+zeigt auch, dass die Validierung
+
+18
+00:00:55,050 --> 00:00:58,695
+und Überwachung
+eines großen Trainingsjobs wichtig ist.
+
+19
+00:00:58,695 --> 00:01:00,305
+Wir werden das später sehen.
+
+20
+00:01:00,305 --> 00:01:03,045
+Konzentrieren wir
+uns jetzt auf die Verteilung.
+
+21
+00:01:03,045 --> 00:01:05,850
+Das traditionelle Verteilungsmodell zum
+
+22
+00:01:05,850 --> 00:01:09,285
+Trainieren neuronaler Netzwerke
+wird als Datenparallelismus bezeichnet.
+
+23
+00:01:09,285 --> 00:01:13,170
+Ihr Modell wird auf
+mehreren Workern repliziert.
+
+24
+00:01:13,170 --> 00:01:16,915
+Diese laden bei jedem Trainingsschritt
+ein Batch von Trainingsdaten,
+
+25
+00:01:16,915 --> 00:01:20,810
+hoffentlich jeweils ein anderes,
+berechnen Gradienten
+
+26
+00:01:20,810 --> 00:01:25,590
+und senden sie an einen
+oder mehrere zentrale Parameterserver,
+
+27
+00:01:25,590 --> 00:01:29,375
+die alle Gewichtungen und Verzerrungen
+des neuronalen Netzwerkmodells enthalten.
+
+28
+00:01:29,375 --> 00:01:31,970
+Die Gradienten werden
+angewendet, sobald sie ankommen.
+
+29
+00:01:31,970 --> 00:01:34,125
+Ändern Sie
+die Gewichtungen und Verzerrungen,
+
+30
+00:01:34,125 --> 00:01:37,257
+wird das aktualisierte Modell für den
+nächsten Trainingsschritt an
+
+31
+00:01:37,257 --> 00:01:39,240
+die Worker gesendet.
+
+32
+00:01:39,240 --> 00:01:42,480
+Es gibt viel zu tun, bis es soweit ist.
+
+33
+00:01:42,480 --> 00:01:44,210
+Worker müssen gestartet werden,
+
+34
+00:01:44,210 --> 00:01:45,870
+ihre Kopie des Modells erhalten,
+
+35
+00:01:45,870 --> 00:01:48,180
+Datenströme zwischen
+Workern und Parameterservern
+
+36
+00:01:48,180 --> 00:01:49,560
+müssen eingerichtet werden.
+
+37
+00:01:49,560 --> 00:01:51,790
+Das System muss
+Ausnahmen und Fehler behandeln
+
+38
+00:01:51,790 --> 00:01:54,210
+und Worker von dort wieder starten,
+
+39
+00:01:54,210 --> 00:01:57,870
+wo sie aufgehört haben,
+als der Vorfall auftrat,
+
+40
+00:01:57,870 --> 00:02:02,255
+und Checkpoints werden
+auch komplizierter, wenn so viel passiert.
+
+41
+00:02:02,255 --> 00:02:07,425
+Zum Glück ist für die Verteilung nur das
+Schreiben einer Konfigurationsdatei nötig.
+
+42
+00:02:07,425 --> 00:02:11,890
+Der gesamte Boilerplate-Code
+ist bereits in der Estimator API
+
+43
+00:02:11,890 --> 00:02:15,775
+und der Funktion
+"estimator.train_and_evaluate" enthalten.
+
+44
+00:02:15,775 --> 00:02:17,805
+Sie müssen vier Dinge tun.
+
+45
+00:02:17,805 --> 00:02:21,420
+Wählen Sie Ihren Estimator, stellen Sie
+eine Ausführungskonfiguration bereit
+
+46
+00:02:21,420 --> 00:02:26,165
+und fügen Sie Trainings- und Testdaten
+über TrainSpec und EvalSpec ein.
+
+47
+00:02:26,165 --> 00:02:27,670
+Sobald das eingerichtet ist,
+
+48
+00:02:27,670 --> 00:02:29,515
+rufen Sie "train_and_evaluate" auf.
+
+49
+00:02:29,515 --> 00:02:32,270
+Wenn Sie die ML-Engine verwenden
+
+50
+00:02:32,270 --> 00:02:34,585
+und die Clustergröße angegeben haben,
+
+51
+00:02:34,585 --> 00:02:37,050
+setzt das verteilte Training ein.
+
+52
+00:02:37,050 --> 00:02:38,895
+Schauen wir uns das genauer an.
+
+53
+00:02:38,895 --> 00:02:40,735
+Zuerst die Ausführungskonfiguration.
+
+54
+00:02:40,735 --> 00:02:44,205
+Hier geben Sie das
+Ausgabeverzeichnis für Checkpoints an.
+
+55
+00:02:44,205 --> 00:02:46,440
+Sie können es immer noch direkt festlegen,
+
+56
+00:02:46,440 --> 00:02:48,490
+wenn Sie den Estimator instanziieren,
+
+57
+00:02:48,490 --> 00:02:50,515
+aber es ist sauberer,
+
+58
+00:02:50,515 --> 00:02:53,715
+ihn hier zusammen mit
+anderen Checkpointeinstellungen anzugeben.
+
+59
+00:02:53,715 --> 00:02:58,520
+Hier legen Sie auch die Häufigkeit fest,
+mit der Sie Checkpoints setzen möchten,
+
+60
+00:02:58,520 --> 00:03:02,015
+und auch die Häufigkeit Ihrer
+Training-Logs und Zusammenfassungen.
+
+61
+00:03:02,015 --> 00:03:04,005
+Wir werden später dazu kommen.
+
+62
+00:03:04,005 --> 00:03:09,690
+Mit TrainSpec übergeben Sie Ihre
+Dateneingabefunktion für Trainingsdaten.
+
+63
+00:03:09,690 --> 00:03:13,230
+Bitte verwenden Sie die Dataset API,
+damit alles richtig eingerichtet ist.
+
+64
+00:03:13,230 --> 00:03:17,380
+Optional können Sie das Training auf 
+eine Anzahl von Schritten beschränken.
+
+65
+00:03:17,380 --> 00:03:21,765
+Standardmäßig wird trainiert,
+bis das Eingabedataset erschöpft ist.
+
+66
+00:03:21,765 --> 00:03:26,220
+Das könnte nach mehreren Schritten
+passieren, wenn Sie es so einrichten.
+
+67
+00:03:26,220 --> 00:03:30,990
+Mit EvalSpec
+verbinden Sie Ihr Testdataset.
+
+68
+00:03:30,990 --> 00:03:34,420
+Wenn Sie sehen möchten,
+wie gut Ihr Modell arbeitet,
+
+69
+00:03:34,420 --> 00:03:39,685
+müssen Sie das an einem Dataset messen,
+das nicht im Training enthalten ist.
+
+70
+00:03:39,685 --> 00:03:43,960
+In der Regel eine Teilmenge der Daten,
+die zum Testen zurückgehalten wurden.
+
+71
+00:03:43,960 --> 00:03:47,270
+Die Testdaten werden über
+eine eval-Eingabefunktion eingegeben.
+
+72
+00:03:47,270 --> 00:03:50,725
+Verwenden Sie bitte unbedingt
+die Dataset API, um sie einzugeben.
+
+73
+00:03:50,725 --> 00:03:55,964
+Sie können auch angeben, wie viele
+Testdatenbatches Sie auswerten möchten,
+
+74
+00:03:55,964 --> 00:03:59,180
+und wie häufig Validierungen erfolgen.
+
+75
+00:03:59,180 --> 00:04:04,415
+Ein wichtiges Detail der Implementierung
+von verteiltem Training ist,
+
+76
+00:04:04,415 --> 00:04:07,625
+dass die Validierung
+auf einem dedizierten Server erfolgt,
+
+77
+00:04:07,625 --> 00:04:12,785
+der das Modell vom letzten Checkpoint
+aus aufruft und dann "eval" ausführt.
+
+78
+00:04:12,785 --> 00:04:16,555
+Daher können Validierungen
+nicht häufiger erfolgen,
+
+79
+00:04:16,555 --> 00:04:20,839
+als Checkpoints gemäß der
+Ausführungskonfiguration gesetzt werden.
+
+80
+00:04:20,839 --> 00:04:23,470
+Sie können jedoch seltener erfolgen,
+
+81
+00:04:23,470 --> 00:04:27,530
+wenn Sie in EvalSpec
+den Parameter "throttle" hinzufügen.
+
+82
+00:04:27,530 --> 00:04:32,445
+Wie Sie sehen, hat EvalSpec auch
+einen Parameter für Exporter.
+
+83
+00:04:32,445 --> 00:04:36,990
+Sie steuern, wie ein Modell für
+die Produktionumgebung exportiert wird.
+
+84
+00:04:36,990 --> 00:04:39,510
+Wir behandeln diese im nächsten Kapitel.
+
+85
+00:04:39,510 --> 00:04:41,845
+Das haben wir bisher:
+
+86
+00:04:41,845 --> 00:04:43,945
+Sie instanziieren einen Estimator,
+
+87
+00:04:43,945 --> 00:04:48,000
+geben ihm eine Ausführungskonfiguration,
+in der Sie festlegen können, wie oft und
+
+88
+00:04:48,000 --> 00:04:51,960
+in welchem ​​Ordner Checkpoints und andere
+Überwachungsdaten aufgezeichnet werden,
+
+89
+00:04:51,960 --> 00:04:56,735
+Sie erstellen dann ein Trainings-
+und ein Validierungsdataset,
+
+90
+00:04:56,735 --> 00:05:03,390
+die Sie über die Dateneingabefunktionen
+in TrainSpec und EvalSpec einspeisen,
+
+91
+00:05:03,390 --> 00:05:06,775
+Sie sind dann bereit
+für Training und Validierung.
+
+92
+00:05:06,775 --> 00:05:09,180
+Ich möchte etwas über eine
+
+93
+00:05:09,180 --> 00:05:12,260
+wichtige praktische Überlegung sagen, 
+das Datenmischen.
+
+94
+00:05:12,260 --> 00:05:16,760
+Der Algorithmus für den stochastischen
+Gradientenabfall, den neuronale Netze
+
+95
+00:05:16,760 --> 00:05:20,245
+zum Trainieren verwenden,
+funktioniert nur mit gut gemischten Daten.
+
+96
+00:05:20,245 --> 00:05:23,790
+Die Dataset API
+hat hierfür eine Mischfunktion,
+
+97
+00:05:23,790 --> 00:05:26,610
+aber manche verwenden sie
+vielleicht nicht, weil sie denken,
+
+98
+00:05:26,610 --> 00:05:29,520
+dass ihr Dataset auf der
+Festplatte bereits gut gemischt ist.
+
+99
+00:05:29,520 --> 00:05:32,400
+Seien Sie beim
+verteilten Training vorsichtig.
+
+100
+00:05:32,400 --> 00:05:35,490
+Selbst mit einem auf
+der Festplatte gut gemischten Dataset,
+
+101
+00:05:35,490 --> 00:05:39,660
+wenn alle Ihre Worker
+direkt aus diesem Dataset laden,
+
+102
+00:05:39,660 --> 00:05:42,005
+sehen sie zur selben Zeit
+dasselbe Datenbatch
+
+103
+00:05:42,005 --> 00:05:45,245
+und erzeugen dieselben Gradienten.
+
+104
+00:05:45,245 --> 00:05:48,360
+Die Vorteile von verteiltem
+Training gehen verloren.
+
+105
+00:05:48,360 --> 00:05:52,350
+Alle Worker arbeiten
+an genau denselben Daten.
+
+106
+00:05:52,350 --> 00:05:54,604
+Die Funktion Dataset.shuffle
+
+107
+00:05:54,604 --> 00:05:56,610
+mischt die Daten für jeden Worker einzeln,
+
+108
+00:05:56,610 --> 00:05:58,770
+der einen anderen
+zufälligen Seed verwendet.
+
+109
+00:05:58,770 --> 00:06:00,360
+Nutzen Sie es also bitte.
+
+110
+00:06:00,360 --> 00:06:03,375
+Auch, wenn Ihre Daten
+bereits auf der Festplatte gemischt sind.
+
+111
+00:06:03,375 --> 00:06:05,895
+Und wenn Sie ganz sicher gehen möchten,
+
+112
+00:06:05,895 --> 00:06:10,290
+können Sie auch die Liste der Dateinamen
+in Ihrem kürzeren Dataset mischen.
+
+113
+00:06:10,290 --> 00:06:14,160
+"list_files" gibt ein Dataset
+mit Dateinamen zurück.
+
+114
+00:06:14,160 --> 00:06:17,070
+Wenden Sie einfach
+die Funktion "shuffle" darauf an.

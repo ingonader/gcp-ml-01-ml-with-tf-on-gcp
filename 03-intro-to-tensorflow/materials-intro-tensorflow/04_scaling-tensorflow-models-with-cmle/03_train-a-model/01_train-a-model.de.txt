@@ -1,0 +1,26 @@
+Sehen wir uns nun an, wie wir
+ein Modell für die ML Engine trainieren. Bevor Sie
+das Training beginnen, sollten Sie 1) Trainingsdaten sammeln und vorbereiten: säubern, aufteilen, Funktionen entwickeln und vorverarbeiten. 2) die Trainingsdaten
+in eine Onlinequelle kopieren, auf die die Cloud ML Engine Zugriff hat, zum Beispiel Cloud Storage. Beim Senden
+von Trainingsjobs an die Cloud ML Engine wird oft der Großteil der Logik auf die 
+Dateien "task.py" und "model.py" aufgeteilt. "task.py" ist
+der Einstiegspunkt in Ihren Code und wird von der CMLE gestartet. Zu den 
+darin definierten Details auf Jobebene zählen: Wie werden Befehlszeilenargumente geparst,
+wohin werden die Ausgaben geschrieben, was ist die Schnittstelle
+zum Optimieren von Hyperparametern usw. Für die Kernfunktionen von ML
+ruft "task.py" dann "model.py" auf. "model.py" führt eher
+die zentralen ML-Aufgaben aus, wie Abrufen von Daten, Definieren der Funktionen, Konfigurieren der Dienstsignatur und wiederholtes Trainieren und Bewerten. Die Codefreigabe zwischen Computern
+erfordert immer eine Paketierung. Beim Senden eines Modells
+an CMLE zum Training ist das nicht anders. TensorFlow und insbesondere Python erfordern für Paket und Struktur
+einen Standard, wie hier dargestellt. Testen Sie lokal, ob Ihre Paketierung
+wie erwartet funktioniert. Rufen Sie sie direkt über "python-m" auf, um den Zustand
+der importierten Daten zu prüfen. Testen wir als Nächstes
+Ihren Code lokal über den Befehl "gcloud". Dies ist eine schnelle Prüfung
+der Plausibilität Ihrer Paketstruktur. Bei Erfolg können wir einen Trainingsjob zur Skalierung an die Cloud senden. Die wichtigen Argumente sind hier "package-path" für den Codespeicherort, "module-name", um anzugeben
+welche Paketdateien auszuführen sind, und "scale-tier", um festzulegen auf welcher Hardware
+der Code ausgeführt werden soll. Bei "scale-tier=BASIC" erfolgt
+die Ausführung auf einer Maschine, bei "scale-tier=STANDARD"
+auf einem kleineren Cluster und bei "scale-tier=BASIC_GPU" auf einer einzelnen GPU. Es soll eine TPU verwendet werden? Richtig: "scale-tier=BASIC_TPU". Sie können auch eigene Stufen angeben und Maschinentypen definieren. Die Skalierungsstufen werden erweitert. In der Dokumentation
+zur Cloud Machine Learning Engine finden Sie alle Optionen. Hier ein Expertentipp: Für die beste Leistung bei ML-Jobs wählen Sie in Google Cloud Storage
+für den Bucket eine einzelne Region aus. Der Standard ist mehrere Regionen und für Web-Serving
+besser geeignet als für ML-Training.

@@ -1,0 +1,34 @@
+Lassen Sie uns zu echten Daten
+statt den Konstanten übergehen, die wir zuvor mit der
+Estimator API verwendet haben. Wenn Ihre Daten in Form von numpy arrays
+oder Pandas in den Arbeitsspeicher passen, bietet die Estimator API praktische
+Funktionen, um sie ins Modell einzufügen. Sie heißen estimator.inputs.numpy_input_fn
+und estimator.inputs.Pandas_input_fn. Sie geben Ihr Featureverzeichnis als x an
+und verwenden denselben Namen wie vorher für die Featurespalten und
+definieren Ihre Labels als y. Beim Lesen von Pandas sind diese Featurenamen nicht nötig. Die API wählt die richtigen Spalten aus
+Ihrem Pandas-Dataframe basierend auf den Namen, die Sie zum Definieren
+der Featurespalten verwendet haben. Diese Eingabefunktionen
+implementieren wichtige Funktionen, die zum Training neuronaler
+Netzwerkmodelle benötigt werden. Meist funktioniert das Training am besten,
+wenn ein Trainingsschritt jeweils mit einem Minibatch
+von Eingabedaten ausgeführt wird, statt mit einem einzelnen Datenelement
+oder dem gesamten Dataset. Sie können hier die Batchgröße angeben. Sie können angeben, wie oft das Dataset
+beim Training wiederholt werden soll, das ist die Anzahl der Schritte. Es ist wichtig, dass Sie Ihre
+Trainingsdaten gründlich mischen. Sie können die Estimator API dazu nutzen. Damit das Dataset nicht
+im Arbeitsspeicher repliziert wird, können Sie die Größe der
+Zufallswarteschlange angeben. Standardmäßig wird das Training
+ausgeführt, bis die Trainingsdaten n-mal erschöpft sind, wenn Sie in
+Ihrer Eingabefunktion n Epochen angeben. Sie können dies mit einer
+konkreten Schritteanzahl überschreiben, wenn Sie die Funktion "train" aufrufen. Es gibt 2 Variablen
+für die Schritteanzahl: "steps=1000" bedeutet, dass ab dem letzten Checkpoint zusätzlich
+1.000 Trainingsschritte ausgeführt werden. Ein Schritt entspricht hier
+einem Batch von Eingabedaten. "max_steps=1000" bewirkt
+einen Neustart vom letzten Checkpoint, zählt die Anzahl der Schritte aus
+dem vorherigen Durchgang und setzt sie fort, bis die maximale
+Anzahl Schritte erreicht wurde. Das hat keine Wirkung, wenn diese Anzahl
+am Checkpoint schon erreicht worden ist. Das hier ist der gesamte Code
+mit Featurespalten, einem Modell, einer Eingabefunktion, die
+Daten aus einem Pandas-Dataframe liest, und dem Training selbst. Möchten Sie ein neues Feature hinzufügen? Zum Beispiel die Anzahl
+der Schlafzimmer im Haus. Sie können es zur Liste der Featurespalten
+hinzufügen, achten Sie aber darauf dass es im Pandas-Dataframe
+mit demselben Namen vorhanden ist.

@@ -1,0 +1,487 @@
+1
+00:00:00,000 --> 00:00:03,060
+A variable is a tensor whose value is
+
+2
+00:00:03,060 --> 00:00:07,965
+initialized and then the value gets changed as a program runs.
+
+3
+00:00:07,965 --> 00:00:11,015
+Let's take a close look at this example.
+
+4
+00:00:11,015 --> 00:00:14,130
+I have a function called forward pass,
+
+5
+00:00:14,130 --> 00:00:16,110
+which takes two parameters,
+
+6
+00:00:16,110 --> 00:00:18,480
+w and x, and multiplies them.
+
+7
+00:00:18,480 --> 00:00:22,285
+Well, it's a matrix multiply because these are tensors,
+
+8
+00:00:22,285 --> 00:00:25,255
+but it multiplies w and x.
+
+9
+00:00:25,255 --> 00:00:28,054
+In my train loop function,
+
+10
+00:00:28,054 --> 00:00:31,980
+I basically create the tensor w except
+
+11
+00:00:31,980 --> 00:00:37,515
+that w is not a constant like the tensors that we've been looking at so far.
+
+12
+00:00:37,515 --> 00:00:40,005
+W is a variable.
+
+13
+00:00:40,005 --> 00:00:42,120
+It has a name, weights.
+
+14
+00:00:42,120 --> 00:00:44,100
+Its shape is 1,2,
+
+15
+00:00:44,100 --> 00:00:47,560
+which means that it has one row and two columns.
+
+16
+00:00:47,560 --> 00:00:49,740
+It's a 1 by 2 matrix.
+
+17
+00:00:49,740 --> 00:00:52,410
+And when w is initialized,
+
+18
+00:00:52,410 --> 00:00:55,260
+we are not initializing it here because remember,
+
+19
+00:00:55,260 --> 00:00:59,720
+TensorFlow is a lazy evaluation framework and so we are only building the graph.
+
+20
+00:00:59,720 --> 00:01:01,350
+We're not yet running it.
+
+21
+00:01:01,350 --> 00:01:04,050
+When w is initialized,
+
+22
+00:01:04,050 --> 00:01:08,655
+it will be initialized by a truncated normal initializer.
+
+23
+00:01:08,655 --> 00:01:11,370
+Now this is a very common initializer that
+
+24
+00:01:11,370 --> 00:01:14,070
+you will see in TensorFlow neural network programs.
+
+25
+00:01:14,070 --> 00:01:17,310
+It initializes a variable to random numbers,
+
+26
+00:01:17,310 --> 00:01:21,285
+but these random numbers are not uniformly distributed.
+
+27
+00:01:21,285 --> 00:01:26,600
+Instead, they have a Gaussian normal distribution with zero mean and unit variants.
+
+28
+00:01:26,600 --> 00:01:32,340
+But Gaussian normal has a very long tail and you might get extreme outliers.
+
+29
+00:01:32,340 --> 00:01:34,230
+It's very unlikely but it could happen.
+
+30
+00:01:34,230 --> 00:01:37,170
+So, what a truncated normal does, well,
+
+31
+00:01:37,170 --> 00:01:42,060
+it kind of truncates things at sum multiplication of sigma.
+
+32
+00:01:42,060 --> 00:01:46,665
+Finally, we say that the variable w is trainable.
+
+33
+00:01:46,665 --> 00:01:51,810
+A trainable variable is a variable that can be changed during training.
+
+34
+00:01:51,810 --> 00:01:54,990
+The point of a variable of course is to be able to
+
+35
+00:01:54,990 --> 00:01:58,110
+change it so most variables will be trainable.
+
+36
+00:01:58,110 --> 00:02:00,360
+But every once in a while,
+
+37
+00:02:00,360 --> 00:02:01,890
+we'll talk about this when we talk about
+
+38
+00:02:01,890 --> 00:02:05,925
+model size reduction and then we talk about transferred learning.
+
+39
+00:02:05,925 --> 00:02:07,905
+Every once in a while,
+
+40
+00:02:07,905 --> 00:02:13,330
+it can be helpful to freeze a graph to make it such that the variables are in changed.
+
+41
+00:02:13,330 --> 00:02:16,625
+This Boolean flag lets us do that.
+
+42
+00:02:16,625 --> 00:02:22,670
+Notice that I'm calling tf.get_variable to create w. Now,
+
+43
+00:02:22,670 --> 00:02:25,440
+you might see TensorFlow code that directly creates
+
+44
+00:02:25,440 --> 00:02:29,025
+a variable by calling the tf.variable constructor.
+
+45
+00:02:29,025 --> 00:02:32,425
+Calling the constructor directly is not recommended.
+
+46
+00:02:32,425 --> 00:02:37,775
+Use tf.get_variable because, as we'll see in course 9,
+
+47
+00:02:37,775 --> 00:02:41,910
+it can be helpful to be able to reuse variables or create them
+
+48
+00:02:41,910 --> 00:02:48,075
+afresh depending on different situations and using tf.get_variable let's us do so.
+
+49
+00:02:48,075 --> 00:02:52,290
+So, I recommend that you get into the habit of using tf.get_variable.
+
+50
+00:02:52,290 --> 00:02:55,710
+So, we then run the forward pass
+
+51
+00:02:55,710 --> 00:03:01,650
+five times and store the result of the matrix multiply at each iteration.
+
+52
+00:03:01,650 --> 00:03:05,280
+So, after we do the product, we change the weight.
+
+53
+00:03:05,280 --> 00:03:08,280
+Here we are adding 0.1 to it.
+
+54
+00:03:08,280 --> 00:03:10,005
+This is like a gradient update.
+
+55
+00:03:10,005 --> 00:03:11,670
+In reality, of course,
+
+56
+00:03:11,670 --> 00:03:15,785
+in gradient update, we will choose what weights to change and how to change them.
+
+57
+00:03:15,785 --> 00:03:18,105
+But here, for just demo purposes,
+
+58
+00:03:18,105 --> 00:03:21,390
+I'll just add 0.1 to the weights each time.
+
+59
+00:03:21,390 --> 00:03:23,820
+Now, from the session,
+
+60
+00:03:23,820 --> 00:03:28,250
+we call train loop by passing in x.
+
+61
+00:03:28,250 --> 00:03:31,520
+The x is a 2 by 3 matrix.
+
+62
+00:03:31,520 --> 00:03:33,470
+So in the forward pass,
+
+63
+00:03:33,470 --> 00:03:38,075
+we multiply w by this x. W is a 1 by 2 matrix.
+
+64
+00:03:38,075 --> 00:03:43,930
+Multiplying a 1 by 2 by 2 by 3 gives us a 1 by 3 matrix.
+
+65
+00:03:43,930 --> 00:03:49,070
+So, at this point, the graph is done but we still need initialize the variables.
+
+66
+00:03:49,070 --> 00:03:50,570
+But that's the run stage.
+
+67
+00:03:50,570 --> 00:03:54,020
+We typically just initialized all the variables in
+
+68
+00:03:54,020 --> 00:03:58,675
+the graph all at once by running the global variables initializer.
+
+69
+00:03:58,675 --> 00:04:04,400
+So, when we now look at the value of the product after each step of the loop,
+
+70
+00:04:04,400 --> 00:04:10,360
+we notice that the 1 by 3 matrix each time is different as you would expect.
+
+71
+00:04:10,360 --> 00:04:13,820
+So, let's summarize what we have just learned.
+
+72
+00:04:13,820 --> 00:04:18,950
+Number 1, create a variable by calling "get variable."
+
+73
+00:04:18,950 --> 00:04:24,585
+Well, I skipped over one line of code when I went through it, the scope piece.
+
+74
+00:04:24,585 --> 00:04:26,564
+When you create a variable,
+
+75
+00:04:26,564 --> 00:04:28,875
+you can specify the scope.
+
+76
+00:04:28,875 --> 00:04:32,625
+That's where I'm telling TensorFlow to reuse the variable
+
+77
+00:04:32,625 --> 00:04:36,665
+each time instead of creating a new variable each time.
+
+78
+00:04:36,665 --> 00:04:41,180
+I'm calling train loop only once so it doesn't matter here,
+
+79
+00:04:41,180 --> 00:04:43,310
+but if I were to call train loop again,
+
+80
+00:04:43,310 --> 00:04:46,725
+the weights would resume from where they left off.
+
+81
+00:04:46,725 --> 00:04:49,605
+We will create a new variable. We would reuse it.
+
+82
+00:04:49,605 --> 00:04:54,035
+So, second thing that you're learning here is that when you create a variable,
+
+83
+00:04:54,035 --> 00:04:57,430
+you have to decide on how to initialize a variable.
+
+84
+00:04:57,430 --> 00:04:59,350
+In neural network training,
+
+85
+00:04:59,350 --> 00:05:03,400
+random normal with truncation is a typical choice.
+
+86
+00:05:03,400 --> 00:05:10,695
+Number 3, use the variable just like any other tensor when building the graph.
+
+87
+00:05:10,695 --> 00:05:13,945
+Number 4, in your session,
+
+88
+00:05:13,945 --> 00:05:16,315
+remember to initialize the variable.
+
+89
+00:05:16,315 --> 00:05:19,220
+Usually, you will initialize all the variables
+
+90
+00:05:19,220 --> 00:05:22,925
+together by calling the global variables initializer.
+
+91
+00:05:22,925 --> 00:05:25,640
+And after the variables are initialized,
+
+92
+00:05:25,640 --> 00:05:27,380
+and this is point number 5,
+
+93
+00:05:27,380 --> 00:05:31,905
+you can evaluate any tensor that you want to evaluate.
+
+94
+00:05:31,905 --> 00:05:33,900
+So, in this example,
+
+95
+00:05:33,900 --> 00:05:36,425
+we are calling the train loop with the x,
+
+96
+00:05:36,425 --> 00:05:39,170
+but the x is a constant.
+
+97
+00:05:39,170 --> 00:05:41,380
+How realistic is that?
+
+98
+00:05:41,380 --> 00:05:45,040
+Do you hardcode input values into your programs?
+
+99
+00:05:45,040 --> 00:05:48,705
+Placeholders allow you to feed in values into the graph.
+
+100
+00:05:48,705 --> 00:05:52,070
+For example, you can read values from a text file into
+
+101
+00:05:52,070 --> 00:05:55,840
+a Python list and then feed that list into the TensorFlow graph.
+
+102
+00:05:55,840 --> 00:05:58,740
+So, here, a is a placeholder.
+
+103
+00:05:58,740 --> 00:06:00,045
+It will hold a scalar.
+
+104
+00:06:00,045 --> 00:06:03,090
+B is a multiplied by 4.
+
+105
+00:06:03,090 --> 00:06:06,590
+If you print a, you will get the debug output of a tensor.
+
+106
+00:06:06,590 --> 00:06:08,900
+You will learn that this particular tensor is
+
+107
+00:06:08,900 --> 00:06:13,340
+a placeholder that expects floating point numbers to be fed into it.
+
+108
+00:06:13,340 --> 00:06:15,695
+If you now want to evaluate b,
+
+109
+00:06:15,695 --> 00:06:18,290
+you can adjust this session.run(b).
+
+110
+00:06:18,290 --> 00:06:22,145
+You have to feed in values for the placeholders that b depends upon.
+
+111
+00:06:22,145 --> 00:06:23,720
+So in this case,
+
+112
+00:06:23,720 --> 00:06:28,790
+you have to pass in a list or a numpy array of numbers for the placeholder a,
+
+113
+00:06:28,790 --> 00:06:32,165
+and you do this using a feed dict, a dictionary.
+
+114
+00:06:32,165 --> 00:06:34,850
+Key value pairs is what a dictionary is.
+
+115
+00:06:34,850 --> 00:06:37,065
+The key is a placeholder,
+
+116
+00:06:37,065 --> 00:06:38,715
+in this case, a.
+
+117
+00:06:38,715 --> 00:06:41,655
+The value is a list of numpy array.
+
+118
+00:06:41,655 --> 00:06:45,030
+And in this case, it's 1,2,3.
+
+119
+00:06:45,030 --> 00:06:46,485
+So that's what we feed in,
+
+120
+00:06:46,485 --> 00:06:48,325
+and so when b is evaluated,
+
+121
+00:06:48,325 --> 00:06:51,150
+you get the value of a multiply by 4,
+
+122
+00:06:51,150 --> 00:06:53,800
+so we get 4,8,12.

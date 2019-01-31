@@ -1,0 +1,427 @@
+1
+00:00:00,000 --> 00:00:02,715
+Just as in tree algorithms such as ID3,
+
+2
+00:00:02,715 --> 00:00:06,130
+and C 4.5 were invented in the 80s and 90s.
+
+3
+00:00:06,130 --> 00:00:09,075
+They are better at certain types of problems in linear regression,
+
+4
+00:00:09,075 --> 00:00:11,450
+and are very easy for humans to interpret.
+
+5
+00:00:11,450 --> 00:00:15,755
+Finding the optimal splitting when creating the trees is an NP hard problem,
+
+6
+00:00:15,755 --> 00:00:18,260
+therefore, greedy algorithms were used to
+
+7
+00:00:18,260 --> 00:00:21,920
+hopefully construct trees as close to optimal as possible.
+
+8
+00:00:21,920 --> 00:00:24,900
+They create a piecewise linear decisions surface,
+
+9
+00:00:24,900 --> 00:00:27,535
+which is essentially what a layer of re-loose gives you.
+
+10
+00:00:27,535 --> 00:00:30,695
+But with DNN's or Deep Neural Networks,
+
+11
+00:00:30,695 --> 00:00:34,885
+each of the real layers combines to make a hyper planar decision surface,
+
+12
+00:00:34,885 --> 00:00:36,825
+which can be much more powerful.
+
+13
+00:00:36,825 --> 00:00:40,640
+But I ask you then ahead to why DNNs can be better than decision trees.
+
+14
+00:00:40,640 --> 00:00:43,435
+Let's first talk about decision trees.
+
+15
+00:00:43,435 --> 00:00:47,890
+Decision trees are one of the most intuitive machine learning algorithms.
+
+16
+00:00:47,890 --> 00:00:51,785
+They can be used for both classification and regression.
+
+17
+00:00:51,785 --> 00:00:53,330
+Imagine you have a data set,
+
+18
+00:00:53,330 --> 00:00:57,155
+and you want to determine how the data is all split into different buckets.
+
+19
+00:00:57,155 --> 00:00:58,760
+The first thing you should do is,
+
+20
+00:00:58,760 --> 00:01:02,080
+brainstorm some interesting questions to query the data set with.
+
+21
+00:01:02,080 --> 00:01:04,560
+Let's walk through an example.
+
+22
+00:01:04,560 --> 00:01:10,810
+Here is the well-known problem predicting who lived or died in the Titanic catastrophe.
+
+23
+00:01:10,810 --> 00:01:13,915
+There were people aboard from all walks of life,
+
+24
+00:01:13,915 --> 00:01:16,465
+different backgrounds, different situations et cetera.
+
+25
+00:01:16,465 --> 00:01:20,170
+So we went to see if any of those possible features can partition
+
+26
+00:01:20,170 --> 00:01:25,580
+my data in such a way that I can with high accuracy predict who lived.
+
+27
+00:01:25,580 --> 00:01:30,225
+A first guess at a feature could possibly be the sex of the passenger.
+
+28
+00:01:30,225 --> 00:01:33,675
+Therefore, I could have asked the question, is the sex male?
+
+29
+00:01:33,675 --> 00:01:37,300
+Thus, I split the data with males going into one bucket,
+
+30
+00:01:37,300 --> 00:01:39,310
+and the rest going into another bucket.
+
+31
+00:01:39,310 --> 00:01:41,310
+64 percent of the data went into
+
+32
+00:01:41,310 --> 00:01:44,315
+the male bucket leaving 36 percent going into the other one.
+
+33
+00:01:44,315 --> 00:01:47,455
+Let's continue along the male bucket partition for now.
+
+34
+00:01:47,455 --> 00:01:52,315
+Another question I could ask is about what passenger class each passenger was.
+
+35
+00:01:52,315 --> 00:01:56,890
+With our partitioning, now 14 percent of all passengers were male,
+
+36
+00:01:56,890 --> 00:01:58,620
+and of the lowest class,
+
+37
+00:01:58,620 --> 00:02:00,980
+whereas 50 percent of all passengers were male,
+
+38
+00:02:00,980 --> 00:02:03,290
+and of the two higher classes.
+
+39
+00:02:03,290 --> 00:02:07,730
+The same type of partitioning could also continue in the female branch of the tree.
+
+40
+00:02:07,730 --> 00:02:09,145
+Taking a step back,
+
+41
+00:02:09,145 --> 00:02:12,675
+it is one thing for the decision tree building algorithm to split sex
+
+42
+00:02:12,675 --> 00:02:17,035
+into two branches because there are only two possible values.
+
+43
+00:02:17,035 --> 00:02:18,660
+But how did it decide to split
+
+44
+00:02:18,660 --> 00:02:22,030
+passenger class with one passenger class branch into the left,
+
+45
+00:02:22,030 --> 00:02:24,925
+and two passenger classes branching to the right.
+
+46
+00:02:24,925 --> 00:02:30,330
+For instance, in the simple classification and regression tree or CART algorithm,
+
+47
+00:02:30,330 --> 00:02:33,480
+the algorithm tries to choose a feature and
+
+48
+00:02:33,480 --> 00:02:37,450
+threshold pair that will produce the purest subsets when split.
+
+49
+00:02:37,450 --> 00:02:41,960
+For classification trees, a column metric to use is the gini impurity,
+
+50
+00:02:41,960 --> 00:02:43,835
+but there is also entropy.
+
+51
+00:02:43,835 --> 00:02:45,850
+Once it is done a good split,
+
+52
+00:02:45,850 --> 00:02:48,495
+it searches for another feature threshold pair,
+
+53
+00:02:48,495 --> 00:02:50,735
+and splits that into subsets as well.
+
+54
+00:02:50,735 --> 00:02:53,860
+This process continues on recursively until
+
+55
+00:02:53,860 --> 00:02:57,015
+either the set maximum depth of the tree has been reached,
+
+56
+00:02:57,015 --> 00:03:00,400
+or, if there are no more splits that reduce the impurity.
+
+57
+00:03:00,400 --> 00:03:04,355
+For regression trees, mean squared error is a common metric split.
+
+58
+00:03:04,355 --> 00:03:08,955
+Does this sound familiar how it chooses to split the data into two subsets?
+
+59
+00:03:08,955 --> 00:03:12,970
+Each split is essentially just a binary linear classifier that
+
+60
+00:03:12,970 --> 00:03:17,135
+finds a hyper plane that slices along one feature's dimension at some value,
+
+61
+00:03:17,135 --> 00:03:20,130
+which is the chosen threshold to minimize the members of
+
+62
+00:03:20,130 --> 00:03:23,815
+the class falling in the other classes side of the hyperplane.
+
+63
+00:03:23,815 --> 00:03:26,830
+Recursively creating these hyper planes in a tree is
+
+64
+00:03:26,830 --> 00:03:30,725
+analogous to layers of linear classifier nodes in a neural network.
+
+65
+00:03:30,725 --> 00:03:32,685
+Very interesting.
+
+66
+00:03:32,685 --> 00:03:35,270
+Now that we know how decision trees are built,
+
+67
+00:03:35,270 --> 00:03:37,910
+let's continue building this tree a bit more.
+
+68
+00:03:37,910 --> 00:03:42,055
+Perhaps there is an age threshold that will help me split my data well,
+
+69
+00:03:42,055 --> 00:03:43,570
+for this classification problem.
+
+70
+00:03:43,570 --> 00:03:47,675
+I could ask, is the age greater than 17 and a half years old?
+
+71
+00:03:47,675 --> 00:03:50,940
+Looking at the lowest class branch of the male parent branch,
+
+72
+00:03:50,940 --> 00:03:54,715
+now just 13 percent of the passengers were 18 and older,
+
+73
+00:03:54,715 --> 00:03:57,015
+while only one percent were younger.
+
+74
+00:03:57,015 --> 00:03:59,680
+Looking at the classes associated with each node,
+
+75
+00:03:59,680 --> 00:04:04,495
+only this one on the male branch so far is classified as survived.
+
+76
+00:04:04,495 --> 00:04:06,180
+We could extend our depth,
+
+77
+00:04:06,180 --> 00:04:09,360
+and or choose different features to hopefully keep expanding
+
+78
+00:04:09,360 --> 00:04:14,570
+the tree until every node only has passengers that had survived or died.
+
+79
+00:04:14,570 --> 00:04:18,220
+However, there are problems with this because essentially,
+
+80
+00:04:18,220 --> 00:04:19,770
+I am just memorizing my data,
+
+81
+00:04:19,770 --> 00:04:21,905
+and fitting the tree perfectly to it.
+
+82
+00:04:21,905 --> 00:04:25,815
+In practice, we are going to want to generalize this to new data,
+
+83
+00:04:25,815 --> 00:04:28,100
+and a model that has memorized the training set is
+
+84
+00:04:28,100 --> 00:04:30,925
+probably not going to perform very well outside of it.
+
+85
+00:04:30,925 --> 00:04:33,440
+There are some methods to regularize it such as
+
+86
+00:04:33,440 --> 00:04:36,190
+citing the minimum number of samples per leaf node,
+
+87
+00:04:36,190 --> 00:04:37,985
+a maximum of leaf nodes,
+
+88
+00:04:37,985 --> 00:04:39,945
+or a maximum number of features.
+
+89
+00:04:39,945 --> 00:04:41,820
+You can also build the full tree,
+
+90
+00:04:41,820 --> 00:04:44,185
+and then prune unnecessary nodes.
+
+91
+00:04:44,185 --> 00:04:46,210
+To really get the most out of trees,
+
+92
+00:04:46,210 --> 00:04:48,410
+it is usually best to combine them into forests,
+
+93
+00:04:48,410 --> 00:04:50,700
+which we'll talk about very soon.
+
+94
+00:04:50,700 --> 00:04:53,560
+In a decision classification tree,
+
+95
+00:04:53,560 --> 00:04:57,625
+what does each decision or node consist of?
+
+96
+00:04:57,625 --> 00:05:02,910
+The correct answer is linear classifier of one feature.
+
+97
+00:05:02,910 --> 00:05:05,160
+Remember, at each node in the tree,
+
+98
+00:05:05,160 --> 00:05:10,450
+the algorithm chooses a feature and threshold pair to split the data into two subsets,
+
+99
+00:05:10,450 --> 00:05:12,255
+and continues this recursively.
+
+100
+00:05:12,255 --> 00:05:14,550
+Many features are eventually split
+
+101
+00:05:14,550 --> 00:05:17,070
+assuming you have set a maximum depth for more than one,
+
+102
+00:05:17,070 --> 00:05:19,840
+but only one feature per depth at a time.
+
+103
+00:05:19,840 --> 00:05:22,915
+Therefore, linear classifier of all features is
+
+104
+00:05:22,915 --> 00:05:26,535
+incorrect because each node splits only one feature at a time.
+
+105
+00:05:26,535 --> 00:05:28,850
+Mean squared error minimizer and
+
+106
+00:05:28,850 --> 00:05:31,730
+euclidean distance minimizer are pretty much the same thing,
+
+107
+00:05:31,730 --> 00:05:34,040
+and are used in regression, not classification.

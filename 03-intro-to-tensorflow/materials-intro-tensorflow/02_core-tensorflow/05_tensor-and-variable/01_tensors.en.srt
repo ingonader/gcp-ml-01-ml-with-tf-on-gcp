@@ -1,0 +1,398 @@
+1
+00:00:00,800 --> 00:00:03,590
+We have talked about what tensor flow is,
+and
+
+2
+00:00:03,590 --> 00:00:06,490
+we have talked about
+the tensor flow API hierarchy.
+
+3
+00:00:06,490 --> 00:00:10,980
+In the previous lesson, we talked about
+the directed acyclic graph, the DAG, and
+
+4
+00:00:10,980 --> 00:00:13,400
+how it's executed within a session.
+
+5
+00:00:13,400 --> 00:00:18,610
+We said that a DAG consists of tensors and
+operations on those tensors.
+
+6
+00:00:18,610 --> 00:00:21,900
+Now, let's look in more
+detail at what tensors are.
+
+7
+00:00:23,120 --> 00:00:27,080
+A tensor, remember,
+is a n-dimensional array of data.
+
+8
+00:00:27,080 --> 00:00:31,070
+When you create a tensor,
+you typically specify its shape.
+
+9
+00:00:31,070 --> 00:00:34,530
+Well occasionally,
+you will not specify the shape completely.
+
+10
+00:00:34,530 --> 00:00:37,580
+For example, the first element of
+the shape could be variable, but
+
+11
+00:00:37,580 --> 00:00:40,170
+let's ignore that special case for now.
+
+12
+00:00:40,170 --> 00:00:45,435
+So here, I'm creating a tf.constant(3).
+
+13
+00:00:45,435 --> 00:00:47,670
+This is 0 rank tensor.
+
+14
+00:00:47,670 --> 00:00:50,370
+It's just a number, it's a scalar.
+
+15
+00:00:50,370 --> 00:00:57,370
+The shape, when you look at the tensor,
+debug output, will be simply ().
+
+16
+00:00:57,370 --> 00:00:58,350
+It's 0 rank.
+
+17
+00:00:59,380 --> 00:01:06,720
+On the other hand, what if a past
+on the list 3, 5, 7 to tf.constant?
+
+18
+00:01:06,720 --> 00:01:09,700
+Now, we have a one-dimensional tensor.
+
+19
+00:01:09,700 --> 00:01:12,350
+We have a vector, so I can go on.
+
+20
+00:01:12,350 --> 00:01:14,660
+So here, I'm passing a 2D array, 3, 5,
+
+21
+00:01:14,660 --> 00:01:19,700
+7 in the first row and 4,
+6, 8 in the second row.
+
+22
+00:01:19,700 --> 00:01:23,899
+The shape of the resulting tensor is 2, 3,
+
+23
+00:01:23,899 --> 00:01:27,442
+2 rows, 3 columns, the rank is 2.
+
+24
+00:01:27,442 --> 00:01:32,610
+You can think of a matrix as
+essentially a stack of 1D tensors.
+
+25
+00:01:32,610 --> 00:01:36,774
+The first tensor is a vector 3, 5, 7, and
+
+26
+00:01:36,774 --> 00:01:43,143
+the second 1D tensor that's being
+stacked is a vector 4, 6, 8.
+
+27
+00:01:43,143 --> 00:01:47,896
+We can similarly create a 3D
+matrix by stacking 2D matrices,
+
+28
+00:01:47,896 --> 00:01:50,340
+one on top of each other.
+
+29
+00:01:50,340 --> 00:01:58,010
+You see me here stacking the 3, 5, 7,
+etc., matrix on top of the 1, 2, 3 matrix.
+
+30
+00:01:58,010 --> 00:02:01,592
+Since I stacked 2, 2 by 3 matrices,
+
+31
+00:02:01,592 --> 00:02:06,160
+the resulting shape of the tensor is 2,
+2, 3.
+
+32
+00:02:07,210 --> 00:02:10,990
+Of course,
+I can do the stacking in code instead,
+
+33
+00:02:10,990 --> 00:02:13,740
+instead of counting all those parenthesis.
+
+34
+00:02:13,740 --> 00:02:20,786
+So here, x1 is a constant and it's
+constructed from a simple list 2, 3, 4.
+
+35
+00:02:20,786 --> 00:02:24,791
+So that makes it a vector of length 3.
+
+36
+00:02:24,791 --> 00:02:30,126
+x2 is constructed by
+stacking x1 on top of x1,
+
+37
+00:02:30,126 --> 00:02:33,790
+so that makes it a 2 by 3 matrix.
+
+38
+00:02:33,790 --> 00:02:40,420
+x3 is constructed by stacking
+four x2s on top of each other.
+
+39
+00:02:40,420 --> 00:02:44,910
+And since each x2 was a 2 by 3 matrix,
+
+40
+00:02:44,910 --> 00:02:51,182
+this makes x3 a 3D tensor
+whose shape is 4 by 2 by 3.
+
+41
+00:02:51,182 --> 00:02:56,491
+x4 is constructed by
+stacking x3 on top of x3,
+
+42
+00:02:56,491 --> 00:03:01,931
+so that makes it two of
+those 4 by 2 by 3 tensors,
+
+43
+00:03:01,931 --> 00:03:07,256
+or a 4D tensor that is of shape 2,
+4, 2, 3.
+
+44
+00:03:07,256 --> 00:03:11,607
+So you can stack tensors on top of
+each other to create tensors of higher
+
+45
+00:03:11,607 --> 00:03:13,320
+dimensions.
+
+46
+00:03:13,320 --> 00:03:20,295
+You can also slice a tensor to pull
+out lower dimensional tensors.
+
+47
+00:03:20,295 --> 00:03:22,710
+So here, what is the shape of x?
+
+48
+00:03:24,690 --> 00:03:26,040
+It's 2 by 3.
+
+49
+00:03:26,040 --> 00:03:28,050
+2 rows, 3 columns.
+
+50
+00:03:29,410 --> 00:03:32,290
+Now take a look at the code for y.
+
+51
+00:03:32,290 --> 00:03:34,910
+It's slicing x.
+
+52
+00:03:34,910 --> 00:03:39,520
+The colon indicates that we're
+getting all the rows, and
+
+53
+00:03:39,520 --> 00:03:45,340
+the one that indicates that we're
+getting just column one, which because
+
+54
+00:03:45,340 --> 00:03:51,480
+Python is zero indexed, is actually
+the second column 01, so second column.
+
+55
+00:03:51,480 --> 00:03:58,160
+So when we evaluate y, we get the value
+of the second column for all the rows.
+
+56
+00:03:58,160 --> 00:04:01,690
+And that's why 5, 6 is being printed out.
+
+57
+00:04:03,720 --> 00:04:09,222
+So quick quiz, what would x[1,
+
+58
+00:04:09,222 --> 00:04:13,593
+:], what would that do?
+
+59
+00:04:13,593 --> 00:04:20,163
+How about x[1, 0:2], what would that do?
+
+60
+00:04:22,180 --> 00:04:23,810
+So answers?
+
+61
+00:04:23,810 --> 00:04:29,090
+When you do x[1, : ],
+you will get the second row.
+
+62
+00:04:29,090 --> 00:04:30,200
+Remember zero indexing?
+
+63
+00:04:30,200 --> 00:04:31,820
+So one is the second row?
+
+64
+00:04:31,820 --> 00:04:33,990
+And you will get all the columns.
+
+65
+00:04:33,990 --> 00:04:38,435
+So we'll get [4, 6, 8].
+
+66
+00:04:38,435 --> 00:04:41,190
+So which columns will 0:2 pull?
+
+67
+00:04:42,760 --> 00:04:47,410
+Now, this is very similar to
+the x range function in Python.
+
+68
+00:04:47,410 --> 00:04:52,500
+It means, start at 0 and
+go up 2, but not including 2.
+
+69
+00:04:52,500 --> 00:04:54,010
+So this means, 0 and 1.
+
+70
+00:04:55,070 --> 00:04:59,225
+And this means that you will get both
+the rows, so it's actually the same thing.
+
+71
+00:04:59,225 --> 00:05:02,750
+We will still get 4, 6, 8 on this data.
+
+72
+00:05:04,826 --> 00:05:07,420
+Once you have the data into a tensor,
+
+73
+00:05:07,420 --> 00:05:11,360
+you can take all that data and
+it can reshape the tensor.
+
+74
+00:05:12,440 --> 00:05:16,020
+So x is a 2D tensor, what's its shape?
+
+75
+00:05:17,620 --> 00:05:19,110
+That's right, 2 by 3.
+
+76
+00:05:20,110 --> 00:05:24,420
+If I reshape it as 3, 2, what will happen?
+
+77
+00:05:26,350 --> 00:05:29,840
+What I want is that,
+I want the six values in x, but
+
+78
+00:05:29,840 --> 00:05:34,140
+I want them put into 3 rows and 2 columns.
+
+79
+00:05:34,140 --> 00:05:39,270
+So essentially, Python will read
+the input tensor row by row, and
+
+80
+00:05:39,270 --> 00:05:41,810
+put the numbers into the output tensor.
+
+81
+00:05:41,810 --> 00:05:45,910
+So it would pick the first two values and
+put it in the first row, so
+
+82
+00:05:45,910 --> 00:05:47,370
+we get 3 and 5.
+
+83
+00:05:47,370 --> 00:05:52,480
+The next two values, 7 and 4,
+will go in to the second row,
+
+84
+00:05:52,480 --> 00:05:56,220
+and the last two values, 6 and
+8, go into the third row.
+
+85
+00:05:56,220 --> 00:05:57,980
+So that's what reshaping does.
+
+86
+00:05:59,180 --> 00:06:02,150
+We can reshape, and we can slice.
+
+87
+00:06:02,150 --> 00:06:06,220
+So here,
+I'm reshaping it to 3 by 2 as before, and
+
+88
+00:06:06,220 --> 00:06:12,250
+then I'm slicing it, so I'm getting
+only the second row and all the columns.
+
+89
+00:06:12,250 --> 00:06:15,392
+And that's why I get 7, 4.

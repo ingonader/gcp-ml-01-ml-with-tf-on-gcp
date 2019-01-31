@@ -1,0 +1,49 @@
+Entrenamos modelos en nuestros
+navegadores con el descenso de gradientes. Y los modelos que creamos pudieron aprender
+relaciones no lineales complejas mediante una jerarquía
+adquirida de atributos. Sin embargo, al final
+de la sección descubrimos que nuestro enfoque
+actual tenía problemas. Las consecuencias incluyen
+tiempos de entrenamiento extensos mínimos subóptimos
+y mínimos inapropiados. En esta sección, revisaremos
+qué es exactamente un mínimo inapropiado por qué existe y cómo las métricas
+de rendimiento ayudan con los resultados. Entonces, ¿qué es un mínimo inapropiado? Piensen en puntos en el espacio
+de parámetros que reflejan estrategias que no se generalizan bien que no reflejan la relación
+real que se modela o ambos. Por ejemplo, supongamos
+que entrenamos un modelo para predecir si hay un espacio libre a partir
+de la imagen de un estacionamiento. Una estrategia inapropiada sería predecir
+que todos los espacios están ocupados. En un conjunto compuesto por una cantidad
+igual de ejemplos positivos y negativos ese tipo de estrategia no podría
+superar el proceso de optimización. Pero cuando los conjuntos de datos
+están sesgados y tienen más de una clase este tipo de estrategia
+se vuelve mucho más atractiva. Esa estrategia no hace
+el esfuerzo por comprender la relación real
+entre los atributos y la etiqueta que podría tener algo que ver con las características
+visuales de un espacio vacío. Por lo tanto, no generalizará bien en nuevos estacionamientos donde
+la relación subyacente será la misma pero la proporción
+de espacios vacíos tal vez no lo sea. Es tentador pensar
+en la existencia de mínimos inapropiados como un problema
+con nuestra función de pérdida. Si tan solo tuviéramos
+la función de pérdida perfecta una que recompense a las buenas
+estrategias y que penalice a las malas la vida sería magnífica. Desafortunadamente, no es posible. Siempre habrá una brecha
+entre las métricas que nos importan y las métricas que funcionan
+bien con el descenso de gradientes. Por ejemplo, supongamos que seguimos
+clasificando estacionamientos. Una función de pérdida ideal
+minimizaría las predicciones incorrectas. Sin embargo, sería una función por partes. Es decir, el rango de valores que podría
+tomar serían números enteros y no reales. Increíblemente, esto es un problema. El problema
+se reduce a la diferencialidad. El descenso de gradientes realiza
+cambios incrementales en los pesos. Esto requiere que podamos
+diferenciar los pesos de la pérdida. Sin embargo, las funciones
+por partes tienen brechas en sus rangos. Y aunque TensorFlow las puede diferenciar la superficie de pérdida resultante tendrá discontinuidades que harán
+que recorrerla sea más desafiante. Así que, tenemos
+que reformular el problema. En vez de buscar la función
+de pérdida ideal durante el entrenamiento usaremos un nuevo tipo de métrica
+después de finalizar el entrenamiento. Y este nuevo tipo
+de métrica nos permitirá rechazar modelos que se hayan
+conformado con mínimos inapropiados. Se llaman métricas de rendimiento. Tienen dos beneficios
+sobre las funciones de pérdida. Primero, son más fáciles de comprender. A menudo son combinaciones
+sencillas de estadísticas contables. Segundo, están directamente
+conectadas con los objetivos comerciales. Este es un punto más lamentable pero se reduce al hecho
+de que, aunque la pérdida y el objetivo comercial que
+se busca suelen estar de acuerdo no siempre será así. A veces, será posible disminuir la pérdida o avanzar poco hacia el objetivo comercial. Revisaremos tres métricas de rendimiento matrices de confusión,
+precisión y recuperación y cuándo usarlas.

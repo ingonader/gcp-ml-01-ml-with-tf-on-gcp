@@ -1,0 +1,67 @@
+Attaquons ensemble
+notre troisième atelier de programmation. Cette fois, nous allons parler
+de la fonction "train_and_evaluate". Comme d'habitude, commençons
+par rechercher les fichiers de l'atelier. Accédez à cloud.google.com/console. Connectez-vous
+avec votre compte d'atelier. Ensuite, cliquez sur ce bouton
+pour ouvrir Cloud Shell, puis reconnectez-vous à votre instance
+Datalab en saisissant "datalab connect", suivi du nom de votre instance. Dans mon cas, "mylab". Une fois connecté,
+cliquez sur le bouton "Web preview", puis spécifiez
+le port "8081" utilisé par Datalab. Nous sommes maintenant dans l'interface
+de bloc-notes que nous connaissons déjà. Créons un nouveau bloc-notes
+pour saisir quelques commandes bash et récupérer notre code, en saisissant "git clone", suivi du dépôt. Dès que c'est fait,
+notre dépôt apparaît ici, sous le nom "training-data-analyst". Les fichiers de ce troisième atelier
+de programmation se trouvent dans "training-data-analyst",
+"courses", "machine_learning", "deepdive", et enfin "tensorflow". Cet atelier s'appelle "d_traineval". Ouvrons-le. C'est ici que nous allons apporter
+la touche finale à notre modèle. Allons-y. Il n'y a rien à changer dans l'interface
+de chargement des données. Nous l'avons déjà fait. Nous utilisons des ensembles de données
+pour charger des données CSV à partir d'un ensemble
+de fichiers CSV partitionnés. Nous n'avons pas non plus
+à changer nos caractéristiques. Elles sont correctes. Voici une nouvelle fonction,
+"serving_input". Elle va nous servir à préparer
+notre modèle pour le déploiement. Lorsque le modèle diffusera
+des prédictions à partir d'une API REST, il recevra des données
+comme un flux JSON. Heureusement, l'API ne nous oblige pas
+à utiliser un flux JSON qui ressemble exactement
+à nos données d'entraînement CSV. La fonction "serving_input" est là
+pour faire les adaptations nécessaires. Pourtant, ici, vous définissez
+la forme attendue de votre flux JSON, avec les noms que vous attendez, et la forme
+et le type de valeurs spécifiés comme des espaces réservés TensorFlow. Ces espaces réservés recevront
+les valeurs lues à partir du flux JSON. Dans ce cas, disons que nous n'avons pas
+besoin de transformations supplémentaires. Nos caractéristiques sont exactement
+identiques aux espaces réservés que nous venons de définir. Notre modèle comprend ce dictionnaire
+de caractéristiques en l'état. Nous sommes presque prêts pour l'appel,
+l'entraînement et l'évaluation. Il ne manque plus
+qu'une petite étape de configuration. Nous choisissons un modèle,
+ici "LinearRegressor". Nous définissons une fonction "TrainSpec". C'est là que la fonction
+"train_input" est intégrée. Nous définissons aussi
+un exportateur, ici "LatestExporter", qui indique que nous voulons exporter
+le modèle prêt pour le déploiement à la fin de l'entraînement. L'exportateur doit connaître
+la fonction "serving_input" que nous venons de définir ici. Puis nous définissons
+notre fonction "EvalSpec". C'est là que la fonction d'entrée
+d'évaluation des données est ajoutée. Et comme les évaluations et exportations
+se produisent uniquement après les points de contrôle, il est judicieux de transmettre
+aussi notre exportateur ici. Nous sommes prêts,
+et la configuration est terminée. Démarrons TensorBoard. Ici. TensorBoard est démarré. Nous pouvons cliquer ici pour y accéder. Notre tableau de bord
+est vide pour l'instant. Nous n'avons pas encore
+commencé l'entraînement. C'est parti. Exécutons cette fonction
+"train_and_evaluate". Les métriques générées
+pendant l'entraînement sont écrites dans notre répertoire de sortie habituel,
+et TensorBoard doit savoir où les trouver. C'est ce que nous avons spécifié
+en lançant cette fonction ici. Maintenant que nous avons
+commencé l'entraînement, nous pouvons voir
+nos journaux d'entraînement ici, et nos courbes doivent apparaître
+dans TensorBoard. Et voilà, elles sont ici. Voici la perte moyenne. Et au bout d'un moment, la perte moyenne
+calculée sur nos ensembles de données d'entraînement et d'évaluation
+commence à s'afficher, car l'entraînement et l'évaluation
+se font en même temps. Ce modèle est toujours en entraînement. Attendons la fin de l'entraînement. Pendant l'entraînement, TensorBoard
+peut s'actualiser automatiquement. Pour cela, sélectionnez cette option,
+"Reload data every 30s". Sinon, cliquez sur le bouton
+d'actualisation pour actualiser les données et voir l'évolution
+de vos courbes pendant l'entraînement. Le modèle est entraîné. Si j'actualise une dernière fois, je peux
+voir les courbes d'entraînement finales. Et voilà. Il y a beaucoup de choses à voir
+dans ces courbes d'entraînement, comme nous le verrons plus tard. Pour le moment, nous voyons juste que l'entraînement du modèle
+n'est pas très efficace. La perte de validation ne s'améliore pas,
+mais nous le savions déjà. Maintenant que le code fonctionne,
+les données sont chargées, et nous pouvons voir
+ce qu'il se passe dans TensorBoard. Nous sommes prêts à faire
+un peu de science des données.

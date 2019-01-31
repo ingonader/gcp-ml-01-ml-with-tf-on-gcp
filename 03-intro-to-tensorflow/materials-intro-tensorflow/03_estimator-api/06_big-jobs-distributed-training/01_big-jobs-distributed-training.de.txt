@@ -1,0 +1,79 @@
+Jetzt sprechen wir über große ML-Jobs und die Vorteile von verteiltem Training. Wir können den ersten Punkt
+unserer Checkliste von Problemen realer Modelle abhaken und zum zweiten
+übergehen, der Geschwindigkeit. In der Realität trainieren
+Modelle stunden-, tage-, wochenlang. Wenn die Dauer
+mehrere Wochen Training erreicht, geben wir bei Google auf. Die Optimierung eines Modells unter
+diesen Bedingungen ist nicht möglich. Sie müssen es auf einem
+Cluster verteilen, um es zu beschleunigen. Von einer Maschine auf viele umzusteigen, mag sich kompliziert anhören,
+aber wie wir sehen werden, verwalten die Estimator API
+und die ML-Engine den Cluster automatisch, sodass die Verteilung
+ohne Setup beginnen kann. Das verteilte Training
+wird mit der Funktion "estimator.train_and_evaluate"
+implementiert. Der Name der Funktion
+zeigt auch, dass die Validierung und Überwachung
+eines großen Trainingsjobs wichtig ist. Wir werden das später sehen. Konzentrieren wir
+uns jetzt auf die Verteilung. Das traditionelle Verteilungsmodell zum Trainieren neuronaler Netzwerke
+wird als Datenparallelismus bezeichnet. Ihr Modell wird auf
+mehreren Workern repliziert. Diese laden bei jedem Trainingsschritt
+ein Batch von Trainingsdaten, hoffentlich jeweils ein anderes,
+berechnen Gradienten und senden sie an einen
+oder mehrere zentrale Parameterserver, die alle Gewichtungen und Verzerrungen
+des neuronalen Netzwerkmodells enthalten. Die Gradienten werden
+angewendet, sobald sie ankommen. Ändern Sie
+die Gewichtungen und Verzerrungen, wird das aktualisierte Modell für den
+nächsten Trainingsschritt an die Worker gesendet. Es gibt viel zu tun, bis es soweit ist. Worker müssen gestartet werden, ihre Kopie des Modells erhalten, Datenströme zwischen
+Workern und Parameterservern müssen eingerichtet werden. Das System muss
+Ausnahmen und Fehler behandeln und Worker von dort wieder starten, wo sie aufgehört haben,
+als der Vorfall auftrat, und Checkpoints werden
+auch komplizierter, wenn so viel passiert. Zum Glück ist für die Verteilung nur das
+Schreiben einer Konfigurationsdatei nötig. Der gesamte Boilerplate-Code
+ist bereits in der Estimator API und der Funktion
+"estimator.train_and_evaluate" enthalten. Sie müssen vier Dinge tun. Wählen Sie Ihren Estimator, stellen Sie
+eine Ausführungskonfiguration bereit und fügen Sie Trainings- und Testdaten
+über TrainSpec und EvalSpec ein. Sobald das eingerichtet ist, rufen Sie "train_and_evaluate" auf. Wenn Sie die ML-Engine verwenden und die Clustergröße angegeben haben, setzt das verteilte Training ein. Schauen wir uns das genauer an. Zuerst die Ausführungskonfiguration. Hier geben Sie das
+Ausgabeverzeichnis für Checkpoints an. Sie können es immer noch direkt festlegen, wenn Sie den Estimator instanziieren, aber es ist sauberer, ihn hier zusammen mit
+anderen Checkpointeinstellungen anzugeben. Hier legen Sie auch die Häufigkeit fest,
+mit der Sie Checkpoints setzen möchten, und auch die Häufigkeit Ihrer
+Training-Logs und Zusammenfassungen. Wir werden später dazu kommen. Mit TrainSpec übergeben Sie Ihre
+Dateneingabefunktion für Trainingsdaten. Bitte verwenden Sie die Dataset API,
+damit alles richtig eingerichtet ist. Optional können Sie das Training auf 
+eine Anzahl von Schritten beschränken. Standardmäßig wird trainiert,
+bis das Eingabedataset erschöpft ist. Das könnte nach mehreren Schritten
+passieren, wenn Sie es so einrichten. Mit EvalSpec
+verbinden Sie Ihr Testdataset. Wenn Sie sehen möchten,
+wie gut Ihr Modell arbeitet, müssen Sie das an einem Dataset messen,
+das nicht im Training enthalten ist. In der Regel eine Teilmenge der Daten,
+die zum Testen zurückgehalten wurden. Die Testdaten werden über
+eine eval-Eingabefunktion eingegeben. Verwenden Sie bitte unbedingt
+die Dataset API, um sie einzugeben. Sie können auch angeben, wie viele
+Testdatenbatches Sie auswerten möchten, und wie häufig Validierungen erfolgen. Ein wichtiges Detail der Implementierung
+von verteiltem Training ist, dass die Validierung
+auf einem dedizierten Server erfolgt, der das Modell vom letzten Checkpoint
+aus aufruft und dann "eval" ausführt. Daher können Validierungen
+nicht häufiger erfolgen, als Checkpoints gemäß der
+Ausführungskonfiguration gesetzt werden. Sie können jedoch seltener erfolgen, wenn Sie in EvalSpec
+den Parameter "throttle" hinzufügen. Wie Sie sehen, hat EvalSpec auch
+einen Parameter für Exporter. Sie steuern, wie ein Modell für
+die Produktionumgebung exportiert wird. Wir behandeln diese im nächsten Kapitel. Das haben wir bisher: Sie instanziieren einen Estimator, geben ihm eine Ausführungskonfiguration,
+in der Sie festlegen können, wie oft und in welchem ​​Ordner Checkpoints und andere
+Überwachungsdaten aufgezeichnet werden, Sie erstellen dann ein Trainings-
+und ein Validierungsdataset, die Sie über die Dateneingabefunktionen
+in TrainSpec und EvalSpec einspeisen, Sie sind dann bereit
+für Training und Validierung. Ich möchte etwas über eine wichtige praktische Überlegung sagen, 
+das Datenmischen. Der Algorithmus für den stochastischen
+Gradientenabfall, den neuronale Netze zum Trainieren verwenden,
+funktioniert nur mit gut gemischten Daten. Die Dataset API
+hat hierfür eine Mischfunktion, aber manche verwenden sie
+vielleicht nicht, weil sie denken, dass ihr Dataset auf der
+Festplatte bereits gut gemischt ist. Seien Sie beim
+verteilten Training vorsichtig. Selbst mit einem auf
+der Festplatte gut gemischten Dataset, wenn alle Ihre Worker
+direkt aus diesem Dataset laden, sehen sie zur selben Zeit
+dasselbe Datenbatch und erzeugen dieselben Gradienten. Die Vorteile von verteiltem
+Training gehen verloren. Alle Worker arbeiten
+an genau denselben Daten. Die Funktion Dataset.shuffle mischt die Daten für jeden Worker einzeln, der einen anderen
+zufälligen Seed verwendet. Nutzen Sie es also bitte. Auch, wenn Ihre Daten
+bereits auf der Festplatte gemischt sind. Und wenn Sie ganz sicher gehen möchten, können Sie auch die Liste der Dateinamen
+in Ihrem kürzeren Dataset mischen. "list_files" gibt ein Dataset
+mit Dateinamen zurück. Wenden Sie einfach
+die Funktion "shuffle" darauf an.

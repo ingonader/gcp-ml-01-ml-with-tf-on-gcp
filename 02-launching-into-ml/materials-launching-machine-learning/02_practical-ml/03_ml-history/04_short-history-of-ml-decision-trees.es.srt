@@ -1,0 +1,495 @@
+1
+00:00:00,400 --> 00:00:03,935
+Los algoritmos de árbol, como ID3 y C4.5
+
+2
+00:00:03,935 --> 00:00:06,420
+se inventaron
+en las décadas de los 80 y 90.
+
+3
+00:00:06,420 --> 00:00:09,655
+Funcionan mejor con ciertos tipos
+de problemas de regresión lineal
+
+4
+00:00:09,655 --> 00:00:11,770
+y para los humanos
+es fácil interpretarlos.
+
+5
+00:00:11,770 --> 00:00:14,385
+Encontrar la división óptima
+cuando se crean los árboles
+
+6
+00:00:14,385 --> 00:00:16,060
+es un problema NP-complejo.
+
+7
+00:00:16,060 --> 00:00:18,520
+Por lo tanto,
+se usaron algoritmos voraces
+
+8
+00:00:18,520 --> 00:00:21,910
+para crear árboles
+lo más cercanos posible a lo óptimo.
+
+9
+00:00:22,450 --> 00:00:25,085
+Crean una superficie lineal
+de decisión por partes
+
+10
+00:00:25,085 --> 00:00:28,085
+que es básicamente
+lo que proporciona una capa de ReLU.
+
+11
+00:00:28,085 --> 00:00:32,755
+Pero con DNN o redes neuronales profundas,
+cada capa de ReLU se combina para formar
+
+12
+00:00:32,755 --> 00:00:36,855
+una superficie de decisión hiperplana,
+que puede ser mucho más poderosa.
+
+13
+00:00:37,205 --> 00:00:40,910
+Les pregunto, ¿por qué las DNN
+son mejores que los árboles de decisión?
+
+14
+00:00:40,910 --> 00:00:43,115
+Primero, hablemos
+de los árboles de decisión.
+
+15
+00:00:44,065 --> 00:00:48,110
+Los árboles de decisión son los algoritmos
+de aprendizaje automático más intuitivos.
+
+16
+00:00:48,110 --> 00:00:51,615
+Se pueden usar tanto para la clasificación
+como para la regresión.
+
+17
+00:00:51,995 --> 00:00:53,940
+Imaginen que tienen un conjunto de datos
+
+18
+00:00:53,940 --> 00:00:57,375
+y quieren determinar cómo se dividen
+los datos en diferentes depósitos.
+
+19
+00:00:57,375 --> 00:01:00,620
+Lo primero que deben hacer
+es pensar en preguntas interesantes
+
+20
+00:01:00,620 --> 00:01:02,400
+para consultar el conjunto de datos.
+
+21
+00:01:02,400 --> 00:01:04,030
+Veamos un ejemplo.
+
+22
+00:01:05,530 --> 00:01:09,260
+Tenemos el conocido problema
+de predecir quiénes murieron
+
+23
+00:01:09,260 --> 00:01:11,445
+en la catástrofe del Titanic,
+o sobrevivieron.
+
+24
+00:01:11,445 --> 00:01:16,465
+Había toda clase de personas,
+de diferentes orígenes, situaciones, etc.
+
+25
+00:01:16,465 --> 00:01:19,170
+Queremos saber si alguno
+de esos atributos posibles
+
+26
+00:01:19,170 --> 00:01:21,040
+pueden particionar mis datos
+
+27
+00:01:21,040 --> 00:01:25,580
+de manera que podamos predecir
+con gran exactitud quiénes sobrevivieron.
+
+28
+00:01:26,380 --> 00:01:30,225
+Un primer atributo
+podría ser el género del pasajero.
+
+29
+00:01:30,225 --> 00:01:33,675
+Entonces, podría preguntar:
+¿es el género masculino?
+
+30
+00:01:34,085 --> 00:01:37,300
+Entonces, divido los datos
+para que los varones estén en un depósito
+
+31
+00:01:37,300 --> 00:01:39,310
+y las otras personas en otro.
+
+32
+00:01:39,670 --> 00:01:42,370
+El 64% de los datos
+se fueron al depósito de los varones
+
+33
+00:01:42,370 --> 00:01:43,985
+y el 36% al otro.
+
+34
+00:01:44,635 --> 00:01:47,935
+Continuemos con la partición
+del depósito de los varones por ahora.
+
+35
+00:01:48,135 --> 00:01:52,215
+Otra pregunta que podría hacer
+es en qué clase estaba cada pasajero.
+
+36
+00:01:52,695 --> 00:01:56,790
+Luego de la partición,
+el 14% ahora son varones
+
+37
+00:01:56,790 --> 00:01:58,520
+de la clase más baja
+
+38
+00:01:58,520 --> 00:02:03,260
+mientras que el 50% son varones
+de las dos clases más altas.
+
+39
+00:02:03,750 --> 00:02:07,630
+El mismo tipo de partición podría
+continuar en la rama femenina del árbol.
+
+40
+00:02:08,130 --> 00:02:11,275
+Si lo analizamos,
+dividir los géneros en dos ramas
+
+41
+00:02:11,275 --> 00:02:14,505
+para el desarrollo del árbol de decisión
+es una forma de hacerlo
+
+42
+00:02:14,505 --> 00:02:17,355
+porque solo hay dos valores posibles.
+
+43
+00:02:17,355 --> 00:02:19,980
+Pero, ¿cómo decidió dividir
+las clases de los pasajeros
+
+44
+00:02:19,980 --> 00:02:25,320
+en una rama de clase a la izquierda
+y dos ramas de clases a la derecha?
+
+45
+00:02:25,320 --> 00:02:30,565
+Por ejemplo, en el árbol de clasificación
+y regresión simple, o algoritmo CART,
+
+46
+00:02:30,565 --> 00:02:33,890
+el algoritmo trata de elegir un par
+compuesto por un atributo
+
+47
+00:02:33,890 --> 00:02:37,650
+y un umbral que, cuando se dividan,
+producirán los subconjuntos más puros.
+
+48
+00:02:38,060 --> 00:02:40,720
+En los árboles de clasificación,
+una métrica común
+
+49
+00:02:40,720 --> 00:02:43,730
+es la impureza de Gini,
+pero también la entropía.
+
+50
+00:02:44,250 --> 00:02:48,855
+Una vez que encuentra una buena división,
+busca otro par umbral-atributo
+
+51
+00:02:48,855 --> 00:02:51,020
+y también lo divide en subconjuntos.
+
+52
+00:02:51,230 --> 00:02:54,255
+Este proceso continúa
+recursivamente hasta alcanzar
+
+53
+00:02:54,255 --> 00:02:57,375
+la profundidad máxima
+configurada del árbol
+
+54
+00:02:57,375 --> 00:03:00,540
+o hasta que no existan más divisiones
+para reducir la impureza.
+
+55
+00:03:00,540 --> 00:03:03,165
+En los árboles de regresión,
+el error cuadrático medio
+
+56
+00:03:03,165 --> 00:03:04,970
+es una métrica común de división.
+
+57
+00:03:04,970 --> 00:03:08,945
+¿Suena familiar la forma cómo se elige
+dividir los datos en dos subconjuntos?
+
+58
+00:03:09,455 --> 00:03:12,715
+Cada división es básicamente
+un clasificador lineal binario
+
+59
+00:03:12,715 --> 00:03:15,560
+que encuentra un hiperplano
+que corta la dimensión
+
+60
+00:03:15,560 --> 00:03:19,375
+de un atributo en cierto valor,
+que es el umbral escogido para minimizar
+
+61
+00:03:19,375 --> 00:03:21,890
+los miembros de la clase
+que se sitúan en el lado
+
+62
+00:03:21,890 --> 00:03:23,815
+de las otras clases en el hiperplano.
+
+63
+00:03:24,275 --> 00:03:28,100
+Crear estos hiperplanos recursivamente
+en un árbol es análogo a las capas
+
+64
+00:03:28,100 --> 00:03:31,155
+de nodos de clasificadores lineales
+en una red neuronal.
+
+65
+00:03:31,155 --> 00:03:32,685
+Muy interesante.
+
+66
+00:03:32,935 --> 00:03:35,610
+Ahora que sabemos cómo se crean
+los árboles de decisión,
+
+67
+00:03:35,610 --> 00:03:37,810
+desarrollemos este árbol un poco más.
+
+68
+00:03:38,580 --> 00:03:42,205
+Tal vez haya un umbral de edad
+que me ayudaría a dividir mis datos
+
+69
+00:03:42,205 --> 00:03:44,050
+en este problema de clasificación.
+
+70
+00:03:44,050 --> 00:03:47,675
+Podría preguntar: ¿es la edad
+mayor que 17 años y medio?
+
+71
+00:03:48,205 --> 00:03:51,610
+Si analizo la rama de la clase más baja
+de la rama superior de varones,
+
+72
+00:03:51,610 --> 00:03:54,715
+13% de los pasajeros
+tenían 18 años o más,
+
+73
+00:03:54,715 --> 00:03:57,015
+mientras que solo 1% eran más jóvenes.
+
+74
+00:03:57,435 --> 00:03:59,680
+Si analizo las clases
+asociadas con cada nodo,
+
+75
+00:03:59,680 --> 00:04:02,555
+por el momento,
+solo esta en la rama de varones
+
+76
+00:04:02,555 --> 00:04:04,930
+se clasifica como de sobrevivientes.
+
+77
+00:04:04,930 --> 00:04:08,110
+Podemos extender la profundidad
+y elegir diferentes atributos
+
+78
+00:04:08,110 --> 00:04:12,130
+para seguir expandiendo el árbol
+hasta que cada nodo tenga solo pasajeros
+
+79
+00:04:12,130 --> 00:04:14,600
+que sobrevivieron o murieron.
+
+80
+00:04:15,120 --> 00:04:19,299
+No obstante, esto es un problema,
+porque básicamente estoy memorizando
+
+81
+00:04:19,299 --> 00:04:21,904
+mis datos y ajustando el árbol
+perfectamente a ellos.
+
+82
+00:04:22,154 --> 00:04:25,645
+En la práctica, debemos generalizarlo
+a nuevos datos
+
+83
+00:04:25,645 --> 00:04:28,680
+y un modelo que memorizó
+el conjunto de datos de entrenamiento
+
+84
+00:04:28,680 --> 00:04:31,455
+probablemente no funcionará
+muy bien fuera de él.
+
+85
+00:04:31,455 --> 00:04:35,420
+Hay algunos métodos para regularizarlo,
+como citar el número mínimo de muestras
+
+86
+00:04:35,420 --> 00:04:38,250
+por nodo hoja,
+un máximo de nodos hoja
+
+87
+00:04:38,250 --> 00:04:40,325
+o una cantidad máxima de atributos.
+
+88
+00:04:40,325 --> 00:04:44,755
+También pueden crear un árbol completo
+y podar los nodos innecesarios.
+
+89
+00:04:44,755 --> 00:04:47,880
+Para aprovechar al máximo
+los árboles, lo mejor es combinarlos
+
+90
+00:04:47,880 --> 00:04:50,685
+en bosques,
+de los que hablaremos pronto.
+
+91
+00:04:51,595 --> 00:04:56,600
+En un árbol de decisión de clasificación,
+¿en qué consiste cada decisión o nodo?
+
+92
+00:04:59,270 --> 00:05:02,930
+La respuesta correcta es:
+C. Clasificador lineal de un atributo.
+
+93
+00:05:03,220 --> 00:05:07,220
+Recuerden que, en cada nodo en el árbol,
+el algoritmo elige un par compuesto
+
+94
+00:05:07,220 --> 00:05:10,670
+por un atributo y un umbral
+para dividir los datos en dos subconjuntos
+
+95
+00:05:10,670 --> 00:05:12,515
+y continua el proceso recursivamente.
+
+96
+00:05:12,815 --> 00:05:15,740
+Muchos atributos se dividen,
+suponiendo que se configuró
+
+97
+00:05:15,740 --> 00:05:18,750
+una profundidad máxima mayor que uno,
+pero solo un atributo
+
+98
+00:05:18,750 --> 00:05:20,240
+por profundidad a la vez.
+
+99
+00:05:20,240 --> 00:05:22,965
+A. Clasificador lineal
+de todos los atributos
+
+100
+00:05:22,965 --> 00:05:26,540
+es incorrecto, porque cada nodo
+divide solo un atributo a la vez.
+
+101
+00:05:26,540 --> 00:05:28,540
+B. Minimizador del error cuadrático medio
+
+102
+00:05:28,540 --> 00:05:30,620
+y D. Minimizador
+de la distancia euclidiana
+
+103
+00:05:30,620 --> 00:05:33,090
+son prácticamente lo mismo
+y se usan en la regresión
+
+104
+00:05:33,090 --> 00:05:34,205
+no en la clasificación.

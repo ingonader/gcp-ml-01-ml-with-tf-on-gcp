@@ -1,0 +1,66 @@
+Prenons l'exemple de l'immobilier. Pouvons-nous prédire
+le prix d'une propriété ? Nous devons d'abord
+choisir nos caractéristiques, les données sur lesquelles nous allons
+baser nos prédictions. Pourquoi ne pas essayer de construire
+un modèle qui prédit le prix d'une maison ou d'un appartement
+en fonction de sa taille ? Voici nos caractéristiques : 1) le nombre de pieds carrés, et 2) la catégorie (maison ou appartement). Voici comment mettre cela en œuvre. Nous pouvons utiliser l'API
+de colonnes de caractéristiques pour définir nos caractéristiques : une colonne numérique
+pour le nombre de pieds carrés, et une colonne catégorique
+pour le type de propriété, avec deux catégories possibles pour
+ce modèle simple (maison ou appartement). Nous pouvons maintenant instancier
+un régresseur linéaire, un des estimateurs prédéfinis,
+pour ces caractéristiques. Un régresseur est un modèle qui
+donne un nombre, dans notre cas
+le prix de vente estimé d'une propriété. Pourquoi des colonnes
+de caractéristiques ? Abordons le sujet plus en détail. Un régresseur linéaire est un modèle
+qui fonctionne sur un vecteur de données. Il calcule une somme pondérée
+de toutes les données d'entrée, et peut être entraîné pour ajuster
+les pondérations selon votre problème, ici la prédiction des prix de vente. Mais comment regrouper nos données
+dans le vecteur d'entrée unique que le régresseur linéaire attend ? Cela dépend des données
+que nous regroupons. C'est là que l'API de colonnes
+de caractéristiques entre en jeu. Elle permet de regrouper des données
+dans des éléments de vecteur. selon plusieurs méthodes standard. Ici, les valeurs de notre colonne
+numérique ne sont que des nombres. Elles peuvent être copiées, car elles sont
+dans un seul élément du vecteur d'entrée. D'autre part, notre colonne catégorique
+est codée selon la méthode "one-hot". Nous avons deux catégories. Les maisons correspondent à "1, 0", et les appartements deviennent "0, 1". Une troisième catégorie
+serait codée "0, 0, 1", etc. À présent, le régresseur linéaire sait
+comment prendre les caractéristiques qui nous intéressent, les regrouper
+dans son vecteur d'entrée, et appliquer ce qu'il a à appliquer. Nous avons le choix parmi de nombreux
+types de colonnes de caractéristiques : valeurs continues à mettre en bucket, plongements de mots, croisements de colonnes, etc. Les transformations qui s'appliquent ici
+sont clairement décrites dans la documentation TensorFlow. Vous pouvez savoir tout ce qu'il se passe
+en permanence. Pour entraîner le modèle, nous devons
+écrire une fonction d'entrée qui renverra les caractéristiques, nommées comme dans
+les colonnes de caractéristiques. Comme nous sommes en entraînement,
+nous avons aussi besoin des bonnes réponses, les libellés. Nous pouvons maintenant appeler
+la fonction d'entraînement de notre estimateur, qui va entraîner
+le modèle en répétant 100 fois cet ensemble de données. Nous verrons plus tard comment
+fonctionne le traitement par lots. Pour ceux qui connaissent déjà ce concept,
+le code écrit ici s'entraîne sur un seul lot de données à chaque étape,
+qui contient tout l'ensemble de données. Une fois entraîné, le modèle
+peut être utilisé pour les prédictions. Nous avons besoin d'une fonction d'entrée qui fournit les données
+pour la prédiction, ici une maison de 1 500 pieds carrés
+et un appartement de 1 800 pieds carrés. La fonction "predict" de l'API Estimator renvoie un générateur Python
+qui permet d'effectuer des itérations sur les prédictions. Voici un résumé de l'API Estimator
+jusqu'à présent. Nous avons utilisé des colonnes de
+caractéristiques pour former nos données de sorte que notre modèle
+puisse les comprendre. Nous avons instancié
+un régresseur linéaire basé sur ces colonnes de caractéristiques,
+et nous avons appelé "train" pour entraîner le modèle sur 100 étapes. L'entraînement de données est assuré
+par une fonction d'entrée de données. Nous avons appelé "predict" pour obtenir
+des prédictions, et pour cela, les données ont aussi été fournies
+par une fonction d'entrée de données. Nous en reparlerons en détail
+plus tard dans ce cours. Pour utiliser un autre estimateur
+prédéfini, il suffit de changer le nom de classe et de fournir les
+paramètres de configuration appropriés. Par exemple, ici,
+nous pourrions utiliser un régresseur de réseau de neurones dense
+avec deux couches cachées. La première a trois neurones
+et la deuxième seulement deux. Puis, un dernier neurone prédit
+le prix de la propriété. Notez que le vecteur d'entrée
+est le même pour les deux modèles. Nous pouvons réutiliser les mêmes
+colonnes de caractéristiques. Sur un réseau de neurones dense,
+vous pouvez ajuster le nombre et la taille
+des couches cachées, le choix de la fonction d'activation,
+les paramètres de régularisation comme le "drop-out", ou votre optimiseur
+préféré pour effectuer l'entraînement. Surtout, la plupart de ces paramètres
+ont de bonnes valeurs par défaut. Pour un régresseur DNN, les seuls paramètres obligatoires
+sont les couches cachées.

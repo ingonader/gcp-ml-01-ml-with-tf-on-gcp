@@ -1,0 +1,112 @@
+Este lab es sobre la división
+repetible de conjuntos de datos. Si todavía no hicieron este lab
+por su cuenta les recomiendo
+que lo intenten y luego regresen para ver este video
+de la explicación de la solución. Aquí vamos. Lo que haremos es predecir
+el retraso de la llegada de un avión si se retrasó a la salida
+y cuál es su relación según los diferentes aeropuertos,
+como los aeropuertos de llegada y de salida. Si tienen un vuelo
+que llega de Nueva York con un retraso de 30 minutos
+y que va a Los Ángeles ¿se retrasará a la llegada también? Finalmente, lo que queremos hacer
+es predecir la relación. Para llegar a esa relación o modelarla tenemos la fórmula que ven aquí,
+en nuestro notebook de Cloud Datalab. El retraso a la llegada es igual
+a un parámetro, que es Alfa por el retraso a la salida. Aquí pueden ver la fórmula
+para estimar Alfa. Lo que intentaremos hacer
+es alimentar mucha información de retrasos de salidas
+y predecir si eso retrasará la llegada. Antes de hacer cualquier
+modelo de aprendizaje debemos configurar los entornos
+de validación y prueba para nuestro modelo y para hacerlo,
+ya que es un conjunto de datos grande usaremos Google BigQuery
+y lo invocaremos desde Cloud Datalab. Ahora, crearemos un par
+de aeropuertos de llegada y de salida de modo que puedan ver
+si existe una correlación fuerte para este aeropuerto específico,
+ese segmento en particular. Para predecir si no se retrasarán
+a la llegada si salieron más tarde de lo esperado. En este notebook, usaremos los
+aeropuertos de Denver y Los Ángeles. Ese es el contexto de nuestro lab. Es muy importante entender
+lo que queremos hacer. Para hacerlo, necesitamos una muestra
+repetible de un conjunto de datos creada en BigQuery. Hablemos de lo que no deberían hacer. Y si ven este código
+o esta muestra aleatoria Naïve en su notebook
+o el de sus colegas podrán decirles que, si quisieran ejecutar su código,
+no obtendrían los mismos resultados como vieron en la lección anterior. Primero, la división aleatoria Naïve. Ejecutaremos este código. Ya lo ejecuté
+y noté que el Alfa que tenemos tiene una alta correlación:
+0.97 entre Denver y Los Ángeles. Ejecutaré esta celda. Y veamos el coeficiente. Los últimos tres números son 784. Para hacerlo repetible,
+si hago exactamente lo mismo. ¿Qué creen que pasará? ¿Obtendré 784? No, obtuve 919. No cambié nada ni hice
+ningún tipo de entrenamiento todavía. Deberían ser los mismos datos,
+¿no es cierto? Pueden ver, en la línea 7 del código,
+que se usa esta función aleatoria como campo de división. Por lo que, cada vez que lo ejecuto,
+como vieron en la lección la función aleatoria
+está aplicando un número diferente entre cero y uno. Se usa eso para la división,
+por lo que no es necesariamente repetible. Escalemos un poco mejor. Esta función aleatoria se ejecuta
+cada vez que se ejecuta una fila en BigQuery. Hagámoslo un poco más obvio. Si lo usan como su métrica de pérdida,
+la raíz del error cuadrático medio entre el retraso de la llegada
+y el de la salida y lo dividen en los diferentes conjuntos,
+como entrenamiento y evaluación. Supongamos que se hizo
+inmediatamente para cada registro usaron esta función aleatoria
+< 0.8 para todos estos veamos si obtenemos la misma RMSE. Ejecutaré esta celda de código. La RMSE es 13.098 para el entrenamiento
+y 13.027 para la evaluación. Parece ser coherente,
+pero si hago lo mismo veamos si es repetible. 13.098 es lo que buscamos
+para el entrenamiento. Y pueden ver aquí,
+durante el entrenamiento obtenemos 13.089 que es diferente del anterior
+y también tenemos 13.063. En segundo plano,
+aunque estamos ejecutando el mismo código obtenemos diferentes resultados
+para la RMSE. Y el culpable,
+como muchos de ustedes ya deben saber es esta función aleatoria
+que tenemos aquí. Incluso dividir aleatoriamente
+en entrenamiento y evaluación no funcionará. Estarán pensando:
+"¿Cómo hago esto entonces?" Si configuro todos mis datos
+en el entrenamiento y la evaluación usando la función aleatoria una vez,
+y tengo la división correcta del 80% y 20% ¿por qué cambia todo el tiempo? ¿Cómo evito que la función aleatoria
+se ejecute cada vez? Aquí es donde tenemos
+que cambiar de forma de pensar. Aquí tenemos otro ejemplo
+en el que tenemos el entrenamiento en aleatorio y se hace eso primero. Hay una subconsulta.
+Están el entrenamiento y la evaluación y se divide
+el entrenamiento y la evaluación como un subconjunto de datos. Luego, se ejecutan esas consultas
+también, pero vean aquí tenemos el mismo problema otra vez,
+donde se tiene una RMSE de 13.037 de mi ejecución,
+que probablemente es diferente de sus ejecuciones también. Se hace en la evaluación. Haré clic aquí y ejecutaré esta celda,
+que ejecutará todo de nuevo hasta aquí. Cuando se ejecute, esperamos tener 13.037 y esperamos que se ejecute. Tenemos 13.087; el Alfa es diferente,
+creo que era 0.977 antes. Como pueden ver, si usan la función
+aleatoria en cualquier parte de su código en BigQuery y lo ejecutan,
+sus datos cambiarán automáticamente por debajo. ¿Cómo evitamos usar la función
+aleatoria entonces? En lugar de usar esta función,
+usamos la función hash que demostramos un poco antes
+y eso es lo que verán aquí. Queremos dividir en la instrucción WHERE. En lugar
+de usar una función aleatoria < 0.8 lo que usamos ahora
+es la función hash en la fecha. La fecha no cambiará,
+será siempre la misma en su conjunto de entrenamiento. Y luego busquen ese resto. Si cae en una categoría en particular,
+en este caso, queremos todo lo que sea < 8 y luego lo volcamos
+en nuestro grupo de entrenamiento. Es una división del 80%
+y probablemente se usará en el entrenamiento. Tenemos 0.975.
+Veamos que tenemos al final, es 403. Sigamos ejecutándolo. Veamos qué obtenemos. Vayamos al final y es 403 nuevamente. Como ven,
+es una forma repetible de hacerlo. Intuitivamente, tiene sentido. No hay funciones por debajo
+que están cambiando los datos cuando se ejecuta el código. Lo que podemos hacer ahora
+es agregar un poco más de SQL y, luego, la raíz del error cuadrático medio. La raíz del error cuadrático medio
+en lugar de SQL otra vez estamos tomando el promedio
+de esa función que vieron antes y aplicamos la raíz cuadrada hasta arriba. Y su conjunto de datos de entrenamiento
+es 13.16072. Entonces, 13.160712. Se obtiene exactamente el mismo resultado
+cada vez que se ejecuta este código. ¿Qué aprendieron? En resumen, cada vez que creen
+una muestra repetible de datos deben usar una función hash,
+en lugar de una muestra aleatoria Naïve. Incluso hacer lo que vieron aquí,
+que es un poco más sofisticado pero igualmente riesgoso,
+como separar previamente los datos de entrenamiento
+y evaluación. Supongamos que quieren
+dividir directamente y crear… podrían preguntar:
+"Evan, ¿y si hago esto y lo ejecuto solo una vez,
+almaceno los resultados en dos tablas diferentes para la evaluación
+y el entrenamiento y los uso inmediatamente?" Sería genial, porque se hizo
+solo una vez y se dividió en 80-20. Pero ¿qué pasa si obtienen
+más datos en el futuro? ¿Qué pasa si alguien
+quiere repetir el análisis en el conjunto de datos original? Solo porque crearon una división
+forzada de datos una vez en 80-20 no quiere decir
+que podrán repetirlo en el futuro especialmente si el conjunto de datos
+se expande o se contrae o si quisieran hacer una división
+diferente de 80-20. Usar un campo para agrupar sus datos
+y usar hash es mucho más flexible y mucho más repetible,
+como pueden ver aquí. Practiquen esto, porque al final será
+uno de los pasos fundamentales que necesitarán
+para ejecutar modelos de AA. Es decir, crear esas agrupaciones
+de las que su modelo pueda aprender validar y, finalmente, tomar la decisión
+mediante los datos de prueba para poner el modelo de AA
+en producción. Eso es todo. Lo que haremos al final es abarcar un poco más de material
+y trabajar en un lab de principio a fin para predecir tarifas de taxis.
+Nos veremos ahí.

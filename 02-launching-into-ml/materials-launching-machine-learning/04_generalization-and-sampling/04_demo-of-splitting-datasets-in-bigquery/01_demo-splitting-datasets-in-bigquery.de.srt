@@ -1,0 +1,742 @@
+1
+00:00:00,000 --> 00:00:04,360
+Wir haben die Theorie behandelt und
+Sie kennen den Code in SQL schon etwas,
+
+2
+00:00:04,360 --> 00:00:06,860
+aber Sie sollten alles
+in BigQuery durchlaufen,
+
+3
+00:00:06,860 --> 00:00:09,695
+um Ihr Wissen zum Aufteilen 
+der Datasets in Buckets zu festigen.
+
+4
+00:00:09,695 --> 00:00:12,170
+Bevor Sie mit dem
+Code für Moduloperatoren
+
+5
+00:00:12,170 --> 00:00:15,345
+arbeiten und Datasets in
+SQL-WHERE-Klauseln aufteilen,
+
+6
+00:00:15,345 --> 00:00:18,680
+zeige ich Ihnen, 
+wie wir dieses Dataset aufteilen.
+
+7
+00:00:18,680 --> 00:00:20,290
+Auf dem Bild sehen Sie
+
+8
+00:00:20,290 --> 00:00:23,400
+ein großes Dataset
+mit insgesamt 70 Millionen Flügen.
+
+9
+00:00:23,400 --> 00:00:26,490
+Es könnten auch 7 Milliarden sein,
+
+10
+00:00:26,490 --> 00:00:29,310
+aber Sie müssen dieses
+Dataset wiederholbar verkleinern.
+
+11
+00:00:29,310 --> 00:00:32,225
+Wir können keine Stichproben
+verwenden, sondern brauchen
+
+12
+00:00:32,225 --> 00:00:34,220
+einen intelligenten
+WHERE-Klausel-Filter.
+
+13
+00:00:34,220 --> 00:00:35,600
+Nehmen wir also
+
+14
+00:00:35,600 --> 00:00:37,160
+ein oder zwei Prozent,
+
+15
+00:00:37,160 --> 00:00:40,070
+wie im orangefarbigen
+Kasten, und arbeiten uns vor bis
+
+16
+00:00:40,070 --> 00:00:42,595
+50 Prozent von diesem 
+1 Prozent für unsere Partner.
+
+17
+00:00:42,595 --> 00:00:45,960
+Zum Beispiel sind im
+orangefarbigen Kasten Ihre Trainingsdaten,
+
+18
+00:00:45,960 --> 00:00:49,760
+50 Prozent davon wären Ihr 
+Validierungs-Dataset und den Rest
+
+19
+00:00:49,760 --> 00:00:53,410
+können Sie als
+Test-Dataset verwenden,
+
+20
+00:00:53,410 --> 00:00:55,545
+also das Ja-oder-Nein-Dataset.
+
+21
+00:00:55,545 --> 00:00:58,190
+Wie funktioniert 
+das in Google BigQuery?
+
+22
+00:00:58,190 --> 00:01:01,390
+Diesen Code können Sie auch in 
+zukünftigen Projekten verwenden.
+
+23
+00:01:01,390 --> 00:01:04,380
+In Google BigQuery gibt es
+
+24
+00:01:04,380 --> 00:01:06,170
+eine vorgefertigte Abfrage,
+
+25
+00:01:06,170 --> 00:01:08,090
+die wir Schritt für
+Schritt durchgehen.
+
+26
+00:01:08,090 --> 00:01:09,800
+Das ist die BigQuery-Oberfläche,
+
+27
+00:01:09,800 --> 00:01:12,815
+die Sie vielleicht 
+schon mal gesehen haben.
+
+28
+00:01:12,815 --> 00:01:16,650
+Obwohl hier steht, 
+dass es 70 Millionen einzelne Flüge gibt,
+
+29
+00:01:16,650 --> 00:01:20,180
+brauchen wir nähere 
+Informationen zur Quelldatentabelle.
+
+30
+00:01:20,180 --> 00:01:24,730
+Deaktivieren Sie unter 
+"Optionen anzeigen" den alten SQL-Dialekt.
+
+31
+00:01:26,170 --> 00:01:28,480
+Sie können die Befehls-
+
+32
+00:01:28,480 --> 00:01:33,620
+oder Windows-Taste gedrückt 
+halten und auf die Tabelle klicken.
+
+33
+00:01:33,630 --> 00:01:36,360
+Das ist überall innerhalb
+von SQL eine Abkürzung,
+
+34
+00:01:36,360 --> 00:01:39,165
+wenn Sie Details zu 
+Ihrer Tabelle brauchen.
+
+35
+00:01:39,165 --> 00:01:40,870
+Hier können Sie alle Felder sehen.
+
+36
+00:01:40,870 --> 00:01:42,590
+Wenn Sie auf "Details" klicken,
+
+37
+00:01:42,590 --> 00:01:45,205
+sehen Sie die Anzahl 
+der Einträge innerhalb eines Fluges.
+
+38
+00:01:45,205 --> 00:01:48,290
+Hier sind die 70 Millionen
+Flüge in diesem Dataset,
+
+39
+00:01:48,290 --> 00:01:50,160
+ungefähr acht Gigabyte,
+
+40
+00:01:50,160 --> 00:01:52,765
+und Sie können sich eine 
+Vorschau des Datasets ansehen.
+
+41
+00:01:52,765 --> 00:01:54,750
+Hier sind die verschiedenen Flugdaten,
+
+42
+00:01:54,750 --> 00:01:56,200
+die Abflughäfen
+
+43
+00:01:56,200 --> 00:01:58,630
+und viele
+andere Informationen,
+
+44
+00:01:58,630 --> 00:02:01,280
+die in einem Dataset einer
+Fluggesellschaft zu erwarten sind.
+
+45
+00:02:01,280 --> 00:02:04,030
+Zusätzlich zu den
+einfachen, allgemeinen Feldern,
+
+46
+00:02:04,030 --> 00:02:06,405
+die wir aus den Daten hier bilden,
+
+47
+00:02:06,405 --> 00:02:09,465
+habe ich noch drei andere hinzugefügt.
+
+48
+00:02:09,465 --> 00:02:10,635
+Bevor wir mit der
+
+49
+00:02:10,635 --> 00:02:12,610
+Filterung beginnen, 
+die Sie in Zeile 17
+
+50
+00:02:12,610 --> 00:02:14,615
+zum WHERE-Klausel-
+Filter sehen können,
+
+51
+00:02:14,615 --> 00:02:18,910
+zeige ich Ihnen ein Beispiel.
+Danach können Sie den Code in einem
+
+52
+00:02:18,910 --> 00:02:22,695
+markierten Block ausführen, 
+indem Sie auf den Abwärtspfeil klicken
+
+53
+00:02:22,695 --> 00:02:29,040
+und die Abfrage ausführen. 
+Das zeigt Ihnen genaue Details
+
+54
+00:02:29,040 --> 00:02:32,810
+zu diesem Datum an,
+z. B. der 30. Juni 2008.
+
+55
+00:02:32,810 --> 00:02:36,015
+Wie bereits in
+diesem Beispiel erwähnt,
+
+56
+00:02:36,015 --> 00:02:39,665
+funktioniert eine 
+Farm-Fingerprint-Funktion so,
+
+57
+00:02:39,665 --> 00:02:45,180
+dass sie diesen String in eine
+Reihe von Zahlen umwandelt.
+
+58
+00:02:45,180 --> 00:02:51,025
+Es ist eine einseitige Hashfunktion,
+die wir ohne Einschränkung nutzen können,
+
+59
+00:02:51,025 --> 00:02:56,610
+aber in jedem Fall wird 
+der 30. Juni 2008, so geschrieben,
+
+60
+00:02:56,610 --> 00:02:59,690
+immer diesen Wert hashen.
+
+61
+00:02:59,690 --> 00:03:03,040
+Der einzige Unterschied nach
+dem Hash mit Farm Fingerprint:
+
+62
+00:03:03,040 --> 00:03:06,770
+In Zeilen 5 und 6
+möchten wir sehen,
+
+63
+00:03:06,770 --> 00:03:14,980
+ob dieser Hash durch 
+70 oder 700 teilbar ist.
+
+64
+00:03:14,980 --> 00:03:17,435
+Der Grund dafür ist,
+
+65
+00:03:17,435 --> 00:03:24,690
+dass wir einen von 70 Einträgen 
+mit einem Rest von 0 abrufen wollen,
+
+66
+00:03:24,690 --> 00:03:27,650
+das sind die 1 oder 2 Prozent
+
+67
+00:03:27,650 --> 00:03:32,740
+der 70 Millionen Flüge,
+die für das Sub-Dataset gefiltert wurden.
+
+68
+00:03:32,740 --> 00:03:35,775
+Hier sehen Sie ein Feld,
+
+69
+00:03:35,775 --> 00:03:38,115
+das "remainder divide by 70" heißt.
+
+70
+00:03:38,115 --> 00:03:40,270
+Wenn dieser Wert 0 entspricht,
+
+71
+00:03:40,270 --> 00:03:43,860
+was genau in einem von 70 Fällen passiert,
+
+72
+00:03:43,860 --> 00:03:46,210
+richten wir den ersten Filter ein.
+
+73
+00:03:46,210 --> 00:03:48,720
+Ich setze das
+Limit weiter herunter.
+
+74
+00:03:48,720 --> 00:03:51,020
+Beim Filtern in SQL
+
+75
+00:03:51,020 --> 00:03:54,370
+werden Einträge mit einer
+WHERE-Klausel gefiltert,
+
+76
+00:03:54,370 --> 00:03:57,110
+wie Sie im
+Kommentar in Zeile 15 sehen.
+
+77
+00:03:57,110 --> 00:03:59,325
+Wir wählen eine von
+70 Zeilen aus, genau dort,
+
+78
+00:03:59,325 --> 00:04:03,370
+wo das Feld 
+"remainder divided by 70" gleich null ist,
+
+79
+00:04:03,370 --> 00:04:06,820
+und legen
+das Limit auf 10 fest.
+
+80
+00:04:06,820 --> 00:04:09,810
+Jeder Wert in der Spalte
+
+81
+00:04:09,810 --> 00:04:13,450
+"remainder divided by 70"
+sollte jetzt null betragen.
+
+82
+00:04:13,450 --> 00:04:20,030
+Sie haben jetzt erfolgreich
+ca. 98 % der Daten ignoriert.
+
+83
+00:04:23,230 --> 00:04:25,885
+Jetzt haben wir die erste
+
+84
+00:04:25,885 --> 00:04:29,465
+Aufteilung der Daten
+geschafft, wie in der Grafik gezeigt.
+
+85
+00:04:29,465 --> 00:04:34,570
+Davon haben wir
+ungefähr 842.000 Zeilen
+
+86
+00:04:34,570 --> 00:04:37,715
+im orangefarbigen Kasten,
+den ich vorhin gezeigt habe.
+
+87
+00:04:37,715 --> 00:04:39,710
+Das wird unser Trainings-Dataset.
+
+88
+00:04:39,710 --> 00:04:42,960
+Sie erinnern sich, dass Sie ein 
+Trainings-, ein Validierungs- und
+
+89
+00:04:42,960 --> 00:04:46,730
+eventuell ein Test-Dataset zur 
+zusätzlichen Filterung benötigen.
+
+90
+00:04:46,730 --> 00:04:49,580
+Wir können "remainder
+divided by 70" nicht zu viel nutzen,
+
+91
+00:04:49,580 --> 00:04:52,535
+also kann man auch 
+nicht "remainder divided by 7" nehmen,
+
+92
+00:04:52,535 --> 00:04:54,500
+weil das schon null beträgt.
+
+93
+00:04:54,500 --> 00:04:56,480
+Das haben wir schon verwendet
+
+94
+00:04:56,480 --> 00:04:59,180
+und nutzen deshalb die
+zweite Filteroption an der Stelle,
+
+95
+00:04:59,180 --> 00:05:01,295
+wo wir 700 verwenden.
+
+96
+00:05:01,295 --> 00:05:06,770
+Ob 70 oder 700 ist eigentlich egal.
+Es hängt von der Größe des Buckets ab,
+
+97
+00:05:06,770 --> 00:05:10,965
+den Sie für die Dataset-
+Splits verwenden möchten.
+
+98
+00:05:10,965 --> 00:05:13,760
+Als Zweites verkleinern
+wir das Dataset um 98 Prozent.
+
+99
+00:05:13,760 --> 00:05:18,160
+Jetzt müssen wir die
+restlichen 800.000 Einträge
+
+100
+00:05:18,160 --> 00:05:20,830
+aufteilen und eine Wand zwischen
+
+101
+00:05:20,830 --> 00:05:25,860
+dem Test- und dem Validierungsdataset 
+und dann das Trainingsdataset errichten.
+
+102
+00:05:25,860 --> 00:05:30,280
+An dieser Stelle richten
+wir einen weiteren Filter
+
+103
+00:05:30,280 --> 00:05:38,300
+für die WHERE-Klausel ein und ignorieren
+50 Prozent des restlichen Datasets.
+
+104
+00:05:38,300 --> 00:05:40,770
+So sieht das dann aus.
+
+105
+00:05:40,770 --> 00:05:45,700
+In dieser Spalte verwenden
+wir "remainder divided by 700",
+
+106
+00:05:45,700 --> 00:05:52,920
+das könnte alles zwischen 0 und
+700 beim zweiten Modulvorgang sein.
+
+107
+00:05:52,920 --> 00:05:56,340
+Wir möchten irgendeinen Wert dazwischen.
+
+108
+00:05:56,340 --> 00:05:59,655
+Wir haben die
+Datensätze zwischen 0 und 700.
+
+109
+00:05:59,655 --> 00:06:03,635
+Der Mittelpunkt 
+zwischen 0 und 700 ist 350.
+
+110
+00:06:03,635 --> 00:06:10,005
+Es gibt also Einträge zwischen 0 und
+350 und Einträge zwischen 350 und 700.
+
+111
+00:06:10,005 --> 00:06:14,890
+Durch das Teilen in der Mitte 
+erhalten wir dieses größer/gleich 350.
+
+112
+00:06:14,890 --> 00:06:19,535
+Der Wert, den Sie hier 
+sehen – 630 – ist größer als 350.
+
+113
+00:06:19,535 --> 00:06:22,215
+Deshalb ist er hier enthalten.
+
+114
+00:06:22,215 --> 00:06:25,425
+Wenn wir uns diese Daten ansehen,
+
+115
+00:06:25,425 --> 00:06:29,630
+handelt es sich nur um
+Flüge vom 13. Juni 2005,
+
+116
+00:06:29,630 --> 00:06:31,980
+und sie haben alle denselben Hash.
+
+117
+00:06:31,980 --> 00:06:35,890
+Das ist eine
+interessante und oft knifflige Sache
+
+118
+00:06:35,890 --> 00:06:37,755
+bei dieser Funktion.
+
+119
+00:06:37,755 --> 00:06:41,600
+Wie vorhin erwähnt,
+wenn wir ein Dataset mit
+
+120
+00:06:41,600 --> 00:06:45,930
+nur zwei
+Datumsangaben wie dem 13. Juli 2005
+
+121
+00:06:45,930 --> 00:06:48,270
+und dem 14. Juli 2005 hätten,
+
+122
+00:06:48,270 --> 00:06:50,135
+könnten wir keinen 
+80/20-Split machen,
+
+123
+00:06:50,135 --> 00:06:53,740
+weil es in diesem Fall 
+nur diese zwei Hashes gäbe.
+
+124
+00:06:55,510 --> 00:06:57,860
+Deshalb ist ein gut verteiltes Dataset
+
+125
+00:06:57,860 --> 00:07:01,255
+besser für diese Splits, 
+weil die Hashes immer den
+
+126
+00:07:01,255 --> 00:07:06,200
+gleichen Wert zurückgeben
+werden, anders als die Funktion "Random".
+
+127
+00:07:06,200 --> 00:07:11,365
+Als Letztes wollen 
+wir das Subset weiter aufteilen,
+
+128
+00:07:11,365 --> 00:07:14,290
+bis es nur
+50 Prozent davon enthält,
+
+129
+00:07:14,290 --> 00:07:17,100
+was 25 Prozent der
+gesamten Trainingsdaten entspricht,
+
+130
+00:07:17,100 --> 00:07:19,020
+die Sie für das
+Testen reservieren.
+
+131
+00:07:19,020 --> 00:07:21,090
+Dazu benötigen Sie
+wieder den Mittelpunkt,
+
+132
+00:07:21,090 --> 00:07:24,445
+also in diesem Fall
+jeder Wert unter 525,
+
+133
+00:07:24,445 --> 00:07:30,100
+also der neue
+Mittelpunkt zwischen 350 und 700.
+
+134
+00:07:30,100 --> 00:07:33,265
+Wenn Sie diesen
+Datenblock herausnehmen,
+
+135
+00:07:33,265 --> 00:07:36,795
+ergeben sich 25 Prozent 
+des ursprünglichen Datasets.
+
+136
+00:07:36,795 --> 00:07:39,490
+Das Schwierigste ist
+nicht die SQL-Syntax,
+
+137
+00:07:39,490 --> 00:07:41,420
+sondern sich zu überlegen,
+
+138
+00:07:41,420 --> 00:07:43,450
+wo man diese Abgrenzungen errichtet
+
+139
+00:07:43,450 --> 00:07:45,800
+und wo die Mittelpunkte
+und Hash-Funktionen sind,
+
+140
+00:07:45,800 --> 00:07:47,810
+die Sie verwenden möchten.
+
+141
+00:07:47,810 --> 00:07:52,100
+Am Ende haben Sie diese
+zehn Einträge, die ich Ihnen jetzt zeige.
+
+142
+00:07:54,300 --> 00:07:57,780
+Sie sollten alle durch 70 teilbar sein
+
+143
+00:07:57,780 --> 00:08:00,560
+und es sollten Ihnen 
+überall Nullen angezeigt werden.
+
+144
+00:08:00,560 --> 00:08:05,580
+Das "remainder divide by 700"
+für das endgültige Test-Dataset
+
+145
+00:08:05,580 --> 00:08:09,020
+sind die 25 Prozent, 
+die wir für das Testen aufheben wollen.
+
+146
+00:08:09,020 --> 00:08:11,900
+Alle Werte sollten kleiner sein.
+
+147
+00:08:11,900 --> 00:08:14,955
+Sie sollten größer/gleich 350,
+
+148
+00:08:14,955 --> 00:08:19,460
+aber weniger als 525 betragen. 
+Das ist hier mit dem Wert 420 erfüllt.
+
+149
+00:08:19,460 --> 00:08:23,230
+Wenn Sie es anders herum angehen
+
+150
+00:08:23,230 --> 00:08:27,960
+und auf die Werte zwischen 
+525 und 700 zugreifen wollen,
+
+151
+00:08:27,960 --> 00:08:33,190
+wandeln Sie das Zeichen
+einfach in ein "größer als" 525 um.
+
+152
+00:08:33,190 --> 00:08:34,369
+Dann speichern Sie
+
+153
+00:08:34,369 --> 00:08:37,115
+die Ergebnisse an drei
+verschiedenen Orten: Training,
+
+154
+00:08:37,115 --> 00:08:39,750
+Validierung und Testen.
+Danach können Sie
+
+155
+00:08:39,750 --> 00:08:42,755
+diese importieren und in 
+ML-Modelle einspeisen.
+
+156
+00:08:42,755 --> 00:08:44,760
+Sie üben das noch in den Labs
+
+157
+00:08:44,760 --> 00:08:47,315
+und werden auf
+verschiedene Fallstricke stoßen,
+
+158
+00:08:47,315 --> 00:08:49,965
+aber Sie verstehen jetzt das Grundkonzept.
+
+159
+00:08:49,965 --> 00:08:52,000
+Also zurück an die Arbeit.

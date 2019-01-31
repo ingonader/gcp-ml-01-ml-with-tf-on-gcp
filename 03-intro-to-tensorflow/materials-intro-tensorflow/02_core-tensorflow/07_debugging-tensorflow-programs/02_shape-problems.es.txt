@@ -1,0 +1,43 @@
+En las próximas lecciones veremos formas
+de resolver problemas comunes. Comenzaremos con los errores de forma. Luego, veremos
+una variante de estos errores relacionada con una discordancia
+entre valores escalares y vectoriales. Por último, veremos
+problemas de tipos de datos. Vimos este código en la lección anterior y dijimos que la razón
+por la que esta suma falló es que tanto a como c
+deben tener la misma forma. Cuál de las dos formas es correcta
+dependerá de la intención del código. En este caso, el método intenta
+tomar la matriz original de 4 x 3 para obtener ventanas deslizantes
+de tamaño constante. Estas ventanas deben ser de 4 x 2. Entonces, a era correcta,
+pero c era incorrecto. ¿Cómo convertimos c a la forma [4, 2]? Puede cambiar c para que,
+en lugar de dividir todas las filas solo en la columna uno divida todas las filas,
+pero en las columnas uno y dos. Recuerde que los rangos de Python incluyen
+el primer número, pero no el segundo. Entonces, a obtiene la columna cero y uno,
+y c obtiene las columnas uno y tres dividiendo ventanas
+de dos columnas cada vez. Cuando ejecutamos el programa,
+todo funciona correctamente. Los problemas de forma
+también ocurren por el tamaño de lote. Recuerde que cuando hablé
+sobre las formas de los tensores dije que a veces una o más dimensiones
+pueden tener una longitud variable. Una razón común
+para los tensores de longitud variable es cuando se escribe
+un programa que usa lotes. Por lo general,
+los lotes son del mismo tamaño. Digamos, 64 elementos cada vez excepto cuando llegamos
+al final del archivo de entrada. En ese momento es posible que no queden
+64 elementos para llenar el lote por lo que podría crear un tensor
+con solo 42 elementos, por ejemplo. Por esa razón, la forma
+del marcador de posición X en el código, es None
+para la primera dimensión. None significa
+que es de longitud variable. Si ejecuta print X obtendrá la salida
+del depurador del tensor que indica que es
+un tensor 2D de la forma (?, 3). Eso significa que la matriz
+siempre tiene tres columnas pero la cantidad de filas puede variar. Ahora, cuando trate
+de inyectar datos de fake_data ¿cuál es la forma de su fake_data? Es un tensor 1D. Tiene tres elementos,
+pero una sola dimensión. Y el marcador de posición
+espera una matriz de dos dimensiones. Puede tener cualquier cantidad de filas incluso una sola, 
+pero tiene que ser una matriz 2D. ¿Cómo corregir ese problema? No es tan simple
+como corregir la división, ¿correcto? La respuesta es
+que necesita cambiar la forma. La coerción de la forma
+se puede realizar con estos métodos. Ya vimos tf.reshape() que toma los números disponibles
+y los organiza de una forma diferente y eso es lo que necesitamos
+para este problema. Tenemos tres números, que son suficientes pero tenemos un tensor 1D
+cuando necesitamos uno 2D. Podemos usar
+reshape y enviarlo.

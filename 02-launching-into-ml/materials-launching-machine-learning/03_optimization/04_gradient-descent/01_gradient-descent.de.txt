@@ -1,0 +1,67 @@
+Im vorherigen Teil haben wir die Optimierung als
+Suche im Parameter-Raum betrachtet. Dann haben wir uns mit Verlustfunktionen
+zum Vergleichen von Punkten befasst. Wie kann jetzt eine Verlustfunktion in
+eine Suchstrategie umgesetzt werden? Hier kommt
+das Gradientenverfahren ins Spiel. Das Gradientenverfahren ist das
+"Hinabschreiten" der Oberfläche, die durch Anwendung der Verlustfunktion an allen Punkten
+im Parameter-Raum gebildet wurde. Diese Oberfläche
+könnte dem hier sehr ähneln. Das ist natürlich das, was mit
+perfekten Informationen sichtbar wäre, also mit umfassender Kenntnis des Graphen. Faktisch kennen wir aber nur Verlustwerte
+an den Punkten im Parameter-Raum, an denen wir unsere
+Verlustfunktion evaluiert haben. In diesem Fall nur die zwei Punkte
+in dem roten Feld, das hier zu sehen ist. Wir müssen uns dennoch entscheiden,
+was unser nächster Schritt sein wird, um das Minimum zu finden. Das Problem, das untere Ende zu finden, kann in zwei separate und
+wichtige Fragen aufgeteilt werden. Welche Richtung soll ich nehmen? Wie weit soll ich gehen? Jetzt werden wir aber
+eine vereinfachende Annahme treffen und nur eine feste Schrittgröße verwenden. Das führt zu
+einem sehr einfachen Algorithmus. Solange der Verlust größer als eine kleine
+Konstante ist: Berechne die Richtung. Lege dann für die einzelnen Parameter
+im Modell die Werte so fest, dass sie dem alten Wert plus dem Produkt aus
+Schrittgröße und Richtung entsprechen. Berechne dann den Verlust neu. Sie können sich eine Verlustoberfläche wie eine topographische oder
+Höhenlinienkarte vorstellen. Jede Linie stellt eine gewisse Tiefe dar. Je näher die Linien beieinander liegen,
+desto steiler ist die Oberfläche dort. Die Schritte des Algorithmus
+habe ich hier als Punkte dargestellt. In diesem Fall hat der
+Algorithmus am oberen Rand angefangen und ist dann in Richtung des
+Minimums in die Mitte gegangen. Sie sehen,
+dass der Algorithmus Schritte mit fester Größe
+in Richtung Minimum macht. Lassen wir die Richtung kurz außer Acht. Wenn die Schrittgröße zu klein
+ist, kann das Training ewig dauern. Das Minimum werden
+Sie aber garantiert finden. Ich habe absichtlich "das" gesagt, da wir vorerst annehmen,
+dass es nur eines gibt. In Zukunft kann es aber
+mehr als eines geben und den Umgang mit diesem
+Problem besprechen wir später. Wenn die Schrittgröße zu groß ist, kann es sein, dass Sie entweder von Rand
+zu Rand Ihrer Oberfläche springen oder das Tal komplett verlassen und in einem
+neuen Teil der Verlustoberfläche landen. Deshalb ist bei einer
+zu großen Schrittgröße die Prozesskonvergenz nicht garantiert. Wenn die Schrittgröße genau
+richtig ist, sind Sie startklar. Doch ganz gleich, was der
+Wert für die Schrittgröße ist, er wird bei einem anderen Problem
+wahrscheinlich nicht genauso gut sein. Die Schrittgröße, die links
+anscheinend gut funktioniert hat, ist rechts überhaupt nicht geeignet. Es gibt keinen
+Universalwert für alle Modelle. Wie sollten wir also
+die Schrittgröße ändern? Glücklicherweise gibt uns die Steigung
+oder der Grad der Veränderung einer Kurve einen guten Anhaltspunkt, wie weit
+und in welche Richtung wir gehen sollten. Sehen Sie sich den Teilbereich
+unten an, der den Wert der Steigung an verschiedenen Punkten auf
+der Gewichtungsverlustkurve angibt. Wo die Werte größer sind, sind wir
+generell weiter vom unteren Ende entfernt als dort, wo die Steigung klein ist. Wo die Steigung negativ ist,
+ist das untere Ende der oberen Grafik rechts und wo die Steigung positiv ist, ist das
+untere Ende der oberen Grafik links. Hier ein weiteres Beispiel: Sehen Sie sich Punkt B an. Hat er
+eine positive oder eine negative Steigung? Punkt B hat eine positive Steigung. Wir
+müssen also links nach dem Minimum suchen. Beachten Sie, dass die Steigung steil
+ist. Es ist also ein großer Schritt nötig. Sehen Sie sich Punkt C
+auf der Verlustoberfläche an. Hat er eine positive
+oder eine negative Steigung? Wie steil ist er? Punkt C hat wieder eine positive Steigung.
+Wir müssen also weiter nach links. Hier ist die Steigung viel geringer. Wir machen also kleinere Schritte, um nicht versehentlich
+das Minimum zu verpassen. Jetzt haben wir die konstante Schrittgröße
+und die Anweisung zur Richtungsberechnung durch einen einzigen Aufruf unserer
+neuen Funktion computeDerivative ersetzt und unsere For-Schleife zum Aktualisieren
+der Modellparameter geändert, sodass jeder Parameter
+seinen alten Wert abzüglich der partiellen Ableitung dieses Parameters
+in Bezug auf den Verlust annimmt. Sind wir jetzt fertig? Wir haben anscheinend einen Weg
+gefunden, um Schritte der richtigen Größe in die richtige Richtung zu machen. Was könnte schiefgehen? Die empirische Leistung. Es hat sich herausgestellt, dass
+unser Basisalgorithmus im Hinblick auf die Probleme, an denen
+ML-Forscher gearbeitet haben, also die Verlustoberflächen, auf die
+wir dieses Verfahren angewendet haben, oft zu lange braucht, suboptimale Minima
+findet oder den Vorgang nicht abschließt. Zur Klarstellung: Das bedeutet nicht,
+dass unser Algorithmus nicht funktioniert. Es heißt einfach, dass wir
+tendenziell nicht auf die Probleme stoßen, für die er
+sehr gut geeignet ist.

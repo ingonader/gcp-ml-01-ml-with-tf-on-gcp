@@ -1,0 +1,236 @@
+1
+00:00:00,520 --> 00:00:04,495
+Sehen wir uns nun an, wie wir
+ein Modell für die ML Engine trainieren.
+
+2
+00:00:04,495 --> 00:00:06,935
+Bevor Sie
+das Training beginnen, sollten Sie
+
+3
+00:00:06,935 --> 00:00:09,800
+1) Trainingsdaten sammeln und vorbereiten:
+
+4
+00:00:09,800 --> 00:00:11,272
+säubern, aufteilen,
+
+5
+00:00:11,272 --> 00:00:13,835
+Funktionen entwickeln und vorverarbeiten.
+
+6
+00:00:13,835 --> 00:00:17,080
+2) die Trainingsdaten
+in eine Onlinequelle kopieren,
+
+7
+00:00:17,080 --> 00:00:19,217
+auf die die Cloud ML Engine Zugriff hat,
+
+8
+00:00:19,217 --> 00:00:21,205
+zum Beispiel Cloud Storage.
+
+9
+00:00:21,205 --> 00:00:23,820
+Beim Senden
+von Trainingsjobs an die Cloud ML Engine
+
+10
+00:00:23,820 --> 00:00:30,110
+wird oft der Großteil der Logik auf die 
+Dateien "task.py" und "model.py" aufgeteilt.
+
+11
+00:00:30,110 --> 00:00:33,240
+"task.py" ist
+der Einstiegspunkt in Ihren Code
+
+12
+00:00:33,240 --> 00:00:36,635
+und wird von der CMLE gestartet. Zu den 
+darin definierten Details auf Jobebene zählen:
+
+13
+00:00:36,635 --> 00:00:40,980
+Wie werden Befehlszeilenargumente geparst,
+wohin werden die Ausgaben geschrieben,
+
+14
+00:00:40,980 --> 00:00:44,070
+was ist die Schnittstelle
+zum Optimieren von Hyperparametern usw.
+
+15
+00:00:44,070 --> 00:00:48,845
+Für die Kernfunktionen von ML
+ruft "task.py" dann "model.py" auf.
+
+16
+00:00:48,845 --> 00:00:52,292
+"model.py" führt eher
+die zentralen ML-Aufgaben aus,
+
+17
+00:00:52,292 --> 00:00:53,705
+wie Abrufen von Daten,
+
+18
+00:00:53,705 --> 00:00:55,072
+Definieren der Funktionen,
+
+19
+00:00:55,072 --> 00:00:56,940
+Konfigurieren der Dienstsignatur
+
+20
+00:00:56,940 --> 00:00:59,710
+und wiederholtes Trainieren und Bewerten.
+
+21
+00:00:59,710 --> 00:01:03,720
+Die Codefreigabe zwischen Computern
+erfordert immer eine Paketierung.
+
+22
+00:01:03,720 --> 00:01:07,350
+Beim Senden eines Modells
+an CMLE zum Training ist das nicht anders.
+
+23
+00:01:07,350 --> 00:01:09,644
+TensorFlow und insbesondere Python
+
+24
+00:01:09,644 --> 00:01:13,935
+erfordern für Paket und Struktur
+einen Standard, wie hier dargestellt.
+
+25
+00:01:13,935 --> 00:01:16,505
+Testen Sie lokal,
+
+26
+00:01:16,505 --> 00:01:18,825
+ob Ihre Paketierung
+wie erwartet funktioniert.
+
+27
+00:01:18,825 --> 00:01:21,480
+Rufen Sie sie direkt über "python-m" auf,
+
+28
+00:01:21,480 --> 00:01:24,380
+um den Zustand
+der importierten Daten zu prüfen.
+
+29
+00:01:24,920 --> 00:01:28,680
+Testen wir als Nächstes
+Ihren Code lokal über den Befehl "gcloud".
+
+30
+00:01:28,680 --> 00:01:32,290
+Dies ist eine schnelle Prüfung
+der Plausibilität Ihrer Paketstruktur.
+
+31
+00:01:32,290 --> 00:01:34,615
+Bei Erfolg können wir einen Trainingsjob
+
+32
+00:01:34,615 --> 00:01:38,005
+zur Skalierung an die Cloud senden.
+
+33
+00:01:38,005 --> 00:01:40,420
+Die wichtigen Argumente sind hier
+
+34
+00:01:40,420 --> 00:01:44,115
+"package-path" für den Codespeicherort,
+
+35
+00:01:44,115 --> 00:01:48,390
+"module-name", um anzugeben
+welche Paketdateien auszuführen sind,
+
+36
+00:01:48,390 --> 00:01:50,382
+und "scale-tier", um festzulegen
+
+37
+00:01:50,382 --> 00:01:53,355
+auf welcher Hardware
+der Code ausgeführt werden soll.
+
+38
+00:01:53,955 --> 00:01:58,405
+Bei "scale-tier=BASIC" erfolgt
+die Ausführung auf einer Maschine,
+
+39
+00:01:58,405 --> 00:02:01,800
+bei "scale-tier=STANDARD"
+auf einem kleineren Cluster
+
+40
+00:02:01,800 --> 00:02:03,920
+und bei "scale-tier=BASIC_GPU"
+
+41
+00:02:03,920 --> 00:02:05,710
+auf einer einzelnen GPU.
+
+42
+00:02:05,710 --> 00:02:07,460
+Es soll eine TPU verwendet werden?
+
+43
+00:02:07,460 --> 00:02:11,135
+Richtig: "scale-tier=BASIC_TPU".
+
+44
+00:02:11,135 --> 00:02:13,445
+Sie können auch eigene Stufen angeben
+
+45
+00:02:13,445 --> 00:02:15,455
+und Maschinentypen definieren.
+
+46
+00:02:15,455 --> 00:02:17,315
+Die Skalierungsstufen werden erweitert.
+
+47
+00:02:17,315 --> 00:02:20,065
+In der Dokumentation
+zur Cloud Machine Learning Engine
+
+48
+00:02:20,065 --> 00:02:21,505
+finden Sie alle Optionen.
+
+49
+00:02:21,505 --> 00:02:22,940
+Hier ein Expertentipp:
+
+50
+00:02:22,940 --> 00:02:25,060
+Für die beste Leistung bei ML-Jobs
+
+51
+00:02:25,060 --> 00:02:28,450
+wählen Sie in Google Cloud Storage
+für den Bucket eine einzelne Region aus.
+
+52
+00:02:28,450 --> 00:02:30,345
+Der Standard ist mehrere Regionen
+
+53
+00:02:30,345 --> 00:02:33,440
+und für Web-Serving
+besser geeignet als für ML-Training.

@@ -1,0 +1,43 @@
+Sehen wir uns
+den Code auf dieser Folie an. Auf den ersten Blick
+sieht es aus wie NumPy. Sie möchten die Tensoren a und b addieren. Sie schreiben also tf.add(a,b). Sie erhalten einen Tensor c. Anders als beim
+typischen Python-Code wird tf.add nicht sofort ausgeführt. Es wird nur der DAG erstellt. DAG steht für
+gerichteter azyklischer Graph. Im DAG sind a, b und c Tensoren und add ist eine Operation. Um diesen Code auszuführen, um den DAG auszuführen, müssen Sie ihn als Teil
+einer sogenannten Sitzung ausführen. Sie möchten also den Wert
+für c ermitteln und sagen: "Sitzung, bitte bewerte c für mich." Dann wird der DAG ausgeführt. Man erhält ein normales
+numerisches Array in Python, das die Werte für c enthält. Zum Programmieren in TensorFlow muss man also
+einen DAG programmieren. Dies umfasst zwei Schritte.
+Als Erstes erstellt man den Graphen. Als Zweites führt man den Graphen aus. Die Graphendefinition ist
+von der Trainingsschleife getrennt, da dies ein Modell
+mit Lazy Evaluation ist. Es minimiert 
+die Kontextwechsel von Python auf C++. Dadurch wird
+die Berechnung sehr effizient. Vom Konzept her ist es so,
+als schreibt man ein Programm, kompiliert es und lässt es
+auf ein paar Daten laufen. Diese Analogie hinkt jedoch ein wenig. Es gibt hier keine
+explizite Compiler-Phase. Beachten Sie, dass c
+nach dem Aufrufen von tf.add keine tatsächlichen Werte liefert. Sie müssen c im Kontext
+einer TensorFlow-Sitzung bewerten. Dann erhalten Sie
+ein NumPy-Array mit Werten also numpy_c. Wie gesagt, TensorFlow
+beinhaltet Lazy Evaluation. Sie schreiben zuerst einen DAG. Dann führen Sie den DAG
+im Kontext einer Sitzung aus, um Ihre Ergebnisse zu erhalten. Sie können TensorFlow auch
+in einem anderen Modus ausführen. Er heißt tf.eager. Hier erfolgt die Bewertung sofort und nicht mit Verzögerung. Der tf.eager-Modus wird jedoch selten
+in Produktionsprogrammen verwendet. Er wird in der Regel
+bei der Entwicklung eingesetzt. Wir werden uns tf.eager
+später im Kurs genauer ansehen. Wir beschäftigen uns jedoch
+primär mit der Lazy Evaluation. Fast der gesamte Code, den wir schreiben
+und in der Produktion ausführen, ist im Lazy Evaluation-Modus. Pythons numerische Software
+ist meist in NumPy geschrieben. Hier sind a und b NumPy-Arrays. NumPy ist so schnell,
+weil es in c implementiert ist. Wenn Sie also np.add aufrufen, wird add in c ausgeführt. Es wird ausgeführt, wenn die CPU
+den Code np.add (a,b) verarbeitet, und das NumPy-Array c
+wird dann mit den Summen befüllt. Wenn Sie c drucken,
+erhalten Sie 8, 2 und 10. 8 ist die Summe von 5 + 3, 3 minus 1 ergibt 2 und so weiter. Was ich sagen will:
+np.add wird sofort bewertet. Im Unterschied zu NumPy liefert c in TensorFlow
+nicht die tatsächlichen Werte. c ist ein Tensor und muss im Kontext
+einer TensorFlow-Sitzung bewertet werden, damit Sie als Ergebnis
+ein NumPy-Array mit Werten erhalten. Wenn die CPU oder GPU
+oder jede beliebige Hardware tf.add (a,b) bewertet, entsteht ein Tensor im
+gerichteten azyklischen Graphen (DAG). Die Addition wird jedoch erst ausgeführt, wenn session.run aufgerufen wird. Wenn wir also print c aufrufen, wird im ersten Feld der Debug-
+Output der Tensorklasse ausgegeben. Er umfasst einen eindeutigen Namen für den Knoten im DAG, in diesem Fall add_7, sowie Gestalt und Datentyp des Wertes,
+der beim Ausführen des DAG angezeigt wird. Nachdem die Sitzung ausgeführt wurde und c im Kontext
+einer Sitzung bewertet wurde, können wir das Resultat drucken und erhalten 8, 2 und 10,
+genau wie bei NumPy. Es gibt also zwei Phasen, die Build-Phase und die Run-Phase. Aber warum? Warum nutzt TensorFlow Lazy Evaluation? Darum geht es in der nächsten Lektion.

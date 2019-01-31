@@ -1,0 +1,105 @@
+Aqui, apresentamos a API Dataset, que vem com o TensorFlow e foi projetada
+para ser usada com estimadores. Vamos ver por que e 
+quando você precisará usá-la. Sabemos como escolher um modelo
+e como alimentar dados da memória, para treinamento e previsões. Mas para os modelos reais, ainda precisamos resolver
+alguns problemas. A API Estimator também pode ajudar nisso. Vamos começar com o primeiro.
+O tamanho dos dados. Sim, na vida real, os dados de treinamento
+raramente caberão na memória e você os carregará no disco
+progressivamente durante o treino. Como gravar uma função de entrada
+para o estimador que faça isso usando conjuntos de dados,
+como em tf.data.Dataset? Conjuntos de dados grandes tendem a
+ser divididos em vários arquivos, que podem ser carregados
+progressivamente. Lembre-se, nós treinamos
+em minilotes de dados. Não precisamos ter o conjunto de
+dados inteiro na memória. Um minilote é tudo o que
+precisamos para uma etapa de treino. Aqui está a API Dataset. Ela ajudará a criar funções de entrada
+que carregam dados progressivamente. Há classes de conjuntos
+de dados especializados que podem ler dados de arquivos
+de texto como CSVs, registros do TensorFlow ou arquivos
+de registro de tamanho fixo. Para qualquer outra coisa, use a cláusula do conjunto de dados genérica e
+adicione seu código de decodificação. No exemplo, o conjunto de dados da linha
+de texto carrega dados do arquivo CSV. Vamos ver as diferentes partes. Esta parte do código diz à classe do
+conjunto de dados como organizar os dados em
+lotes de treinamento de 128, repetidos por 15 épocas e, é claro, embaralhados com
+um buffer aleatório de 1.000 elementos. Aqui, instanciamos o conjunto de dados
+da linha de texto de um nome de arquivo. Isso carrega o arquivo
+e o divide em linhas. O conjunto de dados resultante é um
+conjunto de linhas de texto. Agora podemos usar a função map
+para transformar as linhas. Nesse caso, queremos dividir
+cada linha em itens de dados. Map aplica uma função a cada item no
+conjunto de dados de modo independente. E nessa função, usamos a função
+tf.decode_csv para extrair os valores separados
+por vírgula das linhas de texto, e formatá-los em atributos e rótulos
+conforme nosso modelo espera. Após o map, temos um conjunto de
+dados de base de rótulos e atributos. Finalmente, criamos a função de
+entrada para nosso modelo. Este pedaço de código
+boilerplate faz o truque. Mas você pode estar se perguntando
+por que isso é chamado de iterador, e por que conseguir o próximo, e o que realmente está
+acontecendo quando treinamos? Vamos nos aprofundar nisso novamente. Isso nos ajudará a entender. O TensorFlow trabalha com um princípio
+de execução diferida. Os comandos antigos do tf que você
+grava no Python não processam dados. Eles criam um gráfico de
+operações na memória. Este gráfico será executado quando
+treinarmos ou prevermos. Quando instanciamos um estimador, como linear ou regressor,
+o mesmo acontece. Um gráfico TensorFlow é criado na memória,
+representando nosso modelo. Agora, o problema é conectá-lo
+a uma fonte de dados. É para isso que servem as
+funções de entrada. O contrato para uma função de entrada é retornar um node do TensorFlow, representando os atributos e
+rótulos esperados pelo modelo. Esse node será conectado às
+entradas do modelo e é responsável por fornecer um novo lote
+de dados toda vez que for executado, durante o treinamento ou a inferência. É para isso que a API Dataset é útil. Ela gera nodes de entrada que entregam um
+lote de dados em cada etapa de treino. E ainda garantem que os dados carreguem
+progressivamente e não saturem a memória. Quando você chama
+dataset.makeiterator.getnext, você não alcança o próximo
+elemento no conjunto de dados. Você está recebendo
+um node do TensorFlow, que toda vez que for executado no treino,
+retorna um lote de dados de treino. Vamos recapitular. Funções de entrada são
+chamadas quando um modelo é instanciado. Retornam um par de nodes do TensorFlow
+para serem anexados às entradas do modelo e esses nodes são responsáveis
+​​por bombear dados para o modelo durante o
+treinamento ou a inferência. Há alguns equívocos sobre
+funções de entrada, que eu gostaria de esclarecer. Uma função de entrada não é chamada
+toda vez que o modelo precisa de dados. Ela é chamada apenas uma vez, no momento da criação do modelo. E não é esperado que elas
+retornem dados reais, mesmo se é o que parece
+quando você os grava. Elas retornam nodes
+do TensorFlow, e esses nodes retornam dados
+quando são executados. Você pode colocar
+um código arbitrariamente complexo na função de entrada para
+transformar os dados, desde que tenha em mente que
+ele será executado apenas uma vez. Quaisquer que sejam as transformações
+que você queira aplicar, e se você usa ou não a API Dataset,
+verifique se elas são expressas em comandos tf
+para gerar um gráfico do TensorFlow. É assim que as transformações
+são aplicadas a cada lote de dados, conforme é carregado no modelo. Mesmo se a função de entrada chamar
+o código apenas uma vez. Aqui está o código completo novamente. Vamos rever. Começando na parte inferior e subindo. Embaralhar o treino inicia
+o loop de treinamento. O modelo recebe dados
+dos nodes de entrada, atributos e rótulos, conforme
+definido na função de entrada. Esses nodes iteram no conjunto de
+dados e retornam um lote de dados toda vez que são executados
+no loop de treinamento. Por isso o nome da API Dataset que você
+chama para dar a eles é dataset.make_one_shot_iterator
+get_next. O conjunto de dados embaralha os dados, repete-os por 15 épocas e agrupa em minilotes de 128 elementos. O conjunto de dados foi produzido
+lendo linhas de um arquivo de texto e decodificando
+os valores separados por vírgula deles. A operação map transforma um
+conjunto de dados de linhas de texto em um conjunto
+de dados de atributos e rótulos. Finalmente, temos que abordar as
+preocupações iniciais, carregando grandes conjuntos de dados de
+um conjunto de arquivos compartilhados. Uma linha extra de código serve. Primeiro, pesquisamos o disco e
+carregamos um conjunto de dados de nomes de arquivos, usando o conjunto
+de dados que lista funções dos arquivos. Ele é compatível a uma sintaxe que combina
+nomes de arquivos com um padrão comum. Em seguida, usamos o conjunto de dados
+da linha de texto para carregar arquivos e transformar cada nome de arquivo em
+um conjunto de dados de linhas de texto. Aplicamos a função flat map em todos
+juntos, em um único conjunto de dados. E, em seguida, para cada linha de texto, usamos map para aplicar o algoritmo de análise de CSV e ter um
+conjunto de dados de atributos e rótulos. Por que duas funções
+de mapeamento, map e flat map? Uma delas é simplesmente para transformações um para um, e a outra
+para transformações um a muitos. Analisar uma linha de texto
+é uma transformação um para um. Portanto, aplicamos
+isso com map. Ao carregar um arquivo com um
+conjunto de dados de linha de texto, um nome de arquivo se torna uma
+coleção de linhas de texto. Então, essa é uma transformação um
+para muitos e é aplicada com flat map para achatar todas as linhas de
+texto resultantes em um conjunto de dados. Agora você sabe como usar
+conjuntos de dados para gerar funções de entrada apropriadas
+para seus modelos e treiná-los em grandes conjuntos de dados sem memória. Mas os conjuntos de dados também
+oferecem uma API avançada para trabalhar e transformar seus dados.
+Use-a.

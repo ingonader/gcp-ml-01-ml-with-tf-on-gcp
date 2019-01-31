@@ -1,0 +1,187 @@
+1
+00:00:00,000 --> 00:00:01,922
+Outre les erreurs de forme
+
+2
+00:00:01,922 --> 00:00:04,354
+que nous avons vues au cours
+des leçons précédentes,
+
+3
+00:00:04,354 --> 00:00:06,435
+un autre type d'erreur couramment rencontré
+
+4
+00:00:06,435 --> 00:00:08,580
+lors du développement
+de programmes TensorFlow
+
+5
+00:00:08,580 --> 00:00:10,805
+est celui relatif au type de données.
+
+6
+00:00:10,805 --> 00:00:14,310
+Ce message d'erreur indique
+que vous avez un Tensor
+
+7
+00:00:14,310 --> 00:00:17,740
+dont les valeurs sont stockées
+sous forme de tableaux de nombres entiers,
+
+8
+00:00:17,740 --> 00:00:19,740
+mais que vous le transmettez à une méthode
+
+9
+00:00:19,740 --> 00:00:22,735
+nécessitant un Tensor contenant
+des valeurs à virgule flottante.
+
+10
+00:00:23,085 --> 00:00:25,510
+Dans quelle situation
+cela pourrait-il se produire ?
+
+11
+00:00:25,940 --> 00:00:28,270
+Par exemple, si vous regardez
+la trace des appels,
+
+12
+00:00:28,270 --> 00:00:32,120
+et que la ligne de code identifiée est celle
+de l'addition que vous voyez ici :
+
+13
+00:00:32,120 --> 00:00:33,950
+s = (a + b).
+
+14
+00:00:34,400 --> 00:00:37,590
+Il est possible que a soit un tableau
+de nombres à virgule flottante
+
+15
+00:00:37,590 --> 00:00:40,275
+et b un tableau de nombres entiers.
+
+16
+00:00:40,715 --> 00:00:41,592
+Certes,
+
+17
+00:00:41,592 --> 00:00:46,099
+l'ajout d'un nombre à virgule flottante
+à un nombre entier est automatique,
+
+18
+00:00:46,099 --> 00:00:48,315
+et donne un nombre à virgule flottante.
+
+19
+00:00:48,545 --> 00:00:52,392
+Mais Python et C++ ne permettent pas
+
+20
+00:00:52,392 --> 00:00:57,006
+d'additionner des tableaux de ces deux types.
+
+21
+00:00:57,006 --> 00:00:59,750
+Cela implique de nombreuses
+optimisations du stockage,
+
+22
+00:00:59,750 --> 00:01:02,095
+et les données d'un tableau
+de nombres entiers
+
+23
+00:01:02,095 --> 00:01:04,850
+peuvent être sur un appareil
+ou en un point de la mémoire
+
+24
+00:01:04,850 --> 00:01:08,000
+n'autorisant pas l'arithmétique
+en virgule flottante.
+
+25
+00:01:08,000 --> 00:01:09,500
+Que faire ?
+
+26
+00:01:09,500 --> 00:01:11,885
+Allez-vous arrondir
+les valeurs à virgule flottante
+
+27
+00:01:11,885 --> 00:01:13,250
+pour obtenir des entiers ?
+
+28
+00:01:13,250 --> 00:01:14,920
+Ou alors, avez-vous fait une erreur
+
+29
+00:01:14,920 --> 00:01:18,582
+en optant pour le type float
+plutôt que pour le type int ?
+
+30
+00:01:18,585 --> 00:01:22,210
+Ou voulez-vous convertir (caster)
+les entiers en nombres à virgule flottante,
+
+31
+00:01:22,210 --> 00:01:23,540
+et procéder à l'addition
+
+32
+00:01:23,540 --> 00:01:26,280
+en sachant que le résultat sera
+un tableau de type float ?
+
+33
+00:01:26,280 --> 00:01:28,970
+Étant donné qu'il existe ici
+plusieurs possibilités,
+
+34
+00:01:28,970 --> 00:01:31,730
+TensorFlow nous demande d'être plus clairs.
+
+35
+00:01:31,730 --> 00:01:37,920
+L'une des solutions consiste à convertir
+le tableau de nombres entiers b
+
+36
+00:01:37,920 --> 00:01:40,900
+en Tensor de valeurs à virgule flottante.
+
+37
+00:01:40,900 --> 00:01:46,360
+Donc, cet appel de tf.cast
+sera inséré dans le graphe de calcul,
+
+38
+00:01:46,360 --> 00:01:49,830
+et il en sera notamment tenu compte
+au niveau des optimisations
+
+39
+00:01:49,830 --> 00:01:52,500
+lors du choix de l'emplacement
+de stockage de b
+
+40
+00:01:52,500 --> 00:01:54,600
+et de son mode de déplacement.
+
+41
+00:01:54,600 --> 00:01:59,840
+Donc ici, nous ajoutons l'opération tf.cast
+dans la méthode afin de la corriger.

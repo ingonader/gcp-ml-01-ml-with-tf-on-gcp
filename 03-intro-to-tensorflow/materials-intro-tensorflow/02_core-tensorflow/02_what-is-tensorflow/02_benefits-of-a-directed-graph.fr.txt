@@ -1,0 +1,78 @@
+Alors, pourquoi TensorFlow utilise-t-il
+des graphes orientés acycliques pour représenter les calculs ? La réponse tient en un mot : portabilité. Le graphe orienté acyclique (DAG) est
+une représentation du code de votre modèle qui est indépendante du langage. Vous pouvez créer un DAG en Python,
+le stocker dans un modèle enregistré et le restaurer dans un programme C++ pour établir des prédictions
+à faible latence. Et ce même code Python peut être exécuté
+sur des processeurs et sur des GPU, de sorte que la portabilité concerne
+aussi bien le langage que le matériel. De bien des façons, ce mode de fonctionnement s'apparente
+à celui de la machine virtuelle Java (JVM) dont la représentation du bytecode
+facilite la portabilité du code Java. En tant que développeurs, nous avons à écrire du code en Java,
+un langage de haut niveau, et à faire en sorte qu'il soit exécuté
+sur différentes plates-formes via la JVM. Très performante, la JVM est
+spécifiquement développée pour le système d'exploitation
+et le matériel utilisés. Elle est écrite en C ou en C++. C'est très proche du mode
+de fonctionnement de TensorFlow. En tant que développeurs, nous avons à écrire du code en Python,
+un langage de haut niveau, et à faire en sorte qu'il soit exécuté
+sur différentes plates-formes via le moteur d'exécution de TensorFlow. Très performant, ce moteur d'exécution
+est spécifiquement développé pour la puce matérielle utilisée afin
+d'en exploiter au mieux les possibilités. Il est écrit en C++. La portabilité entre les appareils apporte
+beaucoup de puissance et de flexibilité. Par exemple, il est courant que vous puissiez
+entraîner un modèle TensorFlow dans le cloud sur une multitude de machines puissantes, puis que vous fassiez passer
+le modèle entraîné sur un appareil situé
+en périphérie du réseau. Il peut s'agir d'un téléphone mobile,
+ou même d'une puce intégrée. Et vous pouvez établir des prédictions
+avec le modèle, directement sur cet appareil. Vous vous souvenez
+de l'application Google Traduction dont il a été question dans
+le premier cours de cette spécialisation ? Elle peut fonctionner tout en étant
+totalement hors connexion avec un modèle de traduction entraîné,
+stocké sur le téléphone, qui est opérationnel sans connexion Internet. Il a tendance à être plus petit et moins
+puissant que celui utilisé dans le cloud, ceci en raison des limites liées
+à la puissance de traitement du téléphone. Mais si TensorFlow peut faire ça, et c'est bien pratique, c'est grâce à la portabilité apportée
+par la représentation orientée acyclique. Ces types de modèles,
+plus petits et moins puissants, sont généralement mis en œuvre
+avec TensorFlow Lite. J'ai parlé de l'entraînement
+effectué dans le cloud et de prédictions établies sur un appareil
+de faible puissance tel qu'un téléphone. Oui, mais est-il possible d'entraîner
+le modèle sur le téléphone ? Pas actuellement, car l'entrainement d'un modèle de ML
+a tendance à être une opération onéreuse. Mais nous en prenons de plus en plus
+le chemin en adoptant une approche mixte. C'est une pratique réservée aux acteurs
+les plus avancés du ML, et peu répandue. Mais qu'est-ce que je veux dire
+quand je parle d'approche mixte ? Imaginez une situation dans laquelle
+vous entraînez un modèle avant de le déployer
+sur de nombreux téléphones. Et lorsqu'il obtient une prédiction, un utilisateur considère
+qu'elle est incorrecte ou souhaite voir davantage
+de résultats du même type. Et à ce stade, vous voulez
+mettre à jour les pondérations du modèle en fonction des préférences
+de cet utilisateur. Ce type d'optimisation d'un modèle entraîné
+est tout à fait possible sur un téléphone. L'appareil personnalise le modèle en local
+en fonction des habitudes de l'utilisateur (A sur le schéma). Cela revient toutefois à optimiser le modèle
+pour chacun des utilisateurs. Vous pouvez souhaiter
+que les préférences des utilisateurs, ne soient pas renvoyées
+sur votre système situé dans le cloud, car il s'agit peut-être
+de données personnelles sensibles. Vous pouvez alors avoir recours
+à l'apprentissage fédéré, qui consiste en l'agrégation
+des mises à jour de nombreux utilisateurs (B sur le schéma). Cela revient pour l'essentiel à mettre à jour
+les pondérations d'un lot d'échantillons, à ceci près que les données proviennent
+de différents utilisateurs. L'opération (C sur le schéma)
+fait ainsi consensus, et s'effectue au niveau
+du modèle partagé stocké dans le cloud. Donc, vous déployez le modèle partagé, vous l'optimisez sur les appareils
+de différents utilisateurs, et vous recommencez. TensorFlow est donc un logiciel portable,
+puissant et prêt à être utilisé en production qui permet d'effectuer
+des calculs numériques. Et il est particulièrement prisé
+pour le machine learning. C'est le dépôt le plus utilisé
+pour le machine learning sur GitHub. Pourquoi ? Les chercheurs en deep learning l'apprécient
+pour sa communauté d'utilisateurs et les possibilités d'extension
+qui ouvrent la voie à de nouveaux usages. Les ingénieurs en ML l'apprécient
+pour sa capacité à produire des modèles et pour son évolutivité. Les raisons de ces deux groupes
+se nourrissent les unes des autres. Les chercheurs veulent que leurs méthodes
+soient largement utilisées, et le fait de les mettre en œuvre
+dans TensorFlow est une façon d'y parvenir. Les ingénieurs en ML veulent
+que leur code soit évolutif et leur permette d'utiliser des modèles
+plus récents dès leur invention, et TensorFlow les aide à y parvenir. Chez Google, nous avons fait de TensorFlow
+un logiciel Open Source parce qu'il peut aider
+de nombreuses autres sociétés, mais aussi parce que
+nous avons vu le potentiel de cette sorte d'aide massive
+apportée par une communauté. Le fait que TensorFlow soit Open Source
+vous donne un avantage essentiel. Vous n'êtes pas captifs lorsque vous utilisez
+Cloud Machine Learning Engine sur GCP : le code que vous écrivez est dans TensorFlow,
+et TensorFlow est Open Source.

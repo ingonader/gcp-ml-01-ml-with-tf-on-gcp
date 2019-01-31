@@ -1,0 +1,291 @@
+1
+00:00:00,000 --> 00:00:02,835
+So, let's look at the code on the slide.
+
+2
+00:00:02,835 --> 00:00:08,040
+At first glance, this looks just like say NumPy,
+
+3
+00:00:08,040 --> 00:00:11,305
+you want to add two tensors a and b.
+
+4
+00:00:11,305 --> 00:00:14,710
+So, you write tf.add(a, b).
+
+5
+00:00:14,710 --> 00:00:21,240
+It returns a tensor c. Unlike typical Python code though,
+
+6
+00:00:21,240 --> 00:00:25,385
+running the tf,add doesn't execute it,
+
+7
+00:00:25,385 --> 00:00:27,830
+it only builds the DAG.
+
+8
+00:00:27,830 --> 00:00:32,250
+In the DAG in the directed acyclic graph, a, b,
+
+9
+00:00:32,250 --> 00:00:37,125
+and c are tensors and add is an operation.
+
+10
+00:00:37,125 --> 00:00:39,545
+In order to run this code,
+
+11
+00:00:39,545 --> 00:00:41,965
+in order to execute the DAG,
+
+12
+00:00:41,965 --> 00:00:47,690
+you need to run it and you run it as part of what is called a session.
+
+13
+00:00:47,690 --> 00:00:52,680
+So, you say that you want a value of c and you ask the session,
+
+14
+00:00:52,680 --> 00:00:56,080
+"Hey session, please evaluate c for me."
+
+15
+00:00:56,080 --> 00:00:58,720
+So, that's what runs the DAG,
+
+16
+00:00:58,720 --> 00:01:03,770
+and then you get back a traditional numeric array in Python that contains the values
+
+17
+00:01:03,770 --> 00:01:09,395
+for c. Programming TensorFlow involves programming a DAG.
+
+18
+00:01:09,395 --> 00:01:11,285
+So, there are two steps.
+
+19
+00:01:11,285 --> 00:01:13,835
+First step, create the graph.
+
+20
+00:01:13,835 --> 00:01:16,675
+Second step, run the graph.
+
+21
+00:01:16,675 --> 00:01:20,465
+The graph definition is separate
+
+22
+00:01:20,465 --> 00:01:24,600
+from the training loop because this is a lazy evaluation model.
+
+23
+00:01:24,600 --> 00:01:27,130
+It minimizes the Python to
+
+24
+00:01:27,130 --> 00:01:33,045
+C++ context switches and enable the computation to be very efficient.
+
+25
+00:01:33,045 --> 00:01:36,735
+Conceptually, this is like writing a program,
+
+26
+00:01:36,735 --> 00:01:40,145
+compiling it, and then running it on some data.
+
+27
+00:01:40,145 --> 00:01:42,320
+But don't take that analogy too far.
+
+28
+00:01:42,320 --> 00:01:44,915
+There is no explicit compile phase here.
+
+29
+00:01:44,915 --> 00:01:49,060
+Note that c after you call tf.add,
+
+30
+00:01:49,060 --> 00:01:51,400
+is not the actual values.
+
+31
+00:01:51,400 --> 00:01:54,780
+You have to evaluate c in the context of
+
+32
+00:01:54,780 --> 00:02:00,160
+a TensorFlow session to get a NumPy array of values, numpy_c.
+
+33
+00:02:00,420 --> 00:02:06,375
+So, to reiterate, TensorFlow does lazy evaluation.
+
+34
+00:02:06,375 --> 00:02:13,890
+You write a DAG and then you run the DAG in the context of a session to get results.
+
+35
+00:02:13,890 --> 00:02:17,260
+Now, there is a different mode in which you can run TensorFlow.
+
+36
+00:02:17,260 --> 00:02:20,420
+It's called tf.eager and in tf.eager,
+
+37
+00:02:20,420 --> 00:02:23,745
+the evaluation is immediate and it's not lazy.
+
+38
+00:02:23,745 --> 00:02:27,820
+But eager mode is typically not used in production programs.
+
+39
+00:02:27,820 --> 00:02:30,320
+It's typically used only for development.
+
+40
+00:02:30,320 --> 00:02:33,535
+We'll look at tf.eager a little bit later in this course,
+
+41
+00:02:33,535 --> 00:02:35,095
+but for the most part,
+
+42
+00:02:35,095 --> 00:02:37,865
+we'll focus on the lazy evaluation paradigm.
+
+43
+00:02:37,865 --> 00:02:40,930
+And almost all the code that we write and we
+
+44
+00:02:40,930 --> 00:02:44,850
+run in production will be in lazy evaluation mode.
+
+45
+00:02:44,850 --> 00:02:50,355
+In NumPy, which is what the lion share of Python Numeric Software is written in,
+
+46
+00:02:50,355 --> 00:02:53,505
+a and b are NumPy arrays.
+
+47
+00:02:53,505 --> 00:02:57,675
+NumPy gets it's speed by being implemented in c,
+
+48
+00:02:57,675 --> 00:03:00,260
+so when you call np.add,
+
+49
+00:03:00,260 --> 00:03:08,300
+that add gets done in c. But it does get done when the CPU runs the code np.add (a,
+
+50
+00:03:08,300 --> 00:03:12,360
+b) and the NumPy array c gets populated with the sums.
+
+51
+00:03:12,360 --> 00:03:14,265
+So, when you print c,
+
+52
+00:03:14,265 --> 00:03:16,825
+you get the 8, 2 and 10.
+
+53
+00:03:16,825 --> 00:03:18,645
+8 is the sum of 5 and 3,
+
+54
+00:03:18,645 --> 00:03:21,590
+3 and -1 you add to get 2, et cetera.
+
+55
+00:03:21,590 --> 00:03:27,455
+The point is np.add is evaluated immediately.
+
+56
+00:03:27,455 --> 00:03:34,235
+Unlike with NumPy, in TensorFlow c is not the actual values.
+
+57
+00:03:34,235 --> 00:03:39,110
+Instead, c is a tensor and you have to evaluate c in
+
+58
+00:03:39,110 --> 00:03:45,315
+the context of a TensorFlow session to get a NumPy array of values, the result.
+
+59
+00:03:45,315 --> 00:03:52,159
+So, when the CPU or GPU or whatever hardware evaluates tf.add (a,
+
+60
+00:03:52,159 --> 00:03:57,165
+b) a tensor gets created in the directed acyclic graph in the DAG.
+
+61
+00:03:57,165 --> 00:04:04,275
+But the addition itself it's not carried out until session.run gets called.
+
+62
+00:04:04,275 --> 00:04:06,905
+So, if we call print c,
+
+63
+00:04:06,905 --> 00:04:12,750
+what gets printed out in the first box is the debug output of the tensor class.
+
+64
+00:04:12,750 --> 00:04:17,220
+It includes a system assigned unique name for the node in the DAG,
+
+65
+00:04:17,220 --> 00:04:20,670
+in this case, add_7 and the shape and
+
+66
+00:04:20,670 --> 00:04:24,785
+the data type of the value that will show up when the DAG is run.
+
+67
+00:04:24,785 --> 00:04:30,805
+After the session is run and c is evaluated in the context of a session,
+
+68
+00:04:30,805 --> 00:04:33,280
+we can print the result and we will get 8,
+
+69
+00:04:33,280 --> 00:04:35,710
+2, and 10, just like we got with NumPy.
+
+70
+00:04:35,710 --> 00:04:37,630
+So, there are two stages,
+
+71
+00:04:37,630 --> 00:04:41,630
+a build stage and a run stage, but why?
+
+72
+00:04:41,630 --> 00:04:46,580
+Why does TensorFlow do lazy evaluation?
+
+73
+00:04:46,580 --> 00:04:48,930
+That is a next lesson.

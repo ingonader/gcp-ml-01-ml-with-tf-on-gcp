@@ -1,0 +1,49 @@
+In den vorherigen Lektionen
+haben wir darüber gesprochen, was TensorFlow ist. Sehen wir uns nun die 
+TensorFlow API-Hierarchie an. Wie die meisten Softwarebibliothenken hat auch TensorFlow
+eine Reihe an Abstraktionsebenen. Die niedrigste Abstraktionsebene
+ist die Ebene, die im Hinblick auf die verschiedenen Hardwareplattformen
+implementiert wird. Es ist unwahrscheinlich,
+dass Sie viel auf dieser Ebene machen, außer Ihr Unternehmen produziert Hardware. Die nächste Ebene
+ist eine TensorFlow C++ API. So können Sie eine benutzerdefinierte
+TensorFlow-Anwendung schreiben. Sie implementieren die
+gewünschte Funktion in C++ und registrieren sie 
+als TensorFlow-Vorgang. Siehe die TensorFlow-Dokumentation
+zur Erweiterung einer Anwendung. Von TensorFlow erhalten Sie 
+dann einen Python-Wrapper, den Sie so wie eine
+bestehende Funktion nutzen können. In dieser Spezialisierung nehmen wir an, dass Sie kein ML-Forscher sind,
+daher müssen Sie das nicht tun. Sollten Sie jemals Ihre eigene
+benutzerdefinierte Anwendung implementieren müssen,
+würden Sie dies in C++ tun und das ist nicht so schwierig. TensorFlow ist auf diese Art erweiterbar. Die Core Python API auf der nächsten Ebene enthält einen Großteil des Codes
+zur numerischen Verarbeitung. Addition, Subtraktion, Division,
+Matrix-Multiplikation und so weiter. Die Erstellung von Variablen und Tensoren, das Erhalten der Form und
+aller Dimensionen eines Tensors, die gesamte, grundlegende 
+numerische Verarbeitung: Das alles ist in der Python API enthalten. Es gibt ein Set an Python-Modulen, die viele nützliche neuronale
+Netzwerkkomponenten enthalten, z. B. eine Möglichkeit, 
+eine neue Ebene versteckter Neuronen innerhalb einer ReLU-
+Aktivierungsfunktion zu erstellen, und zwar mit tf.layers. Sie können die Wurzel
+der mittleren Fehlerquadratsumme bei eingehenden Daten 
+berechnen: tf.metrics. Sie können Kreuzentropien 
+mit Logits berechnen. Dies ist eine übliche Verlustmessung
+bei Klassifikationsproblemen. Kreuzentropie mit Logits ist in tf.losses enthalten. Diese Module bieten Ihnen
+nützliche Komponenten zur Erstellung von
+benutzerdefinierten NN-Modellen. Warum betone ich
+benutzerdefinierte NN-Modelle? Oft benötigen Sie kein benutzerdefiniertes Modell für neuronale Netzwerke. Meistens genügen Ihnen die
+relativ standardmäßigen Möglichkeiten für Training, Evaluierung und 
+Bereitstellung von Modellen. Sie müssen nicht anpassen, 
+wie Sie trainieren, sondern Sie nutzen eine Möglichkeit aus der Familie
+der Gradientenverfahrensoptimierung und Sie propagieren die 
+Gewichtungen zurück und tun dies iterativ. In diesem Fall schreiben Sie keine
+untergeordnete Sitzungsschleife, sondern nutzen nur einen Estimator. Der Estimator ist die
+übergeordnete API in TensorFlow. Dieser weiß,
+wie verteiltes Training funktioniert, wie evaluiert und
+ein Prüfpunkt erstellt wird, wie ein Modell gespeichert wird und welche Einrichtung
+für die Bereitstellung notwendig ist. Alles ist auf vernünftige Art vorbereitet und passt für die meisten
+ML-Modelle in der Produktion. Wenn Sie also einen Beispielcode
+für TensorFlow im Internet sehen und dieser nicht die Estimator API nutzt, lassen Sie am besten die Finger davon, es lohnt sich nicht. Sie müssen eine Menge an Code schreiben für die Gerätezuordnung und 
+die Speicherverwaltung und Verteilung. Lassen Sie den Estimator dies für Sie tun. Das sind die 
+TensorFlow-Abstraktionsebenen. Cloud ML Engine ist orthogonal
+in Bezug auf diese Hierarchie. Unabhängig von der Abstraktionsebene, auf
+der Sie Ihren TensorFlow-Code schreiben, bietet CMLE einen verwalteten Dienst. TensorFlow wird gehostet, damit Sie TensorFlow auf der Cloud und
+einem Gerätecluster ausführen können, ohne Software installieren
+oder Server verwalten zu müssen.

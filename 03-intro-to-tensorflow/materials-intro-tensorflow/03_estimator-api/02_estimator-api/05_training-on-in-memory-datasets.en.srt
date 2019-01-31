@@ -1,0 +1,163 @@
+1
+00:00:00,000 --> 00:00:03,420
+Let's move to real data and not the constants we have been
+
+2
+00:00:03,420 --> 00:00:06,705
+using previously to illustrate the Estimator API.
+
+3
+00:00:06,705 --> 00:00:12,780
+If your data fits a memory in the form of either numpy arrays or Pandas,
+
+4
+00:00:12,780 --> 00:00:17,760
+the Estimator API has easy convenience functions for feeding them into your model.
+
+5
+00:00:17,760 --> 00:00:24,110
+They are called estimator.inputs.numpy_input_fn and estimator.inputs.Pandas_input_fn.
+
+6
+00:00:24,110 --> 00:00:30,270
+You specify your feature dictionary as x using the same names as the ones you used to,
+
+7
+00:00:30,270 --> 00:00:34,415
+to define features columns and your labels as y.
+
+8
+00:00:34,415 --> 00:00:36,235
+When the reading from Pandas,
+
+9
+00:00:36,235 --> 00:00:38,430
+these feature names are not even necessary.
+
+10
+00:00:38,430 --> 00:00:41,160
+The API will pick up the correct columns from
+
+11
+00:00:41,160 --> 00:00:46,155
+your Pandas data frame based on the names you used when defining feature columns.
+
+12
+00:00:46,155 --> 00:00:48,690
+These input functions implement
+
+13
+00:00:48,690 --> 00:00:52,485
+the key functionalities needed when training neural network models.
+
+14
+00:00:52,485 --> 00:00:56,730
+Typically, training works best when one training step is
+
+15
+00:00:56,730 --> 00:01:01,230
+performed on what is called a mini batch of input data at a time,
+
+16
+00:01:01,230 --> 00:01:05,285
+not a single data item and not the entire data set either.
+
+17
+00:01:05,285 --> 00:01:08,080
+You can specify the batch size here.
+
+18
+00:01:08,080 --> 00:01:11,320
+You can also say how many times you want to repeat the data
+
+19
+00:01:11,320 --> 00:01:14,840
+set during training called the number of epochs.
+
+20
+00:01:14,840 --> 00:01:20,100
+And finally, thoroughness shuffling your training data is important.
+
+21
+00:01:20,100 --> 00:01:23,245
+You can ask the Estimator API to do it.
+
+22
+00:01:23,245 --> 00:01:26,345
+And to avoid replicating the data set in memory,
+
+23
+00:01:26,345 --> 00:01:30,045
+when doing so, you can specify the size of the shuffle queue.
+
+24
+00:01:30,045 --> 00:01:34,560
+By default, training will run until your training data is
+
+25
+00:01:34,560 --> 00:01:41,130
+exhausted or exhausted n times if you specifies you want n epochs in your input function.
+
+26
+00:01:41,130 --> 00:01:44,115
+You can also override this with
+
+27
+00:01:44,115 --> 00:01:47,775
+an explicit number of steps when calling the train function.
+
+28
+00:01:47,775 --> 00:01:50,610
+There are two variants for the step setting.
+
+29
+00:01:50,610 --> 00:01:54,180
+Steps equals 1,000 will run
+
+30
+00:01:54,180 --> 00:01:58,965
+1,000 additional training steps starting from the last checkpoint.
+
+31
+00:01:58,965 --> 00:02:03,210
+One step here corresponds to one batch of input data.
+
+32
+00:02:03,210 --> 00:02:09,315
+Max steps equals 1,000 on the other hand restarts from the latest check points
+
+33
+00:02:09,315 --> 00:02:12,255
+reads the step count reached in the previous run
+
+34
+00:02:12,255 --> 00:02:15,765
+and continues until the step count reaches max steps.
+
+35
+00:02:15,765 --> 00:02:20,085
+This can potentially do nothing if the checkpoint was already there.
+
+36
+00:02:20,085 --> 00:02:24,770
+Here is the entire code with feature columns, a model,
+
+37
+00:02:24,770 --> 00:02:30,870
+an input function that reads data from a Pandas data frame and the training itself.
+
+38
+00:02:30,870 --> 00:02:33,090
+Would you like to add a new feature?
+
+39
+00:02:33,090 --> 00:02:35,745
+Let's say the number of bedrooms in the house.
+
+40
+00:02:35,745 --> 00:02:39,105
+You can add it to the list of feature columns and make sure it is
+
+41
+00:02:39,105 --> 00:02:42,770
+present with the same name in the Pandas data frame.

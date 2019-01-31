@@ -1,0 +1,39 @@
+Jetzt sehen wir uns Graph und Sitzung an. Der gerichtete azyklische Graph, also der DAG in TensorFlow, gleicht jedem anderen Graphen. Er besteht aus Kanten und Knoten. Die Kanten repräsentieren Daten, sie repräsentieren Tensoren,
+also n-dimensionale Arrays. Die Knoten repräsentieren TensorFlow-
+Operationen auf diesen Tensoren. Operationen wie tf.add, die wir
+in der letzten Lektion gelöst haben. Ein TensorFlow-DAG besteht aus Tensoren und Operationen auf diesen Tensoren. Warum arbeitet TensorFlow
+nun mit verzögerter Auswertung? Weil verzögerte Auswertung
+bei der Ausführung des Graphen Flexibilität und Optimierung ermöglicht TensorFlow kann jetzt den
+Graphen verarbeiten und kompilieren, Sende- und Empfangs-
+knoten mitten im DAG einfügen und diese remote ausführen. TensorFlow kann verschiedene Teile
+des DAG verschiedenen Geräten zuweisen, je nachdem, ob sie E/A-gebunden ist oder GPU-Funktionen erfordert. Während der Graph verarbeitet wird, kann TensorFlow
+Quantisierung oder Datentypen hinzufügen, Debug-Knoten hinzufügen, Zusammenfassungen erstellen,
+in die Werte geschrieben werden, damit Tensor sie lesen kann,
+außerdem Berechnungen wie Addieren, Matmul, Konstanten, Variablen. Dies
+sind Vorgänge, die TensorFlow nutzen kann. Wenn der Graph kompiliert wird, kann TensorFlow zwei Vorgänge
+zur Leistungssteigerung zusammenfassen. Wenn Sie zum Beispiel zwei
+aufeinanderfolgende Addierknoten haben, kann TensorFlow diese
+zu einem zusammenfassen. Der XLA-Compiler von TensorFlow kann die Informationen in einen
+gerichteten azyklischen Graphen übertragen und damit schnelleren Code erzeugen. Das ist ein Grund, einen
+DAG zur Optimierung einzusetzen. Das Spannendste aber ist, 
+dass man den DAG remote ausführen und Geräten zuweisen kann. An diesem Punkt wird der
+Nutzen des DAG sehr deutlich. Explizite Kanten repräsentieren
+Abhängigkeiten zwischen Operationen, dadurch kann das System parallel
+ausführbare Operationen leicht erkennen. Explizite Kanten repräsentieren auch
+Werte, die zwischen Operationen fließen, und dadurch kann TensorFlow ein
+Programm auf verschiedene Geräte, CPUs, GPUs, TPUs usw. verteilen,
+sogar in verschiedenen Maschinen. Kommunikation und Koordination zwischen
+diesen Geräten ist Sache von TensorFlow. Nun zu den Farben im Diagramm. Verschiedene Teile des Graphen
+können auf verschiedenen Geräten sein, ganz gleich, ob GPUs
+oder verschiedene Computer. Ein wichtiger Vorteil dieses Modells, nämlich Berechnungen auf viele Maschinen und Maschinentypen verteilen zu können, ist dem DAG zu verdanken. Wir schreiben nur den Python-Code und überlassen es 
+dem TensorFlow-Ausführungssystem, den Graphen zu 
+optimieren und zu verteilen. Die Sitzungsklasse repräsentiert diese
+Verbindung zwischen dem Python-Programm und der Laufzeit in C++. Das Sitzungsobjekt bietet Zugang
+zu Geräten der lokalen Maschine und zu Remotegeräten,
+verteilt durch die TensorFlow-Laufzeit. Es dient als Zwischenspeicher
+für Informationen über den Graphen, dadurch kann die gleiche
+Berechnung mehrmals ausgeführt werden. TensorFlow-Graphen werden in einer tf-
+Sitzung durch Aufruf von run ausgeführt. Dabei geben wir einen Tensor an, der ausgewertet werden soll. In diesem Codebeispiel definiere ich zwei Datentensoren x und y. Dies sind Konstanten, 1-D-Tensoren. Der Tensor z ist das Ergebnis
+des Aufrufs von tf.add mit x und y. Wenn ich ihn auswerten möchte, rufe ich session.run mit z auf. Die Sitzung (hier "sess")
+ist eine Instanz der tf-Sitzung und mit der Python-Anweisung "with" sorgen wir dafür, dass die Sitzung anschließend
+automatisch geschlossen wird.

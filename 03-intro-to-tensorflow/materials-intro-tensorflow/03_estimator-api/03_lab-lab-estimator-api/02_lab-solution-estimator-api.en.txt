@@ -1,0 +1,76 @@
+Let's go through our first
+estimator code lab together. To start,
+we need to locate the code lab files. Let me do that with you. You go to cloud.google.com/console,
+and log with your lab account. I'll do that as well. And now, you have to pick a project. Sometimes it's already selected for you. And open the Cloud Shell,
+it's this icon here. In the Cloud Shell,
+we are going to type datalab create. Let's call our data lab instance, mylab. And we will create it in the zone,
+us-central1-a. So this will create our
+first data lab instance. It does take a while on the first attempt. The next time, you don't have to
+recreate the data of instance, just reconnect to it by
+typing datalab connect and the data of instance, mylab in my case. And now,
+locate the Web preview button right here. Change the port to 8081,
+that's what the data lab uses. And click Preview. And this opens a familiar
+notebook interface. From here we still need to
+get the code from GitHub. So we open a notebook to start
+typing bash commands into it, %bash. And we will git clone our code lab repository into the local directory. As soon as this is finished, the local directory appears right here. Here we go. So it's called training-data-analyst, and in there you want to locate
+a directory called courses, then the machine_learning, then deepdive. Then tensorflow. And our first lab is b_estimator.ipynb. So in this example, we will be using
+Pandas to read our data from CSV files containing information
+about taxi rides. Pick up location, drop off location,
+and the number of passengers. We will be training our model
+to predict the taxi fare. So let's go through it. First, we define our column names here,
+fare amount, pickuplon, pickuplat, and so on. And we use Pandas to read
+this data from CSV files. One data set for training data,
+one data set for validation data. Now, we use the built-in functionality in estimators to make an input
+function from our Pandas. It's called
+tf.estimators.inputs.pandas_input_fn. The function lets us specify
+the features as x right here, and the target labels as y right here. It also handles all the standard
+settings for a training data set, the batch size, the number of epochs,
+and also shuffling with the queue_capacity here that
+is simply the shuffle queue buffer. So let's run this one. And now, we create our feature columns. All of them are numeric columns. So we call tf.feature_column.numeric_column for
+each one. The list of features columns is what
+tells the model how to back the data into its input vector. The model is instantiated here,
+right here. We give it the list of feature columns and a directory where all the output
+data will be written, right here. To train the model, we call it train function passing
+in the data input function. Train and data input function. That's the one getting data from
+the Pandas' data frame into our model. So the model is now running for
+ten epochs. You see the training logs here. And it has finished, it is trained. How good is it? Why not try it out on our
+validation data center? For that,
+we call model evaluates Right here. Parsing in, this time the data
+input function that gets the data from the df_valid
+validation Pandas' data frame. So we parse it in here. And we get our results. The final RMSE root mean
+square error is $10. Well, $10 is a big error for a taxi fare. And it is nowhere near our
+previous benchmark of $6. We will improve this later, now that
+we have working code to play with. Let's see if we can use this model for
+predictions. When we instantiate the model again,
+it will look for a check point in the model directory and
+reload itself from there. Since we have just trained the model, we
+have a trained checkpoint on the model and it is ready for predictions. We instantiate it here,
+passing it the same output directory. And the predict function, called here,
+returns a Python generator. We call it in a loop to
+get predicted fares. Right here, and
+you see the predicted fares here. And maybe this explains
+why the RMSE was so high. The model essentially predicts
+the same amount for every trip. Would a more complex model help? Lets try,
+using a good deep neural network. We keep everything as it is,
+feature columns, input functions. And we changed the model from
+a linear regressor to a DNN regressor with three hidden layers. So let's do that. We instantiate the DNN regressor here,
+and configure the hidden layers here. So 32 nodes in the first one, 8 nodes in
+the second one, 2 nodes in the last one. Let's train it. It trains again for ten epochs. And at the end,
+we will be calling this the model.predict function again from
+this print_rmse helper. It's training, training, training. Now, it is validating. And the RMSE on the validation
+data set is this time is $11. Well, it's still bad. We are not beating our benchmark
+model with either model. What's up? Well, maybe we are using TensorFlow for
+Machine Learning but we are not yet using it well. That's what the rest of
+this course is about. But for the record, let's say we had
+to choose between the two models, we would choose the one with
+the lowest validation error. And finally, we would measure the RMSE
+on the test data with this chosen model. This final RMSE can be published as the
+objective performance of our best model. There is the standard procedure in
+data science, training, validation, test, each with its separate data sets. Let's try this on our benchmark data set. The RMSE on the benchmark
+data set is 9.41. And here we are, the RMSE on
+the benchmark data set is $10.5. This is not only way more than
+our original benchmark of $6. But it doesn't even beat our
+distance based rules RMSE of $80. Fair enough you have learned how
+to write a TensorFlow model. But not to do all the things, that you
+will have to do to improve your model and make it performing. We will do this in the next chapters. In this chapter though,
+we will get our TensorFlow model ready for these improvements.

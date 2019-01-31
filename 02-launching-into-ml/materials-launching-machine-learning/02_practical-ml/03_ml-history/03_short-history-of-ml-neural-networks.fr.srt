@@ -1,0 +1,663 @@
+1
+00:00:00,000 --> 00:00:02,495
+Pourquoi utiliser
+une seule couche de perceptron ?
+
+2
+00:00:02,495 --> 00:00:06,070
+Pourquoi ne pas envoyer la sortie
+sur une couche et l'entrée sur une autre ?
+
+3
+00:00:06,380 --> 00:00:10,365
+Le perceptron multicouche semble
+être un modèle beaucoup plus performant.
+
+4
+00:00:10,885 --> 00:00:14,550
+Mais, si vous n'utilisez pas de
+fonction d'activation non linéaire,
+
+5
+00:00:14,550 --> 00:00:19,740
+toutes les couches peuvent être
+compressées en une seule linéaire,
+
+6
+00:00:19,740 --> 00:00:21,515
+et n'apportent ainsi aucun avantage.
+
+7
+00:00:21,845 --> 00:00:24,530
+Vous avez besoin de fonctions
+d'activation non linéaires.
+
+8
+00:00:24,720 --> 00:00:28,720
+Ainsi, les fonctions d'activation sigmoïde
+et tangente hyperbolique, ou tanh,
+
+9
+00:00:28,720 --> 00:00:32,100
+ont commencé à être utilisées
+pour les données non linéaires.
+
+10
+00:00:32,510 --> 00:00:35,150
+À l'époque, on n'utilisait que celles-ci,
+
+11
+00:00:35,150 --> 00:00:38,395
+car on avait besoin
+d'une fonction différentiable
+
+12
+00:00:38,395 --> 00:00:41,575
+utilisée lors de la rétropropagation
+pour les poids du modèle.
+
+13
+00:00:41,845 --> 00:00:45,410
+Les fonctions d'activation actuelles
+ne sont pas forcément différentiables.
+
+14
+00:00:45,410 --> 00:00:48,025
+Et les gens ne savaient pas les utiliser.
+
+15
+00:00:48,765 --> 00:00:51,920
+La contrainte d'utiliser des fonctions
+d'activation différentiables
+
+16
+00:00:51,920 --> 00:00:54,060
+pouvait compliquer
+l'entraînement des réseaux.
+
+17
+00:00:54,670 --> 00:00:58,505
+L'efficacité de ces modèles était
+aussi limitée par le volume de données,
+
+18
+00:00:58,505 --> 00:01:02,110
+les ressources de calcul disponibles
+et d'autres problèmes d'entraînement.
+
+19
+00:01:02,440 --> 00:01:06,145
+Par exemple, l'optimisation est souvent
+obtenue au niveau des points-selles,
+
+20
+00:01:06,145 --> 00:01:07,960
+plutôt qu'en trouvant
+le minimum global
+
+21
+00:01:07,960 --> 00:01:10,395
+espéré durant la descente de gradient.
+
+22
+00:01:11,015 --> 00:01:16,390
+Mais, avec le développement de la fonction
+d'unité de rectification linéaire ou ReLu,
+
+23
+00:01:16,390 --> 00:01:19,535
+l'entraînement était
+huit à dix fois plus rapide,
+
+24
+00:01:19,535 --> 00:01:22,245
+et la convergence garantie
+pour la régression logistique.
+
+25
+00:01:23,365 --> 00:01:26,095
+Tout comme le cerveau,
+le développement du perceptron
+
+26
+00:01:26,095 --> 00:01:28,580
+a permis de connecter plusieurs couches
+
+27
+00:01:28,580 --> 00:01:31,175
+pour créer des réseaux de
+neurones à propagation avant.
+
+28
+00:01:31,685 --> 00:01:35,060
+Les composants sont presque identiques
+à ceux du perceptron monocouche.
+
+29
+00:01:35,390 --> 00:01:38,100
+Il y a toujours des entrées,
+des sommes pondérées,
+
+30
+00:01:38,100 --> 00:01:40,665
+des fonctions d'activation et des sorties.
+
+31
+00:01:40,925 --> 00:01:44,875
+En revanche, les entrées des neurones
+qui ne sont pas dans la couche d'entrée
+
+32
+00:01:44,875 --> 00:01:48,675
+ne sont pas les entrées brutes,
+mais les sorties de la couche précédente.
+
+33
+00:01:48,965 --> 00:01:52,640
+L'autre différence est que le mode de
+connexion des neurones entre les couches
+
+34
+00:01:52,640 --> 00:01:55,670
+n'est plus un vecteur, mais une matrice,
+
+35
+00:01:55,680 --> 00:01:59,520
+en raison de la connectivité totale
+de tous les neurones entre les couches.
+
+36
+00:02:00,260 --> 00:02:01,900
+Par exemple, dans ce schéma,
+
+37
+00:02:01,900 --> 00:02:04,570
+la matrice de poids
+de la couche d'entrée est de 4 par 2,
+
+38
+00:02:04,570 --> 00:02:06,900
+et celle de la couche
+cachée est de 2 par 1.
+
+39
+00:02:07,450 --> 00:02:09,790
+Nous verrons plus tard que
+les réseaux de neurones
+
+40
+00:02:09,790 --> 00:02:11,980
+n'offrent pas toujours
+une connectivité totale,
+
+41
+00:02:11,980 --> 00:02:14,930
+ce qui est utile dans certaines
+applications, comme les images.
+
+42
+00:02:15,400 --> 00:02:19,185
+Il y a d'autres fonctions d'activation
+que la fonction échelon-unité,
+
+43
+00:02:19,185 --> 00:02:23,200
+comme les fonctions sigmoïde et
+tangente hyperbolique, ou tanh.
+
+44
+00:02:23,590 --> 00:02:26,040
+Chaque neurone qui n'est pas en entrée
+
+45
+00:02:26,040 --> 00:02:29,130
+regroupe 3 étapes dans une seule unité.
+
+46
+00:02:29,320 --> 00:02:31,670
+La première est la somme pondérée.
+
+47
+00:02:31,860 --> 00:02:34,190
+La deuxième est la fonction d'activation.
+
+48
+00:02:34,430 --> 00:02:37,270
+La troisième est la sortie
+de la fonction d'activation.
+
+49
+00:02:37,860 --> 00:02:41,360
+Un réseau de neurones peut être complexe
+en raison du nombre de couches,
+
+50
+00:02:41,360 --> 00:02:45,040
+de neurones, de fonctions d'activation
+et de façons de les entraîner possible.
+
+51
+00:02:45,200 --> 00:02:48,510
+Pendant ce cours, on utilisera
+l'outil intuitif TensorFlow Playground
+
+52
+00:02:48,510 --> 00:02:51,740
+pour découvrir le flux des informations
+dans un réseau de neurones.
+
+53
+00:02:52,150 --> 00:02:55,710
+Cet outil ludique vous permet de
+personnaliser plus d'hyperparamètres,
+
+54
+00:02:55,790 --> 00:02:58,195
+et de visualiser la magnitude des poids
+
+55
+00:02:58,195 --> 00:03:01,105
+ainsi que l'évolution de
+la fonction de perte au fil du temps.
+
+56
+00:03:02,345 --> 00:03:04,715
+Voici la fonction d'activation linéaire.
+
+57
+00:03:04,715 --> 00:03:09,010
+Il s'agit d'une fonction identité,
+car la fonction de x est égale à x.
+
+58
+00:03:09,610 --> 00:03:11,650
+C'est la fonction d'activation d'origine.
+
+59
+00:03:11,790 --> 00:03:13,370
+Comme je l'ai déjà indiqué,
+
+60
+00:03:13,370 --> 00:03:15,880
+même avec un réseau de milliers de couches
+
+61
+00:03:15,880 --> 00:03:18,305
+utilisant toutes une fonction
+d'activation linéaire,
+
+62
+00:03:18,305 --> 00:03:22,550
+la sortie sera juste une combinaison
+linéaire des attributs d'entrée.
+
+63
+00:03:22,730 --> 00:03:27,130
+Cela peut être réduit en multipliant
+les attributs par une constante.
+
+64
+00:03:27,430 --> 00:03:29,225
+Ça vous rappelle quelque chose ?
+
+65
+00:03:29,325 --> 00:03:31,240
+Il s'agit d'une régression linéaire.
+
+66
+00:03:31,580 --> 00:03:34,550
+Des fonctions d'activation non linéaires
+sont donc nécessaires
+
+67
+00:03:34,550 --> 00:03:36,650
+pour une chaîne complexe de fonctions
+
+68
+00:03:36,650 --> 00:03:40,435
+qui permet aux réseaux de neurones
+de comprendre la distribution des données.
+
+69
+00:03:43,255 --> 00:03:45,480
+Outre la fonction d'activation linéaire,
+
+70
+00:03:45,480 --> 00:03:47,205
+où f de x est égal à x,
+
+71
+00:03:47,205 --> 00:03:50,680
+les principales fonctions d'activation
+utilisées au premier âge d'or
+
+72
+00:03:50,680 --> 00:03:54,670
+des réseaux de neurones étaient
+les fonctions sigmoïde et tanh.
+
+73
+00:03:55,070 --> 00:03:59,525
+La fonction sigmoïde est une version
+lisse de la fonction échelon-unité,
+
+74
+00:03:59,525 --> 00:04:01,980
+avec une asymptote
+égale à 0 en moins l'infini,
+
+75
+00:04:01,980 --> 00:04:04,665
+et une asymptote
+égale à 1 en plus l'infini,
+
+76
+00:04:04,665 --> 00:04:07,310
+mais avec des valeurs
+intermédiaires entre les deux.
+
+77
+00:04:10,420 --> 00:04:13,060
+La tangente hyperbolique ou tanh
+
+78
+00:04:13,060 --> 00:04:16,040
+était une autre fonction
+d'activation très utilisée.
+
+79
+00:04:16,040 --> 00:04:18,220
+Elle correspond à une fonction sigmoïde
+
+80
+00:04:18,220 --> 00:04:21,344
+évoluée et décalée avec une plage
+moins l'infini égale à 1.
+
+81
+00:04:21,544 --> 00:04:23,170
+Ces fonctions étaient idéales,
+
+82
+00:04:23,170 --> 00:04:27,055
+car elles étaient différentiables partout,
+monotones et lisses.
+
+83
+00:04:27,775 --> 00:04:31,230
+Cependant, des problèmes
+de saturation survenaient
+
+84
+00:04:31,230 --> 00:04:35,120
+si le nombre de valeurs d'entrée
+était trop faible ou trop élevé,
+
+85
+00:04:35,120 --> 00:04:38,060
+et créaient des plateaux asymptotiques.
+
+86
+00:04:38,460 --> 00:04:41,180
+Comme la courbe est
+quasiment plate à ces points,
+
+87
+00:04:41,180 --> 00:04:43,665
+les dérivées sont proches de 0.
+
+88
+00:04:43,925 --> 00:04:47,360
+L'apprentissage des poids
+était donc très lent,
+
+89
+00:04:47,360 --> 00:04:50,840
+ou s'arrêtait même, comme les gradients
+étaient tous très proches de 0,
+
+90
+00:04:50,840 --> 00:04:55,660
+générant de faibles pas d'apprentissage
+en bas pendant la descente de gradient.
+
+91
+00:04:56,210 --> 00:04:59,735
+Les fonctions linéaires sont
+différentiables, monotones et lisses.
+
+92
+00:04:59,925 --> 00:05:01,235
+Mais, comme déjà expliqué,
+
+93
+00:05:01,235 --> 00:05:05,000
+une combinaison de fonctions linéaires
+peut réduire le nombre de neurones à un.
+
+94
+00:05:05,060 --> 00:05:08,070
+Cela ne nous permet pas de créer
+la chaîne complexe de fonctions
+
+95
+00:05:08,070 --> 00:05:09,895
+nécessaire pour décrire nos données.
+
+96
+00:05:10,405 --> 00:05:13,030
+Il existait des itérations
+de fonctions linéaires,
+
+97
+00:05:13,030 --> 00:05:14,845
+mais non différentiables partout.
+
+98
+00:05:15,005 --> 00:05:18,060
+Elles n'ont donc commencé
+à être utilisées que bien plus tard.
+
+99
+00:05:19,630 --> 00:05:24,425
+La fonction d'unité de rectification
+linéaire est désormais très utilisée.
+
+100
+00:05:24,535 --> 00:05:27,920
+Elle est non linéaire et offre donc
+la modélisation complexe nécessaire.
+
+101
+00:05:27,990 --> 00:05:32,020
+Elle évite toute saturation dans la plage
+non négative de l'espace d'entrée.
+
+102
+00:05:32,220 --> 00:05:37,430
+Mais, comme les valeurs négatives
+se traduisent par une activation nulle,
+
+103
+00:05:37,430 --> 00:05:41,065
+les couches ReLu peuvent disparaître
+ou ne plus s'activer,
+
+104
+00:05:41,115 --> 00:05:44,360
+ce qui entraîne le ralentissement
+ou l'arrêt de l'entraînement.
+
+105
+00:05:46,950 --> 00:05:49,525
+Plusieurs solutions permettent
+de résoudre ce problème,
+
+106
+00:05:49,525 --> 00:05:54,320
+comme l'utilisation de la fonction
+d'unité exponentielle linéaire ou ELU.
+
+107
+00:05:55,400 --> 00:05:59,140
+Elle est à peu près linéaire sur la plage
+non négative de l'espace d'entrée.
+
+108
+00:05:59,140 --> 00:06:01,505
+Elle est lisse, monotone,
+
+109
+00:06:01,505 --> 00:06:05,030
+et surtout non égale à 0
+sur la zone négative de l'espace d'entrée.
+
+110
+00:06:05,650 --> 00:06:09,040
+L'inconvénient majeur de cette fonction
+est qu'elle est plus coûteuse
+
+111
+00:06:09,040 --> 00:06:12,580
+en calcul que la fonction ReLu
+de par sa nature exponentielle.
+
+112
+00:06:12,680 --> 00:06:15,615
+Ces fonctions seront détaillées
+dans le prochain module.
+
+113
+00:06:16,065 --> 00:06:19,670
+Si je veux que mes résultats
+soient des probabilités,
+
+114
+00:06:19,670 --> 00:06:23,050
+quelle fonction d'activation dois-je
+utiliser dans la dernière couche ?
+
+115
+00:06:26,040 --> 00:06:29,190
+La bonne réponse est
+une fonction d'activation sigmoïde.
+
+116
+00:06:29,370 --> 00:06:33,020
+En effet, les limites de
+cette fonction vont de 0 à 1,
+
+117
+00:06:33,020 --> 00:06:35,085
+et correspondent
+aux limites de probabilité.
+
+118
+00:06:35,355 --> 00:06:36,630
+Au-delà de ses limites,
+
+119
+00:06:36,630 --> 00:06:39,680
+cette fonction est la fonction
+de distribution cumulative
+
+120
+00:06:39,680 --> 00:06:41,830
+de la répartition logistique
+des probabilités
+
+121
+00:06:41,830 --> 00:06:46,105
+dont la fonction quantile est l'inverse
+de la logique modélisant les prédictions.
+
+122
+00:06:46,415 --> 00:06:49,455
+Elle peut donc être utilisée
+comme une probabilité de confiance.
+
+123
+00:06:49,715 --> 00:06:52,955
+Ces raisons seront détaillées
+plus tard dans la spécialisation.
+
+124
+00:06:53,275 --> 00:06:57,345
+Bien qu'étant aussi de type "écrasement",
+la fonction tanh n'est pas adaptée,
+
+125
+00:06:57,345 --> 00:06:59,970
+car ses limites vont de -1 à 1,
+
+126
+00:06:59,970 --> 00:07:02,295
+et sont différentes
+de celles de la probabilité.
+
+127
+00:07:02,505 --> 00:07:05,170
+De plus, écraser la fonction tanh
+en fonction sigmoïde
+
+128
+00:07:05,170 --> 00:07:07,545
+ne va pas la transformer
+par magie en probabilité,
+
+129
+00:07:07,545 --> 00:07:10,160
+car elle n'a pas les propriétés,
+comme déjà indiqué,
+
+130
+00:07:10,160 --> 00:07:13,285
+permettant d'interpréter
+les résultats en probabilité.
+
+131
+00:07:13,615 --> 00:07:15,610
+Pour la convertir
+en fonction sigmoïde,
+
+132
+00:07:15,610 --> 00:07:19,520
+vous devez d'abord ajouter 1, puis diviser
+par 2 pour obtenir les bonnes limites.
+
+133
+00:07:19,930 --> 00:07:22,475
+De plus, pour obtenir le bon écart,
+
+134
+00:07:22,475 --> 00:07:24,840
+vous devez diviser l'argument tanh par 2.
+
+135
+00:07:25,180 --> 00:07:27,365
+Comme vous avez déjà
+calculé la fonction tanh,
+
+136
+00:07:27,365 --> 00:07:29,220
+vous devez refaire certaines tâches,
+
+137
+00:07:29,220 --> 00:07:31,930
+et vous auriez pu utiliser
+une fonction sigmoïde au début.
+
+138
+00:07:32,400 --> 00:07:36,505
+La fonction ReLu est inadaptée,
+car ses limites vont de 0 à plus l'infini,
+
+139
+00:07:36,505 --> 00:07:39,315
+ce qui est très éloigné
+de la représentation de probabilité.
+
+140
+00:07:39,445 --> 00:07:44,000
+La fonction ELU est aussi inadaptée, car
+ses limites vont de moins à plus l'infini.

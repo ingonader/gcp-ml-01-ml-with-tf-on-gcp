@@ -1,0 +1,577 @@
+1
+00:00:00,660 --> 00:00:03,980
+Ahora, hablaremos sobre
+cómo procesar grandes trabajos de AA
+
+2
+00:00:03,980 --> 00:00:06,210
+y los beneficios
+del entrenamiento distribuido.
+
+3
+00:00:06,210 --> 00:00:09,300
+Ya podemos dar por resuelto
+el primer elemento de nuestra lista
+
+4
+00:00:09,300 --> 00:00:12,230
+de problemas fastidiosos
+que tienen los modelos del mundo real
+
+5
+00:00:12,230 --> 00:00:14,765
+y pasar al segundo, la velocidad.
+
+6
+00:00:14,765 --> 00:00:20,000
+Sí. Entrenar un modelo real lleva
+muchísimo tiempo: horas, días o semanas.
+
+7
+00:00:20,000 --> 00:00:22,450
+Cuando se requieren
+varias semanas de entrenamiento
+
+8
+00:00:22,450 --> 00:00:24,515
+en Google nos damos por vencidos.
+
+9
+00:00:24,515 --> 00:00:28,125
+Optimizar un modelo
+en esas condiciones no es práctico.
+
+10
+00:00:28,125 --> 00:00:32,440
+Es necesario distribuirlo
+en un clúster para que sea más rápido.
+
+11
+00:00:32,850 --> 00:00:35,050
+Pasar de una máquina a muchas
+
+12
+00:00:35,050 --> 00:00:37,985
+puede parecer complicado,
+pero como veremos
+
+13
+00:00:37,985 --> 00:00:42,275
+con la API de Estimator y ML Engine
+que administra el clúster automáticamente
+
+14
+00:00:42,275 --> 00:00:44,995
+se obtiene distribución lista para usar.
+
+15
+00:00:44,995 --> 00:00:48,435
+La función que implementa
+el entrenamiento distribuido
+
+16
+00:00:48,435 --> 00:00:51,565
+se llama estimator.train_and_evaluate.
+
+17
+00:00:51,565 --> 00:00:55,050
+El nombre de la función
+también destaca que será importante
+
+18
+00:00:55,050 --> 00:00:58,695
+evaluar y supervisar un trabajo
+grande de entrenamiento.
+
+19
+00:00:58,695 --> 00:01:00,305
+Veremos eso más adelante.
+
+20
+00:01:00,305 --> 00:01:03,045
+Por ahora,
+enfoquémonos en la distribución.
+
+21
+00:01:03,845 --> 00:01:05,850
+El modelo tradicional de distribución
+
+22
+00:01:05,850 --> 00:01:09,300
+para el entrenamiento de redes neuronales
+se llama paralelismo de datos.
+
+23
+00:01:09,300 --> 00:01:13,170
+Su modelo se replica
+en varios trabajadores.
+
+24
+00:01:13,170 --> 00:01:15,035
+En cada paso de entrenamiento
+
+25
+00:01:15,035 --> 00:01:17,305
+estos cargan
+un lote de datos de entrenamiento
+
+26
+00:01:17,305 --> 00:01:19,500
+esperamos que uno diferente cada uno
+
+27
+00:01:19,500 --> 00:01:21,645
+calculan los gradientes
+
+28
+00:01:21,645 --> 00:01:25,530
+y los envían a uno o varios servidores
+centrales de parámetros
+
+29
+00:01:25,530 --> 00:01:29,535
+que tienen todos los pesos
+y sesgos del modelo de la red neuronal.
+
+30
+00:01:29,535 --> 00:01:31,830
+Los gradientes se aplican
+a medida que llegan
+
+31
+00:01:31,830 --> 00:01:33,615
+cambian los pesos y los sesgos
+
+32
+00:01:33,615 --> 00:01:37,120
+y el modelo actualizado
+se envía a los trabajadores
+
+33
+00:01:37,120 --> 00:01:39,620
+para el siguiente paso
+en el entrenamiento.
+
+34
+00:01:39,620 --> 00:01:42,480
+Hay mucho trabajo que hacer
+para que esto ocurra.
+
+35
+00:01:42,480 --> 00:01:45,690
+Los trabajadores deben iniciarse
+y luego recibir su copia del modelo
+
+36
+00:01:45,700 --> 00:01:47,480
+se deben establecer flujos de datos
+
+37
+00:01:47,480 --> 00:01:49,660
+entre trabajadores
+y servidores de parámetros
+
+38
+00:01:49,660 --> 00:01:52,030
+el sistema debe
+administrar excepciones y errores
+
+39
+00:01:52,030 --> 00:01:54,020
+y reiniciar los trabajadores con errores
+
+40
+00:01:54,020 --> 00:01:57,640
+desde donde se quedaron
+si ocurre un incidente.
+
+41
+00:01:57,870 --> 00:02:02,045
+Y el manejo de los controles
+también se complica con todo esto.
+
+42
+00:02:02,655 --> 00:02:05,760
+Por suerte, para el usuario
+la distribución es tan simple
+
+43
+00:02:05,760 --> 00:02:07,780
+como escribir un archivo de configuración.
+
+44
+00:02:07,780 --> 00:02:11,880
+Todo el código estándar
+ya está escrito en la API de Estimator
+
+45
+00:02:11,880 --> 00:02:16,195
+y la función estimator.train_and_evaluate.
+
+46
+00:02:16,195 --> 00:02:18,095
+Necesitará seguir cuatro pasos.
+
+47
+00:02:18,095 --> 00:02:21,250
+Elegir el estimador, proporcionar
+una configuración de ejecución
+
+48
+00:02:21,250 --> 00:02:23,865
+y proporcionar datos
+de entrenamiento y prueba
+
+49
+00:02:23,865 --> 00:02:26,175
+mediante train_spec y eval_spec.
+
+50
+00:02:26,175 --> 00:02:27,840
+Una vez que eso está configurado
+
+51
+00:02:27,840 --> 00:02:29,515
+llame a train_and_evaluate.
+
+52
+00:02:29,515 --> 00:02:32,270
+Si está usando ML Engine
+
+53
+00:02:32,270 --> 00:02:34,585
+y especificó el tamaño del clúster
+
+54
+00:02:34,585 --> 00:02:37,050
+se iniciará el entrenamiento distribuido.
+
+55
+00:02:37,050 --> 00:02:39,145
+Veamos con más detalle.
+
+56
+00:02:39,145 --> 00:02:41,115
+Primero, la configuración de ejecución.
+
+57
+00:02:41,115 --> 00:02:44,585
+Aquí se especifica el directorio
+de salida para los controles.
+
+58
+00:02:44,585 --> 00:02:48,500
+Puede configurarlos directamente
+cuando instancie el estimador
+
+59
+00:02:48,500 --> 00:02:53,045
+pero es más ordenado hacerlo aquí
+con la demás configuración de controles.
+
+60
+00:02:53,155 --> 00:02:58,430
+Aquí también se configuran
+la frecuencia de generación de controles
+
+61
+00:02:58,530 --> 00:03:02,015
+y la frecuencia de los registros
+o resúmenes de entrenamiento.
+
+62
+00:03:02,015 --> 00:03:04,005
+Regresaremos a este punto más adelante.
+
+63
+00:03:04,495 --> 00:03:07,935
+TrainSpec es donde se pasa
+la función de entrada de datos
+
+64
+00:03:07,935 --> 00:03:09,695
+para el entrenamiento.
+
+65
+00:03:09,695 --> 00:03:13,080
+Es importante que use la API de Dataset
+para configurarla correctamente.
+
+66
+00:03:13,080 --> 00:03:15,890
+De manera opcional,
+puede limitar el entrenamiento
+
+67
+00:03:15,890 --> 00:03:17,560
+a una cantidad específica de pasos.
+
+68
+00:03:17,580 --> 00:03:19,930
+De forma predeterminada,
+el entrenamiento continúa
+
+69
+00:03:19,930 --> 00:03:22,290
+hasta que el conjunto
+de datos de entrada se agota
+
+70
+00:03:22,290 --> 00:03:26,190
+lo que puede suceder
+tras varios ciclos si así lo configuró.
+
+71
+00:03:27,000 --> 00:03:31,350
+EvalSpec es donde se introduce
+el conjunto de datos de prueba.
+
+72
+00:03:31,350 --> 00:03:34,420
+Para verificar el rendimiento de su modelo
+
+73
+00:03:34,420 --> 00:03:39,685
+deberá medirlo con datos
+que no haya visto en el entrenamiento.
+
+74
+00:03:39,685 --> 00:03:43,960
+Por lo general, se usa un subconjunto
+de los datos separados para la prueba.
+
+75
+00:03:43,960 --> 00:03:47,320
+Los datos de prueba ingresan
+mediante una función eval_input.
+
+76
+00:03:47,320 --> 00:03:50,725
+Aquí también, es importante
+que use la API de Dataset para obtenerla.
+
+77
+00:03:50,725 --> 00:03:52,684
+También puede especificar
+
+78
+00:03:52,684 --> 00:03:56,084
+la cantidad de lotes de datos
+de prueba usados en la evaluación
+
+79
+00:03:56,084 --> 00:03:59,180
+y la frecuencia
+con la que se hacen las evaluaciones
+
+80
+00:03:59,750 --> 00:04:02,595
+Un detalle de implementación
+que debería tener en cuenta.
+
+81
+00:04:02,865 --> 00:04:04,785
+es que en el entrenamiento distribuido
+
+82
+00:04:04,785 --> 00:04:07,625
+la evaluación ocurre
+en un servidor dedicado
+
+83
+00:04:07,625 --> 00:04:11,105
+que regenera el modelo
+desde el último control
+
+84
+00:04:11,105 --> 00:04:12,765
+y luego ejecuta la evaluación.
+
+85
+00:04:12,765 --> 00:04:16,495
+Por eso, no es posible
+realizar evaluaciones con más frecuencia
+
+86
+00:04:16,495 --> 00:04:21,049
+que la frecuencia de los controles
+elegida en la configuración de ejecución.
+
+87
+00:04:21,169 --> 00:04:23,470
+Sin embargo,
+sí puede hacerlas menos frecuentes
+
+88
+00:04:23,470 --> 00:04:27,530
+mediante el parámetro
+de regulación en EvalSpec.
+
+89
+00:04:28,260 --> 00:04:32,445
+Notarán que EvalSpec también
+tiene un parámetro para exportadores.
+
+90
+00:04:32,445 --> 00:04:36,990
+Controlan cómo se exporta un modelo
+para su implementación en la producción.
+
+91
+00:04:36,990 --> 00:04:39,510
+Hablaremos de eso en el próximo capítulo.
+
+92
+00:04:40,100 --> 00:04:41,845
+Esto es lo que tenemos hasta ahora.
+
+93
+00:04:41,845 --> 00:04:43,945
+Instanciamos un estimador
+
+94
+00:04:43,945 --> 00:04:46,620
+usamos una configuración de ejecución
+
+95
+00:04:46,620 --> 00:04:50,880
+en la que se puede definir la frecuencia
+y la carpeta de generación de controles
+
+96
+00:04:50,880 --> 00:04:53,220
+y otros datos de supervisión.
+
+97
+00:04:53,220 --> 00:04:56,995
+Luego, configuró un conjunto de datos
+de entrenamiento y uno de evaluación
+
+98
+00:04:56,995 --> 00:05:01,340
+que se inyectan
+con las funciones de entrada de datos
+
+99
+00:05:01,340 --> 00:05:03,410
+en TrainSpec y EvalSpec
+
+100
+00:05:03,410 --> 00:05:06,775
+y entonces están listos
+para entrenar y evaluar.
+
+101
+00:05:07,415 --> 00:05:09,180
+Quiero comentarles
+
+102
+00:05:09,180 --> 00:05:11,550
+sobre una consideración
+práctica importante
+
+103
+00:05:11,550 --> 00:05:13,060
+la redistribución de datos.
+
+104
+00:05:13,060 --> 00:05:15,560
+El algoritmo estocástico
+de descenso de gradientes
+
+105
+00:05:15,560 --> 00:05:17,980
+que las redes neuronales
+usan para el entrenamiento
+
+106
+00:05:17,980 --> 00:05:20,635
+solo funciona
+con datos redistribuidos correctamente.
+
+107
+00:05:20,635 --> 00:05:24,090
+La API de Dataset tiene una función
+de redistribución que puede ayudar
+
+108
+00:05:24,090 --> 00:05:26,580
+pero algunas personas
+podrían no usarla si creen
+
+109
+00:05:26,580 --> 00:05:29,450
+que su conjunto de datos
+ya está redistribuido en el disco.
+
+110
+00:05:29,450 --> 00:05:32,400
+Tengan cuidado
+con el entrenamiento distribuido.
+
+111
+00:05:32,400 --> 00:05:35,490
+Incluso con datos redistribuidos
+correctamente en el disco
+
+112
+00:05:35,490 --> 00:05:39,660
+si todos los trabajadores están cargando
+directamente desde este conjunto
+
+113
+00:05:39,660 --> 00:05:42,005
+verán el mismo lote de datos
+
+114
+00:05:42,005 --> 00:05:45,245
+al mismo tiempo
+y producirán los mismos gradientes.
+
+115
+00:05:45,245 --> 00:05:48,360
+En ese caso, se pierde el beneficio
+del entrenamiento distribuido
+
+116
+00:05:48,360 --> 00:05:52,350
+porque todos los trabajadores
+hacen exactamente lo mismo.
+
+117
+00:05:52,350 --> 00:05:54,604
+Con dataset.shuffle
+
+118
+00:05:54,604 --> 00:05:56,610
+la redistribución
+ocurre independientemente
+
+119
+00:05:56,610 --> 00:05:58,835
+en cada uno
+con distintas semillas aleatorias.
+
+120
+00:05:58,835 --> 00:06:03,485
+Use esta función incluso si sus datos
+ya están redistribuidos en el disco.
+
+121
+00:06:03,485 --> 00:06:07,195
+Para mayor seguridad,
+también puede redistribuir
+
+122
+00:06:07,195 --> 00:06:10,655
+la lista de nombres de archivo
+en el conjunto de datos fragmentado.
+
+123
+00:06:10,655 --> 00:06:13,930
+List_files muestra un conjunto
+de datos de nombres de archivo.
+
+124
+00:06:13,930 --> 00:06:16,550
+Simplemente llame a shuffle en él.

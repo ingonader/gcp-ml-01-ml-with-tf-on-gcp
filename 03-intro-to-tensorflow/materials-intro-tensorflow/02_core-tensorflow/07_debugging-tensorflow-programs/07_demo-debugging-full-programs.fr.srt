@@ -1,0 +1,350 @@
+1
+00:00:00,540 --> 00:00:03,955
+Je suis dans le dépôt GitHub du cours,
+
+2
+00:00:03,955 --> 00:00:06,270
+et dans 03_tensorflow,
+
+3
+00:00:06,270 --> 00:00:08,389
+ce qui correspond à notre chapitre.
+
+4
+00:00:08,389 --> 00:00:10,740
+Je vais maintenant ouvrir debug_demo.
+
+5
+00:00:11,250 --> 00:00:14,405
+Et nous allons voir
+quelques-unes des choses
+
+6
+00:00:14,405 --> 00:00:16,975
+dont j'ai parlé dans ce chapitre.
+
+7
+00:00:17,215 --> 00:00:21,425
+Je vais donc importer TensorFlow.
+
+8
+00:00:21,875 --> 00:00:24,690
+Et voici le premier exemple
+que nous avons vu.
+
+9
+00:00:24,690 --> 00:00:29,650
+Nous avions effectué une scission
+pour récupérer toutes les lignes de data,
+
+10
+00:00:29,650 --> 00:00:31,520
+et nous récupérions deux des colonnes.
+
+11
+00:00:31,520 --> 00:00:33,662
+Et pour c, nous récupérions
+toutes les lignes,
+
+12
+00:00:33,662 --> 00:00:35,035
+mais seulement une colonne.
+
+13
+00:00:35,035 --> 00:00:37,365
+Et donc maintenant,
+si nous additionnons a et c,
+
+14
+00:00:37,365 --> 00:00:39,615
+nous devrions avoir une erreur de forme.
+
+15
+00:00:39,615 --> 00:00:41,740
+Et tel est bien le cas.
+
+16
+00:00:41,740 --> 00:00:46,560
+Et tout en bas de la trace de la pile,
+
+17
+00:00:46,560 --> 00:00:49,750
+nous avons le message d'erreur,
+qui nous signale l'erreur de valeur.
+
+18
+00:00:49,750 --> 00:00:52,795
+Les dimensions doivent être égales,
+mais ne le sont pas (2 et 4).
+
+19
+00:00:52,795 --> 00:00:58,835
+La première est un Tensor 2D de forme 4, 2,
+et la deuxième un Tensor 1D de forme 4.
+
+20
+00:00:58,835 --> 00:01:01,540
+Et si l'on remonte dans la trace de la pile,
+
+21
+00:01:01,540 --> 00:01:05,070
+nous voyons cette ligne :
+common_shapes.pyc (Python).
+
+22
+00:01:05,070 --> 00:01:07,710
+Ce n'est pas à nous.
+C'est dans TensorFlow.
+
+23
+00:01:07,710 --> 00:01:09,050
+Nous pouvons donc l'ignorer.
+
+24
+00:01:09,050 --> 00:01:12,195
+Celle-ci est aussi dans TensorFlow,
+et nous pouvons donc l'ignorer.
+
+25
+00:01:12,195 --> 00:01:17,495
+Comme celle-ci. Celle-ci est également
+dans TensorFlow. Encore une.
+
+26
+00:01:17,495 --> 00:01:20,185
+Nous pouvons ignorer toutes ces lignes.
+
+27
+00:01:20,185 --> 00:01:22,617
+Je continue donc
+à faire défiler la trace de la pile
+
+28
+00:01:22,617 --> 00:01:25,730
+jusqu'à ce que je trouve quelque chose
+qui figure dans mon code.
+
+29
+00:01:25,730 --> 00:01:28,650
+Et là je trouve some_method
+qui est dans mon code.
+
+30
+00:01:28,650 --> 00:01:31,860
+Et voici la méthode s
+qui est égale à a + c.
+
+31
+00:01:31,860 --> 00:01:34,530
+Une flèche indique que c'est là
+que se situe le problème.
+
+32
+00:01:34,530 --> 00:01:37,085
+Et ce code est bien sûr
+appelé depuis sess.run,
+
+33
+00:01:37,085 --> 00:01:41,090
+mais nous allons ignorer cette indication
+puisque le problème est ici : s = a + c.
+
+34
+00:01:41,090 --> 00:01:44,715
+Donc, regardons cela en nous demandant
+d'où peut venir l'erreur de valeur.
+
+35
+00:01:44,715 --> 00:01:47,557
+Et si nous continuons à remonter,
+nous voyons ici s = a + c.
+
+36
+00:01:47,557 --> 00:01:48,895
+C'est là qu'est le problème.
+
+37
+00:01:48,895 --> 00:01:53,050
+Nous savons que, selon
+les règles de l'algèbre linéaire,
+
+38
+00:01:53,050 --> 00:01:55,857
+deux choses que l'on ajoute
+(ici, deux Tensors) doivent être
+
+39
+00:01:55,857 --> 00:01:58,185
+exactement de même forme
+pour que cela fonctionne.
+
+40
+00:01:58,185 --> 00:02:01,960
+Nous pouvons donc maintenant
+essayer de corriger le code.
+
+41
+00:02:01,960 --> 00:02:08,955
+Donc, dans ce cas,
+je vais créer des données fictives.
+
+42
+00:02:08,955 --> 00:02:12,794
+Je transmets mes données fictives, que voici.
+
+43
+00:02:12,794 --> 00:02:16,030
+Quelle est la forme ici ?
+C'est une matrice 4, 3.
+
+44
+00:02:16,030 --> 00:02:23,785
+Je transmets les données, puis je récupère
+et j'affiche les formes de a et de c.
+
+45
+00:02:23,785 --> 00:02:26,185
+Et si maintenant j'exécute cette cellule...
+
+46
+00:02:26,185 --> 00:02:27,485
+Si j'exécute cette cellule,
+
+47
+00:02:27,485 --> 00:02:33,230
+j'obtiens la forme de a qui est 4, 2,
+et celle de c qui est 4.
+
+48
+00:02:33,230 --> 00:02:36,710
+Et là, je sais d'où venait le problème.
+
+49
+00:02:36,930 --> 00:02:39,810
+La question est donc maintenant
+de savoir comment y remédier.
+
+50
+00:02:39,810 --> 00:02:44,820
+Et la façon d'y remédier consiste à veiller
+à ce que a et c soient de même forme.
+
+51
+00:02:44,820 --> 00:02:48,640
+Donc, je peux utiliser
+0:2 pour a, et 1:3 ici.
+
+52
+00:02:48,640 --> 00:02:52,350
+En d'autres termes, c'est la fenêtre
+glissante, avec un pas de 1 à chaque fois.
+
+53
+00:02:52,350 --> 00:02:56,415
+Vous en saurez plus sur cette notion de "pas"
+lorsqu'il sera question des images.
+
+54
+00:02:56,415 --> 00:02:59,500
+Le pas est donc de 1,
+et la taille de la fenêtre de 2.
+
+55
+00:02:59,500 --> 00:03:01,260
+C'est exactement à ce que je fais.
+
+56
+00:03:01,260 --> 00:03:04,360
+Et si je lance l'exécution,
+tout devrait fonctionner.
+
+57
+00:03:04,360 --> 00:03:09,070
+Et j'obtiens la somme, qui est
+le résultat de la fenêtre glissante.
+
+58
+00:03:09,070 --> 00:03:11,210
+Nous avons donc vu
+l'essentiel de la procédure
+
+59
+00:03:11,210 --> 00:03:13,400
+que vous devez suivre
+pour déboguer votre code.
+
+60
+00:03:13,400 --> 00:03:15,445
+Lisez la trace de la pile.
+
+61
+00:03:15,445 --> 00:03:16,920
+Lisez le message d'erreur.
+
+62
+00:03:16,920 --> 00:03:20,695
+Localisez le problème et corrigez-le.
+
+63
+00:03:20,695 --> 00:03:23,600
+Assurez-vous que le code fonctionne
+avec vos données fictives,
+
+64
+00:03:23,600 --> 00:03:26,872
+puis faites un test avec l'intégralité
+de votre ensemble de données,
+
+65
+00:03:26,872 --> 00:03:28,775
+et tout devrait normalement fonctionner.
+
+66
+00:03:28,775 --> 00:03:31,525
+Nous avons aussi vu les erreurs de type,
+
+67
+00:03:31,525 --> 00:03:33,765
+et la procédure à suivre
+est exactement la même.
+
+68
+00:03:33,765 --> 00:03:35,990
+Dans ce cas, j'ajoute a et b.
+
+69
+00:03:35,990 --> 00:03:38,505
+a est un tableau
+de nombres à virgule flottante,
+
+70
+00:03:38,505 --> 00:03:40,175
+et b un tableau de nombres entiers.
+
+71
+00:03:40,175 --> 00:03:41,459
+Cela ne va pas fonctionner.
+
+72
+00:03:41,459 --> 00:03:44,885
+Je vais donc regarder la trace de la pile,
+consulter le message d'erreur,
+
+73
+00:03:44,885 --> 00:03:48,750
+et voir que pour remédier au problème,
+une solution peut consister à faire un cast
+
+74
+00:03:48,750 --> 00:03:52,565
+pour convertir b qui n'était à l'origine
+qu'un tableau de nombres entiers.
+
+75
+00:03:52,565 --> 00:03:55,370
+Nous allons faire le cast, et tout
+fonctionnera normalement.
+
+76
+00:03:55,370 --> 00:03:57,252
+C'est l'idée de base ici.

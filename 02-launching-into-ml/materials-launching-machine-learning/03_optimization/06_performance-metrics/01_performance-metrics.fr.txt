@@ -1,0 +1,52 @@
+Précédemment, nous avons entraîné
+des modèles dans un navigateur à l'aide de la descente de gradient. Les modèles que nous avons créés ont appris
+des relations complexes non linéaires en se servant d'une hiérarchie
+de caractéristiques apprise. Or, nous avons vu à la fin de la section
+que notre approche actuelle présente des défauts qui se traduisent
+par plusieurs problèmes : la longue durée des entraînements, les minima
+sous-optimaux et les minima inappropriés. Dans cette section, nous verrons ce que sont exactement
+les minima inappropriés, pourquoi ils existent, et comment les métriques de performances
+nous aident à obtenir de meilleurs résultats. Alors, que sont les minima inappropriés ? Vous pouvez les voir comme des points
+de l'espace des paramètres correspondant à des stratégies qui ne peuvent pas être
+correctement généralisées, ou qui ne reflètent pas
+la véritable relation modélisée, ou les deux. Supposons que nous entraînons un modèle devant prédire si une place
+de stationnement est libre à partir d'une image du parking. Une stratégie inappropriée consisterait à simplement prédire
+que toutes les places sont occupées. Avec un ensemble de données composé d'autant
+d'exemples positifs que d'exemples négatifs, ce type de stratégie serait systématiquement
+éliminé par le processus d'optimisation. Toutefois, lorsque les ensembles
+de données sont asymétriques, et contiennent plus d'éléments
+d'une classe que d'une autre, ce type de stratégie peut s'avérer
+intéressant. Une stratégie de ce genre n'essaie pas de comprendre
+la véritable relation entre les caractéristiques et l'étiquette, que l'on s'attendrait à être liée aux
+caractéristiques visuelles d'une place vide. Par conséquent, elle ne pourrait pas
+être bien généralisée afin de s'appliquer à de nouveaux parkings pour lesquels la relation
+sous-jacente serait la même, mais pas la proportion de places libres. Il est tentant d'envisager l'existence
+de minima inappropriés comme un problème
+affectant notre fonction de perte. Si seulement nous disposions
+de la fonction de perte parfaite, qui favoriserait les stratégies optimales,
+et pénaliserait les mauvaises, tout serait plus simple. C'est malheureusement impossible. Il y aura toujours un écart entre
+les métriques qui nous intéressent et celles qui fonctionnent bien
+avec la descente de gradient. Par exemple, supposons que nous soyons toujours
+en train de classifier des places de parking. Une fonction de perte apparemment parfaite minimiserait le nombre
+de prédictions incorrectes. Toutefois, cette fonction serait segmentée, c'est-à-dire que la plage de valeurs
+qu'elle accepterait serait constituée d'entiers,
+et non de nombres réels. Et étonnamment, ceci est problématique. Le problème se résume à une question
+de différentiabilité. La descente de gradient applique des
+modifications incrémentielles à nos poids. Il faut donc pouvoir différencier
+les poids par rapport à la perte. Toutefois, les fonctions segmentées
+présentent des lacunes dans leurs plages. Même si TensorFlow
+peut les différencier, la surface de perte obtenue
+comporterait des discontinuités qui en compliqueraient le balayage. Nous devons donc recadrer le problème. Au lieu de chercher la fonction de perte
+parfaite pendant l'entraînement, nous allons utiliser
+un nouveau type de métrique une fois l'entraînement terminé. Il va nous permettre de rejeter les modèles qui présentent systématiquement
+des minima inappropriés. Les métriques de ce type
+sont appelées métriques de performances. Elles présentent deux avantages
+par rapport aux fonctions de perte. Tout d'abord, elles sont plus faciles
+à comprendre, car il s'agit généralement de combinaisons de statistiques
+quantifiables. Ensuite, elles sont directement liées
+aux objectifs des entreprises. Par contre, même si la perte et
+l'objectif visé sont souvent en accord, ce n'est pas systématiquement le cas. Il sera parfois possible
+de réduire la perte, ou de progresser quelque peu
+en direction de l'objectif. Nous allons voir trois métriques
+de performances, les matrices de confusion,
+la précision et le rappel, et quand les utiliser.

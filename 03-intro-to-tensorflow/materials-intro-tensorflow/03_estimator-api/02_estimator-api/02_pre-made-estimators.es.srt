@@ -1,0 +1,434 @@
+1
+00:00:00,780 --> 00:00:02,025
+Veamos un ejemplo.
+
+2
+00:00:02,025 --> 00:00:03,525
+Probemos con bienes raíces.
+
+3
+00:00:03,525 --> 00:00:05,810
+¿Podemos predecir
+el precio de una propiedad?
+
+4
+00:00:05,810 --> 00:00:08,160
+Primero debemos elegir los atributos.
+
+5
+00:00:08,160 --> 00:00:11,625
+Es decir, los datos que usaremos
+como base de nuestras predicciones.
+
+6
+00:00:11,625 --> 00:00:14,885
+¿Por qué no compilar
+un modelo que prediga el precio
+
+7
+00:00:14,885 --> 00:00:18,160
+según el tamaño de una casa o apartamento?
+
+8
+00:00:18,160 --> 00:00:21,930
+Nuestros atributos serán:
+uno, los pies cuadrados
+
+9
+00:00:21,930 --> 00:00:25,225
+y, dos, la categoría:
+casa o apartamento.
+
+10
+00:00:25,225 --> 00:00:27,435
+Lo implementamos así.
+
+11
+00:00:27,435 --> 00:00:31,275
+Podemos usar la API
+de feature_column para definir los atributos.
+
+12
+00:00:31,275 --> 00:00:34,500
+Primero, una columna numérica
+para los metros cuadrados
+
+13
+00:00:34,500 --> 00:00:38,125
+luego, una columna categórica
+para el tipo de propiedad.
+
+14
+00:00:38,125 --> 00:00:42,670
+Hay dos categorías posibles
+en este modelo simple: casa o apartamento.
+
+15
+00:00:42,670 --> 00:00:46,049
+Ahora podemos
+instanciar un regresor lineal
+
+16
+00:00:46,049 --> 00:00:49,315
+uno de los estimadores prediseñados
+para esos atributos.
+
+17
+00:00:49,315 --> 00:00:52,230
+Un regresor es un modelo
+que tiene como salida un número
+
+18
+00:00:52,230 --> 00:00:56,090
+en nuestro caso, el precio
+de venta previsto de la propiedad.
+
+19
+00:00:56,090 --> 00:00:58,785
+Pero ¿para qué necesitamos
+columnas de atributos?
+
+20
+00:00:58,785 --> 00:01:01,335
+Veamos con más detalle.
+
+21
+00:01:01,335 --> 00:01:05,565
+Un regresor lineal es un modelo
+que funciona con un vector de datos.
+
+22
+00:01:05,565 --> 00:01:09,540
+Calcula la suma ponderada
+de todos los elementos de datos de entrada
+
+23
+00:01:09,540 --> 00:01:14,255
+y puede entrenarse para ajustar
+la ponderación para su problema
+
+24
+00:01:14,255 --> 00:01:17,225
+en este caso, predecir el precio de venta.
+
+25
+00:01:17,225 --> 00:01:19,655
+Pero ¿cómo podemos
+empaquetar nuestros datos
+
+26
+00:01:19,655 --> 00:01:24,245
+en el vector único de entrada
+que el regresor lineal espera?
+
+27
+00:01:24,245 --> 00:01:29,160
+La respuesta es: de varias formas,
+según los datos que estamos empaquetando
+
+28
+00:01:29,160 --> 00:01:33,420
+y allí es donde resulta útil
+la API de feature_column.
+
+29
+00:01:33,420 --> 00:01:37,100
+Implementa varias formas estándar
+de empaquetar datos
+
+30
+00:01:37,100 --> 00:01:38,720
+en elementos vectoriales.
+
+31
+00:01:38,720 --> 00:01:43,090
+Aquí, los valores de la columna numérica
+son solo números.
+
+32
+00:01:43,090 --> 00:01:48,615
+Se copian tal como están
+a un elemento único del vector de entrada.
+
+33
+00:01:48,615 --> 00:01:53,745
+Por otro lado, la columna categórica
+recibe una codificación de solo 1.
+
+34
+00:01:53,745 --> 00:01:55,305
+Tenemos dos categorías.
+
+35
+00:01:55,305 --> 00:01:58,060
+Casa será 1, 0
+
+36
+00:01:58,060 --> 00:02:00,705
+mientras que apartamento será 0, 1.
+
+37
+00:02:00,705 --> 00:02:05,290
+Una tercera categoría
+se codificaría como 0, 0, 1, etcétera.
+
+38
+00:02:05,910 --> 00:02:10,235
+El regresor lineal sabe
+cómo usar los atributos que nos importan
+
+39
+00:02:10,235 --> 00:02:12,420
+empaquetarlos en su vector de entrada
+
+40
+00:02:12,420 --> 00:02:16,310
+y aplicar lo que hace un regresor lineal.
+
+41
+00:02:16,840 --> 00:02:20,320
+Hay muchos más tipos de columnas
+de atributos que puede escoger
+
+42
+00:02:20,320 --> 00:02:23,860
+columnas para valores continuos
+que desee agrupar
+
+43
+00:02:23,860 --> 00:02:27,270
+incorporaciones de palabras,
+combinaciones de columnas, etcétera.
+
+44
+00:02:27,270 --> 00:02:30,190
+Las transformaciones que aplican
+se describen claramente
+
+45
+00:02:30,190 --> 00:02:34,110
+en la documentación de TensorFlow,
+de modo que siempre sepa qué sucede.
+
+46
+00:02:35,150 --> 00:02:38,490
+Para entrenar el modelo necesitamos
+escribir una función de entrada
+
+47
+00:02:38,490 --> 00:02:41,050
+que mostrará los atributos
+con los mismos nombres
+
+48
+00:02:41,050 --> 00:02:42,690
+que en las columnas de funciones.
+
+49
+00:02:42,690 --> 00:02:44,080
+Ya que estamos entrenando
+
+50
+00:02:44,080 --> 00:02:47,320
+también necesitamos
+las respuestas correctas o etiquetas.
+
+51
+00:02:47,320 --> 00:02:51,850
+Ahora, podemos llamar
+a la función train de nuestro estimador
+
+52
+00:02:51,850 --> 00:02:54,435
+que entrenará el modelo
+mediante la repetición
+
+53
+00:02:54,435 --> 00:02:56,965
+de este conjunto de datos 100 veces.
+
+54
+00:02:56,965 --> 00:02:59,470
+Veremos cómo funcionan
+los lotes más adelante
+
+55
+00:02:59,470 --> 00:03:04,770
+pero si ya conoce el concepto de lotes.
+
+56
+00:03:04,770 --> 00:03:08,490
+este código entrena
+con un único lote de datos
+
+57
+00:03:08,490 --> 00:03:13,055
+en cada paso y este lote
+contiene el conjunto de datos completo.
+
+58
+00:03:13,055 --> 00:03:16,450
+Una vez entrenado, el modelo
+se puede usar para las predicciones.
+
+59
+00:03:16,450 --> 00:03:20,110
+Necesitaremos una función de entrada
+que proporcione datos para la predicción
+
+60
+00:03:20,110 --> 00:03:24,640
+en este caso, una casa de 1,500 ft²
+y un apartamento de 1,800 ft².
+
+61
+00:03:25,290 --> 00:03:28,100
+La función predict
+en la API de Estimator
+
+62
+00:03:28,100 --> 00:03:31,710
+muestra un generador
+de Python que puede usarse para iterar
+
+63
+00:03:31,710 --> 00:03:33,570
+en las predicciones.
+
+64
+00:03:33,570 --> 00:03:37,415
+Este es un resumen de lo que hizo
+la API de Estimator hasta ahora.
+
+65
+00:03:37,415 --> 00:03:40,515
+Usamos feature_column
+para cambiar nuestros datos
+
+66
+00:03:40,515 --> 00:03:43,740
+a un formato
+que nuestro modelo pueda entender.
+
+67
+00:03:43,740 --> 00:03:48,660
+Instanciamos un regresor lineal
+con base en estas columnas de atributos
+
+68
+00:03:48,660 --> 00:03:52,545
+llamamos a train,
+para entrenar el modelo por 100 pasos.
+
+69
+00:03:52,545 --> 00:03:56,590
+Los datos de entrenamiento se proporcionan
+mediante una función de entrada de datos.
+
+70
+00:03:56,590 --> 00:03:59,440
+Llamamos a predict
+para obtener las predicciones.
+
+71
+00:03:59,440 --> 00:04:04,090
+Nuevamente, los datos se obtuvieron
+mediante una función de entrada de datos.
+
+72
+00:04:04,150 --> 00:04:08,200
+Hablaremos de eso
+en más detalle más adelante en el curso.
+
+73
+00:04:08,200 --> 00:04:10,505
+Para usar un estimador
+prediseñado diferente
+
+74
+00:04:10,505 --> 00:04:12,520
+simplemente cambie el nombre de la clase
+
+75
+00:04:12,520 --> 00:04:15,560
+y proporcione los parámetros
+de configuración apropiados.
+
+76
+00:04:15,560 --> 00:04:18,479
+Por ejemplo, aquí, 
+podríamos usar un regresor
+
+77
+00:04:18,479 --> 00:04:21,290
+de red neuronal densa
+con dos capas ocultas.
+
+78
+00:04:21,290 --> 00:04:23,155
+La primera tiene tres neuronas
+
+79
+00:04:23,155 --> 00:04:24,650
+la segunda solo dos
+
+80
+00:04:24,650 --> 00:04:28,930
+y terminamos en la neurona
+que predice el precio de la propiedad.
+
+81
+00:04:28,930 --> 00:04:32,415
+Observen que el vector de entrada
+es el mismo en ambos modelos.
+
+82
+00:04:32,415 --> 00:04:35,190
+Podemos volver a usar
+las mismas columnas de atributos.
+
+83
+00:04:35,760 --> 00:04:37,430
+Estos son algunos de los elementos
+
+84
+00:04:37,430 --> 00:04:39,620
+que pueden ajustarse
+en una red neuronal densa.
+
+85
+00:04:39,620 --> 00:04:42,160
+La cantidad
+y el tamaño de las capas ocultas
+
+86
+00:04:42,160 --> 00:04:44,130
+la función de activación elegida
+
+87
+00:04:44,130 --> 00:04:47,025
+los parámetros de regularización,
+como los retirados
+
+88
+00:04:47,025 --> 00:04:49,785
+o su optimizador favorito
+para realizar el entrenamiento.
+
+89
+00:04:50,325 --> 00:04:52,335
+Lo más importante es que hay
+
+90
+00:04:52,335 --> 00:04:55,185
+buenas configuraciones
+predeterminadas para casi todos.
+
+91
+00:04:55,185 --> 00:04:56,910
+Para un regresor DNN
+
+92
+00:04:56,910 --> 00:05:00,310
+los únicos parámetros obligatorios
+son las capas ocultas.

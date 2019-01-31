@@ -1,0 +1,20 @@
+Você pode chamar sess.runs z
+ou pode chamar z.eval para avaliar z no contexto
+da sessão padrão. O z.eval é apenas um atalho, e você o verá e o codificará
+com frequência. É o mesmo que chamar run na sessão padrão. Você pode chamar session.run
+e passar uma única resposta, mas também pode passar
+uma lista de tensores para avaliar. O TensorFlow descobrirá quais partes do gráfico precisa avaliar
+e realizará a avaliação. Para cada tensor de entrada, há uma matriz NumPy
+correspondente na saída. Como passamos z e z3, você retorna às matrizes NumPy
+que estou chamando de a1 e a3. Observe que esse código também mostra que
+você não precisa escrever tf.add(x, y). Você pode simplesmente dizer x + y, porque as operações aritméticas comuns
+estão sobrecarregadas. Mencionei antes brevemente o tf.eager. Normalmente, os programas do TensorFlow
+usam avaliação lenta, e é isso que eu recomendo quando
+você escreve o código de produção. No entanto, quando você está
+desenvolvendo ou depurando, às vezes pode ser prático ter o código executado
+de modo imediato em vez de lentamente. Então, vou mostrar como usar o tf.eager. Você importa tf.eager
+e ativa a execução imediata. Mas faça isso apenas uma vez. Normalmente, você faz isso
+no início do seu mi. Aqui, estou criando dois tensores x e y e imprimindo x - y. Se não estivéssemos no modo imediato, o que seria impresso? Apenas a saída de depuração do tensor. Isso incluiria um nome exclusivo
+atribuído pelo sistema para o nó no DAG, bem como a forma e o tipo de dados do valor que será
+exibido quando os DAGs forem executados. Mas como estamos no modo imediato, não precisamos aguardar a sessão executada
+para ter o resultado real da subtração. É por isso que, quando faço x - y, você vê a lista 2, 3, 4.

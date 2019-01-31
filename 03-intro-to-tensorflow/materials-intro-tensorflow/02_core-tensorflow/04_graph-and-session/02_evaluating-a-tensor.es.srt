@@ -1,0 +1,165 @@
+1
+00:00:00,770 --> 00:00:02,990
+Puede llamar a sess.run z
+
+2
+00:00:03,500 --> 00:00:08,695
+o z.eval para evaluar z en el contexto
+de la sesión predeterminada.
+
+3
+00:00:09,195 --> 00:00:11,740
+z.eval es solo un acceso directo
+
+4
+00:00:11,880 --> 00:00:13,605
+y a menudo lo verá en el código.
+
+5
+00:00:13,775 --> 00:00:16,685
+Es lo mismo que llamar a run
+en la sesión predeterminada.
+
+6
+00:00:17,875 --> 00:00:21,519
+Si bien puede llamar
+a sess.run y pasar un solo tensor
+
+7
+00:00:21,879 --> 00:00:25,830
+también puede pasar
+una lista de tensores para evaluar.
+
+8
+00:00:26,310 --> 00:00:27,740
+TensorFlow decidirá
+
+9
+00:00:27,740 --> 00:00:31,625
+qué partes del gráfico debe evaluar
+y realizará la evaluación.
+
+10
+00:00:32,075 --> 00:00:33,800
+A cada tensor de entrada
+
+11
+00:00:34,000 --> 00:00:36,800
+corresponde un arreglo de NumPy
+en la salida.
+
+12
+00:00:37,050 --> 00:00:39,785
+Puesto que pasamos z1 y z3
+
+13
+00:00:40,105 --> 00:00:44,810
+obtenemos dos matrices
+de NumPy que llamaré a1 y a3.
+
+14
+00:00:45,660 --> 00:00:52,195
+Note que el código también muestra
+que no hace falta escribir tf.add(x, y).
+
+15
+00:00:52,605 --> 00:00:54,830
+Puede simplemente decir x + y
+
+16
+00:00:55,500 --> 00:00:59,325
+porque las operaciones aritméticas
+comunes ya están cargadas.
+
+17
+00:00:59,695 --> 00:01:02,975
+Hace poco mencioné tf.eager brevemente.
+
+18
+00:01:03,515 --> 00:01:06,945
+Por lo general, los programas de TensorFlow
+usan la evaluación reactiva
+
+19
+00:01:07,185 --> 00:01:10,060
+y es lo que le recomiendo
+para escribir código de producción.
+
+20
+00:01:10,600 --> 00:01:14,200
+Sin embargo,
+durante el desarrollo o la depuración
+
+21
+00:01:14,540 --> 00:01:18,930
+puede ser conveniente
+que el código se ejecute de inmediato
+
+22
+00:01:19,200 --> 00:01:20,590
+en lugar de en forma reactiva.
+
+23
+00:01:21,020 --> 00:01:24,280
+Por eso, aquí muestro cómo usar tf.eager.
+
+24
+00:01:25,000 --> 00:01:28,960
+Importe tf.eager
+y habilite con enable_eager_execution.
+
+25
+00:01:29,420 --> 00:01:31,140
+Asegúrese de hacerlo solo una vez.
+
+26
+00:01:31,690 --> 00:01:34,195
+Por lo general, se hace
+al inicio de la función principal.
+
+27
+00:01:34,635 --> 00:01:38,095
+En este caso, creo dos tensores, x y y
+
+28
+00:01:38,345 --> 00:01:40,355
+y uso print en (x - y).
+
+29
+00:01:41,235 --> 00:01:43,115
+Si no estuviera en modo proactivo
+
+30
+00:01:43,635 --> 00:01:44,990
+¿qué se mostraría?
+
+31
+00:01:46,720 --> 00:01:48,855
+Solo la salida del depurador del tensor.
+
+32
+00:01:49,965 --> 00:01:54,130
+Esto hubiera incluido el nombre único
+asignado por el sistema para el nodo del DAG
+
+33
+00:01:54,345 --> 00:01:58,580
+con la forma y el tipo de dato del valor
+que se mostrará cuando se ejecute el DAG.
+
+34
+00:01:59,520 --> 00:02:01,675
+Sin embargo, como usamos el modo proactivo
+
+35
+00:02:02,475 --> 00:02:06,910
+no necesitamos esperar a sess.run
+para obtener el resultado de la resta.
+
+36
+00:02:07,560 --> 00:02:10,770
+Por eso, cuando ejecuto (x - y)
+
+37
+00:02:11,060 --> 00:02:13,920
+se ve la lista [2, 3, 4].

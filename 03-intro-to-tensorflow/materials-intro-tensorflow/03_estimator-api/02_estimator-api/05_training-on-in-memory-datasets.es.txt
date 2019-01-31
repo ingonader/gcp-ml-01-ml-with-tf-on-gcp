@@ -1,0 +1,37 @@
+Pasemos a los datos reales
+en lugar de las constantes que usamos antes
+para ilustrar la API de Estimator. Si sus datos caben en la memoria
+en forma de matrices Numpy o Pandas la API de Estimator tiene funciones
+sencillas para alimentarlas a su modelo. Se llaman estimator.inputs.numpy_input_fn
+y estimator.inputs.Pandas_input_fn. Especifique
+el diccionario de funciones como "x" con los mismos nombres usados
+para definir las columnas de funciones. Y especifique las etiquetas como "y". Cuando se lee de Pandas estos nombres de funciones
+ni siquiera son necesarios. La API usará las columnas correctas
+desde el marco de datos de Pandas según los nombres que haya usado cuando definió
+las columnas de funciones. Estas funciones de entrada
+implementan las funcionalidades clave necesarias para el entrenamiento
+de modelos de redes neuronales. Por lo general, el entrenamiento
+funciona mejor cuando un paso se realiza en un "minilote"
+de datos de entrada a la vez y no en un único elemento de datos
+y tampoco en todo el conjunto. Puede especificar
+el tamaño del lote aquí y también indicar cuántas veces quiere
+repetir el conjunto en el entrenamiento. Es decir, la cantidad de ciclos. Por último, hacer una redistribución
+exhaustiva de los datos de entrenamiento es importante. Puede pedirle
+a la API de Estimator que lo haga. Y para evitar replicar
+el conjunto de datos en la memoria puede especificar el tamaño
+de la cola de redistribución. En la configuración predeterminada,
+el entrenamiento se ejecutará hasta que los datos se agoten o se agoten n veces si especificó
+n ciclos en su función de entrada. También puede anular esto con una cantidad específica de pasos
+en la llamada a la función train. Hay dos variantes
+en la configuración de pasos. Con "steps=1000", se ejecutan
+1,000 pasos más desde el último control. Aquí, cada paso corresponde
+a un lote de datos de entrada. Por otro lado, "max_steps=1000"
+reinicia desde los últimos controles lee la cantidad de pasos
+alcanzada en la ejecución anterior y continúa hasta alcanzar
+el valor de "max_steps". Si el control ya había alcanzado
+ese valor, puede que no se haga nada más. Aquí está todo el código,
+con columnas de funciones, un modelo una función de entrada que lee
+datos del marco de datos de Pandas y el entrenamiento en sí. ¿Quiere agregar una nueva función? Por ejemplo, la cantidad
+de dormitorios de la casa. Puede agregarla a la lista
+de columnas de funciones y luego asegurarse
+de que figure con el mismo nombre en el marco de datos de Pandas.

@@ -1,0 +1,50 @@
+Je vais maintenant vous parler
+des graphes et des sessions. Le graphe orienté acyclique (DAG) de TensorFlow est comparable à n'importe quel graphe. Il est constitué de bords et de nœuds. Les bords représentent les données,
+c'est-à-dire les Tensors qui, comme vous le savez maintenant,
+sont des tableaux à n dimensions. Les nœuds représentent les opérations
+TensorFlow effectuées sur ces Tensors (par exemple, le calcul basé sur tf.add que nous avons résolu
+lors de la leçon précédente). Un DAG TensorFlow est constitué de Tensors
+et d'opérations effectuées sur ces Tensors. Alors, pourquoi TensorFlow effectue-t-il
+une évaluation paresseuse ? C'est parce que l'évaluation
+paresseuse a pour avantage d'apporter beaucoup
+de flexibilité et d'optimisation lors de l'exécution du graphe. TensorFlow peut maintenant
+traiter le graphe, le compiler, insérer des nœuds d'envoi et de réception
+au milieu du DAG, et l'exécuter à distance. TensorFlow peut affecter différentes parties
+du DAG à différents appareils sur la base de critères
+tels que la sollicitation des E/S ou l'utilisation de fonctionnalités de GPU. Pendant le traitement du graphe, TensorFlow peut ajouter une quantification, des types de données
+ou des nœuds de débogage. Il peut créer des résumés
+pour écrire des valeurs que le Tensor pourra lire avec des calculs
+(tels que add et matmul), des constantes ou encore des variables : autant d'opérations
+utilisables par TensorFlow. Pendant la compilation du graphe, TensorFlow peut fusionner deux opérations
+pour améliorer les performances. Par exemple, si vous avez
+deux nœuds add consécutifs, TensorFlow peut les fusionner
+pour n'en constituer qu'un seul. Le compilateur XLA de TensorFlow
+peut utiliser les informations d'un graphe orienté acyclique pour générer du code plus rapide. C'est l'un des aspects pour lesquels
+vous avez intérêt à utiliser un DAG pour l'optimisation. Mais ce qui est le plus intéressant, c'est que le DAG est exécutable à distance
+et peut être affecté à des appareils. Et c'est là que les avantages de l'approche
+basée sur le DAG deviennent évidents. Lorsque vous utilisez des bords explicites pour représenter les dépendances
+entre les opérations, le système peut facilement identifier
+les opérations exécutables en parallèle. Et lorsque vous utilisez des bords explicites pour représenter les valeurs
+qui circulent entre les opérations, TensorFlow est en mesure
+de répartir votre programme entre plusieurs appareils
+(processeurs, GPU, TPU, etc.), lesquels peuvent même
+appartenir à différentes machines. TensorFlow assure la communication
+et la coordination entre ces appareils. Regardez les couleurs du schéma. Plusieurs parties du graphe peuvent être
+sur des appareils différents, qu'il s'agisse de GPU
+ou de plusieurs ordinateurs. Un avantage clé de ce modèle réside dans
+la possibilité de répartition des calculs entre de nombreuses machines
+et de nombreux types de machines. Et c'est possible grâce au DAG. Nous ne faisons qu'écrire le code Python, et le système d'exécution de TensorFlow
+optimise et répartit le graphe. La classe Session
+représente cette connexion entre le programme Python que nous écrivons
+et l'environnement d'exécution C++. L'objet Session gère l'accès aux appareils
+(de la machine locale et distants) à l'aide de l'environnement d'exécution
+TensorFlow qui gère la répartition. Il assure également la mise en cache
+d'informations relatives au graphe, de sorte qu'un même calcul
+peut être exécuté plusieurs fois. Comme nous l'avons vu, nous exécutons les graphes TensorFlow
+en appelant run() pour une tf.Session. Et lorsque nous faisons cela, nous spécifions un Tensor
+que nous voulons évaluer. Donc, dans cet exemple de code, je définis les deux Tensors
+de données x et y. Il s'agit de constantes. Ce sont des Tensors unidimensionnels. Le Tensor z est le résultat
+de l'appel de tf.add pour x et y. Lorsque je veux effectuer une évaluation,
+j'appelle session.run pour z. La session (ici "sess"),
+est une instance de tf.Session. Quant à l'instruction Python with, elle nous permet de veiller à ce que
+la session soit automatiquement fermée lorsque nous avons terminé.

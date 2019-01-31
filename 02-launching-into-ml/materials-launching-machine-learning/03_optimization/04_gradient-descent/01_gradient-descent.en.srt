@@ -1,0 +1,408 @@
+1
+00:00:01,620 --> 00:00:02,530
+In the previous section,
+
+2
+00:00:02,530 --> 00:00:05,570
+we framed optimization as
+a search in parameter space.
+
+3
+00:00:05,570 --> 00:00:08,980
+And then introduced the loss functions
+as a way to compare these points.
+
+4
+00:00:10,180 --> 00:00:13,260
+So how do you take a loss function and
+turn it into a search strategy?
+
+5
+00:00:14,820 --> 00:00:16,340
+That's where Gradient Descent comes in.
+
+6
+00:00:17,620 --> 00:00:21,280
+Gradient Descent refers to the process
+of walking down the surface
+
+7
+00:00:21,280 --> 00:00:25,270
+formed by using our loss function on
+all the points in parameter space.
+
+8
+00:00:26,850 --> 00:00:29,420
+And that surface might
+actually look a lot like this.
+
+9
+00:00:30,930 --> 00:00:34,280
+Of course, this is what you would
+see with perfect information, i.e.
+
+10
+00:00:34,280 --> 00:00:35,560
+with complete knowledge of the graph.
+
+11
+00:00:37,140 --> 00:00:41,145
+In actuality, we'll only know loss values
+at the points in parameter space where
+
+12
+00:00:41,145 --> 00:00:43,515
+we've evaluated our loss function.
+
+13
+00:00:43,515 --> 00:00:46,730
+Or in this case just the two points in
+the red bounded box that I've shown here.
+
+14
+00:00:48,800 --> 00:00:52,310
+Somehow though, we'll still need to make
+a decision about where to go next to find
+
+15
+00:00:52,310 --> 00:00:53,220
+the minimum anyway.
+
+16
+00:00:54,880 --> 00:00:58,670
+It turns out that the problem of finding
+the bottom can be decomposed into two
+
+17
+00:00:58,670 --> 00:01:01,000
+different and important questions.
+
+18
+00:01:01,000 --> 00:01:02,850
+Which direction should I head?
+
+19
+00:01:02,850 --> 00:01:04,030
+And how far away should I step?
+
+20
+00:01:05,270 --> 00:01:07,990
+For now though,
+let's make a simplifying assumption, and
+
+21
+00:01:07,990 --> 00:01:09,570
+use a fixed size step only.
+
+22
+00:01:12,840 --> 00:01:14,800
+This leads us to a very simple algorithm.
+
+23
+00:01:16,080 --> 00:01:21,050
+While the loss is greater than a tiny
+constant, compute the direction.
+
+24
+00:01:21,050 --> 00:01:25,864
+And then for each parameter in the model,
+set its value to be the old value plus
+
+25
+00:01:25,864 --> 00:01:28,841
+the product of the step size and
+the direction.
+
+26
+00:01:28,841 --> 00:01:30,878
+Then finally re-compute the loss.
+
+27
+00:01:34,546 --> 00:01:38,030
+You can think of a loss surface
+as a topographic or contour map.
+
+28
+00:01:39,150 --> 00:01:41,010
+Every line represents a specific depth.
+
+29
+00:01:42,080 --> 00:01:45,590
+The closer the lines are together,
+the steeper the surface is at that point.
+
+30
+00:01:47,960 --> 00:01:52,170
+The algorithm takes steps which
+I have represented here as dots.
+
+31
+00:01:52,170 --> 00:01:55,160
+In this case,
+the algorithm started at the top edge and
+
+32
+00:01:55,160 --> 00:01:57,440
+worked its way down toward
+the minimum in the middle.
+
+33
+00:01:59,030 --> 00:02:02,389
+Note how the algorithm takes fixed size
+steps in the direction of the minimum.
+
+34
+00:02:04,240 --> 00:02:06,190
+Putting side direction for the moment.
+
+35
+00:02:06,190 --> 00:02:10,240
+If your step size is too small,
+your training might take forever.
+
+36
+00:02:10,240 --> 00:02:12,750
+You are guaranteed to find the minimum,
+though.
+
+37
+00:02:12,750 --> 00:02:14,140
+And I've used the word the because for
+
+38
+00:02:14,140 --> 00:02:16,700
+the moment we're going to
+assume that there is only one.
+
+39
+00:02:16,700 --> 00:02:19,150
+However, in the future there
+might be more than one, and
+
+40
+00:02:19,150 --> 00:02:21,199
+we'll talk about how to
+deal with this issue later.
+
+41
+00:02:24,060 --> 00:02:25,780
+If your step size is too big,
+
+42
+00:02:25,780 --> 00:02:28,940
+you might either bounce from wall
+to wall of your loss surface or
+
+43
+00:02:28,940 --> 00:02:34,080
+bounce out of the valley entirely and into
+an entirely new part of the loss surface.
+
+44
+00:02:34,080 --> 00:02:36,315
+Because of this,
+when the step size is too big,
+
+45
+00:02:36,315 --> 00:02:38,650
+the process is not guaranteed to converge.
+
+46
+00:02:40,900 --> 00:02:45,060
+If your step size is just right,
+well then you're all set.
+
+47
+00:02:45,060 --> 00:02:47,081
+But whatever this value is for step size,
+
+48
+00:02:47,081 --> 00:02:50,170
+it's unlikely to be just as
+good on a different problem.
+
+49
+00:02:50,170 --> 00:02:53,841
+Note that the step size which seemed
+to work on the left-hand curve fails
+
+50
+00:02:53,841 --> 00:02:55,656
+miserably on the righthand curve.
+
+51
+00:02:59,139 --> 00:03:02,210
+One size really does not fit all models.
+
+52
+00:03:02,210 --> 00:03:04,090
+So how should we vary step size?
+
+53
+00:03:06,609 --> 00:03:11,029
+Thankfully, the slope or the rate at which
+the curve is changing gives us a decent
+
+54
+00:03:11,029 --> 00:03:14,220
+sense of how far to step and
+the direction at the same time.
+
+55
+00:03:15,910 --> 00:03:18,600
+Look at the bottom subplot
+showing the value of the slope
+
+56
+00:03:18,600 --> 00:03:20,590
+at various points along
+the weight loss curve.
+
+57
+00:03:21,980 --> 00:03:26,045
+Note that where the values are bigger we
+are generally farther away from the bottom
+
+58
+00:03:26,045 --> 00:03:27,340
+than where the slope is small.
+
+59
+00:03:28,510 --> 00:03:32,120
+Note also that where the slope is negative
+the bottom on the top chart is to
+
+60
+00:03:32,120 --> 00:03:33,100
+the right, and
+
+61
+00:03:33,100 --> 00:03:37,420
+where the slope is positive the bottom
+on the top chart is to the left.
+
+62
+00:03:37,420 --> 00:03:39,260
+Here's another example.
+
+63
+00:03:39,260 --> 00:03:42,480
+Look at point B, does it have
+a positive or a negative slope?
+
+64
+00:03:43,870 --> 00:03:47,689
+Point B has a positive slope, which
+tells us to go left to find the minimum.
+
+65
+00:03:48,780 --> 00:03:51,820
+Note that the slope is steep,
+which means we need to take a big step.
+
+66
+00:03:54,190 --> 00:03:56,500
+Take a look at point C
+in the loss surface.
+
+67
+00:03:56,500 --> 00:03:59,390
+Does it have a positive or
+a negative slope?
+
+68
+00:03:59,390 --> 00:04:00,160
+How steep is it?
+
+69
+00:04:02,260 --> 00:04:05,990
+Point C has a positive slope again,
+which means we still need to travel left.
+
+70
+00:04:07,410 --> 00:04:09,480
+Here the slope is much more gradual.
+
+71
+00:04:09,480 --> 00:04:11,580
+So we're actually going to
+take smaller steps so
+
+72
+00:04:11,580 --> 00:04:14,450
+we don't accidentally
+step over the minimum.
+
+73
+00:04:14,450 --> 00:04:18,409
+Now we've replaced our constant step size
+and our call to compute direction with
+
+74
+00:04:18,409 --> 00:04:21,650
+a single call to our new
+function computeDerivative.
+
+75
+00:04:21,650 --> 00:04:23,040
+And updated our for loop for
+
+76
+00:04:23,040 --> 00:04:27,540
+updating the model's parameters to set
+each parameter to be its old value
+
+77
+00:04:27,540 --> 00:04:31,180
+minus the partial derivative of that
+parameter with respect to the loss.
+
+78
+00:04:32,530 --> 00:04:34,130
+So are we done yet?
+
+79
+00:04:34,130 --> 00:04:36,720
+We seem to have found a way to
+take steps in the right direction
+
+80
+00:04:36,720 --> 00:04:38,490
+with the appropriate step size.
+
+81
+00:04:38,490 --> 00:04:39,140
+What could go wrong?
+
+82
+00:04:40,250 --> 00:04:41,929
+Well, empirical performance.
+
+83
+00:04:43,940 --> 00:04:47,100
+It turns out that with respect to the set
+of problems that ML researchers have
+
+84
+00:04:47,100 --> 00:04:48,990
+worked on, which is to say,
+
+85
+00:04:48,990 --> 00:04:53,110
+the set of loss surfaces on which we've
+applied this procedure, our basic
+
+86
+00:04:53,110 --> 00:04:58,080
+algorithm often either takes too long,
+finds suboptimal minima or doesn't finish.
+
+87
+00:04:59,180 --> 00:05:02,500
+And to be clear, this doesn't mean
+that our algorithm doesn't work,
+
+88
+00:05:02,500 --> 00:05:06,280
+it simply means we tend not to encounter
+the sorts of problems where it excels.

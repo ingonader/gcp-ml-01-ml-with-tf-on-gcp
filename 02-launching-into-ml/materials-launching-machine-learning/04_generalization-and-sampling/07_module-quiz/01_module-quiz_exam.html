@@ -1,0 +1,343 @@
+<meta charset="utf-8"/>
+<h3>
+ Question 1
+</h3>
+<co-content>
+ <p>
+  True or False - In ML, you could train using all your data and decide not to hold out a test set and still get a good model
+ </p>
+</co-content>
+<form>
+ <label>
+  <input name="0" type="radio"/>
+  <co-content>
+   <span>
+    True
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="0" type="radio"/>
+  <co-content>
+   <span>
+    False
+   </span>
+  </co-content>
+  <br/>
+ </label>
+</form>
+<hr/>
+<h3>
+ Question 2
+</h3>
+<co-content>
+ <p>
+  You are tasked with splitting your dataset into 80% training and 20% evaluation for your ML model. Your partner wrote the below SQL script for you to use. Should you use it to create your datasets? Why or why not
+ </p>
+ <pre>#standardSQL
+WITH
+  alldata AS (
+  SELECT
+    IF (RAND() &lt; 0.8,
+      'train',
+      'eval') AS dataset,
+    arrival_delay,
+    departure_delay
+  FROM
+    `bigquery-samples.airline_ontime_data.flights`
+  WHERE
+    departure_airport = 'DEN'
+    AND arrival_airport = 'LAX' ),
+  training AS (
+  SELECT
+    SAFE_DIVIDE( SUM(arrival_delay * departure_delay) , SUM(departure_delay * departure_delay)) AS alpha
+  FROM
+    alldata
+  WHERE
+    dataset = 'train' )</pre>
+ <p>
+ </p>
+ <p>
+ </p>
+ <p>
+ </p>
+</co-content>
+<form>
+ <label>
+  <input name="1" type="radio"/>
+  <co-content>
+   <span>
+    Yes use it - the RAND() function is only called once at the very beginning so all the data is put into training and evaluation in a repeatable fashion
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="1" type="radio"/>
+  <co-content>
+   <span>
+    Almost - instead of using a WITH clause, if you stored the training and testing data permanently then you will always have the exact same dataset to train and evaluate on.
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="1" type="radio"/>
+  <co-content>
+   <span>
+    Yes use it - this will yield 80% training, 20% validation due to the RAND() filter logic
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="1" type="radio"/>
+  <co-content>
+   <span>
+    No - the use of RAND(), even if only called once to divide the training and validation dataset, makes the experiment not repeatable for anyone else trying to start with the same datapoints. Consider using a hash function and a modulo operator instead.
+   </span>
+  </co-content>
+  <br/>
+ </label>
+</form>
+<hr/>
+<h3>
+ Question 3
+</h3>
+<co-content>
+ <p>
+  What is a way to approximate or model real world unknown data? (choose all that apply)
+ </p>
+</co-content>
+<form>
+ <label>
+  <input name="2" type="checkbox"/>
+  <co-content>
+   <span>
+    Increase the breadth and quality of the data you have available. The better the data, the easier it will be for the model to learn.
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="2" type="checkbox"/>
+  <co-content>
+   <span>
+    Split your dataset into three training buckets: training, validation, and production. Train the model on each of the three datasets to find which dataset performs the best. Then, use only that dataset to train your production model.
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="2" type="checkbox"/>
+  <co-content>
+   <span>
+    You can't because real world data cannot be modeled
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="2" type="checkbox"/>
+  <co-content>
+   <span>
+    Split your dataset into separate buckets and train your model only on a portion of that dataset (keeping the rest as held out which will model unseen data)
+   </span>
+  </co-content>
+  <br/>
+ </label>
+</form>
+<hr/>
+<h3>
+ Question 4
+</h3>
+<co-content>
+ <p>
+  What's a recommended way to split your dataset in a repeatable fashion using SQL?
+ </p>
+</co-content>
+<form>
+ <label>
+  <input name="3" type="radio"/>
+  <co-content>
+   <span>
+    Use a modulo operator and a hash function
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="3" type="radio"/>
+  <co-content>
+   <span>
+    Use a hash function and a RAND() function
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="3" type="radio"/>
+  <co-content>
+   <span>
+    There is no way to get the same data values again
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="3" type="radio"/>
+  <co-content>
+   <span>
+    Use a modulo operator and a RAND() function
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="3" type="radio"/>
+  <co-content>
+   <span>
+    Use a RAND() function to ensure a random sample
+   </span>
+  </co-content>
+  <br/>
+ </label>
+</form>
+<hr/>
+<h3>
+ Question 5
+</h3>
+<co-content>
+ <p>
+  Check all the common pitfalls for splitting a dataset even if done properly:
+ </p>
+</co-content>
+<form>
+ <label>
+  <input name="4" type="checkbox"/>
+  <co-content>
+   <span>
+    Your validation dataset will never be as good as your training dataset
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="4" type="checkbox"/>
+  <co-content>
+   <span>
+    You can no longer predict using the field you split the data on
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="4" type="checkbox"/>
+  <co-content>
+   <span>
+    Your splitting field may not be noisy enough for granular divides of your dataset
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="4" type="checkbox"/>
+  <co-content>
+   <span>
+    You might not have enough data to split the dataset into training, validation, and testing
+   </span>
+  </co-content>
+  <br/>
+ </label>
+</form>
+<hr/>
+<h3>
+ Question 6
+</h3>
+<co-content>
+ <p>
+  What can you do if your model passes validation but fails testing?
+ </p>
+ <p>
+  (Select all 2 correct answers)
+ </p>
+</co-content>
+<form>
+ <label>
+  <input name="5" type="checkbox"/>
+  <co-content>
+   <span>
+    Re-train the same model again with different hyperparameters to optimize for a lower loss metric on your testing dataset
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="5" type="checkbox"/>
+  <co-content>
+   <span>
+    Start from the beginning with a brand new model type
+   </span>
+  </co-content>
+  <br/>
+ </label>
+ <label>
+  <input name="5" type="checkbox"/>
+  <co-content>
+   <span>
+    Stop model training and work to collect new data points before trying the same model again
+   </span>
+  </co-content>
+  <br/>
+ </label>
+</form>
+<hr/>
+<style>
+ body {
+    padding: 50px 85px 50px 85px;
+}
+
+table th, table td {
+    border: 1px solid #e0e0e0;
+    padding: 5px 20px;
+    text-align: left;
+}
+input {
+    margin: 10px;
+}
+}
+th {
+    font-weight: bold;
+}
+td, th {
+    display: table-cell;
+    vertical-align: inherit;
+}
+img {
+    height: auto;
+    max-width: 100%;
+}
+pre {
+    display: block;
+    margin: 20px;
+    background: #424242;
+    color: #fff;
+    font-size: 13px;
+    white-space: pre-wrap;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    border: 1px solid #ccc;
+}
+</style>
+<script async="" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+ MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$$','$$'], ['$','$'] ],
+      displayMath: [ ["\\[","\\]"] ],
+      processEscapes: true
+    }
+  });
+</script>

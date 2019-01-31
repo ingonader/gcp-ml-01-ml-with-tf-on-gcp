@@ -1,0 +1,479 @@
+1
+00:00:00,000 --> 00:00:03,885
+En plus de vous aider à choisir
+entre deux modèles de ML différents :
+
+2
+00:00:03,885 --> 00:00:06,975
+"dois-je utiliser la régression linéaire
+ou un réseau de neurones ?",
+
+3
+00:00:06,975 --> 00:00:09,400
+vous pouvez aussi utiliser
+vos données de validation
+
+4
+00:00:09,400 --> 00:00:12,160
+pour ajuster les hyperparamètres
+d'un modèle unique,
+
+5
+00:00:12,160 --> 00:00:15,750
+qui, vous vous en souvenez peut-être,
+sont définis avant l'entraînement.
+
+6
+00:00:16,090 --> 00:00:19,715
+Ce processus d'ajustement passe
+par des entraînements successifs
+
+7
+00:00:19,715 --> 00:00:21,830
+puis par la comparaison
+de ces entraînements
+
+8
+00:00:21,830 --> 00:00:26,215
+aux données de validation indépendantes
+pour repérer le surapprentissage.
+
+9
+00:00:26,775 --> 00:00:30,640
+Voici comment votre ensemble de validation
+va être utilisé pendant l'entraînement.
+
+10
+00:00:31,010 --> 00:00:33,395
+Comme nous l'avons vu
+en parlant de l'optimisation,
+
+11
+00:00:33,395 --> 00:00:36,685
+entraîner le modèle commence
+par le calcul de pondérations aléatoires,
+
+12
+00:00:36,685 --> 00:00:40,530
+calculer la dérivée, regarder
+la direction de la courbe de perte,
+
+13
+00:00:40,530 --> 00:00:43,335
+minimiser la métrique de perte,
+puis recommencer.
+
+14
+00:00:43,945 --> 00:00:46,750
+Et, régulièrement,
+évaluer les performances d'un modèle
+
+15
+00:00:46,750 --> 00:00:49,160
+avec des données non vues
+pendant l'entraînement,
+
+16
+00:00:49,160 --> 00:00:52,735
+moment où nous utilisons
+l'ensemble de données de validation.
+
+17
+00:00:52,735 --> 00:00:57,295
+Après un entraînement complet,
+valider les résultats de ce modèle
+
+18
+00:00:57,295 --> 00:01:01,245
+avec les données de validation
+pour voir si les hyperparamètres sont bons
+
+19
+00:01:01,245 --> 00:01:03,050
+ou s'il faut encore les ajuster.
+
+20
+00:01:03,050 --> 00:01:06,900
+Et s'il n'y a pas d'écart important entre
+les métriques de perte de l'entraînement
+
+21
+00:01:06,900 --> 00:01:09,550
+et celles de la validation,
+
+22
+00:01:09,550 --> 00:01:13,480
+nous pouvons revenir en arrière
+et optimiser les hyperparamètres.
+
+23
+00:01:14,050 --> 00:01:17,800
+Quand les métriques de notre modèle
+ont été suffisamment optimisées
+
+24
+00:01:17,800 --> 00:01:21,270
+et ont réussi l'étape de validation,
+quand vous voyez cet écart
+
+25
+00:01:21,270 --> 00:01:23,530
+et que le modèle
+n'est pas en surapprentissage,
+
+26
+00:01:23,530 --> 00:01:25,310
+c'est le moment où vous devez arrêter
+
+27
+00:01:25,310 --> 00:01:28,880
+et décider que le modèle est ajusté
+et prêt pour la production.
+
+28
+00:01:29,910 --> 00:01:31,865
+Vous pouvez utiliser une boucle similaire
+
+29
+00:01:31,865 --> 00:01:35,365
+pour choisir
+les paramètres de vos modèles,
+
+30
+00:01:35,365 --> 00:01:38,280
+comme pour les hyperparamètres
+définis avant l'entraînement.
+
+31
+00:01:38,280 --> 00:01:41,500
+Par exemple, les couches d'un réseau
+ou le nombre de nœuds
+
+32
+00:01:41,500 --> 00:01:42,740
+que vous devriez utiliser.
+
+33
+00:01:42,740 --> 00:01:44,555
+Vous entraînez avec une configuration,
+
+34
+00:01:44,555 --> 00:01:46,600
+comme six nœuds
+dans le réseau de neurones,
+
+35
+00:01:46,600 --> 00:01:48,960
+puis avec une autre,
+et vous évaluez ensuite
+
+36
+00:01:48,960 --> 00:01:51,910
+laquelle fonctionne le mieux
+avec votre ensemble de validation.
+
+37
+00:01:51,910 --> 00:01:55,420
+Vous choisissez une configuration
+qui obtient une perte plus faible
+
+38
+00:01:55,420 --> 00:02:00,460
+dans l'ensemble de validation,
+et pas dans celui d'entraînement.
+
+39
+00:02:01,490 --> 00:02:05,930
+Ultérieurement, nous allons vous montrer
+comment Cloud ML Engine peut réaliser
+
+40
+00:02:05,930 --> 00:02:08,935
+une brève recherche bayésienne
+avec un espace d'hyperparamètres,
+
+41
+00:02:08,935 --> 00:02:11,695
+pour que vous n'ayez pas
+à faire ce type d'expérimentation
+
+42
+00:02:11,695 --> 00:02:13,620
+hyperparamètre par hyperparamètre.
+
+43
+00:02:13,620 --> 00:02:17,280
+CMLE peut nous aider
+à réaliser ce type d'expérimentation
+
+44
+00:02:17,280 --> 00:02:20,829
+de façon parallèle
+avec une stratégie optimisée différente.
+
+45
+00:02:22,369 --> 00:02:24,060
+Une fois l'entraînement terminé,
+
+46
+00:02:24,060 --> 00:02:27,230
+vous devez indiquer à votre chef
+les performances de votre modèle.
+
+47
+00:02:27,520 --> 00:02:30,915
+Quel ensemble de données allez-vous
+utiliser pour l'évaluation finale ?
+
+48
+00:02:31,395 --> 00:02:35,250
+Pouvez-vous simplement signaler la perte
+ou l'erreur sur vos données de validation
+
+49
+00:02:35,250 --> 00:02:38,015
+même si elle est cohérente
+avec l'ensemble d'entraînement ?
+
+50
+00:02:38,015 --> 00:02:40,865
+Vous ne pouvez pas. Mais pourquoi ?
+
+51
+00:02:41,405 --> 00:02:44,830
+Parce que vous avez utilisé
+votre ensemble de données de validation
+
+52
+00:02:44,830 --> 00:02:47,185
+pour choisir quand arrêter l'entraînement.
+
+53
+00:02:47,185 --> 00:02:49,040
+Il n'est plus indépendant.
+
+54
+00:02:49,040 --> 00:02:50,430
+Le modèle l'a vu.
+
+55
+00:02:50,430 --> 00:02:52,435
+Que faire alors ?
+
+56
+00:02:53,215 --> 00:02:56,200
+Vous devez séparer
+vos données en trois parties :
+
+57
+00:02:56,200 --> 00:03:01,295
+l'entraînement, la validation
+et un nouveau silo complètement distinct
+
+58
+00:03:01,295 --> 00:03:03,295
+appelé "test" ou "testing".
+
+59
+00:03:03,315 --> 00:03:05,910
+Quand votre modèle
+a été entraîné et validé,
+
+60
+00:03:05,910 --> 00:03:09,775
+vous pouvez l'écrire une seule fois
+avec l'ensemble de test indépendant.
+
+61
+00:03:09,775 --> 00:03:12,490
+C'est la métrique de perte
+que vous indiquez à votre chef.
+
+62
+00:03:12,490 --> 00:03:15,060
+Et c'est celle qui décide,
+avec votre ensemble de test,
+
+63
+00:03:15,060 --> 00:03:17,600
+si le modèle doit
+être utilisé en production.
+
+64
+00:03:17,940 --> 00:03:20,820
+Que se passe-t-il si vous échouez
+avec l'ensemble de test
+
+65
+00:03:20,820 --> 00:03:22,730
+alors que la validation avait réussi ?
+
+66
+00:03:22,730 --> 00:03:25,495
+Cela signifie que vous ne pouvez pas
+tester le même modèle,
+
+67
+00:03:25,495 --> 00:03:28,540
+et vous devez entraîner un nouveau modèle,
+
+68
+00:03:28,540 --> 00:03:31,900
+ou revenir à l'étude et collecter
+d'autres échantillons de données
+
+69
+00:03:31,900 --> 00:03:34,470
+pour fournir de nouvelles données
+à votre modèle de ML.
+
+70
+00:03:35,610 --> 00:03:39,195
+Il s'agit d'une bonne approche,
+mais elle présente un petit problème.
+
+71
+00:03:39,195 --> 00:03:41,010
+Personne n'aime gaspiller les données,
+
+72
+00:03:41,010 --> 00:03:42,965
+mais les données de test semblent l'être.
+
+73
+00:03:42,965 --> 00:03:44,965
+Je ne les utilise qu'une fois,
+c'est tendu.
+
+74
+00:03:44,965 --> 00:03:47,395
+Peut-on utiliser
+toutes les données à l'entraînement
+
+75
+00:03:47,395 --> 00:03:50,600
+tout en obtenant une bonne indication
+des performances du modèle ?
+
+76
+00:03:51,880 --> 00:03:53,160
+Oui, c'est possible.
+
+77
+00:03:53,610 --> 00:03:57,500
+Le compromis entre ces méthodes est
+de séparer l'entraînement de la validation
+
+78
+00:03:57,500 --> 00:03:58,930
+et de le faire plusieurs fois.
+
+79
+00:03:59,390 --> 00:04:02,390
+Entraîner, puis calculer la perte
+dans l'ensemble de validation,
+
+80
+00:04:02,390 --> 00:04:05,340
+en gardant à l'esprit que celui-ci
+peut consister en des points
+
+81
+00:04:05,340 --> 00:04:07,960
+qui n'ont pas été utilisés
+lors du premier entraînement,
+
+82
+00:04:07,960 --> 00:04:09,155
+puis séparer les données.
+
+83
+00:04:09,155 --> 00:04:11,675
+Vos données d'entraînement
+peuvent contenir des points
+
+84
+00:04:11,675 --> 00:04:13,770
+utilisés lors de la première validation,
+
+85
+00:04:13,770 --> 00:04:16,790
+mais vous faites plusieurs itérations.
+
+86
+00:04:17,060 --> 00:04:19,670
+Et après quelques tours de ceci,
+
+87
+00:04:19,670 --> 00:04:23,340
+vous calculez la moyenne
+des métriques de perte de validation.
+
+88
+00:04:23,490 --> 00:04:26,195
+Vous obtenez un écart type
+des pertes de validation,
+
+89
+00:04:26,195 --> 00:04:29,904
+et cela vous aide à analyser cet écart
+et à vous arrêter sur un chiffre final.
+
+90
+00:04:29,904 --> 00:04:33,340
+Ce processus est appelé "méthode
+d'autoamorçage" ou "validation croisée".
+
+91
+00:04:33,340 --> 00:04:34,935
+Vous utilisez toutes les données,
+
+92
+00:04:34,935 --> 00:04:37,310
+mais vous réalisez
+beaucoup plus d'entraînements,
+
+93
+00:04:37,310 --> 00:04:39,300
+car vous créez plus de séparations.
+
+94
+00:04:39,620 --> 00:04:42,335
+Au bout du compte,
+voici ce dont vous devez vous souvenir.
+
+95
+00:04:42,335 --> 00:04:43,910
+Si vous avez beaucoup de données,
+
+96
+00:04:43,910 --> 00:04:48,110
+utilisez un ensemble de données
+complètement indépendant,
+
+97
+00:04:48,110 --> 00:04:50,540
+c'est prendre la décision
+de continuer ou d'arrêter.
+
+98
+00:04:50,540 --> 00:04:52,015
+Si vous n'en avez pas beaucoup,
+
+99
+00:04:52,015 --> 00:04:53,880
+utilisez la validation croisée.
+
+100
+00:04:55,710 --> 00:04:59,045
+Mais comment séparer
+ces grands ensembles de données
+
+101
+00:04:59,045 --> 00:05:01,485
+en ces silos dont nous avons tant parlé ?
+
+102
+00:05:01,485 --> 00:05:04,720
+C'est le sujet de notre prochain
+cours sur l'échantillonnage.

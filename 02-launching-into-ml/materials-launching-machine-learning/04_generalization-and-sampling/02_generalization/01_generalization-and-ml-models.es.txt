@@ -1,0 +1,91 @@
+Hablemos primero de la generalización,
+que nos ayuda a responder cuándo el modelo de AA
+más preciso no es la mejor opción. Una vez más, tenemos
+el conjunto de datos de natalidad pero esta vez,
+usaremos el peso ganado por la madre en el eje X
+para predecir la duración del embarazo en el eje Y. ¿Qué observan acerca del patrón
+que ven en los datos? Están fuertemente correlacionados. Mientras más peso se gana,
+más largo es el embarazo lo que tiene sentido intuitivamente
+ya que el bebé está creciendo. Para modelar este comportamiento
+y comprobar una correlación por lo general, ¿qué modelo
+deberíamos invocar primero? Si respondieron
+un "modelo de regresión lineal" tienen toda la razón. Como ya mencionamos,
+para los problemas de regresión la métrica de pérdida
+que deberán optimizar por lo general,
+es el error cuadrático medio, MSE o RMSE,
+el error de la raíz cuadrada de la media. El error cuadrático medio
+nos indica lo cerca que está una línea de regresión del conjunto de puntos. Lo hace mediante el cálculo
+de las distancias desde los puntos hasta la línea de regresión real. Esas distancias se llaman errores,
+los que se elevan al cuadrado. Elevar al cuadrado es necesario
+para quitar cualquier signo negativo. MSE también otorga mayor peso
+a esas diferencias más grandes desde la línea. Si se aplica la raíz cuadrada del MSE,
+se obtiene el RMSE que simplemente es la distancia
+promedio de un punto de datos desde la línea ajustada
+medida a lo largo de una línea vertical. El RMSE se interpreta directamente
+con las unidades de medición en el eje Y. Es una mejor medida de un ajuste correcto
+que un coeficiente de correlación. Ahora, para ambas medidas de error,
+un valor más bajo señala un modelo de mejor rendimiento
+y mientras más cerca esté el error de cero, será mejor. Aquí, usamos un modelo de regresión lineal que simplemente grafica
+esa línea de mejor ajuste para minimizar el error. Nuestro RMSE final es 2.224. Y para nuestro problema,
+eso está bastante bien. Bueno, ahora vean esto. ¿Y si usamos un modelo más complejo? Un modelo más complejo
+puede tener más parámetros libres. En este caso,
+esos parámetros libres nos permiten capturar cada variación
+en el conjunto de datos, como ven ahí. Aunque reducimos nuestro RMSE a cero el modelo
+ahora es perfectamente preciso. ¿Hemos terminado? ¿Es el mejor modelo?
+¿Podemos ponerlo en producción? Bueno, podrían pensar
+que algo raro pasa con el segundo modelo. ¿Cómo podemos darnos cuenta? En el AA, a menudo tenemos muchos datos
+pero no una buena intuición. ¿Es una red neuronal con 8 nodos
+mejor que una con 12? Tenemos un RMSE menor
+para una con 16 nodos. ¿Deberíamos elegir esa? El ejemplo que ven aquí
+podría ser un polinomio de grado 100 o una red neuronal con cientos de nodos. Como vieron en el ejemplo de la espiral,
+al final de la última clase sobre optimización,
+un modelo más complejo tiene más de estos parámetros
+que se pueden optimizar. Aunque esto puede ayudar
+a ajustar datos más complejos como la espiral,
+también puede ayudar a memorizar conjuntos de datos más pequeños y simples. ¿En qué momento le decimos a un modelo
+que se detenga, que está memorizando el conjunto de datos
+y posiblemente sobreajustando? Una de las mejores formas de evaluar
+la calidad de un modelo es ver su rendimiento
+con un nuevo conjunto de datos que no ha visto antes. Entonces podemos determinar
+si ese modelo generaliza bien en nuevos puntos de datos. Es un buen proxy para la producción
+con datos del mundo real. Volvamos al modelo de regresión lineal
+y a los modelos de redes neuronales para ver cómo les va. Nuestro modelo de regresión lineal
+en estos nuevos puntos de datos está generalizando bastante bien. El RMSE es comparable
+a lo que vimos antes y en este caso
+es bueno que no haya sorpresas. Queremos un rendimiento coherente
+de nuestros modelos en el entrenamiento y la validación. Si regresamos al segundo modelo,
+vemos que no generaliza nada bien en el nuevo conjunto de datos
+de entrenamiento y eso es muy alarmante. El RMSE saltó de 0 a 3.2,
+lo que es un problema serio y quiere decir que el modelo
+se sobreajustó completamente al conjunto de datos de entrenamiento
+y que no es generalizable a nuevos datos. Podrían preguntarse,
+¿cómo puedo asegurarme de que mi modelo no se sobreajuste? ¿Cómo sé cuándo detener el entrenamiento? La respuesta es sorprendentemente simple. Dividiremos los datos. Mediante la división del conjunto de datos
+original en grupos completamente separados y aislados,
+pueden volver a entrenar el modelo en el conjunto de datos de entrenamiento
+y, luego, cuando terminen de hacerlo comparar su rendimiento
+con un conjunto de validación independiente y aislado. Los modelos que generalizaron bien
+tendrán métricas de pérdida o valores de error similares
+en el entrenamiento y la validación. En cuanto vean que su modelo
+no tiene buen rendimiento con el conjunto de validación,
+si las métricas de pérdida comienzan a aumentar
+o subir por sorpresa es momento de parar. Entrenar y evaluar un modelo de AA
+es un experimento para encontrar el modelo generalizable
+y los parámetros correctos que se ajusten a su conjunto de datos
+de entrenamiento sin memorizarlo. Como ven aquí,
+tenemos un modelo lineal muy simple que no se ajusta a las relaciones
+de los datos correctamente. Pueden ver lo malo que es visualmente. Hay unos cuantos puntos fuera de la forma
+de la línea de tendencia. A eso se le llama sobregeneralización. En el lado opuesto del espectro,
+y un poco más peligroso está el sobreajuste, del que ya hablamos. Esto se muestra en el extremo derecho. Aquí, aumentamos mucho
+la complejidad de nuestro modelo lineal y lo convertimos en un polinomio
+de orden n, lo que parece ayudar al modelo a ajustar los datos y las variaciones
+que mencionamos antes. Aquí es donde el conjunto
+de evaluación entra en la ecuación y tendrán que determinar
+si los parámetros del modelo conducen al sobreajuste.
+¿Es demasiado complejo? El sobreajuste o la memorización
+del conjunto de entrenamiento puede ser mucho peor que un modelo
+que solo se ajusta a sus datos. A veces no lo sabrán hasta la producción;
+eso intentamos validar. En algún lugar
+entre una sobregeneralización y un sobreajuste está el nivel correcto
+de complejidad de un modelo. Veamos cómo usar el conjunto
+de datos de validación para saber cuándo detener el entrenamiento
+y prevenir el sobreajuste.

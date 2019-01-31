@@ -1,0 +1,88 @@
+Dans cet atelier, tout comme nous l'avons fait
+lors des ateliers précédents, nous accédons à la console GCP, puis à Cloud Shell,
+et nous lançons Datalab. Une fois dans Datalab, je vais accéder au bloc-notes
+pour commencer à utiliser TensorFlow. Donc, la première cellule
+de ce bloc-notes a pour fonction d'importer
+des packages TensorFlow et NumPy avec lesquels nous allons nous amuser. Je peux donc exécuter cette cellule. J'ai un message qui m'indique que j'exécute
+TensorFlow 1.4 dans cette instance. Je vais maintenant vous montrer
+comment ajouter deux tableaux NumPy. J'ai donc un premier tableau NumPy (a),
+et en voici un deuxième (b). Et dans ce cas, j'effectue une addition
+avec np.add(a, b), puis j'affiche c. Étant donné que c'est du code NumPy,
+il est intégralement évalué immédiatement. Donc, lorsque je l'exécute,
+j'obtiens 8, 2, 10. C'est donc ma liste. Avec la syntaxe TensorFlow,
+le code équivalent nécessite deux étapes. Nous allons seulement
+exécuter la première étape. Et tout comme nous avons créé a en NumPy, nous allons créer a avec tf.constant
+à la place de np.array. Je crée donc le tableau de constantes a,
+et le tableau de constantes b. J'appelle tf.add(a, b). Mais cette fois, lorsque j'affiche c,
+vous ne voyez pas la liste 8, 2, 10. Que voyez-vous ? Vous voyez la sortie du débogage du Tensor. Donc, dans ce cas, nous disons que le c
+est un résultat de l'opération add. Il va contenir trois nombres
+qui seront tous des entiers. C'est donc la première étape,
+qui consiste à créer le graphe. Je vais maintenant essayer quelque chose
+en remplaçant par exemple 5 par 5.0. A ce stade, a n'est plus
+un tableau de nombres entiers, mais un tableau de nombres
+à virgule flottante. Donc je continue, et je n'affiche
+pas seulement c, mais également a. Vous voyez où je veux en venir. Et maintenant, lorsque je lance l'exécution, vous voyez que a est de type float
+(nombres à virgule flottante), et que nous ne pouvons plus
+procéder à l'addition parce que b est de type int
+(nombres entiers). C'est pour cela qu'il y a une erreur. Mais je peux également modifier ça
+pour avoir un nombre à virgule flottante. Et lorsque j'exécute le code,
+je vois que c est de type float. Retenez donc bien cela. Je vais maintenant remettre un entier pour que nous puissions
+passer à l'étape suivante. Donc, dans ce cas, j'ai a et c, et l'étape suivante de mon graphe
+a pour fonction d'évaluer la valeur de c, et de nous donner les nombres. Souvenez-vous : créer le graphe, puis l'exécuter. Donc, dans ce cas,
+je vais exécuter sess.run(c), puis afficher le résultat. Le résultat sera un tableau
+tout à fait normal. Si je continue, le résultat affiché est 8, 2 et 10. Retenez donc que TensorFlow
+effectue une évaluation paresseuse. La première étape consiste à créer le graphe, et la deuxième à l'exécuter. Dans ce cas, tout dans mon graphe était codé en dur. Normalement toutefois,
+vous aurez des espaces réservés qui vous permettront de récupérer
+des informations lors de l'exécution. Donc, dans mon cas, je crée a afin que ce soit un espace réservé
+destiné à contenir une liste, et b sera aussi un autre espace réservé
+destiné à contenir une liste. J'additionne a et b. Je fais en sorte que les nombres 3, 4 et 5
+soient transmis lors de l'exécution. Lorsque j'exécute la session, je transmets 3, 4 et 5 pour a,
+et -1, 2 et 3 pour b. Et maintenant, lorsque j'affiche le résultat, j'obtiens 2, 6 et 8 parce que
+3 moins 1 donne 2. Mais dans ce cas, souvenez-vous que
+ces trois lignes (a, b et c) nous servent à créer le graphe. Le reste du code sert à l'exécuter. Et lors de l'exécution, des valeurs
+sont chargées dans le graphe. Nous pouvons maintenant
+combiner ces deux concepts afin de faire quelque chose d'utile. Nous allons donc partir d'un triangle
+en indiquant les longueurs de ses côtés, et demander au programme
+d'en calculer l'aire. Il existe une formule
+appelée formule de Héron, que vous pouvez voir ici. Nous allons la mettre en œuvre
+dans TensorFlow. Encore une fois, TF n'est pas seulement conçu
+pour les réseaux de neurones mais aussi pour la programmation numérique, et peut donc servir
+à calculer l'aire d'un triangle. Alors, j'ai ma méthode, ma fonction permettant de calculer l'aire
+à partir des longueurs des côtés. Vous devez toutefois retenir que vous n'allez pas utiliser TensorFlow
+pour calculer l'aire d'un seul triangle, mais afin d'effectuer ce calcul
+pour de très nombreux triangles. Nous allons donc décider que nous n'allons pas avoir recours
+à un seul ensemble de trois nombres, mais à un très grand nombre
+d'ensembles de trois nombres. Nous avons donc plusieurs triangles pour lesquels nous voulons récupérer
+les longueurs des trois côtés que nous allons stocker dans a, b et c. Avec a, nous allons scinder sides
+(qui contient les côtés) en récupérant toutes les lignes, dont le nombre indique la taille
+du lot (le nombre de triangles), puis nous ferons de même avec b et c
+(puisqu'il y a trois côtés). La première colonne sera stockée dans a, la deuxième dans b, et la troisième dans c. Donc, vous voyez ici le code pour
+la première colonne qui correspond à a, pour la deuxième qui correspond à b, et pour la troisième qui correspond à c. Nous allons donc ici
+transmettre une matrice 2, 3 correspondant à deux triangles. Chaque triangle a trois côtés. Le premier ensemble de côtés
+comprend 5 et 2.3. C'est le a. Il y a ensuite 3 et 4.1. C'est le b. Et nous avons enfin 7.1 et 4.8. C'est le c. Nous avons donc maintenant a, b et c. Nous calculons la moitié du périmètre, soit le total de a, b et c
+que nous divisons par 2, puis nous utilisons cette formule
+pour calculer le carré de l'aire. Nous calculons ensuite la racine carrée
+du résultat, que nous retournons. Tout cela fait partie
+de la création du graphe. Lorsque nous voulons l'exécuter,
+nous pouvons utiliser sess.run. Mais cette fois, je veux calculer l'aire des variables
+(ou l'aire du Tensor TensorFlow), et la façon de le faire
+consiste à appeler compute_area en transmettant ces valeurs. Donc, si maintenant j'exécute ça,
+je vais obtenir l'aire de deux triangles : deux nombres, pour deux triangles. J'ai ici codé ces nombres en dur,
+mais vous pouvez préférer que les valeurs soient
+chargées pendant l'exécution. C'est ce que vous montre
+cette dernière partie. Nous utilisons le même compute_area, mais les longueurs des côtés
+sont maintenant chargées dans le graphe. Donc, sides est un espace réservé
+(placeholder dans le code). Nous n'utilisons plus tf.constant. Et lorsque nous lançons l'exécution
+et que nous voulons évaluer l'aire, nous transmettons une paire clé/valeur. La clé est le nom du Tensor (sides), et la valeur est maintenant le tableau 2D parce que nous transmettons
+un tableau de triangles. Nous pouvons donc maintenant exécuter ça,
+et nous obtenons le même résultat. La dernière partie du bloc-notes
+vous montre comment éviter
+cette procédure en deux étapes (créer le graphe, exécuter le graphe) à l'aide de tf.eager. Nous appelons enable_eager_execution, ce qui nous permet de faire en sorte
+qu'il n'y ait plus deux étapes. Désormais, lors du processus
+de création du graphe, toutes les choses que nous faisons
+font l'objet d'une évaluation immédiate. Donc, dans ce cas, je crée compute_area. Je procède exactement de la même façon, puis j'indique area = compute_area, et print area. Si je n'étais pas en mode
+d'exécution "eager" (dynamique)… Donc, je mets ça en commentaire pour que
+vous puissiez voir ce que je veux dire. Sans le mode "eager", si j'exécute print area, je vais seulement obtenir
+la sortie du débogage du Tensor. Voici la sortie du débogage du Tensor. Je n'obtiens pas les valeurs, mais seulement des informations
+sur ce que contiendra la réponse pour deux triangles. Si j'active maintenant le mode "eager"
+et que je lance l'exécution, la sortie contient les valeurs. J'appelle toujours print area. Je n'ai pas appelé session.run print area. Mais cette fois, j'obtiens la réponse.

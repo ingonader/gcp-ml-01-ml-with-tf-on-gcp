@@ -1,0 +1,695 @@
+1
+00:00:00,000 --> 00:00:03,280
+Já falamos sobre a teoria
+e você já viu um pouco do código no SQL,
+
+2
+00:00:03,280 --> 00:00:06,910
+mas praticar no BigQuery ajudará a
+solidificar o conhecimento
+
+3
+00:00:06,910 --> 00:00:09,025
+sobre como dividir conjuntos
+de dados em intervalos.
+
+4
+00:00:09,025 --> 00:00:12,750
+Mas antes disso e de você começar a
+explorar códigos de operadores de módulo
+
+5
+00:00:12,750 --> 00:00:15,075
+e dividir conjuntos de dados
+na cláusula WHERE do SQL,
+
+6
+00:00:15,075 --> 00:00:18,190
+vamos falar sobre
+como dividir esse conjunto de dados.
+
+7
+00:00:18,190 --> 00:00:21,990
+Nesta imagem, temos
+70 milhões de voos no total
+
+8
+00:00:21,990 --> 00:00:23,440
+e poderia ser um conjunto imenso,
+
+9
+00:00:23,440 --> 00:00:25,180
+poderia ser de 7 bilhões,
+
+10
+00:00:25,180 --> 00:00:28,840
+mas queremos reduzir esse conjunto
+de dados de maneira reproduzível.
+
+11
+00:00:28,840 --> 00:00:31,535
+Então, não podemos usar
+uma amostragem aleatória qualquer,
+
+12
+00:00:31,535 --> 00:00:34,890
+queremos usar filtros inteligentes
+de cláusula WHERE, como você verá.
+
+13
+00:00:34,890 --> 00:00:37,950
+Vamos pegar 1% ou 2%,
+como mostrado na caixa laranja,
+
+14
+00:00:37,950 --> 00:00:39,880
+e depois reduzir
+
+15
+00:00:39,880 --> 00:00:42,135
+para 50% desse 1%.
+
+16
+00:00:42,135 --> 00:00:44,770
+Então, digamos que a caixa laranja
+representa os dados de treinamento,
+
+17
+00:00:44,770 --> 00:00:48,540
+50% deles são os dados
+de validação e o restante,
+
+18
+00:00:48,540 --> 00:00:53,030
+a metade do conjunto de validação,
+pode ser usado como dados de teste.
+
+19
+00:00:53,030 --> 00:00:55,225
+Lembre-se, esse é
+um conjunto de dados binário.
+
+20
+00:00:55,225 --> 00:00:58,150
+Vamos ver como isso
+funciona no Google BigQuery
+
+21
+00:00:58,150 --> 00:01:01,870
+e como você pode usar
+esse código em projetos futuros.
+
+22
+00:01:01,870 --> 00:01:04,040
+No Google BigQuery,
+
+23
+00:01:04,040 --> 00:01:05,530
+tenho esta consulta pré-escrita,
+
+24
+00:01:05,530 --> 00:01:07,420
+mas mostrarei cada etapa.
+
+25
+00:01:07,420 --> 00:01:11,010
+Esta é a interface do Google BigQuery,
+que você já deve conhecer.
+
+26
+00:01:11,010 --> 00:01:14,815
+A primeira coisa, embora
+aqui diga que há 70 milhões de linhas
+
+27
+00:01:14,815 --> 00:01:16,200
+ou voos individuais,
+
+28
+00:01:16,200 --> 00:01:19,410
+é me informar um pouco
+sobre a tabela de dados de origem.
+
+29
+00:01:19,410 --> 00:01:25,140
+Em “Show Options”,
+desative “Use Legacy SQL”
+
+30
+00:01:25,140 --> 00:01:31,050
+para que você possa segurar
+a tecla Windows ou command,
+
+31
+00:01:31,050 --> 00:01:34,160
+e clicar na tabela.
+
+32
+00:01:34,160 --> 00:01:37,060
+Esse é um atalho em qualquer parte do SQL
+
+33
+00:01:37,060 --> 00:01:39,165
+para acessar os detalhes da tabela.
+
+34
+00:01:39,165 --> 00:01:40,870
+Aqui você pode ver todos os campos.
+
+35
+00:01:40,870 --> 00:01:42,540
+Clicando em “Details”,
+
+36
+00:01:42,540 --> 00:01:45,075
+podemos ver o número
+de registros no arquivo.
+
+37
+00:01:45,075 --> 00:01:48,290
+Aqui vemos que há 70 milhões
+de voos diferentes no conjunto de dados,
+
+38
+00:01:48,290 --> 00:01:50,000
+mas em gigabytes.
+
+39
+00:01:50,000 --> 00:01:52,565
+Você pode visualizar o conjunto
+de dados, se quiser analisá-lo.
+
+40
+00:01:52,565 --> 00:01:54,750
+Aqui estão as datas dos voos,
+
+41
+00:01:54,750 --> 00:01:56,200
+os aeroportos de partida,
+
+42
+00:01:56,200 --> 00:01:58,580
+de onde os voos partiram
+e várias informações úteis
+
+43
+00:01:58,580 --> 00:02:00,910
+que podemos esperar de um conjunto
+de dados de uma companhia aérea.
+
+44
+00:02:00,910 --> 00:02:03,810
+Além desses campos genéricos básicos
+
+45
+00:02:03,810 --> 00:02:05,925
+extraídos do conjunto
+de dados que visualizamos,
+
+46
+00:02:05,925 --> 00:02:08,215
+adicionei mais três campos.
+
+47
+00:02:08,215 --> 00:02:09,555
+Agora, faremos o seguinte,
+
+48
+00:02:09,555 --> 00:02:12,560
+antes da filtragem abaixo na linha 17,
+
+49
+00:02:12,560 --> 00:02:14,345
+onde está o filtro da cláusula WHERE,
+
+50
+00:02:14,345 --> 00:02:18,910
+vou mostrar um exemplo e executar o código
+
+51
+00:02:18,910 --> 00:02:23,795
+no bloco em destaque, clicando
+na seta para baixo e executando a consulta.
+
+52
+00:02:23,795 --> 00:02:29,970
+O que isso nos mostra é que...
+
+53
+00:02:29,970 --> 00:02:32,420
+Por exemplo, vamos olhar este dia.
+
+54
+00:02:32,420 --> 00:02:36,825
+Em 30 de junho de 2008,
+como já mencionei neste exemplo,
+
+55
+00:02:36,825 --> 00:02:39,665
+é isso que uma função
+FARM_FINGERPRINT faz.
+
+56
+00:02:39,665 --> 00:02:45,180
+Ela pega esta string e a transforma
+em uma sequência de números.
+
+57
+00:02:45,180 --> 00:02:51,025
+É uma função de hash unidirecional
+que podemos usar à vontade.
+
+58
+00:02:51,025 --> 00:02:56,610
+Em todo caso,
+30 de junho de 2018 escrito dessa maneira
+
+59
+00:02:56,610 --> 00:03:00,020
+sempre gerará hash com esse
+valor específico, o que é muito útil.
+
+60
+00:03:00,020 --> 00:03:03,040
+Depois de gerar o hash com
+FARM_FINGERPRINT,
+
+61
+00:03:03,040 --> 00:03:06,770
+a única coisa diferente
+que fiz nas linhas cinco e seis
+
+62
+00:03:06,770 --> 00:03:15,660
+foi colocar um comando para ver se o hash
+pode ser dividido exatamente por 70 ou 700.
+
+63
+00:03:15,660 --> 00:03:18,535
+Basicamente, usamos esse comando
+
+64
+00:03:18,535 --> 00:03:23,970
+para extrair um entre 70 registros
+cujo resto seja zero.
+
+65
+00:03:23,970 --> 00:03:33,510
+Isso forma aquele 1% ou 2% dos 70 milhões
+de voos filtrados no subconjunto de dados.
+
+66
+00:03:33,510 --> 00:03:35,225
+Como você pode ver aqui,
+
+67
+00:03:35,225 --> 00:03:37,945
+temos este campo chamado
+“remainder_divide_by_70”
+
+68
+00:03:37,945 --> 00:03:42,930
+com valor zero exatamente
+em um dentre 70 casos.
+
+69
+00:03:43,610 --> 00:03:46,420
+Também é onde vamos
+configurar o primeiro filtro.
+
+70
+00:03:46,420 --> 00:03:49,270
+Vou mover este limite aqui embaixo
+
+71
+00:03:49,270 --> 00:03:52,100
+e colocá-lo como um filtro no SQL
+
+72
+00:03:52,100 --> 00:03:55,490
+para filtrar os registros
+onde está a cláusula WHERE na linha 15
+
+73
+00:03:55,490 --> 00:03:57,110
+porque o comando está aqui.
+
+74
+00:03:57,110 --> 00:03:59,325
+Vamos selecionar uma dentre 70 linhas
+
+75
+00:03:59,325 --> 00:04:04,640
+com o campo "remainder_divide_by_70"
+exatamente igual a zero.
+
+76
+00:04:04,640 --> 00:04:06,820
+Vou limitar a 10.
+
+77
+00:04:06,820 --> 00:04:08,670
+Você verá que todos os valores
+
+78
+00:04:08,670 --> 00:04:12,220
+na coluna “remaider_divide_by_70”
+serão iguais a zero.
+
+79
+00:04:12,220 --> 00:04:13,460
+E aí está.
+
+80
+00:04:13,460 --> 00:04:22,760
+Conseguimos descartar, ou melhor,
+ignorar cerca de 98% dos dados.
+
+81
+00:04:22,760 --> 00:04:25,885
+Lembre-se daquela primeira imagem,
+
+82
+00:04:25,885 --> 00:04:29,465
+daquele recorte ou da divisão
+do conjunto de dados que vimos na imagem.
+
+83
+00:04:29,465 --> 00:04:37,720
+Agora temos cerca de 800 mil ou 842 mil
+linhas na caixa laranja que vimos há pouco.
+
+84
+00:04:37,720 --> 00:04:39,710
+Esse será o meu conjunto de treinamento.
+
+85
+00:04:39,710 --> 00:04:42,960
+Você precisará criar conjuntos
+de dados de treinamento, de validação
+
+86
+00:04:42,960 --> 00:04:46,330
+e, talvez, de teste.
+Então temos que inserir mais filtros.
+
+87
+00:04:46,330 --> 00:04:49,580
+Não podemos abusar
+de “remainder_divide_by_70”.
+
+88
+00:04:49,580 --> 00:04:52,255
+Então, não podemos inserir
+um “remainder_divide_by_7”
+
+89
+00:04:52,255 --> 00:04:53,570
+porque o valor já é zero,
+
+90
+00:04:53,570 --> 00:04:54,610
+já usamos isso uma vez.
+
+91
+00:04:54,610 --> 00:04:58,140
+É por isso que temos essa
+segunda operação de filtragem
+
+92
+00:04:58,140 --> 00:05:00,835
+em que usamos 700.
+
+93
+00:05:00,835 --> 00:05:03,065
+Usar 70 ou 700 é arbitrário
+
+94
+00:05:03,065 --> 00:05:06,260
+e depende do tamanho
+dos intervalos que você usará
+
+95
+00:05:06,260 --> 00:05:10,575
+para o tamanho das divisões
+do conjunto de dados que você quer criar.
+
+96
+00:05:10,575 --> 00:05:14,510
+Reduzimos o conjunto de dados em 98%.
+
+97
+00:05:14,510 --> 00:05:18,360
+Agora precisamos
+dividir os 800 mil registros restantes,
+
+98
+00:05:18,360 --> 00:05:22,990
+limitando o conjunto
+de dados de teste, o de validação
+
+99
+00:05:22,990 --> 00:05:25,020
+e o nosso conjunto
+de dados de treinamento inicial.
+
+100
+00:05:25,020 --> 00:05:31,070
+Agora, vamos adicionar
+outro filtro na cláusula WHERE.
+
+101
+00:05:34,120 --> 00:05:38,330
+Precisamos ignorar
+50% do conjunto de dados restante.
+
+102
+00:05:38,330 --> 00:05:41,160
+Vou mostrar como fica.
+
+103
+00:05:41,160 --> 00:05:45,380
+Agora estamos usando
+a coluna "remainder_divide_by_700"
+
+104
+00:05:45,380 --> 00:05:52,920
+com um valor que pode variar
+entre 0 e 700 para a segunda operação.
+
+105
+00:05:52,920 --> 00:05:56,340
+Queremos selecionar entre...
+
+106
+00:05:56,340 --> 00:05:59,655
+Pense nos conjuntos entre 0 e 700,
+
+107
+00:05:59,655 --> 00:06:03,635
+o ponto intermediário entre 0 e 700 é 350.
+
+108
+00:06:03,635 --> 00:06:10,005
+Agora temos conjuntos de registros
+entre 0 e 350 e entre 350 e 700.
+
+109
+00:06:10,005 --> 00:06:14,080
+Então, dividimos no meio para ter
+os valores maiores ou iguais a 350.
+
+110
+00:06:14,080 --> 00:06:19,435
+Como você pode ver aqui,
+esse valor de 630 é maior.
+
+111
+00:06:19,435 --> 00:06:21,185
+É por isso que ele foi incluso.
+
+112
+00:06:21,185 --> 00:06:23,295
+Mas também é uma pegadinha.
+
+113
+00:06:23,295 --> 00:06:25,635
+Veja estas datas.
+
+114
+00:06:25,635 --> 00:06:29,720
+São todos voos que aconteceram
+em 13 de julho de 2005.
+
+115
+00:06:29,720 --> 00:06:31,980
+Eles têm o mesmo hash.
+
+116
+00:06:31,980 --> 00:06:35,890
+Uma das questões mais
+interessantes e complicadas
+
+117
+00:06:35,890 --> 00:06:38,225
+de usar algo como isso é que,
+
+118
+00:06:38,225 --> 00:06:41,600
+como mencionei anteriormente na aula,
+se adicionarmos um conjunto de dados
+
+119
+00:06:41,600 --> 00:06:47,880
+que tem apenas duas datas, como se
+houvesse apenas 13 e 14 de julho de 2005,
+
+120
+00:06:47,880 --> 00:06:50,135
+não poderemos fazer uma divisão 80/20
+
+121
+00:06:50,135 --> 00:06:53,520
+porque teremos apenas estes
+dois hashes presentes aqui.
+
+122
+00:06:54,930 --> 00:06:58,780
+Por isso que você precisa de um conjunto
+de dados com ruídos ou bem distribuído
+
+123
+00:06:58,780 --> 00:07:00,485
+antes de fazer as divisões.
+
+124
+00:07:00,485 --> 00:07:03,340
+Os hashes sempre
+retornarão o mesmo valor,
+
+125
+00:07:03,340 --> 00:07:05,370
+diferentemente de uma função RANDOM.
+
+126
+00:07:05,370 --> 00:07:11,175
+A última coisa a fazer é
+dividir ainda mais esse subconjunto
+
+127
+00:07:11,175 --> 00:07:14,850
+para incluir apenas 50% dele,
+
+128
+00:07:14,850 --> 00:07:18,720
+o que representa 25% de todos os dados
+de treinamento reservados para testes.
+
+129
+00:07:18,720 --> 00:07:21,740
+Para fazer isso, trabalhamos
+novamente com o ponto intermediário
+
+130
+00:07:21,740 --> 00:07:24,445
+que, neste caso, pode ser
+qualquer um menor que 525,
+
+131
+00:07:24,445 --> 00:07:30,100
+que é o novo ponto
+intermediário entre 350 e 700.
+
+132
+00:07:30,100 --> 00:07:33,475
+Excluir todo o pedaço abaixo de 525
+
+133
+00:07:33,475 --> 00:07:36,795
+resultará em 25%
+do conjunto de dados original.
+
+134
+00:07:36,795 --> 00:07:39,710
+A parte mais difícil não é a sintaxe do SQL,
+
+135
+00:07:39,710 --> 00:07:43,570
+mas imaginar como
+vamos formar esses limites
+
+136
+00:07:43,570 --> 00:07:47,910
+e que pontos intermediários
+e funções hash usaremos.
+
+137
+00:07:47,910 --> 00:07:52,740
+Vou mostrar apenas os dez registros.
+
+138
+00:07:53,900 --> 00:07:57,780
+Você verá que todos
+eles são divisíveis por 70,
+
+139
+00:07:57,780 --> 00:08:00,060
+então esse campo só terá zeros.
+
+140
+00:08:00,060 --> 00:08:01,740
+E em "remainder_divide_by_700",
+
+141
+00:08:01,740 --> 00:08:05,580
+para o conjunto de dados de testes final,
+
+142
+00:08:05,580 --> 00:08:09,020
+ou seja, os 25% que queremos
+reservar para os testes,
+
+143
+00:08:09,020 --> 00:08:16,635
+todos os valores nesse campo deverão ser
+maiores ou iguais a 350 e menores que 525.
+
+144
+00:08:16,635 --> 00:08:19,080
+Isso é confirmado por este valor de 420.
+
+145
+00:08:19,080 --> 00:08:27,990
+Se você quiser acessar a outra parte,
+os valores acima de 525 até 700,
+
+146
+00:08:27,990 --> 00:08:33,370
+basta inverter este sinal para maior que 525.
+
+147
+00:08:33,370 --> 00:08:38,615
+Depois, salve os resultados em três locais
+diferentes: treinamento, validação e teste,
+
+148
+00:08:38,615 --> 00:08:41,780
+e você estará pronto para importá-los
+e ingeri-los nos modelos de ML.
+
+149
+00:08:41,780 --> 00:08:43,990
+Você praticará muito isso nos laboratórios
+
+150
+00:08:43,990 --> 00:08:46,345
+e verá algumas possíveis dificuldades,
+
+151
+00:08:46,345 --> 00:08:49,585
+mas entenda que esse é
+um conceito básico que você verá.
+
+152
+00:08:49,585 --> 00:08:52,000
+Vamos ao trabalho.

@@ -1,0 +1,82 @@
+Hier ist das Lab 
+zum wiederholbaren Splitting. Wenn Sie sich dieses
+Lab noch nicht angesehen und ausprobiert haben, 
+würde ich es Ihnen empfehlen. Danach können Sie 
+sich diese Komplettlösung ansehen. Los geht's. Wir wollen eine
+Vorhersage der Ankunftverspätung eines Fluges treffen, 
+der beim Abflug eine Verspätung hatte und das entsprechende
+Verhältnis untersuchen, abhängig vom
+Ankunft- und Abflugflughafen. Wenn ein Flugzeug aus New York mit 30 Min.
+Verspätung nach L. A. fliegt, hat es dann bei der Ankunft auch Verspätung? Wir möchten letztendlich 
+diese Beziehung vorhersagen. Um diese Beziehung zu modellieren, benutzen wir diese Formel im Cloud DataLab-Notebook: Die Ankunftverspätung 
+ist gleich dem Parameter Alpha mal die Abflugverspätung. Zum Schätzen von Alpha gibt es diese Formel. Wir versuchen hier, 
+Informationen zur Abflugverspätung 
+einzuspeisen und vorherzusagen, ob diese zu einer 
+Ankunftverspätung führt. Bevor wir mit 
+der Modellierung beginnen, müssen wir die Test- und
+Validierungsumgebungen einrichten. Weil es so ein großes Dataset ist, nutzen wir dazu Google BigQuery, das über Cloud DataLab ausgeführt wird. Wir erstellen jetzt jeweils einen Ankunft- und einen Abflughafen. So erkennen Sie, ob eine starke
+Korrelation für diesen Flughafen bzw. diese Strecke
+besteht und ob der Flug bei der Ankunft verspätet sein wird, wenn er beim Abflug verspätet war. Dabei soll es nur um Denver und Los Angeles gehen. Das ist der Kontext dieses Labs, um diesen Prozess zu verstehen. Wir brauchen dazu ein
+wiederholbares Beispiel-Dataset, das in BigQuery erstellt wurde. Wir gehen zuerst durch,
+was Sie nicht machen sollten. Wenn Sie diesen Code oder 
+naive zufällige Stichproben sehen, können Sie darauf aufmerksam machen, dass, wenn dieser Code ausgeführt wird, nicht unbedingt die gleichen 
+Ergebnisse wie im Kurs herauskommen. Als Erstes steht 
+die naive zufällige Aufteilung an. Wir führen diesen Code aus. Ich habe ihn schon ausgeführt und bemerkt, dass unser Alpha 
+eine hohe Korrellation aufweist, nämlich 0,97 zwischen 
+Denver und Los Angeles. Ich führe das in dieser Zelle aus und rufe den Koeffizienten dafür ab. Die letzten drei Ziffern sind 784. Wenn ich genau das Gleiche mache und es wiederholbar wird, was würde dann passieren? Kommt dabei 784 heraus?
+Nein, sondern 919. Ich habe noch nichts verändert und kein Training oder Ähnliches gemacht, also sollten die 
+Daten eigentlich gleich sein, oder? In Zeile 7 im Code sieht man, dass diese Random-Funktion
+als Split-Feld ausgewählt wird. Jedes Mal, wenn das ausgeführt wird, wendet die Random-Funktion
+eine andere Zahl zwischen 0 und 1 an. Danach teilen Sie auf. 
+Es ist also nicht zwingend wiederholbar. Wir sollten es besser eskalieren. Dieser Random wird 
+mit jeder Zeile in BigQuery ausgeführt. Wir können es etwas
+offensichtlicher machen. Sie nehmen das als Ihren Verlustwert, ein Root Mean Square Error zwischen
+Ihrer Ankunft- und Abflugverspätung, und teilen es in Trainings-
+und Evaluierungs-Datasets auf. Angenommen, es wurde 
+für jeden Eintrag direkt gemacht, d. h. Random ist kleiner als 0,8. Mal sehen, ob der
+gleiche RMSE herauskommt. Ich führe mal diese Codezelle aus. Der RMSE für Training ist
+13,098 und für Evaluierung 13,027. Es ist einigermaßen konsistent, aber mal sehen, ob es wiederholbar ist. Wir brauchen den Wert 13,098 für Training. Wie Sie sehen, 
+haben wir im Training 13,089, also ein anderer Wert
+als vorher, und 13,063. Das heißt: Obwohl wir denselben Code ausführen, erhalten wir verschiedene RMSE-Ergebnisse. Der Grund dafür, was viele von Ihnen 
+sicher schon erkannt haben, ist die Random-
+Funktion, die wir hier verwenden. Selbst die zufällige Aufteilung in 
+Training und Evaluierung funktioniert nicht. Sie denken sich bestimmt, "Wie mache ich das denn jetzt? Wenn ich mit der Random-Funktion
+alle Daten in Training und Evaluierung einrichte und sie korrekt 
+nach 80-20 Prozent aufgeteilt habe, warum verändern sie sich ständig? Wie vermeide ich, dass
+jedes Mal Random ausgeführt wird?" Hier müssen wir unsere Denkweise ändern. Noch ein Beispiel, bei dem das Training
+zuerst mit Random gemacht wird, dann haben Sie eine
+Unterabfrage oder Training und Evaluierung und teilen Training
+und Evaluierung als Sub-Dataset. Dann führen Sie
+diese Abfragen auch aus, aber haben genau das gleiche
+Problem mit einem RMSE von 13,037, der wahrscheinlich 
+anders als bei Ihren Ausführungen ist. Das ist bei der Evaluierung. Ich klicke jetzt hier
+und führe die Zelle aus, die alles Bisherige noch mal ausführt. Wir warten, bis es ausgeführt wurde – wir brauchen 13,037. Hier haben wir 13,087. Der Alpha ist anders, 
+ich glaube, er war vorher 0,977. Sie sehen, wenn Sie
+Random im BigQuery-Code nutzen und ihn ausführen, 
+verändern sich Ihre Daten automatisch. Welche Alternative zu Random haben wir? Statt Random zu verwenden, verwenden wir die Hash-Funktion, die wir vorhin vorgeführt haben. Wir möchten die Aufteilung innerhalb der WHERE-Klausel machen, statt
+eine Random-Funktion kleiner als 0,8. Jetzt verwenden wir eine Hash-Funktion für das Datum. Das Datum verändert sich nicht. Es bleibt bei dem Wert
+aus dem Trainings-Dataset. Suchen Sie nach dem Rest. Wenn das in eine bestimmte Kategorie fällt – wir nehmen hier
+irgendeinen Wert kleiner als 8 – stecken wir ihn in das Trainings-Bucket. Das ist eine 80-Prozent-Aufteilung, die Sie wahrscheinlich 
+für das Training verwenden werden. Wir haben den Wert 0,975. Wenn wir bis ans Ende gehen, ist er 403. Wir führen das weiter aus und sehen, was dabei herauskommt. Ganz am Ende kommt noch mal 403 heraus. Es ist also ein
+wiederholbarer Vorgang. Intuitiv ergibt das auch Sinn. Es gibt keine Funktionen, die sich im Hintergrund verändern, 
+während Sie den Code ausführen. Wir können dazu jetzt mehr SQL hinzufügen 
+und den RMSE berechnen. Root Mean Squared Error statt SQL - Sie nehmen nur den
+Mittelwert der vorherigen Funktion und bilden am obersten Punkt die Wurzel. Beim Trainings-Dataset
+ergibt das 13,16072. 13,160712 ist der gleiche Wert, der bei jeder Ausführung
+herauskommt. Was lernen wir daraus? Jedes Mal, wenn Sie eine
+wiederholbare Datenstichprobe erstellen, müssen Sie eine Hash-Funktion 
+statt eine naive Stichprobe verwenden. Wenn Sie so wie hier vorgehen, was ein bisschen anspruchsvoller ist, aber genau so risikoreich als wenn Sie Ihre Daten innerhalb von 
+Training und Evaluierung aufteilen. Wenn Sie das herausarbeiten oder erstellen möchten, fragen Sie sich vielleicht, ob Sie es einmal ausführen und die Ergebnisse in zwei
+getrennten Tabellen speichern und diese direkt verwenden. Das ist super, weil Sie das nur einmal gemacht und 
+eine 80-20-Aufteilung erstellt haben. Wenn Sie in Zukunft mehr Daten haben? Wenn jemand Ihre Analyse im 
+ursprünglichen Dataset wiederholen möchte? Nur weil Sie diesen einmaligen 
+hartcodierten Daten-Split von 80-20 erstellt haben, lässt sich das 
+vielleicht in Zukunft wiederholen, besonders wenn Ihr 
+Dataset wächst oder schrumpft oder Sie einen anderen 
+Split als 80-20 möchten. Es ist viel flexibler und wiederholbarer, ein Feld
+zu verwenden, um die Daten zu hashen. Das sehen Sie hier. Machen Sie sich mit der Arbeit hiermit vertraut. Es ist ein notwendiger Schritt, bevor Sie Machine 
+Learning-Modelle ausführen, Sie erstellen diese Daten
+Buckets, von denen das Modell lernt, validiert und letztlich diese Ja-oder-Nein-Entscheidung mit dem Test-Dataset trifft, 
+bevor das Modell in die Produktion geht. Am Ende gehen wir noch etwas Material
+durch und arbeiten dann weiter an einem End-to-End-Lab, 
+um Taxipreise vorherzusagen.

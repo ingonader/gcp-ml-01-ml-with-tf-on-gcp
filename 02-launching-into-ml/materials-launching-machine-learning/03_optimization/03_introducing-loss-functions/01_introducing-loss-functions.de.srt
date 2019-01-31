@@ -1,0 +1,606 @@
+1
+00:00:00,680 --> 00:00:02,490
+Im vorigen Teil haben wir
+
+2
+00:00:02,490 --> 00:00:06,545
+Modelle als mathematische Funktionen mit 
+Parametern und Hyperparametern definiert
+
+3
+00:00:06,545 --> 00:00:09,225
+und die Parameter für
+lineare Modelle vorgestellt.
+
+4
+00:00:09,225 --> 00:00:11,720
+Dann haben wir besprochen,
+dass analytische Methoden
+
+5
+00:00:11,720 --> 00:00:15,035
+zum Finden der besten Reihe von
+Modellparametern nicht skalierbar sind
+
+6
+00:00:15,035 --> 00:00:16,945
+und wie wir uns die Parameteroptimierung
+
+7
+00:00:16,945 --> 00:00:19,155
+als Suche im
+Parameter-Raum vorstellen können.
+
+8
+00:00:19,155 --> 00:00:21,310
+Doch zum Vergleichen
+von Punkten untereinander
+
+9
+00:00:21,310 --> 00:00:23,580
+benötigen wir ein Maß.
+
+10
+00:00:23,580 --> 00:00:27,730
+In diesem Teil sprechen wir über
+Verlustfunktionen und wie sie anhand
+
+11
+00:00:27,730 --> 00:00:30,640
+der Qualität von Vorhersagen
+für eine Gruppe von Datenpunkten
+
+12
+00:00:30,640 --> 00:00:33,095
+aus unserem
+Trainingssatz eine einzelne Zahl bilden,
+
+13
+00:00:33,095 --> 00:00:37,085
+mit der die Qualität der aktuellen
+Modellparameter eingeschätzt werden kann.
+
+14
+00:00:37,085 --> 00:00:40,955
+Ein Maß für die Qualität der Vorhersage
+an einem einzelnen Punkt ist einfach
+
+15
+00:00:40,955 --> 00:00:45,225
+die Zeichen-Abweichung zwischen der
+Vorhersage und dem tatsächlichen Wert.
+
+16
+00:00:45,225 --> 00:00:48,335
+Diese Abweichung nennt man den Fehler.
+
+17
+00:00:49,495 --> 00:00:52,630
+Wie können wir ein Reihe
+von Fehlerwerten zusammenführen?
+
+18
+00:00:52,630 --> 00:00:56,070
+Die einfachste Möglichkeit
+besteht darin, sie zu summieren.
+
+19
+00:00:56,070 --> 00:01:00,005
+Bei Verwendung der Summenfunktion
+würde das resultierende Modell Fehler mit
+
+20
+00:01:00,005 --> 00:01:04,584
+gegensätzlichen Vorzeichen allerdings
+als sich gegenseitig aufhebend behandeln.
+
+21
+00:01:04,584 --> 00:01:08,200
+Unser Modell muss aber
+gegensätzliche Ergebnisse berücksichtigen
+
+22
+00:01:08,200 --> 00:01:10,020
+und es ist nicht so, dass ein Modell,
+
+23
+00:01:10,020 --> 00:01:13,165
+das die Differenz zwischen
+positiven und negativen Fehlern aufhebt,
+
+24
+00:01:13,185 --> 00:01:14,775
+die perfekte Lösung bietet.
+
+25
+00:01:14,775 --> 00:01:17,860
+Eine perfekte Lösung wäre
+ein Modell, in dem die Vorhersagen
+
+26
+00:01:17,860 --> 00:01:21,505
+dem Label für alle Punkte im Datensatz
+entsprechen – nicht ein Modell, das
+
+27
+00:01:21,505 --> 00:01:24,020
+Fehler mit unterschiedlichen Vorzeichen
+
+28
+00:01:24,020 --> 00:01:25,720
+einander aufheben lässt.
+
+29
+00:01:25,720 --> 00:01:29,610
+Die Summe der Absolutwerte des Fehlers
+mag als sinnvolle Alternative erscheinen,
+
+30
+00:01:29,610 --> 00:01:32,995
+doch auch bei dieser Methode der
+Datenzusammenstellung gibt es Probleme,
+
+31
+00:01:32,995 --> 00:01:34,985
+die wir in Kürze besprechen werden.
+
+32
+00:01:35,361 --> 00:01:39,715
+Stattdessen wird oft der
+mittlere quadratische Fehler verwendet.
+
+33
+00:01:39,715 --> 00:01:41,240
+Der mittlere quadratische Fehler
+
+34
+00:01:41,240 --> 00:01:45,505
+oder MQF wird anhand der verschiedenen
+Fehler aus unserem Datensatz berechnet.
+
+35
+00:01:45,505 --> 00:01:48,345
+Man bildet ihr Quadrat,
+um negative Zahlen zu eliminieren,
+
+36
+00:01:48,345 --> 00:01:51,110
+und berechnet 
+den Durchschnitt der Quadrate.
+
+37
+00:01:51,110 --> 00:01:54,145
+Der MQF ist 
+eine absolut stichhaltige Verlustfunktion,
+
+38
+00:01:54,145 --> 00:01:56,005
+es gibt aber ein Problem.
+
+39
+00:01:56,005 --> 00:01:58,420
+Die Fehler sind zwar in Pfund,
+
+40
+00:01:58,420 --> 00:01:59,840
+Kilometern oder Dollar,
+
+41
+00:01:59,840 --> 00:02:02,180
+der quadratische Fehler ist aber in Pfund,
+
+42
+00:02:02,180 --> 00:02:04,435
+Kilometern oder Dollar zum Quadrat.
+
+43
+00:02:04,435 --> 00:02:07,920
+Das kann die
+Interpretation des MQF erschweren.
+
+44
+00:02:07,920 --> 00:02:11,340
+Daher wird oft
+die Quadratwurzel des MQF gezogen,
+
+45
+00:02:11,340 --> 00:02:13,755
+um nachvollziehbare Einheiten zu erhalten.
+
+46
+00:02:14,075 --> 00:02:16,895
+Die Wurzel des MQF
+wird mit RMSE abgekürzt.
+
+47
+00:02:17,555 --> 00:02:19,635
+Je größer die Wurzel des MQF,
+
+48
+00:02:19,635 --> 00:02:21,880
+desto schlechter
+die Qualität der Vorhersage.
+
+49
+00:02:21,880 --> 00:02:24,570
+Deshalb möchten wir
+diesen Wert minimieren.
+
+50
+00:02:25,730 --> 00:02:27,690
+Für die Notation wird hier ein ^
+
+51
+00:02:27,690 --> 00:02:31,680
+über dem Y verwendet, das
+die Vorhersage unseres Modells darstellt,
+
+52
+00:02:31,680 --> 00:02:33,995
+und ein normales Y für das Label.
+
+53
+00:02:37,025 --> 00:02:40,855
+Nun haben wir eine Metrik zum Vergleichen
+von zwei Punkten im Parameter-Raum.
+
+54
+00:02:40,855 --> 00:02:45,840
+Zur Erinnerung: So werden die aktuellen
+Parameterwerte im linearen Modell codiert.
+
+55
+00:02:46,450 --> 00:02:49,740
+Sehen Sie sich diese beiden
+Punktwolken und Regressionslinien für
+
+56
+00:02:49,740 --> 00:02:53,765
+das Gewicht des Babys in Abhängigkeit vom
+Alter der Mutter für Mütter über 39 an.
+
+57
+00:02:53,965 --> 00:02:56,220
+Es kann sehr schwer
+sein, visuell festzustellen,
+
+58
+00:02:56,220 --> 00:02:59,135
+welche Linien für
+die zugrunde liegenden Daten besser passt.
+
+59
+00:02:59,135 --> 00:03:03,880
+Hier helfen unsere Verlustmessgrößen,
+zu bestimmen, welches Modell besser ist.
+
+60
+00:03:05,440 --> 00:03:08,545
+Das Modell links hat
+eine MQF-Wurzel von 0,145
+
+61
+00:03:08,545 --> 00:03:12,730
+und das Modell rechts hat
+eine MQF-Wurzel von 0,149.
+
+62
+00:03:12,840 --> 00:03:15,115
+Die Verlustunfunktionen
+deuten also darauf hin,
+
+63
+00:03:15,115 --> 00:03:16,950
+dass die Werte für Gewichtung und Bias
+
+64
+00:03:16,950 --> 00:03:19,795
+links besser sind als rechts.
+
+65
+00:03:19,795 --> 00:03:23,210
+Die MQF-Wurzel funktioniert zwar
+für lineare Regressionsprobleme,
+
+66
+00:03:23,210 --> 00:03:26,285
+aber nicht als
+Verlustfunktion für die Klassifikation.
+
+67
+00:03:26,285 --> 00:03:31,315
+Bei Klassifikationsproblemen ist
+das Label eine Kategorievariable und
+
+68
+00:03:31,315 --> 00:03:34,560
+das Problem bei der Verwendung
+der MQF-Wurzel für die Klassifikation
+
+69
+00:03:34,560 --> 00:03:38,975
+hängt mit der Darstellung dieser
+Kategorievariablen im Modell zusammen.
+
+70
+00:03:38,975 --> 00:03:40,870
+Wie bereits erwähnt,
+
+71
+00:03:40,870 --> 00:03:45,040
+werden Kategorievariablen oft
+als binäre Ganzzahlen dargestellt.
+
+72
+00:03:45,390 --> 00:03:48,335
+Warum sich daraus ein Problem ergibt,
+
+73
+00:03:48,335 --> 00:03:50,865
+wird aus den
+dargestellten Verlustkurven ersichtlich.
+
+74
+00:03:50,865 --> 00:03:54,410
+Die x-Achse steht für die Vorhersage und
+
+75
+00:03:54,410 --> 00:03:59,030
+die y-Achse für den Verlust
+in Anbetracht der jeweiligen Vorhersage.
+
+76
+00:03:59,030 --> 00:04:01,270
+Das Label ist farblich gekennzeichnet.
+
+77
+00:04:01,270 --> 00:04:03,625
+Bei grün war das Label eins
+
+78
+00:04:03,625 --> 00:04:06,465
+und bei blau war das Label null.
+
+79
+00:04:07,025 --> 00:04:09,590
+Was stimmt mit dieser Kurve nicht?
+
+80
+00:04:10,200 --> 00:04:14,140
+Das Problem ist, dass wir erwarten würden,
+dass wirklich schlechte Vorhersagen
+
+81
+00:04:14,140 --> 00:04:17,849
+viel stärker sanktioniert
+werden, und das geschieht hier nicht.
+
+82
+00:04:17,849 --> 00:04:19,920
+Beachten Sie,
+dass eine Vorhersage von eins,
+
+83
+00:04:19,920 --> 00:04:21,165
+wenn das Ziel null ist,
+
+84
+00:04:21,165 --> 00:04:25,835
+rund dreimal schlechter ist als eine
+Vorhersage von 0,5 mit dem gleichen Ziel.
+
+85
+00:04:25,835 --> 00:04:28,215
+Wir benötigen also
+eine andere Verlustfunktion
+
+86
+00:04:28,215 --> 00:04:29,935
+anstelle der MQF-Wurzel.
+
+87
+00:04:29,935 --> 00:04:34,440
+Eine, die entsprechend unseren Erwartungen
+für Klassifikationsprobleme sanktioniert.
+
+88
+00:04:36,780 --> 00:04:39,940
+Eine der meistverwendeten
+Verlustfunktionen für die Klassifikation
+
+89
+00:04:39,940 --> 00:04:43,425
+ist die Kreuzentropie
+(oder der logarithmische Verlust).
+
+90
+00:04:43,425 --> 00:04:46,615
+Hier haben wir eine ähnliche
+Grafik wie auf der letzten Folie,
+
+91
+00:04:46,615 --> 00:04:49,570
+allerdings wird anstelle des
+Verlusts auf Basis der MQF-Wurzel
+
+92
+00:04:49,570 --> 00:04:53,160
+der Wert einer neuen Verlustfunktion
+dargestellt: der Kreuzentropie.
+
+93
+00:04:53,160 --> 00:04:54,770
+Anders als bei der MQF-Wurzel
+
+94
+00:04:54,770 --> 00:04:58,340
+werden schlechte Vorhersagen bei
+der Kreuzentropie sehr stark sanktioniert,
+
+95
+00:04:58,340 --> 00:05:00,535
+sogar in diesem begrenzten Bereich.
+
+96
+00:05:00,535 --> 00:05:04,630
+Sehen wir uns ein Beispiel an, um besser
+zu verstehen, wie die Formel funktioniert.
+
+97
+00:05:04,630 --> 00:05:08,325
+Die Formel für die Kreuzentropie läuft
+auf zwei unterschiedliche Terme hinaus.
+
+98
+00:05:08,325 --> 00:05:12,190
+Nur einer davon ist für den Verlust
+für einen bestimmten Datenpunkt relevant.
+
+99
+00:05:12,190 --> 00:05:15,665
+Der erste Term wird
+bei positiven Beispielen einbezogen,
+
+100
+00:05:15,665 --> 00:05:19,320
+also Beispiele,
+bei denen das Label Y eins ist.
+
+101
+00:05:19,320 --> 00:05:23,100
+Der zweite Term wird
+einbezogen, wenn das Label null ist.
+
+102
+00:05:25,860 --> 00:05:28,450
+Hier haben wir eine Tabelle mit den Labels
+
+103
+00:05:28,450 --> 00:05:32,620
+und den Vorhersagen für zwei Bilder
+in einer Bildklassifikationsaufgabe.
+
+104
+00:05:32,620 --> 00:05:36,570
+Das Label codiert, ob das Bild
+ein menschliches Gesicht darstellt.
+
+105
+00:05:38,130 --> 00:05:40,695
+Das Modell scheint gut zu funktionieren.
+
+106
+00:05:40,695 --> 00:05:43,720
+Die Vorhersage ist für das
+Beispiel oben bedeutend höher
+
+107
+00:05:43,720 --> 00:05:46,185
+als für das Beispiel unten.
+
+108
+00:05:46,185 --> 00:05:49,780
+Sehen wir uns das Prinzip der Funktion an.
+
+109
+00:05:51,280 --> 00:05:53,800
+Die Verlustfunktion ist hier so aufgebaut,
+
+110
+00:05:53,800 --> 00:05:56,135
+dass der negative Term
+aus dem ersten Beispiel
+
+111
+00:05:56,135 --> 00:05:59,765
+und der positive Term
+aus dem zweiten Beispiel beide wegfallen.
+
+112
+00:05:59,765 --> 00:06:03,115
+In Anbetracht von
+Vorhersagen von 0,7 und 0,2
+
+113
+00:06:03,115 --> 00:06:05,600
+für zwei Datenpunkte
+mit Label eins und null
+
+114
+00:06:05,600 --> 00:06:07,790
+ist der Kreuzentropieverlust im Grunde
+
+115
+00:06:07,790 --> 00:06:09,740
+der positive Term
+für den ersten Datenpunkt
+
+116
+00:06:09,740 --> 00:06:12,110
+plus der negative Term
+für den zweiten Datenpunkt
+
+117
+00:06:12,110 --> 00:06:14,715
+mal -0,5.
+
+118
+00:06:14,715 --> 00:06:17,420
+Das Ergebnis ist 0,13.
+
+119
+00:06:17,420 --> 00:06:20,650
+Was passiert, wenn unser
+Modell keine gute Vorhersage liefert?
+
+120
+00:06:20,650 --> 00:06:24,840
+Hier scheint das negative Beispiel
+falsch klassifiziert worden zu sein,
+
+121
+00:06:24,840 --> 00:06:27,470
+was eine Steigerung
+des Verlusts zur Folge hat.
+
+122
+00:06:27,500 --> 00:06:28,740
+Und das ist auch sinnvoll,
+
+123
+00:06:28,740 --> 00:06:31,395
+da der Verlust das ist,
+was wir minimieren möchten.
+
+124
+00:06:33,205 --> 00:06:36,495
+Wir können jetzt bei Verwendung
+der MQF-Wurzel für Regression oder
+
+125
+00:06:36,495 --> 00:06:40,645
+der Kreuzentropie für Klassifikation zwei
+Punkte im Parameter-Raum vergleichen.
+
+126
+00:06:41,325 --> 00:06:42,987
+Unser Ziel ist es aber,
+
+127
+00:06:43,270 --> 00:06:47,215
+die beste Reihe von Parametern oder den
+besten Punkt im Parameter-Raum zu finden.
+
+128
+00:06:47,797 --> 00:06:50,117
+Wie können wir unser
+Wissen über das Vergleichen
+
+129
+00:06:50,117 --> 00:06:53,065
+von zwei Reihen von Parametern
+in eine Suchstrategie umsetzen?
+
+130
+00:06:53,065 --> 00:06:54,980
+Damit befassen wir uns im nächsten Teil.

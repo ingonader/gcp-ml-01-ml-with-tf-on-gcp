@@ -1,0 +1,30 @@
+Reden wir ein paar Minuten
+über das Monitoring von Jobs. Nach dem Senden eines Jobs zur Ausführung
+auf der Cloud Machine Learning Engine gibt es verschiedene 
+Möglichkeiten zur Prüfung. Am einfachsten ist es,
+den aktuellen Status abzurufen. Sie erfahren, ob der Job ausstehend ist, ausgeführt wird oder abgeschlossen ist. Nach Ausführungsstart können Sie
+die letzten Log-Einträge untersuchen. Auch das geht mit dem Befehl "gcloud". Wenn Sie viele Jobs
+zur parallelen Ausführung senden, probieren Sie die Listen-
+und Filterfunktionen von gcloud aus. Über die Webkonsole der GCP
+können Sie Ihre Jobs gut überwachen. Sie sehen genau,
+wie sie aufgerufen wurden, können Logs prüfen und sehen,
+wie viel CPU und Speicher sie verwenden. Log-Einträge helfen vielleicht, technische Fehler
+wie Ausnahmen zu beheben, sind aber nicht das richtige Tool,
+um die ML-Leistung zu untersuchen. TensorBoard ist dagegen ein tolles Tool. Lassen Sie Ihre Jobs in Cloud Storage
+zusammenfassende Daten speichern. Geben Sie dann dieses Verzeichnis
+einfach beim Start von TensorBoard an. Sie können sogar
+mehrere Jobs pro Ordner überwachen. Sehen wir jetzt einmal,
+was wir mit unserem Modell machen können. Nach Abschluss unseres Training-Jobs haben wir ein TensorFlow-Modell für Vorhersagen. Cloud ML Engine
+bietet dazu eine gute Infrastruktur. CMLE erstellt aus Ihrem Trainingsmodell
+eine einsatzbereite Web-App für Sie und bietet einen Batch-Dienst für Ihre
+weniger latenzabhängigen Vorhersagen. Da beide REST-APIs sind, können Sie skalierbare, sichere Inferenzen aus der für den jeweiligen 
+Client gewünschten Sprache erstellen. Um Ihr TF-Modellartefakt
+zur Bereitstellung an die Cloud zu senden, müssen wir als Ressource
+eine CMLE-Modellinversion erstellen. Ihre einzelne TF-Datei
+mit trainiertem Modell entspricht einer bestimmten Version. Auf CMLE ist ein Modell
+eine Gruppe dieser Versionen mit einer Standardversion. Durch diese zusätzliche Abstraktionsebene und Gruppierung
+können wir Traffic einer TF-Modellversion nahtlos zur nächsten migrieren. Dazu ändern wir nur
+die Standardversion des Modells. Hier ist ein einfaches Beispiel für die Verwendung des bereitgestellten
+Vorhersagemodells über einen REST-Aufruf. Die CMLE-Onlinevorhersage
+ist ein vollständig serverloses System. Sie müssen sich daher
+nicht um Ressourcenzuweisungen kümmern. Ressourcen werden einfach skaliert.

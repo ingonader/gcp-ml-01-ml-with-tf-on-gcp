@@ -1,0 +1,116 @@
+Veamos un poco
+de la historia del aprendizaje automático para ver su evolución en el tiempo
+en las redes neuronales de aprendizaje profundo
+que son tan populares hoy. Observarán que,
+a pesar de que las redes neuronales estuvieron de moda de manera
+intermitente en las últimas décadas los trucos y técnicas
+que se desarrollaron para otros algoritmos se pueden aplicar a estas redes,
+lo que las hace muy poderosas. La regresión lineal se inventó
+para predecir el movimiento de los planetas y el tamaño
+de las vainas según sus progenitores. Sir Francis Galton fue pionero
+en el uso de los métodos estadísticos para medir fenómenos naturales. Buscaba datos sobre los tamaños
+relativos de los progenitores y los hijos en varias especies,
+incluidas las arvejillas. Observó un hecho muy extraño
+que no era obvio de inmediato. Un progenitor más grande que el promedio
+tiende a producir hijos más grandes que el promedio,
+pero ¿cuánto más grande es el hijo con respecto al promedio
+de los otros hijos de esa generación? Resultó que esta proporción
+para los hijos es menor que la proporción
+correspondiente para el progenitor. Por ejemplo, si el tamaño del progenitor
+fuera 1.5 desviaciones estándar de la media en su propia generación;
+entonces, predeciría que el tamaño del hijo sería menor que las 1.5
+desviaciones estándar de la media en su grupo. Decimos que de generación
+en generación, la naturaleza es regresiva o regresa a la media,
+por eso el nombre de "regresión lineal". Este gráfico de 1877
+es la primera regresión lineal realizada. Genial. El poder de computación
+en el siglo XIX era bastante limitado y no se imaginaban lo bien
+que esto funcionaría cuando hubiera grandes conjuntos de datos disponibles. Había una forma de solución cerrada
+para resolver las regresiones lineales pero los métodos de descenso
+de gradientes también se pueden usar cada uno con sus ventajas y desventajas,
+según el conjunto de datos. Veamos con detalle
+cómo funciona una regresión lineal. Tratemos de entender sus motivaciones. Comencemos con una ecuación lineal
+que, según nuestra hipótesis, describe nuestro sistema,
+mediante la multiplicación de varios pesos por los vectores
+de nuestros atributos observados y, luego, lo sumamos todo. Podemos representarlo
+en la primera ecuación para cada ejemplo en nuestro conjunto de datos:
+y = w0x0 + w1x1 + w2x2 y así para cada atributo
+en nuestro modelo. Es decir, aplicamos esta ecuación
+a cada fila en nuestro conjunto de datos en la que los valores
+de los pesos son fijos y los valores de los atributos
+pertenecen a cada columna asociada en nuestro conjunto de datos de AA. Esto se podría condensar muy bien
+en la siguiente ecuación de la matriz y = Xw Esta ecuación
+de la hipótesis es muy importante no solo para la regresión lineal,
+sino también para otros modelos de AA como las redes neuronales profundas,
+de las que hablaremos más tarde. Pero ¿cómo puedo determinar
+si los pesos que elegí realizan predicciones buenas o malas? La respuesta es que necesitamos
+crear una función de pérdida que es, en esencia,
+simplemente la función objetivo que queremos optimizar. Como explicamos antes, por lo general,
+en los problemas de regresión la función de pérdida
+es el error cuadrático medio que se muestra
+en forma de matriz en esta ecuación. Quité la constante, ya que desaparecerá
+más tarde en la derivación. Primero, encontramos la diferencia
+entre el valor real de las etiquetas y el valor pronosticado
+de nuestra etiqueta, ŷ, que es simplemente Xw. Pero recuerden que mi objetivo
+es reducir la pérdida lo más posible. Debo encontrar
+una manera de minimizarla con respecto a los pesos. Para hacerlo, tomo la derivada
+con respecto de los pesos en el caso de una dimensión
+o, de manera general, el gradiente cuando tengo varias características. Puedo usar esto
+para encontrar la mínima global. Esta ecuación,
+en la que no haré derivación proporciona una forma cerrada de solución
+analítica para la regresión lineal. Es decir, si incluyen los valores
+de X y Y en esta fórmula, obtendrán los valores de los pesos. Pero esto no es muy práctico,
+hay problemas con la inversa. Primero, suponemos
+que la matriz de Gram, X transpuesta de X, no es singular, es decir,
+que todas las columnas de nuestra matriz de atributos X
+son linealmente independientes. Pero en conjuntos de datos del mundo real,
+habrá datos duplicados o casi duplicados. El mismo cliente
+que compra el mismo producto otra vez, dos fotos del mismo amanecer
+tomadas con segundos de diferencia. Incluso si la matriz de Gram
+es linealmente independiente técnicamente, igual podría estar mal condicionada y, por ende,
+causar que la matriz no sea invertible y causarnos problemas. La inversa también tiene una complejidad
+de tiempo de ON al cubo con el algoritmo Naïve pero incluso con estos algoritmos
+sofisticados, no es mejor. Además, cada uno incluye
+sus propios problemas numéricos. Lo mismo pasa incluso
+con la multiplicación para crear la matriz de Gram. En vez, podríamos resolver
+las ecuaciones normales con lo que se conoce como Cholesky
+o una descomposición QR. Para ON al cubo o incluso ON a la 2.5,
+cuando N es igual a 10,000 o más, el algoritmo puede ser muy lento. Entonces, sí.
+Se puede resolver con los pesos de la ecuación normal
+pero dependerá de sus datos, su modelo, qué algoritmos de matriz
+de algebra lineal están usando, etcétera. Afortunadamente, existe el algoritmo
+de optimización del descenso de gradientes que es, primero, menos costoso
+en términos de computación en tiempo y memoria; segundo,
+más práctico para la generalización leve y tercero, lo suficientemente genérico
+para la mayoría de los problemas. En vez, en el descenso de gradientes
+tenemos nuestra función de pérdida o, de manera general,
+nuestra función objetivo que está parametrizada
+por los pesos de nuestro modelo. En este espacio, hay picos y valles,
+al igual que en la Tierra. No obstante, en muchos
+problemas de aprendizaje automático habrá muchas más dimensiones
+en el mundo espacial en 3D en el que vivimos. Ya que este
+es un descenso de gradientes, minimización
+en el gradiente, no ascenso, que en su lugar sería maximización, queremos atravesar
+la hipersuperficie de pérdida para encontrar la mínima global. Es decir,
+esperamos encontrar el valle más bajo sin importar dónde comencemos
+en la hipersuperficie. Esto se puede hacer
+si encontramos el gradiente de la función de pérdida
+y lo multiplicamos por un hiperparámetro, la tasa de aprendizaje,
+y luego restamos ese valor de los pesos actuales. Este proceso se repite
+hasta la convergencia. Elegir la tasa de aprendizaje óptima
+y esperar muchas repeticiones podría provocar que elijan
+la ecuación normal en su lugar, si la cantidad
+de atributos es pequeña y no hay problemas
+de colinealidad, etcétera. O agregar un optimizador
+de descenso de gradientes, como el momentum, o mediante
+el descenso de la tasa de aprendizaje. Hablaremos más sobre el descenso
+de gradientes en el próximo módulo. ¿Qué hiperparámetro
+ayuda a determinar el tamaño del paso del descenso
+de gradientes en la hipersuperficie para acelerar la convergencia? La respuesta correcta es
+B. La tasa de aprendizaje. Esta tasa, junto con otros
+hiperparámetros que veremos en próximos módulos,
+ayuda a determinar el tamaño del paso en el descenso de gradientes. Si es muy bajo, el descenso
+de gradientes toma demasiado tiempo para llegar a la convergencia.
+Si es muy alto, podría desviarse y aumentar mucho más la pérdida. Las otras tres respuestas
+tienen que ver con la colinealidad y el condicionamiento,
+que no deben preocuparnos en el descenso de gradientes,
+a diferencia de la ecuación normal.

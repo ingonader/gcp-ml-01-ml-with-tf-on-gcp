@@ -1,0 +1,39 @@
+Veamos el código de la diapositiva. A primera vista, es muy parecido a NumPy. Queremos sumar dos tensores, a y b. Así que escribimos tf.add(a, b). El resultado es el tensor c. A diferencia del código de Python típico ejecutar tf.add en realidad no lo ejecuta solo compila el DAG. En el DAG, el grafo acíclico dirigido a, b y c, son tensores y add es una operación. Para ejecutar el código es decir, ejecutar este DAG debe ejecutarlo pero debe hacerlo
+como parte de lo que se llama una sesión. Digamos que quiere el valor de c y le pide a la sesión "Sesión, evalúa c por mí". Eso es lo que ejecuta el DAG y entonces recibe
+un arreglo numérico tradicional en Python que contiene los valores de c. Programar en TensorFlow
+implica programar un DAG. Así que hay dos pasos. Primero, crear el grafo. Segundo, ejecutarlo. La definición del grafo es independiente
+del bucle de entrenamiento porque este es un modelo
+de evaluación reactiva. Reduce los cambios de contexto
+de Python a C++ lo cual permite
+que el cálculo sea muy eficiente. Conceptualmente
+es como escribir un programa compilarlo
+y luego ejecutarlo en algunos datos. Pero esa analogía
+no es realmente apropiada. No hay una fase explícita de compilación. Observe que c, luego de llamar a tf.add no tiene los valores reales. Deberá evaluar c en el contexto de una sesión de TensorFlow para obtener un arreglo de valores de NumPy,
+numpy_c. Como dijimos,
+TensorFlow usa evaluación reactiva. Escribe un DAG y luego lo ejecuta
+en el contexto de una sesión para obtener resultados. Hay otro modo
+en que puede ejecutar TensorFlow. Se llama tf.eager. En tf.eager,
+la evaluación es inmediata y no es reactiva. Pero el modo proactivo
+no suele usarse en programas de producción Normalmente se usa
+solo para el desarrollo. Veremos tf.eager
+un poco más adelante en el curso. Pero, en general, nos enfocaremos
+en el paradigma de la evaluación reactiva. Casi todo el código que escribiremos
+y ejecutaremos en la producción usará el modo de evaluación reactiva. En NumPy que se usa para escribir
+la mayoría del software numérico de Python a y b son arreglos de NumPy. NumPy logra su velocidad
+porque se implementa en c. Cuando llama a np.add,
+la suma se hace en c. Pero se hace cuando la CPU
+ejecuta el código np.add(a, b) y el arreglo de NumPy c
+se completa con las sumas. Cuando ejecuta print c,
+obtiene 8, 2 y 10. 8 es la suma de 5 y 3. 3 y -1 sumados dan 2, etcétera. Lo importante
+es que np.add se evalúa de inmediato. A diferencia de NumPy en TensorFlow
+c no contiene los valores reales. En su lugar,
+c es un tensor y tenemos que evaluar c en el contexto de una sesión de TensorFlow para obtener un arreglo de valores de NumPy el resultado. Así que cuando el CPU o GPU
+o cualquier otro hardware evalúa tf.add(a, b) se crea un tensor
+en el grafo acíclico dirigido, el DAG. Pero la suma en sí no se ejecuta
+hasta que llame a sess.run. Si llamamos a print c lo que se imprime en la primera casilla es la salida del depurador
+de la clase del tensor. Incluye un nombre único
+asignado por el sistema para el nodo del DAG en este caso, Add_7 con la forma y el tipo de dato del valor
+que se mostrará cuando se ejecute el DAG. Luego que se ejecuta la sesión y c se evalúa en el contexto de la sesión podemos usar print result
+y obtener 8, 2 y 10, igual que en NumPy. Así que hay dos etapas. Una etapa de compilación
+y otra de ejecución. ¿Por qué? ¿Por qué TensorFlow
+usa la evaluación reactiva? Lo veremos en la siguiente lección.

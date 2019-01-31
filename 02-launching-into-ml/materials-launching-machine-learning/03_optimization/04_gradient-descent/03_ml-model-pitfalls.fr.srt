@@ -1,0 +1,609 @@
+1
+00:00:01,630 --> 00:00:04,225
+Dans la pratique, il arrive couramment
+
+2
+00:00:04,225 --> 00:00:06,795
+que l'on réutilise le code
+d'un modèle précédent
+
+3
+00:00:06,795 --> 00:00:09,287
+en pensant qu'il va produire
+le même résultat,
+
+4
+00:00:09,287 --> 00:00:11,680
+et que l'on constate
+que tel n'est pas le cas.
+
+5
+00:00:11,680 --> 00:00:15,795
+Les programmeurs ont souvent pour habitude
+d'utiliser des configurations déterministes.
+
+6
+00:00:15,795 --> 00:00:18,355
+En ML, ceci n'est pas toujours adapté.
+
+7
+00:00:18,355 --> 00:00:21,540
+Pour de nombreux modèles,
+si vous procédez à un second entraînement,
+
+8
+00:00:21,540 --> 00:00:24,345
+et ce même avec des réglages
+d'hyperparamètres identiques,
+
+9
+00:00:24,345 --> 00:00:28,025
+les réglages de paramètres que vous obtenez
+peuvent être très différents.
+
+10
+00:00:28,025 --> 00:00:29,880
+Au début, cela peut être déconcertant.
+
+11
+00:00:29,880 --> 00:00:32,790
+Or, nous recherchons bien le meilleur
+ensemble de paramètres.
+
+12
+00:00:32,790 --> 00:00:35,270
+Est-ce la descente de gradient qui
+ne fonctionne pas,
+
+13
+00:00:35,270 --> 00:00:38,080
+ou la mise en place qui
+n'a pas été effectuée correctement ?
+
+14
+00:00:38,080 --> 00:00:40,660
+Pas forcément.
+Ce que cela pourrait signifier,
+
+15
+00:00:40,660 --> 00:00:44,200
+c'est qu'au lieu d'analyser une surface
+de perte comme celle de gauche,
+
+16
+00:00:44,200 --> 00:00:48,075
+nous analysons des surfaces
+comme celle de droite.
+
+17
+00:00:48,075 --> 00:00:51,635
+Notez que la surface de gauche
+n'a qu'un seul minimum,
+
+18
+00:00:51,635 --> 00:00:54,760
+alors que celle de droite en a plusieurs.
+
+19
+00:00:54,760 --> 00:00:57,805
+Le terme consacré pour désigner
+cette propriété est "convexité".
+
+20
+00:00:57,805 --> 00:01:03,835
+La surface de gauche est convexe,
+tandis que celle de droite ne l'est pas.
+
+21
+00:01:03,835 --> 00:01:08,180
+Pourquoi la surface de perte d'un modèle
+de ML pourrait-elle avoir plusieurs minima ?
+
+22
+00:01:08,180 --> 00:01:12,070
+Parce qu'il existe un certain nombre
+de points équivalents ou presque équivalents
+
+23
+00:01:12,070 --> 00:01:13,470
+dans l'espace des paramètres,
+
+24
+00:01:13,470 --> 00:01:16,570
+c'est-à-dire des réglages de paramètres
+qui produisent des modèles
+
+25
+00:01:16,570 --> 00:01:19,025
+dotés de la même capacité
+à faire des prédictions.
+
+26
+00:01:19,025 --> 00:01:22,120
+Nous y reviendrons lorsque je présenterai
+les réseaux de neurones,
+
+27
+00:01:22,129 --> 00:01:24,935
+qui sont un parfait exemple
+de situation où cela se produit.
+
+28
+00:01:24,935 --> 00:01:27,610
+Ne vous inquiétez pas si tout n'est pas
+totalement clair.
+
+29
+00:01:27,610 --> 00:01:30,610
+Retenez simplement que les surfaces de perte
+varient en fonction
+
+30
+00:01:30,610 --> 00:01:33,685
+du nombre de minima qu'elles comportent.
+
+31
+00:01:33,685 --> 00:01:37,110
+Parfois, les modèles ne sont pas
+suffisamment rapides.
+
+32
+00:01:37,110 --> 00:01:40,040
+Personne n'aime attendre la fin
+de l'entraînement des modèles.
+
+33
+00:01:40,040 --> 00:01:43,350
+Y a-t-il un moyen d'accélérer 
+cet entraînement ?
+
+34
+00:01:43,350 --> 00:01:46,135
+Oui, mais pour identifier
+les options dont nous disposons,
+
+35
+00:01:46,135 --> 00:01:49,230
+mieux vaut examiner les étapes
+de haut niveau de notre algorithme
+
+36
+00:01:49,230 --> 00:01:51,415
+et leurs sources de complexité temporelle.
+
+37
+00:01:51,415 --> 00:01:55,425
+Vous voyez ici les trois principales étapes
+de notre algorithme.
+
+38
+00:01:56,585 --> 00:01:58,305
+Lorsque nous calculons la dérivée,
+
+39
+00:01:58,305 --> 00:02:01,402
+le coût du calcul est proportionnel
+au nombre de points de données
+
+40
+00:02:01,402 --> 00:02:03,405
+incorporés dans notre fonction de perte,
+
+41
+00:02:03,405 --> 00:02:06,315
+ainsi qu'au nombre de paramètres
+de notre modèle.
+
+42
+00:02:06,315 --> 00:02:08,715
+Dans la pratique,
+les modèles peuvent comporter
+
+43
+00:02:08,715 --> 00:02:12,015
+plusieurs dizaines voire centaines
+de millions de paramètres.
+
+44
+00:02:12,015 --> 00:02:14,407
+De même, les ensembles de données
+peuvent comporter
+
+45
+00:02:14,407 --> 00:02:18,480
+quelques milliers voire plusieurs centaines
+de milliards de points.
+
+46
+00:02:18,480 --> 00:02:22,480
+La mise à jour des paramètres des modèles
+se fait une fois par boucle,
+
+47
+00:02:22,480 --> 00:02:26,595
+et le coût de l'opération dépend seulement
+du nombre de paramètres du modèle.
+
+48
+00:02:26,595 --> 00:02:30,097
+Toutefois, le coût de la mise à jour
+est généralement peu élevé
+
+49
+00:02:30,097 --> 00:02:31,940
+par rapport à celui des autres étapes.
+
+50
+00:02:31,940 --> 00:02:35,010
+Reste l'étape de contrôle de la perte.
+
+51
+00:02:35,010 --> 00:02:38,570
+Sa complexité temporelle est proportionnelle
+au nombre de points de données
+
+52
+00:02:38,570 --> 00:02:44,045
+de l'ensemble que nous utilisons pour évaluer
+la perte et la complexité de notre modèle.
+
+53
+00:02:44,045 --> 00:02:47,515
+Bien que ce processus soit représenté
+sous la forme d'une boucle,
+
+54
+00:02:47,515 --> 00:02:50,825
+il est étonnant que la perte doive être
+contrôlée à chaque passage.
+
+55
+00:02:50,825 --> 00:02:57,025
+C'est parce que la plupart des modifications
+de la fonction de perte sont incrémentielles.
+
+56
+00:02:57,605 --> 00:03:00,970
+Alors, que pouvons-nous modifier
+pour réduire le temps d'entraînement ?
+
+57
+00:03:00,970 --> 00:03:04,440
+Le nombre de paramètres affectés
+dans un modèle est généralement fixe,
+
+58
+00:03:04,440 --> 00:03:06,965
+même si nous verrons plus tard
+comment le faire varier
+
+59
+00:03:06,965 --> 00:03:10,340
+dans un module consacré à la régularisation.
+
+60
+00:03:10,340 --> 00:03:12,510
+En outre, même s'il peut sembler intéressant
+
+61
+00:03:12,510 --> 00:03:16,285
+de réduire le nombre de points de données
+utilisés pour contrôler la perte,
+
+62
+00:03:16,285 --> 00:03:18,500
+cela n'est généralement pas recommandé.
+
+63
+00:03:18,510 --> 00:03:21,565
+Pour réduire le temps d'entraînement,
+nous pouvons agir sur
+
+64
+00:03:21,565 --> 00:03:25,950
+le nombre des points de données
+pour lesquels nous calculons la dérivée,
+
+65
+00:03:25,950 --> 00:03:29,150
+et sur la fréquence de contrôle de la perte.
+
+66
+00:03:29,150 --> 00:03:33,270
+Examinons d'abord le nombre
+de points de données
+
+67
+00:03:33,270 --> 00:03:35,365
+pour lesquels nous calculons la dérivée.
+
+68
+00:03:35,365 --> 00:03:38,410
+Souvenez-vous que la dérivée
+vient de notre fonction de perte,
+
+69
+00:03:38,410 --> 00:03:41,095
+qui elle-même constitue l'erreur
+associée au regroupement
+
+70
+00:03:41,095 --> 00:03:42,770
+d'un certain nombre de prédictions.
+
+71
+00:03:42,770 --> 00:03:46,300
+Cette méthode permet surtout de réduire
+le nombre de points de données
+
+72
+00:03:46,300 --> 00:03:48,625
+utilisés pour alimenter
+la fonction de perte
+
+73
+00:03:48,635 --> 00:03:51,200
+à chaque itération de l'algorithme.
+
+74
+00:03:51,200 --> 00:03:56,920
+Selon vous, pourquoi cela pourrait-il
+encore fonctionner ?
+
+75
+00:03:56,920 --> 00:04:00,870
+Parce qu'il est possible d'extraire
+de nos données d'entraînement
+
+76
+00:04:00,870 --> 00:04:04,465
+des échantillons qui, en moyenne,
+se compensent.
+
+77
+00:04:04,465 --> 00:04:08,190
+Nous aborderons les risques liés à
+l'échantillonnage dans de prochains modules,
+
+78
+00:04:08,190 --> 00:04:09,870
+et nous verrons comment les éviter.
+
+79
+00:04:09,870 --> 00:04:12,730
+Retenez simplement qu'avec
+notre stratégie d'échantillonnage,
+
+80
+00:04:12,730 --> 00:04:16,770
+la sélection s'effectue avec une probabilité
+uniforme dans l'ensemble d'apprentissage.
+
+81
+00:04:16,770 --> 00:04:20,342
+Toutes les instances ont donc la même chance
+d'être vues par le modèle.
+
+82
+00:04:20,795 --> 00:04:24,575
+En ML, cet échantillonnage
+effectué pendant l'entraînement
+
+83
+00:04:24,575 --> 00:04:28,100
+à partir de l'ensemble d'apprentissage
+est appelé traitement par mini-lots.
+
+84
+00:04:28,100 --> 00:04:29,955
+Cette variante de descente de gradient
+
+85
+00:04:29,955 --> 00:04:32,860
+s'appelle descente de gradient par mini-lots.
+
+86
+00:04:32,860 --> 00:04:36,970
+Enfin, on parle de lots
+pour désigner les échantillons.
+
+87
+00:04:36,970 --> 00:04:41,345
+La descente de gradient par mini-lots permet
+non seulement de gagner du temps,
+
+88
+00:04:41,345 --> 00:04:46,425
+mais aussi d'utiliser moins de mémoire,
+et peut être facilement traitée en parallèle.
+
+89
+00:04:46,425 --> 00:04:49,767
+Juste une rapide parenthèse à ce sujet.
+Vous entendrez peut-être parler
+
+90
+00:04:49,767 --> 00:04:51,770
+de descente de gradient "par lot".
+
+91
+00:04:51,770 --> 00:04:54,770
+Il n'est ici question que
+de traitement par lot,
+
+92
+00:04:54,770 --> 00:04:59,140
+et l'opération porte sur l'intégralité
+de l'ensemble de données.
+
+93
+00:04:59,140 --> 00:05:02,780
+Cela n'a donc rien à voir
+avec la descente de gradient par mini-lots
+
+94
+00:05:02,780 --> 00:05:05,835
+dont nous parlons ici.
+
+95
+00:05:05,835 --> 00:05:08,792
+On parle souvent de taille des lots,
+alors qu'on fait référence
+
+96
+00:05:08,792 --> 00:05:11,516
+à la taille des mini-lots,
+ce qui peut prêter à confusion.
+
+97
+00:05:11,516 --> 00:05:12,945
+C'est le cas dans TensorFlow.
+
+98
+00:05:12,945 --> 00:05:15,835
+Nous ferons donc de même.
+
+99
+00:05:15,835 --> 00:05:19,790
+Dans la suite de cette spécialisation,
+lorsque nous parlerons de la taille des lots,
+
+100
+00:05:19,790 --> 00:05:21,960
+nous ferons référence
+à celle des échantillons
+
+101
+00:05:21,960 --> 00:05:24,395
+de la descente de gradient par mini-lots.
+
+102
+00:05:24,395 --> 00:05:27,380
+Alors, quelle doit être la taille
+de ces mini-lots ?
+
+103
+00:05:27,380 --> 00:05:31,050
+Tout comme le taux d'apprentissage,
+la taille des lots est un hyperparamètre.
+
+104
+00:05:31,050 --> 00:05:34,110
+Sa valeur optimale est donc
+dépendante du problème,
+
+105
+00:05:34,110 --> 00:05:36,830
+et peut être trouvée
+à l'aide du réglage d'hyperparamètres
+
+106
+00:05:36,830 --> 00:05:38,520
+dont nous parlerons ultérieurement.
+
+107
+00:05:38,520 --> 00:05:42,185
+Généralement, chaque lot comprend
+de 10 à 100 exemples.
+
+108
+00:05:43,005 --> 00:05:46,630
+Tout comme le taux d'apprentissage,
+la taille des lots est un hyperparamètre.
+
+109
+00:05:46,630 --> 00:05:49,795
+Sa valeur optimale est donc
+dépendante du problème,
+
+110
+00:05:49,795 --> 00:05:52,525
+et peut être trouvée
+à l'aide du réglage d'hyperparamètres
+
+111
+00:05:52,525 --> 00:05:54,610
+dont nous parlerons ultérieurement.
+
+112
+00:05:54,610 --> 00:05:58,220
+Généralement, chaque lot comprend
+de 10 à 1 000 exemples.
+
+113
+00:05:58,230 --> 00:06:02,205
+L'autre élément sur lequel nous pouvons agir
+pour accélérer l'entraînement de modèle
+
+114
+00:06:02,205 --> 00:06:04,925
+est la fréquence de contrôle de la perte.
+
+115
+00:06:04,925 --> 00:06:06,685
+Bien qu'il puisse sembler intéressant
+
+116
+00:06:06,685 --> 00:06:09,805
+de simplement contrôler la perte
+sur un sous-ensemble des données,
+
+117
+00:06:09,805 --> 00:06:12,155
+cela n'est pas une bonne idée.
+
+118
+00:06:12,155 --> 00:06:13,880
+La mise en place est simple.
+
+119
+00:06:13,880 --> 00:06:15,740
+Nous ajoutons une logique de traitement
+
+120
+00:06:15,740 --> 00:06:20,245
+indiquant que la fonction de calcul
+de la perte doit être exécutée moins souvent.
+
+121
+00:06:20,245 --> 00:06:23,310
+Certaines stratégies utilisées
+pour obtenir une fonction de perte
+
+122
+00:06:23,310 --> 00:06:26,395
+prête à être mise à jour sont basées
+sur le temps et sur les pas.
+
+123
+00:06:26,395 --> 00:06:28,785
+Par exemple, avec une exécution
+tous les 1 000 pas
+
+124
+00:06:28,785 --> 00:06:30,225
+ou toutes les 30 minutes.
+
+125
+00:06:30,225 --> 00:06:32,935
+Avec la réduction de la fréquence
+de contrôle de la perte
+
+126
+00:06:32,935 --> 00:06:34,440
+et le traitement par mini-lots,
+
+127
+00:06:34,440 --> 00:06:37,312
+nous avons commencé à dissocier
+les deux aspects fondamentaux
+
+128
+00:06:37,312 --> 00:06:40,765
+de l'entraînement de modèle :
+modification des paramètres du modèle
+
+129
+00:06:40,765 --> 00:06:44,420
+et vérification pour voir quand
+les bonnes modifications ont été apportées.

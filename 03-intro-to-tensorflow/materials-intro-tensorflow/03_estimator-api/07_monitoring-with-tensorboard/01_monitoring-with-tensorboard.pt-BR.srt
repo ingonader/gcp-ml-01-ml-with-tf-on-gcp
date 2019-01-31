@@ -1,0 +1,303 @@
+1
+00:00:00,000 --> 00:00:04,805
+Aqui, mostraremos como monitorar o
+treinamento usando o TensorBoard.
+
+2
+00:00:04,805 --> 00:00:06,655
+Vamos revisitar nosso progresso.
+
+3
+00:00:06,655 --> 00:00:08,715
+Dois prontos, faltam dois.
+
+4
+00:00:08,715 --> 00:00:11,180
+Já estamos usando train_and_evaluate,
+
+5
+00:00:11,180 --> 00:00:15,300
+então estamos conseguindo métricas de
+avaliação à medida que o treino progride.
+
+6
+00:00:15,300 --> 00:00:19,680
+Vamos visualizá-las usando uma
+ferramenta chamada TensorBoard.
+
+7
+00:00:19,680 --> 00:00:22,800
+Esta é uma prática recomendada
+para qualquer treino.
+
+8
+00:00:22,800 --> 00:00:25,830
+Há muitas coisas úteis que você pode ver
+
+9
+00:00:25,830 --> 00:00:29,055
+ao comparar curvas de treinamento e
+avaliação em um gráfico.
+
+10
+00:00:29,055 --> 00:00:32,800
+Eu uso train_and_evaluate para isso
+o tempo todo,
+
+11
+00:00:32,800 --> 00:00:35,655
+não apenas quando estou executando
+treinamentos distribuídos.
+
+12
+00:00:35,655 --> 00:00:38,040
+TensorBoard é uma ferramenta
+que permite visualizar
+
+13
+00:00:38,040 --> 00:00:42,180
+o treinamento e a biometria
+que o modelo grava em disco.
+
+14
+00:00:42,180 --> 00:00:46,385
+O TensorBoard vem como padrão com
+a instalação do TensorFlow.
+
+15
+00:00:46,385 --> 00:00:48,000
+É uma ferramenta de linha comum,
+
+16
+00:00:48,000 --> 00:00:52,450
+apontada para o diretório de saída
+especificado na configuração de execução,
+
+17
+00:00:52,450 --> 00:00:58,525
+e o painel TensorBoard aparece na
+coluna de host local 606.
+
+18
+00:00:58,525 --> 00:01:03,300
+Os estimadores pré-fabricados vêm com um
+conjunto de métricas padrão pré-definidas,
+
+19
+00:01:03,300 --> 00:01:05,595
+portanto não há mais nada
+para você configurar.
+
+20
+00:01:05,595 --> 00:01:10,185
+Por exemplo, você verá a perda de
+treinamento e avaliação no mesmo gráfico.
+
+21
+00:01:10,185 --> 00:01:13,240
+Isso é útil para ver se o modelo
+está sobreajustando.
+
+22
+00:01:13,240 --> 00:01:15,599
+O estimador de rede neural densa
+
+23
+00:01:15,599 --> 00:01:20,115
+também rastreia a fração de neurônios
+que estão produzindo zeros.
+
+24
+00:01:20,115 --> 00:01:24,220
+Isso acontece quando você usa a função
+de ativação de ReLU,
+
+25
+00:01:24,220 --> 00:01:26,175
+mas fique de olho nela.
+
+26
+00:01:26,175 --> 00:01:28,710
+Se todos os neurônios
+estiverem emitindo zeros,
+
+27
+00:01:28,710 --> 00:01:30,605
+a rede neural está morta.
+
+28
+00:01:30,605 --> 00:01:35,085
+No TensorBoard você também
+pode ver seu gráfico do TensorFlow.
+
+29
+00:01:35,085 --> 00:01:37,710
+Isso pode ser útil para depuração ou se
+
+30
+00:01:37,710 --> 00:01:41,105
+você quiser ver qual gráfico
+o código produziu.
+
+31
+00:01:41,905 --> 00:01:44,160
+Se você está criando um
+estimador personalizado,
+
+32
+00:01:44,160 --> 00:01:47,850
+especificando suas próprias
+camadas de rede neural,
+
+33
+00:01:47,850 --> 00:01:51,410
+você também pode usar comandos
+tf.summary
+
+34
+00:01:51,420 --> 00:01:55,785
+para registrar vários tipos de dados e
+visualizá-los no TensorBoard.
+
+35
+00:01:55,785 --> 00:01:57,725
+Eles podem ser números, textos, imagens,
+
+36
+00:01:57,725 --> 00:01:59,840
+ou até mesmo arquivos de áudio.
+
+37
+00:01:59,840 --> 00:02:04,605
+Com a API Estimator, uma linha é tudo que
+você precisa para escrever em um modelo.
+
+38
+00:02:04,605 --> 00:02:07,410
+tf.summary.scalar e, em seguida,
+
+39
+00:02:07,410 --> 00:02:10,380
+o nome do gráfico que você quer
+ver no TensorBoard
+
+40
+00:02:10,380 --> 00:02:12,750
+e o Tensor com os valores a
+serem plotados.
+
+41
+00:02:12,750 --> 00:02:15,650
+Se você não está usando a API Estimator,
+
+42
+00:02:15,650 --> 00:02:17,820
+há algumas etapas adicionais.
+
+43
+00:02:17,820 --> 00:02:20,140
+Confira na documentação aqui.
+
+44
+00:02:20,140 --> 00:02:24,015
+Por exemplo, este é um gráfico
+de histograma.
+
+45
+00:02:24,015 --> 00:02:28,640
+Acho útil visualizar coisas ruins que
+podem acontecer em suas próprias saídas.
+
+46
+00:02:28,640 --> 00:02:29,990
+Aqui à esquerda,
+
+47
+00:02:29,990 --> 00:02:33,285
+temos um histograma do tempo
+de todos os valores que
+
+48
+00:02:33,285 --> 00:02:37,230
+saem de uma camada de rede neural
+ativada por um sigmoide.
+
+49
+00:02:37,230 --> 00:02:38,690
+Então nós vemos um problema.
+
+50
+00:02:38,690 --> 00:02:40,130
+Há um pico em zero,
+
+51
+00:02:40,130 --> 00:02:45,720
+outro em um e a maioria dos neurônios está
+saturada e não muito útil.
+
+52
+00:02:45,720 --> 00:02:49,995
+Uma técnica de regularização, chamada
+normalização em lote, pode corrigir isso.
+
+53
+00:02:49,995 --> 00:02:53,415
+Aqui está a saída da mesma camada
+após a normalização do lote,
+
+54
+00:02:53,415 --> 00:02:58,605
+e agora nossos neurônios estão produzindo
+valores em toda a faixa útil.
+
+55
+00:02:58,605 --> 00:03:01,170
+Se isso produz resultados melhores ou não,
+
+56
+00:03:01,170 --> 00:03:02,280
+depende do modelo,
+
+57
+00:03:02,280 --> 00:03:06,705
+mas pelo menos eu vejo que minha
+normalização em lote está funcionando.
+
+58
+00:03:06,705 --> 00:03:09,360
+Ao trabalhar com imagens ou sons,
+
+59
+00:03:09,360 --> 00:03:14,475
+o TensorBoard tem painéis específicos para
+você ver e ouvir o que está acontecendo.
+
+60
+00:03:14,475 --> 00:03:17,060
+Você pode usar as funções 
+summary.image
+
+61
+00:03:17,060 --> 00:03:21,270
+e summary.audio no código para
+especificar que
+
+62
+00:03:21,270 --> 00:03:29,099
+o Tensor que você está registrando é
+uma imagem ou um arquivo de áudio,
+
+63
+00:03:29,099 --> 00:03:33,945
+e eles aparecerão no painel
+dedicado no TensorBoard.
+
+64
+00:03:33,945 --> 00:03:36,720
+Aqui está, por exemplo, uma
+visualização que eu
+
+65
+00:03:36,720 --> 00:03:40,190
+estava usando ao desenvolver
+um modelo de detecção de aviões.

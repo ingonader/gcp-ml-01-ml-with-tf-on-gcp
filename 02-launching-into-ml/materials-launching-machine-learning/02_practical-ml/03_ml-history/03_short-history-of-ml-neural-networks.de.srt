@@ -1,0 +1,680 @@
+1
+00:00:00,000 --> 00:00:02,495
+Weshalb nur eine Perzeptronschicht?
+
+2
+00:00:02,495 --> 00:00:06,000
+Wie wäre es, das Output einer Schicht als
+Input an die nächste zu senden?
+
+3
+00:00:06,000 --> 00:00:10,885
+Perzeptronschichten zu kombinieren, klingt
+nach einem viel leistungsfähigeren Modell.
+
+4
+00:00:10,885 --> 00:00:14,550
+Aber ohne die Verwendung
+nicht linearer Aktivierungsfunktionen
+
+5
+00:00:14,550 --> 00:00:17,740
+können alle zusätzlichen Schichten
+zurückkomprimiert werden
+
+6
+00:00:17,740 --> 00:00:21,695
+in eine einzelne lineare Schicht, und
+es ergibt sich kein wirklicher Vorteil.
+
+7
+00:00:21,695 --> 00:00:24,670
+Wir brauchen
+nicht lineare Aktivierungsfunktionen.
+
+8
+00:00:24,670 --> 00:00:27,390
+Deshalb fing man an, Sigmoid- oder
+hyperbolische Tangens-
+
+9
+00:00:27,390 --> 00:00:28,720
+- kurz: tanh -
+
+10
+00:00:28,720 --> 00:00:32,200
+Aktivierungsfunktionen
+für Nichtlinearität zu verwenden.
+
+11
+00:00:32,200 --> 00:00:35,840
+Damals waren wir auf diese beschränkt,
+denn was wir brauchten, war
+
+12
+00:00:35,840 --> 00:00:38,395
+eine differenzierbare
+Funktion, da dieser Aspekt
+
+13
+00:00:38,395 --> 00:00:41,765
+bei der Fehlerrückführung zum
+Ändern der Modellgewichte genutzt wird.
+
+14
+00:00:41,765 --> 00:00:45,290
+Moderne Aktivierungsfunktionen sind
+nicht unbedingt differenzierbar und
+
+15
+00:00:45,290 --> 00:00:48,275
+man wusste nicht, wie
+man mit ihnen umgehen sollte.
+
+16
+00:00:48,275 --> 00:00:51,920
+Dadurch, dass Aktivierungsfunktionen
+differenzierbar sein mussten,
+
+17
+00:00:51,920 --> 00:00:54,310
+war es mitunter schwierig,
+die Netze zu trainieren.
+
+18
+00:00:54,310 --> 00:00:58,445
+Die Wirksamkeit dieser Modelle war auch
+durch die Datenmenge eingeschränkt,
+
+19
+00:00:58,445 --> 00:01:02,280
+die verfügbaren Rechenressourcen
+und andere Schwierigkeiten beim Training.
+
+20
+00:01:02,280 --> 00:01:06,325
+Beispielsweise bleibt die
+Optimierung gerne in Sattelpunkten hängen,
+
+21
+00:01:06,325 --> 00:01:07,960
+anstatt, wie wir gehofft hatten,
+
+22
+00:01:07,960 --> 00:01:10,625
+das globale Minimum
+beim Gradientenverfahren zu finden.
+
+23
+00:01:10,625 --> 00:01:16,390
+Aber seit es den Trick mit rektifizierten
+Lineareinheiten (ReLUs) gibt,
+
+24
+00:01:16,390 --> 00:01:19,535
+war ein 8- bis 10-mal
+schnelleres Training möglich,
+
+25
+00:01:19,535 --> 00:01:22,765
+nahezu garantierte Konvergenz
+für logistische Regression.
+
+26
+00:01:22,765 --> 00:01:26,095
+Aufbauend auf dem
+Perzeptron, ganz wie das Gehirn,
+
+27
+00:01:26,095 --> 00:01:28,960
+können wir viele davon
+verbinden, um Schichten zu bilden
+
+28
+00:01:28,960 --> 00:01:31,545
+und neuronale
+Feedforward-Netze zu erstellen.
+
+29
+00:01:31,545 --> 00:01:35,340
+Die Komponenten sind im Vergleich zum
+einlagigen Perzeptron nicht sehr anders.
+
+30
+00:01:35,340 --> 00:01:37,060
+Es gibt weiterhin Inputs,
+
+31
+00:01:37,060 --> 00:01:40,925
+gewichtete Summen,
+Aktivierungsfunktionen und Outputs.
+
+32
+00:01:40,925 --> 00:01:44,875
+Ein Unterschied ist, dass die Inputs an
+Neuronen in einer anderen Schicht
+
+33
+00:01:44,875 --> 00:01:48,925
+nicht die Roheingaben, sondern die
+Ausgaben der vorherigen Schicht sind.
+
+34
+00:01:48,925 --> 00:01:53,570
+Ein weiterer Unterschied ist, dass die
+Neuronen zwischen den Schichten nicht mehr
+
+35
+00:01:53,570 --> 00:01:56,420
+in Form eines Vektors, sondern
+einer Matrix verbunden sind,
+
+36
+00:01:56,420 --> 00:01:59,850
+da alle Neuronen der Schichten
+vollständig miteinander verbunden sind.
+
+37
+00:01:59,850 --> 00:02:01,900
+Zum Beispiel ist in diesem Diagramm die
+
+38
+00:02:01,900 --> 00:02:03,860
+Matrix der Eingangsschicht-Gewichtungen
+
+39
+00:02:03,860 --> 00:02:07,450
+4 × 2 und die Matrix der Schicht
+verdeckter Gewichtungen ist 2 × 1.
+
+40
+00:02:07,450 --> 00:02:10,130
+Wir lernen später,
+dass neuronale Netze nicht immer
+
+41
+00:02:10,130 --> 00:02:11,980
+vollständige Verbindung bieten, was
+
+42
+00:02:11,980 --> 00:02:15,230
+für erstaunliche Anwendungen
+und Leistungen, etwa bei Bildern, sorgt.
+
+43
+00:02:15,230 --> 00:02:19,185
+Auch gibt es mehr Aktivierungsfunktionen
+als nur die Einheitssprungfunktion,
+
+44
+00:02:19,185 --> 00:02:23,510
+etwa die Sigmoid- und hyperbolische
+Tangens- oder tanh-Aktivierungsfunktionen.
+
+45
+00:02:23,510 --> 00:02:26,040
+Sie können sich jedes
+Nicht-Eingabeneuron als eine
+
+46
+00:02:26,040 --> 00:02:29,240
+Sammlung von drei in einer Einheit
+verpackten Schritten vorstellen.
+
+47
+00:02:29,240 --> 00:02:31,670
+Die erste Komponente ist
+eine gewichtete Summe,
+
+48
+00:02:31,670 --> 00:02:34,190
+die zweite Komponente ist die
+Aktivierungsfunktion
+
+49
+00:02:34,190 --> 00:02:37,520
+und die dritte Komponente ist die
+Ausgabe der Aktivierungsfunktion.
+
+50
+00:02:37,520 --> 00:02:41,360
+Neuronale Netze können ziemlich komplex
+werden, bei all den Schichten,
+
+51
+00:02:41,360 --> 00:02:44,940
+Neuronen, Aktivierungsfunktionen
+und Lernverfahren.
+
+52
+00:02:44,940 --> 00:02:47,940
+In diesem Kurs verwenden wir
+TensorFlow Playground, um den
+
+53
+00:02:47,940 --> 00:02:51,810
+Informationsfluss durch ein neuronales
+Netz verständlicher darzustellen.
+
+54
+00:02:51,810 --> 00:02:53,400
+Es macht auch viel Spaß,
+
+55
+00:02:53,400 --> 00:02:55,790
+lässt Sie viel mehr
+Hyperparameter anpassen,
+
+56
+00:02:55,790 --> 00:02:58,225
+stellt die Größe der Gewichte optisch dar
+
+57
+00:02:58,225 --> 00:03:01,695
+und die zeitliche
+Entwicklung der Verlustfunktion.
+
+58
+00:03:01,695 --> 00:03:04,715
+Das ist die lineare Aktivierungsfunktion,
+
+59
+00:03:04,715 --> 00:03:09,390
+im Wesentlichen eine Identitätsfunktion,
+da die Funktion von x einfach x ausgibt.
+
+60
+00:03:09,390 --> 00:03:11,650
+Dies war die
+ursprüngliche Aktivierungsfunktion.
+
+61
+00:03:11,650 --> 00:03:13,200
+Aber, wie bereits gesagt,
+
+62
+00:03:13,200 --> 00:03:15,900
+ist selbst bei neuronalen
+Netzen mit tausenden Schichten,
+
+63
+00:03:15,900 --> 00:03:18,105
+allen mit linearer Aktivierungsfunktion,
+
+64
+00:03:18,105 --> 00:03:22,690
+die Ausgabe schließlich nur eine
+lineare Kombination der Input-Merkmale.
+
+65
+00:03:22,690 --> 00:03:27,430
+Das reduziert sich auf die Input-Merkmale
+multipliziert mit je einer Konstanten.
+
+66
+00:03:27,430 --> 00:03:29,325
+Hört sich das bekannt an?
+
+67
+00:03:29,325 --> 00:03:31,260
+Es ist einfach eine lineare Regression.
+
+68
+00:03:31,260 --> 00:03:34,780
+Deshalb brauchen wir
+nicht lineare Funktionen, um
+
+69
+00:03:34,780 --> 00:03:36,840
+die komplexen
+Kettenfunktionen zu erhalten,
+
+70
+00:03:36,840 --> 00:03:41,655
+die es neuronalen Netzen so gut
+ermöglichen, Datenverteilungen zu lernen.
+
+71
+00:03:41,655 --> 00:03:45,480
+Neben den linearen Aktivierungsfunktionen,
+
+72
+00:03:45,480 --> 00:03:47,205
+wo f von x gleich x ist,
+
+73
+00:03:47,205 --> 00:03:50,680
+waren damals, während der ersten
+Blütezeit der neuronalen Netze,
+
+74
+00:03:50,680 --> 00:03:54,920
+Sigmoid und tanh die
+Haupt-Aktivierungsfunktionen.
+
+75
+00:03:54,920 --> 00:03:59,525
+Die Sigmoid-Funktion ist eigentlich eine
+glatte Version der Einheitssprungfunktion,
+
+76
+00:03:59,525 --> 00:04:01,010
+wo Asymptote zu 0 gegen
+
+77
+00:04:01,010 --> 00:04:04,665
+negative Unendlichkeit und Asymptote
+zu 1 gegen positive Unendlichkeit gehen,
+
+78
+00:04:04,665 --> 00:04:08,860
+aber überall Zwischenwerte sind.
+
+79
+00:04:08,860 --> 00:04:13,060
+Der hyperbolische Tangens, kurz tanh, ist
+
+80
+00:04:13,060 --> 00:04:16,040
+derzeit eine weitere häufig
+verwendete Aktivierungsfunktion,
+
+81
+00:04:16,040 --> 00:04:18,220
+die im Wesentlichen nur eine skalierte und
+
+82
+00:04:18,220 --> 00:04:21,404
+verschobene Sigmoid-Funktion
+mit dem Bereich -1 bis 1 ist.
+
+83
+00:04:21,404 --> 00:04:24,270
+Das waren sehr gute Optionen,
+da sie überall differenzierbar,
+
+84
+00:04:24,270 --> 00:04:27,365
+monoton und glatt waren.
+
+85
+00:04:27,365 --> 00:04:31,230
+Es ergaben sich aber Probleme
+wie Sättigung aufgrund
+
+86
+00:04:31,230 --> 00:04:35,120
+hoher oder niedriger
+Eingangswerte für die Funktionen,
+
+87
+00:04:35,120 --> 00:04:38,240
+die zu asymptotischen Plateaus
+der Funktionen führten.
+
+88
+00:04:38,240 --> 00:04:41,180
+Da die Kurve an diesen
+Stellen nahezu flach ist,
+
+89
+00:04:41,180 --> 00:04:43,825
+nähern sich die Ableitungen sehr an 0 an.
+
+90
+00:04:43,825 --> 00:04:46,990
+Deshalb verläuft das Lernen
+der Gewichte sehr langsam
+
+91
+00:04:46,990 --> 00:04:50,840
+oder hält sogar an,
+da die Gradienten alle gegen 0 gehen,
+
+92
+00:04:50,840 --> 00:04:55,870
+was im Endeffekt zu sehr kleinen
+Schritten beim Gradientenverfahren führt.
+
+93
+00:04:55,870 --> 00:04:59,735
+Lineare Aktivierungsfunktionen waren
+differenzierbar, monoton und glatt.
+
+94
+00:04:59,735 --> 00:05:01,235
+Aber, wie bereits gesagt,
+
+95
+00:05:01,235 --> 00:05:05,040
+ist eine Linearkombination von linearen
+Funktionen wieder eine lineare Funktion.
+
+96
+00:05:05,040 --> 00:05:07,460
+Das hilft uns nicht beim Erstellen
+der komplexen
+
+97
+00:05:07,460 --> 00:05:10,465
+Funktionskette, die wir zum Beschreiben
+der Datenzeile brauchen.
+
+98
+00:05:10,465 --> 00:05:13,100
+Es waren Annäherungen an
+lineare Aktivierungsfunktionen,
+
+99
+00:05:13,100 --> 00:05:14,845
+aber nicht überall differenzierbar.
+
+100
+00:05:14,845 --> 00:05:18,710
+Erst viel später konnte man
+etwas mit ihnen anfangen.
+
+101
+00:05:18,710 --> 00:05:24,425
+Jetzt ist die rektifizierte Lineareinheit
+oder ReLU-Aktivierungsfunktion beliebt.
+
+102
+00:05:24,425 --> 00:05:27,830
+Sie ist nicht linear, ermöglicht also
+die nötige komplexe Modellierung
+
+103
+00:05:27,830 --> 00:05:32,080
+und hat keine Sättigung
+im nicht negativen Teil des Input-Raums.
+
+104
+00:05:32,080 --> 00:05:37,430
+Da aber der negative Teil des
+Input-Raums eine Null-Aktivierung ergibt,
+
+105
+00:05:37,430 --> 00:05:41,115
+können sich ReLU-Schichten totlaufen
+oder hören auf zu aktivieren,
+
+106
+00:05:41,115 --> 00:05:45,490
+was ebenfalls zur Verlangsamung oder
+Beendigung des Lernvorgangs führt.
+
+107
+00:05:45,490 --> 00:05:49,065
+Es gibt Möglichkeiten,
+dieses Problem zu lösen,
+
+108
+00:05:49,065 --> 00:05:50,370
+zum Beispiel die Verwendung
+
+109
+00:05:50,370 --> 00:05:54,320
+einer anderen Aktivierungsfunktion, der
+exponentiellen Lineareinheit oder ELU.
+
+110
+00:05:54,320 --> 00:05:59,140
+Sie ist im nicht negativen Teil
+des Input-Raums annähernd linear,
+
+111
+00:05:59,140 --> 00:06:02,225
+glatt, monoton und vor allem
+
+112
+00:06:02,225 --> 00:06:05,440
+nicht null im negativen
+Teil des Input-Raums.
+
+113
+00:06:05,440 --> 00:06:08,680
+Der größte Nachteil von ELUs ist, dass sie
+
+114
+00:06:08,680 --> 00:06:12,680
+rechenlastiger sind als ReLus,
+da sie den Exponent berechnen müssen.
+
+115
+00:06:12,680 --> 00:06:16,065
+Wir werden im nächsten Modul
+mehr damit experimentieren.
+
+116
+00:06:16,065 --> 00:06:19,690
+Wenn ich meine Ausgaben in
+Form von Wahrscheinlichkeiten möchte,
+
+117
+00:06:19,690 --> 00:06:24,260
+welche Aktivierungsfunktion sollte
+ich dann für die letzte Schicht wählen?
+
+118
+00:06:24,440 --> 00:06:29,370
+Die richtige Antwort lautet:
+die Sigmoid-Aktivierungsfunktion.
+
+119
+00:06:29,370 --> 00:06:33,090
+Und zwar deshalb, weil der Bereich
+der Sigmoid-Funktion 0 bis 1 ist,
+
+120
+00:06:33,090 --> 00:06:35,095
+so wie der Bereich für Wahrscheinlichkeit.
+
+121
+00:06:35,095 --> 00:06:36,630
+Abgesehen vom Bereich
+
+122
+00:06:36,630 --> 00:06:39,590
+ist die Sigmoid-Funktion
+die kumulative Verteilungsfunktion der
+
+123
+00:06:39,590 --> 00:06:42,780
+logistischen Wahrscheinlichkeits-
+verteilung, deren Quantilfunktion
+
+124
+00:06:42,780 --> 00:06:46,275
+die Umkehrung der Logik ist,
+die die Log Odds modelliert.
+
+125
+00:06:46,275 --> 00:06:49,695
+Deshalb kann das als eine wirkliche
+Wahrscheinlichkeit verwendet werden.
+
+126
+00:06:49,695 --> 00:06:53,165
+Später in diesem Kurs
+gehen wir weiter auf diese Gründe ein.
+
+127
+00:06:53,165 --> 00:06:57,545
+Tanh ist falsch, denn, obwohl sie wie ein
+Sigmoid eine komprimierende Funktion ist,
+
+128
+00:06:57,545 --> 00:06:59,590
+hat sie einen Bereich von -1 bis 1,
+
+129
+00:06:59,590 --> 00:07:02,285
+was nicht dem Bereich der
+Wahrscheinlichkeit entspricht.
+
+130
+00:07:02,285 --> 00:07:04,500
+Durch bloßes Komprimieren von tanh in
+
+131
+00:07:04,500 --> 00:07:07,595
+ein Sigmoid entsteht außerdem
+nicht plötzlich eine Wahrscheinlichkeit,
+
+132
+00:07:07,595 --> 00:07:10,140
+da es nicht dieselben
+erwähnten Eigenschaften hat,
+
+133
+00:07:10,140 --> 00:07:13,505
+durch die Sigmoid-Ausgaben als
+Wahrscheinlichkeit interpretierbar sind.
+
+134
+00:07:13,505 --> 00:07:15,610
+Für eine richtige Umformung in ein Sigmoid
+
+135
+00:07:15,610 --> 00:07:19,940
+addieren wir erst 1 und dividieren durch 
+2, um den richtigen Bereich zu erhalten.
+
+136
+00:07:19,940 --> 00:07:22,475
+Um die
+richtige Verteilung zu erhalten,
+
+137
+00:07:22,475 --> 00:07:25,080
+müssten wir das
+tanh-Argument durch 2 dividieren,
+
+138
+00:07:25,080 --> 00:07:27,365
+aber wir haben tanh schon berechnet,
+
+139
+00:07:27,365 --> 00:07:29,220
+sodass es viel Arbeit wäre
+
+140
+00:07:29,220 --> 00:07:32,050
+und wir genauso gut
+gleich ein Sigmoid verwenden könnten.
+
+141
+00:07:32,050 --> 00:07:36,565
+ReLu ist falsch, da ihr Bereich
+zwischen 0 und unendlich liegt,
+
+142
+00:07:36,565 --> 00:07:39,745
+was weit von der Darstellung der
+Wahrscheinlichkeit entfernt ist.
+
+143
+00:07:39,745 --> 00:07:44,000
+ELU ist auch falsch wegen des Bereichs
+von negativer Unendlichkeit und unendlich.

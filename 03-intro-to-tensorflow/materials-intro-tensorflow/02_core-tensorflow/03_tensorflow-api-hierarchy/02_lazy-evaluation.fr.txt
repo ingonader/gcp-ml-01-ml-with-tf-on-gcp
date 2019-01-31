@@ -1,0 +1,60 @@
+Examinons le code de la diapositive. À première vue, cela ressemble
+à du code NumPy. Vous voulez ajouter
+les deux Tensors a et b. Vous écrivez donc tf.add(a, b) en indiquant que le résultat doit être
+retourné sous la forme d'un Tensor c. À la différence toutefois
+du code Python classique, le traitement de tf.add
+ne se traduit pas par une exécution, mais simplement par la création
+du graphe orienté acyclique (DAG). Dans le DAG, a, b et c sont des Tensors,
+et add est une opération. Pour que ce code soit exécuté,
+(pour que le DAG soit exécuté), vous devez en lancer l'exécution, chose que vous pouvez faire dans le cadre
+de ce que l'on appelle une session. Vous indiquez donc que vous voulez
+connaître la valeur de c, et vous demandez à la session d'évaluer c. C'est cela qui se traduit
+par l'exécution du DAG, et vous obtenez le résultat en Python sous la forme
+d'un tableau numérique classique contenant les valeurs de c. Le fait de programmer TensorFlow
+implique donc de programmer un DAG. Il y donc deux étapes. La première, qui est celle
+de la création du graphe. Et la seconde, qui est celle
+de son exécution. La définition du graphe est distincte
+de la boucle d'apprentissage, car il s'agit d'un modèle
+d'évaluation paresseuse. Cela minimise le code Python sous forme
+de changements de contexte C++, et permet au calcul d'être très efficace. Conceptuellement, c'est comparable
+à l'écriture d'un programme suivie de sa compilation
+et de son exécution avec des données. Mais ne poussez pas trop loin
+cette analogie. Il n'y a pas ici de phase
+de compilation explicite. Remarquez qu'après l'appel de tf.add,
+c ne correspond pas aux valeurs réelles. Vous devez évaluer c dans le contexte
+d'une session TensorFlow pour obtenir un tableau
+de valeurs NumPy (numpy_c). Donc, en résumé : TensorFlow effectue
+une évaluation paresseuse. Vous écrivez un DAG que vous exécutez ensuite dans le contexte
+d'une session pour obtenir des résultats. Mais il y a aussi un autre mode dans lequel
+vous pouvez exécuter TensorFlow : tf.eager. Dans ce mode, l'évaluation est immédiate
+et n'est pas paresseuse. Il n'est toutefois généralement
+pas utilisé en production, mais plutôt exclusivement
+pour le développement. Nous verrons tf.eager
+un peu plus tard dans ce cours. Mais pour l'essentiel, nous nous concentrerons sur le paradigme
+de l'évaluation paresseuse. Et la presque totalité du code
+que nous écrivons et que nous exécutons en production est en mode d'évaluation paresseuse. Dans la bibliothèque NumPy (utilisée pour l'écriture de la plupart
+des logiciels numériques en Python), a et b sont des tableaux NumPy. NumPy tient sa rapidité
+de sa mise en œuvre au niveau de c, de sorte que lorsque vous appelez np.add,
+cet add est traité au niveau de c. Mais il l'est quand le processeur
+exécute le code np.add (a, b), et les totaux sont alors insérés
+dans le tableau NumPy c. Ainsi, lorsque vous affichez c,
+vous obtenez 8, 2 et 10. 8 est le total de 5 et 3. L'addition des valeurs 3
+et -1 donne 2, etc. L'important est que np.add
+fait l'objet d'une évaluation immédiate. À la différence
+de ce qui se passe avec NumPy, c ne correspond pas
+aux valeurs réelles dans TensorFlow. Il s'agit dans ce cas d'un Tensor que vous devez évaluer dans le contexte
+d'une session TensorFlow pour obtenir le résultat qui se présente
+sous la forme d'un tableau de valeurs NumPy. Donc, lorsque le processeur, le GPU
+ou tout autre matériel évalue tf.add (a, b), un Tensor est créé
+dans le graphe orienté acyclique (DAG). Mais l'addition n'est effectivement calculée
+qu'après l'appel de session.run. L'exécution de la ligne print c
+du premier cadre aurait donc pour effet d'entraîner l'affichage de la sortie
+du débogage de la classe du Tensor. Cela comprend un nom unique
+affecté par le système pour le nœud se trouvant
+dans le DAG (dans ce cas, Add_7), ainsi que la forme
+et le type de données de la valeur qui s'affichera
+lors de l'exécution du DAG. Une fois que la session a été exécutée et que c a été évalué
+dans le contexte d'une session, nous obtenons 8, 2 et 10
+lorsque nous affichons les résultats, tout comme précédemment avec NumPy. Il y a donc deux étapes :
+la création et l'exécution. Mais pour quelle raison ? Pourquoi TensorFlow effectue-t-il
+une évaluation paresseuse ? Nous le verrons dans la prochaine leçon.

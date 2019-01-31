@@ -1,0 +1,60 @@
+Nehmen wir ein Beispiel. Wie wäre es mit Immobilien? Können wir den Preis
+einer Immobilie vorhersagen? Wir müssen zuerst die Features wählen. Auf diesen Daten basieren die Vorhersagen. Versuchen wir es mit
+einem Modell, dass den Preis basierend auf der Größe
+des Hauses oder der Wohnung vorhersagt. Als Features wählen wir erstens, die Wohnfläche, und zweitens, die Kategorie Haus oder Wohnung. So wir das implementiert: Wir verwenden die Feature Column API,
+um die Features zu definieren. Zuerst nehmen wir
+eine Nummernspalte für die Wohnfläche, dann eine Kategoriespalte
+für die Immobilienart. Dieses einfache Modell
+hat zwei Kategorien, Haus oder Wohnung. Jetzt können wir
+einen linearen Regressor instanziieren, einen der vorgefertigten
+Estimators für diese Features. Ein Regressor ist
+ein Modell, das eine Zahl ausgibt, in diesem Fall eine Vorhersage
+des Verkaufspreises für eine Immobilie. Aber wozu brauchen wir die Featurespalten? Sehen wir uns den Mechanismus dahinter an. Ein linearer Regressor ist ein Modell,
+das mit einem Datenvektor arbeitet. Es berechnet die gewichtete
+Summe aller eingegebenen Datenelemente und kann darauf trainiert werden,
+die Gewichtung an Ihr Problem anzupassen, hier die Vorhersage des Verkaufspreises. Wie bekommen wir die Daten
+in den einzelnen Eingabevektor, den der lineare Regressor erwartet? Die Antwort hängt von
+den eingegebenen Daten ab, daher hilft uns hier
+die Feature Columns API. Sie implementiert Standardmethoden,
+um Daten in Vektorelemente einzufügen. Hier sind die Werte
+in einer Nummernspalte nur Zahlen. Sie können unverändert in ein einzelnes
+Element des Eingabevektors kopiert werden. Die Kategorienspalte
+hingegen wird one-hot-codiert. Wir haben zwei Kategorien. Daher wird "Haus" zu 1, 0 und "Wohnung" wird zu 0, 1. Eine dritte Kategorie würde zu 0, 0, 1 werden und so weiter. Jetzt weiß der lineare Regressor,
+welche Features uns wichtig sind, kann sie in einen Eingabevektor einfügen und das tun,
+was ein linearer Regressor tut. Es gibt viele weitere Arten
+von Featurespalten zur Auswahl, Spalten für kontinuierliche
+Werte, die in ein Bucket sollen, Worteinbettungen,
+Spaltenkreuzungen und so weiter. Die angewendeten Transformationen sind in
+der TensorFlow-Dokumentation beschrieben, sodass Sie dort immer nachlesen können. Für das Modelltraining müssen wir eine Eingabefunktion schreiben, die die Features
+wie in der Featurespalte benannt ausgibt. Dies ist ein Training, also brauchen wir
+auch die richtigen Antworten, die Labels. Jetzt können wir die
+Trainingsfunktion des Estimators aufrufen, die das Modell trainiert,
+indem sie das Dataset 100 Mal wiederholt. Wir betrachten später,
+wie Batching funktioniert, aber für die von Ihnen,
+die damit schon vertraut sind: der hier gezeigte Code
+trainiert mit einem einzelnen Datenbatch bei jedem Schritt, und dieses
+Batch enthält das gesamte Dataset. Nach dem Training kann das Modell
+für Vorhersagen genutzt werden. Wir brauchen eine Eingabefunktion,
+die Daten für die Vorhersage bietet, hier ein 140-Quadratmeter-Haus
+und eine 170-Quadratmeter-Wohnung. Die Vorhersagefunktion der Estimator API gibt einen Python-Generator für
+Iterationen der Vorhersagen zurück. Folgendes wissen wir
+schon über die Estimator API: Die Daten wurden mit
+Featurespalten in eine Form gebracht, die das Modell versteht. Basierend auf den Featurespalten
+wurde ein linearer Regressor instanziiert und mit dem Aufruf "train"
+das Modell für 100 Schritte trainiert. Trainingsdaten werden über
+die Dateneingabefunktion eingespeist und "predict" aufgerufen, um
+Vorhersagen zu erhalten, für die die Daten wiederum aus einer
+Dateneingabefunktion stammen. Diese besprechen wir
+später im Kurs genauer. Für einen anderen
+vorgefertigten Estimator müssen Sie nur den Klassennamen ändern und
+geeignete Konfigurationsparameter angeben. Wir könnten etwa ein
+dichtes neuronales Netzwerk, einen Regressor und
+zwei versteckten Schichten verwenden. Die erste hat drei Neuronen, die zweite nur zwei und am Schluss sagt ein einzelnes
+Neuron den Immobilienpreis voraus. Beachten Sie, dass der Eingabevektor
+für beide Modelle derselbe ist. Wir können dieselben
+Featurespalten wiederverwenden. Hier sind einige Punkte, die Sie in 
+dichten neuronalen Netzen anpassen können: Anzahl und Größe
+der versteckten Schichten, Wahl der Aktivierungsfunktion, regulierende Parameter, wie "Löschen" oder
+ein Optimierer zur Trainingssteigerung. Am Wichtigsten ist,
+dass alle gute Standardwerte bieten. Für einen DNN-Regressor sind als Einziges die
+versteckte Schichten Pflichtparameter.

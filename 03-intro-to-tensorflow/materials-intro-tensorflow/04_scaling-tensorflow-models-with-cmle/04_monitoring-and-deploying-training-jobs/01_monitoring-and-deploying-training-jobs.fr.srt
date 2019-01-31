@@ -1,0 +1,218 @@
+1
+00:00:00,000 --> 00:00:04,740
+Prenons un petit instant pour parler
+du contrôle des tâches.
+
+2
+00:00:04,740 --> 00:00:08,655
+Lorsque vous soumettez une tâche
+à exécuter dans CMLE,
+
+3
+00:00:08,655 --> 00:00:11,005
+vous pouvez la contrôler 
+de différentes manières.
+
+4
+00:00:11,005 --> 00:00:13,620
+La plus simple est de regarder
+son état actuel.
+
+5
+00:00:13,620 --> 00:00:15,535
+Vous saurez alors
+si elle est en attente,
+
+6
+00:00:15,535 --> 00:00:17,350
+en cours d'exécution ou déjà terminée.
+
+7
+00:00:17,350 --> 00:00:19,870
+Pendant l'exécution, vous pouvez
+inspecter les entrées
+
+8
+00:00:19,880 --> 00:00:22,020
+de journal les plus récentes
+pour cette tâche,
+
+9
+00:00:22,020 --> 00:00:24,105
+ce que vous pouvez
+aussi faire avec G Cloud.
+
+10
+00:00:24,105 --> 00:00:26,960
+Enfin, lorsque vous exécutez
+plusieurs tâches en parallèle,
+
+11
+00:00:26,960 --> 00:00:30,310
+vous pouvez essayer la fonction
+de liste et de filtre de G Cloud.
+
+12
+00:00:31,920 --> 00:00:36,000
+La console Web GCP est dotée d'une IU
+efficace pour le contrôle de vos tâches.
+
+13
+00:00:36,000 --> 00:00:38,670
+Vous pouvez voir exactement
+comment elles sont appelées,
+
+14
+00:00:38,670 --> 00:00:42,300
+vérifier les journaux, et voir combien
+de CPU et de mémoire elles consomment.
+
+15
+00:00:42,300 --> 00:00:45,265
+L'inspection des entrées de journaux
+peut vous aider à déboguer
+
+16
+00:00:45,265 --> 00:00:47,410
+des problèmes techniques comme
+les exceptions.
+
+17
+00:00:47,410 --> 00:00:50,235
+Mais ce n'est pas fait pour analyser
+les performances du ML.
+
+18
+00:00:50,235 --> 00:00:52,125
+TensorBoard est là pour ça.
+
+19
+00:00:52,125 --> 00:00:55,935
+Pour l'utiliser, vérifiez que votre tâche
+enregistre des données récapitulatives
+
+20
+00:00:55,935 --> 00:00:57,810
+sur l'emplacement Google Cloud Storage.
+
+21
+00:00:57,810 --> 00:01:00,955
+Lorsque vous lancez TensorBoard,
+indiquez simplement ce répertoire.
+
+22
+00:01:00,955 --> 00:01:03,430
+Vous pouvez même gérer
+plusieurs tâches par dossier.
+
+23
+00:01:03,930 --> 00:01:07,360
+Maintenant que nous avons un modèle,
+voyons ce que nous pouvons en faire.
+
+24
+00:01:07,360 --> 00:01:10,910
+Une fois la tâche d'entraînement terminée,
+nous avons un modèle TensorFlow
+
+25
+00:01:10,910 --> 00:01:12,760
+prêt pour les prédictions.
+
+26
+00:01:12,760 --> 00:01:16,090
+CMLE propose une infrastructure
+efficace pour cela.
+
+27
+00:01:16,090 --> 00:01:20,290
+Il crée une application prête pour le Web
+à partir de votre modèle entraîné,
+
+28
+00:01:20,290 --> 00:01:23,535
+et offre un service par lots
+pour vos prédictions les moins sensibles
+
+29
+00:01:23,535 --> 00:01:24,330
+aux latences.
+
+30
+00:01:24,460 --> 00:01:26,360
+Il s'agit d'API REST.
+
+31
+00:01:26,360 --> 00:01:29,870
+Vous pouvez donc faire des inférences
+sûres et évolutives dans le langage
+
+32
+00:01:29,870 --> 00:01:31,970
+de votre choix.
+
+33
+00:01:34,110 --> 00:01:37,935
+Pour envoyer votre artefact de modèle TF
+sur le cloud, vous devez créer
+
+34
+00:01:37,935 --> 00:01:41,055
+une ressource d'inversion de modèle CMLE.
+
+35
+00:01:41,865 --> 00:01:45,230
+Votre fichier 
+de modèle TF entraîné individuel
+
+36
+00:01:45,230 --> 00:01:47,270
+correspond à une version spécifique.
+
+37
+00:01:47,270 --> 00:01:50,430
+Sur CMLE, un modèle est un groupe
+de ces versions qui possède aussi
+
+38
+00:01:50,430 --> 00:01:52,670
+une version par défaut.
+
+39
+00:01:53,240 --> 00:01:56,195
+Cette couche d'abstraction
+et de regroupement supplémentaire
+
+40
+00:01:56,195 --> 00:02:00,470
+permet de migrer le trafic d'une
+version de modèle TF vers la suivante.
+
+41
+00:02:00,750 --> 00:02:03,685
+Il suffit de changer la version
+par défaut du modèle.
+
+42
+00:02:05,550 --> 00:02:08,950
+Voici un exemple simple
+d'utilisation du modèle déployé à distance
+
+43
+00:02:08,950 --> 00:02:11,415
+pour effectuer des prédictions
+avec un appel REST.
+
+44
+00:02:11,660 --> 00:02:15,615
+La prédiction en ligne de CMLE
+repose sur un système sans serveur.
+
+45
+00:02:15,615 --> 00:02:18,720
+Vous n'avez pas à vous soucier
+des allocations de ressources.
+
+46
+00:02:17,807 --> 00:02:20,077
+Elles évoluent pour vous.

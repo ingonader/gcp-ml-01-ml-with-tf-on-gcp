@@ -1,0 +1,99 @@
+Ya debe haber visto este diagrama. TensorFlow se puede ejecutar en
+diferentes configuraciones de hardware. Puede programarlo
+en una API de C++ de bajo nivel y lo más probable es que use la API
+de Python como se practica en este curso. Ya comenzó a ver las diferentes capas de abstracción
+para el entrenamiento distribuido. Pero, ¿ejecuta entrenamiento
+distribuido a escala en la producción? Para hacerlo, presentaremos
+Cloud Machine Learning Engine. Para iniciarse en el AA,
+es frecuente comenzar, pero no terminar con pequeños conjuntos
+de datos que caben en memoria. Para estos conjuntos sencillos,
+casi cualquier marco de AA es suficiente. R, Python y otros lenguajes
+tienen paquetes estadísticos que solo necesitan
+3 o 4 líneas de código para ejecutarse. El Estimador de TensorFlow
+tiene una API similar a Scikit-learn que es fácil y funciona bien
+con conjuntos de datos pequeños. Pero, claro, lo que queremos en realidad es usar conjuntos de datos
+de producción de escala empresarial. Conjuntos tan grandes,
+que no caben en la memoria. Se hace necesario escalar
+a paquetes más sofisticados. Ahora que el conjunto de datos
+ya no cabe en la memoria tendremos que iterar
+muchas veces durante los entrenamientos. Esto puede hacerse
+con una sola máquina, pero no es lo ideal. ¿Imagina esperar semanas solo para ver
+si el entrenamiento es convergente o no? Necesitamos distribuir
+el entrenamiento en varias máquinas. No es tan sencillo como con MapReduce,
+donde todo es terriblemente paralelo. La optimización por descenso de gradientes
+y otros algoritmos no son tan sencillos y requieren servidores de parámetros
+que ayuden a los trabajadores. Estos servidores de parámetros
+forman una suerte de memoria compartida y permiten que cada
+entrenador aprenda de los demás. Suena tentador evitar
+el entrenamiento distribuido usando una máquina gigante con muchos GPU. Sin embargo,
+esto casi nunca resulta a la larga. Los conjuntos de datos suelen crecer
+más rápido que la capacidad de la máquina. La solución es usar
+escalamiento horizontal, no vertical. Otro atajo que muchos intentan
+es tomar muestras de los datos de un tamaño que les permita
+realizar AA con el hardware que tienen. Con este enfoque, se sacrifica
+un rendimiento potencial considerable. Usar todos los datos disponibles y elaborar un plan
+para recopilar diez veces más suele ser la diferencia
+entre el AA que se desempeña bien y el que no. A menudo creamos modelos de AA
+en dominios en que la información humana puede mejorar el rendimiento más que el entrenamiento
+con los datos por sí solo. Solemos usar esta información sobre lo que los expertos
+ya saben del problema en forma de nuevas funciones. Estas funciones se agregan
+después del preprocesamiento de los datos. Es decir, cuando los escalamos,
+los codificamos y demás. Otra vez, el tamaño de los conjuntos
+de datos que queremos utilizar es necesario distribuir
+estos procesos y realizarlos en la nube. Cuando realizamos AA, a menudo tenemos
+que realizar elecciones algo arbitrarias como la cantidad
+de nodos, las incorporaciones o el tamaño del paso
+de una capa convolucional. A medida que sus modelos se complejizan comenzará a preguntarse
+si eligió los valores adecuados. Ya sea de forma manual o automática tendrá que realizar una búsqueda
+en el espacio de hiperparámetros para ver si sería mejor
+utilizar otros valores. La cantidad de capas o de nodos
+son hiperparámetros obvios. Pero, como verá en este curso es conveniente tomar
+las opciones de preprocesamiento como la cantidad de depósitos,
+y también tratarlas como hiperparámetros. Hasta ahora, hablamos del entrenamiento. Pero ¿de qué sirve un modelo entrenado
+si no lo puede usar para las inferencias? No es conveniente, y a menudo
+no es posible, integrar directamente nuestro modelo de AA a la aplicación
+que necesita las funciones predichas. Una buena forma de manejar esto es
+envolver el modelo en un microservicio y hacer que otros
+microservicios se comuniquen con él al igual que cualquier aplicación web. Esto tiene la ventaja
+de que nos permite actualizar el modelo y ejecutar pruebas A/B
+sin cambiar la lógica de la aplicación. Solo hay que cambiar los microservicios. ¿Cómo aprovisionamos la cantidad
+adecuada de hardware para este modelo? Los sistemas eficaces
+usan autoescalamiento para adaptarse
+a sus necesidades en cada momento. En Cloud, puede escalar a cero máquinas o a las que necesite para manejar
+muchas consultas por segundo. Permítame ahorrarle dolores de cabeza. ¿Recuerda que hablamos sobre procesar
+sus ejemplos antes del entrenamiento? Bueno, tenga cuidado. Asegúrese de que ese procesamiento previo
+también se realice para las predicciones. Además del procesamiento previo,
+hay otras diferencias potenciales entre sus modelos
+de entrenamiento y predicción. Usar un estándar como Cloud MLE
+lo ayudará a eliminar estos problemas. Aunque no se menciona mucho sus entradas de predicción serán sistemáticamente
+diferentes a las del entrenamiento. De maneras sutiles
+y difíciles de detectar. Tal vez se modificó
+el promedio de alguna columna o la varianza aumentó con el tiempo. Esto se denomina distorsión. Para detectarla, hay que recopilar datos
+y reexaminarlos en forma continua. Usar TensorFlow básico
+por su cuenta no es fácil. Tiene que instalar controladores,
+tener las máquinas adecuadas hacer un seguimiento
+del orden del procesamiento previo los parámetros de escalamiento, etcétera. Pero Google Cloud puede ayudar. Ofrecemos varios servicios de macrodatos. Hoy me quiero enfocar
+en Cloud Machine Learning Engine o CMLE. Le brinda las máquinas
+que necesita en el momento justo. Simplifica la contabilidad y garantiza que el modelo entrenado sea
+lo que se ejecuta durante la predicción. Es un servicio muy escalable que facilita
+la entrega y el entrenamiento distribuido. CMLE ayuda a distribuir
+el procesamiento previo muestra los
+servidores de parámetros y ajusta los hiperparámetros. Para las predicciones, se puede acceder
+al modelo de AA con una API de REST que incluye la creación de funciones
+de procesamiento que pondría usted. Así, el código del cliente puede
+proporcionar las variables de entrada con lo que recopiló del archivo
+de registro, el sensor o la base de datos y obtener una predicción. CMLE también escala su servicio
+con la cantidad de máquinas que necesite para alcanzar más consultas
+por segundo. Y esto es importante. Necesita una ejecución de calidad
+durante el entrenamiento y la predicción. Los cálculos de los modelos
+de TensorFlow son relativamente baratos pero la clave es obtener
+muchas predicciones de su modelo de AA. Los notebooks
+como Cloud Datalab o Kaggle Kernels son una gran forma de comenzar y reforzar
+rápidamente el desarrollo de su modelo. Le permiten explorar
+los datos de forma interactiva para encontrar y explorar nuevas funciones o hacer trabajos
+de entrenamiento y evaluación. La interfaz combina
+el código, los resultados y la documentación en un formato legible. Y como está en Cloud,
+tiene funciones para compatir y colaborar además de instructivos. Datalab nos ofrece una gran ventaja y una transición sencilla
+para escalar el procesamiento con diversos servicios de Google Cloud. En este ejemplo, puede ver
+que lanzamos un trabajo de Apache Beam en Dataflow, que puede
+distribuirse a muchas VM.

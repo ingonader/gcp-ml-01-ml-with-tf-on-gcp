@@ -1,0 +1,483 @@
+1
+00:00:00,720 --> 00:00:04,115
+A common situation that practitioners encounter,
+
+2
+00:00:04,115 --> 00:00:06,685
+is that they rerun model code that they've written
+
+3
+00:00:06,685 --> 00:00:10,910
+expecting it to produce the same output, only it doesn't.
+
+4
+00:00:10,910 --> 00:00:15,025
+Programmers are often used to working in deterministic settings.
+
+5
+00:00:15,025 --> 00:00:18,015
+In ML, this is sometimes not the case.
+
+6
+00:00:18,015 --> 00:00:20,870
+For many models, if you retrain the model a second
+
+7
+00:00:20,870 --> 00:00:24,225
+time even when using the same hyperparameter settings,
+
+8
+00:00:24,225 --> 00:00:27,475
+the resulting parameter settings might be very different.
+
+9
+00:00:27,475 --> 00:00:30,120
+This at first seems disconcerting.
+
+10
+00:00:30,120 --> 00:00:32,600
+Aren't we looking for the best set of parameters?
+
+11
+00:00:32,600 --> 00:00:34,960
+Does this mean that gradient descent isn't working,
+
+12
+00:00:34,960 --> 00:00:37,140
+or that I've implemented incorrectly?
+
+13
+00:00:37,140 --> 00:00:40,740
+Not necessarily. What it could mean
+
+14
+00:00:40,740 --> 00:00:44,010
+is that instead of searching a loss surface like on the left hand side,
+
+15
+00:00:44,010 --> 00:00:47,585
+we're actually searching loss surfaces like on the right hand side.
+
+16
+00:00:47,585 --> 00:00:51,465
+Notice that whereas the left hand side loss surface has a single bottom,
+
+17
+00:00:51,465 --> 00:00:53,920
+the right hand side has more than one.
+
+18
+00:00:53,920 --> 00:00:57,475
+The formal name for this property is convexity.
+
+19
+00:00:57,475 --> 00:01:03,015
+The left hand side is a convex surface whereas the right hand side is non-convex.
+
+20
+00:01:03,015 --> 00:01:07,490
+Why might an ML model's loss surface have more than one minimum?
+
+21
+00:01:07,490 --> 00:01:10,350
+Well it means that there are a number of equivalent,
+
+22
+00:01:10,350 --> 00:01:13,340
+or close to equivalent points in parameter space.
+
+23
+00:01:13,340 --> 00:01:15,370
+Meaning settings for our parameters that produce
+
+24
+00:01:15,370 --> 00:01:18,395
+models with the same capacity to make predictions.
+
+25
+00:01:18,395 --> 00:01:20,370
+We'll revisit this later on,
+
+26
+00:01:20,370 --> 00:01:21,965
+when we introduce neural networks,
+
+27
+00:01:21,965 --> 00:01:24,375
+because they're a prime example of where this happens.
+
+28
+00:01:24,375 --> 00:01:26,640
+So it's okay if it's not clear.
+
+29
+00:01:26,640 --> 00:01:29,180
+For now, simply keep in mind that
+
+30
+00:01:29,180 --> 00:01:33,025
+loss services vary with respect to the number of minima that they have.
+
+31
+00:01:33,025 --> 00:01:36,560
+Sometimes fast just isn't fast enough.
+
+32
+00:01:36,560 --> 00:01:39,660
+We all hate waiting for models to finish training.
+
+33
+00:01:39,660 --> 00:01:43,120
+Is there a way to make model training go even faster?
+
+34
+00:01:43,120 --> 00:01:46,045
+Yes. But to understand what our options are,
+
+35
+00:01:46,045 --> 00:01:48,020
+it's best to consider the high level steps of
+
+36
+00:01:48,020 --> 00:01:51,005
+our algorithm and their sources of time complexity.
+
+37
+00:01:51,005 --> 00:01:55,675
+Here I've depicted the three primary steps our algorithm must go through.
+
+38
+00:01:55,675 --> 00:01:58,245
+When we calculate the derivative,
+
+39
+00:01:58,245 --> 00:02:00,500
+the cost of the calculation is proportional to
+
+40
+00:02:00,500 --> 00:02:03,235
+the number of data points we are putting into our loss function,
+
+41
+00:02:03,235 --> 00:02:06,315
+as well as the number of parameters in our model.
+
+42
+00:02:06,315 --> 00:02:11,855
+In practice, models can vary from tens of parameters to hundreds of millions.
+
+43
+00:02:11,855 --> 00:02:17,640
+Similarly, datasets can vary from a few thousand points to hundreds of billions.
+
+44
+00:02:17,640 --> 00:02:20,670
+For the case of updating the models parameters,
+
+45
+00:02:20,670 --> 00:02:23,270
+this happens once per loop and its cost
+
+46
+00:02:23,270 --> 00:02:26,605
+is determined solely by the number of parameters in the model.
+
+47
+00:02:26,605 --> 00:02:31,890
+However, the cost of making the update is typically small relative to the other steps.
+
+48
+00:02:31,890 --> 00:02:34,810
+Finally there's checking the loss.
+
+49
+00:02:34,810 --> 00:02:39,220
+This step time complexity is proportional to the number of data points in the set that
+
+50
+00:02:39,220 --> 00:02:43,445
+we're using for measuring the loss and the complexity of our model.
+
+51
+00:02:43,445 --> 00:02:47,415
+Surprisingly, even though we have represented this process has a loop,
+
+52
+00:02:47,415 --> 00:02:50,695
+the check loss step needing to be done at every pass.
+
+53
+00:02:50,695 --> 00:02:56,155
+And the reason for this, is that most changes in the loss function are incremental.
+
+54
+00:02:56,155 --> 00:03:00,370
+So what can we change to improve training time?
+
+55
+00:03:00,370 --> 00:03:04,280
+Typically, the number of affected parameters in a model is fixed,
+
+56
+00:03:04,280 --> 00:03:09,450
+although we'll return to how this might be varied in a future module on regularisation.
+
+57
+00:03:09,450 --> 00:03:12,630
+Additionally, although it might sound appealing to
+
+58
+00:03:12,630 --> 00:03:15,345
+reduce the number of data points used to check the loss,
+
+59
+00:03:15,345 --> 00:03:18,270
+this is generally not recommended.
+
+60
+00:03:18,270 --> 00:03:22,830
+Instead, we have two main knobs to turn to improve training time.
+
+61
+00:03:22,830 --> 00:03:25,770
+The number of data points we calculate the derivative on,
+
+62
+00:03:25,770 --> 00:03:28,600
+and the frequency with which we check the loss.
+
+63
+00:03:28,600 --> 00:03:32,270
+As we said, one of the knobs we can turn to speed up model training,
+
+64
+00:03:32,270 --> 00:03:35,595
+is the number of data points that we calculate the derivative on.
+
+65
+00:03:35,595 --> 00:03:38,750
+Remember, the derivative comes from our loss function,
+
+66
+00:03:38,750 --> 00:03:42,800
+and our loss function composes the error of a number of predictions together.
+
+67
+00:03:42,800 --> 00:03:46,420
+So, this method essentially reduces the number of data points
+
+68
+00:03:46,420 --> 00:03:50,470
+that we feed into our loss function at each iteration of our algorithm.
+
+69
+00:03:50,470 --> 00:03:55,125
+Take a moment and think about why this might still work.
+
+70
+00:03:55,125 --> 00:03:58,680
+The reason that this might still work,
+
+71
+00:03:58,680 --> 00:04:00,870
+is that it's possible to extract samples from
+
+72
+00:04:00,870 --> 00:04:04,475
+our training data that on average balance each other out.
+
+73
+00:04:04,475 --> 00:04:09,410
+We'll talk more about pitfalls for sampling and how to avoid them in later modules.
+
+74
+00:04:09,410 --> 00:04:11,360
+For now, just keep in mind that
+
+75
+00:04:11,360 --> 00:04:15,320
+our sampling strategy selects from our training set with uniform probability.
+
+76
+00:04:15,320 --> 00:04:20,800
+So, every instance in the training set has an equal chance of being seen by the model.
+
+77
+00:04:20,800 --> 00:04:24,580
+In ML, we refer to this practice of sampling from
+
+78
+00:04:24,580 --> 00:04:27,725
+our training set during training as mini-batching,
+
+79
+00:04:27,725 --> 00:04:32,175
+and this variant of gradient descent as mini-batch gradient descent.
+
+80
+00:04:32,175 --> 00:04:36,100
+The samples themselves are referred to as batches.
+
+81
+00:04:36,100 --> 00:04:41,230
+Mini-batch gradient descent has the added benefit in addition to costing less time,
+
+82
+00:04:41,230 --> 00:04:45,660
+of using less memory and of being easy to parallelize.
+
+83
+00:04:45,660 --> 00:04:51,315
+Now a quick aside. You might hear people using the term batch gradient descent.
+
+84
+00:04:51,315 --> 00:04:54,585
+The batch there refers to batch processing.
+
+85
+00:04:54,585 --> 00:04:58,170
+So, batch gradient descent computes the gradient on the entire dataset.
+
+86
+00:04:58,170 --> 00:05:02,440
+It is definitely not the same as mini-batch gradient descent.
+
+87
+00:05:02,440 --> 00:05:06,100
+Here, we're talking about mini-batch gradient descent.
+
+88
+00:05:06,100 --> 00:05:10,845
+Confusingly, mini-batch size is often just called batch size.
+
+89
+00:05:10,845 --> 00:05:12,700
+This is what TensorFlow calls it.
+
+90
+00:05:12,700 --> 00:05:15,115
+And so, this is what we will call it too.
+
+91
+00:05:15,115 --> 00:05:17,415
+In the rest of the specialization,
+
+92
+00:05:17,415 --> 00:05:18,940
+when we talk about batch size,
+
+93
+00:05:18,940 --> 00:05:23,740
+we're actually talking about the size of the samples in mini-batch gradient descent.
+
+94
+00:05:23,740 --> 00:05:26,835
+So, how big should those mini-batches be?
+
+95
+00:05:26,835 --> 00:05:28,620
+Well like learning rate,
+
+96
+00:05:28,620 --> 00:05:30,880
+batch size is another hyperparameter.
+
+97
+00:05:30,880 --> 00:05:33,330
+And as such, it's optimal value is problem
+
+98
+00:05:33,330 --> 00:05:36,310
+dependent and can be found using hyperparameter tuning,
+
+99
+00:05:36,310 --> 00:05:37,995
+which we'll talk about later.
+
+100
+00:05:37,995 --> 00:05:42,320
+Typically, batch size is between 10 and 100 examples.
+
+101
+00:05:42,320 --> 00:05:44,470
+Well, like learning rate,
+
+102
+00:05:44,470 --> 00:05:47,405
+batch size is another hyperparameter and as such,
+
+103
+00:05:47,405 --> 00:05:52,080
+its optimal value is problem dependent and can be found using hyperparameter tuning,
+
+104
+00:05:52,080 --> 00:05:53,970
+which we'll talk about later.
+
+105
+00:05:53,970 --> 00:05:58,685
+Typically, batch size is between 10 and 1,000 examples.
+
+106
+00:05:58,685 --> 00:06:01,525
+The other knob we can turn to speed up model training,
+
+107
+00:06:01,525 --> 00:06:04,325
+is the frequency with which we check the loss.
+
+108
+00:06:04,325 --> 00:06:09,065
+Recall that although it will be great to simply check the loss on a subset of the data,
+
+109
+00:06:09,065 --> 00:06:11,240
+this isn't a good idea.
+
+110
+00:06:11,240 --> 00:06:13,740
+The implementation is quite simple.
+
+111
+00:06:13,740 --> 00:06:15,105
+We introduce some logic,
+
+112
+00:06:15,105 --> 00:06:19,675
+such that our expensive compute loss function evaluates reduced frequency.
+
+113
+00:06:19,675 --> 00:06:23,305
+Some popular strategies for the ready to update loss function,
+
+114
+00:06:23,305 --> 00:06:25,435
+are time-based and step-based.
+
+115
+00:06:25,435 --> 00:06:28,295
+For example, once every 1,000 steps,
+
+116
+00:06:28,295 --> 00:06:30,525
+or once every 30 minutes.
+
+117
+00:06:30,525 --> 00:06:32,900
+With the reduction of the frequency that we check
+
+118
+00:06:32,900 --> 00:06:35,385
+the loss and the introduction of mini-batching,
+
+119
+00:06:35,385 --> 00:06:39,260
+we've now begun to decouple the two fundamental parts of model training.
+
+120
+00:06:39,260 --> 00:06:41,100
+Changing our model's parameters,
+
+121
+00:06:41,100 --> 00:06:44,000
+and checking to see when we've made the right changes.

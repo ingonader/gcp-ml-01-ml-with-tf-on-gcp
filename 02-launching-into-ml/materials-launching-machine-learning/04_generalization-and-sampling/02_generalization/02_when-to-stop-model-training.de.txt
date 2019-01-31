@@ -1,0 +1,78 @@
+Zusätzlich zur Frage, 
+welches ML-Modell geeignet ist, ein lineares Regressionsmodell
+oder auch ein neuronales Netzwerk, kann ein Validierungs-Dataset 
+beim Feinschliff der Hyperparameter eines einzelnen Modells helfen. Denken Sie daran, 
+dass diese Hyperparameter vor dem Training 
+bestimmt werden. Diese Abstimmung
+erfolgt über sukzessive Trainingsläufe, die dann mit dem 
+unabhängigen Validierungs-Dataset verglichen werden, 
+um eine Überanpassung auszuschließen. So wird das Validierungs-Set
+beim Training tatsächlich verwendet. Wie beim Thema 
+Optimierung schon beschrieben, beginnen wir beim Training des Modells 
+mit der Berechnung beliebiger Gewichtungen, bilden die Ableitung, untersuchen die
+Richtung der Gradientenabfallsverlustkurve, minimieren den Verlustwert 
+und wiederholen den Vorgang. Die Leistung des 
+Modells sollte in regelmäßigen Abständen anhand unbekannter 
+Daten bewertet werden. Dafür verwenden 
+wir das Validierungs-Dataset. Nach Abschluss eines Trainingslaufs können Sie die
+Ergebnisse des Modells anhand des Validierungs-Datasets 
+auswerten und kontrollieren, ob die Hyperparameter
+in Ordnung sind oder nicht. Wenn es keine
+signifikante Abweichung zwischen den
+Verlustwerten aus dem Training und den Werten 
+aus dem Validierungslauf gibt, könnte man die Hyperparameter 
+noch etwas weiter optimieren. Nachdem die Verlustwerte aus 
+dem Modell optimiert wurden und das 
+Validierungs-Dataset passiert haben, also beim Auftreten der Abweichung, und wenn Sie eine
+Überanpassung ausgeschlossen haben, ist der Zeitpunkt gekommen, an dem das Modell angepasst 
+und bereit für die Produktion ist. Mit einer ähnlichen 
+Schleife können Sie herausfinden, welche Parameter 
+für Ihre Modelle geeignet sind, so wie die Hyperparameter 
+vor dem Training bestimmt wurden, z. B. die Ebenen eines Netzwerkes oder die
+Zahl der Knoten, die Sie verwenden sollten. Sie trainieren mit einer Konfiguration
+wie sechs Knoten im neuronalen Netzwerk, dann trainieren Sie mit einer anderen und bewerten, welche mit dem 
+Validierungs-Dataset besser funktioniert. Am Ende wählen Sie eine Konfiguration, die zu geringeren 
+Verlusten im Validierungs-Dataset führt und nicht die, die geringere 
+Verluste im Trainings-Dataset erzielt. In dieser Spezialisierung zeigen wir, wie Cloud ML Engine
+eine Bayes'sche Kurzsuche durch einen Hyperparameterraum durchführt. Sie müssen dieses Experiment 
+nicht mit jedem Hyperparameter machen. Mit Cloud Machine Learning
+Engine können Sie diese Experimente parallel zu einer anderen 
+Optimierungsstrategie ausführen. Nachdem Sie 
+das Training abgeschlossen haben, möchte Ihr Chef wissen, 
+ob das Modell gut funktioniert. Welches Dataset verwenden Sie 
+für diese entscheidende Auswertung? Ist es möglich, den Fehler 
+in Ihrem Validierungs-Dataset zu melden, auch wenn er
+mit Ihrem Trainings-Dataset übereinstimmt? Tatsächlich ist das
+nicht möglich. Warum ist das so? Sie haben das Validierungs-
+Dataset verwendet, um zu entscheiden, wann Sie das Training beenden. Es ist nicht mehr
+unabhängig, das Modell kennt es bereits. Was können Sie also tun? Eigentlich müssen Sie 
+Ihre Daten in drei Teile aufteilen: Training, Validierung und ein 
+komplett isoliertes Silo, nämlich Testen. Nachdem Ihr Modell 
+trainiert und validiert wurde, können Sie es nur einmal auf dem unabhängigen 
+Test-Dataset schreiben. Das ist der Verlustwert, 
+den Sie melden können. Dieser Verlustwert 
+entscheidet beim Test-Dataset, ob dieses Modell 
+in die Produktion gehen soll. Was passiert, wenn das
+Modell beim Testen durchfällt, obwohl es beim Validieren bestanden hat? Dann können Sie 
+dieses ML-Modell nicht mehr testen und müssen entweder 
+ein neues ML-Modell trainieren oder wieder von vorn beginnen und neue Daten für
+Ihr ML-Modell generieren. Obwohl das ein guter Ansatz ist, gibt es ein kleines Problem. Niemand möchte Daten verschwenden. Die Testdaten werden aber verschwendet, denn sie werden nur einmal verwendet. Kann man nicht 
+alle Daten im Training verwenden und trotzdem gut erkennen,
+wie gut das Modell funktionieren wird? Die Antwortet lautet "Ja". Der Kompromiss besteht darin, mehrmals eine Aufteilung in 
+Training und Validierung vorzunehmen. Also trainieren, den Verlust im 
+Validierungs-Dataset berechnen, wobei dieses Validierungs-Set 
+aus Punkten bestehen könnte, die nicht im 
+ersten Training vorkamen, und die Daten erneut aufteilen. Vielleicht enthalten 
+die Trainingsdaten Punkte, die in der ersten
+Validierung schon verwendet wurden, aber Sie führen 
+den Vorgang ja mehrmals aus. Nach mehreren 
+Runden dieser Durchmischung mitteln Sie die Validierungs-Verlustwerte. Sie erhalten eine Standard-
+abweichung der Validierungsverluste, mit der Sie die Spanne analysieren
+und das Ergebnis nutzen können. Dieser Vorgang heißt 
+"Bootstrapping" oder "Kreuzvalidierung". Der Vorteil ist, dass
+alle Daten benutzt werden, dafür müssen Sie aber öfter trainieren, weil Sie mehr Splits erstellen. Zusammengefasst müssen 
+Sie also Folgendes beachten. Wenn Sie viele Daten haben, sollten Sie ein völlig 
+unabhängiges Test-Dataset verwenden, quasi eine Alles-oder-Nichts-Entscheidung. Wenn Sie nicht so viele Daten haben, sollten Sie mit 
+der Kreuzvalidierung arbeiten. Wie schaffen Sie es also, diese großen
+Datasets in Silos aufzuteilen? Darum wird es im 
+nächsten Kurs zum Sampling gehen.

@@ -1,0 +1,303 @@
+1
+00:00:00,260 --> 00:00:03,123
+Vamos ver este segundo
+laboratório de código juntos.
+
+2
+00:00:03,123 --> 00:00:08,665
+Desta vez, veremos como usar a API Dataset
+para criar funções de entrada.
+
+3
+00:00:08,665 --> 00:00:11,223
+Vamos localizar os
+arquivos do laboratório.
+
+4
+00:00:11,223 --> 00:00:16,429
+Acessamos cloud.goole.com/console
+
+5
+00:00:16,429 --> 00:00:20,260
+e entramos com nossa
+conta de laboratório.
+
+6
+00:00:28,109 --> 00:00:30,090
+Aqui estamos no console.
+
+7
+00:00:30,090 --> 00:00:32,280
+Podemos abrir o Cloud Shell
+
+8
+00:00:33,360 --> 00:00:37,990
+e reconectar à nossa instância
+do Datalab existente
+
+9
+00:00:37,990 --> 00:00:43,348
+digitando datalab connect mylab.
+
+10
+00:00:50,883 --> 00:00:53,883
+A conexão é estabelecida.
+
+11
+00:00:53,883 --> 00:00:57,710
+Agora vá para o botão "Preview"
+
+12
+00:00:57,710 --> 00:01:02,798
+e altere a porta para 8081,
+que é a que o Datalab usa.
+
+13
+00:01:04,184 --> 00:01:09,761
+E aqui estamos na interface
+usual do bloco de notas.
+
+14
+00:01:09,761 --> 00:01:15,747
+Vamos criar um novo bloco de notas só
+para digitar alguns comandos git
+
+15
+00:01:15,747 --> 00:01:17,483
+e baixar os códigos.
+
+16
+00:01:17,483 --> 00:01:20,645
+Então %bash
+
+17
+00:01:20,645 --> 00:01:26,244
+e clonamos este repositório.
+
+18
+00:01:29,862 --> 00:01:35,745
+Ele está em execução, e o repositório
+apareceu aqui como training-data-analyst.
+
+19
+00:01:35,755 --> 00:01:38,130
+Vamos localizar nossos
+arquivos de laboratório.
+
+20
+00:01:38,130 --> 00:01:44,228
+Clicamos em "training-data-analyst",
+depois em "courses",
+
+21
+00:01:44,228 --> 00:01:47,986
+em "machine_learning",
+
+22
+00:01:47,986 --> 00:01:54,050
+depois em "deepdive".
+E, por fim, em "TensorFlow".
+
+23
+00:01:55,443 --> 00:02:00,578
+O segundo laboratório se chama c_dataset.
+Vamos abri-lo.
+
+24
+00:02:07,300 --> 00:02:12,153
+A API Dataset pode ser usada para criar
+as funções de entrada para o estimador.
+
+25
+00:02:12,153 --> 00:02:17,409
+Ela faz o carregamento progressivo.
+Use-a se tiver um grande conjunto de dados.
+
+26
+00:02:19,665 --> 00:02:22,515
+Vamos olhar para o código aqui.
+
+27
+00:02:24,839 --> 00:02:29,944
+Nosso conjunto de dados no disco é
+um conjunto de arquivos CSV fragmentados.
+
+28
+00:02:29,944 --> 00:02:35,025
+Usamos a função dataset.list_files
+para verificar o disco e
+
+29
+00:02:35,025 --> 00:02:37,668
+conseguir um conjunto de dados
+de nomes de arquivos.
+
+30
+00:02:37,668 --> 00:02:42,625
+A função TextLineDataset pode ser
+usada para ler cada arquivo
+
+31
+00:02:42,625 --> 00:02:45,467
+e transformá-lo em um conjunto
+de linhas de texto.
+
+32
+00:02:45,467 --> 00:02:48,025
+Essa é uma tranformação
+um para muitos.
+
+33
+00:02:48,025 --> 00:02:51,156
+Um nome de arquivo se torna
+várias linhas de texto.
+
+34
+00:02:51,156 --> 00:02:54,070
+Nós aplicamos com a função flat map.
+
+35
+00:02:54,070 --> 00:02:58,269
+Agora temos um único conjunto de dados
+de linhas de texto geradas
+
+36
+00:02:58,269 --> 00:03:00,836
+do conteúdo de todos os arquivos.
+
+37
+00:03:00,836 --> 00:03:03,006
+Esta é apenas uma
+representação conceitual.
+
+38
+00:03:03,006 --> 00:03:05,993
+Os arquivos não foram todos
+carregados na memória.
+
+39
+00:03:05,993 --> 00:03:08,110
+Eles não caberiam.
+
+40
+00:03:08,110 --> 00:03:13,010
+Por fim, usamos a função map para
+aplicar uma
+
+41
+00:03:13,010 --> 00:03:16,346
+transformação de um para um
+às linhas de texto.
+
+42
+00:03:16,346 --> 00:03:19,808
+Cada linha é analisada como
+um conjunto de
+
+43
+00:03:19,808 --> 00:03:24,597
+valores separados por vírgula (CSV),
+e se torna uma lista de atributos.
+
+44
+00:03:24,597 --> 00:03:27,812
+A decodificação em si acontece aqui.
+
+45
+00:03:27,812 --> 00:03:33,192
+Agora temos o conjunto de dados
+de atributos e rótulos que queríamos aqui.
+
+46
+00:03:36,039 --> 00:03:41,697
+Aplicamos a função shuffle em um
+determinado tamanho de buffer de shuffle.
+
+47
+00:03:41,697 --> 00:03:46,754
+Repetimos para um determinado
+número de épocas
+
+48
+00:03:46,754 --> 00:03:51,401
+e dividimos em minilotes.
+
+49
+00:03:51,401 --> 00:03:55,750
+Finalmente, chamamos a função get_next,
+
+50
+00:03:55,750 --> 00:04:00,638
+que retorna os atributos e rótulos como
+uma nota do TensorFlow.
+
+51
+00:04:00,638 --> 00:04:02,593
+É isso que nosso modelo espera.
+
+52
+00:04:02,593 --> 00:04:06,693
+Toda vez que o modelo executar
+essas anotações durante o treinamento,
+
+53
+00:04:06,693 --> 00:04:10,039
+ele entregará o próximo lote
+de atributos e rótulos,
+
+54
+00:04:10,039 --> 00:04:14,903
+acionando operações de carregamento
+de arquivos quando necessário.
+
+55
+00:04:15,663 --> 00:04:21,688
+Aqui, nós definimos as funções
+de validação de treino
+
+56
+00:04:21,688 --> 00:04:29,140
+e de entrada de conjunto de dados de teste
+carregando arquivos CSV correspondentes.
+
+57
+00:04:29,140 --> 00:04:34,686
+taxi-train.csv, taxi-valid.csv
+e taxi-text.csv
+
+58
+00:04:38,666 --> 00:04:41,062
+Vamos executar essas células.
+
+59
+00:04:46,032 --> 00:04:53,096
+Deixamos as colunas de atributo como
+estão, e estamos prontos para treinar.
+
+60
+00:04:56,892 --> 00:04:59,074
+O treinamento está sendo executado.
+
+61
+00:04:59,074 --> 00:05:05,471
+Chamamos a função model.train,
+como antes, em nossa função de entrada,
+
+62
+00:05:05,471 --> 00:05:08,380
+para obter o conjunto de
+dados de treinamento.
+
+63
+00:05:10,367 --> 00:05:12,703
+Nós temos um modelo treinado.
+
+64
+00:05:12,703 --> 00:05:19,305
+E agora, finalmente, avaliamos e
+conseguimos nossas métricas de validação.
+
+65
+00:05:22,448 --> 00:05:27,620
+Aqui estão elas. E isso é tudo para este
+laboratório de código.

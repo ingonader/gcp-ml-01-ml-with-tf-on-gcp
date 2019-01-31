@@ -1,0 +1,143 @@
+Wir haben uns das
+Trinkgeld-Dataset bereits angesehen und gesagt, dass wir entweder den
+Trinkgeldbetrag oder das Geschlecht des Kunden
+als Label verwenden können. In Option 1 nehmen wir den Trinkgeldbetrag
+als Label und möchten ihn anhand der anderen Merkmale
+im Dataset vorhersagen. Nehmen wir an,
+Sie verwenden nur ein Merkmal, nämlich den Gesamtrechnungsbetrag,
+zur Vorhersage des Trinkgelds. Da das Trinkgeld eine
+kontinuierliche Zahl ist, ist dies ein Regressionsproblem. Das Ziel bei Regressionsproblemen ist es, mit mathematischen Funktionen
+und verschiedenen Kombinationen von Merkmalen den kontinuierlichen
+Wert des Labels vorherzusagen. Das wird durch die Linie dargestellt, wobei ein Rechnungsbetrag
+multipliziert mit der Kurvensteigung einen kontinuierlichen Wert als
+Trinkgeld ergibt. Nehmen wir an, die durchschnittliche
+Trinkgeldhöhe beträgt 18 % des Rechnungsbetrags. Dann ist die Kurvensteigung 0,18. Die Multiplikation des Rechnungsbetrags
+mit 0,18 ergibt die Trinkgeldvorhersage. Diese Regression mit einem Merkmal lässt
+sich auf weitere Merkmale ausweiten. In diesem Fall haben wir ein
+mehrdimensionales Problem, aber das Prinzip ist dasselbe. Der Wert jedes Merkmals multipliziert
+mit der Steigung einer Hyperebene, der Generalisierung einer Geraden, ergibt
+einen kontinuierlichen Wert für das Label. Bei Regressionsproblemen möchten wir den Fehler zwischen dem
+vorausgesagten kontinuierlichen Wert und dem kontinuierlichen Wert des Labels mithilfe der mittleren quadratischen
+Abweichung minimieren. In Option 2 verwenden wir
+das Geschlecht als Label und sagen das Geschlecht des Kunden mit Daten
+aus Trinkgeld und Rechnungsbetrag voraus. Wie wir an den Daten sehen,
+ist das natürlich eine schlechte Idee. Die Daten für Männer und Frauen
+sind nicht wirklich getrennt und wir würden ein
+fürchterliches Modell erhalten. Aber der Versuch hilft mir
+zu veranschaulichen, was passiert, wenn die Zielantwort nicht
+kontinuierlich, sondern kategorial ist. Die möglichen Werte
+für die Spalte "Geschlecht", zumindest in diesem Dataset, sind überschaubar: männlich oder weiblich. Da das Geschlecht kategorisch ist und wir die Spalte "Geschlecht"
+des Datasets als Label nehmen, ist dies ein Klassifikationsproblem. Bei Klassifikationsproblemen
+suchen wir keine kontinuierliche Variable, sondern möchten eine Entscheidungsgrenze
+zur Trennung der Klassen erstellen. In diesem Fall haben wir also
+zwei Klassen: weiblich und männlich. Eine lineare Entscheidungsgrenze bildet
+eine Gerade oder Hyperebene (bei mehreren Dimensionen) mit einer Klasse auf jeder Seite. Wenn zum Beispiel das Trinkgeld höher als 0,18 multipliziert mit 
+dem Rechnungsbetrag ist, ergibt die Prognose,
+dass ein Mann bezahlt hat. Das zeigt die rote Linie. Das funktioniert aber bei
+diesem Dataset nicht sehr gut. Männer haben einen
+höheren Schwankungsbereich, während Frauen ähnlicheres Trinkgeld geben. Dies ist ein Beispiel für eine
+nicht lineare Entscheidungsgrenze, dargestellt durch die gelben Bögen im Diagramm. Woher wissen wir,
+dass die rote Grenze schlecht und die gelbe besser ist? Bei Klassifikationsproblemen möchten wir
+den Fehler bzw. die Fehlklassifikation zwischen der vorhergesagten Klasse 
+und der Klasse des Labels minimieren. Dazu verwendet man
+normalerweise Kreuzentropie. Auch wenn wir
+das Trinkgeld voraussagen, müssen wir vielleicht nicht
+die genaue Höhe wissen. Vielmehr interessiert uns, ob das
+Trinkgeld hoch, mittel oder niedrig ist. Als hoch könnten wir
+Beträge über 25 % definieren, als mittel Beträge zwischen 15 und 25 % und als niedriges Trinkgeld
+Beträge unter 15 %. Sprich, wir könnten
+in Richtung des Betrags diskretisieren. Und jetzt wird die
+Prognose der Trinkgeldhöhe oder besser der Trinkgeldklasse
+zu einem Klassifikaitonsproblem. Ein rohes kontinuierliches Merkmal lässt
+sich in ein kategorisches diskretisieren. Im Verlauf dieses Kurses gehen wir noch genauer auf
+den umgekehrten Prozess ein. Ein kategorisches Merkmal kann in einen
+kontinuierlichen Raum eingebettet werden. Das hängt von dem Problem ab,
+das Sie zu lösen versuchen, und davon, was am besten funktioniert. Beim maschinellen Lernen
+geht es um Versuche. Beide Problemtypen,
+Regression und Klassifikation, können wir uns als
+Vorhersageprobleme vorstellen. Unüberwachte Probleme hingegen
+eher als Beschreibungsprobleme. Doch wo kommen eigentlich all diese Daten her? Etwas wie dieses Trinkgeld-Dataset
+nennen wir strukturierte Daten, die aus Zeilen und Spalten bestehen. Eine sehr übliche Quelle für strukturierte
+Daten bei ML ist Ihr Data Warehouse. Unstrukturierte Daten sind zum Beispiel
+Bilder, Audio- oder Videodaten. Hier zeige ich Ihnen ein
+Geburtenraten-Dataset, ein öffentliches Dataset
+mit medizinischen Daten. Dabei handelt es sich um ein
+öffentlich verfügbares Dataset in BigQuery, das wir später in diesem Kurs verwenden. Vorerst nehmen wir an, dass dieses
+Dataset in unserem Data Warehouse ist. Wir möchten nun für ein Baby
+die Schwangerschaftswoche vorhersagen. Genauer gesagt, vorhersagen,
+wann das Baby geboren wird. Sie können mit einer SQL-SELECT-Anweisung
+in BigQuery ein ML-Dataset erstellen. Wir wählen Eingabemerkmale
+für das Modell aus, wie Alter der Mutter, Gewichtszunahme und das Label, die Schwangerschaftswoche. Da die Schwangerschaftswoche
+eine kontinuierliche Zahl ist, ist dies ein Regressionsproblem. Vorhersagen aufgrund von strukturierten
+Daten zu treffen, ist sehr gebräuchlich und darauf haben wir uns im ersten Teil
+dieses Kurses konzentriert. Natürlich dient dieses medizinische
+Dataset auch für andere Prognosen. Wir möchten vielleicht das Babygewicht
+mit den anderen Attributen voraussagen. Das Babygewicht kann ein
+Gesundheitsindikator sein. Wenn ein niedriges
+Geburtsgewicht erwartet wird, stellt das Krankenhaus normalerweise
+Geräte wie einen Inkubator bereit. Es kann also wichtig sein, das
+Babygewicht voraussagen zu können. Das Label ist hier das Babygewicht und das ist eine kontinuierliche Variable. Sie ist als Gleitkommazahl gespeichert,
+also ist das ein Regressionsproblem. Ist dieses Dataset ein guter Kandidat für lineare Regression oder für lineare Klassifikation? Die Antwort ist: beides. Schauen wir, weshalb. Hier sind
+beide Klassen im Dataset vermischt. Ohne die verschiedenen
+Farben und Formen als Hilfe ist das eine unklare Linie mit negativer 
+Steigung und positivem Achsenabschnitt. Da es ziemlich linear aussieht, ist dies wahrscheinlich ein guter
+Kandidat für lineare Regression, bei der unser Prognoseziel
+der Wert für Y ist. Bringen wir wieder Farben und Formen ein, wird noch deutlicher,
+dass dieses Dataset eigentlich aus zwei linearen Serien mit etwas
+Gaußschem Rauschen besteht. Die Geraden haben leicht andere
+Steigungen und andere Achsenabschnitte und das Rauschen unterschiedliche
+Standardabweichungen. Ich habe die Geraden so festgelegt,
+um Ihnen zu zeigen, dass dies ganz eindeutig ein lineares Dataset ist,
+nur etwas verrauscht. Dies wäre ein guter
+Kandidat für lineare Regression. Es liegen uns zwar zwei
+unterschiedliche lineare Serien vor, aber wir betrachten zuerst das Ergebnis
+einer eindimensionalen linearen Regression und plotten Y von X, um eine Intuition aufzubauen. Dann sehen wir, ob es noch besser geht. Die grüne Linie hier ist die angepasste
+lineare Gleichung aus linearer Regression. Sie ist weit von den einzelnen
+Klassenverteilungen entfernt, da Klasse B die Linie von Klasse A
+wegzieht und umgekehrt. Sie halbiert ungefähr den Raum
+zwischen den zwei Verteilungen. Das ist sinnvoll, da wir bei Regression unseren Verlust der mittleren
+quadratischen Abweichung optimieren. So sollte bei gleichem
+Zug durch jede Klasse die Regression die niedrigste MQA
+zwischen den zwei Klassen haben, die etwa gleich weit von ihren
+Mittelwerten entfernt sind. Da die Klassen unterschiedliche lineare
+Serien mit eigener Steigung und eigenem Achsenabschnitt sind, hätten wir eine
+viel höhere Genauigkeit, wenn wir eine lineare Regression
+pro Klasse vornehmen würden, die ziemlich genau auf die hier
+dargestellten Linien passen sollte. Noch besser als die Durchführung einer eindimensionalen linearen Regression zur
+Prognose des Werts von Y aus dem Merkmal X wäre eine zweidimensionale lineare
+Regression zur Prognose von Y aus den zwei Merkmalen X und der Klasse des Punkts. Das Klassenmerkmal könnte eine 1 sein,
+wenn der Punkt zu Klasse A gehört, und 0, wenn er zu Klasse B gehört. Anstelle einer Linie würde
+dies eine 2D-Hyperebene bilden. Schauen wir einmal, wie das aussieht. Hier sind die Ergebnisse
+der zweidimensionalen linearen Regression. Zur Prognose des Labels Y haben wir
+die zwei Merkmale X und Klasse verwendet. Wie Sie sehen, hat sich
+eine 2D-Hyperebene zwischen den zwei Datasets gebildet, die nun
+durch die Klassendimension getrennt sind. Ich habe auch die Linien für
+Klasse A und Klasse B eingebunden sowie die Linie
+der eindimensionalen linearen Regression. Die Ebene enthält keine der Geraden ganz, da das Datenrauschen
+die zwei Steigungen der Ebene kippt. Anderenfalls, ohne Rauschen, lägen alle drei
+Linien perfekt in der Ebene. Außerdem haben wir bereits eine Antwort auf den anderen Teil der
+Quizfrage zur linearen Klassifikation, denn die lineare Regressionsgerade trennt die Klassen
+auf effektive Art und Weise. Dies ist also auch ein sehr guter
+Kandidat für die lineare Klassifikation. Würde sie aber eine 
+Entscheidungsgrenze genau auf der Linie der
+eindimensionalen linearen Regression bilden? Mal sehen. Die gelbe Linie ist das Ergebnis eines eindimensionalen linearen Klassifikators:
+logistische Regression. Sie liegt sehr nahe an der
+Geraden der linearen Regression, aber nicht genau darauf. 
+Woran könnte das liegen? Ich habe bereits erwähnt,
+dass Regressionsmodelle oft die mittlere quadratische
+Abweichung als Verlustfunktion verwenden und Klassifikationsmodelle
+normalerweise die Kreuzentropie. Wodurch unterscheiden sich nun die beiden? Ohne zu sehr ins Detail zu gehen, gibt es bei der MQA
+einen quadratischen Abzug. Es wird also im Grunde versucht, den euklidischen Abstand zwischen Antwort
+und vorausgesagtem Ziel zu minimieren. Bei der Kreuzentropie der Klassifikation
+hingegen ist der Abzug fast linear und die vorausgesagte Wahrscheinlichkeit
+liegt nahe an der tatsächlichen Antwort. Aber mit zunehmender Distanz
+wird sie exponentiell, bei Annäherung an die Vorhersage der
+entgegengesetzten Klasse des Labels. Betrachten wir die Darstellung, ist der wahrscheinlichste Grund für die leicht negativere Steigung der
+Entscheidungsgrenze der Klassifizierung der, dass einige der roten Punkte (wobei Rot die Rauschverteilung ist) jenseits der Entscheidungsgrenze liegen
+und ihren hohen Fehlerbeitrag verlieren. Da sie so nahe an der Geraden liegen, wäre ihr Fehlerbeitrag bei
+linearer Regression geringer, weil der Fehler quadratisch ist und bei Regression egal ist, auf welcher
+Seite der Geraden ein Punkt liegt, solange der Abstand
+so klein wie möglich ist. Wie Sie also sehen, ist dieses Dataset perfekt für lineare
+Regression und lineare Klassifikation. Im Gegensatz zum Trinkgeld-Dataset, das für lineare Regression
+lediglich akzeptabel und besser für eine nicht
+lineare Klassifikation geeignet war.

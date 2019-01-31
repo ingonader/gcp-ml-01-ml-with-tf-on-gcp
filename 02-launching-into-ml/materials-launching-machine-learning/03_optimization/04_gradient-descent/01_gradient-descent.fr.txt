@@ -1,0 +1,66 @@
+Dans la section précédente, nous avons envisagé l'optimisation
+comme une recherche dans l'espace des paramètres, puis présenté
+les fonctions de perte qui permettent
+de comparer ces points. Comment transformer
+une fonction de perte en stratégie de recherche ? C'est là qu'intervient
+la descente de gradient. Cette technique consiste
+à descendre le long de la surface formée par l'utilisation
+de notre fonction de perte sur tous les points
+de l'espace des paramètres. Voici à quoi devrait ressembler
+cette surface. Dans l'idéal, c'est ce que vous verriez
+avec des informations parfaites, c.-à-d. avec une connaissance complète du graphe. Dans la réalité, nous ne connaîtrons
+les valeurs de perte que pour les points analysés avec notre fonction. À savoir, dans notre cas,
+les deux points figurant dans le cadre rouge. Mais il reste à choisir la méthode
+qui permettra ensuite de trouver malgré tout le minimum. Pour déterminer un minimum, il faut se poser deux questions
+questions importantes. Quelle direction dois-je choisir ? Et combien de pas dois-je faire ? Nous allons dans un premier temps
+simplifier les choses, et nous n'utiliserons
+qu'un pas d'apprentissage fixe. Nous obtenons alors
+un algorithme très simple. Tant que la perte est supérieure à une petite
+constante, il calcule la direction. Il recalcule ensuite chaque paramètre
+du modèle en additionnant l'ancienne valeur au produit du pas d'apprentissage
+et de la direction. Enfin, il calcule à nouveau la perte. Une surface de perte peut être vue
+comme une carte topographique dont chaque courbe (de niveau)
+représente une profondeur. Plus les courbes sont proches les unes
+des autres, plus la surface est abrupte. L'algorithme fait des pas
+représentés ici sous la forme de points. Dans ce cas,
+l'algorithme est parti du bord supérieur, puis il a progressé vers le bas en direction
+de la valeur minimale située au milieu. Notez que la taille
+des pas d'apprentissage ne varie pas. Laissons la question de la direction
+de côté pour le moment. Si le pas est trop petit, l'apprentissage
+risque de durer éternellement. Mais vous finirez toujours
+par trouver le minimum. J'ai utilisé le singulier, car nous allons supposer pour le moment
+qu'il n'y en a qu'un seul. Toutefois, il pourrait
+y en avoir plusieurs à l'avenir, et nous verrons ultérieurement
+comment traiter ce problème. Si le pas d'apprentissage est trop grand, nous risquons de rebondir
+sur les parois de la surface de perte, voire même de sortir complètement
+du creux de la courbe, et de nous retrouver sur
+une nouvelle zone de la surface. Ainsi, lorsque le pas est trop grand, le processus risque de ne pas converger. Si le pas d'apprentissage convient
+parfaitement, tout va bien. Mais quelle que soit sa valeur, il est peu probable qu'elle soit aussi
+appropriée pour un autre problème. Voyez comme le pas qui semblait
+fonctionner pour la courbe de gauche échoue totalement pour celle de droite. La taille ne peut donc pas être
+la même pour tous les modèles. Alors, comment devons-nous la faire varier ? Heureusement, la pente qui correspond
+au taux d'évolution de la courbe nous donne une assez bonne idée
+du pas d'apprentissage, mais aussi de la direction,
+que nous devons adopter. Regardez le point du graphique du bas
+qui indique la valeur de la pente en divers endroits
+de la courbe de perte de poids. Notez que lorsque les valeurs sont
+plus grandes, elles sont plus éloignées du bas de la courbe que lorsque la pente est faible. Dans le diagramme du haut, notez que lorsque la pente est négative,
+le minimum se situe vers la droite, et lorsqu'elle est positive,
+il se situe vers la gauche. Voici un autre exemple. Regardez le point B. La pente est-elle
+positive ou négative à cet endroit ? Elle est positive. Il faut donc aller vers
+la gauche pour trouver la perte minimale. Notez que la pente est raide,
+ce qui signifie que le pas doit être grand. Regardez le point C de la surface de perte. La pente est-elle positive
+ou négative à cet endroit ? Est-elle raide ? Là encore, la pente est positive. Nous devons
+donc toujours aller vers la gauche. La pente est beaucoup plus douce
+à cet endroit. Nous allons faire des pas plus petits pour ne pas risquer
+de dépasser le minimum. Nous avons remplacé
+le pas d'apprentissage constant et l'appel qui calcule la direction par l'appel de notre nouvelle
+fonction computeDerivative. Nous avons aussi modifié la boucle For
+de mise à jour des paramètres du modèle, selon le calcul suivant : ancienne valeur du paramètre moins la dérivée partielle de ce
+paramètre par rapport à la perte. Alors, avons-nous terminé ? Nous semblons aller dans la bonne direction avec le pas d'apprentissage approprié. Qu'est-ce qui pourrait poser problème ? Eh bien, les performances empiriques. Pour l'ensemble de problèmes sur lequel
+les chercheurs en ML ont travaillé, c'est-à-dire celui des surfaces de perte auxquelles nous avons appliqué
+cette procédure, il arrive souvent
+que notre algorithme de base prenne trop de temps, trouve des minima
+sous-optimaux, ou ne termine jamais. Cela ne veut pas dire que l'algorithme
+ne fonctionne pas, mais simplement que nous avons tendance
+à ne pas rencontrer les types de problèmes pour lesquels il excelle.

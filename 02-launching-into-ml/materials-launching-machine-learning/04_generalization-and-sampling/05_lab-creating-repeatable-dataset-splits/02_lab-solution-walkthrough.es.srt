@@ -1,0 +1,762 @@
+1
+00:00:00,280 --> 00:00:03,485
+Este lab es sobre la división
+repetible de conjuntos de datos.
+
+2
+00:00:03,485 --> 00:00:06,240
+Si todavía no hicieron este lab
+por su cuenta
+
+3
+00:00:06,240 --> 00:00:09,100
+les recomiendo
+que lo intenten y luego regresen
+
+4
+00:00:09,100 --> 00:00:12,065
+para ver este video
+de la explicación de la solución.
+
+5
+00:00:12,065 --> 00:00:13,110
+Aquí vamos.
+
+6
+00:00:13,110 --> 00:00:18,035
+Lo que haremos es predecir
+el retraso de la llegada de un avión
+
+7
+00:00:18,035 --> 00:00:21,895
+si se retrasó a la salida
+y cuál es su relación
+
+8
+00:00:21,895 --> 00:00:25,050
+según los diferentes aeropuertos,
+como los aeropuertos de llegada
+
+9
+00:00:25,050 --> 00:00:26,255
+y de salida.
+
+10
+00:00:26,255 --> 00:00:28,290
+Si tienen un vuelo
+que llega de Nueva York
+
+11
+00:00:28,290 --> 00:00:30,730
+con un retraso de 30 minutos
+y que va a Los Ángeles
+
+12
+00:00:30,730 --> 00:00:32,565
+¿se retrasará a la llegada también?
+
+13
+00:00:32,565 --> 00:00:35,470
+Finalmente, lo que queremos hacer
+es predecir la relación.
+
+14
+00:00:35,470 --> 00:00:38,660
+Para llegar a esa relación o modelarla
+
+15
+00:00:38,660 --> 00:00:42,170
+tenemos la fórmula que ven aquí,
+en nuestro notebook de Cloud Datalab.
+
+16
+00:00:42,170 --> 00:00:45,135
+El retraso a la llegada es igual
+a un parámetro, que es Alfa
+
+17
+00:00:45,135 --> 00:00:48,420
+por el retraso a la salida.
+
+18
+00:00:48,780 --> 00:00:51,710
+Aquí pueden ver la fórmula
+para estimar Alfa.
+
+19
+00:00:51,710 --> 00:00:54,640
+Lo que intentaremos hacer
+es alimentar mucha información
+
+20
+00:00:54,640 --> 00:01:00,195
+de retrasos de salidas
+y predecir si eso retrasará la llegada.
+
+21
+00:01:00,430 --> 00:01:02,810
+Antes de hacer cualquier
+modelo de aprendizaje
+
+22
+00:01:02,810 --> 00:01:06,410
+debemos configurar los entornos
+de validación y prueba para nuestro modelo
+
+23
+00:01:06,750 --> 00:01:09,300
+y para hacerlo,
+ya que es un conjunto de datos grande
+
+24
+00:01:09,300 --> 00:01:12,485
+usaremos Google BigQuery
+y lo invocaremos desde Cloud Datalab.
+
+25
+00:01:12,805 --> 00:01:18,635
+Ahora, crearemos un par
+de aeropuertos de llegada y de salida
+
+26
+00:01:18,635 --> 00:01:21,810
+de modo que puedan ver
+si existe una correlación fuerte
+
+27
+00:01:21,810 --> 00:01:26,380
+para este aeropuerto específico,
+ese segmento en particular.
+
+28
+00:01:26,790 --> 00:01:30,170
+Para predecir si no se retrasarán
+a la llegada si salieron más tarde
+
+29
+00:01:30,170 --> 00:01:31,335
+de lo esperado.
+
+30
+00:01:31,975 --> 00:01:36,000
+En este notebook, usaremos los
+aeropuertos de Denver y Los Ángeles.
+
+31
+00:01:36,000 --> 00:01:39,250
+Ese es el contexto de nuestro lab.
+
+32
+00:01:39,250 --> 00:01:41,580
+Es muy importante entender
+lo que queremos hacer.
+
+33
+00:01:41,580 --> 00:01:45,010
+Para hacerlo, necesitamos una muestra
+repetible de un conjunto de datos
+
+34
+00:01:45,010 --> 00:01:46,230
+creada en BigQuery.
+
+35
+00:01:46,230 --> 00:01:49,670
+Hablemos de lo que no deberían hacer.
+
+36
+00:01:49,670 --> 00:01:52,345
+Y si ven este código
+o esta muestra aleatoria Naïve
+
+37
+00:01:52,345 --> 00:01:55,690
+en su notebook
+o el de sus colegas podrán decirles
+
+38
+00:01:55,690 --> 00:01:59,130
+que, si quisieran ejecutar su código,
+no obtendrían los mismos resultados
+
+39
+00:01:59,130 --> 00:02:01,105
+como vieron en la lección anterior.
+
+40
+00:02:01,105 --> 00:02:03,820
+Primero, la división aleatoria Naïve.
+
+41
+00:02:04,890 --> 00:02:06,975
+Ejecutaremos este código.
+
+42
+00:02:07,505 --> 00:02:10,995
+Ya lo ejecuté
+y noté que el Alfa que tenemos
+
+43
+00:02:10,995 --> 00:02:16,395
+tiene una alta correlación:
+0.97 entre Denver y Los Ángeles.
+
+44
+00:02:16,745 --> 00:02:19,230
+Ejecutaré esta celda.
+
+45
+00:02:21,590 --> 00:02:24,320
+Y veamos el coeficiente.
+
+46
+00:02:25,650 --> 00:02:28,750
+Los últimos tres números son 784.
+
+47
+00:02:28,750 --> 00:02:31,975
+Para hacerlo repetible,
+si hago exactamente lo mismo.
+
+48
+00:02:31,975 --> 00:02:33,815
+¿Qué creen que pasará?
+
+49
+00:02:35,550 --> 00:02:37,220
+¿Obtendré 784?
+
+50
+00:02:38,030 --> 00:02:40,020
+No, obtuve 919.
+
+51
+00:02:40,020 --> 00:02:46,060
+No cambié nada ni hice
+ningún tipo de entrenamiento todavía.
+
+52
+00:02:46,700 --> 00:02:49,370
+Deberían ser los mismos datos,
+¿no es cierto?
+
+53
+00:02:49,370 --> 00:02:53,415
+Pueden ver, en la línea 7 del código,
+que se usa esta función aleatoria
+
+54
+00:02:53,415 --> 00:02:55,200
+como campo de división.
+
+55
+00:02:55,200 --> 00:02:58,245
+Por lo que, cada vez que lo ejecuto,
+como vieron en la lección
+
+56
+00:02:58,245 --> 00:03:00,910
+la función aleatoria
+está aplicando un número diferente
+
+57
+00:03:00,910 --> 00:03:01,960
+entre cero y uno.
+
+58
+00:03:01,960 --> 00:03:05,320
+Se usa eso para la división,
+por lo que no es necesariamente repetible.
+
+59
+00:03:05,320 --> 00:03:07,965
+Escalemos un poco mejor.
+
+60
+00:03:10,595 --> 00:03:13,970
+Esta función aleatoria se ejecuta
+cada vez que se ejecuta una fila
+
+61
+00:03:13,970 --> 00:03:15,290
+en BigQuery.
+
+62
+00:03:15,290 --> 00:03:19,635
+Hagámoslo un poco más obvio.
+
+63
+00:03:20,285 --> 00:03:24,330
+Si lo usan como su métrica de pérdida,
+la raíz del error cuadrático medio
+
+64
+00:03:24,330 --> 00:03:27,195
+entre el retraso de la llegada
+y el de la salida
+
+65
+00:03:27,195 --> 00:03:32,710
+y lo dividen en los diferentes conjuntos,
+como entrenamiento y evaluación.
+
+66
+00:03:32,710 --> 00:03:36,340
+Supongamos que se hizo
+inmediatamente para cada registro
+
+67
+00:03:36,340 --> 00:03:38,950
+usaron esta función aleatoria
+< 0.8 para todos estos
+
+68
+00:03:38,950 --> 00:03:42,195
+veamos si obtenemos la misma RMSE.
+
+69
+00:03:42,565 --> 00:03:44,730
+Ejecutaré esta celda de código.
+
+70
+00:03:49,970 --> 00:03:56,160
+La RMSE es 13.098 para el entrenamiento
+y 13.027 para la evaluación.
+
+71
+00:03:56,760 --> 00:04:00,690
+Parece ser coherente,
+pero si hago lo mismo
+
+72
+00:04:00,690 --> 00:04:02,550
+veamos si es repetible.
+
+73
+00:04:02,550 --> 00:04:06,210
+13.098 es lo que buscamos
+para el entrenamiento.
+
+74
+00:04:08,850 --> 00:04:13,300
+Y pueden ver aquí,
+durante el entrenamiento obtenemos 13.089
+
+75
+00:04:14,170 --> 00:04:18,015
+que es diferente del anterior
+y también tenemos 13.063.
+
+76
+00:04:18,015 --> 00:04:22,190
+En segundo plano,
+aunque estamos ejecutando el mismo código
+
+77
+00:04:22,190 --> 00:04:24,340
+obtenemos diferentes resultados
+para la RMSE.
+
+78
+00:04:24,340 --> 00:04:28,010
+Y el culpable,
+como muchos de ustedes ya deben saber
+
+79
+00:04:28,010 --> 00:04:30,050
+es esta función aleatoria
+que tenemos aquí.
+
+80
+00:04:30,050 --> 00:04:33,170
+Incluso dividir aleatoriamente
+en entrenamiento y evaluación
+
+81
+00:04:33,170 --> 00:04:34,320
+no funcionará.
+
+82
+00:04:34,320 --> 00:04:38,600
+Estarán pensando:
+"¿Cómo hago esto entonces?"
+
+83
+00:04:38,600 --> 00:04:41,629
+Si configuro todos mis datos
+en el entrenamiento y la evaluación
+
+84
+00:04:41,629 --> 00:04:46,740
+usando la función aleatoria una vez,
+y tengo la división correcta del 80% y 20%
+
+85
+00:04:46,740 --> 00:04:48,960
+¿por qué cambia todo el tiempo?
+
+86
+00:04:48,960 --> 00:04:52,735
+¿Cómo evito que la función aleatoria
+se ejecute cada vez?
+
+87
+00:04:53,085 --> 00:04:57,040
+Aquí es donde tenemos
+que cambiar de forma de pensar.
+
+88
+00:04:57,040 --> 00:05:00,245
+Aquí tenemos otro ejemplo
+en el que tenemos el entrenamiento
+
+89
+00:05:00,245 --> 00:05:02,490
+en aleatorio y se hace eso primero.
+
+90
+00:05:02,490 --> 00:05:06,415
+Hay una subconsulta.
+Están el entrenamiento y la evaluación
+
+91
+00:05:06,415 --> 00:05:09,845
+y se divide
+el entrenamiento y la evaluación
+
+92
+00:05:09,845 --> 00:05:12,445
+como un subconjunto de datos.
+
+93
+00:05:12,445 --> 00:05:15,250
+Luego, se ejecutan esas consultas
+también, pero vean aquí
+
+94
+00:05:15,250 --> 00:05:20,430
+tenemos el mismo problema otra vez,
+donde se tiene una RMSE de 13.037
+
+95
+00:05:20,430 --> 00:05:22,765
+de mi ejecución,
+que probablemente es diferente
+
+96
+00:05:22,765 --> 00:05:24,835
+de sus ejecuciones también.
+
+97
+00:05:24,835 --> 00:05:26,690
+Se hace en la evaluación.
+
+98
+00:05:27,740 --> 00:05:33,800
+Haré clic aquí y ejecutaré esta celda,
+que ejecutará todo de nuevo hasta aquí.
+
+99
+00:05:36,190 --> 00:05:41,470
+Cuando se ejecute, esperamos tener 13.037
+
+100
+00:05:45,360 --> 00:05:47,455
+y esperamos que se ejecute.
+
+101
+00:05:47,955 --> 00:05:52,410
+Tenemos 13.087; el Alfa es diferente,
+creo que era 0.977 antes.
+
+102
+00:05:53,010 --> 00:05:56,810
+Como pueden ver, si usan la función
+aleatoria en cualquier parte de su código
+
+103
+00:05:56,810 --> 00:05:59,980
+en BigQuery y lo ejecutan,
+sus datos cambiarán automáticamente
+
+104
+00:05:59,980 --> 00:06:01,480
+por debajo.
+
+105
+00:06:01,950 --> 00:06:04,795
+¿Cómo evitamos usar la función
+aleatoria entonces?
+
+106
+00:06:04,795 --> 00:06:07,310
+En lugar de usar esta función,
+usamos la función hash
+
+107
+00:06:07,310 --> 00:06:10,550
+que demostramos un poco antes
+y eso es lo que verán aquí.
+
+108
+00:06:11,040 --> 00:06:14,295
+Queremos dividir en la instrucción WHERE.
+
+109
+00:06:14,295 --> 00:06:16,890
+En lugar
+de usar una función aleatoria < 0.8
+
+110
+00:06:16,890 --> 00:06:20,860
+lo que usamos ahora
+es la función hash en la fecha.
+
+111
+00:06:20,860 --> 00:06:23,865
+La fecha no cambiará,
+será siempre la misma
+
+112
+00:06:23,865 --> 00:06:26,130
+en su conjunto de entrenamiento.
+
+113
+00:06:26,130 --> 00:06:28,375
+Y luego busquen ese resto.
+
+114
+00:06:28,375 --> 00:06:31,505
+Si cae en una categoría en particular,
+en este caso, queremos
+
+115
+00:06:31,505 --> 00:06:33,670
+todo lo que sea < 8
+
+116
+00:06:33,670 --> 00:06:36,405
+y luego lo volcamos
+en nuestro grupo de entrenamiento.
+
+117
+00:06:36,405 --> 00:06:39,520
+Es una división del 80%
+y probablemente se usará
+
+118
+00:06:39,520 --> 00:06:41,040
+en el entrenamiento.
+
+119
+00:06:41,040 --> 00:06:46,250
+Tenemos 0.975.
+Veamos que tenemos al final, es 403.
+
+120
+00:06:46,720 --> 00:06:48,660
+Sigamos ejecutándolo.
+
+121
+00:06:49,620 --> 00:06:51,955
+Veamos qué obtenemos.
+
+122
+00:06:51,955 --> 00:06:54,400
+Vayamos al final y es 403 nuevamente.
+
+123
+00:06:54,400 --> 00:06:56,500
+Como ven,
+es una forma repetible de hacerlo.
+
+124
+00:06:56,500 --> 00:06:57,960
+Intuitivamente, tiene sentido.
+
+125
+00:06:57,970 --> 00:07:00,990
+No hay funciones por debajo
+que están cambiando los datos
+
+126
+00:07:00,990 --> 00:07:02,980
+cuando se ejecuta el código.
+
+127
+00:07:02,980 --> 00:07:06,690
+Lo que podemos hacer ahora
+es agregar un poco más de SQL
+
+128
+00:07:06,690 --> 00:07:09,850
+y, luego, la raíz del error cuadrático medio.
+
+129
+00:07:10,420 --> 00:07:13,380
+La raíz del error cuadrático medio
+en lugar de SQL otra vez
+
+130
+00:07:13,380 --> 00:07:17,550
+estamos tomando el promedio
+de esa función que vieron antes
+
+131
+00:07:17,550 --> 00:07:20,350
+y aplicamos la raíz cuadrada hasta arriba.
+
+132
+00:07:20,350 --> 00:07:24,950
+Y su conjunto de datos de entrenamiento
+es 13.16072.
+
+133
+00:07:24,950 --> 00:07:29,615
+Entonces, 13.160712.
+
+134
+00:07:31,645 --> 00:07:35,645
+Se obtiene exactamente el mismo resultado
+cada vez que se ejecuta este código.
+
+135
+00:07:35,645 --> 00:07:37,505
+¿Qué aprendieron?
+
+136
+00:07:37,505 --> 00:07:42,710
+En resumen, cada vez que creen
+una muestra repetible de datos
+
+137
+00:07:42,710 --> 00:07:46,910
+deben usar una función hash,
+en lugar de una muestra aleatoria Naïve.
+
+138
+00:07:46,910 --> 00:07:50,055
+Incluso hacer lo que vieron aquí,
+que es un poco más sofisticado
+
+139
+00:07:50,055 --> 00:07:53,805
+pero igualmente riesgoso,
+como separar previamente
+
+140
+00:07:53,805 --> 00:07:56,115
+los datos de entrenamiento
+y evaluación.
+
+141
+00:07:56,115 --> 00:07:58,500
+Supongamos que quieren
+dividir directamente
+
+142
+00:07:58,500 --> 00:08:01,975
+y crear… podrían preguntar:
+"Evan, ¿y si hago esto
+
+143
+00:08:01,975 --> 00:08:05,000
+y lo ejecuto solo una vez,
+almaceno los resultados en dos tablas
+
+144
+00:08:05,000 --> 00:08:07,280
+diferentes para la evaluación
+y el entrenamiento
+
+145
+00:08:07,280 --> 00:08:08,650
+y los uso inmediatamente?"
+
+146
+00:08:08,650 --> 00:08:13,515
+Sería genial, porque se hizo
+solo una vez y se dividió en 80-20.
+
+147
+00:08:13,515 --> 00:08:15,875
+Pero ¿qué pasa si obtienen
+más datos en el futuro?
+
+148
+00:08:15,875 --> 00:08:18,140
+¿Qué pasa si alguien
+quiere repetir el análisis
+
+149
+00:08:18,150 --> 00:08:19,820
+en el conjunto de datos original?
+
+150
+00:08:19,820 --> 00:08:23,695
+Solo porque crearon una división
+forzada de datos una vez en 80-20
+
+151
+00:08:23,695 --> 00:08:26,270
+no quiere decir
+que podrán repetirlo en el futuro
+
+152
+00:08:26,270 --> 00:08:29,150
+especialmente si el conjunto de datos
+se expande o se contrae
+
+153
+00:08:29,150 --> 00:08:32,250
+o si quisieran hacer una división
+diferente de 80-20.
+
+154
+00:08:32,250 --> 00:08:35,830
+Usar un campo para agrupar sus datos
+y usar hash es mucho más flexible
+
+155
+00:08:35,830 --> 00:08:37,930
+y mucho más repetible,
+como pueden ver aquí.
+
+156
+00:08:37,930 --> 00:08:42,300
+Practiquen esto, porque al final será
+uno de los pasos fundamentales
+
+157
+00:08:42,300 --> 00:08:45,870
+que necesitarán
+para ejecutar modelos de AA.
+
+158
+00:08:45,870 --> 00:08:49,380
+Es decir, crear esas agrupaciones
+de las que su modelo pueda aprender
+
+159
+00:08:49,380 --> 00:08:53,560
+validar y, finalmente, tomar la decisión
+mediante los datos de prueba
+
+160
+00:08:53,560 --> 00:08:55,545
+para poner el modelo de AA
+en producción.
+
+161
+00:08:56,195 --> 00:08:58,130
+Eso es todo. Lo que haremos al final
+
+162
+00:08:58,130 --> 00:09:01,590
+es abarcar un poco más de material
+y trabajar en un lab de principio a fin
+
+163
+00:09:01,590 --> 00:09:06,200
+para predecir tarifas de taxis.
+Nos veremos ahí.

@@ -1,0 +1,200 @@
+1
+00:00:00,000 --> 00:00:03,420
+Lassen Sie uns zu echten Daten
+statt den Konstanten übergehen,
+
+2
+00:00:03,420 --> 00:00:06,705
+die wir zuvor mit der
+Estimator API verwendet haben.
+
+3
+00:00:06,705 --> 00:00:12,780
+Wenn Ihre Daten in Form von numpy arrays
+oder Pandas in den Arbeitsspeicher passen,
+
+4
+00:00:12,780 --> 00:00:17,750
+bietet die Estimator API praktische
+Funktionen, um sie ins Modell einzufügen.
+
+5
+00:00:17,760 --> 00:00:24,110
+Sie heißen estimator.inputs.numpy_input_fn
+und estimator.inputs.Pandas_input_fn.
+
+6
+00:00:24,110 --> 00:00:30,270
+Sie geben Ihr Featureverzeichnis als x an
+und verwenden denselben Namen wie vorher
+
+7
+00:00:30,270 --> 00:00:34,415
+für die Featurespalten und
+definieren Ihre Labels als y.
+
+8
+00:00:34,415 --> 00:00:36,235
+Beim Lesen von Pandas
+
+9
+00:00:36,235 --> 00:00:38,430
+sind diese Featurenamen nicht nötig.
+
+10
+00:00:38,430 --> 00:00:42,860
+Die API wählt die richtigen Spalten aus
+Ihrem Pandas-Dataframe basierend auf
+
+11
+00:00:42,860 --> 00:00:46,155
+den Namen, die Sie zum Definieren
+der Featurespalten verwendet haben.
+
+12
+00:00:46,155 --> 00:00:49,630
+Diese Eingabefunktionen
+implementieren wichtige Funktionen,
+
+13
+00:00:49,630 --> 00:00:52,485
+die zum Training neuronaler
+Netzwerkmodelle benötigt werden.
+
+14
+00:00:52,485 --> 00:00:56,730
+Meist funktioniert das Training am besten,
+wenn ein Trainingsschritt jeweils
+
+15
+00:00:56,730 --> 00:01:01,230
+mit einem Minibatch
+von Eingabedaten ausgeführt wird,
+
+16
+00:01:01,230 --> 00:01:05,285
+statt mit einem einzelnen Datenelement
+oder dem gesamten Dataset.
+
+17
+00:01:05,285 --> 00:01:08,080
+Sie können hier die Batchgröße angeben.
+
+18
+00:01:08,080 --> 00:01:12,550
+Sie können angeben, wie oft das Dataset
+beim Training wiederholt werden soll,
+
+19
+00:01:12,550 --> 00:01:14,840
+das ist die Anzahl der Schritte.
+
+20
+00:01:14,840 --> 00:01:20,100
+Es ist wichtig, dass Sie Ihre
+Trainingsdaten gründlich mischen.
+
+21
+00:01:20,100 --> 00:01:23,292
+Sie können die Estimator API dazu nutzen.
+
+22
+00:01:23,292 --> 00:01:26,345
+Damit das Dataset nicht
+im Arbeitsspeicher repliziert wird,
+
+23
+00:01:26,345 --> 00:01:30,045
+können Sie die Größe der
+Zufallswarteschlange angeben.
+
+24
+00:01:30,045 --> 00:01:34,560
+Standardmäßig wird das Training
+ausgeführt, bis die Trainingsdaten
+
+25
+00:01:34,560 --> 00:01:41,130
+n-mal erschöpft sind, wenn Sie in
+Ihrer Eingabefunktion n Epochen angeben.
+
+26
+00:01:41,130 --> 00:01:44,365
+Sie können dies mit einer
+konkreten Schritteanzahl überschreiben,
+
+27
+00:01:44,365 --> 00:01:47,765
+wenn Sie die Funktion "train" aufrufen.
+
+28
+00:01:47,775 --> 00:01:50,610
+Es gibt 2 Variablen
+für die Schritteanzahl:
+
+29
+00:01:50,610 --> 00:01:54,180
+"steps=1000" bedeutet, dass
+
+30
+00:01:54,180 --> 00:01:58,965
+ab dem letzten Checkpoint zusätzlich
+1.000 Trainingsschritte ausgeführt werden.
+
+31
+00:01:58,965 --> 00:02:03,210
+Ein Schritt entspricht hier
+einem Batch von Eingabedaten.
+
+32
+00:02:03,210 --> 00:02:09,315
+"max_steps=1000" bewirkt
+einen Neustart vom letzten Checkpoint,
+
+33
+00:02:09,315 --> 00:02:12,255
+zählt die Anzahl der Schritte aus
+dem vorherigen Durchgang und
+
+34
+00:02:12,255 --> 00:02:15,910
+setzt sie fort, bis die maximale
+Anzahl Schritte erreicht wurde.
+
+35
+00:02:15,910 --> 00:02:20,085
+Das hat keine Wirkung, wenn diese Anzahl
+am Checkpoint schon erreicht worden ist.
+
+36
+00:02:20,085 --> 00:02:24,770
+Das hier ist der gesamte Code
+mit Featurespalten, einem Modell,
+
+37
+00:02:24,770 --> 00:02:29,350
+einer Eingabefunktion, die
+Daten aus einem Pandas-Dataframe liest,
+
+38
+00:02:29,350 --> 00:02:30,870
+und dem Training selbst.
+
+39
+00:02:30,870 --> 00:02:33,090
+Möchten Sie ein neues Feature hinzufügen?
+
+40
+00:02:33,090 --> 00:02:35,745
+Zum Beispiel die Anzahl
+der Schlafzimmer im Haus.
+
+41
+00:02:35,745 --> 00:02:39,415
+Sie können es zur Liste der Featurespalten
+hinzufügen, achten Sie aber darauf
+
+42
+00:02:39,415 --> 00:02:42,770
+dass es im Pandas-Dataframe
+mit demselben Namen vorhanden ist.

@@ -1,0 +1,463 @@
+1
+00:00:00,000 --> 00:00:04,145
+We've already seen how a linear model can perform on this dataset.
+
+2
+00:00:04,145 --> 00:00:07,160
+Let's see how a neural network does.
+
+3
+00:00:07,160 --> 00:00:09,920
+Before we do though, we need to review
+
+4
+00:00:09,920 --> 00:00:13,025
+some additional features I've enabled in TenserFlow playground.
+
+5
+00:00:13,025 --> 00:00:15,620
+The first I've enabled is activation.
+
+6
+00:00:15,620 --> 00:00:18,610
+Activation refers to the activation function.
+
+7
+00:00:18,610 --> 00:00:21,015
+We'll cover these in more depth in Course 5,
+
+8
+00:00:21,015 --> 00:00:22,775
+the art and science of ML.
+
+9
+00:00:22,775 --> 00:00:25,370
+The crucial point for now is that the choice of
+
+10
+00:00:25,370 --> 00:00:29,155
+activation function is what separates linear models from neural networks.
+
+11
+00:00:29,155 --> 00:00:31,255
+Previously unbeknownst to you,
+
+12
+00:00:31,255 --> 00:00:34,370
+the activation function was set to be linear.
+
+13
+00:00:34,370 --> 00:00:38,935
+The second additional feature I've enabled is the hidden layers feature.
+
+14
+00:00:38,935 --> 00:00:41,660
+The hidden layers feature allows you to change the number of
+
+15
+00:00:41,660 --> 00:00:45,550
+hidden layers and the number of neurons within each hidden layer.
+
+16
+00:00:45,550 --> 00:00:47,990
+You can think of this as changing the number of
+
+17
+00:00:47,990 --> 00:00:51,185
+transformations that the network performs on your data.
+
+18
+00:00:51,185 --> 00:00:53,685
+Each neuron in every hidden layer,
+
+19
+00:00:53,685 --> 00:00:56,430
+receives all the output from the layer that proceeds it,
+
+20
+00:00:56,430 --> 00:01:01,860
+transforms that input, and passes output to all the neurons in the subsequent layer.
+
+21
+00:01:01,860 --> 00:01:05,310
+The shorthand way for describing the number of neurons and how they
+
+22
+00:01:05,310 --> 00:01:09,285
+pass information to each other is the networks architecture.
+
+23
+00:01:09,285 --> 00:01:11,630
+I've also enabled batch size,
+
+24
+00:01:11,630 --> 00:01:15,010
+which we'll use in an experiment momentarily.
+
+25
+00:01:15,010 --> 00:01:20,380
+Follow the link on the slide and try to train a model that can classify this dataset.
+
+26
+00:01:20,380 --> 00:01:23,680
+However, instead of introducing non-linear features,
+
+27
+00:01:23,680 --> 00:01:27,995
+try to improve performance only by changing the network's architecture.
+
+28
+00:01:27,995 --> 00:01:32,550
+I realized we haven't actually explained how a neural network works and that's okay.
+
+29
+00:01:32,550 --> 00:01:34,950
+For now, simply play around in the interface
+
+30
+00:01:34,950 --> 00:01:39,250
+until you have a network that performs reasonably well.
+
+31
+00:01:40,430 --> 00:01:45,210
+At this point, you should have a model that performs reasonably
+
+32
+00:01:45,210 --> 00:01:49,905
+well and the shape of the blue region in the output column should be a polygon.
+
+33
+00:01:49,905 --> 00:01:55,585
+Let's take a look under the hood to get an intuition of how the model is able to do this.
+
+34
+00:01:55,585 --> 00:01:59,615
+Take a look again at the neurons in the first hidden layer.
+
+35
+00:01:59,615 --> 00:02:01,395
+As I hover over each one,
+
+36
+00:02:01,395 --> 00:02:05,050
+the output box changes to reflect what the neuron has learned.
+
+37
+00:02:05,050 --> 00:02:09,225
+You can read these neurons the same way you read the features and the output.
+
+38
+00:02:09,225 --> 00:02:14,200
+The values of the features X1 and X2 are encoded in the position within the square.
+
+39
+00:02:14,200 --> 00:02:16,680
+And the color indicates the value that this neuron
+
+40
+00:02:16,680 --> 00:02:20,335
+will output for that combination of X1 and X2.
+
+41
+00:02:20,335 --> 00:02:23,725
+As I hover over each one of the squares in sequence,
+
+42
+00:02:23,725 --> 00:02:27,985
+mentally start imagining what they would look like superimposed on each other.
+
+43
+00:02:27,985 --> 00:02:30,860
+Blue atop blue becomes even bluer,
+
+44
+00:02:30,860 --> 00:02:33,465
+blue atop white becomes a light blue,
+
+45
+00:02:33,465 --> 00:02:36,880
+and blue atop orange becomes white.
+
+46
+00:02:36,880 --> 00:02:40,180
+What you should start to see is how each neuron
+
+47
+00:02:40,180 --> 00:02:42,615
+participates in the model's decision boundary,
+
+48
+00:02:42,615 --> 00:02:46,155
+how the shape of the output is a function of the hidden layers.
+
+49
+00:02:46,155 --> 00:02:50,625
+For example, this neuron contributes this edge to the decision boundary,
+
+50
+00:02:50,625 --> 00:02:53,995
+while this neuron contributes this edge.
+
+51
+00:02:53,995 --> 00:02:57,580
+Now, given your knowledge of geometry,
+
+52
+00:02:57,580 --> 00:02:59,170
+how small do you think you could make
+
+53
+00:02:59,170 --> 00:03:02,115
+this network and still get reasonable performance out of it?
+
+54
+00:03:02,115 --> 00:03:05,340
+To give you a hint, what's the simplest sort of shape you could
+
+55
+00:03:05,340 --> 00:03:09,035
+draw around the blue dots that would still somewhat do the job?
+
+56
+00:03:09,035 --> 00:03:14,105
+Experiment in TenserFlow playground and see if your intuition is correct.
+
+57
+00:03:14,105 --> 00:03:18,220
+Now you've seen how output of the neurons in the first hidden layer
+
+58
+00:03:18,220 --> 00:03:21,465
+of the network can be used to compose the decision boundary.
+
+59
+00:03:21,465 --> 00:03:23,565
+What about those other layers?
+
+60
+00:03:23,565 --> 00:03:28,500
+How does a neural network with one hidden layer differ from a neural network with many?
+
+61
+00:03:28,500 --> 00:03:31,200
+Click on the link below to start training
+
+62
+00:03:31,200 --> 00:03:34,570
+a neural network to classify this spiral dataset.
+
+63
+00:03:34,570 --> 00:03:37,450
+Let's take this opportunity to understand more
+
+64
+00:03:37,450 --> 00:03:40,180
+about how batch size affects gradient descent.
+
+65
+00:03:40,180 --> 00:03:43,780
+Set the batch size parameter to one and then experiment with
+
+66
+00:03:43,780 --> 00:03:47,805
+neural network architectures until you found one that seems to work.
+
+67
+00:03:47,805 --> 00:03:54,130
+Then train your model for 300 appox and paused to take note of the last curve.
+
+68
+00:03:54,130 --> 00:03:59,005
+Now set the batch size parameter to 10 and restart the training.
+
+69
+00:03:59,005 --> 00:04:05,600
+Train your model for 300 appox and then pause and once again take note of the loss curve.
+
+70
+00:04:05,600 --> 00:04:11,555
+Finally, do this once more but with the batch size equal to 30.
+
+71
+00:04:11,555 --> 00:04:14,560
+What have you observed and how can we make
+
+72
+00:04:14,560 --> 00:04:17,650
+sense of these observations given what we know?
+
+73
+00:04:17,650 --> 00:04:20,170
+What you should have seen is that there are
+
+74
+00:04:20,170 --> 00:04:23,530
+marked differences in the smoothness of the loss curves.
+
+75
+00:04:23,530 --> 00:04:25,590
+As batch size increased,
+
+76
+00:04:25,590 --> 00:04:29,345
+so did the smoothness. Why might this be?
+
+77
+00:04:29,345 --> 00:04:32,610
+Think about how batch size affects gradient descent.
+
+78
+00:04:32,610 --> 00:04:34,440
+When batch size is small,
+
+79
+00:04:34,440 --> 00:04:36,600
+the model makes an update to its parameters on
+
+80
+00:04:36,600 --> 00:04:39,455
+the basis that the loss from a single example.
+
+81
+00:04:39,455 --> 00:04:43,465
+Examples vary however and therein lies the problem.
+
+82
+00:04:43,465 --> 00:04:45,760
+As batch size increases though,
+
+83
+00:04:45,760 --> 00:04:51,195
+the noise of individual data points settles out and a clear signal begins to take shape.
+
+84
+00:04:51,195 --> 00:04:55,160
+One thing you shouldn't conclude on the basis of these observations,
+
+85
+00:04:55,160 --> 00:04:59,865
+is that changes in batch size will have a simple effect on the rate of convergence.
+
+86
+00:04:59,865 --> 00:05:03,120
+As with learning rate, the optimal batch size is problem
+
+87
+00:05:03,120 --> 00:05:07,845
+dependent and can be found using hyper parameter tuning.
+
+88
+00:05:07,845 --> 00:05:13,695
+Now your model should have finished training and it should look something like this.
+
+89
+00:05:13,695 --> 00:05:16,720
+The first thing to call out is the relationship between
+
+90
+00:05:16,720 --> 00:05:19,875
+the first hidden layer and those that come after it.
+
+91
+00:05:19,875 --> 00:05:23,060
+What should be apparent is that although the outputs from
+
+92
+00:05:23,060 --> 00:05:26,180
+the neurons in the first hidden layer, were basically lines.
+
+93
+00:05:26,180 --> 00:05:30,075
+Subsequent hidden layers had far more complicated outputs.
+
+94
+00:05:30,075 --> 00:05:34,050
+These subsequent layers build upon those that came before in
+
+95
+00:05:34,050 --> 00:05:38,125
+much the same way we did when stacking up the outputs of the hidden layer.
+
+96
+00:05:38,125 --> 00:05:43,680
+Consequently, you can think of a neural network as a hierarchy of features.
+
+97
+00:05:43,680 --> 00:05:47,210
+And this idea of taking inputs and then
+
+98
+00:05:47,210 --> 00:05:50,810
+transforming them in complex ways before ultimately classifying them,
+
+99
+00:05:50,810 --> 00:05:53,250
+is typical of neural networks and represents
+
+100
+00:05:53,250 --> 00:05:57,255
+a significant departure from the approach used classically in machine learning.
+
+101
+00:05:57,255 --> 00:06:02,690
+Before neural networks, data scientists spent much more time doing feature engineering.
+
+102
+00:06:02,690 --> 00:06:06,910
+Now, the model itself is taking over some of that responsibility and
+
+103
+00:06:06,910 --> 00:06:11,655
+you can think of the layers as being a form of feature engineering onto themselves.
+
+104
+00:06:11,655 --> 00:06:16,375
+The next thing to call out are some strange things that the model has learned.
+
+105
+00:06:16,375 --> 00:06:20,020
+The model seems to have interpreted the absence of orange points in
+
+106
+00:06:20,020 --> 00:06:23,545
+these two regions as evidence to support their blueness.
+
+107
+00:06:23,545 --> 00:06:26,940
+We call mistakes like this where the model has interpreted noise
+
+108
+00:06:26,940 --> 00:06:29,725
+in the dataset as significant over-fitting.
+
+109
+00:06:29,725 --> 00:06:32,170
+And they can occur when the model has more decision
+
+110
+00:06:32,170 --> 00:06:35,215
+making power than is strictly necessary for the problem.
+
+111
+00:06:35,215 --> 00:06:40,525
+When models over-fit, they generalize poorly meaning that they don't do well on new data,
+
+112
+00:06:40,525 --> 00:06:42,740
+which are unlikely to have quite the same pattern of
+
+113
+00:06:42,740 --> 00:06:46,235
+noise even though the underlying signal should remain.
+
+114
+00:06:46,235 --> 00:06:48,145
+How do we combat this?
+
+115
+00:06:48,145 --> 00:06:49,780
+For that, you'll have to stick around for
+
+116
+00:06:49,780 --> 00:06:53,000
+our next lecture on generalization and sampling.

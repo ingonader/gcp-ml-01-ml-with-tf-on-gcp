@@ -1,0 +1,393 @@
+1
+00:00:00,333 --> 00:00:03,103
+Sehen wir uns
+den Code auf dieser Folie an.
+
+2
+00:00:03,103 --> 00:00:08,349
+Auf den ersten Blick
+sieht es aus wie NumPy.
+
+3
+00:00:08,349 --> 00:00:10,305
+Sie möchten die Tensoren
+
+4
+00:00:10,305 --> 00:00:11,435
+a und b addieren.
+
+5
+00:00:11,435 --> 00:00:15,590
+Sie schreiben also tf.add(a,b).
+
+6
+00:00:15,590 --> 00:00:17,940
+Sie erhalten einen Tensor c.
+
+7
+00:00:18,660 --> 00:00:21,480
+Anders als beim
+typischen Python-Code
+
+8
+00:00:21,480 --> 00:00:25,645
+wird tf.add nicht sofort ausgeführt.
+
+9
+00:00:25,645 --> 00:00:28,380
+Es wird nur der DAG erstellt.
+
+10
+00:00:28,380 --> 00:00:31,760
+DAG steht für
+gerichteter azyklischer Graph.
+
+11
+00:00:31,760 --> 00:00:34,825
+Im DAG sind a, b und c Tensoren
+
+12
+00:00:34,825 --> 00:00:37,635
+und add ist eine Operation.
+
+13
+00:00:37,635 --> 00:00:39,545
+Um diesen Code auszuführen,
+
+14
+00:00:39,545 --> 00:00:42,365
+um den DAG auszuführen,
+
+15
+00:00:42,365 --> 00:00:48,230
+müssen Sie ihn als Teil
+einer sogenannten Sitzung ausführen.
+
+16
+00:00:48,230 --> 00:00:52,680
+Sie möchten also den Wert
+für c ermitteln und sagen:
+
+17
+00:00:52,680 --> 00:00:56,430
+"Sitzung, bitte bewerte c für mich."
+
+18
+00:00:56,430 --> 00:00:58,720
+Dann wird der DAG ausgeführt.
+
+19
+00:00:58,720 --> 00:01:02,420
+Man erhält ein normales
+numerisches Array in Python,
+
+20
+00:01:02,420 --> 00:01:04,830
+das die Werte für c enthält.
+
+21
+00:01:05,610 --> 00:01:07,555
+Zum Programmieren in TensorFlow
+
+22
+00:01:07,555 --> 00:01:09,855
+muss man also
+einen DAG programmieren.
+
+23
+00:01:09,855 --> 00:01:13,995
+Dies umfasst zwei Schritte.
+Als Erstes erstellt man den Graphen.
+
+24
+00:01:13,995 --> 00:01:16,675
+Als Zweites führt man den Graphen aus.
+
+25
+00:01:17,075 --> 00:01:21,725
+Die Graphendefinition ist
+von der Trainingsschleife getrennt,
+
+26
+00:01:21,725 --> 00:01:24,490
+da dies ein Modell
+mit Lazy Evaluation ist.
+
+27
+00:01:24,830 --> 00:01:29,730
+Es minimiert 
+die Kontextwechsel von Python auf C++.
+
+28
+00:01:29,730 --> 00:01:33,215
+Dadurch wird
+die Berechnung sehr effizient.
+
+29
+00:01:33,215 --> 00:01:36,735
+Vom Konzept her ist es so,
+als schreibt man ein Programm,
+
+30
+00:01:36,735 --> 00:01:40,425
+kompiliert es und lässt es
+auf ein paar Daten laufen.
+
+31
+00:01:40,425 --> 00:01:42,440
+Diese Analogie hinkt jedoch ein wenig.
+
+32
+00:01:42,440 --> 00:01:44,655
+Es gibt hier keine
+explizite Compiler-Phase.
+
+33
+00:01:45,725 --> 00:01:49,150
+Beachten Sie, dass c
+nach dem Aufrufen von tf.add
+
+34
+00:01:49,150 --> 00:01:51,610
+keine tatsächlichen Werte liefert.
+
+35
+00:01:51,610 --> 00:01:56,260
+Sie müssen c im Kontext
+einer TensorFlow-Sitzung bewerten.
+
+36
+00:01:56,260 --> 00:01:58,585
+Dann erhalten Sie
+ein NumPy-Array mit Werten
+
+37
+00:01:58,585 --> 00:02:01,195
+also numpy_c.
+
+38
+00:02:01,630 --> 00:02:06,475
+Wie gesagt, TensorFlow
+beinhaltet Lazy Evaluation.
+
+39
+00:02:06,475 --> 00:02:08,360
+Sie schreiben zuerst einen DAG.
+
+40
+00:02:08,360 --> 00:02:12,220
+Dann führen Sie den DAG
+im Kontext einer Sitzung aus,
+
+41
+00:02:12,220 --> 00:02:14,280
+um Ihre Ergebnisse zu erhalten.
+
+42
+00:02:14,280 --> 00:02:17,260
+Sie können TensorFlow auch
+in einem anderen Modus ausführen.
+
+43
+00:02:17,260 --> 00:02:19,030
+Er heißt tf.eager.
+
+44
+00:02:19,030 --> 00:02:22,305
+Hier erfolgt die Bewertung sofort
+
+45
+00:02:22,305 --> 00:02:24,225
+und nicht mit Verzögerung.
+
+46
+00:02:24,225 --> 00:02:27,870
+Der tf.eager-Modus wird jedoch selten
+in Produktionsprogrammen verwendet.
+
+47
+00:02:27,870 --> 00:02:30,620
+Er wird in der Regel
+bei der Entwicklung eingesetzt.
+
+48
+00:02:30,620 --> 00:02:33,535
+Wir werden uns tf.eager
+später im Kurs genauer ansehen.
+
+49
+00:02:33,535 --> 00:02:38,115
+Wir beschäftigen uns jedoch
+primär mit der Lazy Evaluation.
+
+50
+00:02:38,115 --> 00:02:39,880
+Fast der gesamte Code,
+
+51
+00:02:39,880 --> 00:02:42,280
+den wir schreiben
+und in der Produktion ausführen,
+
+52
+00:02:42,280 --> 00:02:44,570
+ist im Lazy Evaluation-Modus.
+
+53
+00:02:45,350 --> 00:02:50,355
+Pythons numerische Software
+ist meist in NumPy geschrieben.
+
+54
+00:02:50,355 --> 00:02:53,835
+Hier sind a und b NumPy-Arrays.
+
+55
+00:02:53,835 --> 00:02:57,845
+NumPy ist so schnell,
+weil es in c implementiert ist.
+
+56
+00:02:57,845 --> 00:03:00,350
+Wenn Sie also np.add aufrufen,
+
+57
+00:03:00,350 --> 00:03:03,560
+wird add in c ausgeführt.
+
+58
+00:03:03,560 --> 00:03:08,960
+Es wird ausgeführt, wenn die CPU
+den Code np.add (a,b) verarbeitet,
+
+59
+00:03:08,960 --> 00:03:12,630
+und das NumPy-Array c
+wird dann mit den Summen befüllt.
+
+60
+00:03:12,630 --> 00:03:16,935
+Wenn Sie c drucken,
+erhalten Sie 8, 2 und 10.
+
+61
+00:03:16,935 --> 00:03:18,645
+8 ist die Summe von 5 + 3,
+
+62
+00:03:18,645 --> 00:03:21,730
+3 minus 1 ergibt 2 und so weiter.
+
+63
+00:03:21,730 --> 00:03:27,525
+Was ich sagen will:
+np.add wird sofort bewertet.
+
+64
+00:03:27,935 --> 00:03:30,310
+Im Unterschied zu NumPy
+
+65
+00:03:30,310 --> 00:03:34,400
+liefert c in TensorFlow
+nicht die tatsächlichen Werte.
+
+66
+00:03:34,400 --> 00:03:41,790
+c ist ein Tensor und muss im Kontext
+einer TensorFlow-Sitzung bewertet werden,
+
+67
+00:03:41,790 --> 00:03:45,315
+damit Sie als Ergebnis
+ein NumPy-Array mit Werten erhalten.
+
+68
+00:03:45,745 --> 00:03:49,369
+Wenn die CPU oder GPU
+oder jede beliebige Hardware
+
+69
+00:03:49,369 --> 00:03:52,739
+tf.add (a,b) bewertet,
+
+70
+00:03:52,739 --> 00:03:57,555
+entsteht ein Tensor im
+gerichteten azyklischen Graphen (DAG).
+
+71
+00:03:57,555 --> 00:04:00,775
+Die Addition wird jedoch erst ausgeführt,
+
+72
+00:04:00,775 --> 00:04:04,745
+wenn session.run aufgerufen wird.
+
+73
+00:04:04,745 --> 00:04:07,105
+Wenn wir also print c aufrufen,
+
+74
+00:04:07,105 --> 00:04:12,750
+wird im ersten Feld der Debug-
+Output der Tensorklasse ausgegeben.
+
+75
+00:04:12,760 --> 00:04:15,520
+Er umfasst einen eindeutigen Namen
+
+76
+00:04:15,520 --> 00:04:17,220
+für den Knoten im DAG,
+
+77
+00:04:17,220 --> 00:04:19,620
+in diesem Fall add_7,
+
+78
+00:04:19,620 --> 00:04:25,295
+sowie Gestalt und Datentyp des Wertes,
+der beim Ausführen des DAG angezeigt wird.
+
+79
+00:04:25,295 --> 00:04:27,525
+Nachdem die Sitzung ausgeführt wurde
+
+80
+00:04:27,525 --> 00:04:30,895
+und c im Kontext
+einer Sitzung bewertet wurde,
+
+81
+00:04:30,895 --> 00:04:32,370
+können wir das Resultat drucken
+
+82
+00:04:32,370 --> 00:04:36,010
+und erhalten 8, 2 und 10,
+genau wie bei NumPy.
+
+83
+00:04:36,010 --> 00:04:37,630
+Es gibt also zwei Phasen,
+
+84
+00:04:37,630 --> 00:04:41,540
+die Build-Phase und die Run-Phase.
+
+85
+00:04:41,540 --> 00:04:43,510
+Aber warum?
+
+86
+00:04:43,510 --> 00:04:44,860
+Warum nutzt TensorFlow
+
+87
+00:04:44,860 --> 00:04:46,960
+Lazy Evaluation?
+
+88
+00:04:46,960 --> 00:04:48,930
+Darum geht es in der nächsten Lektion.

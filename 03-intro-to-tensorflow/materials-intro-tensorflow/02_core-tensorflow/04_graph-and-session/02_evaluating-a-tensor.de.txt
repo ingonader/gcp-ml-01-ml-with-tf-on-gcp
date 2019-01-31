@@ -1,0 +1,18 @@
+Sie können entweder
+ sess.runs z oder z.eval aufrufen, um z im Kontext der
+Standardsitzung auszuwerten. z.eval ist nur eine Kurzform, der Sie im Code oft begegnen werden. Sie entspricht einem
+run-Aufruf mit der Standardsitzung. Man kann session.run aufrufen
+und einen einzelnen Tensor übergeben, aber man kann auch eine Liste
+von Tensoren zur Auswertung übergeben. TensorFlow ermittelt selbst, welche Teile des Graphen
+ausgewertet werden müssen, und führt die Auswertung durch. Für jeden Eingangstensor gibt es einen entsprechenden
+Array numPy in der Ausgabe. Da wir z und z3 übergeben haben, erhält man numPy-Arrays zurück,
+die ich a1 und a3 nennen möchte. An diesem Code sieht man auch, dass man tf.Add(x, y)
+nicht ausschreiben muss. Man kann einfach x plus y verwenden, denn die gängigen
+arithmetischen Operationen sind überladen. Ich habe schon über tf.eager gesprochen. TensorFlow-Programme arbeiten
+normalerweise mit verzögerter Auswertung, und wenn Sie Produktionscode schreiben, empfehle ich das auch. Aber bei der Entwicklung oder Fehlersuche kann es manchmal praktisch sein,
+wenn der Code sofort ausgeführt wird. Hierfür möchte ich Ihnen tf.eager zeigen. Importieren Sie  tf.eager und aktivieren
+Sie die sofortige ("eager") Ausführung. Dies darf man aber nur einmal tun. Typischerweise
+tut man es zu Beginn der mi. Hier erstelle ich zwei Tensoren x und y und lasse x minus y ausgeben. Wenn der eager-Modus nicht aktiviert wäre, was würde dann ausgegeben werden? Nur die Debug-Ausgabe des Tensors. Darin wären ein vom System
+zugewiesener, eindeutiger Name für den Knoten und den DAG, die Form
+und der Datentyp des Werts enthalten, der beim Ausführen des DAG erscheint. Weil aber der eager-Modus aktiviert ist, müssen wir nicht auf
+das Subtraktionsergebnis warten, bis die Sitzung ausgeführt wurde. Und deshalb sehen wir für x minus y als Ergebnis die Liste 2, 3, 4.

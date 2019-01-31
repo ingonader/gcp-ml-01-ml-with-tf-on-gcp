@@ -1,0 +1,109 @@
+Intéressons-nous brièvement
+à l'histoire du machine learning pour voir comment il s'est transformé
+en réseaux de neurones de deep learning qui sont aujourd'hui si populaires. Les réseaux de neurones ont été utilisés
+au gré des modes ces dernières décennies, mais ces techniques développées
+pour d'autres algorithmes peuvent être appliquées
+aux réseaux de neurones de deep learning, qui sont ainsi très puissants. La régression linéaire a été inventée
+pour prédire le mouvement des planètes et la taille des cosses
+en fonction de leur apparence. Sir Francis Galton a été l'un des premiers
+à utiliser les méthodes statistiques pour mesurer des phénomènes naturels. Il s'intéressait aux tailles respectives
+des parents et de leurs enfants, pour différentes espèces,
+dont les pois de senteur. Il a alors observé
+quelque chose de très étrange : un parent plus grand que la moyenne a
+tendance à produire un enfant plus grand, mais dans quelle mesure est-il plus grand
+que la moyenne des autres enfants ? Ce ratio pour l'enfant est
+en fait inférieur à celui du parent. Si la taille du parent a un écart type
+de 1,5 par rapport à la moyenne, au sein de sa génération, cela prédit que la taille
+de l'enfant sera inférieure aux écarts types de 1,5
+observés au sein de sa cohorte. Nous disons que,
+génération après génération, les choses de la nature régressent
+ou reviennent à la moyenne, d'où le nom "régression linéaire". Ce graphique de 1877 est
+la première régression linéaire. Remarquable. La puissance de calcul,
+en 1800, était assez limitée. Ils n'ont donc même pas réalisé
+que cela fonctionnerait très bien avec de grands ensembles de données. Il existait une solution analytique
+pour résoudre la régression linéaire, mais les méthodes de descente
+de gradient peuvent aussi être utilisées, chacune ayant
+ses avantages et inconvénients, selon l'ensemble de données. Penchons-nous sur la régression linéaire. Attardons-nous sur les motivations
+autour de la régression linéaire. Nous commençons par une équation linéaire qui, selon l'hypothèse de départ,
+décrit notre système. Nous multiplions diverses pondérations par les vecteurs de caractéristiques
+observés, puis en faisons la somme. Nous pouvons le représenter
+dans l'équation ci-dessus, pour chaque exemple
+de notre ensemble de données, y= w0 fois x0
++ w1 fois x1 plus w2 fois x2, etc., pour chaque caractéristique
+de notre modèle. Ainsi, nous appliquons cette équation
+à chaque ligne de notre ensemble, quand les valeurs pondérales sont fixes, et que les valeurs des caractéristiques
+proviennent de chaque colonne associée et de notre ensemble de données de ML. Cela pourrait être résumé
+par l'équation de mesures y = X fois w. Cette équation d'hypothèse
+est très importante pour la régression linéaire
+et d'autres modèles de ML, comme les réseaux de neurones profonds
+dont nous parlerons ultérieurement. Comment déterminer si mes pondérations
+font de bonnes ou mauvaises suppositions ? Réponse : nous devons
+créer une fonction de perte, qui est une fonction d'objectif
+que nous voulons optimiser. Comme déjà expliqué, en général,
+pour les problèmes de régression, la fonction de perte est
+l'erreur quadratique moyenne, qui est représentée dans cette équation
+sous forme matricielle. Je ne parle pas de la constante ici :
+elle va disparaître dans la dérivation. Nous trouvons d'abord la différence
+entre la valeur réelle des étiquettes et la valeur prédite de celles-ci,
+y-accent circonflexe, qui est X fois w. Mon objectif est de réduire la perte
+autant que faire se peut. Je dois trouver un moyen
+de la réduire au maximum, en fonction des pondérations. Pour ce faire, je prends la dérivée
+en fonction des pondérations, dans le cas de la 1D, ou, plus généralement, le gradient
+quand j'ai plusieurs caractéristiques. Je peux ensuite utiliser ceci
+pour trouver le minimum absolu. L'équation ici, je ne vais pas parler
+de la dérivation, fournit une solution analytique
+pour la régression linéaire. Ainsi, si vous ajoutez
+les valeurs X et y à cette formule, vous obtiendrez
+les valeurs des pondérations. Mais, ce n'est pas très pratique, il y a des problèmes avec l'inverse, nous supposons d'abord que la matrice
+de Gram, X transposition X, est régulière. Toutes les colonnes de notre matrice X
+sont donc linéairement indépendantes. Dans les ensembles de données
+du monde réel, cependant, il y a des données en double,
+ou presque en double. Rachat du même produit par le même client, deux photos du même coucher de soleil
+à quelques secondes d'intervalle,... Même si la matrice de Gram est
+techniquement linéairement indépendante, elle peut être mal conditionnée et être ainsi singulière
+sur le plan des calculs, et nous causer des problèmes. L'inverse a aussi une complexité en temps
+de O(n3) avec l'algorithme naïf, mais n'est pas meilleur
+avec des algorithmes complexes. Et ces derniers apportent
+leur lot de problèmes numériques. Il en va de même pour la multiplication
+permettant de créer la matrice de Gram. À la place, nous pouvons
+résoudre les équations normales à l'aide d'un Cholesky
+ou d'une décomposition QR. Pour O(n3) ou même O(n2.5),
+quand N est égal à 10 000 ou plus, l'algorithme peut être très lent. Oui, vous pouvez résoudre le problème
+en utilisant l'équation normale, mais cela dépend
+fortement de vos données, du modèle, de quels algorithmes matriciels
+d'algèbre linéaire vous utilisez, etc. Heureusement, il existe un algorithme
+d'optimisation de descente de gradient qui est moins onéreux en termes
+de temps et de mémoire pour les calculs, plus souple pour la généralisation faible et assez générique
+pour résoudre la plupart des problèmes. À la place, en descente de gradient,
+nous avons notre fonction de perte ou, plus généralement,
+notre fonction d'objectif, qui est paramétrée
+par les pondérations de notre modèle. Au sein de cet espace,
+il y a des collines et des vallées, tout comme sur la Terre. Cependant, dans de nombreux
+problèmes de machine learning, il y aura de nombreuses autres dimensions,
+dans le monde 3D dans lequel nous vivons. Puisqu'il s'agit
+d'une descente en gradient, une minimisation avec le gradient,
+et pas avec la montée, qui serait une maximisation, nous voulons parcourir
+la dernière hypersurface, à la recherche du minimum absolu. Autrement dit, nous voulons
+trouver la vallée la plus basse, quel que soit le point de départ
+sur l'hypersurface. Pour ce faire, il faut trouver
+le gradient de la fonction de perte, et le multiplier par un hyperparamètre,
+le taux d'apprentissage, puis soustraire cette valeur
+aux pondérations actuelles. Ce processus effectue
+des itérations jusqu'à la convergence. Choisir le taux d'apprentissage optimal
+et attendre la fin des itérations peut vous inciter
+à utiliser l'équation normale, en présupposant que le nombre
+de caractéristiques est petit, qu'il n'y a pas
+de problèmes de colinéarité, etc. Ou ajouter un optimiseur
+de descente de gradient, comme un momentum, ou utiliser
+un taux d'apprentissage en diminution. Nous parlerons en détail de la descente
+de gradient au module suivant. Qu'est-ce qu'un hyperparamètre qui aide
+à déterminer le pas d'apprentissage de descente de gradient
+le long de l'hypersurface pour accélérer la convergence ? La bonne réponse est
+le taux d'apprentissage. Le taux d'apprentissage
+et d'autres hyperparamètres, que vous découvrirez
+dans les modules suivants, aident à dimensionner le pas
+d'apprentissage de descente de gradient. S'il est trop faible, cette dernière
+mettra beaucoup de temps à atteindre la convergence. S'il est trop élevé, la descente
+de gradient pourrait même diverger, et augmenter de plus en plus la perte. Les trois autres réponses concernent
+la colinéarité et le conditionnement, que nous n'avons pas à traiter
+avec la descente de gradient, comme dans une équation normale.

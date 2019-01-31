@@ -1,0 +1,76 @@
+Donc voici l'atelier
+sur la répartition reproductible. Si vous n'avez pas
+encore suivi cet atelier et essayé,
+je vous recommande de le faire, puis revenez et regardez cette vidéo. Commençons. Nous cherchons à prédire
+le retard à l'arrivée d'un avion dont le départ a été retardé, et quelle est la relation entre eux
+en fonction des différents aéroports, les aéroports de départ et d'arrivée. Prenons un vol venant de New York
+qui a 30 minutes de retard et qui va à Los Angeles, sera-t-il en retard à l'arrivée ? Nous voulons prédire cette relation. Pour obtenir cette relation
+ou le modèle de cette relation, nous avons cette formule-ci, notre bloc-notes Cloud Datalab. C'est le retard à l'arrivée
+égal à un paramètre, alpha, multiplié par le retard au départ. Pour estimer l'alpha, voici la formule. Nous voulons ajouter
+des informations sur le retard au départ, et prédire s'il y aura
+un retard à l'arrivée. Avant cette modélisation de données, nous devons créer nos environnements
+de test et de validation pour le modèle. Puisqu'il s'agit d'un grand ensemble, nous allons utiliser BigQuery, en l'appelant depuis Cloud DataLab. Nous allons créer une paire
+d'aéroports de départ et d'arrivée, pour voir s'il y a une corrélation forte pour cet aéroport particulier, cette étape particulière, s'il va y avoir du retard à l'arrivée si le départ a été retardé. Pour ce bloc-notes, nous allons nous intéresser
+à Denver et Los Angeles. Tout ceci est le contexte de l'atelier,
+c'est très important pour comprendre ce que nous faisons. Nous avons besoin d'un échantillon
+de données reproductible créé dans BigQuery. Voyons d'abord
+ce que vous ne devez pas faire, et si vous voyez ce code
+ou cet échantillon random naïf dans votre bloc-notes
+ou celui de vos collègues, vous pouvez le montrer et dire "Si je veux exécuter votre code, je n'obtiendrai pas forcément
+les mêmes résultats que dans ce cours". Penchons-nous d'abord
+sur cette répartition random naïve. Exécutons ce code. Je l'ai déjà exécuté et j'ai remarqué que l'alpha est hautement corrélé, 0,97 pour entre Denver et Los Angeles. Je vais l'exécuter jusqu'à cette cellule. Cherchons le coefficient. Les trois derniers chiffres
+sont 7, 8 et 4. Pour que ce soit reproductible, si je faisais à nouveau la même chose, que se passerait-il ? Vais-je obtenir 7, 8 et 4 ?
+Non, j'obtiens 9, 1 et 9. Je n'ai rien changé ni fait d'entraînement
+ou quelque chose du même genre, cela devrait donc
+être les mêmes données, n'est-ce pas ? Vous pouvez voir à la ligne 7 du code, vous sélectionnez cette fonction Random
+comme champ de répartition. Chaque fois que j'exécute ceci
+comme vu dans le cours, la fonction Random applique
+un chiffre différent entre 0 et 1. Ce n'est donc pas forcément reproductible. Faisons mieux. Random est exécutée chaque fois
+qu'une ligne est exécutée dans BigQuery. Je vais vous expliquer
+cela plus clairement. Si vous utilisez ceci
+pour votre métrique de perte, la RMSE entre le retard à l'arrivée
+et le retard au départ, et divisez ceci en différents ensembles
+pour l'entraînement et l'évaluation... Disons que cela a été fait
+immédiatement pour chaque enregistrement, random < 0,8 pour tous, voyons si nous obtenons la même RMSE. Je vais exécuter cette cellule. Nous obtenons 13,098 pour l'entraînement
+et 13,027 pour l'évaluation. C'est donc assez cohérent, mais voyons si c'est reproductible
+si je fais la même chose. Nous voulons 13,098 pour l'entraînement. Comme vous le voyez ici,
+pour l'entraînement, nous obtenons 13,089, ce qui est différent du 98 d'avant, et 13,063. Même si nous exécutons
+exactement le même code, on obtient une RMSE différente. Et le coupable ici, et nombre d'entre vous
+doivent déjà le crier, c'est la fonction random. Diviser au hasard pour l'entraînement
+et l'évaluation ne fonctionne pas. Vous vous demandez
+peut-être comment faire. Si je configure toutes mes données
+pour l'entraînement et l'évaluation avec la fonction random une fois, et que je les ai
+correctement divisées en 80 et 20 %, pourquoi cela change-t-il sans arrêt ? Comment ne pas exécuter
+random à chaque fois ? Nous devons réfléchir autrement. Voici un autre exemple où vous avez
+l'entraînement sur la fonction random, et vous faites cela en premier. C'est un peu une sous-requête, ou vous avez l'entraînement
+et l'évaluation, et vous les divisez en sous-ensembles de données. Puis vous exécutez ces requêtes,
+mais vous voyez ici que nous obtenons le même problème. La RMSE est de 13,037. Les vôtres sont probablement différentes. C'est pour l'évaluation. Je vais cliquer ici
+et exécuter jusqu'à cette cellule, ce qui va à nouveau exécuter tout cela. Et dès que l'exécution est finie, nous voulons 13,037, nous attendons la fin de l'exécution. Nous obtenons 13,087, l'alpha est différent,
+je crois que c'était 0,977 avant. Si vous utilisez la fonction random
+n'importe où dans votre code BigQuery, vos données vont automatiquement changer. Comment donc ne plus utiliser random ? Au lieu d'utiliser random, on utilise la fonction de hachage. C'est ce que vous allez voir ici. Nous voulons diviser dans la clause Where au lieu d'utiliser
+une fonction random "< 0,8". Nous allons hacher la date. La date ne va pas changer. La date va être la même
+que dans votre ensemble d'entraînement. Puis chercher le reste. Et si cela appartient
+à une catégorie particulière, dans ce cas particulier, on veut tout ce qui est inférieur à 8, et les placer
+dans notre bucket d'entraînement. C'est une répartition à 80 %, et cela sera probablement
+utilisé pour l'entraînement. Nous avons 0,975, et prenons la fin, c'est 403. Exécutons ceci. Et voyons ce que l'on obtient. À la fin, on obtient aussi 403. Cette opération est donc reproductible. C'est intuitivement logique. Aucune fonction ne change
+lorsque vous exécutez ce code. Nous pouvons ajouter un peu de SQL, et calculer la RMSE. La RMSE au lieu du SQL, à nouveau, on prend la moyenne de la fonction
+dont nous avons parlé, et on prend la racine carrée en haut, et votre ensemble de données
+d'entraînement est 13,16072. On obtient ce même résultat
+à chaque exécution. Qu'avez-vous appris ? À chaque fois que vous créez
+un échantillon de données reproductible, vous devez utiliser
+une fonction de hachage au lieu d'un échantillon random naïf. Même si vous faites quelque chose
+d'assez sophistiqué comme ici, mais tout aussi dangereux
+que de préséparer vos données pour l'entraînement et l'évaluation, disons que vous vouliez sculpter cela, que vous vouliez créer, vous pourriez demander "Si j'avais fait cela,
+exécuté ce code une fois et stocké les résultats dans deux tables,
+pour l'entraînement et l'évaluation, puis utilisé celles-ci immédiatement, c'est génial,
+car vous ne l'avez fait qu'une fois, et vous avez fait une répartition 80/20. Et si vous recevez d'autres données ? Et si quelqu'un veut répéter
+votre analyse avec l'ensemble d'origine ? Ce n'est parce que vous avez créé
+cette répartition de données une fois, que vous allez pouvoir la reproduire, en particulier
+si votre ensemble s'agrandit ou diminue, ou pour faire
+une autre répartition que 80/20. C'est bien plus flexible et reproductible d'utiliser un champ
+pour grouper et hacher vos données. Vous pouvez le voir ici. Entraînez-vous à tout cela, car ce sont des étapes fondamentales que vous devez faire
+avant d'exécuter des modèles de ML. Et cela crée ces buckets de données à partir desquels votre modèle
+peut apprendre, valider, puis prendre la décision
+avec les données de test de passer votre modèle en production. Voilà, c'est fini. Pour finir,
+nous allons parler de l'équipement, puis faire un atelier complet
+pour prédire le tarif d'un taxi. À bientôt.

@@ -1,0 +1,590 @@
+1
+00:00:01,020 --> 00:00:04,380
+Comme nous l'avons vu,
+les modèles sont des fonctions mathématiques
+
+2
+00:00:04,380 --> 00:00:06,605
+avec des paramètres et des hyperparamètres.
+
+3
+00:00:06,605 --> 00:00:09,155
+On a aussi abordé les paramètres
+de modèles linéaires.
+
+4
+00:00:09,545 --> 00:00:12,020
+On a vu que
+les méthodes analytiques pour trouver
+
+5
+00:00:12,020 --> 00:00:14,405
+les paramètres optimaux
+ne sont pas évolutives,
+
+6
+00:00:14,405 --> 00:00:16,935
+et qu'il est possible
+d'optimiser nos paramètres
+
+7
+00:00:16,935 --> 00:00:19,085
+via une recherche
+dans l'espace de paramètres.
+
+8
+00:00:19,535 --> 00:00:21,010
+Pour comparer des points,
+
+9
+00:00:21,010 --> 00:00:22,900
+on a besoin de critères de mesure.
+
+10
+00:00:23,460 --> 00:00:26,290
+On va maintenant étudier
+les fonctions de perte.
+
+11
+00:00:26,300 --> 00:00:30,330
+Elles traduisent la qualité des prédictions
+pour un groupe de points de données
+
+12
+00:00:30,340 --> 00:00:34,495
+issu de notre ensemble d'apprentissage.
+Puis, elle les arrange en nombre individuel
+
+13
+00:00:34,505 --> 00:00:37,245
+pour évaluer la qualité des paramètres
+actuels du modèle.
+
+14
+00:00:37,685 --> 00:00:40,955
+Pour mesurer la qualité d'une prédiction
+au niveau d'un point unique,
+
+15
+00:00:40,955 --> 00:00:44,915
+il suffit d'examiner la différence de signe
+entre la prédiction et la valeur réelle.
+
+16
+00:00:45,375 --> 00:00:47,835
+Cette différence s'appelle l'erreur.
+
+17
+00:00:49,785 --> 00:00:52,250
+Comment regrouper
+plusieurs valeurs d'erreur ?
+
+18
+00:00:53,260 --> 00:00:55,860
+Le plus simple est d'en faire la somme.
+
+19
+00:00:56,700 --> 00:01:00,005
+Or, si on utilise une fonction
+de somme pour définir nos termes,
+
+20
+00:01:00,005 --> 00:01:04,554
+les erreurs de signe opposé s'annuleront
+dans le modèle obtenu.
+
+21
+00:01:04,584 --> 00:01:08,710
+Notre modèle doit être capable de gérer
+des données contradictoires,
+
+22
+00:01:08,710 --> 00:01:10,810
+mais un modèle qui répartit
+
+23
+00:01:10,810 --> 00:01:13,425
+les différences par erreurs
+positives et négatives
+
+24
+00:01:13,425 --> 00:01:14,775
+n'est pas idéal.
+
+25
+00:01:14,825 --> 00:01:17,860
+Il est préférable d'opter pour
+un modèle où les prédictions
+
+26
+00:01:17,860 --> 00:01:21,505
+correspondent à l'étiquette pour
+tous les points de l'ensemble de données,
+
+27
+00:01:21,505 --> 00:01:24,380
+plutôt qu'un modèle dans
+lequel les erreurs positives
+
+28
+00:01:24,380 --> 00:01:25,560
+et négatives s'annulent.
+
+29
+00:01:26,200 --> 00:01:30,060
+On peut essayer de calculer la somme
+des valeurs absolues de l'erreur,
+
+30
+00:01:30,060 --> 00:01:32,995
+mais cette méthode présente
+d'autres problèmes
+
+31
+00:01:32,995 --> 00:01:34,585
+que nous décrirons bientôt.
+
+32
+00:01:35,465 --> 00:01:39,495
+L'erreur quadratique moyenne
+est souvent utilisée à la place.
+
+33
+00:01:39,515 --> 00:01:41,240
+L'erreur quadratique moyenne
+(ou MSE)
+
+34
+00:01:41,240 --> 00:01:45,435
+se calcule à partir des termes d'erreur
+issus de l'ensemble de données.
+
+35
+00:01:45,505 --> 00:01:48,345
+On les met au carré pour
+éliminer les valeurs négatives,
+
+36
+00:01:48,345 --> 00:01:50,590
+puis on calcule la moyenne des carrés.
+
+37
+00:01:51,750 --> 00:01:54,305
+MSE est une fonction
+de perte tout à fait valide,
+
+38
+00:01:54,305 --> 00:01:55,915
+mais elle présente un problème.
+
+39
+00:01:56,105 --> 00:01:58,420
+Si les erreurs sont exprimées en kilos,
+
+40
+00:01:58,420 --> 00:01:59,840
+en kilomètres ou en euros,
+
+41
+00:01:59,840 --> 00:02:02,180
+les mettre au carré donnera comme résultat
+
+42
+00:02:02,180 --> 00:02:04,435
+des kilos, des kilomètres ou des euros
+au carré,
+
+43
+00:02:04,435 --> 00:02:07,580
+ce qui peut compliquer
+l'interprétation globale.
+
+44
+00:02:08,410 --> 00:02:13,240
+On calcule plutôt la racine carrée du MSE
+pour obtenir un résultat cohérent.
+
+45
+00:02:13,660 --> 00:02:17,125
+RMSE est la racine carrée
+de l'erreur quadratique moyenne.
+
+46
+00:02:18,285 --> 00:02:19,635
+Plus elle est élevée,
+
+47
+00:02:19,635 --> 00:02:21,790
+moins bonne est la qualité
+des prédictions.
+
+48
+00:02:21,880 --> 00:02:24,820
+L'objectif est donc de réduire la RMSE.
+
+49
+00:02:26,020 --> 00:02:28,580
+Il faut ajouter un symbole de chapeau "^"
+
+50
+00:02:28,580 --> 00:02:31,680
+au dessus du Y représentant
+la prédiction du modèle,
+
+51
+00:02:31,680 --> 00:02:34,295
+et utiliser un Y normal pour
+représenter l'étiquette.
+
+52
+00:02:37,405 --> 00:02:41,115
+Cette métrique nous permet de comparer
+deux points dans l'espace de paramètres,
+
+53
+00:02:41,115 --> 00:02:45,480
+afin d'encoder les valeurs de paramètres
+actuelles dans notre modèle linéaire.
+
+54
+00:02:47,120 --> 00:02:49,900
+Voici deux nuages de points
+et droites de régression
+
+55
+00:02:49,900 --> 00:02:53,445
+pour le poids des bébés en fonction de
+l'âge des mères au-dessus de 39 ans.
+
+56
+00:02:54,175 --> 00:02:56,510
+Il est très difficile
+d'identifier visuellement
+
+57
+00:02:56,510 --> 00:02:59,035
+la droite la plus adaptée
+aux données sous-jacentes.
+
+58
+00:02:59,245 --> 00:03:03,190
+C'est là que nos métriques de perte entrent
+en jeu pour trouver le meilleur modèle.
+
+59
+00:03:04,540 --> 00:03:08,545
+Le modèle de gauche a une RMSE de 0,145,
+
+60
+00:03:08,545 --> 00:03:12,430
+tandis que celui de droite
+a une RMSE de 0,149.
+
+61
+00:03:13,480 --> 00:03:16,905
+Les fonctions de perte indiquent
+que les valeurs de poids et de biais
+
+62
+00:03:16,905 --> 00:03:19,795
+à gauche sont plus efficaces
+que celles du tableau de droite.
+
+63
+00:03:19,955 --> 00:03:23,270
+Bien que la RMSE soit utile
+pour les problèmes de régression linéaire,
+
+64
+00:03:23,270 --> 00:03:26,125
+elle n'est pas adaptée
+à la classification.
+
+65
+00:03:26,665 --> 00:03:31,325
+Dans les problèmes de classification,
+l'étiquette est une variable catégorielle.
+
+66
+00:03:31,565 --> 00:03:34,560
+Si on utilise la RMSE
+pour la classification,
+
+67
+00:03:34,560 --> 00:03:38,655
+cela pose un problème de représentation
+des variables catégorielles dans le modèle.
+
+68
+00:03:38,975 --> 00:03:40,870
+Comme nous l'avons vu,
+
+69
+00:03:40,870 --> 00:03:44,710
+les variables catégorielles sont souvent
+représentées comme des entiers binaires.
+
+70
+00:03:46,160 --> 00:03:48,625
+Pour comprendre pourquoi
+cela pose un problème,
+
+71
+00:03:48,625 --> 00:03:50,795
+observons ces courbes de perte.
+
+72
+00:03:51,105 --> 00:03:54,410
+L'axe des abscisses
+représente la prédiction,
+
+73
+00:03:54,410 --> 00:03:58,740
+et l'axe des ordonnées représente la perte,
+en fonction de cette prédiction.
+
+74
+00:03:59,550 --> 00:04:01,270
+La couleur s'applique à l'étiquette.
+
+75
+00:04:01,320 --> 00:04:03,625
+Le vert signifie que l'étiquette vaut 1,
+
+76
+00:04:03,625 --> 00:04:05,845
+le bleu qu'elle vaut 0.
+
+77
+00:04:07,235 --> 00:04:09,140
+Quel est le problème de cette courbe ?
+
+78
+00:04:10,720 --> 00:04:14,140
+Contrairement à notre idée,
+elle ne pénalise pas assez sévèrement
+
+79
+00:04:14,140 --> 00:04:17,789
+les prédictions de très mauvaise qualité.
+
+80
+00:04:18,029 --> 00:04:19,920
+Notez qu'une prédiction de 1,
+
+81
+00:04:19,920 --> 00:04:21,165
+lorsque la cible est 0,
+
+82
+00:04:21,165 --> 00:04:25,245
+est au moins trois fois plus mauvaise
+qu'une prédiction de 0,5 pour la même cible.
+
+83
+00:04:26,635 --> 00:04:28,215
+Il faut donc remplacer la RMSE
+
+84
+00:04:28,215 --> 00:04:31,075
+par une nouvelle fonction de perte,
+qui applique une pénalité
+
+85
+00:04:31,075 --> 00:04:34,320
+suffisamment sévère pour
+les problèmes de classification.
+
+86
+00:04:36,990 --> 00:04:40,280
+L'une des fonctions de perte
+les plus utilisées pour la classification
+
+87
+00:04:40,280 --> 00:04:42,995
+est l'entropie croisée,
+ou perte logarithmique.
+
+88
+00:04:43,955 --> 00:04:46,855
+Ce graphique est semblable
+à celui de la dernière diapositive.
+
+89
+00:04:46,975 --> 00:04:49,570
+Au lieu de présenter la perte pour la RMSE,
+
+90
+00:04:49,570 --> 00:04:52,920
+il affiche celle d'une nouvelle
+fonction de perte : l'entropie croisée.
+
+91
+00:04:53,160 --> 00:04:54,980
+Contrairement à la RMSE,
+
+92
+00:04:54,980 --> 00:04:58,340
+l'entropie croisée pénalise très sévèrement
+les mauvaises prédictions,
+
+93
+00:04:58,340 --> 00:05:00,155
+même dans ce domaine limité.
+
+94
+00:05:01,135 --> 00:05:04,800
+Prenons un exemple pour mieux comprendre
+le fonctionnement de la formule.
+
+95
+00:05:05,250 --> 00:05:08,295
+La formule de cette fonction
+compte deux termes différents.
+
+96
+00:05:08,325 --> 00:05:11,920
+Un seul est utilisé pour calculer
+la perte d'un point de données spécifique.
+
+97
+00:05:12,490 --> 00:05:15,665
+Le premier est utilisé
+pour les exemples positifs,
+
+98
+00:05:15,665 --> 00:05:19,210
+où l'étiquette Y vaut 1.
+
+99
+00:05:19,320 --> 00:05:22,260
+Le deuxième est utilisé
+lorsque l'étiquette vaut 0.
+
+100
+00:05:25,860 --> 00:05:29,000
+Voici un tableau présentant
+les étiquettes et les prédictions
+
+101
+00:05:29,000 --> 00:05:32,230
+pour deux photos dans
+une tâche de classification d'images.
+
+102
+00:05:33,040 --> 00:05:36,240
+L'étiquette indique si la photo
+comporte ou non un visage humain.
+
+103
+00:05:38,030 --> 00:05:40,645
+Le modèle semble être efficace.
+
+104
+00:05:40,865 --> 00:05:43,920
+La prédiction a une valeur
+bien supérieure dans l'exemple du haut
+
+105
+00:05:43,920 --> 00:05:45,685
+que dans celui du bas.
+
+106
+00:05:46,625 --> 00:05:48,790
+Examinons la fonction en pratique.
+
+107
+00:05:51,780 --> 00:05:54,110
+En raison de la structure
+de la fonction de perte,
+
+108
+00:05:54,110 --> 00:05:56,135
+le terme négatif du premier exemple
+
+109
+00:05:56,135 --> 00:05:59,435
+et le terme positif
+du deuxième exemple s'annulent.
+
+110
+00:05:59,795 --> 00:06:02,745
+Si l'on considère les prédictions
+de 0,7 et 0,2
+
+111
+00:06:02,745 --> 00:06:05,650
+pour deux points de données avec
+des étiquettes de 1 et 0,
+
+112
+00:06:05,650 --> 00:06:09,840
+la perte d'entropie croisée correspond
+au terme positif du premier point de données
+
+113
+00:06:09,840 --> 00:06:12,170
+plus le terme négatif
+du deuxième point de données
+
+114
+00:06:12,170 --> 00:06:14,285
+multiplié par -0,5.
+
+115
+00:06:15,355 --> 00:06:17,140
+Le résultat est 0,13.
+
+116
+00:06:17,890 --> 00:06:20,360
+Que se passe-t-il
+en cas de mauvaise prédiction ?
+
+117
+00:06:20,980 --> 00:06:24,410
+L'exemple négatif semble
+ici avoir été mal classé,
+
+118
+00:06:24,410 --> 00:06:26,640
+ce qui a entraîné
+l'augmentation de la perte.
+
+119
+00:06:26,880 --> 00:06:30,615
+C'est logique,
+car le but est de minimiser la perte.
+
+120
+00:06:33,255 --> 00:06:36,655
+Vous savez maintenant comparer
+deux points dans l'espace de paramètres,
+
+121
+00:06:36,655 --> 00:06:40,855
+avec la RMSE pour la régression,
+ou l'entropie croisée pour la classification.
+
+122
+00:06:41,015 --> 00:06:44,660
+N'oubliez pas que l'objectif est de
+trouver le meilleur groupe de paramètres
+
+123
+00:06:44,660 --> 00:06:46,945
+ou le meilleur point
+dans l'espace de paramètres.
+
+124
+00:06:47,675 --> 00:06:50,730
+Comment utiliser la comparaison
+de deux groupes de paramètres
+
+125
+00:06:50,730 --> 00:06:52,635
+pour créer une stratégie de recherche ?
+
+126
+00:06:52,975 --> 00:06:55,070
+Nous allons le voir
+dans la section suivante.

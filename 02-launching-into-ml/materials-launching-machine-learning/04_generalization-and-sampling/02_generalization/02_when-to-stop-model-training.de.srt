@@ -1,0 +1,496 @@
+1
+00:00:00,470 --> 00:00:03,475
+Zusätzlich zur Frage, 
+welches ML-Modell geeignet ist,
+
+2
+00:00:03,475 --> 00:00:06,865
+ein lineares Regressionsmodell
+oder auch ein neuronales Netzwerk,
+
+3
+00:00:06,865 --> 00:00:10,370
+kann ein Validierungs-Dataset 
+beim Feinschliff der Hyperparameter
+
+4
+00:00:10,370 --> 00:00:12,160
+eines einzelnen Modells helfen.
+
+5
+00:00:12,160 --> 00:00:14,240
+Denken Sie daran, 
+dass diese Hyperparameter
+
+6
+00:00:14,240 --> 00:00:15,875
+vor dem Training 
+bestimmt werden.
+
+7
+00:00:16,085 --> 00:00:19,520
+Diese Abstimmung
+erfolgt über sukzessive Trainingsläufe,
+
+8
+00:00:19,520 --> 00:00:22,995
+die dann mit dem 
+unabhängigen Validierungs-Dataset
+
+9
+00:00:22,995 --> 00:00:26,470
+verglichen werden, 
+um eine Überanpassung auszuschließen.
+
+10
+00:00:26,470 --> 00:00:30,455
+So wird das Validierungs-Set
+beim Training tatsächlich verwendet.
+
+11
+00:00:30,645 --> 00:00:32,825
+Wie beim Thema 
+Optimierung schon beschrieben,
+
+12
+00:00:32,825 --> 00:00:36,470
+beginnen wir beim Training des Modells 
+mit der Berechnung beliebiger Gewichtungen,
+
+13
+00:00:36,470 --> 00:00:40,625
+bilden die Ableitung, untersuchen die
+Richtung der Gradientenabfallsverlustkurve,
+
+14
+00:00:40,625 --> 00:00:43,290
+minimieren den Verlustwert 
+und wiederholen den Vorgang.
+
+15
+00:00:43,980 --> 00:00:46,780
+Die Leistung des 
+Modells sollte in regelmäßigen Abständen
+
+16
+00:00:46,780 --> 00:00:49,115
+anhand unbekannter 
+Daten bewertet werden.
+
+17
+00:00:49,115 --> 00:00:52,595
+Dafür verwenden 
+wir das Validierungs-Dataset.
+
+18
+00:00:52,595 --> 00:00:54,505
+Nach Abschluss eines Trainingslaufs
+
+19
+00:00:54,505 --> 00:00:56,860
+können Sie die
+Ergebnisse des Modells anhand
+
+20
+00:00:56,860 --> 00:00:59,800
+des Validierungs-Datasets 
+auswerten und kontrollieren,
+
+21
+00:00:59,800 --> 00:01:02,460
+ob die Hyperparameter
+in Ordnung sind oder nicht.
+
+22
+00:01:02,740 --> 00:01:04,720
+Wenn es keine
+signifikante Abweichung
+
+23
+00:01:04,720 --> 00:01:07,020
+zwischen den
+Verlustwerten aus dem Training
+
+24
+00:01:07,020 --> 00:01:09,570
+und den Werten 
+aus dem Validierungslauf gibt,
+
+25
+00:01:09,570 --> 00:01:13,370
+könnte man die Hyperparameter 
+noch etwas weiter optimieren.
+
+26
+00:01:14,110 --> 00:01:17,300
+Nachdem die Verlustwerte aus 
+dem Modell optimiert wurden
+
+27
+00:01:17,300 --> 00:01:19,520
+und das 
+Validierungs-Dataset passiert haben,
+
+28
+00:01:19,520 --> 00:01:21,405
+also beim Auftreten der Abweichung,
+
+29
+00:01:21,405 --> 00:01:24,005
+und wenn Sie eine
+Überanpassung ausgeschlossen haben,
+
+30
+00:01:24,005 --> 00:01:25,450
+ist der Zeitpunkt gekommen,
+
+31
+00:01:25,450 --> 00:01:29,290
+an dem das Modell angepasst 
+und bereit für die Produktion ist.
+
+32
+00:01:29,850 --> 00:01:32,400
+Mit einer ähnlichen 
+Schleife können Sie herausfinden,
+
+33
+00:01:32,400 --> 00:01:35,305
+welche Parameter 
+für Ihre Modelle geeignet sind,
+
+34
+00:01:35,305 --> 00:01:38,190
+so wie die Hyperparameter 
+vor dem Training bestimmt wurden,
+
+35
+00:01:38,190 --> 00:01:42,500
+z. B. die Ebenen eines Netzwerkes oder die
+Zahl der Knoten, die Sie verwenden sollten.
+
+36
+00:01:42,500 --> 00:01:46,340
+Sie trainieren mit einer Konfiguration
+wie sechs Knoten im neuronalen Netzwerk,
+
+37
+00:01:46,340 --> 00:01:48,130
+dann trainieren Sie mit einer anderen
+
+38
+00:01:48,130 --> 00:01:51,600
+und bewerten, welche mit dem 
+Validierungs-Dataset besser funktioniert.
+
+39
+00:01:51,900 --> 00:01:54,110
+Am Ende wählen Sie eine Konfiguration,
+
+40
+00:01:54,110 --> 00:01:57,125
+die zu geringeren 
+Verlusten im Validierungs-Dataset führt
+
+41
+00:01:57,125 --> 00:02:00,995
+und nicht die, die geringere 
+Verluste im Trainings-Dataset erzielt.
+
+42
+00:02:01,445 --> 00:02:03,890
+In dieser Spezialisierung zeigen wir,
+
+43
+00:02:03,890 --> 00:02:06,610
+wie Cloud ML Engine
+eine Bayes'sche Kurzsuche
+
+44
+00:02:06,610 --> 00:02:09,009
+durch einen Hyperparameterraum durchführt.
+
+45
+00:02:09,009 --> 00:02:13,270
+Sie müssen dieses Experiment 
+nicht mit jedem Hyperparameter machen.
+
+46
+00:02:13,270 --> 00:02:17,090
+Mit Cloud Machine Learning
+Engine können Sie diese Experimente
+
+47
+00:02:17,090 --> 00:02:21,395
+parallel zu einer anderen 
+Optimierungsstrategie ausführen.
+
+48
+00:02:22,355 --> 00:02:24,660
+Nachdem Sie 
+das Training abgeschlossen haben,
+
+49
+00:02:24,660 --> 00:02:27,535
+möchte Ihr Chef wissen, 
+ob das Modell gut funktioniert.
+
+50
+00:02:27,535 --> 00:02:31,335
+Welches Dataset verwenden Sie 
+für diese entscheidende Auswertung?
+
+51
+00:02:31,335 --> 00:02:34,430
+Ist es möglich, den Fehler 
+in Ihrem Validierungs-Dataset
+
+52
+00:02:34,430 --> 00:02:37,835
+zu melden, auch wenn er
+mit Ihrem Trainings-Dataset übereinstimmt?
+
+53
+00:02:37,835 --> 00:02:40,920
+Tatsächlich ist das
+nicht möglich. Warum ist das so?
+
+54
+00:02:41,970 --> 00:02:45,280
+Sie haben das Validierungs-
+Dataset verwendet, um zu entscheiden,
+
+55
+00:02:45,280 --> 00:02:47,055
+wann Sie das Training beenden.
+
+56
+00:02:47,055 --> 00:02:50,260
+Es ist nicht mehr
+unabhängig, das Modell kennt es bereits.
+
+57
+00:02:50,865 --> 00:02:52,815
+Was können Sie also tun?
+
+58
+00:02:52,815 --> 00:02:56,960
+Eigentlich müssen Sie 
+Ihre Daten in drei Teile aufteilen:
+
+59
+00:02:56,960 --> 00:03:02,685
+Training, Validierung und ein 
+komplett isoliertes Silo, nämlich Testen.
+
+60
+00:03:02,995 --> 00:03:05,830
+Nachdem Ihr Modell 
+trainiert und validiert wurde,
+
+61
+00:03:05,830 --> 00:03:07,340
+können Sie es nur einmal
+
+62
+00:03:07,340 --> 00:03:09,900
+auf dem unabhängigen 
+Test-Dataset schreiben.
+
+63
+00:03:09,900 --> 00:03:12,350
+Das ist der Verlustwert, 
+den Sie melden können.
+
+64
+00:03:12,350 --> 00:03:15,140
+Dieser Verlustwert 
+entscheidet beim Test-Dataset,
+
+65
+00:03:15,140 --> 00:03:17,665
+ob dieses Modell 
+in die Produktion gehen soll.
+
+66
+00:03:17,965 --> 00:03:20,780
+Was passiert, wenn das
+Modell beim Testen durchfällt,
+
+67
+00:03:20,780 --> 00:03:22,730
+obwohl es beim Validieren bestanden hat?
+
+68
+00:03:22,730 --> 00:03:25,940
+Dann können Sie 
+dieses ML-Modell nicht mehr testen
+
+69
+00:03:25,940 --> 00:03:29,145
+und müssen entweder 
+ein neues ML-Modell trainieren
+
+70
+00:03:29,145 --> 00:03:31,430
+oder wieder von vorn beginnen
+
+71
+00:03:31,430 --> 00:03:34,975
+und neue Daten für
+Ihr ML-Modell generieren.
+
+72
+00:03:35,305 --> 00:03:37,215
+Obwohl das ein guter Ansatz ist,
+
+73
+00:03:37,215 --> 00:03:39,145
+gibt es ein kleines Problem.
+
+74
+00:03:39,145 --> 00:03:41,000
+Niemand möchte Daten verschwenden.
+
+75
+00:03:41,000 --> 00:03:42,980
+Die Testdaten werden aber verschwendet,
+
+76
+00:03:42,980 --> 00:03:44,910
+denn sie werden nur einmal verwendet.
+
+77
+00:03:44,910 --> 00:03:47,390
+Kann man nicht 
+alle Daten im Training verwenden
+
+78
+00:03:47,390 --> 00:03:51,060
+und trotzdem gut erkennen,
+wie gut das Modell funktionieren wird?
+
+79
+00:03:51,480 --> 00:03:53,330
+Die Antwortet lautet "Ja".
+
+80
+00:03:53,330 --> 00:03:55,120
+Der Kompromiss besteht darin,
+
+81
+00:03:55,120 --> 00:03:58,955
+mehrmals eine Aufteilung in 
+Training und Validierung vorzunehmen.
+
+82
+00:03:58,955 --> 00:04:02,305
+Also trainieren, den Verlust im 
+Validierungs-Dataset berechnen,
+
+83
+00:04:02,305 --> 00:04:05,460
+wobei dieses Validierungs-Set 
+aus Punkten bestehen könnte,
+
+84
+00:04:05,460 --> 00:04:07,380
+die nicht im 
+ersten Training vorkamen,
+
+85
+00:04:07,380 --> 00:04:09,070
+und die Daten erneut aufteilen.
+
+86
+00:04:09,070 --> 00:04:11,710
+Vielleicht enthalten 
+die Trainingsdaten Punkte,
+
+87
+00:04:11,710 --> 00:04:14,465
+die in der ersten
+Validierung schon verwendet wurden,
+
+88
+00:04:14,465 --> 00:04:16,964
+aber Sie führen 
+den Vorgang ja mehrmals aus.
+
+89
+00:04:16,964 --> 00:04:19,980
+Nach mehreren 
+Runden dieser Durchmischung
+
+90
+00:04:19,980 --> 00:04:23,405
+mitteln Sie die Validierungs-Verlustwerte.
+
+91
+00:04:23,405 --> 00:04:26,370
+Sie erhalten eine Standard-
+abweichung der Validierungsverluste,
+
+92
+00:04:26,370 --> 00:04:29,510
+mit der Sie die Spanne analysieren
+und das Ergebnis nutzen können.
+
+93
+00:04:29,510 --> 00:04:33,075
+Dieser Vorgang heißt 
+"Bootstrapping" oder "Kreuzvalidierung".
+
+94
+00:04:33,075 --> 00:04:35,640
+Der Vorteil ist, dass
+alle Daten benutzt werden,
+
+95
+00:04:35,640 --> 00:04:37,580
+dafür müssen Sie aber öfter trainieren,
+
+96
+00:04:37,580 --> 00:04:39,270
+weil Sie mehr Splits erstellen.
+
+97
+00:04:39,270 --> 00:04:42,005
+Zusammengefasst müssen 
+Sie also Folgendes beachten.
+
+98
+00:04:42,210 --> 00:04:44,015
+Wenn Sie viele Daten haben,
+
+99
+00:04:44,015 --> 00:04:47,550
+sollten Sie ein völlig 
+unabhängiges Test-Dataset verwenden,
+
+100
+00:04:47,550 --> 00:04:50,180
+quasi eine Alles-oder-Nichts-Entscheidung.
+
+101
+00:04:50,180 --> 00:04:52,100
+Wenn Sie nicht so viele Daten haben,
+
+102
+00:04:52,100 --> 00:04:54,830
+sollten Sie mit 
+der Kreuzvalidierung arbeiten.
+
+103
+00:04:55,980 --> 00:04:58,140
+Wie schaffen Sie es also,
+
+104
+00:04:58,140 --> 00:05:01,245
+diese großen
+Datasets in Silos aufzuteilen?
+
+105
+00:05:01,245 --> 00:05:05,000
+Darum wird es im 
+nächsten Kurs zum Sampling gehen.

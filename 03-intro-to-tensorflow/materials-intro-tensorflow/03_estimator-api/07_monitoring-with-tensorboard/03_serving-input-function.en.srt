@@ -1,0 +1,408 @@
+1
+00:00:00,470 --> 00:00:04,970
+We trained our model on a large dataset,
+using distributed training,
+
+2
+00:00:04,970 --> 00:00:09,390
+our TensorBoard curves all check out,
+it's time to deploy.
+
+3
+00:00:09,390 --> 00:00:10,160
+That is easy.
+
+4
+00:00:10,160 --> 00:00:14,770
+A couple of clicks in the ML engine cloud
+console, and our train model will be live
+
+5
+00:00:14,770 --> 00:00:20,730
+behind an autoscaled, fully managed,
+REST API, ready to accept JSON traffic.
+
+6
+00:00:20,730 --> 00:00:23,030
+But wait, you said JSON?
+
+7
+00:00:23,030 --> 00:00:25,980
+The model doesn't know how to read JSON.
+
+8
+00:00:25,980 --> 00:00:29,700
+We have input functions for
+training and test data but
+
+9
+00:00:29,700 --> 00:00:33,510
+not for live JSON data
+coming to our REST endpoint.
+
+10
+00:00:33,510 --> 00:00:35,190
+It's time to add one.
+
+11
+00:00:35,190 --> 00:00:40,760
+Remember the exporter's parameter we
+mentioned in the evolved spec previously.
+
+12
+00:00:40,760 --> 00:00:42,970
+That is what defines a complete model.
+
+13
+00:00:42,970 --> 00:00:48,030
+Ready for deployment with not only a
+checkpoint on good trained parameters, but
+
+14
+00:00:48,030 --> 00:00:51,890
+also an extra input function
+that will map between the JSON
+
+15
+00:00:51,890 --> 00:00:56,730
+received by the REST API and
+the features as expected by the model.
+
+16
+00:00:56,730 --> 00:01:00,050
+This one is called
+the serving input function.
+
+17
+00:01:00,050 --> 00:01:01,410
+So, here's the key point.
+
+18
+00:01:01,410 --> 00:01:06,020
+Serving and training time inputs
+are often very different.
+
+19
+00:01:06,020 --> 00:01:10,080
+To understand what is going on,
+let us peek under the hood again.
+
+20
+00:01:10,080 --> 00:01:13,050
+In TensorFlow, everything is a graph.
+
+21
+00:01:13,050 --> 00:01:18,150
+And here's our model graph produced
+when we instantiated our model.
+
+22
+00:01:18,150 --> 00:01:23,120
+It is essentially the same at training and
+inference time, even if a bit simpler for
+
+23
+00:01:23,120 --> 00:01:26,828
+inference, it takes in features and
+produces predictions.
+
+24
+00:01:26,828 --> 00:01:30,018
+Let's connect a data source to its inputs.
+
+25
+00:01:30,018 --> 00:01:34,222
+At training time this is done
+through the training input function.
+
+26
+00:01:34,222 --> 00:01:39,516
+We use the data as an API there to make
+an input node that could progressively
+
+27
+00:01:39,516 --> 00:01:45,260
+read from CSV files and send batches
+of training data into the model.
+
+28
+00:01:45,260 --> 00:01:49,280
+We will use a similar pattern for
+our deployed model.
+
+29
+00:01:49,280 --> 00:01:53,910
+The serving input function lets us add
+a set of TensorFlow transformations
+
+30
+00:01:53,910 --> 00:01:58,289
+between the JSON our REST API receives and
+the features expected by our model.
+
+31
+00:01:59,400 --> 00:02:03,950
+We don't need to parse the JSON, that is
+taken care of automatically by ML engine,
+
+32
+00:02:03,950 --> 00:02:07,010
+but any other transformations
+need to be written there.
+
+33
+00:02:08,360 --> 00:02:12,180
+Its a common misconception to believe
+that the serving input function
+
+34
+00:02:12,180 --> 00:02:16,030
+will get called on every piece of
+data your REST endpoint receives.
+
+35
+00:02:16,030 --> 00:02:18,065
+That's not how it works.
+
+36
+00:02:18,065 --> 00:02:21,710
+It's run only once,
+when the model is instantiated.
+
+37
+00:02:21,710 --> 00:02:26,170
+And it produces a piece of tensile
+flow graph, connected on one end
+
+38
+00:02:26,170 --> 00:02:31,080
+to the JSON parser and,
+on the other end, to your model.
+
+39
+00:02:31,080 --> 00:02:34,500
+How you transform data from JSON
+values to features is up to you, but
+
+40
+00:02:34,500 --> 00:02:37,670
+please remember to do so
+with tensile flow commands, so
+
+41
+00:02:37,670 --> 00:02:40,599
+that a graph of
+transformations is returned.
+
+42
+00:02:42,120 --> 00:02:44,920
+When do all these pieces
+of graph come together?
+
+43
+00:02:44,920 --> 00:02:49,400
+Well the connection happens when you
+specify the serving input function in your
+
+44
+00:02:49,400 --> 00:02:53,940
+exporter and
+add the exporter to your eval_spec.
+
+45
+00:02:53,940 --> 00:02:58,140
+The exporter will save a checkpointed
+version of the model along with
+
+46
+00:02:58,140 --> 00:03:04,260
+the transformation info into an exported
+model file that is ready to be deployed.
+
+47
+00:03:04,260 --> 00:03:06,300
+What checkpoint gets saved?
+
+48
+00:03:06,300 --> 00:03:08,780
+That depends on the kind of exporter.
+
+49
+00:03:08,780 --> 00:03:12,270
+The simplest one is latest
+exporter used here,
+
+50
+00:03:12,270 --> 00:03:14,650
+which takes the latest
+checkpoint available.
+
+51
+00:03:15,840 --> 00:03:20,810
+We can see the exported model on
+disk here in the export folder.
+
+52
+00:03:20,810 --> 00:03:27,417
+We called this exporter pricing in the
+API, so a pricing subfolder was created.
+
+53
+00:03:28,620 --> 00:03:33,990
+In it, each numbered folder is
+a model ready for deployment.
+
+54
+00:03:33,990 --> 00:03:39,460
+To test the REST API just send
+JSON data at its endpoint.
+
+55
+00:03:39,460 --> 00:03:43,218
+The Google Cloud SDK has
+the G Cloud ML engine predict
+
+56
+00:03:43,218 --> 00:03:48,900
+command that allows you to test
+easily with the data in a JSON file.
+
+57
+00:03:48,900 --> 00:03:53,480
+The syntax for this must be a single JSON
+field called instances, which contains
+
+58
+00:03:53,480 --> 00:03:59,950
+a list of JSON objects of the format
+expected by your serving input function.
+
+59
+00:03:59,950 --> 00:04:03,660
+Here, square footage and property type.
+
+60
+00:04:03,660 --> 00:04:08,561
+The data instances in the list will
+be automatically batched together and
+
+61
+00:04:08,561 --> 00:04:13,697
+your serving input function will receive
+a list of square footage numbers and
+
+62
+00:04:13,697 --> 00:04:16,084
+a list of property type strengths.
+
+63
+00:04:16,084 --> 00:04:20,223
+That is even an easier way of
+testing without deploying anything.
+
+64
+00:04:20,223 --> 00:04:24,071
+The G cloud ML engine local
+predict command lets you get
+
+65
+00:04:24,071 --> 00:04:28,330
+predictions directly from
+an exported model on disk.
+
+66
+00:04:28,330 --> 00:04:29,160
+No need to deploy.
+
+67
+00:04:30,300 --> 00:04:33,940
+Notice the slightly different
+format expected by this command.
+
+68
+00:04:33,940 --> 00:04:37,530
+A list of JSON objects in a file,
+one object per line.
+
+69
+00:04:38,820 --> 00:04:42,740
+Here is another very typical use
+of a serving input function,
+
+70
+00:04:42,740 --> 00:04:44,600
+decoding JPEG images.
+
+71
+00:04:44,600 --> 00:04:46,890
+If you are working with
+a model processing images,
+
+72
+00:04:46,890 --> 00:04:50,750
+you will always be sending the images
+across the network compressed.
+
+73
+00:04:50,750 --> 00:04:55,170
+But your model will always
+expect them uncompressed.
+
+74
+00:04:55,170 --> 00:04:58,380
+The serving input function
+can handle the decompression.
+
+75
+00:04:58,380 --> 00:05:00,910
+And here is the sample code for that.
+
+76
+00:05:00,910 --> 00:05:06,070
+You see that the image is right from
+the JSON feed as type tf.string,
+
+77
+00:05:06,070 --> 00:05:11,160
+which in TensorFlow terminology designates
+a byte string, a list of random bytes.
+
+78
+00:05:11,160 --> 00:05:15,480
+Yes, JPEG is a binary format,
+and base 64 encoding
+
+79
+00:05:15,480 --> 00:05:20,790
+is required to turn it into a text
+string that will work in JSON.
+
+80
+00:05:20,790 --> 00:05:24,703
+TensorFlow adopts a custom
+JSON convention for
+
+81
+00:05:24,703 --> 00:05:29,390
+marking base 64 encoded
+binary string as such.
+
+82
+00:05:29,390 --> 00:05:34,330
+The name of the field must end with
+_bytes and the value must be a JSON
+
+83
+00:05:34,330 --> 00:05:39,290
+object called b64, with the base
+64-encoded string as its value.
+
+84
+00:05:40,490 --> 00:05:45,310
+With this convention,
+base 64 decoding happens automatically.
+
+85
+00:05:45,310 --> 00:05:47,970
+You do not have to handle it in
+your serving input function.

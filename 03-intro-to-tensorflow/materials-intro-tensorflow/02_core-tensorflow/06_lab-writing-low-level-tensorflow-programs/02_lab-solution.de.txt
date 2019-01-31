@@ -1,0 +1,65 @@
+In diesem Lab 
+machen wir es wieder wie gehabt: Sie rufen die GCP Console auf, gehen in die Cloud Shell und starten Datalab. Sobald wir in Datalab sind, öffne ich das Notebook,
+um mit TensorFlow zu beginnen. In der ersten Zelle des Notebooks importiere ich TensorFlow-
+und NumPy-Pakete. Wir werden mit beiden
+ein wenig herumspielen. Ich führe also diese Zelle aus und es wird angezeigt, dass ich TensorFlow 1.4
+in dieser Instanz ausführe. Anschließend will ich
+zwei NumPy-Arrays addieren. Ein NumPy-Array ist a, und ein zweites NumPy-Array ist b. In diesem Fall addiere ich NumPy
+mit np.add (a,b) und drucke c. Da dies NumPy ist,
+wird alles sofort bewertet. Wenn ich das Ganze ausführe, erhalte ich die Werte 8,2,10. Das ist meine Liste. Der entsprechende Code
+in TensorFlow umfasst zwei Schritte. Führen wir jetzt den ersten Schritt aus. Genau wie in NumPy
+erstellen wir zunächst a, wir verwenden aber nicht np.array, sondern tf.constant. Ich erstelle also
+ein Konstanten-Array a, dann ein weiteres Konstanten-Array b, ich rufe tf.add (a,b) auf, aber wenn ich diesmal c drucke, sehen Sie nicht die Liste 8,2,10. Stattdessen sehen Sie
+den Debug-Output des Tensors. In diesem Fall sagen wir: c ist das Ergebnis der add-Operation. Es enthält drei Zahlen,
+die alle Ganzzahlen sind. Damit ist Schritt 1 beendet,
+der Graph ist also erstellt. Jetzt versuchen wir Folgendes: Wir ändern diese Zahl in 5.0. a ist damit nicht mehr
+ein Array aus Ganzzahlen, sondern ein Array
+aus Gleitkommazahlen. Drucken wir jetzt nicht c, sondern a.
+Dann verstehen Sie, was ich meine. Wenn ich dies jetzt ausführe, sehen Sie, dass a jetzt
+den Datentyp Gleitkomma hat. Wir können a und b nicht addieren, da a Gleitkommazahlen
+und b Ganzzahlen enthält. Darum wird ein Fehler angezeigt. Wenn ich dies jedoch auch
+in eine Gleitkommazahl ändere und das Ganze ausführe, ändert sich der Typ für c in Gleitkomma. Das sollten Sie sich merken. Ich stelle jetzt
+die Ganzzahlen wieder her, damit wir fortfahren können. In diesem Fall habe ich a und c, und möchte im nächsten Schritt
+den Wert von c bewerten. So erhalte ich meine Zahlen. Wir erstellen den Graphen
+und führen ihn dann aus. In diesem Fall führe ich sess.run(c) aus und drucke dann das Ergebnis. Das Ergebnis ist ein ganz normales Array. Wenn ich es drucke,
+erhalte ich wie zuvor 8,2,10. Denken Sie daran, dass TensorFlow
+die Lazy Evaluation zugrundeliegt. Schritt 1: Den Graphen erstellen. Schritt 2: Den Graphen ausführen. In diesem Fall war
+der gesamte Graph hartcodiert. In der Regel verwenden Sie
+allerdings einen Platzhalter, um Laufzeitdaten einzuspeisen. Hier erstelle ich a als Platzhalter, der eine Liste enthalten wird. b ist ein Platzhalter
+für eine weitere Liste. Ich addiere a und b und füge die Zahlen
+3, 4 und 5 zur Laufzeit ein. Wenn ich die Sitzung ausführe, füge ich 3, 4 und 5 für a ein und -1, 2 und 3 für b. Wenn ich jetzt das Ergebnis drucke, erhalte ich 2,6,8,
+da 3 minus 1 gleich 2 ist. Wie gesagt, mit diesen drei Zeilen
+wird der Graph erstellt. a, b und c erstellen den Graphen. Mit den übrigen Zeilen
+wird der Graph ausgeführt. Wenn ich den Graphen ausführe, speise ich Werte ein. Wir können diese
+beiden Konzepte jetzt verbinden, um etwas zu berechnen. Und zwar machen wir Folgendes: Wir berechnen für ein beliebiges Dreieck anhand der Seitenlänge
+die Fläche des Dreiecks. Dafür nutzt man den Satz des Heron, das ist diese Formel hier. Das implementieren wir nun in TensorFlow. Bei TensorFlow geht es
+nicht nur um neuronale Netze, sondern um numerisches Programmieren. Darum können wir auch Dreiecksflächen in TensorFlow berechnen. Ich habe also meine Methode, meine Funktion zum Berechnen
+der Fläche anhand der Seitenlängen. Sie werden jedoch
+TensorFlow nicht verwenden, um den Flächeninhalt für
+nur ein Dreieck zu bestimmen. Sie werden mit TensorFlow
+die Fläche von vielen Dreiecken bestimmen. Wir verwenden also
+nicht nur einen Satz mit drei Zahlen, sondern viele Datensätze mit drei Zahlen. Wir haben also mehrere Dreiecke und benötigen jetzt die Werte
+für a, b und c, also die drei Seiten. Dabei gibt a quasi die Stapelgröße an, also die Anzahl der vorhandenen Dreiecke, multipliziert mit 3,
+da es drei davon gibt. Die erste Spalte ist also a, die zweite Spalte ist b, und die dritte Spalte ist c. Ich nehme die erste Spalte, also a, die zweite Spalte, also b, und die dritte Spalte, also c. Wir fügen also eine 2x3-Matrix ein, die 2x3-Matrix von zwei Dreiecken. Jedes Dreieck hat drei Seiten. Der erste Datensatz
+umfasst 5 und 2.3. Das ist a. Dann kommt 3 und 4.1. Das ist b. Und dann 7.1 und 4.8. Das ist c. Damit haben wir a, b und c. Wir berechnen den halben Umfang, also a + b + c, geteilt durch 2. Wir berechnen 
+mit dieser Formel das Flächenquadrat, ziehen die Quadratwurzel
+und zeigen das Ergebnis an. Damit haben wir den Graphen erstellt. Wenn wir den Graphen ausführen möchten, geben wir einfach sess.run ein. Diesmal möchte ich aber
+den Variablenbereich berechnen, also den TensorFlow-Tensorbereich. Dafür rufen wir compute_area auf und stellen diese Werte bereit. Wenn ich dies jetzt ausführe, erhalte ich damit
+die Fläche von zwei Dreiecken. Darum stehen hier zwei Zahlen für zwei Dreiecke. Diese Zahlen habe ich jedoch hartcodiert. Sie möchten vielleicht
+lieber Daten einspeisen. Das wird hier als Letztes gezeigt. Es wird wieder compute_area verwendet, aber diesmal werden die Seitenlängen in den Graphen eingespeist. sides ist also ein Platzhalter. Es ist keine tf-Konstante mehr. Wenn Sie die Funktion ausführen
+und die Fläche bewerten möchten, fügen wir ein Schlüssel/Wert-Paar ein. Der Schlüssel ist
+der Name der Tensorseiten. Der Wert ist jetzt Ihr 2D-Array,
+da Sie ein Array von Dreiecken einfügen. Wenn Sie dies jetzt ausführen,
+erhalten Sie quasi dasselbe Ergebnis. Im letzten Abschnitt
+dieses Notebooks sehen Sie, wie Sie den zweiten Schritt umgehen, indem Sie tf eager verwenden. Dafür rufen wir jetzt
+enable_eager_execution auf. Damit stellen wir sicher,
+dass der zweite Schritt wegfällt. Anstatt den Graphen
+zu erstellen und auszuführen, erstellen wir den Graphen wie zuvor, und alle Eingaben werden sofort bewertet. Ich definiere also hier compute_area und mache alles exakt wie zuvor. Ich gebe area = compute_area an und dann print area. Ohne die direkte
+Ausführung mit Eager Execution... Ich kommentiere das kurz aus,
+damit Sie sehen, was ich meine. Wenn ich print area
+ohne Eager Execution aufrufe erhalte ich nur
+den Debug-Output des Tensors. Das ist ein Debug-Output des Tensors. Ich erhalte hier keine Werte, sondern nur die Anzeige, dass dies die Antwort
+für zwei Dreiecke enthalten wird. Wenn ich die direkte Ausführung
+jetzt aktiviere und ausführe, sehen Sie, dass der Output
+die tatsächlichen Werte enthält. Ich rufe zwar immer noch print area auf, aber nicht mehr session.runprint area. Dieses Mal erhalte ich
+tatsächlich eine Antwort.

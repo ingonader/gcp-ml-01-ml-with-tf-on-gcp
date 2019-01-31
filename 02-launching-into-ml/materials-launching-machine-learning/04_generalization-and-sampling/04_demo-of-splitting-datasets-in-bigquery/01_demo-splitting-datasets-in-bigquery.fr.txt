@@ -1,0 +1,97 @@
+Nous avons parlé de cette théorie,
+et vous avez pu découvrir le code SQL. Mais c'est en exécutant
+du code dans BigQuery que vous allez vraiment intégrer
+comment diviser des ensembles en buckets. Avant de nous intéresser au code
+pour les opérateurs de module et de diviser des ensembles
+en une clause WHERE SQL, voyons comment nous allons
+diviser cet ensemble. Comme vous le voyez,
+nous avons un total de 70 millions de vols et cela peut être un énorme ensemble, cela aurait pu être 7 milliards,
+mais ce que l'on veut, c'est réduire l'ensemble
+de façon reproductible. On ne peut pas utiliser
+n'importe quel échantillon. Nous allons utiliser
+des filtres de la clause WHERE. Prenons 1 ou 2 % comme vous le voyez
+dans la case orange. Nous voulons 50 % de ce 1 %
+pour nos collaborateurs. L'orange est pour l'entraînement, 50 % de ces données
+sont pour la validation, et le reste ou la moitié de l'ensemble
+de validation peut être utilisée pour votre ensemble de test, celui qui permet de prendre une décision. Comment cela fonctionne-t-il dans BigQuery et pouvez-vous utiliser
+ce code pour vos futurs projets ? Commençons. Dans BigQuery,
+j'ai cette requête prédéfinie, mais je vais vous guider
+pour chaque étape. Voici l'interface de BigQuery
+que vous avez peut-être déjà vue. Bien qu'il est écrit qu'il y a
+70 millions de lignes ou de vols, j'aimerais avoir des informations
+sur ma table de données source. Dans Show Options, désactivez Legacy SQL. Vous pouvez maintenir enfoncée
+la touche Commande ou Windows, et cliquer sur la table. C'est un raccourci dans votre SQL
+pour accéder aux détails de la table. Ici vous voyez les champs, cliquez sur Details pour accéder au nombre
+d'enregistrements dans le vol. C'est ici que vous obtenez
+les 70 millions de vols de cet ensemble, mais en gigaoctets. Vous pouvez prévisualiser
+cet ensemble si vous le souhaitez. Voici les différentes dates de vol, les aéroports de départ,
+d'où les vols partent, et de nombreuses informations
+typiques pour une compagnie aérienne. En plus de ces champs génériques de base tirés de cet ensemble, j'en ai ajouté trois autres. Ce que je vais faire, avant de passer au filtrage à la ligne 17
+pour le filtre de la clause WHERE, je vais vous en montrer un échantillon,
+et vous pouvez exécuter le code du bloc surligné
+en cliquant sur la flèche vers le bas, et en exécutant cette requête. Elle va vous montrer
+de quel jour il s'agit, regardons celui-ci. C'est le 30 juin 2008, et comme je l'ai mentionné, c'est ce que fait
+la fonction Farm Fingerprint, elle prend cette chaîne et la transforme
+en une séquence de chiffres. Il s'agit d'une fonction
+de hachage à sens unique, que nous pouvons utiliser à notre guise. Dans tous les cas, le 30 juin 2008 écrit comme ceci
+sera toujours haché avec cette valeur, ce qui est très utile, et après avoir fait
+le hachage avec Farm Fingerprint, la seule chose que j'ai faite
+différemment, aux lignes 5 et 6, est de chercher à savoir si le hachage
+est divisible par 70 ou 700 également. Nous allons utiliser ceci, car nous voulons prendre
+1 enregistrement sur 70, où le restant est 0, et cela constitue 1 ou 2 %
+des 70 millions de vols filtrés pour nous et le sous-ensemble. Comme vous le voyez ici, nous avons ce champ appelé
+remainder_divide_by_70 où c'est égal à 0,
+ce qui est à peu près 1 cas sur 70, exactement 1 cas sur 70. Nous allons configurer
+notre premier filtre. Je vais déplacer cette limite plus bas pour vous familiariser avec ceci. Filtrage et SQL. Le filtrage des enregistrements se fait
+dans la clause WHERE, à la ligne 15, et le commentaire est ici. Nous prenons 1 ligne sur 70, où, comme vous le voyez sur ce champ, le reste divisé par 70 est égal à 0, Je continue et fixe la limite à 10. Vous voyez que toutes les valeurs de la colonne remainder_divide_by_70
+sont désormais égales à 0. Voilà. Vous avez jeté, ou plutôt ignoré,
+98 % des données. Ce que nous voulons faire,
+nous l'avons fait, lors du premier zoom avant
+ou de la division de l'ensemble de données que vous avez vu dans l'image, parmi cela, nous avons environ
+842 000 lignes dans la case orange dont nous avons parlé. C'est pour mon ensemble d'entraînement. N'oubliez pas que
+vous devez créer un ensemble d'entraînement,
+de validation et peut-être de test, pour réaliser d'autres filtrages. Nous ne pouvons pas
+abuser du reste divisé par 70, vous ne pourriez pas
+diviser le reste par 7. Car c'est déjà 0, vous l'avez déjà utilisée, c'est pourquoi il y a ce deuxième
+filtrage sur ce module-ci, où nous utilisons la colonne 700. Choisir 70 ou 700 est arbitraire
+selon la taille de vos buckets, pour la taille des répartitions
+que vous voulez créer. Secundo, nous avons réduit
+l'ensemble de données de 98 %. Et nous devons maintenant diviser
+les 800 000 enregistrements restants par un mur entre les ensembles
+de données de test et de validation, puis celui d'entraînement
+par lequel nous avons commencé. Nous allons maintenant ajouter
+un autre filtre pour la clause WHERE, et nous voulons ignorer 50 %
+de l'ensemble de données restant. Je vais vous montrer ce que cela donne. Nous utilisons maintenant
+la colonne remainder_divide_by_700. Cela peut être entre 0 et 700,
+pour cette deuxième opération de module. Nous voulons prendre une valeur entre... Pensez aux ensembles entre 0 et 700, le point milieu entre 0 et 700 est 350. Vous avez donc des enregistrements
+entre 0 et 350, et entre 350 et 700. En les divisant au milieu, nous obtenons
+ce signe supérieur ou égal à 350. Comme vous le voyez ici,
+le nombre 630 est plus grand. C'est pourquoi il est inclus. Il s'agit aussi d'un moment important. Regardez les dates ici, ce sont tous des vols du 13 juillet 2005, ils ont tous le même hachage. Il s'agit d'une partie très intéressante
+et potentiellement délicate lorsqu'on utilise quelque chose comme ça. Comme déjà mentionné,
+si vous aviez un ensemble de données avec seulement deux jours, comme le 13 et le 14 juillet 2005, vous ne pouvez pas
+faire une division 80/20, car vous n'aurez
+que ces deux hachages présents ici. Vous devez donc avoir des données bien
+distribuées ou qui comportent du bruit avant de les diviser, car les hachages auront
+toujours la même valeur, contrairement à une fonction aléatoire. Enfin, nous voulons diviser cet ensemble
+pour qu'il n'inclue que 50 % de cela, ce qui correspond à 25 %
+du total des données d'entraînement destinées au test. Je me répète,
+vous travaillez avec ce point milieu. Dans ce cas, c'est tout
+ce qui est inférieur à 525 qui est le nouveau
+point milieu entre 350 et 700. Si vous prenez la partie
+de tout ce qui est inférieur à 525, vous obtiendrez 25 % de votre ensemble
+de données d'entraînement d'origine. La partie la plus difficile
+n'est pas la syntaxe SQL. C'est mentaliser comment
+former ces frontières, et où placer ces points milieu
+et ces fonctions de hachage. Je vais vous montrer
+ces 10 enregistrements, pour ne pas que vous ayez à attendre. Tout ceci devrait être divisible par 70. Vous devriez voir des zéros partout ici, et remainder_divide_by_700
+pour l'ensemble final destiné au test, les 25 % que nous voulons
+utiliser pour le test. Toutes les valeurs devraient
+être supérieures ou égales à 350 mais inférieures à 525. Nous en avons
+la confirmation avec la valeur 420. Que se passe-t-il si vous voulez
+accéder par l'autre côté. Si voulez accéder
+aux valeurs supérieures à 525-700, il faut simplement inverser le signe
+pour une valeur supérieure à 525, et vous voyez les résultats
+dans trois endroits différents : entraînement, validation et test. Puis vous pouvez les importer
+et ingérer dans les modèles de ML. Continuez à vous
+entraîner dans vos ateliers, pour découvrir les pièges
+que vous pouvez rencontrer. Ce sont des concepts fondamentaux. Bon, revenons à notre sujet.

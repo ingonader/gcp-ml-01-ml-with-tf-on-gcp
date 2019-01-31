@@ -1,0 +1,35 @@
+Veremos como funciona o treinamento do
+Machine Learning Engine modelo. Antes de começar a treinar, primeiro, reúna e prepare seus
+dados de treinamento, limpe, divida e crie recursos
+pré-processados. Em seguida, coloque esses dados de
+treinamento em uma fonte on-line que o Cloud Machine Learning Engine
+possa acessar, como o Cloud Storage. Ao enviar jobs de treino para o
+Cloud Machine Learning Engine, é comum dividir a maior parte da lógica
+em arquivos task.py e model.py. Task.py é o ponto de entrada
+para o código que, aparentemente, começará nos detalhes
+do nível do job, por exemplo, em como analisar argumentos da linha de
+comando, por quanto tempo executar, onde gravar as saídas, como interagir com o
+ajuste de hiperparâmetros etc. Para fazer o ML principal, o task.py invocará o model.py. O model.py se concentra nas tarefas
+principais de ML, como buscar os dados, definir os recursos, configurar 
+a assinatura do serviço e, é claro, o treinamento
+real e o loop eval. Compartilhar códigos entre computadores
+envolve algum tipo de empacotamento. Enviar um modelo para o CMLE
+para treinamento não é diferente. TensorFlow e principalmente Python exigem especificamente o pacote e
+a estrutura padronizados mostrados aqui. É recomendável fazer um teste local para
+ver se o pacote funciona como esperado. Tente chamar diretamente com python -m para verificar se todas as
+importações estão certas. Em seguida, vamos usar o GCloud para
+testar nosso código localmente. Isso fará algumas verificações para ver
+se a estrutura de pacote está correta. Depois, enviamos o job de treinamento
+para lançar a tarefa no Cloud e escalonar. As linhas de comando principais
+adicionadas aqui são o caminho do pacote, para especificar onde o código está
+localizado, o nome do módulo, para especificar
+qual dos arquivos no pacote executar, e nível de escalonamento, para especificar
+em qual hardware o código será executado. Você definiria nível de escalonamento
+igual a básico para executar uma máquina, nível de escalonamento igual a padrão
+para executar um cluster pequeno. Nível de escalonamento igual a GPU básica para executar em uma única GPU. Você quer executar em uma TPU? Isso mesmo. Nível de escalonamento
+igual a TPU básica. Você também pode especificar níveis
+personalizados e definir tipos de máquina. Esses níveis continuam se expandindo. Veja as opções atuais na documentação
+do Cloud Machine Learning Engine. Uma dica profissional: para melhorar
+o desempenho dos jobs de ML, selecione um intervalo de região única
+no Google Cloud Storage. O padrão é multirregional, mais adequado para suprimento
+na Web do que treinamento de ML.

@@ -1,0 +1,352 @@
+1
+00:00:00,000 --> 00:00:03,415
+Je vais maintenant vous parler
+des graphes et des sessions.
+
+2
+00:00:03,415 --> 00:00:06,150
+Le graphe orienté acyclique (DAG)
+
+3
+00:00:06,150 --> 00:00:07,310
+de TensorFlow
+
+4
+00:00:07,310 --> 00:00:09,170
+est comparable à n'importe quel graphe.
+
+5
+00:00:09,170 --> 00:00:12,295
+Il est constitué de bords et de nœuds.
+
+6
+00:00:12,295 --> 00:00:16,835
+Les bords représentent les données,
+c'est-à-dire les Tensors
+
+7
+00:00:16,835 --> 00:00:20,475
+qui, comme vous le savez maintenant,
+sont des tableaux à n dimensions.
+
+8
+00:00:20,475 --> 00:00:25,110
+Les nœuds représentent les opérations
+TensorFlow effectuées sur ces Tensors
+
+9
+00:00:25,110 --> 00:00:26,967
+(par exemple, le calcul basé sur tf.add
+
+10
+00:00:26,967 --> 00:00:29,525
+que nous avons résolu
+lors de la leçon précédente).
+
+11
+00:00:29,525 --> 00:00:37,070
+Un DAG TensorFlow est constitué de Tensors
+et d'opérations effectuées sur ces Tensors.
+
+12
+00:00:37,070 --> 00:00:41,000
+Alors, pourquoi TensorFlow effectue-t-il
+une évaluation paresseuse ?
+
+13
+00:00:41,000 --> 00:00:43,635
+C'est parce que l'évaluation
+paresseuse a pour avantage
+
+14
+00:00:43,635 --> 00:00:47,262
+d'apporter beaucoup
+de flexibilité et d'optimisation
+
+15
+00:00:47,262 --> 00:00:49,120
+lors de l'exécution du graphe.
+
+16
+00:00:49,120 --> 00:00:52,400
+TensorFlow peut maintenant
+traiter le graphe, le compiler,
+
+17
+00:00:52,400 --> 00:00:58,860
+insérer des nœuds d'envoi et de réception
+au milieu du DAG, et l'exécuter à distance.
+
+18
+00:00:58,860 --> 00:01:02,910
+TensorFlow peut affecter différentes parties
+du DAG à différents appareils
+
+19
+00:01:02,910 --> 00:01:05,575
+sur la base de critères
+tels que la sollicitation des E/S
+
+20
+00:01:05,575 --> 00:01:09,015
+ou l'utilisation de fonctionnalités de GPU.
+
+21
+00:01:09,015 --> 00:01:11,215
+Pendant le traitement du graphe,
+
+22
+00:01:11,215 --> 00:01:13,265
+TensorFlow peut ajouter une quantification,
+
+23
+00:01:13,265 --> 00:01:15,950
+des types de données
+ou des nœuds de débogage.
+
+24
+00:01:15,950 --> 00:01:18,820
+Il peut créer des résumés
+pour écrire des valeurs
+
+25
+00:01:18,820 --> 00:01:23,580
+que le Tensor pourra lire avec des calculs
+(tels que add et matmul),
+
+26
+00:01:23,580 --> 00:01:25,487
+des constantes ou encore des variables :
+
+27
+00:01:25,487 --> 00:01:28,285
+autant d'opérations
+utilisables par TensorFlow.
+
+28
+00:01:28,285 --> 00:01:30,420
+Pendant la compilation du graphe,
+
+29
+00:01:30,420 --> 00:01:34,865
+TensorFlow peut fusionner deux opérations
+pour améliorer les performances.
+
+30
+00:01:34,865 --> 00:01:38,515
+Par exemple, si vous avez
+deux nœuds add consécutifs,
+
+31
+00:01:38,515 --> 00:01:41,735
+TensorFlow peut les fusionner
+pour n'en constituer qu'un seul.
+
+32
+00:01:41,735 --> 00:01:45,707
+Le compilateur XLA de TensorFlow
+peut utiliser les informations
+
+33
+00:01:45,707 --> 00:01:47,580
+d'un graphe orienté acyclique
+
+34
+00:01:47,580 --> 00:01:50,390
+pour générer du code plus rapide.
+
+35
+00:01:50,390 --> 00:01:54,672
+C'est l'un des aspects pour lesquels
+vous avez intérêt à utiliser un DAG
+
+36
+00:01:54,672 --> 00:01:56,125
+pour l'optimisation.
+
+37
+00:01:56,125 --> 00:01:58,120
+Mais ce qui est le plus intéressant,
+
+38
+00:01:58,120 --> 00:02:02,730
+c'est que le DAG est exécutable à distance
+et peut être affecté à des appareils.
+
+39
+00:02:02,730 --> 00:02:08,870
+Et c'est là que les avantages de l'approche
+basée sur le DAG deviennent évidents.
+
+40
+00:02:08,870 --> 00:02:11,472
+Lorsque vous utilisez des bords explicites
+
+41
+00:02:11,472 --> 00:02:15,155
+pour représenter les dépendances
+entre les opérations,
+
+42
+00:02:15,155 --> 00:02:21,290
+le système peut facilement identifier
+les opérations exécutables en parallèle.
+
+43
+00:02:21,290 --> 00:02:23,435
+Et lorsque vous utilisez des bords explicites
+
+44
+00:02:23,435 --> 00:02:26,430
+pour représenter les valeurs
+qui circulent entre les opérations,
+
+45
+00:02:26,430 --> 00:02:30,150
+TensorFlow est en mesure
+de répartir votre programme
+
+46
+00:02:30,150 --> 00:02:34,770
+entre plusieurs appareils
+(processeurs, GPU, TPU, etc.),
+
+47
+00:02:34,770 --> 00:02:38,175
+lesquels peuvent même
+appartenir à différentes machines.
+
+48
+00:02:38,175 --> 00:02:44,220
+TensorFlow assure la communication
+et la coordination entre ces appareils.
+
+49
+00:02:44,220 --> 00:02:46,510
+Regardez les couleurs du schéma.
+
+50
+00:02:46,510 --> 00:02:49,800
+Plusieurs parties du graphe peuvent être
+sur des appareils différents,
+
+51
+00:02:49,800 --> 00:02:53,010
+qu'il s'agisse de GPU
+ou de plusieurs ordinateurs.
+
+52
+00:02:53,010 --> 00:02:57,650
+Un avantage clé de ce modèle réside dans
+la possibilité de répartition des calculs
+
+53
+00:02:57,650 --> 00:03:00,940
+entre de nombreuses machines
+et de nombreux types de machines.
+
+54
+00:03:00,940 --> 00:03:02,750
+Et c'est possible grâce au DAG.
+
+55
+00:03:02,750 --> 00:03:05,490
+Nous ne faisons qu'écrire le code Python,
+
+56
+00:03:05,490 --> 00:03:11,125
+et le système d'exécution de TensorFlow
+optimise et répartit le graphe.
+
+57
+00:03:11,865 --> 00:03:15,055
+La classe Session
+représente cette connexion
+
+58
+00:03:15,055 --> 00:03:19,560
+entre le programme Python que nous écrivons
+et l'environnement d'exécution C++.
+
+59
+00:03:19,560 --> 00:03:27,039
+L'objet Session gère l'accès aux appareils
+(de la machine locale et distants)
+
+60
+00:03:27,039 --> 00:03:30,558
+à l'aide de l'environnement d'exécution
+TensorFlow qui gère la répartition.
+
+61
+00:03:30,558 --> 00:03:33,940
+Il assure également la mise en cache
+d'informations relatives au graphe,
+
+62
+00:03:33,940 --> 00:03:36,795
+de sorte qu'un même calcul
+peut être exécuté plusieurs fois.
+
+63
+00:03:36,795 --> 00:03:38,070
+Comme nous l'avons vu,
+
+64
+00:03:38,070 --> 00:03:43,635
+nous exécutons les graphes TensorFlow
+en appelant run() pour une tf.Session.
+
+65
+00:03:43,635 --> 00:03:45,015
+Et lorsque nous faisons cela,
+
+66
+00:03:45,015 --> 00:03:48,330
+nous spécifions un Tensor
+que nous voulons évaluer.
+
+67
+00:03:48,330 --> 00:03:50,430
+Donc, dans cet exemple de code,
+
+68
+00:03:50,430 --> 00:03:54,150
+je définis les deux Tensors
+de données x et y.
+
+69
+00:03:54,150 --> 00:03:55,337
+Il s'agit de constantes.
+
+70
+00:03:55,337 --> 00:03:57,415
+Ce sont des Tensors unidimensionnels.
+
+71
+00:03:57,415 --> 00:04:05,785
+Le Tensor z est le résultat
+de l'appel de tf.add pour x et y.
+
+72
+00:04:05,785 --> 00:04:10,845
+Lorsque je veux effectuer une évaluation,
+j'appelle session.run pour z.
+
+73
+00:04:11,605 --> 00:04:16,820
+La session (ici "sess"),
+est une instance de tf.Session.
+
+74
+00:04:16,820 --> 00:04:19,130
+Quant à l'instruction Python with,
+
+75
+00:04:19,130 --> 00:04:22,700
+elle nous permet de veiller à ce que
+la session soit automatiquement fermée
+
+76
+00:04:22,700 --> 00:04:23,983
+lorsque nous avons terminé.

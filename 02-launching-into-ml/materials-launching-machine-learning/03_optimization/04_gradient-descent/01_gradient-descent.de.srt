@@ -1,0 +1,437 @@
+1
+00:00:01,310 --> 00:00:02,740
+Im vorherigen Teil haben wir
+
+2
+00:00:02,740 --> 00:00:05,570
+die Optimierung als
+Suche im Parameter-Raum betrachtet.
+
+3
+00:00:05,570 --> 00:00:09,220
+Dann haben wir uns mit Verlustfunktionen
+zum Vergleichen von Punkten befasst.
+
+4
+00:00:09,950 --> 00:00:13,550
+Wie kann jetzt eine Verlustfunktion in
+eine Suchstrategie umgesetzt werden?
+
+5
+00:00:14,470 --> 00:00:16,620
+Hier kommt
+das Gradientenverfahren ins Spiel.
+
+6
+00:00:17,170 --> 00:00:21,280
+Das Gradientenverfahren ist das
+"Hinabschreiten" der Oberfläche,
+
+7
+00:00:21,280 --> 00:00:23,275
+die durch Anwendung der Verlustfunktion
+
+8
+00:00:23,275 --> 00:00:25,410
+an allen Punkten
+im Parameter-Raum gebildet wurde.
+
+9
+00:00:26,850 --> 00:00:29,570
+Diese Oberfläche
+könnte dem hier sehr ähneln.
+
+10
+00:00:30,930 --> 00:00:34,280
+Das ist natürlich das, was mit
+perfekten Informationen sichtbar wäre,
+
+11
+00:00:34,280 --> 00:00:36,360
+also mit umfassender Kenntnis des Graphen.
+
+12
+00:00:37,140 --> 00:00:41,025
+Faktisch kennen wir aber nur Verlustwerte
+an den Punkten im Parameter-Raum,
+
+13
+00:00:41,025 --> 00:00:43,515
+an denen wir unsere
+Verlustfunktion evaluiert haben.
+
+14
+00:00:43,515 --> 00:00:47,260
+In diesem Fall nur die zwei Punkte
+in dem roten Feld, das hier zu sehen ist.
+
+15
+00:00:48,800 --> 00:00:52,560
+Wir müssen uns dennoch entscheiden,
+was unser nächster Schritt sein wird,
+
+16
+00:00:52,560 --> 00:00:54,290
+um das Minimum zu finden.
+
+17
+00:00:54,880 --> 00:00:57,760
+Das Problem, das untere Ende zu finden,
+
+18
+00:00:57,760 --> 00:01:01,000
+kann in zwei separate und
+wichtige Fragen aufgeteilt werden.
+
+19
+00:01:01,000 --> 00:01:02,850
+Welche Richtung soll ich nehmen?
+
+20
+00:01:02,850 --> 00:01:04,500
+Wie weit soll ich gehen?
+
+21
+00:01:05,269 --> 00:01:07,990
+Jetzt werden wir aber
+eine vereinfachende Annahme treffen
+
+22
+00:01:07,990 --> 00:01:10,130
+und nur eine feste Schrittgröße verwenden.
+
+23
+00:01:12,840 --> 00:01:15,130
+Das führt zu
+einem sehr einfachen Algorithmus.
+
+24
+00:01:16,080 --> 00:01:21,050
+Solange der Verlust größer als eine kleine
+Konstante ist: Berechne die Richtung.
+
+25
+00:01:21,050 --> 00:01:25,304
+Lege dann für die einzelnen Parameter
+im Modell die Werte so fest, dass sie
+
+26
+00:01:25,304 --> 00:01:28,841
+dem alten Wert plus dem Produkt aus
+Schrittgröße und Richtung entsprechen.
+
+27
+00:01:28,841 --> 00:01:30,878
+Berechne dann den Verlust neu.
+
+28
+00:01:34,486 --> 00:01:36,370
+Sie können sich eine Verlustoberfläche
+
+29
+00:01:36,370 --> 00:01:39,090
+wie eine topographische oder
+Höhenlinienkarte vorstellen.
+
+30
+00:01:39,150 --> 00:01:41,320
+Jede Linie stellt eine gewisse Tiefe dar.
+
+31
+00:01:42,080 --> 00:01:46,420
+Je näher die Linien beieinander liegen,
+desto steiler ist die Oberfläche dort.
+
+32
+00:01:47,960 --> 00:01:52,050
+Die Schritte des Algorithmus
+habe ich hier als Punkte dargestellt.
+
+33
+00:01:52,050 --> 00:01:55,160
+In diesem Fall hat der
+Algorithmus am oberen Rand angefangen
+
+34
+00:01:55,160 --> 00:01:58,170
+und ist dann in Richtung des
+Minimums in die Mitte gegangen.
+
+35
+00:01:59,030 --> 00:02:00,719
+Sie sehen,
+dass der Algorithmus
+
+36
+00:02:00,719 --> 00:02:03,174
+Schritte mit fester Größe
+in Richtung Minimum macht.
+
+37
+00:02:04,240 --> 00:02:06,190
+Lassen wir die Richtung kurz außer Acht.
+
+38
+00:02:06,190 --> 00:02:10,240
+Wenn die Schrittgröße zu klein
+ist, kann das Training ewig dauern.
+
+39
+00:02:10,240 --> 00:02:12,750
+Das Minimum werden
+Sie aber garantiert finden.
+
+40
+00:02:12,750 --> 00:02:14,380
+Ich habe absichtlich "das" gesagt,
+
+41
+00:02:14,380 --> 00:02:16,790
+da wir vorerst annehmen,
+dass es nur eines gibt.
+
+42
+00:02:16,790 --> 00:02:19,320
+In Zukunft kann es aber
+mehr als eines geben und
+
+43
+00:02:19,320 --> 00:02:22,409
+den Umgang mit diesem
+Problem besprechen wir später.
+
+44
+00:02:23,690 --> 00:02:25,430
+Wenn die Schrittgröße zu groß ist,
+
+45
+00:02:25,430 --> 00:02:29,160
+kann es sein, dass Sie entweder von Rand
+zu Rand Ihrer Oberfläche springen oder
+
+46
+00:02:29,160 --> 00:02:34,080
+das Tal komplett verlassen und in einem
+neuen Teil der Verlustoberfläche landen.
+
+47
+00:02:34,080 --> 00:02:36,315
+Deshalb ist bei einer
+zu großen Schrittgröße
+
+48
+00:02:36,315 --> 00:02:38,650
+die Prozesskonvergenz nicht garantiert.
+
+49
+00:02:40,900 --> 00:02:44,440
+Wenn die Schrittgröße genau
+richtig ist, sind Sie startklar.
+
+50
+00:02:44,440 --> 00:02:47,081
+Doch ganz gleich, was der
+Wert für die Schrittgröße ist,
+
+51
+00:02:47,081 --> 00:02:50,490
+er wird bei einem anderen Problem
+wahrscheinlich nicht genauso gut sein.
+
+52
+00:02:50,490 --> 00:02:53,381
+Die Schrittgröße, die links
+anscheinend gut funktioniert hat,
+
+53
+00:02:53,381 --> 00:02:55,656
+ist rechts überhaupt nicht geeignet.
+
+54
+00:02:59,139 --> 00:03:02,210
+Es gibt keinen
+Universalwert für alle Modelle.
+
+55
+00:03:02,210 --> 00:03:04,670
+Wie sollten wir also
+die Schrittgröße ändern?
+
+56
+00:03:06,609 --> 00:03:11,029
+Glücklicherweise gibt uns die Steigung
+oder der Grad der Veränderung einer Kurve
+
+57
+00:03:11,029 --> 00:03:15,120
+einen guten Anhaltspunkt, wie weit
+und in welche Richtung wir gehen sollten.
+
+58
+00:03:15,510 --> 00:03:18,600
+Sehen Sie sich den Teilbereich
+unten an, der den Wert der Steigung
+
+59
+00:03:18,600 --> 00:03:21,660
+an verschiedenen Punkten auf
+der Gewichtungsverlustkurve angibt.
+
+60
+00:03:21,980 --> 00:03:26,045
+Wo die Werte größer sind, sind wir
+generell weiter vom unteren Ende entfernt
+
+61
+00:03:26,045 --> 00:03:27,840
+als dort, wo die Steigung klein ist.
+
+62
+00:03:28,510 --> 00:03:32,120
+Wo die Steigung negativ ist,
+ist das untere Ende der oberen Grafik
+
+63
+00:03:32,120 --> 00:03:33,100
+rechts und
+
+64
+00:03:33,100 --> 00:03:37,420
+wo die Steigung positiv ist, ist das
+untere Ende der oberen Grafik links.
+
+65
+00:03:37,420 --> 00:03:39,260
+Hier ein weiteres Beispiel:
+
+66
+00:03:39,260 --> 00:03:42,920
+Sehen Sie sich Punkt B an. Hat er
+eine positive oder eine negative Steigung?
+
+67
+00:03:43,870 --> 00:03:47,929
+Punkt B hat eine positive Steigung. Wir
+müssen also links nach dem Minimum suchen.
+
+68
+00:03:48,970 --> 00:03:52,750
+Beachten Sie, dass die Steigung steil
+ist. Es ist also ein großer Schritt nötig.
+
+69
+00:03:54,050 --> 00:03:56,500
+Sehen Sie sich Punkt C
+auf der Verlustoberfläche an.
+
+70
+00:03:56,500 --> 00:03:59,390
+Hat er eine positive
+oder eine negative Steigung?
+
+71
+00:03:59,390 --> 00:04:00,560
+Wie steil ist er?
+
+72
+00:04:01,970 --> 00:04:05,930
+Punkt C hat wieder eine positive Steigung.
+Wir müssen also weiter nach links.
+
+73
+00:04:07,410 --> 00:04:09,480
+Hier ist die Steigung viel geringer.
+
+74
+00:04:09,480 --> 00:04:11,580
+Wir machen also kleinere Schritte,
+
+75
+00:04:11,580 --> 00:04:14,450
+um nicht versehentlich
+das Minimum zu verpassen.
+
+76
+00:04:14,450 --> 00:04:18,409
+Jetzt haben wir die konstante Schrittgröße
+und die Anweisung zur Richtungsberechnung
+
+77
+00:04:18,409 --> 00:04:22,069
+durch einen einzigen Aufruf unserer
+neuen Funktion computeDerivative ersetzt
+
+78
+00:04:22,069 --> 00:04:23,320
+und unsere For-Schleife
+
+79
+00:04:23,320 --> 00:04:25,710
+zum Aktualisieren
+der Modellparameter geändert,
+
+80
+00:04:25,710 --> 00:04:28,165
+sodass jeder Parameter
+seinen alten Wert abzüglich
+
+81
+00:04:28,165 --> 00:04:31,850
+der partiellen Ableitung dieses Parameters
+in Bezug auf den Verlust annimmt.
+
+82
+00:04:32,530 --> 00:04:34,130
+Sind wir jetzt fertig?
+
+83
+00:04:34,130 --> 00:04:37,470
+Wir haben anscheinend einen Weg
+gefunden, um Schritte der richtigen Größe
+
+84
+00:04:37,470 --> 00:04:39,140
+in die richtige Richtung zu machen.
+
+85
+00:04:39,140 --> 00:04:40,320
+Was könnte schiefgehen?
+
+86
+00:04:40,320 --> 00:04:41,929
+Die empirische Leistung.
+
+87
+00:04:43,710 --> 00:04:47,110
+Es hat sich herausgestellt, dass
+unser Basisalgorithmus im Hinblick auf
+
+88
+00:04:47,110 --> 00:04:49,490
+die Probleme, an denen
+ML-Forscher gearbeitet haben,
+
+89
+00:04:49,500 --> 00:04:53,140
+also die Verlustoberflächen, auf die
+wir dieses Verfahren angewendet haben,
+
+90
+00:04:53,140 --> 00:04:58,080
+oft zu lange braucht, suboptimale Minima
+findet oder den Vorgang nicht abschließt.
+
+91
+00:04:58,790 --> 00:05:02,560
+Zur Klarstellung: Das bedeutet nicht,
+dass unser Algorithmus nicht funktioniert.
+
+92
+00:05:02,560 --> 00:05:05,820
+Es heißt einfach, dass wir
+tendenziell nicht auf die Probleme stoßen,
+
+93
+00:05:05,820 --> 00:05:07,330
+für die er
+sehr gut geeignet ist.

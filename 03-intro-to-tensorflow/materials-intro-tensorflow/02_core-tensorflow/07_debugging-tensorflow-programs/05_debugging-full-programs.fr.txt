@@ -1,0 +1,56 @@
+Au cours des dernières leçons, vous avez vu comment déboguer
+un programme TensorFlow : regarder le message d'erreur,
+isoler la méthode concernée, charger des données fictives, et enfin corriger l'erreur une fois
+que vous avez compris ce qui se passe. Il arrive toutefois parfois
+que les problèmes soient plus subtils. Ils ne surviennent que lorsque
+certaines choses se produisent. Et vous pourriez ne pas pouvoir déterminer pourquoi tout fonctionne correctement
+pour cinq, six ou sept lots, avant qu'une erreur n'apparaisse
+soudainement pour disparaître ensuite. En d'autres termes, lorsque les erreurs
+sont liées à une valeur d'entrée donnée ou à une condition du système d'exécution. Dans ce cas, vous devez déboguer
+le programme dans son intégralité, et il existe pour cela trois méthodes. tf.Print() permet d'afficher
+les valeurs des Tensors lorsque certaines conditions sont remplies. tf_debug est un débogueur interactif que vous pouvez exécuter
+à partir d'un terminal en vous connectant à une session
+TensorFlow locale ou distante. TensorBoard est un outil de surveillance
+doté d'une interface graphique. J'en ai déjà parlé comme
+d'un mode de consultation du DAG, mais cet outil est également utilisable
+pour d'autres tâches de dépannage. Vous pouvez consulter
+les statistiques d'évaluation, rechercher le surapprentissage
+ou les couches mortes, etc., c.-à-d. procéder à un débogage
+de haut niveau de vos réseaux de neurones. Nous verrons TensorBoard
+dans un futur chapitre de ce cours. Je voulais simplement en parler
+pour que vous sachiez et reteniez que c'est un puissant outil de débogage. Il n'est pas non plus sans intérêt
+que je vous signale que le niveau de journalisation par défaut
+des programmes TensorFlow est warn (relativement peu de messages). Si vous optez pour le niveau info, vous verrez beaucoup plus
+de messages pendant l'entraînement. Vous pouvez changer de niveau
+à l'aide de tf.logging et définir le niveau de détails
+avec le paramètre verbosity. Les niveaux sont debug, info, warn,
+error et fatal. Dans cet ordre. Debug est le plus détaillé, tandis
+que fatal est celui qui l'est le moins. J'ai tendance à utiliser le niveau info
+pendant le développement, et je me sers plutôt de warn en production. Vous pouvez bien sûr définir
+un paramètre de ligne de commande pour passer d'un mode à l'autre. tf.Print() peut être utilisé
+pour la journalisation de valeurs de Tensor données. Par exemple, si vous divisez a par b, et que vous obtenez nan
+(Not a Number) dans la sortie, vous voulez avoir connaissance
+des valeurs de a et de b dont le traitement
+est à l'origine du problème. Si vous affichez a avec print, vous n'obtiendrez que la sortie
+du débogage du Tensor, et pas sa valeur. Souvenez-vous de l'exécution paresseuse : vous devez évaluer un Tensor
+pour obtenir sa valeur. Vous ne voulez pas que la valeur de a
+soit affichée à chaque fois. L'idée est ici d'utiliser le Tensor print_ab
+qui encapsule s et affiche à la fois a et b. Je remplace alors s
+par print_ab dans le graphe, mais seulement au niveau des lots
+pour lesquels s retourne la sortie nan. Et donc, seules les données
+de ces lots sont affichées. Cela doit être effectué
+dans un programme autonome, car Datalab utilise le Tensor
+pour générer les messages du journal. C'est la raison pour laquelle
+ma solution consiste à exécuter un fichier dans lequel j'ai écrit le code. Il est fréquent que l'on utilise tf.Print
+pour des programmes TF en cours d'exécution afin de diagnostiquer des erreurs rares et d'enregistrer les informations
+dans les journaux. C'est propre et pratique. TensorFlow comporte également
+un débogueur interactif dynamique appelé tf_debug, exécutable depuis
+l'interface de ligne de commande. Vous exécutez le programme TensorFlow à partir d'un terminal
+comme programme autonome en ajoutant l'indicateur
+de ligne de commande --debug. C'est aussi utile pour déboguer
+des programmes TensorFlow exécutés sur un site distant (établissement d'un lien avec le programme). Il existe également
+des raccordements de débogage spéciaux pour le débogage des programmes
+Experiment et Estimator. Et dès qu'un programme démarre, vous pouvez utiliser un débogueur
+pour suivre le code pas à pas, définir des points d'arrêt, etc. Si vous avez déjà utilisé
+un débogueur interactif pour tout autre langage ou environnement, cette terminologie (exécution
+pas à pas, points d'arrêt, etc.) ne vous est sans doute pas inconnue.

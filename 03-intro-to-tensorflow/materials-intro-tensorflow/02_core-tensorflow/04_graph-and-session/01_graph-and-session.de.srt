@@ -1,0 +1,325 @@
+1
+00:00:00,390 --> 00:00:03,415
+Jetzt sehen wir uns Graph und Sitzung an.
+
+2
+00:00:03,415 --> 00:00:05,370
+Der gerichtete azyklische Graph,
+
+3
+00:00:05,370 --> 00:00:07,260
+also der DAG in TensorFlow,
+
+4
+00:00:07,260 --> 00:00:08,790
+gleicht jedem anderen Graphen.
+
+5
+00:00:08,790 --> 00:00:12,115
+Er besteht aus Kanten und Knoten.
+
+6
+00:00:12,115 --> 00:00:14,785
+Die Kanten repräsentieren Daten,
+
+7
+00:00:14,785 --> 00:00:20,295
+sie repräsentieren Tensoren,
+also n-dimensionale Arrays.
+
+8
+00:00:20,295 --> 00:00:24,920
+Die Knoten repräsentieren TensorFlow-
+Operationen auf diesen Tensoren.
+
+9
+00:00:24,920 --> 00:00:29,415
+Operationen wie tf.add, die wir
+in der letzten Lektion gelöst haben.
+
+10
+00:00:29,415 --> 00:00:33,150
+Ein TensorFlow-DAG besteht aus Tensoren
+
+11
+00:00:33,150 --> 00:00:37,090
+und Operationen auf diesen Tensoren.
+
+12
+00:00:37,090 --> 00:00:40,850
+Warum arbeitet TensorFlow
+nun mit verzögerter Auswertung?
+
+13
+00:00:40,850 --> 00:00:44,380
+Weil verzögerte Auswertung
+bei der Ausführung des Graphen
+
+14
+00:00:44,380 --> 00:00:49,025
+Flexibilität und Optimierung ermöglicht
+
+15
+00:00:49,025 --> 00:00:52,310
+TensorFlow kann jetzt den
+Graphen verarbeiten und kompilieren,
+
+16
+00:00:52,310 --> 00:00:55,900
+Sende- und Empfangs-
+knoten mitten im DAG einfügen
+
+17
+00:00:55,900 --> 00:00:58,825
+und diese remote ausführen.
+
+18
+00:00:58,825 --> 00:01:02,660
+TensorFlow kann verschiedene Teile
+des DAG verschiedenen Geräten zuweisen,
+
+19
+00:01:02,660 --> 00:01:04,855
+je nachdem, ob sie E/A-gebunden ist
+
+20
+00:01:04,855 --> 00:01:08,735
+oder GPU-Funktionen erfordert.
+
+21
+00:01:08,735 --> 00:01:11,035
+Während der Graph verarbeitet wird,
+
+22
+00:01:11,035 --> 00:01:14,355
+kann TensorFlow
+Quantisierung oder Datentypen hinzufügen,
+
+23
+00:01:14,355 --> 00:01:15,950
+Debug-Knoten hinzufügen,
+
+24
+00:01:15,950 --> 00:01:18,820
+Zusammenfassungen erstellen,
+in die Werte geschrieben werden,
+
+25
+00:01:18,820 --> 00:01:22,700
+damit Tensor sie lesen kann,
+außerdem Berechnungen wie Addieren,
+
+26
+00:01:22,700 --> 00:01:28,125
+Matmul, Konstanten, Variablen. Dies
+sind Vorgänge, die TensorFlow nutzen kann.
+
+27
+00:01:28,125 --> 00:01:30,390
+Wenn der Graph kompiliert wird,
+
+28
+00:01:30,390 --> 00:01:34,845
+kann TensorFlow zwei Vorgänge
+zur Leistungssteigerung zusammenfassen.
+
+29
+00:01:34,845 --> 00:01:38,415
+Wenn Sie zum Beispiel zwei
+aufeinanderfolgende Addierknoten haben,
+
+30
+00:01:38,415 --> 00:01:41,715
+kann TensorFlow diese
+zu einem zusammenfassen.
+
+31
+00:01:41,715 --> 00:01:44,290
+Der XLA-Compiler von TensorFlow
+
+32
+00:01:44,290 --> 00:01:47,770
+kann die Informationen in einen
+gerichteten azyklischen Graphen übertragen
+
+33
+00:01:47,770 --> 00:01:50,410
+und damit schnelleren Code erzeugen.
+
+34
+00:01:50,410 --> 00:01:56,095
+Das ist ein Grund, einen
+DAG zur Optimierung einzusetzen.
+
+35
+00:01:56,095 --> 00:02:00,890
+Das Spannendste aber ist, 
+dass man den DAG remote ausführen
+
+36
+00:02:00,890 --> 00:02:02,790
+und Geräten zuweisen kann.
+
+37
+00:02:02,790 --> 00:02:08,740
+An diesem Punkt wird der
+Nutzen des DAG sehr deutlich.
+
+38
+00:02:08,740 --> 00:02:14,965
+Explizite Kanten repräsentieren
+Abhängigkeiten zwischen Operationen,
+
+39
+00:02:14,965 --> 00:02:20,980
+dadurch kann das System parallel
+ausführbare Operationen leicht erkennen.
+
+40
+00:02:20,980 --> 00:02:26,230
+Explizite Kanten repräsentieren auch
+Werte, die zwischen Operationen fließen,
+
+41
+00:02:26,230 --> 00:02:32,110
+und dadurch kann TensorFlow ein
+Programm auf verschiedene Geräte,
+
+42
+00:02:32,110 --> 00:02:38,155
+CPUs, GPUs, TPUs usw. verteilen,
+sogar in verschiedenen Maschinen.
+
+43
+00:02:38,155 --> 00:02:44,160
+Kommunikation und Koordination zwischen
+diesen Geräten ist Sache von TensorFlow.
+
+44
+00:02:44,160 --> 00:02:46,280
+Nun zu den Farben im Diagramm.
+
+45
+00:02:46,280 --> 00:02:49,540
+Verschiedene Teile des Graphen
+können auf verschiedenen Geräten sein,
+
+46
+00:02:49,540 --> 00:02:52,740
+ganz gleich, ob GPUs
+oder verschiedene Computer.
+
+47
+00:02:52,740 --> 00:02:55,660
+Ein wichtiger Vorteil dieses Modells,
+
+48
+00:02:55,660 --> 00:02:58,910
+nämlich Berechnungen auf viele Maschinen
+
+49
+00:02:58,910 --> 00:03:00,775
+und Maschinentypen verteilen zu können,
+
+50
+00:03:00,775 --> 00:03:02,820
+ist dem DAG zu verdanken.
+
+51
+00:03:02,820 --> 00:03:05,370
+Wir schreiben nur den Python-Code
+
+52
+00:03:05,370 --> 00:03:07,925
+und überlassen es 
+dem TensorFlow-Ausführungssystem,
+
+53
+00:03:07,925 --> 00:03:12,005
+den Graphen zu 
+optimieren und zu verteilen.
+
+54
+00:03:12,005 --> 00:03:17,315
+Die Sitzungsklasse repräsentiert diese
+Verbindung zwischen dem Python-Programm
+
+55
+00:03:17,315 --> 00:03:19,530
+und der Laufzeit in C++.
+
+56
+00:03:19,530 --> 00:03:24,759
+Das Sitzungsobjekt bietet Zugang
+zu Geräten der lokalen Maschine
+
+57
+00:03:24,759 --> 00:03:29,649
+und zu Remotegeräten,
+verteilt durch die TensorFlow-Laufzeit.
+
+58
+00:03:29,649 --> 00:03:32,735
+Es dient als Zwischenspeicher
+für Informationen über den Graphen,
+
+59
+00:03:32,735 --> 00:03:36,790
+dadurch kann die gleiche
+Berechnung mehrmals ausgeführt werden.
+
+60
+00:03:36,790 --> 00:03:43,395
+TensorFlow-Graphen werden in einer tf-
+Sitzung durch Aufruf von run ausgeführt.
+
+61
+00:03:43,395 --> 00:03:46,555
+Dabei geben wir einen Tensor an,
+
+62
+00:03:46,555 --> 00:03:48,405
+der ausgewertet werden soll.
+
+63
+00:03:48,405 --> 00:03:50,310
+In diesem Codebeispiel
+
+64
+00:03:50,310 --> 00:03:54,170
+definiere ich zwei Datentensoren x und y.
+
+65
+00:03:54,170 --> 00:03:57,390
+Dies sind Konstanten, 1-D-Tensoren.
+
+66
+00:03:57,390 --> 00:04:05,795
+Der Tensor z ist das Ergebnis
+des Aufrufs von tf.add mit x und y.
+
+67
+00:04:05,795 --> 00:04:07,635
+Wenn ich ihn auswerten möchte,
+
+68
+00:04:07,635 --> 00:04:11,565
+rufe ich session.run mit z auf.
+
+69
+00:04:11,565 --> 00:04:16,750
+Die Sitzung (hier "sess")
+ist eine Instanz der tf-Sitzung
+
+70
+00:04:16,750 --> 00:04:19,170
+und mit der Python-Anweisung "with"
+
+71
+00:04:19,170 --> 00:04:20,280
+sorgen wir dafür,
+
+72
+00:04:20,280 --> 00:04:23,500
+dass die Sitzung anschließend
+automatisch geschlossen wird.

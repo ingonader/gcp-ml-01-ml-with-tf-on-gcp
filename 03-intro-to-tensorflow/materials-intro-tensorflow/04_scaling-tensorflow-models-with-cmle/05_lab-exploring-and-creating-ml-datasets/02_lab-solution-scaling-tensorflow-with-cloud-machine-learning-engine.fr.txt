@@ -1,0 +1,186 @@
+Je me suis connecté à Qwiklabs
+et j'ai lancé l'atelier. Je me suis connecté à la console GCP
+avec mon nom d'utilisateur et mon mot de passe. J'ai aussi lancé Datalab. Tout d'abord, je dois cloner le dépôt
+dans lequel se trouvent nos blocs-notes. Pour cela, je peux utiliser
+l'icône Git située ici, ou je peux créer un nouveau bloc-notes
+et utiliser la fonction bash. Je saisis "bash",
+puis "git clone"… J'ai créé un clone Git du dépôt d'analyse
+des données d'entraînement qui contient le bloc-notes
+que nous allons utiliser dans cet atelier. Le dépôt "training-data-analyst"
+s'affiche maintenant ici. Nous allons ouvrir ce dépôt
+et accéder au dossier qui contient le bloc-notes,
+à savoir "deepdive". Nous sommes dans le troisième cours
+et nous parlons de Cloud ML Engine. Voici Cloud ML Engine. Dans cet atelier, nous allons surtout
+faire évoluer notre modèle TensorFlow, le même que celui que nous avions,
+sauf que nous l'avons transformé en module Python, et nous allons
+l'exécuter sur ML Engine. Premièrement, comme nous allons
+l'exécuter dans le cloud, nous devons spécifier le projet
+que nous allons développer. Qwiklabs nous a donné un ID de projet. Nous allons utiliser cet ID de projet
+pour le projet que nous allons développer et pour le bucket.
+Mais qu'est-ce qu'un bucket ? Nous devons créer un bucket. Pour cela, nous pouvons accéder
+à la console GCP, aller dans Storage > Browser,
+puis vérifier qu'un bucket existe. Sinon, nous devons en créer un. Les noms de bucket doivent être uniques. Comment faire
+pour avoir des noms uniques ? Nous pouvons utiliser un nom de bucket
+identique au nom du projet. Il faudrait vraiment être malchanceux
+pour que quelqu'un ait déjà créé un bucket portant ce nom. Je vais donc créer un bucket avec ce nom. Je peux créer un bucket multirégional. C'est parti. Le bucket est créé. Il porte le même nom que le projet,
+ce qui simplifie les choses. Je vais maintenant spécifier
+le nom du bucket et la région La région est très importante. C'est là que vous allez lancer
+votre tâche ML Engine. Si vous aviez un bucket régional,
+votre ordinateur devrait se trouver dans cette région. Ici, nous avons un bucket multirégional,
+donc cela n'a pas d'importance. Nous pouvons effectuer nos calculs
+dans n'importe quelle région. Je vais donc garder "us-central1". En l'occurrence, j'ai lancé Datalab
+avec cette région, mais l'instance Datalab et les tâches ML Engine n'ont pas besoin
+de s'exécuter dans la même région. Ils peuvent s'exécuter
+dans des régions différentes. Nous allons juste envoyer une tâche,
+et toutes les machines que nous allons créer pour l'exécuter se trouveront
+dans la région "us-central1". Je peux enregistrer le bloc-notes
+pour ne pas le perdre. Voici mon projet. Je peux cliquer sur "Run". À partir de maintenant,
+j'appuierai sur Maj + Entrée, ce qui revient au même. Cela crée un bucket de projet
+et des variables de région en Python. La cellule suivante définit exactement
+les mêmes variables, mais en bash. Nous lançons la commande Python
+"os.environ", qui définit une variable bash. Désormais, chaque fois que nous saisissons
+"$project" ou "$bucket" dans le bloc-notes, nous recevons la
+variable appropriée dans le script bash. Nous allons surtout utiliser ça. Google Cloud peut simuler,
+définir le projet sur ce projet défini et définir la région de calcul
+sur cette région définie. Le projet principal et la région de calcul
+sont maintenant mis à jour. CMLE s'exécute dans un projet fictif. Nous voulons fournir à ML Engine
+un accès à tous nos fichiers de données. ML Engine est un compte robot,
+un compte automatisé. C'est un compte de service,
+et nous voulons lui donner l'accès pour qu'il puisse lire les fichiers
+de notre bucket. Et c'est ce que nous faisons là. En gros, nous demandons de donner
+à ML Engine un accès aux fichiers présents dans le bucket
+et aux fichiers qui vont être créés, car nous allons stocker des choses
+comme des points de contrôle et des sorties de modèle
+dans ce bucket. C'est ce que vous faites. Une bonne pratique consiste à
+insérer uniquement des données essentielles dans le bucket,
+de sorte que ML Engine puisse y accéder et les lire. Typiquement, vous n'allez pas
+créer un bucket dans lequel vous allez conserver toutes vos données. Vous allez créer des buckets spécifiques
+au machine learning, et garder ces fichiers dedans. Cela permet de renforcer la sécurité. Nous allons faire cela,
+puis nous allons donner à ML Engine un accès en lecture et en écriture
+dans ce bucket. Une fois cela fait,
+nous avons autorisé le compte de service ML Engine, qui se traduit par
+la commande "service-". Voici l'ID de projet. Vous pouvez le trouver
+dans la console GCP. Sur la page d'accueil, vous avez le numéro de projet. Mais vous n'avez pas besoin
+de savoir ça. Nous pouvons rédiger un script
+pour l'obtenir. Pour cela, il suffit simplement
+d'utiliser l'appel JSON "response['serviceAccount']". Ensuite, nous devons prendre notre code. Dans les ateliers précédents, notre
+code se trouvait dans un bloc-notes, car nous faisions des expériences,
+nous construisions des choses. Mais maintenant, nous voulons
+l'exécuter à grande échelle. Quand vous voulez exécuter du code,
+celui-ci se trouve dans un package Python. C'est ce que nous faisons ici. Nous sommes en train de créer
+un package Python, que j'appelle "taxifare",
+et qui contient tous ces fichiers. Vous pouvez les consulter dans Datalab. Dans le dossier "taxifare",
+vous pouvez voir un dossier nommé "trainer", qui contient
+les deux fichiers dont nous avons parlé : "task.py" et "model.py". Le fichier "task.py"
+contient les données principales. C'est lui qui lance toute l'analyse
+des lignes de commande. Il recherche des chemins
+des données d'entraînement, la taille des lots d'entraînement, etc. Ces informations proviennent
+de la ligne de commande. Le fichier "model.py"
+contient le noyau du modèle. C'est lui qui crée
+la régression appropriée, qui possède les fonctions d'entrée
+pour lire les données, etc. Nous avons maintenant
+notre package en Python, qui est essentiellement une structure
+de dossiers contenant tous les fichiers dont nous avons besoin. Nous pouvons regarder "model.py",
+qui contient essentiellement le code qui était auparavant
+dans les blocs-notes Datalab, et que nous avons mis
+dans un package Python. À présent, comment faire
+pour mettre du code Python dans un package Python ? Nous allons voir une méthode simple. Recherchons du code en Python. Imaginons que nous voulons
+écrire ce code dans un fichier. Une méthode simple consiste
+à utiliser la commande magique de Jupyter, "writefile". Je saisis "%writefile tensorboard.py",
+et lorsque j'exécute cet appel, tout le code ici est écrit
+dans "tensorboard.py". C'est un moyen simple d'écrire du code
+du bloc-notes Python dans un autre fichier Python
+dans un package Python. La commande "writefile"
+possède aussi une option d'ajout. Vous pouvez ainsi ajouter
+des lignes supplémentaires à "python.py". Je vais supprimer cette option,
+puisque nous voulons l'exécuter, mais pour vous montrer
+que tensorboard.py a bien été rempli, nous pouvons revenir dans le dépôt. Dans "03_tensorflow", vous devriez voir
+"tensorboard.py". C'est le fichier que j'ai rempli
+avec la commande "%writefile". Revenons là où nous en étions. Nous avons pour l'instant créé
+un package Python, et nous pouvons vérifier que nous avons
+nos fichiers de données. Voici un fichier de données. Dans Datalab, tout est mappé
+avec "/content". Voici donc le dépôt concerné. Et nous avons imprimé une ligne
+du fichier d'entrée d'entraînement et une ligne
+du fichier d'entrée de validation. Maintenant que j'ai un package Python,
+je peux essayer de l'exécuter. L'exécution du package Python
+n'a rien à voir avec ML Engine. Pour exécuter un package Python, il suffit d'écrire "python-m"
+et de transmettre le module. Le module s'appelle "task", et il se trouve
+dans le package "trainer", mais pour cela, nous devons indiquer
+à Python l'emplacement en définissant un chemin "PYTHONPATH"
+sur le répertoire actuel "/taxifare", car c'est là que se trouve
+l'application d'entraînement. Je spécifie donc le chemin "PYTHONPATH",
+et j'exécute le programme Python, en transmettant "taxi-train*"
+et "taxi-valid", en m'assurant que ces chemins
+de ligne de commande fonctionnent, et en spécifiant un répertoire de sortie
+et quelques étapes d'entraînement. Je pourrais même ne spécifier
+que 10 étapes si je le voulais. Je peux maintenant lancer l'exécution
+en appuyant sur Maj + Entrée. Le module Python s'exécute et nous pouvons nous assurer
+qu'il fonctionne. Lorsque c'est bon, nous pouvons vérifier
+que quelque chose a bien été écrit. Tout s'exécute, et vous pouvez voir
+qu'un modèle enregistré a été écrit. C'est important,
+car nous voulons nous assurer que l'entraînement a fonctionné,
+et que nous avons un modèle enregistré. Nous pouvons vérifier cela
+en appelant "export/exporter" pour voir si le modèle enregistré existe. Il est bien présent dans le répertoire,
+et nous pouvons maintenant vérifier que tout fonctionne correctement. Notez que je n'ai encore rien fait
+avec ML Engine. Je suis toujours dans Datalab. Je vérifie que le module Python fonctionne
+et que j'ai un fichier "test.json". Notez que j'utilise ici
+la commande "writefile" pour écrire cette ligne
+sous "test.json". Puis, à l'aide de la commande "gcloud",
+avec le répertoire local exporté, je transmets "test.json" pour m'assurer
+que l'exportation et les prédictions fonctionnent, et que
+toute cette séquence fonctionne comme un module Python
+et s'exécute localement. La prédiction ne va pas être très précise,
+je ne l'ai entraînée que sur 10 étapes. Mais nous savons
+que tout le code fonctionne, que nous avons entraîné le modèle,
+que nous l'avons exporté, que nous pouvons transmettre
+une entrée JSON, et que nous pouvons l'utiliser
+pour faire des prédictions. Nous pouvons alors, si nous le voulons faire un entraînement local
+à l'aide de Google Cloud ML Engine. C'est exactement comme
+la commande "python-m". La différence est que nous spécifions
+le nom du module et le chemin du package différemment,
+et nous n'avons pas besoin de spécifier de chemin Python,
+car ML Engine peut le faire tout seul. De plus, nous pouvons spécifier
+tous ces paramètres, que notre modèle prend en compte. Une fois cela fait, peu importe
+la méthode utilisée, avec "gcloud" ou avec "python-m", vous pouvez exécuter
+TensorBoard pour visualiser le modèle. Je vais lancer TensorBoard…
+Il devrait se trouver ici. Nous voulons transmettre
+le répertoire actuel. Nous n'avons pas besoin de tout ça. Nous lançons ça. TensorBoard est maintenant lancé, et nous pouvons cliquer ici
+pour y accéder. Nous voyons alors, même si nous n'avons
+effectué que 10 étapes, les variations de perte. C'est très utile si on revient l'exécuter
+sur ML Engine. Nous pouvons pointer vers un répertoire
+Google Cloud Storage, et nous pouvons voir
+l'évolution de la fonction de perte durant l'entraînement.
+Descendons un peu et arrêtons-nous pour vous montrer
+que vous pouvez l'utiliser, même en local. Nous nous arrêtons à "4122". Nous allons maintenant l'exécuter
+sur le cloud. Lorsque vous l'exécutez sur le cloud,
+et c'est très important, les données doivent aussi
+être sur le cloud. Je vais donc copier
+les fichiers d'entrée dans le cloud. Je copie les fichiers CSV dans le cloud. Une fois cela terminé,
+une fois les fichiers copiés, je peux maintenant envoyer
+la tâche d'entraînement à ML Engine. J'envoie la tâche d'entraînement
+à ML Engine pour effectuer beaucoup plus d'étapes
+sur toutes ces entrées. La tâche est mise en attente. Nous pouvons revenir à la console GCP, et faire défiler le menu
+jusqu'à ML Engine. Regardez les tâches. Vous verrez qu'il y en a maintenant
+une sur le point de démarrer. Pendant qu'elle s'exécute, vous pouvez
+consulter les journaux et voir tout ce que la tâche produit
+pendant son exécution. À la fin, vous pouvez alors
+déployer ce modèle. Vous pouvez aussi
+faire des prédictions avec, exactement comme nous l'avons fait
+de manière locale, à ceci près qu'il s'agit ici
+d'un modèle entièrement entraîné. Il a été entraîné sur plusieurs étapes
+et il est prêt à être utilisé. Maintenant qu'il est déployé, nous pouvons
+essayer de faire des prédictions, non seulement depuis
+Cloud ML Engine, mais aussi comme un programme client le ferait,
+c'est-à-dire en créant une entrée JSON à partir d'un programme Python,
+et en utilisant cette API Python pour appeler la fonction de prédiction
+et obtenir une réponse. Nous n'avons pas obtenu de modèle miracle. Nous avons seulement pris
+des données brutes et nous les avons mises dans le modèle. Dans le prochain atelier, nous aborderons
+l'extraction de caractéristiques pour améliorer notre modèle. Pour vous montrer les performances
+de cette technique, nous pourrions réaliser l'entraînement
+sur un ensemble de données plus grand. Cela ne nous aidera pas beaucoup. Notre modèle n'est pas génial,
+il ne contient pas d'insights humains. Nous pourrions aussi exécuter
+un entraînement dans le cloud sur un ensemble de données plus grand,
+mais cela ne changerait rien du tout. Si vous en avez le temps,
+et si vous voulez vous lancer un défi, modifiez votre solution
+comme dans l'exercice précédent. Je vous encourage vivement
+à essayer les défis et à venir en discuter sur les forums Coursera. Merci.

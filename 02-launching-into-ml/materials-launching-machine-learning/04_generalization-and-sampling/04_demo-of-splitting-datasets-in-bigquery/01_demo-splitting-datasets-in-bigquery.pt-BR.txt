@@ -1,0 +1,89 @@
+Já falamos sobre a teoria
+e você já viu um pouco do código no SQL, mas praticar no BigQuery ajudará a
+solidificar o conhecimento sobre como dividir conjuntos
+de dados em intervalos. Mas antes disso e de você começar a
+explorar códigos de operadores de módulo e dividir conjuntos de dados
+na cláusula WHERE do SQL, vamos falar sobre
+como dividir esse conjunto de dados. Nesta imagem, temos
+70 milhões de voos no total e poderia ser um conjunto imenso, poderia ser de 7 bilhões, mas queremos reduzir esse conjunto
+de dados de maneira reproduzível. Então, não podemos usar
+uma amostragem aleatória qualquer, queremos usar filtros inteligentes
+de cláusula WHERE, como você verá. Vamos pegar 1% ou 2%,
+como mostrado na caixa laranja, e depois reduzir para 50% desse 1%. Então, digamos que a caixa laranja
+representa os dados de treinamento, 50% deles são os dados
+de validação e o restante, a metade do conjunto de validação,
+pode ser usado como dados de teste. Lembre-se, esse é
+um conjunto de dados binário. Vamos ver como isso
+funciona no Google BigQuery e como você pode usar
+esse código em projetos futuros. No Google BigQuery, tenho esta consulta pré-escrita, mas mostrarei cada etapa. Esta é a interface do Google BigQuery,
+que você já deve conhecer. A primeira coisa, embora
+aqui diga que há 70 milhões de linhas ou voos individuais, é me informar um pouco
+sobre a tabela de dados de origem. Em “Show Options”,
+desative “Use Legacy SQL” para que você possa segurar
+a tecla Windows ou command, e clicar na tabela. Esse é um atalho em qualquer parte do SQL para acessar os detalhes da tabela. Aqui você pode ver todos os campos. Clicando em “Details”, podemos ver o número
+de registros no arquivo. Aqui vemos que há 70 milhões
+de voos diferentes no conjunto de dados, mas em gigabytes. Você pode visualizar o conjunto
+de dados, se quiser analisá-lo. Aqui estão as datas dos voos, os aeroportos de partida, de onde os voos partiram
+e várias informações úteis que podemos esperar de um conjunto
+de dados de uma companhia aérea. Além desses campos genéricos básicos extraídos do conjunto
+de dados que visualizamos, adicionei mais três campos. Agora, faremos o seguinte, antes da filtragem abaixo na linha 17, onde está o filtro da cláusula WHERE, vou mostrar um exemplo e executar o código no bloco em destaque, clicando
+na seta para baixo e executando a consulta. O que isso nos mostra é que... Por exemplo, vamos olhar este dia. Em 30 de junho de 2008,
+como já mencionei neste exemplo, é isso que uma função
+FARM_FINGERPRINT faz. Ela pega esta string e a transforma
+em uma sequência de números. É uma função de hash unidirecional
+que podemos usar à vontade. Em todo caso,
+30 de junho de 2018 escrito dessa maneira sempre gerará hash com esse
+valor específico, o que é muito útil. Depois de gerar o hash com
+FARM_FINGERPRINT, a única coisa diferente
+que fiz nas linhas cinco e seis foi colocar um comando para ver se o hash
+pode ser dividido exatamente por 70 ou 700. Basicamente, usamos esse comando para extrair um entre 70 registros
+cujo resto seja zero. Isso forma aquele 1% ou 2% dos 70 milhões
+de voos filtrados no subconjunto de dados. Como você pode ver aqui, temos este campo chamado
+“remainder_divide_by_70” com valor zero exatamente
+em um dentre 70 casos. Também é onde vamos
+configurar o primeiro filtro. Vou mover este limite aqui embaixo e colocá-lo como um filtro no SQL para filtrar os registros
+onde está a cláusula WHERE na linha 15 porque o comando está aqui. Vamos selecionar uma dentre 70 linhas com o campo "remainder_divide_by_70"
+exatamente igual a zero. Vou limitar a 10. Você verá que todos os valores na coluna “remaider_divide_by_70”
+serão iguais a zero. E aí está. Conseguimos descartar, ou melhor,
+ignorar cerca de 98% dos dados. Lembre-se daquela primeira imagem, daquele recorte ou da divisão
+do conjunto de dados que vimos na imagem. Agora temos cerca de 800 mil ou 842 mil
+linhas na caixa laranja que vimos há pouco. Esse será o meu conjunto de treinamento. Você precisará criar conjuntos
+de dados de treinamento, de validação e, talvez, de teste.
+Então temos que inserir mais filtros. Não podemos abusar
+de “remainder_divide_by_70”. Então, não podemos inserir
+um “remainder_divide_by_7” porque o valor já é zero, já usamos isso uma vez. É por isso que temos essa
+segunda operação de filtragem em que usamos 700. Usar 70 ou 700 é arbitrário e depende do tamanho
+dos intervalos que você usará para o tamanho das divisões
+do conjunto de dados que você quer criar. Reduzimos o conjunto de dados em 98%. Agora precisamos
+dividir os 800 mil registros restantes, limitando o conjunto
+de dados de teste, o de validação e o nosso conjunto
+de dados de treinamento inicial. Agora, vamos adicionar
+outro filtro na cláusula WHERE. Precisamos ignorar
+50% do conjunto de dados restante. Vou mostrar como fica. Agora estamos usando
+a coluna "remainder_divide_by_700" com um valor que pode variar
+entre 0 e 700 para a segunda operação. Queremos selecionar entre... Pense nos conjuntos entre 0 e 700, o ponto intermediário entre 0 e 700 é 350. Agora temos conjuntos de registros
+entre 0 e 350 e entre 350 e 700. Então, dividimos no meio para ter
+os valores maiores ou iguais a 350. Como você pode ver aqui,
+esse valor de 630 é maior. É por isso que ele foi incluso. Mas também é uma pegadinha. Veja estas datas. São todos voos que aconteceram
+em 13 de julho de 2005. Eles têm o mesmo hash. Uma das questões mais
+interessantes e complicadas de usar algo como isso é que, como mencionei anteriormente na aula,
+se adicionarmos um conjunto de dados que tem apenas duas datas, como se
+houvesse apenas 13 e 14 de julho de 2005, não poderemos fazer uma divisão 80/20 porque teremos apenas estes
+dois hashes presentes aqui. Por isso que você precisa de um conjunto
+de dados com ruídos ou bem distribuído antes de fazer as divisões. Os hashes sempre
+retornarão o mesmo valor, diferentemente de uma função RANDOM. A última coisa a fazer é
+dividir ainda mais esse subconjunto para incluir apenas 50% dele, o que representa 25% de todos os dados
+de treinamento reservados para testes. Para fazer isso, trabalhamos
+novamente com o ponto intermediário que, neste caso, pode ser
+qualquer um menor que 525, que é o novo ponto
+intermediário entre 350 e 700. Excluir todo o pedaço abaixo de 525 resultará em 25%
+do conjunto de dados original. A parte mais difícil não é a sintaxe do SQL, mas imaginar como
+vamos formar esses limites e que pontos intermediários
+e funções hash usaremos. Vou mostrar apenas os dez registros. Você verá que todos
+eles são divisíveis por 70, então esse campo só terá zeros. E em "remainder_divide_by_700", para o conjunto de dados de testes final, ou seja, os 25% que queremos
+reservar para os testes, todos os valores nesse campo deverão ser
+maiores ou iguais a 350 e menores que 525. Isso é confirmado por este valor de 420. Se você quiser acessar a outra parte,
+os valores acima de 525 até 700, basta inverter este sinal para maior que 525. Depois, salve os resultados em três locais
+diferentes: treinamento, validação e teste, e você estará pronto para importá-los
+e ingeri-los nos modelos de ML. Você praticará muito isso nos laboratórios e verá algumas possíveis dificuldades, mas entenda que esse é
+um conceito básico que você verá. Vamos ao trabalho.

@@ -1,0 +1,25 @@
+Outre les erreurs de forme que nous avons vues au cours
+des leçons précédentes, un autre type d'erreur couramment rencontré lors du développement
+de programmes TensorFlow est celui relatif au type de données. Ce message d'erreur indique
+que vous avez un Tensor dont les valeurs sont stockées
+sous forme de tableaux de nombres entiers, mais que vous le transmettez à une méthode nécessitant un Tensor contenant
+des valeurs à virgule flottante. Dans quelle situation
+cela pourrait-il se produire ? Par exemple, si vous regardez
+la trace des appels, et que la ligne de code identifiée est celle
+de l'addition que vous voyez ici : s = (a + b). Il est possible que a soit un tableau
+de nombres à virgule flottante et b un tableau de nombres entiers. Certes, l'ajout d'un nombre à virgule flottante
+à un nombre entier est automatique, et donne un nombre à virgule flottante. Mais Python et C++ ne permettent pas d'additionner des tableaux de ces deux types. Cela implique de nombreuses
+optimisations du stockage, et les données d'un tableau
+de nombres entiers peuvent être sur un appareil
+ou en un point de la mémoire n'autorisant pas l'arithmétique
+en virgule flottante. Que faire ? Allez-vous arrondir
+les valeurs à virgule flottante pour obtenir des entiers ? Ou alors, avez-vous fait une erreur en optant pour le type float
+plutôt que pour le type int ? Ou voulez-vous convertir (caster)
+les entiers en nombres à virgule flottante, et procéder à l'addition en sachant que le résultat sera
+un tableau de type float ? Étant donné qu'il existe ici
+plusieurs possibilités, TensorFlow nous demande d'être plus clairs. L'une des solutions consiste à convertir
+le tableau de nombres entiers b en Tensor de valeurs à virgule flottante. Donc, cet appel de tf.cast
+sera inséré dans le graphe de calcul, et il en sera notamment tenu compte
+au niveau des optimisations lors du choix de l'emplacement
+de stockage de b et de son mode de déplacement. Donc ici, nous ajoutons l'opération tf.cast
+dans la méthode afin de la corriger.

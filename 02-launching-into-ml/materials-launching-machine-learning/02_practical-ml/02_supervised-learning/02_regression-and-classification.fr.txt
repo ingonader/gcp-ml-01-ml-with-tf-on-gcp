@@ -1,0 +1,159 @@
+Nous avons examiné
+l'ensemble des pourboires, et dit que nous pouvions
+utiliser le montant du pourboire ou le sexe du client comme étiquette. Dans l'Option 1,
+le montant est l'étiquette, et nous voulons le prédire en fonction des caractéristiques
+de l'ensemble de données. Imaginons que vous n'utilisez
+qu'une seule caractéristique, le montant de l'addition
+pour prédire le pourboire. Puisque le pourboire
+est un nombre continu, il s'agit d'un problème de régression. Dans ce type de problèmes,
+le but est d'utiliser des fonctions de différentes
+combinaisons de caractéristiques, pour prédire
+la valeur continue de notre étiquette. C'est illustré par la droite, où, pour le total de l'addition
+multiplié par la pente de la droite, nous obtenons une valeur continue
+pour le montant du pourboire. Si le pourboire moyen
+est 18 % du total de l'addition, la pente de la droite est alors de 0,18. Et en multipliant l'addition par 0,18,
+nous obtenons le pourboire prédit. Cette progression linéaire
+avec une seule caractéristique est généralisée
+à d'autres caractéristiques. Dans ce cas,
+le problème a plusieurs dimensions, mais le concept est identique. La valeur de chaque caractéristique est
+multipliée par le gradient d'un hyperplan, qui est simplement
+la généralisation de la droite pour obtenir
+une valeur continue pour l'étiquette. Dans les problèmes de régression,
+nous voulons réduire l'erreur entre la valeur continue prédite
+et la valeur continue de l'étiquette, en général en utilisant
+l'erreur quadratique moyenne. Dans l'Option 2, le sexe est l'étiquette,
+et nous prédisons le sexe du client grâce aux données
+du pourboire et de l'addition. Il s'agit bien sûr d'une mauvaise idée
+comme vous le voyez dans les données. Les données des hommes et des femmes
+ne sont pas vraiment distinctes, et nous obtiendrons
+un mauvais modèle en faisant cela. Cela va cependant me permettre
+d'illustrer ce qu'il se passe lorsque ce que vous voulez prédire
+est catégorique, et pas continu. Les valeurs de la colonne "sex",
+au moins dans cet ensemble de données, sont discrètes : homme ou femme. Puisque le sexe est catégorique, et que nous utilisons
+la colonne "sex" comme notre étiquette, le problème est
+un problème de classification. Dans les problèmes de classification,
+au lieu de prédire une variable continue, nous créons une frontière de décision
+qui sépare les différentes classes. Dans ce cas, il existe deux classes
+de sexe : femme et homme. Une frontière de décision linéaire
+forme une ligne ou un hyperplan pour les dimensions supérieures,
+avec une classe de chaque côté. Par exemple, nous pouvons prédire
+que si le pourboire est plus élevé que 0,18 fois le total de l'addition, la personne qui a payé est un homme. C'est illustré par la droite rouge. Mais cela ne fonctionne pas très bien
+pour cet ensemble de données. La variabilité semble
+plus grande pour les hommes, alors que le pourboire féminin
+reste dans une bande plus étroite. C'est un exemple de frontière
+de décision non linéaire, illustrée par les lèvres jaunes
+sur notre graphique. Comment déterminer
+que la frontière rouge est mauvaise, et que la jaune est meilleure ? Dans les problèmes de classification,
+nous voulons réduire les erreurs de classification entre la classe
+prédite et celle des étiquettes. Pour cela, on utilise
+en général l'entropie croisée. Même si nous prédisons le pourboire, nous n'avons peut-être pas besoin
+de connaître le montant exact. À la place, nous voulons déterminer
+s'il sera élevé, moyen ou faible. Un pourboire élevé
+serait supérieur à 25 %, un pourboire moyen
+entre 15 et 25 %, et un pourboire faible en dessous de 15 %. Autrement dit, nous pourrions
+discrétiser jusqu'au montant. Créer le montant du pourboire ou, plutôt, la classe du pourboire,
+devient un problème de classification. Une caractéristique continue brute peut, en général, être discrétisée
+en une caractéristique catégorique. Nous parlerons ultérieurement
+du processus inverse. Une caractéristique catégorique
+peut être intégrée à un espace continu. Cela dépend du problème
+que vous voulez résoudre, et de ce qui est le plus adapté. En ML, tout est affaire d'expérimentation. Ces deux types de problèmes,
+la régression et la classification, peuvent être considérés
+comme des problèmes de prédiction, contrairement aux problèmes non supervisés
+qui sont des problèmes de description. Mais d'où viennent toutes ces données ? Ces données sur les pourboires
+sont des données structurées qui sont rangées en lignes et colonnes. Très souvent, les données structurées
+proviennent d'un entrepôt de données. Les données non structurées sont
+des images, des fichiers audio ou vidéo. Voici un ensemble
+de données sur la natalité, un ensemble de données publiques
+contenant des informations médicales. Il s'agit d'un ensemble
+de données publiques dans BigQuery, et vous l'utiliserez ultérieurement. Pour le moment, partons du principe
+que cet ensemble est dans votre entrepôt. Nous voulons prédire
+les semaines de gestation du bébé. Autrement dit, nous voulons
+prédire sa date de naissance. Vous pouvez effectuer une instruction
+de sélection SQL dans BigQuery pour créer un ensemble de données de ML. Nous choisissons
+les caractéristiques d'entrée du modèle, comme l'âge de la mère,
+la prise de poids, et l'étiquette : semaines de gestation. Puisque les semaines de gestation
+sont un nombre continu, il s'agit d'un problème de régression. Effectuer des prédictions à partir de
+données structurées est très courant, et c'est ce que nous avons fait
+dans la première partie. Cet ensemble de données médicales peut
+être utilisé pour d'autres prédictions, comme prédire le poids du bébé en utilisant les autres attributs
+comme caractéristiques. Le poids du bébé peut
+indiquer son état de santé. Lorsqu'il est prédit qu'un bébé
+aura un poids de naissance faible, l'hôpital prépare en général une couveuse. Il peut donc être important
+de prédire le poids d'un bébé. L'étiquette est le poids du bébé,
+et il s'agit d'une variable continue. Elle est stockée
+en tant que nombre à virgule flottante, ce qui est en fait
+un problème de régression. Cet ensemble de données est-il
+adapté à la régression linéaire ou à la classification linéaire ? La réponse est : les deux. Voyons pourquoi. Observons l'ensemble de données
+avec les deux classes mélangées. Sans couleurs ni formes pour nous aider,
+les données sont une ligne brouillonne avec une pente négative
+et un point d'intersection positif. Puisque la droite semble assez linéaire, la régression linéaire sera
+sans doute la solution la plus adaptée pour prédire la valeur de Y. Si l'on ajoute des couleurs et des formes,
+il est alors bien plus évident que cet ensemble de données
+se compose de deux séries linéaires avec du bruit gaussien. Les droites ont des pentes et points
+d'intersection légèrement différents, et le bruit présente
+différents écarts types. J'ai utilisé des lignes ici
+pour vous montrer qu'il s'agit d'un ensemble linéaire.
+Je vais faire un peu de bruit. Il s'agit d'un bon exemple
+pour la régression linéaire. Bien qu'il y ait
+deux séries linéaires distinctes, penchons-nous d'abord sur le résultat
+d'une régression linéaire dimensionnelle, en traçant point par point Y à partir de X pour commencer à construire une intuition. Nous verrons ensuite
+si nous pouvons faire mieux. La droite verte est l'équation linéaire
+ajustée de la régression linéaire. Remarquez qu'elle est éloignée
+de chaque distribution de classe, car la classe B éloigne la droite
+de la classe A, et vice versa. Elle bissecte approximativement
+l'espace entre les deux distributions. Cela paraît sensé,
+car, avec la régression, nous optimisons la perte
+d'erreur quadratique moyenne. Avec un éloignement égal de chaque classe,
+la régression devrait avoir l'erreur quadratique moyenne
+la plus faible entre les deux classes, à peu près équidistante de leurs moyennes. Puisque chaque classe
+est une série linéaire différente avec des pentes
+et points d'intersection différents, nous obtiendrions
+une précision bien meilleure en réalisant une régression linéaire
+pour chaque classe qui devrait se trouver très près
+de chacune des droites tracées ici. Mieux encore, au lieu d'effectuer
+une régression linéaire unidimensionnelle, en prédisant la valeur de Y
+à partir d'une caractéristique X, nous pourrions effectuer
+une régression linéaire bidimensionnelle en prédisant Y
+à partir de deux caractéristiques : X et la classe du point. La caractéristique de classe peut être
+"1" si le point appartient à la classe A, et "0"
+si le point appartient à la classe B. Au lieu d'une droite,
+ce serait un hyperplan 2D. Voyons à quoi cela ressemblerait. Voici les résultats
+d'une régression linéaire en 2D. Pour prédire notre étiquette Y,
+nous avons utilisé deux caractéristiques : X et la classe. Un hyperplan 2D a été créé
+entre les deux ensembles de données qui sont désormais
+séparés par la dimension de classe. J'ai aussi ajouté les vraies droites
+pour les classes A et B, et la droite de régression linéaire en 1D. L'hyperplan ne contient
+aucune des droites entièrement, à cause des bruits des données
+qui inclinent ses deux pentes. Sans bruit, les trois droites
+se trouveraient dans l'hyperplan. Nous avons aussi déjà répondu
+à l'autre partie de la question concernant la classification linéaire. Car la droite de régression linéaire
+sépare déjà très bien les classes. Il s'agit donc aussi d'un très bon exemple
+pour la classification linéaire. Mais est-ce que cela créerait
+une frontière de décision exactement sur la droite de régression
+linéaire 1D ? Découvrons-le. La droite jaune est le résultat
+d'un classifieur linéaire 1D, la régression logistique. Remarquez qu'elle est très proche
+de la droite verte de régression linéaire, mais pas complètement dessus.
+Pour quelles raisons ? Les modèles de régression utilisent
+en général l'erreur quadratique moyenne comme fonction de pertes, alors que les modèles de classification
+utilisent l'entropie croisée. Quelle est donc
+la différence entre les deux ? Sans trop entrer dans les détails,
+il existe une pénalisation quadratique pour l'erreur quadratique moyenne. Il s'agit de réduire
+la distance euclidienne entre la véritable étiquette
+et l'étiquette prédite. Avec l'entropie croisée,
+la pénalisation est presque linéaire, et la probabilité prédite est proche
+de la véritable étiquette, mais lorsqu'elle continue,
+elle devient exponentielle, lorsqu'elle s'approche de la prédiction
+de la classe opposée de l'étiquette. Ainsi, si vous regardez
+le tracé plus précisément, la pente de la frontière de décision est
+probablement légèrement plus négative, car certains des points rouges,
+le rouge étant la distribution du bruit, se trouvent de l'autre côté
+de la frontière de décision et perdent
+leur contribution élevée à l'erreur. Puisqu'ils sont si proches de la droite, leur contribution à l'erreur
+serait petite pour la régression linéaire, car l'erreur est quadratique,
+et il n'y a pas de préférence quant à leur position d'un côté ou l'autre
+de la droite pour la régression, tant que la distance
+est aussi faible que possible. Cet ensemble convient donc pour la
+régression et la classification linéaires. Contrairement à l'ensemble
+de données des pourboires, pour lequel nous ne pouvions
+utiliser que la régression linéaire, et avons opté
+pour une classification non linéaire.

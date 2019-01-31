@@ -1,0 +1,319 @@
+1
+00:00:01,110 --> 00:00:05,940
+Nas lições anteriores, falamos sobre como
+depurar um programa do TensorFlow
+
+2
+00:00:05,940 --> 00:00:10,110
+observando a mensagem de erro,
+isolando o método em questão,
+
+3
+00:00:10,110 --> 00:00:15,370
+alimentando com dados falsos e corrigindo
+o erro depois de entender o que aconteceu.
+
+4
+00:00:15,370 --> 00:00:18,770
+Às vezes, porém,
+os problemas são mais sutis.
+
+5
+00:00:18,770 --> 00:00:22,900
+Eles só ocorrem
+em situações específicas.
+
+6
+00:00:22,900 --> 00:00:26,500
+E talvez você não consiga identificar
+por que tudo está funcionando
+
+7
+00:00:26,500 --> 00:00:30,839
+em cinco, seis, sete lotes
+e, de repente, recebe um erro
+
+8
+00:00:30,839 --> 00:00:32,860
+e, em seguida, tudo volta ao normal.
+
+9
+00:00:32,860 --> 00:00:36,160
+Em outras palavras, quando os erros
+estão associados a algum
+
+10
+00:00:36,160 --> 00:00:41,270
+valor de entrada específico
+ou a uma condição do sistema de execução.
+
+11
+00:00:41,860 --> 00:00:46,117
+Nesse ponto, você precisa depurar
+o programa completo,
+
+12
+00:00:46,117 --> 00:00:48,412
+e há três métodos para fazer isso.
+
+13
+00:00:49,222 --> 00:00:53,224
+tf.Print() é uma maneira de imprimir
+os valores dos tensores
+
+14
+00:00:53,224 --> 00:00:55,785
+quando condições específicas
+são atendidas.
+
+15
+00:00:55,785 --> 00:01:00,491
+tfdbg é um depurador interativo que pode
+ser executado em um terminal
+
+16
+00:01:00,491 --> 00:01:04,140
+e anexado a uma sessão local ou
+remota do TensorFlow.
+
+17
+00:01:04,780 --> 00:01:08,130
+O TensorBoard é uma ferramenta
+de monitoramento visual.
+
+18
+00:01:08,130 --> 00:01:11,110
+Conversamos sobre isso como
+uma maneira de ver o DAG,
+
+19
+00:01:11,110 --> 00:01:14,830
+mas há mais soluções de problemas
+possíveis com o TensorBoard.
+
+20
+00:01:14,830 --> 00:01:18,120
+Você pode analisar as métricas
+de avaliação, buscar por sobreajustes,
+
+21
+00:01:18,120 --> 00:01:20,170
+camadas inativas etc.
+
+22
+00:01:20,170 --> 00:01:23,274
+Depuração de redes neurais
+de nível mais alto, em outras palavras.
+
+23
+00:01:23,274 --> 00:01:26,563
+Analisaremos o TensorBoard em um
+capítulo mais adiante neste curso,
+
+24
+00:01:26,563 --> 00:01:30,871
+mas por enquanto eu só queria deixar
+um lembrete para você ter em mente
+
+25
+00:01:30,871 --> 00:01:34,732
+que o TensorBoard é uma poderosa
+ferramenta de solução de problemas.
+
+26
+00:01:34,732 --> 00:01:39,801
+Algo bobo, mas que vale a pena mencionar,
+é que o nível padrão
+
+27
+00:01:39,801 --> 00:01:44,230
+em termos de geração de registro
+para programas do TensorFlow é WARN.
+
+28
+00:01:44,230 --> 00:01:46,390
+Então ele executa
+sem muitos detalhes.
+
+29
+00:01:46,390 --> 00:01:50,630
+Altere o nível de registro para INFO
+para ver mais mensagens de registro,
+
+30
+00:01:50,630 --> 00:01:52,570
+conforme o TensorFlow treina.
+
+31
+00:01:52,570 --> 00:01:55,970
+Você pode alterar isso usando tf.logging
+
+32
+00:01:55,970 --> 00:01:57,980
+e configurando o nível de detalhamento.
+
+33
+00:01:57,980 --> 00:02:04,060
+Os níveis são debug, info, warn,
+error e fatal, nessa ordem.
+
+34
+00:02:04,060 --> 00:02:09,160
+Debug é o mais detalhado,
+e fatal é o menos.
+
+35
+00:02:09,160 --> 00:02:15,240
+INFO é o que costumo usar no
+desenvolvimento, e WARN na produção.
+
+36
+00:02:15,240 --> 00:02:19,405
+Você pode configurar um parâmetro de linha
+de comando para alternar de um ao outro.
+
+37
+00:02:20,255 --> 00:02:24,910
+tf.Print() pode ser usado para registrar
+valores específicos de tensores.
+
+38
+00:02:25,550 --> 00:02:29,480
+Talvez você divida
+a por b e receba NAN,
+
+39
+00:02:29,480 --> 00:02:32,560
+não um número NAN, na saída,
+
+40
+00:02:32,560 --> 00:02:37,720
+e queira descobrir os valores de a e b
+que estão causando o problema.
+
+41
+00:02:37,720 --> 00:02:41,111
+Se você imprimir a, só terá a saída
+de depuração do tensor,
+
+42
+00:02:41,111 --> 00:02:42,800
+e não o valor.
+
+43
+00:02:42,800 --> 00:02:44,860
+Execução lenta, você lembra?
+
+44
+00:02:44,860 --> 00:02:47,290
+É preciso avaliar um tensor
+para ter o valor.
+
+45
+00:02:47,860 --> 00:02:52,090
+Você não quer imprimir
+o valor de a toda vez.
+
+46
+00:02:52,090 --> 00:03:00,050
+A ideia aqui é que print_ab é um
+tensor, ele envolve s e imprime a e b.
+
+47
+00:03:00,770 --> 00:03:08,860
+Em seguida, substituo s no gráfico por
+print_ab, só para os lotes em que s é NAN.
+
+48
+00:03:08,860 --> 00:03:11,600
+Logo, apenas isso é impresso.
+
+49
+00:03:12,220 --> 00:03:14,720
+Isso deve ser feito em
+um programa independente,
+
+50
+00:03:14,720 --> 00:03:17,728
+porque o Datalab consome
+as mensagens de registro do TensorFlow.
+
+51
+00:03:17,728 --> 00:03:22,060
+Daí vem a solução alternativa de gravar
+o código em um arquivo e executá-lo.
+
+52
+00:03:23,010 --> 00:03:26,780
+Você tende a usar o tf.Print() nos
+programas do TensorFlow em execução
+
+53
+00:03:26,780 --> 00:03:31,570
+para diagnosticar erros raros e garantir
+a captura de elementos nos registros.
+
+54
+00:03:31,570 --> 00:03:32,950
+É um truque legal.
+
+55
+00:03:34,490 --> 00:03:39,610
+O TensorFlow também tem um depurador
+interativo dinâmico chamado tf_debug.
+
+56
+00:03:39,610 --> 00:03:41,720
+Você o executa pela linha de comando.
+
+57
+00:03:41,720 --> 00:03:45,990
+Então executamos o programa do TensorFlow
+em um terminal como um programa autônomo,
+
+58
+00:03:45,990 --> 00:03:51,270
+e, quando o executamos, adicionamos
+a sinalização de linha de comando --debug.
+
+59
+00:03:51,270 --> 00:03:55,270
+Isso também é útil para depurar programas
+do TensorFlow executados remotamente.
+
+60
+00:03:55,270 --> 00:03:57,870
+Em outras palavras,
+você pode anexar ao programa.
+
+61
+00:03:57,870 --> 00:04:01,787
+Há também ganchos de depuração
+especiais para depurar experimentos
+
+62
+00:04:01,787 --> 00:04:03,760
+e programas do Estimator.
+
+63
+00:04:03,760 --> 00:04:08,250
+E quando um programa é iniciado, use
+um depurador para percorrer o código,
+
+64
+00:04:08,250 --> 00:04:09,950
+definir pontos de interrupção etc.
+
+65
+00:04:10,510 --> 00:04:14,720
+Se você já usou um depurador interativo
+para outra linguagem ou ambiente,
+
+66
+00:04:14,720 --> 00:04:17,960
+a terminologia, as etapas,
+os pontos de interrupção etc.
+
+67
+00:04:17,960 --> 00:04:19,689
+serão todos bastante familiares.

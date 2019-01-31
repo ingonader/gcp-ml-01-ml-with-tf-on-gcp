@@ -1,0 +1,332 @@
+1
+00:00:00,370 --> 00:00:02,790
+Ce module aborde cinq thèmes principaux.
+
+2
+00:00:03,050 --> 00:00:06,660
+On va d'abord définir formellement
+ce qu'est un modèle.
+
+3
+00:00:07,250 --> 00:00:10,370
+Comme il est nécessaire de se baser
+sur un critère d'optimisation,
+
+4
+00:00:10,370 --> 00:00:13,520
+on utilisera les fonctions de perte
+pour évaluer notre progression.
+
+5
+00:00:14,310 --> 00:00:17,840
+On verra que la descente de gradient
+consiste à trouver le bas d'une pente,
+
+6
+00:00:17,840 --> 00:00:19,550
+définie par la fonction de perte.
+
+7
+00:00:20,790 --> 00:00:24,575
+Dans un bac à sable, nous vous montrerons
+la descente des modèles
+
+8
+00:00:24,575 --> 00:00:27,010
+sur les surfaces perdues en temps réel.
+
+9
+00:00:27,790 --> 00:00:30,750
+Nous verrons enfin comment mesurer
+les performances d'un modèle
+
+10
+00:00:30,750 --> 00:00:32,340
+en dehors de l'entraînement.
+
+11
+00:00:33,610 --> 00:00:36,507
+Commençons par définir
+ce que sont les modèles de ML
+
+12
+00:00:36,507 --> 00:00:38,500
+et les paramètres à définir.
+
+13
+00:00:40,284 --> 00:00:44,780
+Ces modèles sont des fonctions mathématiques
+avec des paramètres et des hyperparamètres.
+
+14
+00:00:45,260 --> 00:00:49,260
+Un paramètre est une variable à valeur réelle
+qui change pendant l'entraînement.
+
+15
+00:00:50,210 --> 00:00:53,126
+Un hyperparamètre se définit avant
+le début de l'entraînement
+
+16
+00:00:53,126 --> 00:00:54,943
+et est définitif.
+
+17
+00:00:57,042 --> 00:00:58,976
+Comme indiqué dans le module précédent,
+
+18
+00:00:58,976 --> 00:01:02,650
+les modèles linéaires ont été les premiers
+types de modèles de ML utilisés.
+
+19
+00:01:03,010 --> 00:01:06,600
+Ils sont encore couramment
+utilisés aujourd'hui.
+
+20
+00:01:08,430 --> 00:01:11,960
+Dans ces modèles, les changements
+apportés aux variables indépendantes,
+
+21
+00:01:11,960 --> 00:01:14,570
+appelées caractéristiques dans
+le domaine du ML,
+
+22
+00:01:14,570 --> 00:01:18,470
+sont répercutés en même quantité dans
+les variables ou étiquettes dépendantes,
+
+23
+00:01:18,470 --> 00:01:21,050
+peu importe où ils surviennent
+dans l'espace d'entrée.
+
+24
+00:01:21,750 --> 00:01:24,311
+Le modèle prend la forme
+d'une droite dans un plan 2D.
+
+25
+00:01:24,311 --> 00:01:28,584
+La formule décrivant cette relation est :
+y = mx + b.
+
+26
+00:01:28,764 --> 00:01:31,891
+"m" indique la quantité
+de changements observés dans l'étiquette
+
+27
+00:01:31,891 --> 00:01:34,699
+suite aux petites modifications
+de la caractéristique.
+
+28
+00:01:36,430 --> 00:01:40,630
+Ce concept de relation, défini par
+une proportion fixe de changements entre
+
+29
+00:01:40,630 --> 00:01:44,820
+les étiquettes et les caractéristiques, peut
+s'étendre à une grande dimensionnalité
+
+30
+00:01:44,820 --> 00:01:47,370
+arbitraire, en termes d'entrées
+comme de sorties.
+
+31
+00:01:47,710 --> 00:01:51,790
+On peut donc créer des modèles acceptant
+davantage de caractéristiques en entrée,
+
+32
+00:01:51,800 --> 00:01:55,460
+modéliser plusieurs étiquettes
+simultanément, ou les deux.
+
+33
+00:01:56,200 --> 00:02:00,000
+Si l'on augmente la dimensionnalité
+de l'entrée, notre valeur "m" doit adopter
+
+34
+00:02:00,020 --> 00:02:02,180
+un espace de dimension n.
+
+35
+00:02:02,180 --> 00:02:03,680
+"m" est appellé "poids".
+
+36
+00:02:05,520 --> 00:02:09,530
+On obtient alors une vue de la droite
+dans un espace de dimension n généralisé,
+
+37
+00:02:09,530 --> 00:02:12,709
+appelé hyperplan, qui s'affiche à droite
+sur l'écran.
+
+38
+00:02:14,030 --> 00:02:17,420
+Je n'entrerai pas dans les détails, mais
+si l'on augmente la dimensionnalité
+
+39
+00:02:17,420 --> 00:02:22,810
+des sorties, "y" et "c" doivent aussi
+devenir des vecteurs de dimensions n.
+
+40
+00:02:24,760 --> 00:02:29,100
+La valeur "b", qu'il s'agisse d'un vecteur
+ou d'un scalaire, est un biais.
+
+41
+00:02:29,490 --> 00:02:33,030
+L'utilisation d'un modèle linéaire pour
+la régression est assez intuitive.
+
+42
+00:02:33,280 --> 00:02:38,020
+Il suffit d'appliquer la formule
+b + m * x pour obtenir la prédiction y.
+
+43
+00:02:38,480 --> 00:02:41,550
+Mais comment utiliser un modèle linéaire
+pour la classification ?
+
+44
+00:02:42,050 --> 00:02:45,490
+Comment interpréter une valeur continue
+en tant que classe ?
+
+45
+00:02:47,300 --> 00:02:50,830
+Pour transformer la sortie numérique
+de notre modèle en classe,
+
+46
+00:02:50,830 --> 00:02:54,349
+on doit d'abord savoir comment encoder
+l'appartenance à une classe.
+
+47
+00:02:54,920 --> 00:02:58,240
+Le plus simple est d'utiliser
+un système binaire :
+
+48
+00:02:58,240 --> 00:03:00,720
+L'entrée appartient
+à la classe ou pas.
+
+49
+00:03:01,310 --> 00:03:05,120
+Dans la plupart des cas, les variables
+catégorielles ont plusieurs valeurs.
+
+50
+00:03:05,790 --> 00:03:07,520
+Cette approche reste valable.
+
+51
+00:03:07,520 --> 00:03:10,600
+Faisons comme si chaque valeur
+correspondait à sa propre classe.
+
+52
+00:03:11,700 --> 00:03:14,820
+Pour l'instant, restons sur
+une classe binaire unique.
+
+53
+00:03:15,600 --> 00:03:19,330
+Nous reviendrons sur la représentation
+des caractéristiques dans le 3e cours.
+
+54
+00:03:20,230 --> 00:03:23,820
+Ce mode de représentation de l'étiquette
+facilite la tâche.
+
+55
+00:03:24,880 --> 00:03:28,880
+Il faut maintenant mapper notre droite sur
+une règle de classification binaire.
+
+56
+00:03:30,360 --> 00:03:33,670
+On peut simplement se baser
+sur le signe de la sortie.
+
+57
+00:03:35,170 --> 00:03:38,530
+Visuellement, cela revient à diviser
+notre graphique en deux zones,
+
+58
+00:03:38,530 --> 00:03:41,200
+avec des points au-dessus
+et en dessous de la droite.
+
+59
+00:03:42,060 --> 00:03:44,300
+Cette droite s'appelle
+la frontière de décision,
+
+60
+00:03:44,300 --> 00:03:47,180
+car elle délimite le début
+et la fin des classes.
+
+61
+00:03:48,230 --> 00:03:49,520
+Cette frontière de décision
+
+62
+00:03:49,520 --> 00:03:53,210
+ne sert pas uniquement à décrire
+les données actuelles.
+
+63
+00:03:53,330 --> 00:03:56,000
+Elle est utilisée pour prédire
+des données non observées.
+
+64
+00:03:57,040 --> 00:04:01,010
+Cette capacité d'adaptation à des exemples
+non observés s'appelle la généralisation.
+
+65
+00:04:01,010 --> 00:04:03,120
+Elle est fondamentale
+pour les modèles de ML.
+
+66
+00:04:03,120 --> 00:04:06,240
+Nous approfondirons la généralisation
+dans le prochain module.
+
+67
+00:04:08,140 --> 00:04:11,120
+Il est difficile de comprendre le ML
+sans pratique.
+
+68
+00:04:11,400 --> 00:04:14,720
+Prenons donc un problème concret
+auquel appliquer le ML,
+
+69
+00:04:14,720 --> 00:04:16,290
+et voyons comment procéder.

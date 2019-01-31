@@ -1,0 +1,96 @@
+Vamos dar uma olhada rápida
+na história do aprendizado de máquina para ver como ele
+evoluiu ao longo do tempo até chegar hoje às famosas redes
+neurais de aprendizagem profunda. Você perceberá que,
+mesmo com tantas redes neurais surgindo e desaparecendo
+nas últimas décadas, os mesmos truques e técnicas
+desenvolvidos para outros algoritmos se aplicam a redes neurais
+de aprendizagem profunda, o que as torna muito poderosas. A regressão linear foi inventada
+para prever o movimento dos planetas e o tamanho de vagens de ervilha
+com base na aparência delas. Sir Francis Galton foi pioneiro
+no uso de métodos estatísticos para avaliar fenômenos naturais. Ele analisava dados sobre
+os tamanhos relativos de pais e filhos em várias espécies,
+incluindo a ervilha-de-cheiro. Ele notou algo que não é
+muito óbvio, algo bem estranho. Certo, um pai maior que a média costuma
+produzir filhos maiores que a média. Mas o quanto esse filho é maior em relação
+à média dos outros filhos desta geração? Acontece que a proporção do filho
+em relação à sua geração é menor do que a proporção correspondente do pai. Se o tamanho do pai tem um desvio
+padrão de 1,5 da média da sua geração, podemos prever que o tamanho do filho terá
+um desvio menor que 1,5 da média do grupo. Pode-se dizer que, de geração em geração, a natureza regressa ou volta para a média. Por isso usamos o nome regressão linear. O gráfico exibido é de 1877 e mostra
+a primeira regressão linear da história. Muito interessante! A computação no século XIX
+era um tanto limitada, ninguém sabia como isso funcionaria
+nos grandes conjuntos de dados. Havia uma solução de forma fechada
+para resolver a regressão linear, mas também era possível
+usar métodos de gradiente descendente, cada um com prós e contras,
+dependendo do conjunto de dados. Vamos olhar mais de perto
+como a regressão linear funciona. Vejamos em detalhes
+para entender a motivação dela. Começamos com uma equação linear
+que descreve nosso sistema como hipótese, multiplicando vários pesos pelos vetores
+de recurso observados e somando tudo. É possível usar a equação superior
+para cada exemplo no conjunto de dados, y = w0 . x0 + w1 . x1 + w2 . x2 + …
+para cada recurso no modelo. Em outras palavras, a equação é aplicada
+a todas as linhas no conjunto de dados, em que os valores de peso são fixos, e os valores de recurso têm
+origem em cada coluna associada no nosso conjunto
+do aprendizado de máquina. É possível condensá-la
+na equação de matriz inferior, y = x . w. Essa equação hipotética é muito
+importante não só na regressão linear, mas em outros modelos de aprendizado como redes neurais profundas,
+que serão abordadas depois. Mas como determinar se os pesos escolhidos
+criam hipóteses boas ou ruins? A resposta é que precisamos
+criar uma função de perda, que é basicamente uma função
+objetivo que queremos otimizar. Como já explicado,
+nos problemas de regressão, a função de perda
+é o erro quadrático médio, mostrado em forma de matriz nesta equação. A constante não aparece,
+já que ela desaparecerá na derivação. Vamos primeiro encontrar a diferença
+entre o valor real dos marcadores e o previsto, y-hat,
+que é x multiplicado por w. Não se esqueça de que o objetivo
+é reduzir a perda o máximo possível. Então precisamos encontrar um jeito
+de minimizá-la considerando os pesos. Para isso, usamos a derivada considerando
+os pesos no caso unidimensional ou, de modo geral, o gradiente quando
+temos vários recursos. Depois, isso é usado para encontrar
+o mínimo global. Nesta equação,
+em que não abordaremos a derivação, temos uma solução analítica
+de forma fechada para regressão linear. Isso significa que, ao aplicar
+os valores de X e Y na fórmula, você encontra os valores dos pesos. No entanto, isso não é muito prático,
+já que há problemas com a inversa. Consideramos que a matriz de Gram, 
+X transposta X, não seja singular. Ou seja, todas as colunas da matriz de
+recurso X são independentes linearmente. Mas em conjuntos de dados reais, você tem dados totalmente
+ou quase duplicados. O mesmo cliente compra
+um produto igual novamente, duas fotos do nascer do sol
+tiradas em alguns segundos... Mesmo se a matriz de Gram
+for independente linearmente, ela ainda poderá ser inadequada, o que a torna singular na computação,
+e continua causando problemas para nós. A inversa também tem
+complexidade de tempo de ON ao cubo usando algoritmo ingênuo. Ainda assim, algoritmos mais
+complexos também não ajudam muito. Eles trazem
+novos problemas numéricos. Isso também se aplica à multiplicação
+usada para criar a matriz de Gram. É melhor resolver as equações
+normais usando a fatoração de Cholesky ou decomposição QR. Em ON ao cubo ou até mesmo ON elevado a
+2,5, quando N é igual a 10.000 ou mais, o algoritmo pode ser muito lento. Então, sim, é possível encontrar
+os pesos usando a equação normal, mas isso depende muito
+dos seus dados e seu modelo, além da álgebra linear
+e algoritmos de matriz que você usa etc. Felizmente, há o algoritmo
+de otimização por gradiente descendente que é mais econômico na computação
+em termos de tempo e memória, mais suscetível a generalização moderada, além de ser genérico suficiente
+para resolver a maioria dos problemas. Na verdade, no gradiente descendente, a função de perda, ou,
+mais geralmente, a função objetivo são parametrizadas pelos pesos do modelo. Neste espaço,
+há montanhas e vales, assim como a Terra. No entanto, em muitos
+problemas de aprendizado de máquina, haverá muito mais dimensões
+do que no mundo 3D em que vivemos. Como o gradiente é descendente, redução ao longo gradiente, 
+e não ascendente, que no caso é aumento, queremos atravessar
+a hipersuperfície de perda em busca do mínimo global. Em outras palavras, o objetivo
+é encontrar o vale mais profundo, seja qual for
+nosso início na hipersuperfície. Isso é feito ao encontrar
+o gradiente da função de perda e multiplicá-lo pelo hiperparâmetro, ou taxa de aprendizado, e depois
+subtrair esse valor dos pesos atuais. Esse processo é
+iterado até a convergência. Para ter a melhor taxa
+de aprendizado e esperar muitas iterações, você pode escolher usar a equação normal, desde que o número
+de recursos seja pequeno, não haja colinearidade etc., ou um otimizador adicional
+de gradiente descendente, como momentum, ou uso
+de uma taxa de aprendizado ruim. Falaremos muito mais sobre os detalhes do
+gradiente descendente no próximo módulo. Qual é o hiperparâmetro que determina o
+tamanho do passo do gradiente descendente, junto com a hipersuperfície, para acelerar a convergência? A resposta correta é "Taxa de 
+aprendizado". A taxa de aprendizado junto
+com alguns outros hiperparâmetros, que você conhecerá nos próximos módulos, dimensionam o tamanho
+do passo no gradiente descendente. Se muito baixa, o gradiente descendente
+levará muito tempo para convergir. Se muito alta, ele poderá até mesmo divergir e aumentar a perda cada vez mais. As outras três respostas têm a ver com
+colinearidade e condicionamento, que não se aplicam ao gradiente
+descendente, diferente da equação normal.

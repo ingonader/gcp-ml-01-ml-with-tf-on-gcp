@@ -1,0 +1,259 @@
+1
+00:00:00,000 --> 00:00:04,805
+Here, we will show how to monitor training by using TensorBoard.
+
+2
+00:00:04,805 --> 00:00:06,655
+Let's revisit our progress.
+
+3
+00:00:06,655 --> 00:00:08,715
+Two checks, two more to go.
+
+4
+00:00:08,715 --> 00:00:11,180
+We are already using train and evaluate,
+
+5
+00:00:11,180 --> 00:00:15,300
+so we are getting evaluation metrics as training progresses.
+
+6
+00:00:15,300 --> 00:00:19,680
+Let us visualize them using a tool called TensorBoard.
+
+7
+00:00:19,680 --> 00:00:22,800
+This is actually a best practice for any training.
+
+8
+00:00:22,800 --> 00:00:25,830
+There are many useful things you can see when you
+
+9
+00:00:25,830 --> 00:00:29,055
+compare training and evaluation of curves on a graph.
+
+10
+00:00:29,055 --> 00:00:32,880
+I use train and evaluate for that all the time,
+
+11
+00:00:32,880 --> 00:00:35,525
+not just when running distributed training.
+
+12
+00:00:35,525 --> 00:00:38,040
+TensorBoard is a tool that lets you visualize
+
+13
+00:00:38,040 --> 00:00:42,180
+the training and the biometrics that your model writes to disk.
+
+14
+00:00:42,180 --> 00:00:46,385
+TensorBoard comes as standard with your TensorFlow installation.
+
+15
+00:00:46,385 --> 00:00:48,000
+It's a common line tool,
+
+16
+00:00:48,000 --> 00:00:52,450
+pointed to the output directory you have specified in your run config and
+
+17
+00:00:52,450 --> 00:00:58,525
+TensorBoard dashboard appears at local host column 606.
+
+18
+00:00:58,525 --> 00:01:03,300
+Pre-made estimators come with a set of predefined standard metrics,
+
+19
+00:01:03,300 --> 00:01:05,595
+so there is nothing else for you to configure.
+
+20
+00:01:05,595 --> 00:01:10,185
+For example, you will see your training and evaluation loss on the same graph.
+
+21
+00:01:10,185 --> 00:01:13,240
+This is useful to see if your model is overfitting.
+
+22
+00:01:13,240 --> 00:01:15,599
+The dense neural network estimator,
+
+23
+00:01:15,599 --> 00:01:20,115
+also tracks the fraction of neurons that are outputting zeros.
+
+24
+00:01:20,115 --> 00:01:24,220
+This does happen when you use the ReLU activation function,
+
+25
+00:01:24,220 --> 00:01:26,175
+but you should keep an eye on it.
+
+26
+00:01:26,175 --> 00:01:28,710
+If all your neurons are outputting zeros,
+
+27
+00:01:28,710 --> 00:01:30,605
+your neural network is dead.
+
+28
+00:01:30,605 --> 00:01:35,085
+TensorBoard is also where you can see your TensorFlow graph.
+
+29
+00:01:35,085 --> 00:01:37,710
+This might be useful for debugging or if you
+
+30
+00:01:37,710 --> 00:01:41,105
+want to see what graph your code has produced.
+
+31
+00:01:41,105 --> 00:01:44,160
+If you're building a custom estimator,
+
+32
+00:01:44,160 --> 00:01:47,850
+specifying your own neural network layers,
+
+33
+00:01:47,850 --> 00:01:51,420
+you can also use tf dot summary dot something commands
+
+34
+00:01:51,420 --> 00:01:55,785
+to log various types of data and visualize them in TensorBoard.
+
+35
+00:01:55,785 --> 00:01:57,725
+They can be numbers, text,
+
+36
+00:01:57,725 --> 00:01:59,840
+images, or even audio files.
+
+37
+00:01:59,840 --> 00:02:04,605
+With the estimator API one line is really all it takes in a model to write something out.
+
+38
+00:02:04,605 --> 00:02:07,410
+Tf dot summary dot scalar and then the
+
+39
+00:02:07,410 --> 00:02:10,380
+name of the graph on which you want to see this in TensorBoard,
+
+40
+00:02:10,380 --> 00:02:12,750
+and the Tensor with the values to plot.
+
+41
+00:02:12,750 --> 00:02:15,650
+If you're not using the estimator API,
+
+42
+00:02:15,650 --> 00:02:17,820
+there are a couple of additional steps,
+
+43
+00:02:17,820 --> 00:02:20,140
+check them out in the documentation here.
+
+44
+00:02:20,140 --> 00:02:24,015
+For example, this is a histogram plot.
+
+45
+00:02:24,015 --> 00:02:28,640
+I find it useful to visualize bad things that can happen on your own outputs.
+
+46
+00:02:28,640 --> 00:02:29,990
+Here on the left,
+
+47
+00:02:29,990 --> 00:02:33,285
+we have a histogram through time of all the values coming
+
+48
+00:02:33,285 --> 00:02:37,230
+out of a neural network layer activated by a sigmoid.
+
+49
+00:02:37,230 --> 00:02:38,690
+Then we see a problem.
+
+50
+00:02:38,690 --> 00:02:40,130
+There is a peak at zero,
+
+51
+00:02:40,130 --> 00:02:45,720
+another at one and most of our neurons are saturated and probably not very useful.
+
+52
+00:02:45,720 --> 00:02:49,995
+A regularization technique, called batch normalization can fix that.
+
+53
+00:02:49,995 --> 00:02:53,415
+Here is the output of the same layer after batch norm,
+
+54
+00:02:53,415 --> 00:02:58,605
+and now our neurons are producing values across the entire useful range.
+
+55
+00:02:58,605 --> 00:03:01,170
+Whether this produces better results or not,
+
+56
+00:03:01,170 --> 00:03:02,280
+will depend on the model,
+
+57
+00:03:02,280 --> 00:03:06,705
+but at least I see that by batched normalization is working.
+
+58
+00:03:06,705 --> 00:03:09,360
+When working with images or sounds,
+
+59
+00:03:09,360 --> 00:03:14,475
+TensorBoard has specific dashboards where you can see and hear what is going on.
+
+60
+00:03:14,475 --> 00:03:15,900
+You can use the summary
+
+61
+00:03:15,900 --> 00:03:21,270
+dot image and summary dot audio functions in your code to specify that
+
+62
+00:03:21,270 --> 00:03:29,099
+the Tensor you are logging represents an image or an audio file,
+
+63
+00:03:29,099 --> 00:03:33,945
+and they will appear in their dedicated dashboard in TensorBoard.
+
+64
+00:03:33,945 --> 00:03:36,720
+Here is for example, a visualization I was
+
+65
+00:03:36,720 --> 00:03:40,190
+using when developing an airplane detection model.

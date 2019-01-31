@@ -1,0 +1,80 @@
+Une variable est un Tensor
+dont la valeur est initialisée avant de changer pendant
+l'exécution du programme. Examinons attentivement cet exemple. J'ai une fonction
+qui s'appelle forward_pass. Elle prend deux paramètres,
+w et x, et les multiplie. C'est une multiplication de matrices
+puisqu'il s'agit de Tensors, mais w est multiplié par x. Dans ma fonction train_loop,
+je crée le Tensor w, mais ce w n'est pas une constante
+comme les Tensors que nous avons déjà vus. C'est une variable. Elle a un nom, weights. Sa forme est 1,2, ce qui signifie
+qu'elle a une ligne et deux colonnes. C'est une matrice 1, 2. Et lorsque w est initialisé, il n'est pas initialisé ici car,
+comme vous vous en souvenez, TensorFlow est un framework
+d'évaluation paresseuse, de sorte que nous ne faisons
+que créer le graphe. Nous ne l'exécutons pas encore. Lorsque w est initialisé, il l'est par un initialiseur normal tronqué. Il s'agit d'un initialiseur très courant que vous verrez dans les programmes
+de réseau de neurones TensorFlow. Il initialise une variable
+avec des nombres aléatoires, mais ces nombres aléatoires
+ne sont pas uniformément distribués. Au lieu de cela, ils ont une distribution normale gaussienne
+de moyenne nulle et de variance unitaire. Mais la loi normale gaussienne
+a une très longue traîne, et vous pourriez obtenir
+des anomalies extrêmes. C'est très peu probable,
+mais c'est possible. Donc, ce que fait
+une loi normale tronquée, c'est qu'elle tronque les valeurs
+au niveau des multiplications de sigma. Enfin, nous disons
+que la variable w est entraînable. Une variable est dite entraînable lorsqu'elle peut être modifiée
+pendant l'entraînement. Bien sûr, une variable est
+par nature modifiable, de sorte que la plupart
+des variables sont entraînables. Mais de temps en temps (nous évoquerons cette question à propos
+de la réduction de la taille du modèle et de l'apprentissage par transfert), de temps en temps, il peut être utile de geler un graphe
+pour éviter la modification des variables. Cet indicateur booléen
+nous permet de le faire. Remarquez que j'appelle
+tf.get_variable pour créer w. Vous pourriez voir du code TensorFlow créant directement une variable
+en appelant le constructeur tf.variable. Il n'est pas recommandé d'appeler
+directement le constructeur. Utilisez tf.get_variable parce que,
+comme nous le verrons dans le cours 9, il peut être utile de pouvoir
+réutiliser des variables ou de les créer de nouveau
+dans différentes situations, et tf.get_variable nous permet de le faire. Je vous recommande donc de prendre
+l'habitude d'utiliser tf.get_variable. Nous exécutons ensuite
+le forward_pass à cinq reprises, et nous stockons le résultat
+de la multiplication de matrices à chaque itération. Et après avoir calculé le produit,
+nous modifions la pondération. Ici, nous y ajoutons 0.1. C'est comme une mise à jour de gradient, laquelle impliquerait
+bien sûr dans la réalité de sélectionner les pondérations à modifier
+et le mode de modification. Mais comme il ne s'agit ici
+que d'une démonstration, je vais seulement ajouter 0.1
+aux pondérations à chaque fois. Maintenant, à partir de la session,
+nous appelons train_loop en transmettant x. Le x est une matrice 2, 3. Donc, dans le forward_pass, nous multiplions w par ce x,
+et w est une matrice 1, 2. La multiplication d'une matrice 1, 2
+par une matrice 2, 3 nous donne une matrice 1, 3. À ce stade, le graphe a été créé, mais nous devons encore
+initialiser les variables. Mais c'est le stade de l'exécution. Nous initialisons généralement
+toutes les variables du graphe à la fois en exécutant
+l'initialiseur de variables global. Donc, si nous regardons maintenant la valeur
+du produit après chaque étape de la boucle, nous remarquons que la matrice 1, 3 est,
+comme attendu, à chaque fois différente. Résumons ce que vous venez d'apprendre. 1. Créez une variable
+en appelant get_variable. J'ai oublié de parler
+d'une ligne de code tout à l'heure : celle qui concerne le champ d'application. Lorsque vous créez une variable, vous pouvez en spécifier
+le champ d'application. Ici, cela revient à indiquer à TensorFlow
+de réutiliser la variable à chaque fois plutôt que d'en créer une nouvelle. Ici, je n'appelle train_loop
+qu'une seule fois, donc c'est sans importance. Mais si je devais l'appeler à nouveau, les pondérations repartiraient
+du niveau où elles étaient auparavant. Nous ne créerions pas
+une nouvelle variable. Nous réutiliserions celle-ci. 2. La deuxième chose que vous avez apprise,
+c'est que lorsque vous créez une variable, vous devez choisir son mode d'initialisation. Pour l'entraînement
+d'un réseau de neurones, des nombres aléatoires
+avec une loi normale tronquée constituent le choix le plus courant. 3. Utilisez la variable comme
+n'importe quel autre Tensor lorsque vous créez le graphe. 4. Dans votre session,
+pensez à initialiser la variable. En général, vous initialisez
+toutes les variables à la fois en appelant
+l'initialiseur de variables global. 5. Une fois
+que les variables ont été initialisées, vous pouvez évaluer n'importe quel Tensor. Donc, dans cet exemple, nous appelons train_loop avec le x,
+mais le x est une constante. Dans quelle mesure est-ce réaliste ? Est-ce que vous codez les valeurs d'entrée
+en dur dans vos programmes ? Les espaces réservés vous permettent
+de charger des valeurs dans le graphe. Par exemple, vous pouvez lire les valeurs
+d'un fichier texte dans une liste Python, puis charger cette liste
+dans le graphe TensorFlow. Donc, ici, a est un espace réservé
+destiné à contenir un scalaire. b est égal à a multiplié par 4. Si vous affichez a, vous obtiendrez
+la sortie du débogage d'un Tensor. Vous apprendrez que ce Tensor
+est un espace réservé destiné à contenir
+des nombres à virgule flottante. Si vous voulez maintenant évaluer b, vous ne pouvez pas simplement
+utiliser session.run(b). Vous devez charger des valeurs
+pour les espaces réservés dont b dépend. Donc, dans ce cas, vous devez transmettre une liste
+ou un tableau NumPy de nombres pour l'espace réservé a, et vous faites cela en vous servant
+d'un feed_dict (un dictionnaire). Un dictionnaire est
+un ensemble de paires clé/valeur. La clé est un espace réservé. Dans ce cas, il s'agit de a. La valeur est une liste ou un tableau NumPy. Et dans ce cas, c'est 1,2,3. Ce sont les données que nous chargeons. Donc, lors de l'évaluation de b, vous obtenez le résultat
+de la multiplication de a par 4, c'est-à-dire 4, 8, 12.

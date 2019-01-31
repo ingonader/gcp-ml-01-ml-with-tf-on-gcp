@@ -1,0 +1,291 @@
+1
+00:00:00,260 --> 00:00:02,704
+Let's go through this
+second code lab together.
+
+2
+00:00:02,704 --> 00:00:08,665
+So this time, we will see how to use the
+dataset API to create our input functions.
+
+3
+00:00:08,665 --> 00:00:11,223
+Let's locate to the lab files.
+
+4
+00:00:11,223 --> 00:00:16,429
+We go to cloud.goole.com/console,
+
+5
+00:00:16,429 --> 00:00:20,260
+and log with our lab account.
+
+6
+00:00:28,109 --> 00:00:30,090
+Here we are in the console.
+
+7
+00:00:30,090 --> 00:00:32,280
+We can open Cloud Shell.
+
+8
+00:00:33,360 --> 00:00:37,990
+And reconnect to our existing data lab
+
+9
+00:00:37,990 --> 00:00:43,348
+instance by typing datalab connect mylab.
+
+10
+00:00:50,883 --> 00:00:53,883
+The connection is established.
+
+11
+00:00:53,883 --> 00:00:57,710
+Now we go to this button where Preview.
+
+12
+00:00:57,710 --> 00:01:01,498
+Change the port to 8081,
+that is what data lab uses
+
+13
+00:01:04,184 --> 00:01:09,761
+And here we are in our
+usual notebook interface.
+
+14
+00:01:09,761 --> 00:01:15,747
+We will create a new notebook just to
+type in a couple of Git commands and
+
+15
+00:01:15,747 --> 00:01:17,483
+get the codes down.
+
+16
+00:01:17,483 --> 00:01:20,645
+So %bash, and
+
+17
+00:01:20,645 --> 00:01:26,244
+we clone this repository.
+
+18
+00:01:29,862 --> 00:01:35,755
+It's running, and the repository has
+appeared here as training-data-analyst.
+
+19
+00:01:35,755 --> 00:01:38,130
+Let's locate our lab files.
+
+20
+00:01:38,130 --> 00:01:44,228
+So we click on training-data-analyst,
+then courses.
+
+21
+00:01:44,228 --> 00:01:47,986
+Then machine_learning.
+
+22
+00:01:47,986 --> 00:01:54,050
+Then deepdive, and finally tensorflow.
+
+23
+00:01:55,443 --> 00:02:00,578
+The second lab is called c_dataset,
+let's open that.
+
+24
+00:02:07,300 --> 00:02:12,153
+The dataset API can be used to create
+the input functions for your estimator.
+
+25
+00:02:12,153 --> 00:02:17,409
+It handles progressive loading, so please
+use it anytime you have a large data set.
+
+26
+00:02:19,665 --> 00:02:22,515
+Let us start looking at the code here.
+
+27
+00:02:24,839 --> 00:02:29,944
+Our data set on disk is
+a set of sharded CSV files.
+
+28
+00:02:29,944 --> 00:02:35,025
+We use the Dataset.list_files
+function to scan the disk and
+
+29
+00:02:35,025 --> 00:02:37,668
+obtain a data set of file names.
+
+30
+00:02:37,668 --> 00:02:42,625
+The TextLineDataset function can
+then be used to read each file and
+
+31
+00:02:42,625 --> 00:02:45,467
+transform it into a set of text lines.
+
+32
+00:02:45,467 --> 00:02:48,025
+This is a one to many transformation.
+
+33
+00:02:48,025 --> 00:02:51,156
+One file name becomes
+multiple lines of text.
+
+34
+00:02:51,156 --> 00:02:54,070
+So we apply it with the flat map function.
+
+35
+00:02:54,070 --> 00:02:58,269
+We now have a single data set
+of text lines obtained from
+
+36
+00:02:58,269 --> 00:03:00,836
+the contents of all of our files.
+
+37
+00:03:00,836 --> 00:03:03,006
+This is only a conceptual representation.
+
+38
+00:03:03,006 --> 00:03:05,993
+The files have not all
+been loaded into memory.
+
+39
+00:03:05,993 --> 00:03:07,630
+They would not fit.
+
+40
+00:03:07,630 --> 00:03:12,470
+Finally, we use the map
+function to apply a one to one
+
+41
+00:03:12,470 --> 00:03:15,776
+transformation to the text lines.
+
+42
+00:03:15,776 --> 00:03:19,808
+Each line is parsed as a set of CSV comma
+
+43
+00:03:19,808 --> 00:03:24,597
+separated values and
+become a feature list.
+
+44
+00:03:24,597 --> 00:03:27,812
+The decoding itself happens here.
+
+45
+00:03:27,812 --> 00:03:33,192
+We now have the dataset of features and
+labels that we wanted right here.
+
+46
+00:03:36,039 --> 00:03:41,697
+We shuffle it with a given
+shuffle buffer size.
+
+47
+00:03:41,697 --> 00:03:46,754
+We repeat it for
+a given number of epochs and
+
+48
+00:03:46,754 --> 00:03:51,401
+split it in mini batches of batch size.
+
+49
+00:03:51,401 --> 00:03:55,750
+Finally, we call this
+get_next function which
+
+50
+00:03:55,750 --> 00:04:00,638
+returns the features and
+labels as a TensorFlow note.
+
+51
+00:04:00,638 --> 00:04:02,593
+This is what our model expects.
+
+52
+00:04:02,593 --> 00:04:06,693
+Every time the model will run
+these notes during training,
+
+53
+00:04:06,693 --> 00:04:10,629
+they will deliver the next
+batch of features and labels,
+
+54
+00:04:10,629 --> 00:04:15,303
+triggering file load operations
+progressively only when needed.
+
+55
+00:04:15,303 --> 00:04:20,679
+Here, we define
+the training validation and
+
+56
+00:04:20,679 --> 00:04:29,170
+test dataset input functions by
+loading the corresponding CSV files.
+
+57
+00:04:29,170 --> 00:04:33,036
+taxi-train.csv, taxi-valid.csv and
+
+58
+00:04:33,036 --> 00:04:39,652
+taxi-text.csv Let's run those cells.
+
+59
+00:04:46,032 --> 00:04:51,786
+We leave our feature columns as they
+are for now, and we are ready to train.
+
+60
+00:04:56,892 --> 00:04:59,074
+The training is running.
+
+61
+00:04:59,074 --> 00:05:03,891
+For that we called as before
+the model.train function on our input
+
+62
+00:05:03,891 --> 00:05:06,910
+function getting the training dataset.
+
+63
+00:05:10,367 --> 00:05:12,703
+We have a trained model.
+
+64
+00:05:12,703 --> 00:05:19,305
+And now finally we evaluate it,
+and get our validation metrics.
+
+65
+00:05:22,448 --> 00:05:27,170
+Here they are, and
+that is it for this code lab.

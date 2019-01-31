@@ -1,0 +1,56 @@
+Hagamos el tercer codelab juntos. Este es sobre train_and_evaluate. Primero, como siempre,
+localicemos los archivos del lab. Vamos a cloud.google.com/console y accedemos con la cuenta del lab. Luego, puede abrir
+Cloud Shell con este botón y volver a conectarse
+a su instancia de Datalab mediante datalab connect
+seguido del nombre de la instancia En mi caso, es mylab. Se está conectando. Una vez conectado,
+use el botón "Web preview". Hay que cambiar el puerto a 8081,
+porque ese es el que usa Datalab. Y ahora estamos
+en la interfaz de notebook habitual. Creemos un nuevo notebook
+para escribir algunos comandos Bash a fin de recuperar nuestro código. Hacemos un git clone de este repositorio. Cuando esté listo, el repositorio
+aparece aquí como "training-data-analyst". Los archivos para este tercer codelab están en "training-data-analyst",
+"courses", "machine_learning" "deepdive" y, finalmente, "03_tensorflow". Este codelab es
+"d_traineval.ipynb". Abrámoslo. Aquí, le pondremos
+los toques finales a nuestro modelo. Veamos. No hay nada que cambiar
+en la parte de carga de los datos. Ya lo hicimos.
+Usamos conjuntos de datos para cargar datos CSV de un conjunto
+de archivos CSV fragmentados. No cambiaremos los atributoss aún. Están bien por el momento. Esto es nuevo.
+La función serving_input. La necesitamos a fin de preparar
+el modelo para la implementación. Cuando el modelo entregue
+predicciones desde una API de REST recibirá datos como un feed JSON. Por suerte, la API no nos obliga a usar un feed JSON exactamente igual
+a nuestros datos de entrenamiento CSV. Tenemos la función serving_input,
+que hace las adaptaciones necesarias. En ella, se define
+el formato esperado del feed JSON con los nombres esperados,
+y el formato y los tipos de valores especificados
+como marcadores de posición de TensorFlow. Estos marcadores de posición
+recibirán los valores del feed JSON. En este caso, supongamos
+que no se necesitan más transofrmaciones por lo que decimos
+que nuestros atributos son idénticos a los marcadores de posición
+de atributos que acabamos de definir. Nuestro modelo puede entender
+este diccionario de atributos como está. Estamos casi listos
+para llamar, entrenar y evaluar. Solo necesitamos un poco de configuración. Elegimos un modelo: LinearRegressor. Definimos TrainSpec. Aquí es donde la función
+de entrada de entrenamiento se inyecta. También, definimos un exportador aquí es LatestExporter,
+que significa que queremos exportar el modelo listo
+para la implementación al final del entrenamiento. El exportador necesita conocer
+la función serving_input que acabamos de definir. Luego, definimos EvalSpec. Aquí es donde se incluye la función
+de entrada de los datos de evaluación y ya que tanto las evaluaciones
+como las exportaciones ocurren solo después de un control es conveniente
+pasar el exportador también. Ahora, la configuración está lista. Iniciemos TensorBoard. TensorBoard se inició,
+hacemos clic aquí para abrirlo y vemos un panel vacío por ahora. Todavía no comenzamos el entrenamiento. Hagamos eso. Ejecutemos la función
+train_and_evaluate. Las métricas generadas
+durante el entrenamiento se escriben
+en el directorio de salida usual y TensorBoard
+debe saber dónde encontrarlas. Es lo que especificamos
+cuando lo iniciamos. Ahora que comenzamos el entrenamiento,
+vemos nuestros registros de entrenamiento y deberíamos ver, en el sitio
+de TensorBoard, nuestras curvas. Y aquí están. Aquí está nuestra pérdida promedio. Después de un momento, comenzamos
+a ver la pérdida promedio calculada para nuestro conjunto de entrenamiento y también
+para nuestro conjunto de evaluación. Eso es porque estamos entrenando
+y evaluando al mismo tiempo. Este modelo sigue entrenando. Esperemos a que termine. A medida que el entrenamiento avanza TensorBoard puede
+actualizarse automáticamente si usa esta configuración de aquí,
+"Reload data every 30 seconds". O puede presionar
+el botón de actualización para ver las curvas de entrenamiento
+a medida que cambian durante el proceso. El modelo ya está entrenado. Si actualizo una última vez veré las curvas de entrenamiento finales. Eso es todo. Hay mucho que analizar
+en estas curvas de entrenamiento. Aprenderá sobre eso más adelante. Por el momento,
+solo vemos que nuestro modelo no está entrenando muy bien. La pérdida de validación no mejora. Pero ya sabíamos eso. Ahora que el código funciona,
+los datos se cargan y podemos ver lo que pasa en TensorBoard estamos listos
+para practicar ciencia de datos.

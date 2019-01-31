@@ -1,0 +1,32 @@
+Vamos usar alguns minutos para discutir
+como o monitoramento dos jobs funciona. Depois de enviar um job para ser executado
+no Cloud Machine Learning Engine, há várias maneiras de acompanhá-lo. A mais simples é ver o estado atual. Isso dirá se ele está pendente, em execução
+ou se já está pronto. Quando estiver em execução, você pode ver as entradas
+de registro recentes dele, o que também pode ser feito
+com o GCloud. Por fim, quando você envia muitos
+jobs para execução em paralelo, pode testar a capacidade
+do GCloud de listá-los e filtrá-los. O console da Web do GCP
+tem uma ótima IU para monitorar os jobs. Você pode ver como
+eles foram invocados, verificar os registros e ver o quanto
+de CPU e memória eles estão consumindo. A inspeção de entradas de registro talvez
+ajude a depurar problemas, como exceção, mas não é a ferramenta certa para
+investigar o desempenho do ML. O TensorBoard, no entanto, é ótimo.
+Para usá-lo, confira se o job salva dados resumidos
+no local do Google Cloud Storage e, quando você iniciar o TensorBoard, forneça esse diretório. Você pode até lidar com
+vários jobs por pasta. Agora que temos um modelo, vamos ver o que podemos fazer com ele. Assim que nosso job de 
+treinamento for concluído, teremos um modelo do TensorFlow
+pronto para atender as previsões. O Cloud ML Engine fornece
+uma ótima infraestrutura para isso. O CMLE criará um app da Web pronto para
+produção a partir do modelo de treino, e oferecerá um serviço em lote para
+suas previsões menos sensíveis à latência. Como as duas são APIs REST, é possível fazer inferências
+seguras e escalonáveis de qualquer linguagem que você
+queira escrever para o cliente. Portanto, para enviar o artefato do
+modelo TF à nuvem para suprimento, precisamos criar um recurso
+de inversão de modelo CMLE. O arquivo de modelo individual TF treinado
+corresponderá a uma versão específica. No CMLE, um modelo é, na verdade,
+um grupo dessas versões, que também tem uma versão padrão. Essa camada extra de abstração
+e agrupamento nos permite migrar o tráfego de uma versão
+do modelo TF para a próxima. Só é preciso mudar
+a versão padrão dos modelos. Este é um exemplo de como usar o modelo implantado remotamente
+para previsões com a chamada REST. A previsão on-line do CMLE é um sistema sem servidor para você não
+se preocupar com alocações de recursos. Ele simplesmente escalonará para você.

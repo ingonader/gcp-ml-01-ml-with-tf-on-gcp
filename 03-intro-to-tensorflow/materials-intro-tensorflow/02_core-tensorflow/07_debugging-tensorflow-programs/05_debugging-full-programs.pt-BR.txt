@@ -1,0 +1,53 @@
+Nas lições anteriores, falamos sobre como
+depurar um programa do TensorFlow observando a mensagem de erro,
+isolando o método em questão, alimentando com dados falsos e corrigindo
+o erro depois de entender o que aconteceu. Às vezes, porém,
+os problemas são mais sutis. Eles só ocorrem
+em situações específicas. E talvez você não consiga identificar
+por que tudo está funcionando em cinco, seis, sete lotes
+e, de repente, recebe um erro e, em seguida, tudo volta ao normal. Em outras palavras, quando os erros
+estão associados a algum valor de entrada específico
+ou a uma condição do sistema de execução. Nesse ponto, você precisa depurar
+o programa completo, e há três métodos para fazer isso. tf.Print() é uma maneira de imprimir
+os valores dos tensores quando condições específicas
+são atendidas. tfdbg é um depurador interativo que pode
+ser executado em um terminal e anexado a uma sessão local ou
+remota do TensorFlow. O TensorBoard é uma ferramenta
+de monitoramento visual. Conversamos sobre isso como
+uma maneira de ver o DAG, mas há mais soluções de problemas
+possíveis com o TensorBoard. Você pode analisar as métricas
+de avaliação, buscar por sobreajustes, camadas inativas etc. Depuração de redes neurais
+de nível mais alto, em outras palavras. Analisaremos o TensorBoard em um
+capítulo mais adiante neste curso, mas por enquanto eu só queria deixar
+um lembrete para você ter em mente que o TensorBoard é uma poderosa
+ferramenta de solução de problemas. Algo bobo, mas que vale a pena mencionar,
+é que o nível padrão em termos de geração de registro
+para programas do TensorFlow é WARN. Então ele executa
+sem muitos detalhes. Altere o nível de registro para INFO
+para ver mais mensagens de registro, conforme o TensorFlow treina. Você pode alterar isso usando tf.logging e configurando o nível de detalhamento. Os níveis são debug, info, warn,
+error e fatal, nessa ordem. Debug é o mais detalhado,
+e fatal é o menos. INFO é o que costumo usar no
+desenvolvimento, e WARN na produção. Você pode configurar um parâmetro de linha
+de comando para alternar de um ao outro. tf.Print() pode ser usado para registrar
+valores específicos de tensores. Talvez você divida
+a por b e receba NAN, não um número NAN, na saída, e queira descobrir os valores de a e b
+que estão causando o problema. Se você imprimir a, só terá a saída
+de depuração do tensor, e não o valor. Execução lenta, você lembra? É preciso avaliar um tensor
+para ter o valor. Você não quer imprimir
+o valor de a toda vez. A ideia aqui é que print_ab é um
+tensor, ele envolve s e imprime a e b. Em seguida, substituo s no gráfico por
+print_ab, só para os lotes em que s é NAN. Logo, apenas isso é impresso. Isso deve ser feito em
+um programa independente, porque o Datalab consome
+as mensagens de registro do TensorFlow. Daí vem a solução alternativa de gravar
+o código em um arquivo e executá-lo. Você tende a usar o tf.Print() nos
+programas do TensorFlow em execução para diagnosticar erros raros e garantir
+a captura de elementos nos registros. É um truque legal. O TensorFlow também tem um depurador
+interativo dinâmico chamado tf_debug. Você o executa pela linha de comando. Então executamos o programa do TensorFlow
+em um terminal como um programa autônomo, e, quando o executamos, adicionamos
+a sinalização de linha de comando --debug. Isso também é útil para depurar programas
+do TensorFlow executados remotamente. Em outras palavras,
+você pode anexar ao programa. Há também ganchos de depuração
+especiais para depurar experimentos e programas do Estimator. E quando um programa é iniciado, use
+um depurador para percorrer o código, definir pontos de interrupção etc. Se você já usou um depurador interativo
+para outra linguagem ou ambiente, a terminologia, as etapas,
+os pontos de interrupção etc. serão todos bastante familiares.

@@ -1,0 +1,56 @@
+Gehen wir gemeinsam
+das dritte Code-Lab durch. Es geht um "train_und_evaluate". Als Erstes suchen wir
+wieder die Lab-Dateien. Wir rufen clouds.google.com/console auf und melden uns mit dem Lab-Konto an. Wenn Sie drin sind, können Sie mit diesem
+kleinen Button die Cloud-Shell öffnen und sich wieder mit
+Ihrer Data-Lab-Instanz verbinden, indem Sie "datalab connect" und
+den Namen Ihrer Instanz eingeben, in meinem Fall "mylab". Die Verbindung
+wird hergestellt. Wenn sie steht, verwenden Sie den
+Preview-Button. Wir müssen den Port
+zu 8081 ändern, da Datalab diesen verwendet, und wir sind
+in der vertrauten Notebook-Umgebung. Wir erstellen ein neues Notebook,
+um einige Bash-Befehle einzugeben und um unseren Code abzurufen. Wir kopieren dieses Repository mit
+"git clone" und sobald das erledigt ist, befindet sich das Repository hier
+unter "training-data-analyst". Die Dateien für dieses
+dritte Code-Lab finden Sie unter "training-data-analyst", "courses",
+"machine_learning", "deepdive" und schließlich "tensorflow". Dieses Code-Lab heißt "d_traineval". Öffnen wir es. Hier geben wir unserem
+Modell den letzten Schliff. Gehen wir es durch. Beim Laden von Daten
+muss nichts geändert werden. Das wurde bereits abgeschlossen. Wir verwenden Datasets, um CSV-Daten
+aus mehreren CSV-Teildateien zu laden. Wir ändern auch nicht unsere Features. Fürs Erste bleiben sie so. Das hier ist neu.
+Die Funktion "serving_input_fn". Mit ihr wird das
+Modell einsatzbereit gemacht. Wenn das Modell über eine
+REST API Vorhersagen bereitstellt, erhält es Daten als JSON-Feed. Glücklicherweise zwingt uns die API nicht, einen JSON-Feed zu verwenden, der
+genau wie die CSV-Trainingsdaten aussieht. Mit der Funktion "serving_input_fn" nehmen
+wir die notwendigen Anpassungen vor. Hier definieren Sie jedoch
+die erwartete Form Ihres JSON-Feeds mit den zu erwartenden
+Namen, der Form und dem Typ der Werte, die als
+TensorFlow-Platzhalter angegeben sind. Diese Platzhalter erhalten die
+vom JSON-Feed gelesenen Werte. In diesem Fall sagen wir, dass wir keine
+zusätzlichen Transformationen benötigen, dass also die Features
+genau dieselben sind, wie die gerade
+definierten Feature-Platzhalter. Das Modell kann dieses Feature-Verzeichnis
+so verstehen, wie es ist. Gleich können wir
+"train_and_evaluate" aufrufen. Es muss nur noch
+ein wenig konfiguriert werden. Wir wählen ein Modell,
+in diesem Fall einen linearen Regressor. Wir definieren ein TrainSpec. An dieser Stelle wird die
+Funktion "train.input_fn" eingebunden. Wir definieren auch einen Exporter, hier den LatestExporter.
+Das bedeutet, dass wir das Modell am Ende des Trainings zur
+Bereitstellung exportieren wollen. Der Exporter muss die
+Funktion "serving_input_fn" kennen, die wir gerade hier definiert haben. Dann definieren wir die EvalSpec. An dieser Stelle kommt die
+Funktion "eval_data_input_fn" ins Spiel und da sowohl Validierungen als auch
+Exporte nur nach Checkpoints erfolgen, ist es sinnvoll, auch hier
+unseren Exporter einzubinden. Jetzt ist alles bereit und konfiguriert. Starten wir jetzt TensorBoard. TensorBoard wurde gestartet.
+Wir können hier klicken, um es zu öffnen, und sehen ein zunächst leeres Dashboard. Wir haben noch nicht
+mit dem Training begonnen. Tun wir das jetzt. Starten wir die
+Funktion "train_and_evaluate". Die im Training erzeugten Matrizen werden
+im üblichen Ausgabeverzeichnis abgelegt, und TensorBoard
+muss wissen, wo sie zu finden sind. Das haben gleich zu Beginn hier angegeben. Da wir mit dem Training begonnen haben, sehen wir hier unsere Training-Logs.
+Wir sollten auf der Tensorboard-Seite hier auch die Kurven sehen – und da sind sie. Hier ist unser durchschnittlicher Verlust. Nach kurzer Zeit sehen wir den
+durchschnittlichen Verlust, der gleichzeitig mit dem Trainingsdataset und dem Evaluierungsdataset berechnet wurde. Das liegt daran, dass wir
+gleichzeitig trainieren und validieren. Dieses Modell trainiert also noch. Warten wir, bis es fertig ist. Während des Trainings kann TensorBoard automatisch aktualisiert werden, das finden Sie
+unter dieser Einstellung hier: "Daten alle 30 Sekunden neu laden". Sie können auch den Button
+"Refresh" anklicken, um die Daten zu aktualisieren und die Trainingskurven
+während des Trainings anzuzeigen. Das Modell ist jetzt fertig trainiert. Wenn ich das letzte Mal hier aktualisiere, sehe ich die endgültigen Trainingskurven. Das war's. Was alles in diesen Trainingskurven
+steckt, erfahren Sie später. Im Moment sehen wir nur, dass
+unser Modell nicht sehr gut trainiert ist. Der Validierungsverlust
+hat sich nicht verbessert. Aber das wussten wir schon. Jetzt, wo der Code funktioniert,
+Daten geladen werden, und wir in TensorBoard sehen, was abläuft, können wir Data Science anwenden.

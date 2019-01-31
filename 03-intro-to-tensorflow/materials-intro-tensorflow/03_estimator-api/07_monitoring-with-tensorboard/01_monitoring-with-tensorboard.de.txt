@@ -1,0 +1,45 @@
+Hier erfahren Sie, wie Sie das Training
+mit TensorBoard überwachen können. Das haben wir bisher gelernt: Zwei Prüfungen
+kennen wir, zwei fehlen noch. Wir nutzen schon "train_and_evaluate", sodass wir im Verlauf des Trainings
+Validierungsmesswerte erhalten. Visualisieren wir sie
+jetzt mit dem Tool TensorBoard. Das ist bei jedem Training sinnvoll. Sie finden viele nützliche Informationen, wenn Sie das Training und die Validierung
+der Kurven in einem Graphen vergleichen. Ich nutze "train_and_evaluate" immer, nicht nur beim verteilten Training. TensorBoard ist ein Tool, mit dem Sie
+die Training- und Validierungsmesswerte, die Ihr Modell auf die
+Festplatte schreibt, visualisieren können. TensorBoard ist standardmäßig in
+jeder TensorFlow-Installation enthalten. Es ist ein Befehlszeilentool, und verweist auf das Ausgabeverzeichnis
+Ihrer Ausführungskonfiguration. Das TensorBoard-Dashboard wird
+in der Local-Host-Spalte 606 angezeigt. Vorgefertigte Estimators enthalten
+vordefinierte Standardmesswerte, sodass Sie nichts weiter
+konfigurieren müssen. Zum Beispiel sehen Sie den Trainings-
+und Validierungsverlust im selben Graphen. Das hilft dabei, eine
+Überanpassung des Modells zu erkennen. Der Estimator des
+dichten neuronalen Netzwerks zeichnet auch den Anteil von
+Neuronen auf, die Nullen ausgeben. Das passiert, wenn Sie die
+ReLU-Aktivierungsfunktion verwenden, aber Sie sollten sie im Auge behalten. Wenn alle Neuronen Nullen ausgeben, ist das neuronale Netzwerk tot. In TensorBoard können Sie
+den TensorFlow-Graphen sehen. Das kann in der Fehlersuche nützlich sein oder wenn Sie sehen möchten,
+welchen Graphen Ihr Code erzeugt hat. Wenn Sie einen
+benutzerdefinierten Estimator erstellen, indem Sie Ihre eigenen
+neuronalen Netzwerkschichten angeben, können Sie auch Befehle vom Typ
+"tf.summary.irgendwas" verwenden, um Datentypen zu protokollieren
+und in TensorBoard zu visualisieren. Das können Zahlen, Text, Bilder oder sogar Audiodateien sein. Mit der Estimator API braucht ein Modell
+nur eine Zeile, um etwas zu schreiben. "tf.summary.scalar"
+und den Namen des Graphen, auf dem Sie
+das in TensorBoard sehen möchten, und den Tensor mit
+den zu plottenden Werten. Wenn Sie nicht die
+Estimator API verwenden, gibt es einige zusätzliche Schritte, die Sie in der Dokumentation
+hier nachlesen können. Zum Beispiel ist dies ein Histogramm-Plot. Ich visualisiere gerne negative Dinge,
+die mit Neuronenausgaben passieren können. Hier auf der linken Seite haben wir ein Histogramm aller Werte
+aus einer Schicht des neuronalen Netzes, die von einem Sigmoid aktiviert wird. Dann sehen wir ein Problem. Es gibt ein Maximum bei null,
+ein weiteres bei eins, und die meisten Neuronen sind gesättigt
+und wahrscheinlich nicht sehr nützlich. Eine Regularisierungstechnik, 
+die Batch-Normalisierung, behebt das. Hier ist die Ausgabe
+derselben Schicht nach "batch norm", jetzt produzieren die Neuronen Werte
+aus dem gesamten nützlichen Bereich. Ob dies zu besseren Ergebnissen führt, hängt vom Modell ab, aber zumindest sehe ich, dass
+die Batch-Normalisierung funktioniert. Wenn Sie mit Bildern oder Ton arbeiten,
+bietet TensorBoard spezielle Dashboards, auf denen Sie sehen
+und hören können, was gerade passiert. Sie können die Funktionen "summary.image" und "summary.audio"
+in Ihrem Code verwenden, um anzugeben, dass der von Ihnen protokollierte Tensor
+ein Bild oder eine Audiodatei darstellt, dann wird er in TensorBoard auf dem
+zugehörigen Dashboard angezeigt. Hier ist zum Beispiel eine Visualisierung,
+die ich bei der Entwicklung eines Modells zur
+Flugzeugerkennung verwendet habe.

@@ -1,0 +1,229 @@
+1
+00:00:00,000 --> 00:00:02,475
+Avant d'examiner l'une
+des premières méthodes
+
+2
+00:00:02,475 --> 00:00:04,995
+utilisées par les chercheurs
+pour traiter ce problème,
+
+3
+00:00:04,995 --> 00:00:08,020
+faisons le point sur ce que
+nous avons appris ensemble.
+
+4
+00:00:08,020 --> 00:00:10,600
+Mettons-nous à la place de notre modèle,
+
+5
+00:00:10,600 --> 00:00:14,682
+et voyons comment la perte peut évoluer
+au fil du temps pendant l'entraînement.
+
+6
+00:00:14,682 --> 00:00:17,697
+Imaginez que nous procédons
+à une descente de gradient
+
+7
+00:00:17,697 --> 00:00:20,565
+et que nous mettons à jour
+les paramètres de notre modèle
+
+8
+00:00:20,565 --> 00:00:22,855
+par rapport à la dérivée
+de la fonction de perte,
+
+9
+00:00:22,855 --> 00:00:25,145
+ceci après avoir tout configuré
+de manière à voir
+
+10
+00:00:25,145 --> 00:00:27,655
+comment la perte évolue au fil du temps.
+
+11
+00:00:27,655 --> 00:00:30,080
+Il s'agit d'un scénario courant
+en machine learning,
+
+12
+00:00:30,080 --> 00:00:32,745
+surtout lorsque l'entraînement
+de modèle dure des heures,
+
+13
+00:00:32,745 --> 00:00:34,580
+et parfois même des jours.
+
+14
+00:00:34,580 --> 00:00:38,815
+Vous pouvez imaginer à quel point il est
+important de ne pas gaspiller du temps.
+
+15
+00:00:38,815 --> 00:00:43,635
+Gardons cela à l'esprit pour résoudre
+les problèmes d'une courbe de perte.
+
+16
+00:00:43,635 --> 00:00:46,055
+En voici une de forme classique.
+
+17
+00:00:46,055 --> 00:00:49,380
+La perte baisse rapidement
+avec nos grands pas le long du gradient,
+
+18
+00:00:49,380 --> 00:00:52,460
+puis la courbe s'aplanit au fil du temps
+avec des pas plus petits
+
+19
+00:00:52,460 --> 00:00:57,490
+lorsqu'elle atteint une valeur minimale
+sur la surface de perte.
+
+20
+00:00:57,490 --> 00:01:01,265
+Si vous voyez une courbe de perte
+de ce type, qu'en déduisez-vous ?
+
+21
+00:01:01,265 --> 00:01:05,035
+Supposons pour le moment que l'échelle
+de l'axe des pertes est grande.
+
+22
+00:01:05,035 --> 00:01:06,950
+Qu'en déduisez-vous sur le modèle
+
+23
+00:01:06,950 --> 00:01:11,380
+et sur la façon dont la recherche se déroule
+sur la surface de perte ?
+
+24
+00:01:11,380 --> 00:01:14,640
+Cela signifie que notre recherche bondit
+dans toutes les directions,
+
+25
+00:01:14,640 --> 00:01:19,480
+et ne progresse pas de façon constante
+vers un minimum donné.
+
+26
+00:01:20,585 --> 00:01:23,010
+Et que diriez-vous de cette courbe ?
+
+27
+00:01:23,010 --> 00:01:26,530
+Celle-ci signifie que nous sommes
+probablement toujours dans le même creux,
+
+28
+00:01:26,530 --> 00:01:30,320
+mais qu'il nous faudra énormément
+de temps pour atteindre le minimum.
+
+29
+00:01:31,680 --> 00:01:33,200
+Dans ces deux cas toutefois,
+
+30
+00:01:33,200 --> 00:01:36,470
+le pas d'apprentissage ne convient pas
+au problème à traiter.
+
+31
+00:01:36,470 --> 00:01:41,415
+Il est trop grand dans le premier cas,
+et trop petit dans le second.
+
+32
+00:01:42,085 --> 00:01:44,765
+Nous avons donc besoin
+d'un paramètre de scaling.
+
+33
+00:01:44,765 --> 00:01:47,895
+Dans la littérature, le terme utilisé
+est "taux d'apprentissage".
+
+34
+00:01:47,895 --> 00:01:49,900
+Avec ce paramètre dans notre code,
+
+35
+00:01:49,900 --> 00:01:52,580
+nous avons maintenant
+une descente de gradient classique.
+
+36
+00:01:52,580 --> 00:01:57,045
+J'ai donc modifié la ligne de la boucle For
+de mise à jour des paramètres.
+
+37
+00:01:57,045 --> 00:01:59,497
+On peut envisager
+d'avoir recours à la force brute
+
+38
+00:01:59,497 --> 00:02:02,320
+pour déterminer la meilleure valeur
+du taux d'apprentissage.
+
+39
+00:02:02,320 --> 00:02:06,690
+Mais rappelez-vous que la meilleure valeur
+de ce taux est souvent propre au problème.
+
+40
+00:02:06,690 --> 00:02:09,365
+Comme il est fixé avant que
+l'apprentissage ne commence,
+
+41
+00:02:09,365 --> 00:02:11,425
+ce taux est un hyperparamètre.
+
+42
+00:02:11,425 --> 00:02:14,080
+Pour déterminer la meilleure valeur
+des hyperparamètres,
+
+43
+00:02:14,080 --> 00:02:18,560
+il existe une méthode plus appropriée
+appelée "réglage d'hyperparamètres".
+
+44
+00:02:18,560 --> 00:02:22,440
+Nous verrons dans un prochain module
+comment l'utiliser dans Cloud ML Engine.
+
+45
+00:02:22,440 --> 00:02:25,457
+Toutefois, le taux d'apprentissage est
+généralement une fraction
+
+46
+00:02:25,457 --> 00:02:27,285
+d'une valeur nettement inférieure à 1.
+
+47
+00:02:27,285 --> 00:02:31,075
+Retenez simplement cette formulation
+de la descente de gradient,
+
+48
+00:02:31,075 --> 00:02:34,162
+et le fait que le taux d'apprentissage
+est un hyperparamètre.

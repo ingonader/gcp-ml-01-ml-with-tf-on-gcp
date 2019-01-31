@@ -1,0 +1,315 @@
+1
+00:00:00,480 --> 00:00:04,610
+Entrenamos modelos en nuestros
+navegadores con el descenso de gradientes.
+
+2
+00:00:04,610 --> 00:00:06,145
+Y los modelos que creamos
+
+3
+00:00:06,145 --> 00:00:08,920
+pudieron aprender
+relaciones no lineales complejas
+
+4
+00:00:08,920 --> 00:00:11,495
+mediante una jerarquía
+adquirida de atributos.
+
+5
+00:00:11,495 --> 00:00:13,930
+Sin embargo, al final
+de la sección descubrimos
+
+6
+00:00:13,930 --> 00:00:16,145
+que nuestro enfoque
+actual tenía problemas.
+
+7
+00:00:16,145 --> 00:00:19,530
+Las consecuencias incluyen
+tiempos de entrenamiento extensos
+
+8
+00:00:19,530 --> 00:00:22,370
+mínimos subóptimos
+y mínimos inapropiados.
+
+9
+00:00:22,710 --> 00:00:26,710
+En esta sección, revisaremos
+qué es exactamente un mínimo inapropiado
+
+10
+00:00:26,710 --> 00:00:30,715
+por qué existe y cómo las métricas
+de rendimiento ayudan con los resultados.
+
+11
+00:00:31,795 --> 00:00:33,855
+Entonces, ¿qué es un mínimo inapropiado?
+
+12
+00:00:33,855 --> 00:00:37,910
+Piensen en puntos en el espacio
+de parámetros que reflejan estrategias
+
+13
+00:00:37,910 --> 00:00:39,940
+que no se generalizan bien
+
+14
+00:00:39,940 --> 00:00:43,305
+que no reflejan la relación
+real que se modela o ambos.
+
+15
+00:00:43,305 --> 00:00:46,470
+Por ejemplo, supongamos
+que entrenamos un modelo para predecir
+
+16
+00:00:46,470 --> 00:00:49,770
+si hay un espacio libre a partir
+de la imagen de un estacionamiento.
+
+17
+00:00:50,570 --> 00:00:55,275
+Una estrategia inapropiada sería predecir
+que todos los espacios están ocupados.
+
+18
+00:00:56,535 --> 00:01:00,355
+En un conjunto compuesto por una cantidad
+igual de ejemplos positivos y negativos
+
+19
+00:01:00,355 --> 00:01:03,775
+ese tipo de estrategia no podría
+superar el proceso de optimización.
+
+20
+00:01:03,775 --> 00:01:09,045
+Pero cuando los conjuntos de datos
+están sesgados y tienen más de una clase
+
+21
+00:01:09,045 --> 00:01:13,005
+este tipo de estrategia
+se vuelve mucho más atractiva.
+
+22
+00:01:14,305 --> 00:01:16,760
+Esa estrategia no hace
+el esfuerzo por comprender
+
+23
+00:01:16,760 --> 00:01:19,190
+la relación real
+entre los atributos y la etiqueta
+
+24
+00:01:19,190 --> 00:01:21,390
+que podría tener algo que ver
+
+25
+00:01:21,390 --> 00:01:24,055
+con las características
+visuales de un espacio vacío.
+
+26
+00:01:24,425 --> 00:01:26,430
+Por lo tanto, no generalizará bien
+
+27
+00:01:26,430 --> 00:01:29,900
+en nuevos estacionamientos donde
+la relación subyacente será la misma
+
+28
+00:01:29,900 --> 00:01:32,695
+pero la proporción
+de espacios vacíos tal vez no lo sea.
+
+29
+00:01:33,485 --> 00:01:36,440
+Es tentador pensar
+en la existencia de mínimos inapropiados
+
+30
+00:01:36,440 --> 00:01:38,900
+como un problema
+con nuestra función de pérdida.
+
+31
+00:01:38,900 --> 00:01:41,395
+Si tan solo tuviéramos
+la función de pérdida perfecta
+
+32
+00:01:41,395 --> 00:01:44,685
+una que recompense a las buenas
+estrategias y que penalice a las malas
+
+33
+00:01:44,685 --> 00:01:46,285
+la vida sería magnífica.
+
+34
+00:01:46,895 --> 00:01:49,240
+Desafortunadamente, no es posible.
+
+35
+00:01:49,560 --> 00:01:52,400
+Siempre habrá una brecha
+entre las métricas que nos importan
+
+36
+00:01:52,400 --> 00:01:55,415
+y las métricas que funcionan
+bien con el descenso de gradientes.
+
+37
+00:01:56,605 --> 00:02:00,885
+Por ejemplo, supongamos que seguimos
+clasificando estacionamientos.
+
+38
+00:02:00,885 --> 00:02:05,110
+Una función de pérdida ideal
+minimizaría las predicciones incorrectas.
+
+39
+00:02:05,430 --> 00:02:08,525
+Sin embargo, sería una función por partes.
+
+40
+00:02:08,525 --> 00:02:12,705
+Es decir, el rango de valores que podría
+tomar serían números enteros y no reales.
+
+41
+00:02:12,705 --> 00:02:15,295
+Increíblemente, esto es un problema.
+
+42
+00:02:16,135 --> 00:02:18,890
+El problema
+se reduce a la diferencialidad.
+
+43
+00:02:18,890 --> 00:02:22,245
+El descenso de gradientes realiza
+cambios incrementales en los pesos.
+
+44
+00:02:22,755 --> 00:02:26,770
+Esto requiere que podamos
+diferenciar los pesos de la pérdida.
+
+45
+00:02:27,190 --> 00:02:30,410
+Sin embargo, las funciones
+por partes tienen brechas en sus rangos.
+
+46
+00:02:30,410 --> 00:02:32,740
+Y aunque TensorFlow las puede diferenciar
+
+47
+00:02:32,740 --> 00:02:34,470
+la superficie de pérdida resultante
+
+48
+00:02:34,470 --> 00:02:37,845
+tendrá discontinuidades que harán
+que recorrerla sea más desafiante.
+
+49
+00:02:38,365 --> 00:02:40,420
+Así que, tenemos
+que reformular el problema.
+
+50
+00:02:40,420 --> 00:02:43,890
+En vez de buscar la función
+de pérdida ideal durante el entrenamiento
+
+51
+00:02:43,890 --> 00:02:47,725
+usaremos un nuevo tipo de métrica
+después de finalizar el entrenamiento.
+
+52
+00:02:47,725 --> 00:02:50,105
+Y este nuevo tipo
+de métrica nos permitirá
+
+53
+00:02:50,105 --> 00:02:53,555
+rechazar modelos que se hayan
+conformado con mínimos inapropiados.
+
+54
+00:02:55,805 --> 00:02:58,590
+Se llaman métricas de rendimiento.
+
+55
+00:02:59,150 --> 00:03:02,370
+Tienen dos beneficios
+sobre las funciones de pérdida.
+
+56
+00:03:02,370 --> 00:03:04,755
+Primero, son más fáciles de comprender.
+
+57
+00:03:04,755 --> 00:03:08,880
+A menudo son combinaciones
+sencillas de estadísticas contables.
+
+58
+00:03:09,560 --> 00:03:13,520
+Segundo, están directamente
+conectadas con los objetivos comerciales.
+
+59
+00:03:13,970 --> 00:03:15,545
+Este es un punto más lamentable
+
+60
+00:03:15,545 --> 00:03:17,910
+pero se reduce al hecho
+de que, aunque la pérdida
+
+61
+00:03:17,910 --> 00:03:20,720
+y el objetivo comercial que
+se busca suelen estar de acuerdo
+
+62
+00:03:20,720 --> 00:03:22,275
+no siempre será así.
+
+63
+00:03:22,705 --> 00:03:24,725
+A veces, será posible disminuir la pérdida
+
+64
+00:03:24,725 --> 00:03:27,220
+o avanzar poco hacia el objetivo comercial.
+
+65
+00:03:28,250 --> 00:03:30,655
+Revisaremos tres métricas de rendimiento
+
+66
+00:03:30,655 --> 00:03:33,560
+matrices de confusión,
+precisión y recuperación
+
+67
+00:03:33,560 --> 00:03:35,000
+y cuándo usarlas.

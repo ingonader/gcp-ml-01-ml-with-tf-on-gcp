@@ -1,0 +1,70 @@
+Les algorithmes d'arbres,
+comme ID3 et C4.5, ont été inventés dans les années 80 et 90. Ils sont efficaces pour certains problèmes
+de régression linéaire, et sont très faciles à interpréter. Trouver la bonne répartition lors de
+la création d'arbres est un problème NP. Des algorithmes gloutons
+ont donc été utilisés pour construire des arbres
+aussi optimaux que possible. Ils créent une surface de décision
+linéaire par morceaux, soit ce qu'une couche ReLu génère. Mais, avec les réseaux de
+neurones profonds ou DNN, chaque couche réelle est combinée pour
+une surface de décision en hyperplan, ce qui peut être bien plus efficace. Pourquoi les DNN peuvent-ils être plus
+efficaces que les arbres de décision ? Commençons par
+les arbres de décision. Ce sont certains des algorithmes
+de machine learning les plus intuitifs. Ils peuvent être utilisés
+pour la classification et la régression. Si vous avez un ensemble de données, dont vous voulez déterminer
+la répartition dans des buckets, vous devez commencer par
+trouver des questions pertinentes pour interroger les données. Prenons un exemple. Nous devons prédire qui a survécu
+ou péri lors du naufrage du Titanic. Les passagers venaient de tous milieux, de différentes éducations,
+de divers contextes, etc. On doit trouver si certaines de ces
+caractéristiques peuvent séparer les données de manière à prédire
+avec précision les survivants. La première caractéristique à examiner
+peut être le sexe des passagers. La question peut donc être
+"Le passager est-il un homme ?". Je répartis donc les données dans
+deux buckets, un pour les hommes et un pour les autres passagers. 64 % des données se retrouvent
+dans le bucket des hommes, et 36 % dans l'autre. Continuons avec la partition
+du bucket des hommes. Une autre question peut être dans quelle
+classe chaque passager voyageait-il ? Notre partitionnement révèle que
+14 % des passagers étaient des hommes de la classe la plus basse, et que 50 % des passagers
+étaient des hommes dans les deux classes les plus hautes. Le même partitionnement peut s'appliquer
+à la branche des femmes de l'arbre. Prenons du recul. L'algorithme de création de l'arbre de
+décision peut facilement séparer les sexes dans deux branches,
+car il n'y a que deux valeurs possibles. Mais comment a-t-il choisi
+de séparer les passagers par classes, avec une branche d'une classe à gauche, et une branche de deux classes à droite. P. ex., avec l'arbre de classification
+et de régression ou algorithme CART, l'algorithme détermine
+quel couple caractéristique-seuil produira des sous-ensembles
+optimaux lors de la séparation. Dans les arbres de classification,
+on peut utiliser l'indice d'impureté Gini, mais aussi l'entropie. Après avoir séparé les données, il recherche un autre couple
+caractéristique-seuil, et sépare les données
+en fonction. Ce processus continue de façon récurrente, jusqu'à ce que la profondeur maximale
+de l'arbre soit atteinte, ou lorsque plus aucune séparation
+ne permet de réduire l'impureté. Dans les arbres de régression, l'erreur
+quadratique moyenne est souvent utilisée. Savez-vous comment les données sont
+séparées dans deux sous-ensembles ? Chaque séparateur est
+un classifieur linéaire binaire qui trouve un hyperplan séparant
+une variable à une certaine valeur, qui correspond au seuil défini
+pour réduire le nombre de membres d'une classe se retrouvant du côté
+de l'autre classe de l'hyperplan. La création récurrente de
+ces hyperplans dans un arbre est semblable aux couches du classifieur
+linéaire dans un réseau de neurones. Très intéressant, non ? Vous savez désormais construire
+des arbres de décision. Passons donc au développement de celui-ci. On peut peut-être séparer les données
+en fonction d'une tranche d'âge pour ce problème de classification. Par exemple, les passagers
+avaient-ils plus de 17 ans et demi ? La branche la plus basse
+de la branche parente des hommes indique désormais que 13 %
+des passagers avaient 18 ans ou plus, et que seulement 1 % étaient plus jeunes. En examinant les classes
+associées à chaque nœud, seule celle-ci de la branche
+des hommes est classée "survivant". On peut augmenter la profondeur, ou choisir d'autres caractéristiques
+pour développer l'arbre jusqu'à ce que chaque nœud ne contienne
+que des passagers ayant survécu ou péri. Cependant, ce modèle pose
+certains problèmes, car les données sont juste mémorisées et l'arbre adapté en conséquence. En pratique, le modèle doit être
+généralisé pour de nouvelles données. Or, un modèle qui a mémorisé
+l'ensemble d'entraînement ne fonctionnera pas bien
+avec d'autres données. Des méthodes peuvent corriger ce problème, comme définir le nombre minimum
+d'échantillons par nœud, le nombre maximum de nœuds ou le nombre maximum de caractéristiques. Vous pouvez aussi construire l'arbre, puis élaguer les nœuds inutiles. Pour tirer pleinement parti des arbres, il vaut mieux les regrouper en forêts, concept que nous aborderons bientôt. Dans un arbre de classification, que comprend chaque décision ou nœud ? La bonne réponse est un classifieur
+linéaire d'une caractéristique. À chaque nœud de l'arbre, l'algorithme choisit
+un couple caractéristique-seuil pour séparer les données
+en deux ensembles, et ce de manière récurrente. Plusieurs caractéristiques sont séparées, si vous définissez une profondeur
+maximale supérieure à 1, mais une seule caractéristique par nœud. Le classifieur linéaire de toutes
+les caractéristiques est incorrect, car chaque nœud sépare
+une caractéristique à la fois. Les minimiseurs de l'erreur
+quadratique moyenne et de la distance euclidienne
+sont presque similaires, et utilisés pour la régression,
+pas la classification.

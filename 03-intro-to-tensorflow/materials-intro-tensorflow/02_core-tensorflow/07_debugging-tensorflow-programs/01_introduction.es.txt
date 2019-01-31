@@ -1,0 +1,50 @@
+Espero que en el lab anterior en el que le pedimos
+que escribiera un poco de código para calcular el área de un triángulo,
+no solo haya ejecutado las celdas sino que haya intentado escribir
+de código de TensorFlow desde cero. Si lo hizo, como la mayoría rápidamente se encontró con problemas
+de compilación y tiempo de ejecución. Y eso le generó la duda
+de cómo depurar un programa de TensorFlow. La depuración
+en TensorFlow puede ser difícil debido al paradigma
+de evaluación perezosa. Si su gráfico
+contiene errores, no lo sabrá hasta que se ejecute
+esa parte del gráfico. Esta es una de las razones
+por las que dijimos que tf.eager puede ser útil para desarrollar
+programas de TensorFlow. Sin embargo,
+tampoco es una solución para todo. Igual necesitará saber cómo depurar incluso si desarrolló el programa
+de forma interactiva con tf.eager. Veamos cómo depurar programas
+de TensorFlow de evaluación perezosa. Hacerlo es similar
+a depurar cualquier programa. Debe aprender
+a interpretar los mensajes de error y usar esos mensajes de error
+y seguimientos de pila para aislar el método. El propósito
+de aislar el método problemático es que pueda llamar solo a ese método. No conviene ejecutar todo el programa
+de TensorFlow en el conjunto de datos y tratar de depurarlo como un todo. En vez, deben enviar
+datos ficticios al método para obtener un error repetible
+que podrá tratar de corregir. ¿Cómo se corrige el error? Obviamente, no podemos
+mostrar todos los errores posibles pero veremos algunos
+de los mensajes de error más comunes y cómo abordarlos. El primer paso
+es no poner la mente en blanco cuando vea un montón
+de mensajes de error. Analice el mensaje de error con atención. En particular,
+hay dos datos que nos interesan. La primera, el seguimiento de pila. Esta es la pila de llamadas de métodos
+en el momento que se generó el error. En ese caso, por ejemplo vemos que la línea s = (a + c) en el método,
+some_method(data), es un problema. Obviamente, la pila de llamadas
+también incluirá un montón de métodos de la biblioteca de TensorFlow. Su programa llama a esos métodos entonces el truco
+es enfocarse en el código. Una vez que lo haga busque el segundo dato. Vea el mensaje de error en sí. En este caso, el mensaje señala
+que se encontró un error de valor. TensorFlow espera
+que las dimensiones sean iguales pero resulta que no lo son. ¿Qué está ocurriendo? Bueno, cuando sumamos a + c eso solo funciona
+si tanto a como c son tensores 2D. Si a es un tensor 4D entonces c también debe serlo. En este caso, resulta
+que uno de ellos, tal vez a, tal vez c es un tensor 2D con la forma [4, 2] y el otro, tal vez c,
+es un tensor 1D con la forma [4]. Ese es el problema. Obviamente,
+algo no está bien en su programa tal vez quería que ambos sean [4, 2] o tal vez que ambos sean [4]. Encontrar la pila de llamadas
+y leer el mensaje de error lo ayudará a entender el problema. El análisis de la pila de llamadas permite encontrar la línea
+de código y el nombre del método. Ahora, deberá
+buscar el método y analizarlo. Aquí, el método se llama some_method y tiene un tensor llamado data. Este es el tensor que deberá reemplazar
+con datos falsos para solucionar el error. Olvídese del resto del programa. Ignore cómo se leen realmente
+los datos en su programa actual. Invocaremos el método con datos ficticios. Para hacerlo, creamos una sesión
+y una matriz de tensores hard-coded. En este caso, crearé
+un tensor de 4 x 3 llamado fake_data. ¿Puede verlo? Tomo fake_data y se lo paso a some_method. Observe que agregué
+varios print al código de some_method. Es un poco anticuado
+depurar con declaraciones print pero es la manera más fácil
+de diagnosticar errores de forma. Estamos sumando dos elementos: a y c. Esto generó un problema. Por eso, me aseguro de hacer
+print de la forma de a y de c. Cuando ejecuto el programa la primera línea muestra [4, 2] y la segunda, [4]. Tal como señalaba
+el mensaje de error de valores. Y ahora, es un problema de intención. ¿Quería dividir una matriz [4, 2] para c? ¿O quería dividir un vector 1D para a? Lo que sea que intentaba hacer, hágalo Cuando ejecuto el programa la primera línea muestra [4, 2] y la segunda, [4]. Tal como señalaba
+el mensaje de error de valores. Y ahora, es un problema de intención. ¿Quería dividir un matriz [4, 2] para c? ¿O quería dividir un vector 1D para a? Lo que sea que intentaba hacer…

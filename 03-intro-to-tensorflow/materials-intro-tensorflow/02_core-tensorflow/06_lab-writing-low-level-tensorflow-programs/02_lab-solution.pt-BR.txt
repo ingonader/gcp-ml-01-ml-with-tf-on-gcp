@@ -1,0 +1,87 @@
+Neste laboratório,
+assim como fizemos nos anteriores, você acessa o console do GCP, entra no Cloud Shell e inicia o Datalab. Quando estiver no Datalab, navegarei até o bloco de notas
+até "Getting started with TensorFlow". Portanto, a primeira célula
+deste bloco de notas é importar pacotes do NumPy e do TensorFlow,
+porque vamos brincar com os dois. Então, posso executar essa célula,
+e isso basicamente me diz que estou executando o TensorFlow 1.4
+nesta instância. Então, mostrarei como adicionar
+duas matrizes NumPy. Então, tenho uma matriz NumPy, que é a, e outra, que é b. Neste caso, estou adicionando
+NumPy np.add(a ,b) e imprimindo c. Como isso é NumPy, toda a pontuação
+está sendo avaliada imediatamente. Então, quando eu o executo, recebo 8, 2, 10. Então, essa é a minha lista. O código equivalente no TensorFlow
+tem duas etapas. Então, vamos executar apenas a primeira. A primeira etapa,
+novamente como em NumPy, é criar a, criar a com np.array,
+fazer tf.constant. Então, criarei uma matriz constante a e outra matriz constante b e chamarei tf.add(a, b). Mas, desta vez, quando eu imprimir c, você não verá a lista 8, 2 e 10. O que você verá? Você vê uma saída de depuração do tensor. Portanto, neste caso, dizemos que c
+é um resultado da operação add. Ele conterá três números,
+e todos serão inteiros. Esta é a primeira etapa,
+a criação do gráfico. Então vamos tentar algo. Vamos mudar isso para ser,
+por exemplo, 5.0. Neste ponto, a agora se torna
+não uma matriz de inteiros, mas uma matriz de flutuantes. Então, vamos imprimir não apenas c, mas vamos imprimir a também
+para você saber do que estou falando. E agora, quando eu o executo, você vê que a é do tipo float e, agora, não podemos somar a e b porque
+a é do tipo float, mas b é do tipo int, e é por isso que recebo o erro. Mas posso mudá-lo também para ser um float
+e, quando eu executar, c será do tipo float. Então, lembre-se disso. Vou alterá-lo de volta para um número
+inteiro para realizar a próxima etapa. Neste caso, tenho a e c, e a próxima etapa do meu gráfico
+é avaliar o valor de c. Assim, conseguirei
+os números. Lembre-se, crie o gráfico
+e execute-o. Então, neste caso, farei sess.run(c)
+e depois imprimirei o resultado. O resultado será
+uma matriz antiga regular. E quando imprimo, fico com 8, 2 e 10. Então, temos que lembrar que,
+no TensorFlow, a avaliação é lenta. Etapa número um, crie o gráfico. Etapa número dois, execute o gráfico. Agora, neste caso,
+tudo no meu gráfico foi fixado no código. No entanto, normalmente você colocará
+um marcador nos itens para conseguir ter informações
+no ambiente de execução. Então, no meu caso, basicamente
+estou criando a para ser um marcador
+que conterá uma lista, e b será outro marcador
+que conterá uma lista. Vou adicionar a e b
+e agora passarei os números 3, 4 e 5 no ambiente de execução. Quando estou executando a sessão, estou passando 3, 4 e 5 para a e -1, 2 e 3 para B. E agora, quando imprimo o resultado,
+recebo 2, 6 e 8 porque 3 - 1 = 2. Mas, neste caso, lembre-se de que
+essas três linhas tratam da criação do gráfico: a, b e c. O restante delas trata
+da execução do gráfico e, quando executo o gráfico,
+estou alimentando valores. Portanto, podemos agora
+juntar os dois conceitos quando se trata de fazer algo útil. Então, o que vamos fazer é: digamos que, dado um triângulo, os lados do triângulo, deixe-me ir em frente
+e calcular a área do triângulo. Há uma fórmula chamada Teorema de Herão
+que é basicamente esta aqui. E é isso que vamos implementar
+no TensorFlow. De novo, o TensorFlow
+não tem a ver apenas com redes neurais, tem a ver com qualquer
+programação numérica. Com certeza também podemos calcular
+a área de um triângulo no TensorFlow. Então eu tenho meu método, minha função para calcular
+a área com base nos lados. Mas lembre-se de que você não vai usar o TensorFlow para calcular
+a área de um triângulo. Você vai usar o TensorFlow para criar
+a área de muitos triângulos. Então vamos decidir que não será
+um conjunto de três números, serão muitos conjuntos
+de três números, certo? Então, pegaremos um número de triângulos e agora queremos conseguir a e b e c,
+os três lados. A vai cortar os lados que basicamente
+serão o tamanho do lote, o número de triângulos que temos, vezes três, porque temos três deles. Então a primeira coluna será a, a segunda será b e a terceira será c. Então, neste caso, conseguirei
+a primeira coluna, que é a, a segunda coluna, que é b, e a terceira, que é c. Portanto, se vamos passar
+matrizes 2x3 aqui, passaremos a matriz 2x3
+de dois triângulos. Cada triângulo tem três lados. O primeiro conjunto de lados
+é 5 e 2.3, que é a, 3 e 4.1, que é b, e 7.1 e 4.8, esse é o seu c. Então, agora temos a, b e c. Calculamos metade do perímetro, então (a + b + c) dividido por dois, e depois usamos essa fórmula
+para calcular o quadrado da área. Calculamos a raiz quadrada disso
+e voltamos. Tudo isso é parte da criação do gráfico,
+e, quando queremos executá-lo, podemos basicamente fazer sess.run,
+mas, desta vez, quero calcular a área variável
+ou a área de tensor do TensorFlow, e o modo como conseguimos a área
+é chamar compute_area passando esses valores. Então, se eu executar isso agora, basicamente terei
+a área de dois triângulos. É por isso que consegui
+dois números aqui, há dois triângulos. Mas aqui esses números
+estão fixos no código. Você pode não querer isso, pode querer alimentá-los. Então é isso que este último item
+está mostrando. Está mostrando o uso
+da mesma área de computação, mas os lados agora são basicamente
+alimentados no gráfico. Então, "sides" é
+um marcador, não mais uma constante tf. E quando você executar
+e quiser avaliar a área, passaremos um par de chave-valor. A chave é o nome do tensor, sides, e o valor agora é a matriz 2D porque você
+está passando, e uma matriz de triângulos. Então, agora podemos executar, e isso
+mostra essencialmente o mesmo resultado. A última parte do bloco de notas mostra
+como podemos evitar essas duas etapas, criar o gráfico e executá-lo
+usando tf imediato. Agora estamos chamando
+enable_eager_execution. Ao chamar isso, garantimos que agora
+não haja mais duas etapas. Não é criar e executar o gráfico,
+mas o processo de criar o gráfico, tudo o que estamos fazendo, tudo será avaliado imediatamente. Então, neste caso, estou criando
+a área de computação, estou fazendo exatamente o mesmo, e estou dizendo que a área é
+compute_area e print area. Se eu não tenho uma execução imediata, deixe-me comentar isso para que
+você possa ver do que estou falando. Se eu não tenho uma execução imediata
+e executo print area, só recebo a saída de depuração do tensor. Então essa é
+uma saída de depuração do tensor. Não estou recebendo os valores aqui, estou apenas recebendo que isso conterá
+a resposta para dois triângulos. Mas agora vou permitir
+a execução imediata e depois executar. Quando fazemos isso, você percebe que
+a saída contém os valores reais. Eu ainda estou chamando print area. Eu não chamei session.run print area. Mas, desta vez,
+estou recebendo a resposta de volta.

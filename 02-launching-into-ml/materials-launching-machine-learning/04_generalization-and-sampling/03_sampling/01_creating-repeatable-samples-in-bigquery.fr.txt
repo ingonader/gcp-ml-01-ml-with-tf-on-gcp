@@ -1,0 +1,95 @@
+Comme vous venez de le voir,
+diviser les données permet de tester sa modélisation
+avec des données réelles simulées, en n'utilisant pas ces sous-ensembles
+lors de l'entraînement. Mais où diviser l'ensemble de départ ? Et si cet ensemble est énorme ? Devons-nous entraîner et tester
+pour tous les points de données ? Dans ce cours sur l'échantillonnage, je vais vous montrer comment diviser
+vos données de façon reproductible, avec Google Big Query,
+ainsi que les principaux pièges à éviter. Vous vous y entraînerez
+lors du prochain atelier. Commençons. Avant de parler de la division
+des ensembles de données, nous devons en choisir un. Nous allons utiliser des données sur
+les performances de compagnies aériennes du Bureau of Transportation Statistics. Google a mis ses données
+à la disposition de tous dans BigQuery sous le nom
+airlineontimedata.flightsdataset. Ces données contiennent les retards
+de vols au départ et à l'arrivée, et ce pour 70 millions de vols. Voyons comment échantillonner
+les données d'entraînement, de validation et de test à partir de cet ensemble,
+de façon uniforme et reproductible. SQL ou Structured Query Language,
+et donc BigQuery, puisqu'on exécute SQL sur BigQuery,
+ont la fonction RAND(), et cela génère
+une valeur située entre 0 et 1. Vous pouvez obtenir 80 % de votre ensemble en appliquant
+une clause SQL WHERE simple. Vous remarquerez peut-être
+des problèmes manifestes. Ce processus sera-t-il reproductible si un collègue veut
+répéter votre expérience avec les mêmes 80 % de votre ensemble ? Et si cet ensemble
+contenait 70 millions de vols, obtiendrait-il
+les mêmes 56 millions de vols ou 80 % du même
+ensemble d'entraînement ? Nous avons besoin d'une meilleure méthode pour déterminer quelles données
+appartiennent à quel bucket : entraînement, validation et test. Cela nous permettra
+de reproduire nos expériences, en utilisant les mêmes données
+pour chaque bucket. Comme vous avez pu le deviner, une simple fonction Random
+prendrait un nouvel ensemble de cinq lignes sélectionnées au hasard,
+à chaque nouvelle requête. Il est alors très difficile,
+voire impossible, d'identifier et de diviser
+les 20 % restants de vos données pour les buckets de validation et de test. En outre, l'ensemble
+de données peut être trié et ajouter des biais à votre échantillon. Et le tri apporte
+aussi son lot de problèmes en cas de descente de gradient
+par mini-lot, par exemple. Pour le ML, vous voulez pouvoir
+créer ces échantillons reproductibles. Pour ce faire, vous pouvez
+utiliser les derniers chiffres d'une fonction de hachage
+sur le champ que vous utilisez pour diviser vos données en buckets. La fonction de hachage disponible
+dans BigQuery s'appelle Farm Fingerprint. Farm Fingerprint a
+la valeur "10 décembre 2018", qui est transformée
+en une chaîne de chiffres, et cette valeur de hachage est identique pour toutes les valeurs 10 décembre 2018
+de l'ensemble de données. Vous créez un algorithme de ML
+pour prévoir les retards à l'arrivée. Vous voulez diviser vos données par date, et obtenir environ 80 % des jours
+dans votre ensemble d'entraînement. C'est reproductible, car la fonction de hachage
+Farm Fingerprint renvoie la même valeur chaque fois
+qu'une date spécifique est choisie. Vous obtiendrez les mêmes 80 %,
+ou à peu près, à chaque fois. Si vous divisez vos données
+par aéroport d'arrivée, 80 % des aéroports sont
+dans l'ensemble d'entraînement et le reste dans les ensembles
+de test et de validation, vous utiliseriez la fonction
+de hachage sur l'aéroport d'arrivée. Dans cette requête, comment obtenir un nouvel échantillon
+de 10 % pour l'évaluation ? Il faut modifier inférieur à 8
+en égal à 8 pour tester les données, ou égal à 8 ou 9 pour un autre 10 %
+pour l'évaluation ou le test. C'est ainsi que vous divisez ces buckets. Nous voulons prédire les retards des vols
+en fonction de la compagnie aérienne, l'heure, le temps
+et les caractéristiques de l'aéroport, comme le nombre de pistes de l'aéroport. En fonction de quels champs
+diviser l'ensemble ? La date ? L'aéroport ? La compagnie ? Divisez donc vos données
+en des ensembles valides en fonction d'un champ
+que vous pouvez perdre. Par exemple, si vous divisez
+vos données par date pour prédire les retards à l'arrivée et qu'il n'y a de vols
+que sur deux jours différents, vous ne pouvez pas les diviser
+plus précisément que 50/50. Le hachage est à sens unique,
+vous n'aurez qu'une valeur. Vous ne pouvez pas
+obtenir 80/20 avec deux dates. Examinons chacune de ces options. Et si nous créons des buckets
+en fonction de la date ? Pas de problème. Mais vous ne pourrez plus faire
+de prédictions en fonction des fêtes, comme Noël ou Thanksgiving. Les principaux facteurs de la prédiction
+ne doivent pas avoir de rapport à la date, car la création des buckets
+est basée sur la date. Que se passe-t-il si nous hachons
+et divisons en fonction de l'aéroport ? D'accord,
+tant que les données comportent du bruit. Vous ne pouvez plus faire de prédictions
+spécifiques à un aéroport, par exemple. Les vols de 17h à partir de JFK
+sont toujours en retard. Vous ne pouvez plus utiliser JFK, car vous avez divisé
+à partir de celui-ci. Et si nous divisons
+en fonction de la compagnie ? Il n'y avait que 11 compagnies,
+et si vous voulez diviser les données, ce n'est pas assez bien distribué
+pour obtenir une division précise. Au lieu de 80/20,
+vous risquez d'obtenir 60/40, ce qui n'est peut-être pas assez bon. Si vous débutez dans le développement ML, il vaut mieux développer votre code
+Tensorflow sur un petit sous-ensemble, puis le faire évoluer dans le cloud
+pour la véritable productisation. Imaginez que vous développez
+une application ML. À chaque modification,
+vous devez la relancer. Si vous utilisez l'ensemble complet, cela peut prendre
+des heures, voire des jours. Il s'agit de pétaoctets, et il n'est pas
+possible de développer ainsi. Il faut un petit ensemble de données,
+pour vérifier rapidement le code, le déboguer et l'exécuter à nouveau. Quand l'application fonctionne,
+vous pouvez l'exécuter une fois, ou le nombre de fois de votre choix
+sur l'ensemble complet. C'est comme le prototypage. Voyons comment échantillonner
+uniformément un sous-ensemble plus petit de nos données
+sur les compagnies aériennes. Nous avons créé les buckets, mais nous voulons moins de données. Les données relatives aux vols
+comportent 70 millions de lignes. Vous vouliez peut-être
+un ensemble plus petit, comme un million de vols. Je me répète,
+cela doit être reproductible. Comment choisir un vol sur 70,
+puis 80 % de ceux-ci pour l'entraînement ? Vous ne pouvez pas choisir 1 vol sur 70,
+puis 1 sur 10 à partir des résultats. Savez-vous pourquoi ? Si vous prenez
+des nombres divisibles par 70, ils seront aussi divisibles par 10. La deuxième opération modulo
+ne sert à rien. Je vais faire une brève démonstration
+pour tout vous expliquer.

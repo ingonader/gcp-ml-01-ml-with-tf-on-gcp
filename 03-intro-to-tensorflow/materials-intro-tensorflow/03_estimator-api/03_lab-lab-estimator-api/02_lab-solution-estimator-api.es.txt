@@ -1,0 +1,75 @@
+Hagamos
+el primer codelab de Estimator juntos. Para comenzar,
+buscaremos los archivos de codelab. Hagámoslo juntos. Vaya a cloud.google.com/console
+y acceda con su cuenta de lab. Lo haré también. Ahora, debe elegir un proyecto. Es posible que ya esté seleccionado. Abra Cloud Shell con este ícono. En Cloud Shell,
+escribamos datalab create. Llamemos a la instancia de Datalab mylab. La crearemos en la zona us-central1-a. Esto creará
+nuestra primera instancia de Datalab. La primera vez lleva un tiempo. Unos minutos más tarde… La próxima vez, no tendrá
+que recrear la instancia de Datalab. Solo tiene que volver a conectarse
+con datalab connect y el nombre. En mi caso, mylab. Ahora, busque el botón "Web preview" aquí. Cambie el puerto a 8081,
+que es el que usa Datalab. Haga clic en "Preview". Esto abre una interfaz
+de notebook que le resultará familiar. Todavía tenemos
+que obtener el código de GitHub. Abrimos un notebook
+para comenzar a escribir comandos Bash. %bash Y haremos una clonación git
+de nuestro repositorio de codelab en el directorio local. Cuando está listo el directorio local aparece aquí. Aquí está. Se llama "training-data-analyst" y allí, buscaremos
+un directorio llamado "courses" luego, "machine_learning" y "deepdive". Luego, "03_tensorflow". Nuestro primer lab
+es "b_estimator.ipynb". En este ejemplo,
+usaremos Pandas para leer nuestros datos de archivos CSV
+que contienen información sobre viajes en taxi como dónde comenzó y terminó
+cada viaje y la cantidad de pasajeros. Entrenaremos nuestro modelo
+para predecir la tarifa de taxi. Comencemos. Primero, definimos los nombres
+de las columnas: fare_amount pickuplon, pickuplat, etcétera. Y usamos Pandas para leer
+estos datos de archivos CSV. Un conjunto de datos
+para entrenamiento y otro para validación. Ahora, usamos la funcionalidad integrada de los estimadores
+para crear una función de entrada a partir de Pandas. Se llama
+tf.estimator.inputs.pandas_input_fn. La función nos permite
+especificar los atributos como "x", aquí y las etiquetas de destino como "y", aquí. También administra
+la configuración estándar del conjunto de datos de entrenamiento el tamaño del lote,
+la cantidad de ciclos y la redistribución. con queue_capacity, que es el búfer
+de la cola de la redistribución. Ejecutemos. Ahora, creamos las columnas de atributos. Todas son numéricas. Así que, para cada una, llamamos a
+tf.feature_column.numeric_column La lista de columnas de atributos
+es lo que le indica al modelo cómo transferir los datos
+a su vector de entrada. El modelo se instancia aquí. Le proporcionamos la lista
+de columnas de atributos y un directorio en el que
+se escribirán todos los datos de salida. Para entrenar el modelo llamamos a la función train
+y le damos la función de entrada de datos. train, además de input_fn. Esa es la que lleva los datos
+de un marco de Pandas a nuestro modelo. Ahora, el modelo
+se ejecutará durante 10 ciclos. Aquí puede ver
+los registros del entrenamiento. Ya terminó. Está entrenado. ¿Es bueno? Probémoslo
+con el conjunto de datos de validación. Para ello, llamamos a model.evaluate. Esta vez, pasamos
+la función de entrada de datos que obtiene los datos del marco de datos
+de validación de Pandas, df_valid. Lo pasamos aquí. Y obtenemos los resultados. La raíz del error cuadrático medio
+o RMSE final es USD 10. USD 10 es un margen de error
+enorme para una tarifa de taxi. Y no se acerca para nada
+a nuestra comparativa anterior de USD 6. Mejoraremos esto más adelante,
+ahora que tenemos el código para trabajar. Veamos si podemos usar
+este modelo para hacer predicciones. Cuando instanciemos el modelo otra vez buscará un control en el directorio
+del modelo y volverá a cargarse desde ahí. Ya que acabamos de entrenar
+el modelo, tenemos un control entrenado y está listo para hacer predicciones. Lo instanciamos aquí
+y pasamos el mismo directorio de salida. Y la función predict que se llama aquí muestra un generador de Python. Lo llamamos en un bucle
+para obtener predicciones de tarifas. Puede ver
+las predicciones de tarifas aquí. Tal vez esto explica
+por qué la RMSE era tan alta. El modelo básicamente predice
+el mismo importe para cada traslado. ¿Ayudaría un modelo más complejo? Probemos con una red neuronal profunda. Conservamos todo tal cual,
+las columnas de atributos y las funciones de entrada. Y cambiamos el modelo
+de un regresor lineal a un regresor de DNN con tres capas ocultas. Hagamos eso. Instanciamos el regresor de DNN aquí
+y configuramos las capas ocultas aquí. 32 nodos en la primera, 8 nodos
+en la segunda y 2 nodos en la última. Entrenemos. Nuevamente,
+el entrenamiento dura 10 ciclos. Cuando termine, llamaremos
+la función model.predict otra vez desde este auxiliar print_rmse Está entrenando. Ahora, está validando. Esta vez, la RMSE del conjunto
+de datos de validación es de USD 11. Aún es malo. Ninguno de estos modelos
+supera nuestra comparativa. ¿Qué sucede? Tal vez estemos usando TensorFlow
+para el aprendizaje automático pero no lo estamos usando muy bien. De eso se trata el resto del curso. Para que quede claro: 
+si tuviéramos que elegir entre dos modelos elegiríamos el que tiene
+el error de validación menor. Finalmente, mediríamos
+la RMSE en los datos de prueba con el modelo elegido. Esta RMSE final se puede publicar
+como el rendimiento objetivo de nuestro mejor modelo. Ese es el procedimiento estándar
+en la ciencia de datos: entrenamiento validación y prueba, cada uno
+con sus propios conjuntos de datos. Probemos esto
+con el conjunto de datos comparativo. La RMSE del conjunto
+de datos comparativo es 9.41. La RMSE del conjunto
+de datos comparativo es USD 10.5. No solo es mucho mayor
+que nuestra comparativa original de USD 6. Ni siquiera supera la RMSE
+de las reglas de distancia, de USD 8. Lo importante es que aprendió
+a escribir un modelo de TensorFlow. Le queda por aprender lo que debe hacer para mejorar el modelo
+a fin de que tenga buen rendimiento. Lo haremos en los siguientes capítulos. En este, preparamos
+nuestro modelo de TensorFlow para aplicar estas mejoras después.

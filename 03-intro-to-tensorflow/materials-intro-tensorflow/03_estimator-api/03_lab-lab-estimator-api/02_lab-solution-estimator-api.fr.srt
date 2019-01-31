@@ -1,0 +1,623 @@
+1
+00:00:00,190 --> 00:00:03,862
+Réalisons ensemble notre premier atelier
+de programmation sur les estimateurs.
+
+2
+00:00:03,862 --> 00:00:07,920
+Pour commencer, nous devons trouver
+les fichiers de l'atelier.
+
+3
+00:00:07,920 --> 00:00:09,980
+Faisons-le ensemble.
+
+4
+00:00:09,980 --> 00:00:17,450
+Accédez à cloud.google.com/console, puis
+connectez-vous à votre compte d'atelier.
+
+5
+00:00:17,450 --> 00:00:18,380
+Je le fais aussi.
+
+6
+00:00:30,700 --> 00:00:33,550
+Vous devez maintenant choisir un projet.
+
+7
+00:00:33,550 --> 00:00:35,580
+Parfois, il est déjà sélectionné
+pour vous.
+
+8
+00:00:36,650 --> 00:00:39,760
+Ouvrez Cloud Shell
+en cliquant sur cette icône.
+
+9
+00:00:44,109 --> 00:00:50,836
+Dans Cloud Shell,
+nous saisissons "datalab create".
+
+10
+00:00:54,831 --> 00:00:59,050
+Nous appelons
+notre instance d'atelier "mylab".
+
+11
+00:01:01,110 --> 00:01:08,704
+Et nous allons créer le projet
+dans la zone "us-central1-a".
+
+12
+00:01:10,234 --> 00:01:12,920
+Nous venons de créer
+notre première instance Datalab.
+
+13
+00:01:14,750 --> 00:01:18,759
+Cela prend un peu de temps
+la première fois.
+
+14
+00:01:19,342 --> 00:01:21,162
+Quelques minutes plus tard...
+
+15
+00:01:21,886 --> 00:01:25,498
+La prochaine fois, vous n'aurez pas besoin
+de recréer l'instance Datalab.
+
+16
+00:01:25,498 --> 00:01:30,815
+Il vous suffira de vous reconnecter
+en saisissant "datalab connect",
+
+17
+00:01:30,815 --> 00:01:34,239
+suivi du nom de votre instance,
+dans mon cas "mylab".
+
+18
+00:01:47,098 --> 00:01:52,030
+Cliquez maintenant sur l'icône
+"Web preview" située ici.
+
+19
+00:01:53,140 --> 00:01:57,239
+Remplacez le port par "8081",
+utilisé par Datalab.
+
+20
+00:01:58,380 --> 00:02:00,370
+Puis cliquez sur "Preview".
+
+21
+00:02:00,370 --> 00:02:03,050
+Une interface familière
+de bloc-notes s'ouvre.
+
+22
+00:02:06,908 --> 00:02:10,759
+Nous devons encore récupérer
+le code à partir de GitHub.
+
+23
+00:02:10,759 --> 00:02:17,385
+Nous ouvrons le bloc-notes pour commencer
+à saisir des commandes bash,
+
+24
+00:02:17,385 --> 00:02:20,740
+avec "%bash".
+
+25
+00:02:21,720 --> 00:02:29,389
+Puis nous créons un clone git
+du dépôt de notre atelier
+
+26
+00:02:29,389 --> 00:02:32,321
+de programmation
+dans le répertoire local.
+
+27
+00:02:33,766 --> 00:02:39,130
+Dès que c'est fait,
+le répertoire local apparaît ici.
+
+28
+00:02:47,488 --> 00:02:48,270
+C'est parti.
+
+29
+00:02:49,920 --> 00:02:52,534
+Il s'appelle "training-data-analyst".
+
+30
+00:02:52,534 --> 00:02:58,894
+Dans ce répertoire, nous cherchons
+un dossier nommé "courses",
+
+31
+00:02:58,894 --> 00:03:08,454
+puis "machine_learning",
+"deepdive", et enfin "tensorflow".
+
+32
+00:03:09,460 --> 00:03:15,104
+Notre premier atelier
+s'appelle "b_estimator.ipynb".
+
+33
+00:03:16,707 --> 00:03:21,313
+Dans cet exemple, nous utiliserons Pandas
+pour lire nos données
+
+34
+00:03:21,313 --> 00:03:24,380
+à partir de fichiers CSV contenant
+des informations sur les prix
+
+35
+00:03:24,380 --> 00:03:25,470
+de courses de taxi :
+
+36
+00:03:25,470 --> 00:03:29,070
+lieux de départ et d'arrivée,
+et nombre de passagers.
+
+37
+00:03:29,630 --> 00:03:33,349
+Nous allons entraîner notre modèle
+pour prédire les prix des courses de taxi.
+
+38
+00:03:34,580 --> 00:03:35,670
+Allons-y.
+
+39
+00:03:37,816 --> 00:03:42,589
+Nous devons d'abord
+définir les noms des colonnes, ici :
+
+40
+00:03:42,589 --> 00:03:44,990
+"fare_amount", "pickuplon",
+"pickuplat", etc.
+
+41
+00:03:46,167 --> 00:03:52,590
+Puis nous utilisons Pandas pour
+lire ces données dans des fichiers CSV :
+
+42
+00:03:52,590 --> 00:03:55,180
+un ensemble de données
+pour les données d'entraînement,
+
+43
+00:03:55,180 --> 00:03:57,221
+et un autre pour les données
+de validation.
+
+44
+00:04:01,311 --> 00:04:05,201
+Nous utilisons maintenant la
+fonctionnalité intégrée
+
+45
+00:04:05,201 --> 00:04:10,867
+pour créer une fonction d'entrée
+à partir de Pandas :
+
+46
+00:04:10,867 --> 00:04:15,594
+"tf.estimators.inputs.pandas_input_fn".
+
+47
+00:04:16,114 --> 00:04:20,702
+Cette fonction nous permet de spécifier
+les caractéristiques sous "x" ici,
+
+48
+00:04:20,702 --> 00:04:24,920
+et les libellés cibles sous "y" ici.
+
+49
+00:04:24,920 --> 00:04:28,750
+Elle gère aussi tous les paramètres
+standard pour un ensemble de données
+
+50
+00:04:28,750 --> 00:04:31,507
+d'entraînement : la taille des lots,
+le nombre d'instances,
+
+51
+00:04:31,507 --> 00:04:35,240
+mais aussi le brassage,
+avec le paramètre "queue_capacity"
+
+52
+00:04:35,240 --> 00:04:37,980
+qui correspond au tampon
+de la file d'attente de brassage.
+
+53
+00:04:38,410 --> 00:04:40,490
+Exécutons la fonction.
+
+54
+00:04:41,560 --> 00:04:44,400
+Puis, nous créons
+nos colonnes de caractéristiques.
+
+55
+00:04:44,400 --> 00:04:46,445
+Ce sont toutes des colonnes numériques.
+
+56
+00:04:46,775 --> 00:04:50,670
+Nous appelons pour chacune
+"tf.feature_column.numeric_column".
+
+57
+00:04:51,170 --> 00:04:53,950
+La liste des colonnes
+de caractéristiques indique au modèle
+
+58
+00:04:53,950 --> 00:04:56,510
+comment entrer les données
+dans son vecteur d'entrée.
+
+59
+00:05:00,069 --> 00:05:03,910
+Le modèle est instancié ici.
+
+60
+00:05:05,440 --> 00:05:09,020
+Nous lui donnons la liste des colonnes
+de caractéristiques, et un répertoire
+
+61
+00:05:09,020 --> 00:05:12,840
+dans lequel toutes les données de sortie
+seront écrites, ici.
+
+62
+00:05:14,250 --> 00:05:17,390
+Pour entraîner le modèle,
+nous appelons la fonction d'entraînement,
+
+63
+00:05:17,390 --> 00:05:19,830
+en transmettant la fonction
+d'entrée de données,
+
+64
+00:05:19,830 --> 00:05:23,122
+"train", puis "input_fn".
+
+65
+00:05:25,469 --> 00:05:29,169
+Cette fonction permet de récupérer
+des données à partir d'un dataframe Pandas
+
+66
+00:05:29,169 --> 00:05:30,863
+pour les mettre dans notre modèle.
+
+67
+00:05:33,831 --> 00:05:36,670
+Le modèle s'exécute maintenant
+sur 10 itérations.
+
+68
+00:05:36,670 --> 00:05:40,220
+On peut voir ici
+les journaux d'entraînement.
+
+69
+00:05:40,220 --> 00:05:42,500
+L'entraînement est maintenant fini.
+
+70
+00:05:42,500 --> 00:05:43,672
+Pour quel résultat ?
+
+71
+00:05:43,672 --> 00:05:47,000
+Pourquoi ne pas l'essayer sur notre
+ensemble de données de validation.
+
+72
+00:05:47,000 --> 00:05:52,771
+Pour cela, nous appelons
+"model.evaluate" ici,
+
+73
+00:05:52,771 --> 00:05:56,247
+en transmettant cette fois la fonction
+d'entrée de données qui récupère
+
+74
+00:05:56,247 --> 00:06:01,800
+les données dans le dataframe
+de validation Pandas "df_valid".
+
+75
+00:06:01,800 --> 00:06:03,240
+Nous le transmettons ici.
+
+76
+00:06:08,116 --> 00:06:10,770
+Nous obtenons nos résultats.
+
+77
+00:06:10,770 --> 00:06:17,428
+La racine carrée de l'erreur quadratique 
+moyenne finale (RMSE) est de 10 $.
+
+78
+00:06:17,428 --> 00:06:20,740
+Cela représente une erreur importante
+pour une course de taxi.
+
+79
+00:06:20,740 --> 00:06:23,800
+Nous sommes loin
+de notre benchmark précédent de 6 $.
+
+80
+00:06:23,800 --> 00:06:25,800
+Nous améliorerons cela plus tard.
+
+81
+00:06:25,800 --> 00:06:28,730
+Maintenant, nous avons
+du code avec lequel travailler.
+
+82
+00:06:29,870 --> 00:06:32,979
+Voyons si nous pouvons
+utiliser ce modèle pour les prédictions.
+
+83
+00:06:38,371 --> 00:06:42,232
+Lorsque nous instancions à nouveau le
+modèle, il recherche un point de contrôle
+
+84
+00:06:42,232 --> 00:06:45,590
+dans le répertoire du modèle
+et se recharge à partir de là.
+
+85
+00:06:45,590 --> 00:06:48,930
+Comme nous venons de l'entraîner,
+nous avons un point de contrôle
+
+86
+00:06:48,930 --> 00:06:51,349
+et le modèle est prêt
+pour les prédictions.
+
+87
+00:06:53,250 --> 00:06:57,890
+Nous l'instancions ici, en transmettant
+le même répertoire de sortie.
+
+88
+00:07:01,852 --> 00:07:09,300
+La fonction de prédiction, appelée ici,
+renvoie un générateur Python.
+
+89
+00:07:09,300 --> 00:07:13,174
+Nous l'appelons dans une boucle
+pour obtenir les tarifs prédits.
+
+90
+00:07:14,214 --> 00:07:17,470
+Les prédictions sont visibles ici.
+
+91
+00:07:18,570 --> 00:07:22,690
+Cela explique peut-être pourquoi
+la RMSE était aussi élevée.
+
+92
+00:07:22,690 --> 00:07:26,460
+Le modèle prédit essentiellement
+le même montant pour chaque trajet.
+
+93
+00:07:26,460 --> 00:07:29,180
+Peut-être qu'un modèle plus complexe
+serait plus efficace.
+
+94
+00:07:29,180 --> 00:07:32,270
+C'est ce que nous allons voir
+avec un réseau de neurones profond.
+
+95
+00:07:32,270 --> 00:07:36,080
+Nous ne modifions rien des colonnes de
+caractéristiques et des fonctions d'entrée
+
+96
+00:07:36,080 --> 00:07:39,460
+mais nous allons changer le modèle pour
+passer d'un régresseur linéaire
+
+97
+00:07:39,460 --> 00:07:41,670
+à un régresseur DNN
+avec trois couches cachées.
+
+98
+00:07:45,930 --> 00:07:47,300
+Allons-y.
+
+99
+00:07:47,990 --> 00:07:53,822
+Nous instancions le régresseur DNN ici, et
+nous configurons les couches cachées ici.
+
+100
+00:07:53,822 --> 00:07:57,779
+32 nœuds dans le 1er, 8 nœuds dans le 2e,
+et 2 nœuds dans le dernier.
+
+101
+00:08:00,022 --> 00:08:03,920
+Lançons l'entraînement,
+qui se fait encore sur 10 itérations.
+
+102
+00:08:05,931 --> 00:08:12,954
+Enfin, nous appelons à nouveau
+la fonction "model.predict"
+
+103
+00:08:12,954 --> 00:08:16,649
+avec la fonction « print_rmse ».
+
+104
+00:08:25,165 --> 00:08:26,840
+L'entraînement se déroule.
+
+105
+00:08:32,106 --> 00:08:33,919
+La validation s'effectue à présent.
+
+106
+00:08:35,634 --> 00:08:41,196
+La RMSE sur l'ensemble de données
+de validation est maintenant de 11 $.
+
+107
+00:08:41,196 --> 00:08:43,610
+Ce n'est pas encore ça.
+
+108
+00:08:43,610 --> 00:08:46,950
+Aucun modèle ne nous permet
+d'atteindre notre modèle benchmark.
+
+109
+00:08:46,950 --> 00:08:47,720
+Et maintenant ?
+
+110
+00:08:47,720 --> 00:08:51,727
+Nous utilisons peut-être TensorFlow
+pour le machine learning,
+
+111
+00:08:51,727 --> 00:08:53,583
+mais nous le faisons mal.
+
+112
+00:08:53,583 --> 00:08:56,980
+C'est donc là l'objet
+du reste de notre cours.
+
+113
+00:08:56,980 --> 00:09:00,800
+Nous devons choisir l'un des deux modèles.
+
+114
+00:09:00,800 --> 00:09:05,150
+Nous choisissons celui qui présente
+la plus faible erreur de validation.
+
+115
+00:09:05,150 --> 00:09:10,650
+Enfin, nous mesurons la RMSE sur
+les données test avec le modèle choisi.
+
+116
+00:09:10,650 --> 00:09:14,130
+Cette RMSE finale peut être publiée
+comme les performances objectives
+
+117
+00:09:14,130 --> 00:09:15,610
+de notre meilleur modèle.
+
+118
+00:09:16,155 --> 00:09:18,765
+Voici la procédure standard
+en science des données :
+
+119
+00:09:18,765 --> 00:09:20,905
+entraînement, validation, test,
+
+120
+00:09:20,905 --> 00:09:23,716
+avec des ensembles de données
+spécifiques pour chaque étape.
+
+121
+00:09:23,716 --> 00:09:26,991
+Essayons cela sur notre ensemble
+de données de benchmark.
+
+122
+00:09:26,991 --> 00:09:32,528
+La RMSE sur l'ensemble de données
+de benchmark est de 9,41.
+
+123
+00:09:57,647 --> 00:10:03,774
+Voilà, la RMSE sur l'ensemble de données
+de benchmark est de 10,5 $.
+
+124
+00:10:04,264 --> 00:10:08,684
+Non seulement il est bien plus élevé
+que dans notre benchmark d'origine de 6 $,
+
+125
+00:10:08,684 --> 00:10:13,964
+mais il n’atteint même pas notre RMSE
+basée sur des règles de distance de 8 $.
+
+126
+00:10:14,814 --> 00:10:15,920
+Ne vous inquiétez pas.
+
+127
+00:10:15,920 --> 00:10:18,520
+Nous avons appris à écrire
+un modèle TensorFlow,
+
+128
+00:10:18,520 --> 00:10:19,680
+mais nous n'avons pas vu
+
+129
+00:10:19,680 --> 00:10:24,790
+comment améliorer ce modèle
+pour le rendre plus performant.
+
+130
+00:10:24,790 --> 00:10:27,030
+Nous verrons cela
+dans les chapitres suivants.
+
+131
+00:10:27,030 --> 00:10:30,395
+Dans ce chapitre, en revanche,
+nous préparerons notre modèle TensorFlow
+
+132
+00:10:30,395 --> 00:10:31,855
+à ces améliorations.

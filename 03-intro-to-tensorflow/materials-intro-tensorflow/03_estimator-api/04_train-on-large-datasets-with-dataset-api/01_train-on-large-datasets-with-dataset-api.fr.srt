@@ -1,0 +1,692 @@
+1
+00:00:00,000 --> 00:00:04,575
+Nous allons parler ici de l'API Dataset,
+intégrée à TensorFlow,
+
+2
+00:00:04,575 --> 00:00:07,445
+et conçue pour être utilisée
+avec les estimateurs.
+
+3
+00:00:07,445 --> 00:00:10,320
+Nous allons voir pourquoi
+et comment vous pouvez l'utiliser.
+
+4
+00:00:10,320 --> 00:00:14,320
+Nous savons comment choisir un modèle
+et l'alimenter avec des données en mémoire
+
+5
+00:00:14,320 --> 00:00:16,184
+pour l'entraînement et les prédictions.
+
+6
+00:00:16,184 --> 00:00:21,530
+Mais pour les modèles réels, nous devons
+résoudre quelques problèmes pratiques.
+
+7
+00:00:21,895 --> 00:00:24,125
+L'API Estimator peut nous aider.
+
+8
+00:00:24,125 --> 00:00:27,075
+Commençons par le premier problème,
+la taille des données.
+
+9
+00:00:27,535 --> 00:00:30,820
+En situation réelle, vos données
+d'entraînement rentreront
+
+10
+00:00:30,820 --> 00:00:33,595
+rarement en mémoire,
+et vous les chargerez progressivement
+
+11
+00:00:33,595 --> 00:00:35,655
+à partir d'un disque
+pendant l'entraînement.
+
+12
+00:00:35,655 --> 00:00:39,499
+Comment écrire une fonction d'entrée
+pour votre estimateur à cette fin ?
+
+13
+00:00:39,499 --> 00:00:43,710
+Grâce à des ensembles de données,
+comme dans "tf.data.Dataset" ?
+
+14
+00:00:43,710 --> 00:00:47,630
+Les ensembles de données volumineux sont
+souvent segmentés en plusieurs fichiers,
+
+15
+00:00:47,630 --> 00:00:49,600
+qui peuvent être chargés progressivement.
+
+16
+00:00:49,600 --> 00:00:52,890
+Souvenez-vous que l'entraînement
+se fait sur des mini-lots de données.
+
+17
+00:00:52,890 --> 00:00:56,430
+Nous n'avons pas besoin de
+tout l'ensemble de données en mémoire.
+
+18
+00:00:56,960 --> 00:01:00,940
+Nous n'avons besoin que d'un mini-lot
+pour une étape d'entraînement.
+
+19
+00:01:00,940 --> 00:01:02,910
+Voici l'API Dataset.
+
+20
+00:01:03,440 --> 00:01:06,625
+Elle va nous aider à créer
+des fonctions d'entrée pour notre modèle
+
+21
+00:01:06,625 --> 00:01:08,790
+pour charger les données progressivement.
+
+22
+00:01:08,790 --> 00:01:11,500
+Il existe des classes d'ensembles
+de données spécialisées,
+
+23
+00:01:11,500 --> 00:01:15,255
+qui peuvent lire des données à partir
+de fichiers texte, comme des fichiers CSV,
+
+24
+00:01:15,255 --> 00:01:18,740
+des enregistrements TF, ou des fichiers
+d'enregistrement de longueur fixe.
+
+25
+00:01:18,740 --> 00:01:22,025
+Sinon, vous pouvez utiliser une clause
+d'ensemble de données générique
+
+26
+00:01:22,025 --> 00:01:24,425
+et ajouter votre propre code de décodage.
+
+27
+00:01:24,620 --> 00:01:28,540
+Voici un exemple dans lequel un ensemble
+de données de lignes de texte est utilisé
+
+28
+00:01:28,540 --> 00:01:30,920
+pour charger des données
+à partir d'un fichier CSV.
+
+29
+00:01:30,920 --> 00:01:32,975
+Analysons chaque étape.
+
+30
+00:01:33,570 --> 00:01:36,470
+Cette partie du code indique
+à la classe d'ensemble de données
+
+31
+00:01:36,470 --> 00:01:37,890
+comment organiser les données
+
+32
+00:01:37,890 --> 00:01:44,439
+en lots d'entraînement de 128,
+répétées sur 15 itérations,
+
+33
+00:01:44,439 --> 00:01:49,175
+et bien sûr brassées avec un tampon
+de brassage de 1 000 éléments.
+
+34
+00:01:49,890 --> 00:01:53,435
+Ici, nous instancions l'ensemble
+de données de lignes de texte
+
+35
+00:01:53,435 --> 00:01:55,160
+à partir d'un nom de fichier.
+
+36
+00:01:55,405 --> 00:01:58,295
+Le fichier est alors chargé
+et divisé en lignes.
+
+37
+00:01:58,810 --> 00:02:02,100
+L'ensemble de données ainsi obtenu
+est un ensemble de lignes de texte.
+
+38
+00:02:02,480 --> 00:02:06,330
+Nous pouvons alors utiliser la fonction
+"map" pour transformer les lignes.
+
+39
+00:02:06,330 --> 00:02:10,220
+Dans notre cas, nous voulons diviser
+chaque ligne en éléments de données.
+
+40
+00:02:10,220 --> 00:02:13,370
+"map" applique indépendamment
+une fonction à chaque élément
+
+41
+00:02:13,370 --> 00:02:15,195
+de l'ensemble de données.
+
+42
+00:02:15,640 --> 00:02:20,200
+Dans cette fonction, nous utilisons
+la fonction "tf.decode_csv"
+
+43
+00:02:20,200 --> 00:02:24,885
+pour extraire les valeurs séparées
+par des virgules des lignes de texte,
+
+44
+00:02:24,885 --> 00:02:30,070
+et pour les formater en caractéristiques
+et libellés attendus par notre modèle.
+
+45
+00:02:30,540 --> 00:02:33,125
+La fonction "map" est suivie
+d'un ensemble de données
+
+46
+00:02:33,125 --> 00:02:34,845
+de paires caractéristiques/libellés.
+
+47
+00:02:34,845 --> 00:02:39,120
+Enfin, nous créons la fonction d'entrée
+pour notre modèle.
+
+48
+00:02:39,120 --> 00:02:42,735
+Ce code récurrent fait tout le travail.
+
+49
+00:02:42,735 --> 00:02:46,245
+Vous vous demandez peut-être
+pourquoi on appelle cela un itérateur,
+
+50
+00:02:46,245 --> 00:02:50,185
+à quoi sert la fonction "get_next", et
+ce qu'il se passe lors de l'entraînement.
+
+51
+00:02:50,425 --> 00:02:54,820
+Analysons tout cela plus en détail
+pour mieux comprendre le processus.
+
+52
+00:02:55,495 --> 00:02:59,655
+TensorFlow repose
+sur un principe d'exécution en différé.
+
+53
+00:02:59,655 --> 00:03:03,370
+Les anciennes commandes
+de type "tf." écrites en Python
+
+54
+00:03:03,370 --> 00:03:05,095
+ne traitent pas de données.
+
+55
+00:03:05,095 --> 00:03:08,225
+Elles construisent un graphique
+des opérations en mémoire.
+
+56
+00:03:08,850 --> 00:03:12,230
+Ce graphique sera exécuté
+lors de l'entraînement ou des prédictions.
+
+57
+00:03:12,705 --> 00:03:16,234
+Lors de l'instanciation d'un estimateur,
+comme un régresseur linéaire,
+
+58
+00:03:16,234 --> 00:03:17,730
+la même chose se produit.
+
+59
+00:03:17,730 --> 00:03:22,250
+Un graphique TensorFlow représentant
+notre modèle est créé en mémoire.
+
+60
+00:03:22,570 --> 00:03:26,520
+Il faut maintenant le connecter
+à une source de données.
+
+61
+00:03:26,520 --> 00:03:29,065
+C'est là qu'interviennent
+les fonctions d'entrée.
+
+62
+00:03:29,065 --> 00:03:34,270
+Les fonctions d'entrée renvoient
+un nœud TensorFlow,
+
+63
+00:03:34,270 --> 00:03:37,905
+qui représente les caractéristiques
+et les libellés attendus par le modèle.
+
+64
+00:03:37,905 --> 00:03:41,760
+Ce nœud sera connecté
+aux entrées du modèle.
+
+65
+00:03:41,760 --> 00:03:47,805
+Son rôle est de fournir un nouveau lot
+de données à chaque exécution,
+
+66
+00:03:47,805 --> 00:03:49,680
+pendant l'entraînement ou l'inférence.
+
+67
+00:03:50,540 --> 00:03:53,415
+C'est là que l'API Dataset entre en jeu.
+
+68
+00:03:53,415 --> 00:03:58,260
+Elle génère des nœuds d'entrée
+qui fournissent un lot de données
+
+69
+00:03:58,260 --> 00:04:00,225
+à chaque étape d'entraînement.
+
+70
+00:04:00,800 --> 00:04:04,080
+Ils s'assurent également que les données
+sont chargées progressivement
+
+71
+00:04:04,080 --> 00:04:06,245
+et qu'elles ne font jamais
+saturer la mémoire.
+
+72
+00:04:06,962 --> 00:04:11,782
+Lorsque vous appelez
+"dataset.make_iterator.get_next",
+
+73
+00:04:11,782 --> 00:04:15,755
+vous n'obtenez pas réellement l'élément
+suivant dans l'ensemble de données,
+
+74
+00:04:15,755 --> 00:04:18,015
+mais un nœud TensorFlow.
+
+75
+00:04:18,015 --> 00:04:21,890
+À chaque fois qu'il est exécuté
+pendant l'entraînement,
+
+76
+00:04:21,890 --> 00:04:24,375
+ce nœud renvoie un lot
+de données d'entraînement.
+
+77
+00:04:24,815 --> 00:04:25,800
+Récapitulons.
+
+78
+00:04:26,350 --> 00:04:30,260
+Les fonctions d'entrée sont appelées
+lorsqu'un modèle est instancié.
+
+79
+00:04:30,640 --> 00:04:35,300
+Elles renvoient une paire de nœuds TF
+connectée aux entrées de votre modèle.
+
+80
+00:04:36,060 --> 00:04:39,555
+Ces nœuds alimentent
+votre modèle en données
+
+81
+00:04:39,555 --> 00:04:41,945
+pendant l'entraînement ou l'inférence.
+
+82
+00:04:43,195 --> 00:04:48,175
+J'aimerais revenir sur quelques idées
+fausses concernant les fonctions d'entrée.
+
+83
+00:04:48,810 --> 00:04:51,520
+Non, une fonction d'entrée
+n'est PAS appelée à chaque fois
+
+84
+00:04:51,520 --> 00:04:53,305
+que votre modèle a besoin de données.
+
+85
+00:04:53,305 --> 00:04:56,770
+Elle est appelée une seule fois,
+lors de la création du modèle.
+
+86
+00:04:57,160 --> 00:05:00,920
+Et non, les fonctions d'entrée ne sont pas
+censées renvoyer des données réelles,
+
+87
+00:05:00,920 --> 00:05:04,130
+même si ça y ressemble
+lorsque vous les écrivez.
+
+88
+00:05:04,370 --> 00:05:09,040
+Elles renvoient des nœuds TensorFlow,
+qui renvoient des données
+
+89
+00:05:09,040 --> 00:05:11,030
+lorsqu'ils sont exécutés.
+
+90
+00:05:11,460 --> 00:05:14,435
+Vous pouvez placer du code
+arbitrairement complexe
+
+91
+00:05:14,435 --> 00:05:17,390
+dans la fonction d'entrée
+pour transformer vos données,
+
+92
+00:05:17,390 --> 00:05:20,910
+mais vous devez garder en tête
+qu'il ne s'exécutera qu'une seule fois.
+
+93
+00:05:21,190 --> 00:05:24,260
+Quelles que soient les transformations
+que vous voulez appliquer,
+
+94
+00:05:24,260 --> 00:05:28,520
+et que vous utilisiez l'API Dataset
+ou non, assurez-vous de les exprimer
+
+95
+00:05:28,520 --> 00:05:32,555
+dans des commandes de type "tf."
+qui génèrent un graphique TensorFlow.
+
+96
+00:05:32,855 --> 00:05:38,025
+Cela vous permet d'appliquer vos
+transformations à chaque lot de données
+
+97
+00:05:38,025 --> 00:05:40,575
+lorsqu'il est chargé dans votre modèle,
+
+98
+00:05:40,575 --> 00:05:44,425
+même si la fonction d'entrée elle-même
+n'est appelée qu'une seule fois.
+
+99
+00:05:44,895 --> 00:05:46,430
+Voici à nouveau le code complet.
+
+100
+00:05:46,430 --> 00:05:51,760
+Examinons-le à encore une fois,
+en commençant par le bas et en remontant.
+
+101
+00:05:52,365 --> 00:05:55,520
+"model.train" lance
+la boucle d'entraînement.
+
+102
+00:05:56,360 --> 00:05:59,960
+Le modèle reçoit des données
+de ses nœuds d'entrée,
+
+103
+00:05:59,960 --> 00:06:03,560
+caractéristiques et libellés définis
+dans la fonction d'entrée.
+
+104
+00:06:03,840 --> 00:06:06,560
+Ces nœuds lancent des itérations
+sur l'ensemble de données
+
+105
+00:06:06,560 --> 00:06:08,780
+et renvoient un lot de données
+
+106
+00:06:08,790 --> 00:06:12,210
+chaque fois qu'ils sont exécutés
+dans la boucle d'entraînement.
+
+107
+00:06:13,100 --> 00:06:17,970
+Ceci explique le nom de l'API Dataset
+appelée pour les donner :
+
+108
+00:06:17,970 --> 00:06:21,065
+dataset.make_one_short_iterator()get_next().
+
+109
+00:06:21,785 --> 00:06:24,615
+L'ensemble de données brasse
+les données, répète l'opération
+
+110
+00:06:24,615 --> 00:06:29,325
+sur 15 itérations, puis forme
+des mini-lots de 128 éléments.
+
+111
+00:06:30,225 --> 00:06:34,010
+L'ensemble de données a été produit
+en lisant les lignes d'un fichier texte
+
+112
+00:06:34,010 --> 00:06:37,970
+et en décodant les valeurs séparées
+par des virgules qu'il contient.
+
+113
+00:06:38,490 --> 00:06:42,545
+L'opération "map" transforme
+un ensemble de données de lignes de texte
+
+114
+00:06:42,545 --> 00:06:45,440
+en ensemble de données
+de caractéristiques et libellés.
+
+115
+00:06:45,860 --> 00:06:49,685
+Enfin, nous devons parler
+de notre problème initial,
+
+116
+00:06:49,685 --> 00:06:54,255
+le chargement d'ensembles de données
+volumineux à partir de fichiers segmentés.
+
+117
+00:06:54,255 --> 00:06:57,360
+Une ligne de code supplémentaire
+suffit pour cela.
+
+118
+00:06:57,360 --> 00:07:00,930
+Nous commençons par analyser le disque
+et par charger un ensemble de données
+
+119
+00:07:00,930 --> 00:07:04,990
+de noms de fichiers à l'aide
+de la fonction "Dataset.list_files".
+
+120
+00:07:05,700 --> 00:07:08,375
+Cette fonction prend en charge
+une syntaxe de type glob
+
+121
+00:07:08,375 --> 00:07:11,905
+qui associe les noms de fichiers
+à un format commun.
+
+122
+00:07:12,170 --> 00:07:15,030
+Puis nous utilisons un ensemble
+de données de lignes de texte
+
+123
+00:07:15,030 --> 00:07:17,940
+pour charger ces fichiers
+et transformer chaque nom de fichier
+
+124
+00:07:17,940 --> 00:07:19,905
+en ensemble de données
+de lignes de texte.
+
+125
+00:07:19,905 --> 00:07:23,775
+Nous effectuons une carte plate de tous
+ces éléments dans un ensemble de données.
+
+126
+00:07:23,775 --> 00:07:27,380
+Puis, pour chaque ligne de texte,
+nous utilisons la fonction "map"
+
+127
+00:07:27,380 --> 00:07:31,410
+pour appliquer l'algorithme d'analyse CSV
+et obtenir un ensemble de données
+
+128
+00:07:31,410 --> 00:07:33,435
+de caractéristiques et de libellés.
+
+129
+00:07:34,195 --> 00:07:37,955
+Pourquoi deux fonctions de mappage
+("map" et "flat_map") ?
+
+130
+00:07:38,350 --> 00:07:42,690
+L'une d'entre elles concerne uniquement
+les transformations un à un,
+
+131
+00:07:42,690 --> 00:07:45,525
+et l'autre les transformations
+un à plusieurs.
+
+132
+00:07:45,995 --> 00:07:50,485
+L'analyse d'une ligne de texte
+est une transformation un à un,
+
+133
+00:07:50,485 --> 00:07:52,535
+et nous l'appliquons donc avec "map".
+
+134
+00:07:52,535 --> 00:07:55,925
+Lors d'un chargement de fichier
+avec un ensemble de données
+
+135
+00:07:55,925 --> 00:08:00,250
+de lignes de texte, un nom de fichier
+devient une collection de lignes de texte.
+
+136
+00:08:00,250 --> 00:08:02,985
+Il s'agit donc
+d'une transformation un à plusieurs,
+
+137
+00:08:02,985 --> 00:08:05,595
+appliquée avec la fonction "flat_map"
+
+138
+00:08:05,595 --> 00:08:10,900
+pour aplatir toutes les lignes de texte
+obtenues dans un ensemble de données.
+
+139
+00:08:11,300 --> 00:08:14,270
+Vous savez maintenant comment
+utiliser les ensembles de données
+
+140
+00:08:14,270 --> 00:08:16,760
+pour générer des fonctions d'entrée
+pour vos modèles
+
+141
+00:08:16,760 --> 00:08:18,440
+et réaliser un entraînement
+
+142
+00:08:18,440 --> 00:08:20,935
+sur des ensembles de données
+volumineux hors mémoire.
+
+143
+00:08:21,275 --> 00:08:24,095
+Mais les ensembles de données
+offrent aussi une API riche
+
+144
+00:08:24,095 --> 00:08:26,742
+pour exploiter et transformer vos données.
+
+145
+00:08:27,052 --> 00:08:27,920
+Profitez-en.

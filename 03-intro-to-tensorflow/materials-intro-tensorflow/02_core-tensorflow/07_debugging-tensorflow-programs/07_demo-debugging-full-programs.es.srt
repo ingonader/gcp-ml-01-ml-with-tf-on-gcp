@@ -1,0 +1,346 @@
+1
+00:00:00,720 --> 00:00:03,735
+Estoy en el repositorio
+de GitHub del curso.
+
+2
+00:00:03,735 --> 00:00:08,110
+Estoy en "03_tensorflow",
+el capítulo que estamos viendo.
+
+3
+00:00:08,189 --> 00:00:10,900
+Abriré "debug_demo".
+
+4
+00:00:10,900 --> 00:00:16,885
+Veamos algunos de los temas
+de los que hablamos en este capítulo.
+
+5
+00:00:16,885 --> 00:00:21,505
+Voy a importar TensorFlow.
+
+6
+00:00:21,505 --> 00:00:24,430
+Aquí tenemos
+el primer ejemplo de lo que vimos.
+
+7
+00:00:24,430 --> 00:00:29,470
+Tenemos datos que dividimos
+para obtener todas las filas de datos.
+
+8
+00:00:29,470 --> 00:00:31,670
+Obtenemos dos columnas.
+
+9
+00:00:31,670 --> 00:00:34,895
+En c, obtenemos
+todas las filas, pero solo una columna.
+
+10
+00:00:34,895 --> 00:00:37,025
+Entonces, cuando sumemos a y c
+
+11
+00:00:37,025 --> 00:00:39,525
+y se generará un error de forma.
+
+12
+00:00:39,525 --> 00:00:41,570
+Y eso es justo lo que ocurre.
+
+13
+00:00:41,570 --> 00:00:47,000
+Observe que al final
+del seguimiento de pila
+
+14
+00:00:47,000 --> 00:00:49,780
+el mensaje de error,
+se indica que hay un error de valor.
+
+15
+00:00:49,780 --> 00:00:52,435
+Las dimensiones deben
+ser iguales, pero son 2 y 4.
+
+16
+00:00:52,470 --> 00:00:55,805
+La primera es un tensor 2D de [4, 2]
+
+17
+00:00:55,805 --> 00:00:58,595
+y la segunda es un tensor 1D de [4].
+
+18
+00:00:58,595 --> 00:01:01,180
+Cuando revisamos el seguimiento de pila
+
+19
+00:01:01,180 --> 00:01:05,900
+vemos este elemento
+common_shapes.python, que no es nuestro.
+
+20
+00:01:05,920 --> 00:01:07,605
+Es de TensorFlow.
+
+21
+00:01:07,605 --> 00:01:08,910
+Podemos ignorarlo.
+
+22
+00:01:08,910 --> 00:01:11,895
+Este también es de TensorFlow, 
+entonces lo ignoramos.
+
+23
+00:01:11,895 --> 00:01:17,255
+Y este también es de TensorFlow, y ese.
+
+24
+00:01:17,255 --> 00:01:21,060
+Todos estos son
+de TensorFlow y podemos ignorarlos.
+
+25
+00:01:21,060 --> 00:01:25,480
+Sigo desplazándome hasta encontrar
+algo que le pertenezca a mi código.
+
+26
+00:01:25,480 --> 00:01:28,310
+Allí está some_method,
+que pertenece a mi código
+
+27
+00:01:28,310 --> 00:01:31,870
+y está la llamada
+al método: s = a + c.
+
+28
+00:01:31,870 --> 00:01:33,885
+Me señala que este es el problema.
+
+29
+00:01:33,885 --> 00:01:37,190
+Y esto se llama desde sess.run
+
+30
+00:01:37,190 --> 00:01:40,895
+pero lo ignoraremos
+porque este es el problema, s = a + c.
+
+31
+00:01:40,950 --> 00:01:44,505
+Veamos esto para encontrar
+el origen del error de valor.
+
+32
+00:01:44,505 --> 00:01:48,500
+Subimos y vemos que s = a + c… Claro.
+
+33
+00:01:48,500 --> 00:01:53,005
+Sumamos dos elementos, pero sabemos
+que según las reglas del álgebra lineal
+
+34
+00:01:53,015 --> 00:01:56,340
+para sumar dos tensores,
+estos deben tener la misma forma.
+
+35
+00:01:56,340 --> 00:01:57,690
+De otra forma, no funciona.
+
+36
+00:01:57,690 --> 00:02:01,845
+Ahora, podemos intentar corregirlo.
+
+37
+00:02:01,845 --> 00:02:08,794
+En este caso, lo que haré
+es crear datos ficticios.
+
+38
+00:02:08,794 --> 00:02:12,400
+Pasaré mis datos ficticios…
+
+39
+00:02:12,400 --> 00:02:14,090
+¿Cuál es la forma aquí?
+
+40
+00:02:14,090 --> 00:02:15,815
+Es una matriz de 4 x 3.
+
+41
+00:02:15,815 --> 00:02:23,605
+Pasaré… Busco la forma de a
+y muestro la forma de c.
+
+42
+00:02:23,605 --> 00:02:25,865
+Ahora, ejecutaré esta celda.
+
+43
+00:02:25,865 --> 00:02:26,647
+Cuando lo hago, me indica
+
+44
+00:02:26,647 --> 00:02:27,038
+que a forma de a es (4, 2)
+
+45
+00:02:27,038 --> 00:02:33,090
+y la forma de c es (4).
+
+46
+00:02:33,440 --> 00:02:36,820
+entonces, ya sé cuál es el problema
+
+47
+00:02:36,820 --> 00:02:39,680
+y la pregunta ahora es, ¿cómo lo arreglo?
+
+48
+00:02:39,680 --> 00:02:41,565
+La forma de hacerlo
+
+49
+00:02:41,565 --> 00:02:44,450
+es asegurarse de
+que ambos tengan la misma forma.
+
+50
+00:02:44,450 --> 00:02:47,590
+Es posible que obtenga 0:2
+en la primera instancia
+
+51
+00:02:47,590 --> 00:02:49,840
+y 1:3, en otras palabras,
+la ventana deslizante
+
+52
+00:02:49,840 --> 00:02:51,495
+que estamos moviendo una cada vez.
+
+53
+00:02:51,495 --> 00:02:53,620
+La zancada (stride), cuando hablamos
+
+54
+00:02:53,620 --> 00:02:56,410
+de imágenes, aprenderán
+sobre este término "la zancada".
+
+55
+00:02:56,410 --> 00:02:59,470
+La zancada es 1
+y el tamaño de mi venta es 2.
+
+56
+00:02:59,470 --> 00:03:01,150
+Eso es lo que hago.
+
+57
+00:03:01,150 --> 00:03:02,620
+Y cuando lo ejecuto
+
+58
+00:03:02,620 --> 00:03:04,520
+debería funcionar perfectamente
+
+59
+00:03:04,520 --> 00:03:07,530
+y, básicamente,
+obtengo la suma que es el resultado
+
+60
+00:03:07,530 --> 00:03:09,050
+de la ventana deslizante.
+
+61
+00:03:09,050 --> 00:03:13,315
+Ese básicamente es el proceso
+que se sigue para depurar el código.
+
+62
+00:03:13,315 --> 00:03:15,270
+Leer el seguimiento de las llamadas
+
+63
+00:03:15,270 --> 00:03:16,745
+leer el mensaje de error
+
+64
+00:03:16,745 --> 00:03:19,780
+encontrar dónde está el problema
+y después de encontrarlo
+
+65
+00:03:19,780 --> 00:03:23,265
+corregirlo, asegurarse de que funciona
+con los datos ficticios.
+
+66
+00:03:23,265 --> 00:03:26,735
+Y, luego, pueden probar
+de nuevo con el conjunto de datos
+
+67
+00:03:26,735 --> 00:03:28,565
+y con suerte todo debería funcionar.
+
+68
+00:03:28,565 --> 00:03:31,610
+De manera similar,
+hablamos de un error de tipo
+
+69
+00:03:31,610 --> 00:03:35,775
+y es exactamente el mismo proceso.
+En este caso, estoy sumando a y b
+
+70
+00:03:35,775 --> 00:03:38,285
+a son números de punto flotante
+
+71
+00:03:38,285 --> 00:03:40,029
+b son enteros
+
+72
+00:03:40,029 --> 00:03:41,245
+no va a funcionar.
+
+73
+00:03:41,245 --> 00:03:43,490
+Revisaré el seguimiento de pila
+
+74
+00:03:43,490 --> 00:03:46,825
+analizaré el mensaje de error
+y descubriré que para corregirlo
+
+75
+00:03:46,825 --> 00:03:51,080
+una forma sería tomar b,
+que son originalmente enteros
+
+76
+00:03:51,080 --> 00:03:52,470
+y aplicar cast.
+
+77
+00:03:52,470 --> 00:03:55,265
+Y después de hacerlo, todo funcionará.
+
+78
+00:03:55,265 --> 00:03:57,260
+Y esa es la idea en esencia.

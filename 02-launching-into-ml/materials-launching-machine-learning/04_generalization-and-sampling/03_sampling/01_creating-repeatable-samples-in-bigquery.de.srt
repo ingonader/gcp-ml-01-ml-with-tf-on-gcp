@@ -1,0 +1,668 @@
+1
+00:00:00,000 --> 00:00:02,969
+Gerade haben Sie gelernt, 
+dass Sie durch Aufteilen der Daten
+
+2
+00:00:02,969 --> 00:00:06,245
+Ihr Modell anhand eines 
+simulierten realen Datasets testen können,
+
+3
+00:00:06,245 --> 00:00:09,075
+indem Sie ein 
+Data-Subset beim Training aussparen.
+
+4
+00:00:09,075 --> 00:00:12,710
+Aber woher weiß man, wo man 
+das ursprüngliche Dataset teilen muss?
+
+5
+00:00:12,710 --> 00:00:15,540
+Was ist, wenn das Dataset riesengroß ist?
+
+6
+00:00:15,540 --> 00:00:18,775
+Müssen wir jeden einzelnen 
+Datenpunkt trainieren und testen?
+
+7
+00:00:18,775 --> 00:00:20,175
+In dieser Lektion zum Sampling
+
+8
+00:00:20,175 --> 00:00:22,580
+zeige ich Ihnen, 
+wie genau Sie Ihre Daten
+
+9
+00:00:22,580 --> 00:00:25,395
+auf wiederholbare Weise
+mit Google BigQuery aufteilen
+
+10
+00:00:25,395 --> 00:00:28,405
+und welche Fehlerquellen
+vermieden werden sollten.
+
+11
+00:00:28,405 --> 00:00:32,750
+Das können Sie dann 
+im nächsten Lab üben.
+
+12
+00:00:32,750 --> 00:00:34,620
+Fangen wir an.
+
+13
+00:00:35,310 --> 00:00:37,735
+Bevor wir über
+das Aufteilen von Datasets sprechen,
+
+14
+00:00:37,735 --> 00:00:39,655
+müssen wir 
+ein passendes Dataset finden.
+
+15
+00:00:39,655 --> 00:00:41,270
+In diesem Beispiel verwenden wir
+
+16
+00:00:41,270 --> 00:00:43,645
+Daten zur Termintreue
+von Fluggesellschaften
+
+17
+00:00:43,645 --> 00:00:46,625
+des US-amerikanischen
+Bureau of Transportation Statistics.
+
+18
+00:00:46,625 --> 00:00:49,640
+Google hat diese öffentlichen 
+Daten für alle Nutzer in BigQuery
+
+19
+00:00:49,640 --> 00:00:53,435
+zugänglich gemacht als
+airlineontimedata.flightsdataset.
+
+20
+00:00:53,435 --> 00:00:56,720
+Dieses Dataset hat
+die Ankunfts- und Abflugsverspätungen
+
+21
+00:00:56,720 --> 00:01:00,945
+und eine neue Reihenfolge 
+von 70 Millionen Flügen aufgezeichnet.
+
+22
+00:01:00,945 --> 00:01:02,895
+Wie können wir effektiv
+
+23
+00:01:02,895 --> 00:01:06,010
+Trainings-, Validierungs- und Testdaten
+
+24
+00:01:06,010 --> 00:01:07,580
+aus diesem Dataset einheitlich
+
+25
+00:01:07,580 --> 00:01:09,615
+und reproduzierbar auswählen?
+
+26
+00:01:10,075 --> 00:01:12,315
+SQL, oder Structured Query Language,
+
+27
+00:01:12,315 --> 00:01:13,500
+und damit BigQuery,
+
+28
+00:01:13,500 --> 00:01:15,020
+wo SQL ausgeführt wird,
+
+29
+00:01:15,020 --> 00:01:16,990
+besitzt die Funktion "Rand",
+
+30
+00:01:16,990 --> 00:01:19,920
+die einen Wert 
+zwischen 0 und 1 generiert.
+
+31
+00:01:19,920 --> 00:01:22,530
+Sie können einfach
+80 Prozent Ihres Datasets erhalten,
+
+32
+00:01:22,530 --> 00:01:25,865
+indem Sie eine einfache 
+SQL WHERE-Klausel anwenden.
+
+33
+00:01:25,865 --> 00:01:28,785
+Sie werden sicher 
+einige Probleme dabei erkennen.
+
+34
+00:01:28,785 --> 00:01:30,360
+Überlegen Sie, 
+ob dieser Prozess
+
+35
+00:01:30,360 --> 00:01:33,560
+wiederholbar sein wird, 
+wenn ein Kollege Ihr Experiment
+
+36
+00:01:33,560 --> 00:01:36,760
+mit denselben 80 Prozent
+des Trainingsdatasets wiederholen würde.
+
+37
+00:01:36,760 --> 00:01:37,855
+Angenommen, das Dataset
+
+38
+00:01:37,855 --> 00:01:41,655
+ist auf 70 Millionen Flüge eingestellt,
+würde er dieselben 56 Millionen Flüge
+
+39
+00:01:41,655 --> 00:01:45,100
+bzw. 80 Prozent 
+des Datasets wie Sie erhalten?
+
+40
+00:01:45,480 --> 00:01:48,660
+Wir müssen wissen, welche Daten
+
+41
+00:01:48,660 --> 00:01:52,805
+in welchen Bucket gehören – 
+Training, Validierung oder Testen.
+
+42
+00:01:52,805 --> 00:01:56,960
+Damit können wir und unsere 
+Kollegen unsere Experimente wiederholen
+
+43
+00:01:56,960 --> 00:01:59,570
+und dabei dieselben Daten 
+für jeden Bucket verwenden.
+
+44
+00:01:59,900 --> 00:02:01,310
+Sie ahnen vielleicht,
+
+45
+00:02:01,310 --> 00:02:02,970
+dass eine simple Random-Funktion
+
+46
+00:02:02,970 --> 00:02:06,125
+einfach fünf beliebig
+ausgewählte Zeilen nehmen würde,
+
+47
+00:02:06,125 --> 00:02:08,565
+und das bei jedem Ausführen der Abfrage.
+
+48
+00:02:08,565 --> 00:02:10,580
+Damit ist es extrem schwer,
+
+49
+00:02:10,580 --> 00:02:13,785
+fast unmöglich, 
+die restlichen 20 Prozent Ihrer Daten
+
+50
+00:02:13,785 --> 00:02:16,170
+für die Validierungs-
+und Test-Buckets aufzuteilen.
+
+51
+00:02:16,170 --> 00:02:18,665
+Zusätzlich dazu
+ist das Dataset vielleicht sortiert,
+
+52
+00:02:18,665 --> 00:02:20,440
+was Ihre Stichprobe verzerren könnte.
+
+53
+00:02:20,440 --> 00:02:21,990
+Und bloß ein Order-by einzufügen
+
+54
+00:02:21,990 --> 00:02:26,785
+kann auch zu Problemen führen, 
+z. B. beim Mini-Batch-Gradientenabstieg.
+
+55
+00:02:27,675 --> 00:02:30,780
+Beim Machine Learning 
+müssen Sie grundsätzlich in der Lage sein,
+
+56
+00:02:30,780 --> 00:02:33,515
+diese reproduzierbaren 
+Datenstichproben zu erstellen.
+
+57
+00:02:33,515 --> 00:02:34,940
+Eine Möglichkeit dafür ist,
+
+58
+00:02:34,940 --> 00:02:37,620
+die letzten 
+paar Ziffern einer Hash-Funktion
+
+59
+00:02:37,620 --> 00:02:41,175
+auf dem Feld zu verwenden, 
+auf dem Sie Ihre Daten aufteilen.
+
+60
+00:02:41,175 --> 00:02:43,240
+Eine öffentlich zugängliche Hash-Funktion
+
+61
+00:02:43,240 --> 00:02:45,900
+in BigQuery heißt Farm Fingerprint.
+
+62
+00:02:45,900 --> 00:02:49,735
+Farm Fingerprint nimmt 
+einen Wert wie "10. Dezember 2018"
+
+63
+00:02:49,735 --> 00:02:52,470
+und wandelt ihn 
+in eine lange Ziffernreihe um.
+
+64
+00:02:52,470 --> 00:02:54,030
+Dieser Hash-Wert ist dann
+
+65
+00:02:54,030 --> 00:02:57,445
+für jeden anderen 
+"10. Dezember 2018"-Wert im Dataset gleich.
+
+66
+00:02:57,445 --> 00:03:01,575
+Wenn Sie einen Algorithmus zur 
+Vorhersage von Verspätungen erstellen,
+
+67
+00:03:01,575 --> 00:03:04,060
+können Sie Ihre Daten nach Datum aufteilen
+
+68
+00:03:04,060 --> 00:03:08,985
+und ca. 80 Prozent 
+der Tage in das Trainings-Dataset stecken.
+
+69
+00:03:09,165 --> 00:03:10,835
+Das ist tatsächlich reproduzierbar,
+
+70
+00:03:10,835 --> 00:03:14,840
+denn die "Farm Fingerprint"-
+Funktion gibt exakt denselben Wert zurück,
+
+71
+00:03:14,840 --> 00:03:17,430
+wenn sie auf 
+ein spezielles Datum ausgerichtet ist.
+
+72
+00:03:17,430 --> 00:03:20,300
+Sie werden immer genau die 80 Prozent,
+
+73
+00:03:20,300 --> 00:03:23,315
+oder in etwa
+die 80 Prozent der Daten erhalten.
+
+74
+00:03:23,315 --> 00:03:25,810
+Wenn Sie Ihre Daten 
+nach Ankunftsflughafen aufteilen
+
+75
+00:03:25,810 --> 00:03:28,270
+und 80 Prozent
+der Flughäfen im Trainingsdataset
+
+76
+00:03:28,270 --> 00:03:31,285
+und der Rest in den Test-
+und Validierungs-Datasets sind,
+
+77
+00:03:31,285 --> 00:03:34,865
+wenden Sie die Hash-Funktion
+stattdessen nach Ankunftsflughafen an.
+
+78
+00:03:34,865 --> 00:03:36,392
+Sehen wir uns diese Abfrage an:
+
+79
+00:03:36,392 --> 00:03:38,540
+Wie würden Sie
+eine neue 10-Prozent-Stichprobe
+
+80
+00:03:38,540 --> 00:03:40,115
+für die Evaluierung erstellen?
+
+81
+00:03:40,115 --> 00:03:44,160
+Sie ändern das "kleiner 8" 
+in "gleich 8" für Testdaten oder
+
+82
+00:03:44,160 --> 00:03:49,495
+in "gleich 8" oder "gleich 9" für weitere
+10 Prozent zum Evaluieren oder Testen um.
+
+83
+00:03:49,495 --> 00:03:51,600
+So sollten Sie also die Buckets aufteilen.
+
+84
+00:03:52,280 --> 00:03:55,860
+Angenommen, es soll eine Vorhersage 
+der Verspätungen nach Fluggesellschaft,
+
+85
+00:03:55,860 --> 00:03:58,010
+Tageszeit, Wetter
+und Flughafeneigenschaften,
+
+86
+00:03:58,010 --> 00:04:00,510
+wie Anzahl 
+der Start-/Landebahnen, getroffen werden.
+
+87
+00:04:00,510 --> 00:04:02,395
+Wonach sollte 
+man die Daten aufteilen?
+
+88
+00:04:02,395 --> 00:04:05,055
+Datum? Flughafen? Fluggesellschaft?
+
+89
+00:04:05,055 --> 00:04:08,240
+Sie sollten Ihre Daten
+immer nach einem Faktor aufteilen,
+
+90
+00:04:08,240 --> 00:04:10,745
+auf den Sie verzichten können.
+
+91
+00:04:10,745 --> 00:04:13,620
+Zum Beispiel, 
+wenn Sie Ankunftsverspätungen
+
+92
+00:04:13,620 --> 00:04:17,120
+vorhersagen wollen und Ihr Dataset 
+nur über Daten von zwei Tagen verfügt,
+
+93
+00:04:17,120 --> 00:04:19,645
+wird die Aufteilung 
+nicht detaillierter als 50-50.
+
+94
+00:04:19,645 --> 00:04:22,475
+Die Hash-Funktion ist
+einseitig und gibt nur einen Wert aus.
+
+95
+00:04:22,475 --> 00:04:25,185
+Sie werden mit zwei Daten
+keine 80-20-Aufteilung erhalten.
+
+96
+00:04:25,185 --> 00:04:28,100
+Sehen wir uns 
+diese Optionen einzeln an.
+
+97
+00:04:28,100 --> 00:04:32,740
+Was passiert, 
+wenn wir nach Datum aufteilen?
+
+98
+00:04:32,740 --> 00:04:34,120
+Schön und gut.
+
+99
+00:04:34,120 --> 00:04:36,290
+Aber in diesem Fall 
+können Sie keine Vorhersagen
+
+100
+00:04:36,290 --> 00:04:38,250
+anhand von Faktoren
+wie Feiertagen machen,
+
+101
+00:04:38,250 --> 00:04:39,980
+z. B. Weihnachten oder Thanksgiving.
+
+102
+00:04:39,980 --> 00:04:43,920
+Die Primärfaktoren in Ihrer Vorhersage
+sollten nichts mit dem Datum zu tun haben,
+
+103
+00:04:43,920 --> 00:04:46,395
+da Sie damit die Buckets erstellt haben.
+
+104
+00:04:46,395 --> 00:04:50,005
+Und wenn wir nach Flughafen aufteilen?
+
+105
+00:04:50,005 --> 00:04:52,690
+Das ist in Ordnung, 
+solange die Daten gut verteilt sind.
+
+106
+00:04:52,690 --> 00:04:54,960
+Dann können Sie nicht
+nach flughafenspezifischen
+
+107
+00:04:54,960 --> 00:04:56,700
+Faktoren vorhersagen,
+
+108
+00:04:56,700 --> 00:04:59,800
+wie "Flüge vom Flughafen JFK
+um 17:00 Uhr haben immer Verspätung".
+
+109
+00:04:59,800 --> 00:05:01,920
+Dieser Flughafen 
+kann nicht verwendet werden,
+
+110
+00:05:01,920 --> 00:05:03,300
+weil danach aufgeteilt wurde.
+
+111
+00:05:03,300 --> 00:05:05,630
+Und wenn wir nach 
+Fluggesellschaft aufteilen?
+
+112
+00:05:05,630 --> 00:05:09,885
+Es gibt ja nur elf Fluggesellschaften
+und wenn Sie Ihre Daten aufteilen möchten,
+
+113
+00:05:09,885 --> 00:05:12,500
+ist es immer noch nicht segmentiert genug,
+
+114
+00:05:12,500 --> 00:05:14,410
+um eine präzise Aufteilung zu erhalten.
+
+115
+00:05:14,410 --> 00:05:18,200
+Statt einer 80-20-Aufteilung
+erhalten Sie nur eine 60-40-Aufteilung,
+
+116
+00:05:18,200 --> 00:05:20,185
+was Ihnen vielleicht nicht reicht.
+
+117
+00:05:21,045 --> 00:05:22,920
+Wenn Sie mit ML-Entwicklung anfangen,
+
+118
+00:05:22,920 --> 00:05:26,630
+sollten Sie Ihren Tensorflow-Code
+mit einem kleinen Data-Subset entwickeln.
+
+119
+00:05:26,630 --> 00:05:29,655
+Später können Sie es 
+zur Produktionalisierung
+
+120
+00:05:29,655 --> 00:05:31,085
+auf die Cloud erweitern.
+
+121
+00:05:31,085 --> 00:05:33,300
+Wenn Sie eine ML-Anwendung entwickeln,
+
+122
+00:05:33,300 --> 00:05:37,100
+müssen Sie sie bei jeder
+Veränderung die Anwendung neu ausführen.
+
+123
+00:05:37,100 --> 00:05:38,860
+Wenn Sie das ganze Dataset verwenden,
+
+124
+00:05:38,860 --> 00:05:40,920
+könnte das Stunden 
+oder sogar Tage dauern.
+
+125
+00:05:40,920 --> 00:05:44,635
+Es geht um mehrere Petabyte Daten. 
+So können Sie keine Software entwickeln.
+
+126
+00:05:44,635 --> 00:05:48,130
+Sie brauchen ein kleines Dataset, 
+damit Sie Ihren Code schnell ausführen,
+
+127
+00:05:48,130 --> 00:05:50,345
+Fehler beheben 
+und neu ausführen können.
+
+128
+00:05:50,345 --> 00:05:52,625
+Sobald die 
+Anwendung ordentlich funktioniert,
+
+129
+00:05:52,625 --> 00:05:55,900
+können Sie sie ein- oder mehrmals 
+auf dem ganzen Dataset ausführen,
+
+130
+00:05:55,900 --> 00:05:57,780
+so wie beim Prototyping.
+
+131
+00:05:57,780 --> 00:06:01,770
+Als Nächstes sehen wir, 
+wie man ein kleineres Subset
+
+132
+00:06:01,770 --> 00:06:03,840
+des Flug-Datasets 
+einheitlich sampeln kann.
+
+133
+00:06:03,840 --> 00:06:06,930
+Wir haben die Buckets erstellt,
+brauchen jetzt aber weniger Daten.
+
+134
+00:06:06,930 --> 00:06:11,110
+Die Flugdaten 
+bestehen aus 70 Millionen Zeilen.
+
+135
+00:06:11,110 --> 00:06:13,265
+Sie benötigen ein kleineres Dataset,
+
+136
+00:06:13,265 --> 00:06:16,310
+etwa aus einer Million Flügen,
+das reproduzierbar sein muss.
+
+137
+00:06:16,310 --> 00:06:21,350
+Wie wählen Sie einen aus 70 Flügen und 
+dann 80 Prozent davon zum Training aus?
+
+138
+00:06:21,350 --> 00:06:26,635
+Man kann nicht einen
+aus 70 und dann einen aus zehn auswählen.
+
+139
+00:06:26,635 --> 00:06:27,740
+Warum nicht?
+
+140
+00:06:28,620 --> 00:06:31,720
+Wenn Sie Zahlen 
+auswählen, die durch 70 teilbar sind,
+
+141
+00:06:31,720 --> 00:06:34,170
+sind sie natürlich auch durch zehn teilbar.
+
+142
+00:06:34,170 --> 00:06:36,280
+Der zweite Modulvorgang
+
+143
+00:06:36,280 --> 00:06:38,610
+ist hier also überflüssig.
+
+144
+00:06:38,840 --> 00:06:42,000
+Wir machen eine kurze Demo,
+damit Sie sehen, was damit gemeint ist.

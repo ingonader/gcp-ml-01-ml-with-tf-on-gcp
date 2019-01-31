@@ -1,0 +1,511 @@
+1
+00:00:00,350 --> 00:00:02,420
+In the previous section,
+
+2
+00:00:02,420 --> 00:00:06,605
+we defined models as mathematical functions using parameters and hyper parameters,
+
+3
+00:00:06,605 --> 00:00:09,425
+and introduce the parameters for linear models.
+
+4
+00:00:09,425 --> 00:00:11,720
+We then discussed how analytical methods for
+
+5
+00:00:11,720 --> 00:00:14,355
+finding the best set of model parameters don't scale.
+
+6
+00:00:14,355 --> 00:00:16,835
+And how we can think of optimizing our parameters,
+
+7
+00:00:16,835 --> 00:00:19,155
+as searching through parameter space.
+
+8
+00:00:19,155 --> 00:00:21,280
+But to compare one point to another,
+
+9
+00:00:21,280 --> 00:00:23,580
+we'll need some sort of measure.
+
+10
+00:00:23,580 --> 00:00:28,270
+In this section, we'll talk about loss functions which are able to take the quality of
+
+11
+00:00:28,270 --> 00:00:30,340
+predictions for a group of data points from
+
+12
+00:00:30,340 --> 00:00:33,095
+our training set and compose them into a single number,
+
+13
+00:00:33,095 --> 00:00:37,185
+with which to estimate the quality of the models current parameters.
+
+14
+00:00:37,185 --> 00:00:40,955
+One measure of the quality of the prediction at a single point,
+
+15
+00:00:40,955 --> 00:00:45,225
+is simply this sign difference between the prediction and the actual value.
+
+16
+00:00:45,225 --> 00:00:48,595
+This difference is called the error.
+
+17
+00:00:48,595 --> 00:00:52,630
+How might we put a bunch of error values together?
+
+18
+00:00:52,630 --> 00:00:56,070
+The simplest way, is to compose them as a sum.
+
+19
+00:00:56,070 --> 00:01:00,005
+However, if we were to use the sum function to compose our terms,
+
+20
+00:01:00,005 --> 00:01:04,585
+the resulting model would treat error terms of opposite sign as canceling each other out.
+
+21
+00:01:04,585 --> 00:01:08,710
+And while our model does need to cope with contradictory evidence,
+
+22
+00:01:08,710 --> 00:01:10,810
+it's not the case that a model that splits
+
+23
+00:01:10,810 --> 00:01:13,295
+the difference between positive and negative errors,
+
+24
+00:01:13,295 --> 00:01:14,775
+has found a perfect solution.
+
+25
+00:01:14,775 --> 00:01:17,860
+Instead, we'd like to reserve that designation for a model in
+
+26
+00:01:17,860 --> 00:01:21,505
+which the predictions match the label for all points in our dataset,
+
+27
+00:01:21,505 --> 00:01:24,020
+not for a model that makes signed errors,
+
+28
+00:01:24,020 --> 00:01:25,720
+they cancel each other out.
+
+29
+00:01:25,720 --> 00:01:30,060
+The sum of the absolute values of the error seems like a reasonable alternative,
+
+30
+00:01:30,060 --> 00:01:32,995
+but there are problems with this method of composing data as well,
+
+31
+00:01:32,995 --> 00:01:34,985
+which we'll tackle shortly.
+
+32
+00:01:34,985 --> 00:01:39,735
+Instead, what is often used as what is called The Mean Squared Error.
+
+33
+00:01:39,735 --> 00:01:41,240
+The Mean Squared Error,
+
+34
+00:01:41,240 --> 00:01:45,505
+or MSE is computed by taking the set of error terms from our dataset.
+
+35
+00:01:45,505 --> 00:01:48,345
+Taking their squares to get rid of the negatives,
+
+36
+00:01:48,345 --> 00:01:51,110
+and computing the average of the squares.
+
+37
+00:01:51,110 --> 00:01:54,305
+The MSE is a perfectly valid loss function,
+
+38
+00:01:54,305 --> 00:01:56,005
+but it has one problem.
+
+39
+00:01:56,005 --> 00:01:58,420
+Although errors might be in pounds,
+
+40
+00:01:58,420 --> 00:01:59,840
+or kilometers, or dollars,
+
+41
+00:01:59,840 --> 00:02:02,180
+the square error will be in pounds squared,
+
+42
+00:02:02,180 --> 00:02:04,435
+kilometers squared, or dollars squared.
+
+43
+00:02:04,435 --> 00:02:07,920
+That can make the MSE kind of hard to interpret.
+
+44
+00:02:07,920 --> 00:02:13,470
+So, we often take the square root of the MSE instead to get units that we can understand.
+
+45
+00:02:13,470 --> 00:02:17,555
+RMSE is the root of the mean squared error.
+
+46
+00:02:17,555 --> 00:02:19,635
+The bigger the RMSE,
+
+47
+00:02:19,635 --> 00:02:21,880
+the worse the quality of the predictions.
+
+48
+00:02:21,880 --> 00:02:24,570
+So what we want to do is, to minimize RMSE.
+
+49
+00:02:24,570 --> 00:02:27,490
+The notation here is to use
+
+50
+00:02:27,490 --> 00:02:31,680
+a little ^ symbol on top of the Y that represents our model's prediction,
+
+51
+00:02:31,680 --> 00:02:35,665
+and to use a plain Y to represent the label.
+
+52
+00:02:35,665 --> 00:02:40,855
+Now, we have a metric to compare two points in parameter space,
+
+53
+00:02:40,855 --> 00:02:46,120
+which remember, is how we encode the current parameter values in our linear model.
+
+54
+00:02:46,120 --> 00:02:49,900
+Take a look at these two scatter plots in regression lines for
+
+55
+00:02:49,900 --> 00:02:53,685
+baby weight versus mother's age for moms above 39.
+
+56
+00:02:53,685 --> 00:02:56,510
+It can be incredibly hard to visually spot
+
+57
+00:02:56,510 --> 00:02:59,135
+which line is a better fit for the underlying data.
+
+58
+00:02:59,135 --> 00:03:03,760
+And that's where our loss metrics aid in deciding which model is better.
+
+59
+00:03:03,760 --> 00:03:08,545
+The model on the left, has an RMSE of point 145,
+
+60
+00:03:08,545 --> 00:03:12,890
+and the model on the right, has an RMSE of point 149.
+
+61
+00:03:12,890 --> 00:03:15,295
+Thus, the loss functions indicate,
+
+62
+00:03:15,295 --> 00:03:16,950
+that the values for weight and bias on
+
+63
+00:03:16,950 --> 00:03:19,795
+the left hand side are better than on the right hand side.
+
+64
+00:03:19,795 --> 00:03:23,210
+Although RMSE works fine for linear regression problems,
+
+65
+00:03:23,210 --> 00:03:26,285
+it doesn't work as a loss function for classification.
+
+66
+00:03:26,285 --> 00:03:31,565
+Remember, classification problems are ones in which the label is a categorical variable.
+
+67
+00:03:31,565 --> 00:03:34,560
+The problem with using RMSE for classification,
+
+68
+00:03:34,560 --> 00:03:38,975
+has to do with how these categorical variables are represented in our model.
+
+69
+00:03:38,975 --> 00:03:40,870
+As we talked about earlier,
+
+70
+00:03:40,870 --> 00:03:45,390
+categorical variables are often represented as binary integers.
+
+71
+00:03:45,390 --> 00:03:48,625
+For an intuition as to why this presents a problem,
+
+72
+00:03:48,625 --> 00:03:50,865
+look at the loss curves we've depicted.
+
+73
+00:03:50,865 --> 00:03:54,410
+The domain on the X axis represents the prediction,
+
+74
+00:03:54,410 --> 00:03:59,030
+the range on the Y axis represents the loss, given that prediction.
+
+75
+00:03:59,030 --> 00:04:01,270
+Color here, denotes the label.
+
+76
+00:04:01,270 --> 00:04:03,625
+Green indicates that the label was one,
+
+77
+00:04:03,625 --> 00:04:06,465
+and blue indicates that the label was zero.
+
+78
+00:04:06,465 --> 00:04:09,740
+What's wrong with this curve?
+
+79
+00:04:09,740 --> 00:04:14,140
+The problem is, it fails to capture our intuitive belief that
+
+80
+00:04:14,140 --> 00:04:18,030
+predictions that are really bad should be penalized much more strongly.
+
+81
+00:04:18,030 --> 00:04:19,920
+Note how a prediction of one,
+
+82
+00:04:19,920 --> 00:04:21,165
+when the target is zero,
+
+83
+00:04:21,165 --> 00:04:25,835
+is about three times worse than a prediction of point five for the same target.
+
+84
+00:04:25,835 --> 00:04:28,215
+Instead of RMSE then,
+
+85
+00:04:28,215 --> 00:04:29,935
+we need a new loss function.
+
+86
+00:04:29,935 --> 00:04:35,550
+One that penalizes in accordance with our intuitions for classification problems.
+
+87
+00:04:35,550 --> 00:04:39,290
+One of the most commonly used loss functions for
+
+88
+00:04:39,290 --> 00:04:43,425
+classification is called Cross Entropy, or log loss.
+
+89
+00:04:43,425 --> 00:04:46,975
+Here, we have a similar graph to what we saw in the last slide,
+
+90
+00:04:46,975 --> 00:04:49,570
+only instead of showing the loss for RMSE,
+
+91
+00:04:49,570 --> 00:04:53,160
+I've shown the value of a new loss function called Cross Entropy.
+
+92
+00:04:53,160 --> 00:04:54,980
+Note that unlike RMSE,
+
+93
+00:04:54,980 --> 00:04:58,340
+cross entropy penalizes bad predictions very strongly,
+
+94
+00:04:58,340 --> 00:05:00,535
+even in this limited domain.
+
+95
+00:05:00,535 --> 00:05:04,930
+Let's walk through an example so we can better understand how the formula works.
+
+96
+00:05:04,930 --> 00:05:08,325
+The formula for cross entropy boils down to two different terms.
+
+97
+00:05:08,325 --> 00:05:12,190
+Only one of which will participate in the loss for a given data point.
+
+98
+00:05:12,190 --> 00:05:15,665
+The first term participates for positive examples,
+
+99
+00:05:15,665 --> 00:05:19,320
+which is to say, examples where the label, Y is one.
+
+100
+00:05:19,320 --> 00:05:23,880
+The second term participates when the label is zero.
+
+101
+00:05:23,890 --> 00:05:28,450
+Here, we have a table showing both the labels, as well as,
+
+102
+00:05:28,450 --> 00:05:32,620
+the predictions for two pictures in an image classification task.
+
+103
+00:05:32,620 --> 00:05:37,100
+The label encodes whether the picture depicts a human face.
+
+104
+00:05:37,100 --> 00:05:40,695
+The model seems to be doing a decent job.
+
+105
+00:05:40,695 --> 00:05:43,720
+The prediction is much higher for the example on the top,
+
+106
+00:05:43,720 --> 00:05:46,185
+as compared with the example on the bottom.
+
+107
+00:05:46,185 --> 00:05:50,170
+Let's see how the function works.
+
+108
+00:05:50,170 --> 00:05:54,110
+Here, the way the loss function is constructed,
+
+109
+00:05:54,110 --> 00:05:56,135
+the negative term from the first example,
+
+110
+00:05:56,135 --> 00:05:59,765
+and the positive term from the second example, both drop out.
+
+111
+00:05:59,765 --> 00:06:03,115
+So, given predictions of point seven and point two,
+
+112
+00:06:03,115 --> 00:06:05,600
+for two data points with labels one and zero,
+
+113
+00:06:05,600 --> 00:06:07,790
+the cross entropy loss is effectively,
+
+114
+00:06:07,790 --> 00:06:09,740
+the positive term for the first data point,
+
+115
+00:06:09,740 --> 00:06:12,110
+plus the negative term for the second data point,
+
+116
+00:06:12,110 --> 00:06:14,715
+multiplied by negative one half.
+
+117
+00:06:14,715 --> 00:06:17,420
+The result is point 13.
+
+118
+00:06:17,420 --> 00:06:20,650
+What happens when our model doesn't make a good prediction?
+
+119
+00:06:20,650 --> 00:06:25,240
+Here, the negative example seems to have been misclassified and as a result,
+
+120
+00:06:25,240 --> 00:06:28,580
+the loss has gone up, which makes sense because remember,
+
+121
+00:06:28,580 --> 00:06:31,815
+loss is what we're trying to minimize.
+
+122
+00:06:31,815 --> 00:06:36,655
+So, we now know how to compare two points in parameter space,
+
+123
+00:06:36,655 --> 00:06:41,015
+whether we're using RMSE for regression or cross entropy for classification.
+
+124
+00:06:41,015 --> 00:06:43,960
+But remember, that our goal is to find the best set of
+
+125
+00:06:43,960 --> 00:06:47,345
+parameters or the best point in parameter space.
+
+126
+00:06:47,345 --> 00:06:49,780
+How can we use our knowledge and how to compare
+
+127
+00:06:49,780 --> 00:06:52,595
+two sets of parameters and turn it into a search strategy?
+
+128
+00:06:52,595 --> 00:06:55,000
+Well, that's what we'll do in the next section.

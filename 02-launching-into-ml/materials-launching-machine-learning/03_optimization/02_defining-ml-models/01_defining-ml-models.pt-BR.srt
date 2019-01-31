@@ -1,0 +1,328 @@
+1
+00:00:00,290 --> 00:00:03,090
+Este módulo tem quatro tópicos principais.
+
+2
+00:00:03,090 --> 00:00:07,370
+Primeiro, daremos uma definição
+funcional, mas formal, de modelo.
+
+3
+00:00:07,370 --> 00:00:10,180
+Depois, como a otimização
+sempre exige um padrão
+
+4
+00:00:10,180 --> 00:00:13,070
+para mostrar as melhorias,
+discutiremos as funções de perda.
+
+5
+00:00:14,190 --> 00:00:17,880
+Veremos como o gradiente descendente é
+parecido com achar a base de uma colina
+
+6
+00:00:17,880 --> 00:00:19,370
+definido pela função de perda.
+
+7
+00:00:20,970 --> 00:00:24,575
+Depois, praticaremos em um sandbox
+onde você verá as superfícies de perda
+
+8
+00:00:24,575 --> 00:00:26,390
+dos modelos decrescendo em tempo real.
+
+9
+00:00:27,780 --> 00:00:30,530
+Por fim, mostraremos como
+medir o desempenho de um modelo
+
+10
+00:00:30,530 --> 00:00:32,060
+fora do contexto de treinamento.
+
+11
+00:00:33,510 --> 00:00:36,037
+Vamos começar com uma revisão
+do que é um modelo de ML
+
+12
+00:00:36,037 --> 00:00:37,900
+e onde os parâmetros entram na equação.
+
+13
+00:00:40,014 --> 00:00:45,260
+Modelos de ML são funções matemáticas
+com parâmetros e hiperparâmetros.
+
+14
+00:00:45,260 --> 00:00:49,070
+Parâmetro é uma variável com valor real
+que muda durante o treinamento do modelo.
+
+15
+00:00:50,210 --> 00:00:53,496
+Hiperparâmetro é uma configuração
+que definimos antes do treinamento e
+
+16
+00:00:53,496 --> 00:00:54,903
+nunca mais é alterada.
+
+17
+00:00:56,672 --> 00:00:58,976
+Como falamos no módulo anterior,
+
+18
+00:00:58,976 --> 00:01:03,010
+os modelos lineares foram um dos
+primeiros tipos de modelo de ML.
+
+19
+00:01:03,010 --> 00:01:06,600
+Eles ainda são uma classe de modelos
+importante e muito usada hoje em dia.
+
+20
+00:01:08,660 --> 00:01:12,030
+No modelo linear, mudanças pequenas
+nas variáveis independentes, ou
+
+21
+00:01:12,030 --> 00:01:14,890
+características, como são chamadas
+no aprendizado de máquina,
+
+22
+00:01:14,890 --> 00:01:18,560
+produzem a mesma quantidade de alterações
+na variável dependente ou no rótulo,
+
+23
+00:01:18,560 --> 00:01:21,270
+não importando onde a mudança
+ocorre no espaço de entrada.
+
+24
+00:01:21,720 --> 00:01:23,931
+Visualmente, é semelhante a
+uma linha em um espaço bidimensional.
+
+25
+00:01:23,931 --> 00:01:28,284
+A fórmula usada para modelar o
+relacionamento é y = mx + b,
+
+26
+00:01:28,284 --> 00:01:31,891
+em que m representa a quantidade de
+alterações observadas no rótulo
+
+27
+00:01:31,891 --> 00:01:34,649
+como consequência de uma mudança
+pequena na característica.
+
+28
+00:01:36,430 --> 00:01:40,630
+O mesmo conceito de relacionamento definido
+por mudança de proporção fixa entre
+
+29
+00:01:40,630 --> 00:01:44,580
+rótulos e características pode ser aplicado
+à dimensionalidade arbitrariamente alta
+
+30
+00:01:44,580 --> 00:01:47,710
+com relação às entradas e saídas.
+
+31
+00:01:47,710 --> 00:01:51,990
+Ou seja, podemos criar modelos que
+aceitam mais características como entrada,
+
+32
+00:01:51,990 --> 00:01:54,870
+modelar vários rótulos
+simultaneamente ou fazer ambos
+
+33
+00:01:56,370 --> 00:01:59,820
+Quando aumentamos a
+dimensionalidade da entrada,
+
+34
+00:01:59,820 --> 00:02:02,180
+o termo de inclinação m precisa
+se tornar n-dimensional.
+
+35
+00:02:02,180 --> 00:02:03,750
+Chamamos esse termo novo de peso.
+
+36
+00:02:05,520 --> 00:02:09,530
+Visualmente, esse processo gera a
+generalização n-dimensional de uma linha
+
+37
+00:02:09,530 --> 00:02:12,709
+chamada hiperplano,
+retratado no lado direito.
+
+38
+00:02:14,120 --> 00:02:17,400
+Não entrarei em detalhes, mas
+quando aumentamos a dimensionalidade das
+
+39
+00:02:17,400 --> 00:02:22,640
+saídas, os termos y e c precisam 
+se tornar vetores bidimensionais.
+
+40
+00:02:24,760 --> 00:02:29,460
+O termo b, seja como escalar ou
+vetor, é chamado de termo de tendência.
+
+41
+00:02:29,460 --> 00:02:33,280
+Fazer uma regressão usando um
+modelo linear é de certo modo intuitivo.
+
+42
+00:02:33,280 --> 00:02:38,510
+Basta usar a fórmula b + m * x
+para resultar na previsão y.
+
+43
+00:02:38,510 --> 00:02:42,040
+Mas como fazer uma classificação
+usando um modelo linear?
+
+44
+00:02:42,040 --> 00:02:45,490
+Como interpretar um número
+contínuo como uma classe?
+
+45
+00:02:47,300 --> 00:02:50,830
+Para transformar a saída numérica
+do modelo em uma classe,
+
+46
+00:02:50,830 --> 00:02:53,819
+primeiro precisamos saber como
+codificar a associação à classe.
+
+47
+00:02:54,790 --> 00:02:58,560
+O modo mais simples de codificar uma
+associação à classe é com um valor binário:
+
+48
+00:02:58,560 --> 00:02:59,840
+você é um membro ou não.
+
+49
+00:03:01,310 --> 00:03:05,760
+É claro que, muitas vezes, as variáveis
+categóricas podem ter mais de dois valores.
+
+50
+00:03:05,760 --> 00:03:07,520
+Porém, essa abordagem ainda funciona.
+
+51
+00:03:07,520 --> 00:03:10,710
+Basta fingir que cada valor está
+em uma classe própria independente.
+
+52
+00:03:11,700 --> 00:03:15,600
+Vamos nos concentrar em
+uma única classe binária por enquanto.
+
+53
+00:03:15,600 --> 00:03:18,810
+Voltaremos à representação de
+características no terceiro curso.
+
+54
+00:03:20,230 --> 00:03:23,850
+Após adotar essa representação do
+rótulo, gerenciar a tarefa será mais fácil.
+
+55
+00:03:24,880 --> 00:03:28,880
+Agora precisamos aprender como mapear a linha
+em uma regra de classificação binária.
+
+56
+00:03:30,360 --> 00:03:33,670
+Um jeito fácil de fazer isso é
+se basear nos indícios da saída.
+
+57
+00:03:35,170 --> 00:03:38,530
+Graficamente, é como
+dividir o gráfico em duas regiões,
+
+58
+00:03:38,530 --> 00:03:42,010
+os pontos acima e os pontos abaixo da linha.
+
+59
+00:03:42,010 --> 00:03:43,920
+Chamamos essa linha de limite de decisão
+
+60
+00:03:43,920 --> 00:03:47,180
+porque ela reflete a decisão de
+onde as classes começam e terminam.
+
+61
+00:03:48,650 --> 00:03:49,490
+Fundamentalmente,
+
+62
+00:03:49,490 --> 00:03:53,330
+o limite de decisão não serve apenas
+como uma descrição dos dados atuais.
+
+63
+00:03:53,330 --> 00:03:56,080
+Ele também serve para
+prever os dados não vistos.
+
+64
+00:03:57,030 --> 00:04:01,240
+A propriedade de se estender a exemplos
+não vistos é chamada de generalização e
+
+65
+00:04:01,240 --> 00:04:02,830
+é essencial para modelos de ML.
+
+66
+00:04:02,830 --> 00:04:06,000
+Falaremos mais sobre
+generalização no próximo módulo.
+
+67
+00:04:08,140 --> 00:04:11,400
+Aprender sobre ML de maneira
+abstrata pode ser um pouco chato.
+
+68
+00:04:11,400 --> 00:04:15,070
+Então, vamos falar sobre um problema
+importante que é um candidato para o ML e
+
+69
+00:04:15,070 --> 00:04:16,210
+depois vamos discutir como estruturá-lo.

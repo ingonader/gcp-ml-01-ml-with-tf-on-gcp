@@ -1,0 +1,86 @@
+Los bebés son muy delicados. Algunos necesitan
+cuidado urgente después de nacer. Pero no hay suficientes médicos
+que proporcionen ese tipo de cuidado. En un mundo ideal, sabríamos
+exactamente dónde enviar médicos para que atiendan
+a los bebés que los necesitan Pero no vivimos en ese mundo. ¿Cómo podría ser esto un problema de AA? Bueno, si supiéramos qué bebés
+necesitarán cuidados, antes de que nazcan podríamos asegurarnos
+de que haya médicos disponibles. Supongamos que queremos
+realizar predicciones antes del nacimiento ¿cuál de estos podría ser
+un atributo en nuestro modelo? La edad de la madre,
+la hora de nacimiento, el peso del bebé. Supongamos que queremos
+realizar predicciones antes del nacimiento ¿cuál podría ser
+una etiqueta en nuestro modelo? La edad de la madre,
+la hora de nacimiento, el peso del bebé. Está bien si no saben
+las respuestas a estas preguntas porque es muy específico del dominio. Lo que sí deberían intuir
+es cuándo está disponible la información con relación
+a cuándo queremos realizar predicciones. En este caso, la hora de nacimiento
+no está disponible hasta el nacimiento y no la podemos usar. El peso del bebé también
+es un indicador importante sobre su salud. Podemos observar la edad de la madre
+y usarla para predecir el peso del bebé. Este parece ser un buen
+candidato de problema para el AA porque hay una necesidad
+de saber algo que resulta costoso esperar y que podría predecirse
+de antemano, como la salud del bebé. Supongamos que elegimos
+el peso del bebé como la etiqueta ¿qué tipo de problema de AA es? Como pista, recuerden que el peso
+del bebé es un número continuo. Por ahora, lo trataremos
+como un problema de regresión. Para simplificar,
+consideremos solo el atributo "edad de la madre"
+y la etiqueta "peso del bebé". Estos datos provienen de un conjunto
+recopilado por el gobierno de los EE.UU. y se llama conjunto de datos
+de natalidad, que significa nacimiento. Está disponible como
+un conjunto público en BigQuery. A menudo, el primer paso
+para modelar los datos es analizarlos para verificar que contienen indicadores
+y que no son solo ruido. Aquí, grafiqué el peso del bebé
+como función de la edad de la madre con un gráfico de dispersión. Hacemos estos gráficos
+a partir de muestras de conjuntos de datos de gran
+tamaño, en lugar de usar todo. ¿Por qué usar muestras? Primero, porque graficar demasiados datos
+no es posible computacionalmente. Segundo, es difícil interpretar
+gráficos de dispersión con tantos datos. Observen que parece haber
+una pequeña relación positiva entre la edad de la madre
+y el peso del bebé. Aquí hay un nuevo tipo de gráfico
+que usa las mismas dos variables pero, en lugar de representar
+los datos de forma individual este gráfico lo hace en grupos
+de datos, específicamente, en cuantiles. Como resultado,
+necesitamos la muestra antes de crearlo y no hay riesgos de obtener
+una muestra no representativa. Como ventaja adicional,
+los resultados también se pueden repetir y el proceso es paralelizable. Este gráfico analiza casi 22 GB
+de datos y lo creé en solo segundos. Más adelante hablaremos
+sobre cómo crear este tipo de gráficos. ¿Pueden ver algún tipo
+de relación en los datos? Tal vez notaron algo que no se vio
+en nuestro gráfico de dispersión. El peso del bebé parece alcanzar el máximo
+cuando la madre tiene alrededor de 30 y disminuye a medida que
+su edad es mayor o menor. Esto sugiere una relación no lineal algo que no era evidente
+en nuestro gráfico de dispersión y es una mala señal dada nuestra intención de modelar
+esta relación con un modelo lineal. De hecho, la idea de modelar
+una función no lineal con un modelo lineal es un ejemplo de lo que
+se llama sobregeneralización. Tal vez se preguntan por qué
+no usamos un tipo de modelo más complejo. En este caso, es por motivos didácticos. Ya hablaremos sobre la selección
+del modelo y del sobreajuste. Hay riesgos proporcionales
+a la complejidad del modelo. Al parecer, hay una leve relación
+positiva entre la edad de la madre y el peso del bebé. La modelaremos con una línea. Como usamos un modelo lineal,
+nuestra intuición anterior se convierte en una línea pendiente ascendente
+con una ordenada al origen “y” positiva. Observamos los datos
+para seleccionar esta línea pero ¿cómo sabemos si la línea
+debería estar más arriba o más abajo? ¿Cómo sabemos que
+está en el lugar adecuado? ¿Cómo sabemos
+que es mejor que esta otra línea? Los que hayan estudiado
+estadística podrían recordar un proceso que determina los mejores pesos,
+llamado regresión de mínimos cuadrados. Hay formas para determinar
+analíticamente los mejores pesos para los modelos lineales. El problema es que estas soluciones
+funcionan hasta una determinada escala. Cuando se usan conjuntos
+de datos de gran tamaño el cálculo analítico para solucionar
+este problema no es práctico. ¿Qué hacer cuando una solución
+analítica deja de ser una opción? Usamos el descenso de gradientes. Pensemos en la optimización como
+una búsqueda en el espacio de parámetros. Recuerden que nuestro modelo
+lineal sencillo tiene dos parámetros un término de peso
+y otro de ordenada al origen. Como los dos tienen un valor real,
+podemos pensar en el espacio de todas las combinaciones
+de valores para esos parámetros como puntos en un espacio 2D. Recuerden, buscamos el mejor valor. ¿Cómo se compara un punto
+en el espacio de parámetros con otro en cuanto a calidad? Bueno, primero necesitamos
+reformular un poco la pregunta. Como los espacios de entrada que es donde residen
+los datos, suelen ser infinitos no se pueden evaluar los parámetros
+en cada punto del espacio de entrada. Así que, lo que hacemos
+es estimar cómo se vería este cálculo usando nuestros datos de entrenamiento. Y para hacerlo, necesitamos
+generalizar a partir de la calidad de una predicción de un único punto
+de datos, que el error de esa predicción a un número que capture
+la calidad de un grupo de predicciones. Las funciones para hacerlo
+son las funciones de pérdida.

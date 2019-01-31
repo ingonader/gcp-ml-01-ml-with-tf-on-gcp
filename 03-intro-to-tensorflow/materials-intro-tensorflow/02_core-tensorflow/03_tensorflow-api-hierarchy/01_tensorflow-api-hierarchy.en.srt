@@ -1,0 +1,295 @@
+1
+00:00:00,000 --> 00:00:02,314
+In the previous lessons,
+
+2
+00:00:02,314 --> 00:00:05,230
+we talked about what TensorFlow is.
+
+3
+00:00:05,230 --> 00:00:10,165
+Now, let's start looking at the TensorFlow API hierarchy.
+
+4
+00:00:10,165 --> 00:00:12,820
+Like most software libraries,
+
+5
+00:00:12,820 --> 00:00:16,510
+TensorFlow has in it a number of abstraction layers,
+
+6
+00:00:16,510 --> 00:00:18,905
+the lowest level of abstruction,
+
+7
+00:00:18,905 --> 00:00:23,655
+is a layer that's implemented to target different hardware platforms.
+
+8
+00:00:23,655 --> 00:00:26,155
+Unless your company makes hardware,
+
+9
+00:00:26,155 --> 00:00:29,265
+it's unlikely that you will do much at this level.
+
+10
+00:00:29,265 --> 00:00:33,900
+The next level, is a TensorFlow c++ API.
+
+11
+00:00:33,900 --> 00:00:37,185
+This is how you can write a custom TensorFlow app,
+
+12
+00:00:37,185 --> 00:00:40,590
+You will implement a function you want in C++,
+
+13
+00:00:40,590 --> 00:00:43,815
+and register it as a TensorFlow operation.
+
+14
+00:00:43,815 --> 00:00:47,505
+See the TensorFlow documentation on extending an app.
+
+15
+00:00:47,505 --> 00:00:52,110
+TensorFlow will then give you a python wrapper that you can use,
+
+16
+00:00:52,110 --> 00:00:55,275
+just like you would an existing function.
+
+17
+00:00:55,275 --> 00:00:57,235
+In this specialization though,
+
+18
+00:00:57,235 --> 00:01:00,215
+we'll assume that you're not an ML researcher,
+
+19
+00:01:00,215 --> 00:01:02,670
+and so you're not having to do this,
+
+20
+00:01:02,670 --> 00:01:05,880
+but if you ever need to implement your own custom app,
+
+21
+00:01:05,880 --> 00:01:07,820
+you would do it in C++,
+
+22
+00:01:07,820 --> 00:01:09,135
+and it's not too hard.
+
+23
+00:01:09,135 --> 00:01:11,610
+TensorFlow, is extensible that way.
+
+24
+00:01:11,610 --> 00:01:14,455
+The core Python API the next level,
+
+25
+00:01:14,455 --> 00:01:18,540
+is what contains much of the numeric processing code,
+
+26
+00:01:18,540 --> 00:01:24,030
+add, subtract, divide, matrix multiply etc.
+
+27
+00:01:24,030 --> 00:01:26,805
+creating variables, creating tensors,
+
+28
+00:01:26,805 --> 00:01:29,895
+getting the shape, all the dimensions of a tensor,
+
+29
+00:01:29,895 --> 00:01:33,900
+all that core basic numeric processing stuff,
+
+30
+00:01:33,900 --> 00:01:36,205
+that's all in the python API.
+
+31
+00:01:36,205 --> 00:01:39,990
+Then, there are a set of Python modules that have
+
+32
+00:01:39,990 --> 00:01:45,140
+high level representation of useful neural network components,
+
+33
+00:01:45,140 --> 00:01:49,110
+for example, a way to create a new layer of hidden neurons,
+
+34
+00:01:49,110 --> 00:01:51,315
+with a real activation function.
+
+35
+00:01:51,315 --> 00:01:53,265
+It's in tf layers,
+
+36
+00:01:53,265 --> 00:01:57,810
+a way to compute the root mean square error and data as it comes in,
+
+37
+00:01:57,810 --> 00:02:02,515
+tf metrics, a way to compute cross entropy with Logic's.
+
+38
+00:02:02,515 --> 00:02:05,550
+This is a common last measurement classification problems,
+
+39
+00:02:05,550 --> 00:02:07,570
+cross entropy with logits,
+
+40
+00:02:07,570 --> 00:02:09,155
+it's in tf losses.
+
+41
+00:02:09,155 --> 00:02:13,125
+These models provide components that are useful,
+
+42
+00:02:13,125 --> 00:02:16,410
+when building custom NN models.
+
+43
+00:02:16,410 --> 00:02:20,265
+Why do I emphasize custom NN models?
+
+44
+00:02:20,265 --> 00:02:22,290
+Because lots of the time,
+
+45
+00:02:22,290 --> 00:02:24,915
+you don't need a custom neural network model,
+
+46
+00:02:24,915 --> 00:02:30,630
+many times you are quite happy to go with a relatively standard way of training,
+
+47
+00:02:30,630 --> 00:02:32,640
+evaluating, and serving models.
+
+48
+00:02:32,640 --> 00:02:35,240
+You don't need to customize the way you train,
+
+49
+00:02:35,240 --> 00:02:38,955
+you're going to use one of a family of gradient descent optimizer,
+
+50
+00:02:38,955 --> 00:02:41,040
+and you're going to back propagator the weights,
+
+51
+00:02:41,040 --> 00:02:42,930
+and you're going to do this iteratively.
+
+52
+00:02:42,930 --> 00:02:46,320
+In that case, don't write a low level session loop.
+
+53
+00:02:46,320 --> 00:02:48,920
+Just use an estimator.
+
+54
+00:02:48,920 --> 00:02:54,685
+The estimator, is the high-level API in TensorFlow.
+
+55
+00:02:54,685 --> 00:02:57,300
+It knows how to do this to be the training,
+
+56
+00:02:57,300 --> 00:03:01,225
+it knows how to evaluate how to create a checkpoint,
+
+57
+00:03:01,225 --> 00:03:02,745
+how to Save a model,
+
+58
+00:03:02,745 --> 00:03:04,450
+how to set it up for serving.
+
+59
+00:03:04,450 --> 00:03:07,685
+It comes with everything done in a sensible way,
+
+60
+00:03:07,685 --> 00:03:10,655
+that fits most machine learning models and production.
+
+61
+00:03:10,655 --> 00:03:14,930
+So, if you see example TensorFlow code on the Internet,
+
+62
+00:03:14,930 --> 00:03:17,625
+and it doesn't use the estimator API,
+
+63
+00:03:17,625 --> 00:03:19,320
+just ignore that code,
+
+64
+00:03:19,320 --> 00:03:22,370
+walk away, it's not worth it.
+
+65
+00:03:22,370 --> 00:03:24,810
+You'll have to write a whole bunch of code to do
+
+66
+00:03:24,810 --> 00:03:27,955
+device placement and memory management and distribution,
+
+67
+00:03:27,955 --> 00:03:30,140
+let the estimator do it for you.
+
+68
+00:03:30,140 --> 00:03:34,340
+So those, are the TensorFlow levels of abstraction.
+
+69
+00:03:34,340 --> 00:03:38,475
+Cloud ML engine is orthogonal to this hierarchy.
+
+70
+00:03:38,475 --> 00:03:43,075
+Regardless of which abstraction level you're writing your tensorflow code at,
+
+71
+00:03:43,075 --> 00:03:46,040
+CMLE gives you a managed service.
+
+72
+00:03:46,040 --> 00:03:48,665
+It's hosted Tensorlow.
+
+73
+00:03:48,665 --> 00:03:53,650
+So, that you can run TensorFlow on the cloud on a cluster of machines,
+
+74
+00:03:53,650 --> 00:03:58,590
+without having to install any software or manage any servers.

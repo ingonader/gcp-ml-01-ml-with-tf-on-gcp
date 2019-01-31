@@ -1,0 +1,323 @@
+1
+00:00:00,200 --> 00:00:02,773
+Suivons ensemble
+ce deuxième atelier de programmation.
+
+2
+00:00:02,933 --> 00:00:06,395
+Cette fois, nous allons voir
+comment utiliser l'API Dataset
+
+3
+00:00:06,395 --> 00:00:08,553
+pour créer nos fonctions d'entrée.
+
+4
+00:00:08,838 --> 00:00:10,768
+Recherchons les fichiers de l'atelier.
+
+5
+00:00:12,003 --> 00:00:16,049
+Accédez à cloud.google.com/console,
+
+6
+00:00:16,049 --> 00:00:19,980
+puis connectez-vous
+avec votre compte d'atelier.
+
+7
+00:00:28,109 --> 00:00:30,090
+Nous sommes maintenant dans la console.
+
+8
+00:00:30,090 --> 00:00:33,020
+Nous pouvons ouvrir Cloud Shell
+
+9
+00:00:33,020 --> 00:00:36,600
+et nous reconnecter
+à notre instance Datalab existante
+
+10
+00:00:36,600 --> 00:00:43,348
+en saisissant "datalab connect mylab".
+
+11
+00:00:50,883 --> 00:00:52,973
+La connexion est établie.
+
+12
+00:00:53,883 --> 00:00:57,710
+Cliquez sur le bouton "Web preview",
+
+13
+00:00:57,710 --> 00:01:01,498
+puis remplacez le port par "8081",
+celui utilisé par Datalab.
+
+14
+00:01:04,714 --> 00:01:09,131
+Nous sommes maintenant
+dans l'interface de bloc-notes habituelle.
+
+15
+00:01:09,971 --> 00:01:15,117
+Nous allons créer un nouveau bloc-notes
+pour saisir quelques commandes Git
+
+16
+00:01:15,117 --> 00:01:19,803
+et récupérer le code
+en saisissant "%bash".
+
+17
+00:01:21,163 --> 00:01:26,465
+Puis nous clonons ce dépôt.
+
+18
+00:01:29,862 --> 00:01:35,755
+La commande s'exécute, et le dépôt
+"training-data-analyst" apparaît ici.
+
+19
+00:01:35,755 --> 00:01:38,130
+Recherchons les fichiers de notre atelier.
+
+20
+00:01:38,130 --> 00:01:47,696
+Cliquez sur "training-data-analyst",
+"courses", "machine_learning",
+
+21
+00:01:47,696 --> 00:01:54,050
+"deepdive", et enfin "tensorflow".
+
+22
+00:01:55,443 --> 00:01:59,298
+Le deuxième atelier s'appelle "c_dataset".
+
+23
+00:01:59,298 --> 00:02:00,611
+Ouvrons-le.
+
+24
+00:02:07,032 --> 00:02:12,042
+L'API Dataset vous permet de créer
+les fonctions d'entrée de l'estimateur.
+
+25
+00:02:12,423 --> 00:02:14,349
+Elle gère le chargement progressif.
+
+26
+00:02:14,349 --> 00:02:17,969
+Utilisez-la à chaque fois que vous avez
+un ensemble de données volumineux.
+
+27
+00:02:19,834 --> 00:02:22,744
+Examinons ce code.
+
+28
+00:02:25,089 --> 00:02:29,944
+Notre ensemble de données sur disque
+se compose de fichiers CSV partitionnés.
+
+29
+00:02:29,944 --> 00:02:32,765
+Nous allons utiliser
+la fonction "Dataset.list_files"
+
+30
+00:02:32,765 --> 00:02:33,983
+pour analyser le disque
+
+31
+00:02:33,983 --> 00:02:36,983
+et obtenir un ensemble
+de données de noms de fichiers.
+
+32
+00:02:37,668 --> 00:02:42,625
+La fonction "TextLineDataset"
+vous permet ensuite de lire chaque fichier
+
+33
+00:02:42,625 --> 00:02:45,467
+pour les transformer
+en un ensemble de lignes de texte.
+
+34
+00:02:45,467 --> 00:02:48,025
+On parle alors
+de transformation un à plusieurs :
+
+35
+00:02:48,025 --> 00:02:51,156
+un nom de fichier se transforme
+en plusieurs lignes de texte.
+
+36
+00:02:51,156 --> 00:02:54,070
+Nous l'appliquons donc
+avec la fonction "flat_map".
+
+37
+00:02:54,070 --> 00:02:57,709
+Nous avons maintenant
+un ensemble de données de lignes de texte
+
+38
+00:02:57,709 --> 00:03:00,836
+obtenu à partir du contenu
+de tous nos fichiers.
+
+39
+00:03:00,836 --> 00:03:03,406
+Il ne s'agit là que
+d'une représentation conceptuelle.
+
+40
+00:03:03,406 --> 00:03:05,993
+Les fichiers n'ont pas tous
+été chargés en mémoire.
+
+41
+00:03:05,993 --> 00:03:07,630
+Ils ne rentreraient pas.
+
+42
+00:03:07,630 --> 00:03:14,330
+Enfin, la fonction "map" nous permet
+d'appliquer une transformation un à un
+
+43
+00:03:14,330 --> 00:03:15,776
+aux lignes de texte.
+
+44
+00:03:15,776 --> 00:03:19,808
+Chaque ligne est analysée
+comme un ensemble de valeurs séparées
+
+45
+00:03:19,808 --> 00:03:24,597
+par des virgules et devient
+une liste de caractéristiques.
+
+46
+00:03:24,597 --> 00:03:27,812
+Le décodage lui-même se produit ici.
+
+47
+00:03:27,812 --> 00:03:30,792
+Nous avons maintenant l'ensemble
+de données de caractéristiques
+
+48
+00:03:30,792 --> 00:03:32,660
+et de libellés dont nous avons besoin.
+
+49
+00:03:36,208 --> 00:03:40,468
+Nous le brassons avec une taille
+de tampon de brassage donnée.
+
+50
+00:03:41,697 --> 00:03:46,754
+Nous répétons l'opération
+sur un nombre d'itérations défini,
+
+51
+00:03:46,754 --> 00:03:50,571
+et nous divisons l'ensemble
+en mini-lots d'une taille définie.
+
+52
+00:03:51,631 --> 00:03:57,030
+Enfin, nous appelons
+la fonction "get_next" qui renvoie
+
+53
+00:03:57,030 --> 00:04:00,638
+les caractéristiques et les libellés
+sous la forme d'un nœud TensorFlow.
+
+54
+00:04:00,638 --> 00:04:02,593
+C'est ce que notre modèle attend.
+
+55
+00:04:02,593 --> 00:04:06,453
+À chaque fois que le modèle
+exécute ces nœuds pendant l'entraînement,
+
+56
+00:04:06,453 --> 00:04:09,859
+ils délivrent le lot suivant
+de caractéristiques et libellés,
+
+57
+00:04:09,859 --> 00:04:13,193
+en déclenchant progressivement
+des opérations de chargement de fichiers
+
+58
+00:04:13,193 --> 00:04:14,163
+en cas de besoin.
+
+59
+00:04:15,423 --> 00:04:22,058
+Ici, nous définissons les fonctions
+d'entrée d'entraînement, de validation
+
+60
+00:04:22,058 --> 00:04:29,170
+et de test, en chargeant
+les fichiers CSV correspondants :
+
+61
+00:04:29,170 --> 00:04:34,426
+"taxi-train.csv",
+"taxi-valid.csv" et "taxi-test.csv".
+
+62
+00:04:38,226 --> 00:04:40,072
+Exécutons ces cellules.
+
+63
+00:04:46,032 --> 00:04:50,336
+Pour l'instant, nous laissons nos colonnes
+de caractéristiques en l'état,
+
+64
+00:04:50,336 --> 00:04:52,518
+et nous pouvons passer à l'entraînement.
+
+65
+00:04:57,184 --> 00:04:58,451
+L'entraînement s'exécute.
+
+66
+00:04:59,161 --> 00:05:05,551
+Pour cela, nous avons appelé la fonction
+"model.train" sur la fonction d'entrée
+
+67
+00:05:05,551 --> 00:05:08,010
+qui récupère l'ensemble
+de données d'entraînement.
+
+68
+00:05:10,367 --> 00:05:12,703
+Nous avons notre modèle entraîné.
+
+69
+00:05:12,703 --> 00:05:19,305
+Et enfin, nous allons l'évaluer
+et obtenir nos métriques de validation.
+
+70
+00:05:22,448 --> 00:05:27,780
+Et voilà, nous avons terminé
+cet atelier de programmation.

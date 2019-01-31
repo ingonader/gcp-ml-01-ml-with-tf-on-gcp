@@ -1,0 +1,651 @@
+1
+00:00:00,000 --> 00:00:03,225
+Aqui, apresentamos a API Dataset,
+
+2
+00:00:03,225 --> 00:00:07,445
+que vem com o TensorFlow e foi projetada
+para ser usada com estimadores.
+
+3
+00:00:07,445 --> 00:00:10,320
+Vamos ver por que e 
+quando você precisará usá-la.
+
+4
+00:00:10,320 --> 00:00:14,460
+Sabemos como escolher um modelo
+e como alimentar dados da memória,
+
+5
+00:00:14,460 --> 00:00:16,184
+para treinamento e previsões.
+
+6
+00:00:16,184 --> 00:00:18,120
+Mas para os modelos reais,
+
+7
+00:00:18,120 --> 00:00:21,645
+ainda precisamos resolver
+alguns problemas.
+
+8
+00:00:21,645 --> 00:00:24,125
+A API Estimator também pode ajudar nisso.
+
+9
+00:00:24,125 --> 00:00:27,455
+Vamos começar com o primeiro.
+O tamanho dos dados.
+
+10
+00:00:27,455 --> 00:00:28,970
+Sim, na vida real,
+
+11
+00:00:28,970 --> 00:00:31,875
+os dados de treinamento
+raramente caberão na memória
+
+12
+00:00:31,875 --> 00:00:35,345
+e você os carregará no disco
+progressivamente durante o treino.
+
+13
+00:00:35,345 --> 00:00:38,999
+Como gravar uma função de entrada
+para o estimador
+
+14
+00:00:38,999 --> 00:00:43,710
+que faça isso usando conjuntos de dados,
+como em tf.data.Dataset?
+
+15
+00:00:43,710 --> 00:00:47,520
+Conjuntos de dados grandes tendem a
+ser divididos em vários arquivos,
+
+16
+00:00:47,520 --> 00:00:49,860
+que podem ser carregados
+progressivamente.
+
+17
+00:00:49,860 --> 00:00:52,890
+Lembre-se, nós treinamos
+em minilotes de dados.
+
+18
+00:00:52,890 --> 00:00:56,430
+Não precisamos ter o conjunto de
+dados inteiro na memória.
+
+19
+00:00:56,430 --> 00:01:00,940
+Um minilote é tudo o que
+precisamos para uma etapa de treino.
+
+20
+00:01:00,940 --> 00:01:02,910
+Aqui está a API Dataset.
+
+21
+00:01:02,910 --> 00:01:08,355
+Ela ajudará a criar funções de entrada
+que carregam dados progressivamente.
+
+22
+00:01:08,355 --> 00:01:11,720
+Há classes de conjuntos
+de dados especializados
+
+23
+00:01:11,720 --> 00:01:14,520
+que podem ler dados de arquivos
+de texto como CSVs,
+
+24
+00:01:14,520 --> 00:01:18,195
+registros do TensorFlow ou arquivos
+de registro de tamanho fixo.
+
+25
+00:01:18,195 --> 00:01:19,950
+Para qualquer outra coisa, use
+
+26
+00:01:19,950 --> 00:01:23,735
+a cláusula do conjunto de dados genérica e
+adicione seu código de decodificação.
+
+27
+00:01:23,735 --> 00:01:30,760
+No exemplo, o conjunto de dados da linha
+de texto carrega dados do arquivo CSV.
+
+28
+00:01:30,760 --> 00:01:33,360
+Vamos ver as diferentes partes.
+
+29
+00:01:33,360 --> 00:01:36,885
+Esta parte do código diz à classe do
+conjunto de dados como
+
+30
+00:01:36,885 --> 00:01:41,399
+organizar os dados em
+lotes de treinamento de 128,
+
+31
+00:01:41,399 --> 00:01:44,565
+repetidos por 15 épocas
+
+32
+00:01:44,565 --> 00:01:49,480
+e, é claro, embaralhados com
+um buffer aleatório de 1.000 elementos.
+
+33
+00:01:49,480 --> 00:01:55,165
+Aqui, instanciamos o conjunto de dados
+da linha de texto de um nome de arquivo.
+
+34
+00:01:55,165 --> 00:01:58,650
+Isso carrega o arquivo
+e o divide em linhas.
+
+35
+00:01:58,650 --> 00:02:02,100
+O conjunto de dados resultante é um
+conjunto de linhas de texto.
+
+36
+00:02:02,100 --> 00:02:06,330
+Agora podemos usar a função map
+para transformar as linhas.
+
+37
+00:02:06,330 --> 00:02:10,220
+Nesse caso, queremos dividir
+cada linha em itens de dados.
+
+38
+00:02:10,220 --> 00:02:14,970
+Map aplica uma função a cada item no
+conjunto de dados de modo independente.
+
+39
+00:02:14,970 --> 00:02:20,555
+E nessa função, usamos a função
+tf.decode_csv
+
+40
+00:02:20,555 --> 00:02:24,885
+para extrair os valores separados
+por vírgula das linhas de texto,
+
+41
+00:02:24,885 --> 00:02:29,940
+e formatá-los em atributos e rótulos
+conforme nosso modelo espera.
+
+42
+00:02:29,940 --> 00:02:34,845
+Após o map, temos um conjunto de
+dados de base de rótulos e atributos.
+
+43
+00:02:34,845 --> 00:02:39,120
+Finalmente, criamos a função de
+entrada para nosso modelo.
+
+44
+00:02:39,120 --> 00:02:42,735
+Este pedaço de código
+boilerplate faz o truque.
+
+45
+00:02:42,735 --> 00:02:46,245
+Mas você pode estar se perguntando
+por que isso é chamado de iterador,
+
+46
+00:02:46,245 --> 00:02:47,685
+e por que conseguir o próximo,
+
+47
+00:02:47,685 --> 00:02:50,415
+e o que realmente está
+acontecendo quando treinamos?
+
+48
+00:02:50,425 --> 00:02:52,680
+Vamos nos aprofundar nisso novamente.
+
+49
+00:02:52,680 --> 00:02:55,495
+Isso nos ajudará a entender.
+
+50
+00:02:55,495 --> 00:02:59,655
+O TensorFlow trabalha com um princípio
+de execução diferida.
+
+51
+00:02:59,655 --> 00:03:05,320
+Os comandos antigos do tf que você
+grava no Python não processam dados.
+
+52
+00:03:05,320 --> 00:03:08,550
+Eles criam um gráfico de
+operações na memória.
+
+53
+00:03:08,550 --> 00:03:12,165
+Este gráfico será executado quando
+treinarmos ou prevermos.
+
+54
+00:03:12,165 --> 00:03:14,415
+Quando instanciamos um estimador,
+
+55
+00:03:14,415 --> 00:03:17,494
+como linear ou regressor,
+o mesmo acontece.
+
+56
+00:03:17,494 --> 00:03:22,290
+Um gráfico TensorFlow é criado na memória,
+representando nosso modelo.
+
+57
+00:03:22,290 --> 00:03:26,100
+Agora, o problema é conectá-lo
+a uma fonte de dados.
+
+58
+00:03:26,100 --> 00:03:28,610
+É para isso que servem as
+funções de entrada.
+
+59
+00:03:28,610 --> 00:03:31,025
+O contrato para uma função de entrada
+
+60
+00:03:31,025 --> 00:03:33,870
+é retornar um node do TensorFlow,
+
+61
+00:03:33,870 --> 00:03:38,360
+representando os atributos e
+rótulos esperados pelo modelo.
+
+62
+00:03:38,360 --> 00:03:40,855
+Esse node será conectado às
+entradas do modelo
+
+63
+00:03:40,855 --> 00:03:47,370
+e é responsável por fornecer um novo lote
+de dados toda vez que for executado,
+
+64
+00:03:47,370 --> 00:03:50,065
+durante o treinamento ou a inferência.
+
+65
+00:03:50,065 --> 00:03:52,940
+É para isso que a API Dataset é útil.
+
+66
+00:03:52,940 --> 00:04:00,275
+Ela gera nodes de entrada que entregam um
+lote de dados em cada etapa de treino.
+
+67
+00:04:00,275 --> 00:04:05,980
+E ainda garantem que os dados carreguem
+progressivamente e não saturem a memória.
+
+68
+00:04:06,430 --> 00:04:11,285
+Quando você chama
+dataset.makeiterator.getnext,
+
+69
+00:04:11,285 --> 00:04:15,370
+você não alcança o próximo
+elemento no conjunto de dados.
+
+70
+00:04:15,370 --> 00:04:17,895
+Você está recebendo
+um node do TensorFlow,
+
+71
+00:04:17,895 --> 00:04:23,675
+que toda vez que for executado no treino,
+retorna um lote de dados de treino.
+
+72
+00:04:24,675 --> 00:04:30,190
+Vamos recapitular. Funções de entrada são
+chamadas quando um modelo é instanciado.
+
+73
+00:04:30,190 --> 00:04:34,915
+Retornam um par de nodes do TensorFlow
+para serem anexados às entradas do modelo
+
+74
+00:04:34,915 --> 00:04:38,950
+e esses nodes são responsáveis
+​​por bombear dados
+
+75
+00:04:38,950 --> 00:04:41,905
+para o modelo durante o
+treinamento ou a inferência.
+
+76
+00:04:43,195 --> 00:04:46,255
+Há alguns equívocos sobre
+funções de entrada,
+
+77
+00:04:46,255 --> 00:04:48,525
+que eu gostaria de esclarecer.
+
+78
+00:04:48,525 --> 00:04:53,090
+Uma função de entrada não é chamada
+toda vez que o modelo precisa de dados.
+
+79
+00:04:53,090 --> 00:04:54,810
+Ela é chamada apenas uma vez,
+
+80
+00:04:54,810 --> 00:04:57,015
+no momento da criação do modelo.
+
+81
+00:04:57,015 --> 00:05:00,310
+E não é esperado que elas
+retornem dados reais,
+
+82
+00:05:00,310 --> 00:05:04,100
+mesmo se é o que parece
+quando você os grava.
+
+83
+00:05:04,100 --> 00:05:06,310
+Elas retornam nodes
+do TensorFlow,
+
+84
+00:05:06,310 --> 00:05:10,430
+e esses nodes retornam dados
+quando são executados.
+
+85
+00:05:11,020 --> 00:05:14,150
+Você pode colocar
+um código arbitrariamente complexo
+
+86
+00:05:14,150 --> 00:05:16,765
+na função de entrada para
+transformar os dados,
+
+87
+00:05:16,765 --> 00:05:20,540
+desde que tenha em mente que
+ele será executado apenas uma vez.
+
+88
+00:05:20,540 --> 00:05:23,440
+Quaisquer que sejam as transformações
+que você queira aplicar,
+
+89
+00:05:23,440 --> 00:05:28,050
+e se você usa ou não a API Dataset,
+verifique se elas são
+
+90
+00:05:28,050 --> 00:05:32,200
+expressas em comandos tf
+para gerar um gráfico do TensorFlow.
+
+91
+00:05:32,200 --> 00:05:37,295
+É assim que as transformações
+são aplicadas a cada lote de dados,
+
+92
+00:05:37,295 --> 00:05:40,235
+conforme é carregado no modelo.
+
+93
+00:05:40,355 --> 00:05:43,765
+Mesmo se a função de entrada chamar
+o código apenas uma vez.
+
+94
+00:05:44,385 --> 00:05:46,715
+Aqui está o código completo novamente.
+
+95
+00:05:46,715 --> 00:05:48,750
+Vamos rever.
+
+96
+00:05:48,750 --> 00:05:51,330
+Começando na parte inferior e subindo.
+
+97
+00:05:52,470 --> 00:05:55,255
+Embaralhar o treino inicia
+o loop de treinamento.
+
+98
+00:05:55,255 --> 00:05:59,780
+O modelo recebe dados
+dos nodes de entrada,
+
+99
+00:05:59,780 --> 00:06:03,460
+atributos e rótulos, conforme
+definido na função de entrada.
+
+100
+00:06:03,460 --> 00:06:07,480
+Esses nodes iteram no conjunto de
+dados e retornam um lote de
+
+101
+00:06:07,480 --> 00:06:12,300
+dados toda vez que são executados
+no loop de treinamento.
+
+102
+00:06:12,300 --> 00:06:17,910
+Por isso o nome da API Dataset que você
+chama para dar a eles é
+
+103
+00:06:17,910 --> 00:06:21,570
+dataset.make_one_shot_iterator
+get_next.
+
+104
+00:06:21,570 --> 00:06:23,585
+O conjunto de dados embaralha os dados,
+
+105
+00:06:23,585 --> 00:06:25,295
+repete-os por 15 épocas
+
+106
+00:06:25,295 --> 00:06:29,575
+e agrupa em minilotes de 128 elementos.
+
+107
+00:06:29,945 --> 00:06:32,505
+O conjunto de dados foi produzido
+lendo linhas de um
+
+108
+00:06:32,505 --> 00:06:37,690
+arquivo de texto e decodificando
+os valores separados por vírgula deles.
+
+109
+00:06:38,120 --> 00:06:41,810
+A operação map transforma um
+conjunto de dados de
+
+110
+00:06:41,810 --> 00:06:44,725
+linhas de texto em um conjunto
+de dados de atributos e rótulos.
+
+111
+00:06:45,235 --> 00:06:49,430
+Finalmente, temos que abordar as
+preocupações iniciais,
+
+112
+00:06:49,430 --> 00:06:54,335
+carregando grandes conjuntos de dados de
+um conjunto de arquivos compartilhados.
+
+113
+00:06:54,335 --> 00:06:56,395
+Uma linha extra de código serve.
+
+114
+00:06:56,885 --> 00:07:00,500
+Primeiro, pesquisamos o disco e
+carregamos um conjunto de dados de
+
+115
+00:07:00,500 --> 00:07:04,690
+nomes de arquivos, usando o conjunto
+de dados que lista funções dos arquivos.
+
+116
+00:07:04,690 --> 00:07:11,220
+Ele é compatível a uma sintaxe que combina
+nomes de arquivos com um padrão comum.
+
+117
+00:07:11,220 --> 00:07:15,335
+Em seguida, usamos o conjunto de dados
+da linha de texto para carregar arquivos
+
+118
+00:07:15,335 --> 00:07:19,285
+e transformar cada nome de arquivo em
+um conjunto de dados de linhas de texto.
+
+119
+00:07:19,285 --> 00:07:23,250
+Aplicamos a função flat map em todos
+juntos, em um único conjunto de dados.
+
+120
+00:07:23,250 --> 00:07:25,465
+E, em seguida, para cada linha de texto,
+
+121
+00:07:25,465 --> 00:07:28,035
+usamos map para aplicar
+
+122
+00:07:28,035 --> 00:07:33,370
+o algoritmo de análise de CSV e ter um
+conjunto de dados de atributos e rótulos.
+
+123
+00:07:33,920 --> 00:07:36,490
+Por que duas funções
+de mapeamento,
+
+124
+00:07:36,490 --> 00:07:38,295
+map e flat map?
+
+125
+00:07:38,295 --> 00:07:40,180
+Uma delas é simplesmente para
+
+126
+00:07:40,180 --> 00:07:45,750
+transformações um para um, e a outra
+para transformações um a muitos.
+
+127
+00:07:45,750 --> 00:07:50,515
+Analisar uma linha de texto
+é uma transformação um para um.
+
+128
+00:07:50,515 --> 00:07:52,585
+Portanto, aplicamos
+isso com map.
+
+129
+00:07:52,585 --> 00:07:56,325
+Ao carregar um arquivo com um
+conjunto de dados de linha de texto,
+
+130
+00:07:56,325 --> 00:07:59,915
+um nome de arquivo se torna uma
+coleção de linhas de texto.
+
+131
+00:07:59,915 --> 00:08:04,590
+Então, essa é uma transformação um
+para muitos e é aplicada com
+
+132
+00:08:04,590 --> 00:08:10,935
+flat map para achatar todas as linhas de
+texto resultantes em um conjunto de dados.
+
+133
+00:08:11,125 --> 00:08:14,160
+Agora você sabe como usar
+conjuntos de dados para gerar
+
+134
+00:08:14,160 --> 00:08:18,185
+funções de entrada apropriadas
+para seus modelos e treiná-los em grandes
+
+135
+00:08:18,185 --> 00:08:20,970
+conjuntos de dados sem memória.
+
+136
+00:08:20,970 --> 00:08:23,745
+Mas os conjuntos de dados também
+oferecem uma API avançada
+
+137
+00:08:23,745 --> 00:08:28,545
+para trabalhar e transformar seus dados.
+Use-a.

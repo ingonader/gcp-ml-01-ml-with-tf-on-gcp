@@ -1,0 +1,219 @@
+1
+00:00:00,580 --> 00:00:03,150
+Pasemos a los datos reales
+en lugar de las constantes
+
+2
+00:00:03,150 --> 00:00:06,705
+que usamos antes
+para ilustrar la API de Estimator.
+
+3
+00:00:07,155 --> 00:00:12,780
+Si sus datos caben en la memoria
+en forma de matrices Numpy o Pandas
+
+4
+00:00:12,780 --> 00:00:17,760
+la API de Estimator tiene funciones
+sencillas para alimentarlas a su modelo.
+
+5
+00:00:17,760 --> 00:00:24,110
+Se llaman estimator.inputs.numpy_input_fn
+y estimator.inputs.Pandas_input_fn.
+
+6
+00:00:24,500 --> 00:00:27,570
+Especifique
+el diccionario de funciones como "x"
+
+7
+00:00:27,570 --> 00:00:31,830
+con los mismos nombres usados
+para definir las columnas de funciones.
+
+8
+00:00:31,830 --> 00:00:34,415
+Y especifique las etiquetas como "y".
+
+9
+00:00:34,415 --> 00:00:36,235
+Cuando se lee de Pandas
+
+10
+00:00:36,235 --> 00:00:38,890
+estos nombres de funciones
+ni siquiera son necesarios.
+
+11
+00:00:38,890 --> 00:00:42,460
+La API usará las columnas correctas
+desde el marco de datos de Pandas
+
+12
+00:00:42,460 --> 00:00:44,135
+según los nombres que haya usado
+
+13
+00:00:44,135 --> 00:00:46,245
+cuando definió
+las columnas de funciones.
+
+14
+00:00:46,745 --> 00:00:49,990
+Estas funciones de entrada
+implementan las funcionalidades clave
+
+15
+00:00:49,990 --> 00:00:52,995
+necesarias para el entrenamiento
+de modelos de redes neuronales.
+
+16
+00:00:52,995 --> 00:00:56,730
+Por lo general, el entrenamiento
+funciona mejor cuando un paso
+
+17
+00:00:56,730 --> 00:01:01,230
+se realiza en un "minilote"
+de datos de entrada a la vez
+
+18
+00:01:01,230 --> 00:01:05,285
+y no en un único elemento de datos
+y tampoco en todo el conjunto.
+
+19
+00:01:05,725 --> 00:01:08,210
+Puede especificar
+el tamaño del lote aquí
+
+20
+00:01:08,210 --> 00:01:12,640
+y también indicar cuántas veces quiere
+repetir el conjunto en el entrenamiento.
+
+21
+00:01:12,640 --> 00:01:15,280
+Es decir, la cantidad de ciclos.
+
+22
+00:01:15,280 --> 00:01:18,930
+Por último, hacer una redistribución
+exhaustiva de los datos de entrenamiento
+
+23
+00:01:18,930 --> 00:01:20,420
+es importante.
+
+24
+00:01:20,420 --> 00:01:23,245
+Puede pedirle
+a la API de Estimator que lo haga.
+
+25
+00:01:23,635 --> 00:01:26,345
+Y para evitar replicar
+el conjunto de datos en la memoria
+
+26
+00:01:26,345 --> 00:01:30,045
+puede especificar el tamaño
+de la cola de redistribución.
+
+27
+00:01:30,835 --> 00:01:33,890
+En la configuración predeterminada,
+el entrenamiento se ejecutará
+
+28
+00:01:33,890 --> 00:01:36,065
+hasta que los datos se agoten
+
+29
+00:01:36,065 --> 00:01:41,185
+o se agoten n veces si especificó
+n ciclos en su función de entrada.
+
+30
+00:01:41,605 --> 00:01:44,115
+También puede anular esto
+
+31
+00:01:44,115 --> 00:01:47,775
+con una cantidad específica de pasos
+en la llamada a la función train.
+
+32
+00:01:47,775 --> 00:01:50,610
+Hay dos variantes
+en la configuración de pasos.
+
+33
+00:01:50,610 --> 00:01:58,570
+Con "steps=1000", se ejecutan
+1,000 pasos más desde el último control.
+
+34
+00:01:59,585 --> 00:02:03,210
+Aquí, cada paso corresponde
+a un lote de datos de entrada.
+
+35
+00:02:03,740 --> 00:02:09,205
+Por otro lado, "max_steps=1000"
+reinicia desde los últimos controles
+
+36
+00:02:09,205 --> 00:02:12,350
+lee la cantidad de pasos
+alcanzada en la ejecución anterior
+
+37
+00:02:12,350 --> 00:02:15,730
+y continúa hasta alcanzar
+el valor de "max_steps".
+
+38
+00:02:15,935 --> 00:02:20,085
+Si el control ya había alcanzado
+ese valor, puede que no se haga nada más.
+
+39
+00:02:20,745 --> 00:02:24,770
+Aquí está todo el código,
+con columnas de funciones, un modelo
+
+40
+00:02:24,770 --> 00:02:28,660
+una función de entrada que lee
+datos del marco de datos de Pandas
+
+41
+00:02:28,660 --> 00:02:30,740
+y el entrenamiento en sí.
+
+42
+00:02:31,220 --> 00:02:33,090
+¿Quiere agregar una nueva función?
+
+43
+00:02:33,090 --> 00:02:35,815
+Por ejemplo, la cantidad
+de dormitorios de la casa.
+
+44
+00:02:35,815 --> 00:02:38,295
+Puede agregarla a la lista
+de columnas de funciones
+
+45
+00:02:38,295 --> 00:02:41,096
+y luego asegurarse
+de que figure con el mismo nombre
+
+46
+00:02:41,096 --> 00:02:42,736
+en el marco de datos de Pandas.

@@ -1,0 +1,219 @@
+1
+00:00:00,000 --> 00:00:01,920
+In the next couple of lessons,
+
+2
+00:00:01,920 --> 00:00:04,995
+let's look at ways to solve common problems.
+
+3
+00:00:04,995 --> 00:00:09,150
+We will start with shape errors and then we look at a variant
+
+4
+00:00:09,150 --> 00:00:13,285
+of shape errors having to do with scalar-vector mismatch,
+
+5
+00:00:13,285 --> 00:00:17,520
+and finally, we will look at data type problems.
+
+6
+00:00:17,520 --> 00:00:22,880
+We looked at this code in the previous lesson and said that the reason the addition
+
+7
+00:00:22,880 --> 00:00:28,145
+failed is that both a and c needed to be the same shape.
+
+8
+00:00:28,145 --> 00:00:32,870
+Which of the two shapes is correct depends on what the intent of the cord is?
+
+9
+00:00:32,870 --> 00:00:37,210
+In this case, the method was trying to take the original four by
+
+10
+00:00:37,210 --> 00:00:41,775
+three matrix and trying to do sliding windows of constant size.
+
+11
+00:00:41,775 --> 00:00:45,700
+These sliding windows needed to be four by two.
+
+12
+00:00:45,700 --> 00:00:49,040
+So, a was correct but c was wrong.
+
+13
+00:00:49,040 --> 00:00:54,995
+So, how would you make c also b four comma two?
+
+14
+00:00:54,995 --> 00:01:00,590
+You could change c from slicing all rows and only column
+
+15
+00:01:00,590 --> 00:01:06,135
+one to slicing all rows but getting columns one and two.
+
+16
+00:01:06,135 --> 00:01:08,530
+Recall that in Python ranges,
+
+17
+00:01:08,530 --> 00:01:11,905
+the first number is included but the last number isn't.
+
+18
+00:01:11,905 --> 00:01:18,030
+So, a gets column zero and one and c gets columns one and three,
+
+19
+00:01:18,030 --> 00:01:21,295
+slicing windows of two columns each time.
+
+20
+00:01:21,295 --> 00:01:25,685
+Now, when we run the program, things work correctly.
+
+21
+00:01:25,685 --> 00:01:31,250
+Shape problems can also happen because of batch size.
+
+22
+00:01:31,250 --> 00:01:34,895
+Remember that when I was talking about shapes of tensors,
+
+23
+00:01:34,895 --> 00:01:39,875
+I said that sometimes one or more of the dimensions might be variable length.
+
+24
+00:01:39,875 --> 00:01:41,690
+One common reason for
+
+25
+00:01:41,690 --> 00:01:46,965
+variable length tensors is when you're writing a program that deals with batches.
+
+26
+00:01:46,965 --> 00:01:49,970
+Batches are all usually the same size.
+
+27
+00:01:49,970 --> 00:01:53,285
+For example 64 examples each time,
+
+28
+00:01:53,285 --> 00:01:56,725
+except when it gets to the end of the input file.
+
+29
+00:01:56,725 --> 00:01:58,459
+At that time though,
+
+30
+00:01:58,459 --> 00:02:02,690
+you may not have 64 examples to fill the batch and so you
+
+31
+00:02:02,690 --> 00:02:07,515
+might create a tensor that contains only say 42 examples.
+
+32
+00:02:07,515 --> 00:02:09,440
+That's the reason the shape of
+
+33
+00:02:09,440 --> 00:02:14,640
+the placeholder X in the code is none for the first dimension.
+
+34
+00:02:14,640 --> 00:02:17,275
+None means there is a variable length.
+
+35
+00:02:17,275 --> 00:02:20,150
+If you print the value of X,
+
+36
+00:02:20,150 --> 00:02:25,635
+you will get the debug output of the tensor which tells you that this is the 2D tensor,
+
+37
+00:02:25,635 --> 00:02:28,375
+It's question mark comma three.
+
+38
+00:02:28,375 --> 00:02:35,330
+Meaning the matrix always has three columns but the number of rows might vary.
+
+39
+00:02:35,330 --> 00:02:38,715
+Now when you're trying to feed into fake data,
+
+40
+00:02:38,715 --> 00:02:41,320
+what is the shape of your fake data?
+
+41
+00:02:41,320 --> 00:02:43,355
+It's a 1D tensor.
+
+42
+00:02:43,355 --> 00:02:45,635
+It has three elements, sure,
+
+43
+00:02:45,635 --> 00:02:50,475
+but it's 1D, but the placeholder wants a 2D matrix.
+
+44
+00:02:50,475 --> 00:02:53,460
+You can have any number of rows and one row is
+
+45
+00:02:53,460 --> 00:02:57,450
+acceptable but you have to make it a 2D matrix.
+
+46
+00:02:57,450 --> 00:02:59,820
+So, how do you fix this problem?
+
+47
+00:02:59,820 --> 00:03:04,125
+It's not as simple as correcting your slicing, is it?
+
+48
+00:03:04,125 --> 00:03:08,170
+The answer is that you need to change the shape.
+
+49
+00:03:08,170 --> 00:03:12,635
+Shape coercing can be done with these methods.
+
+50
+00:03:12,635 --> 00:03:15,480
+We've already seen tf that reshape.
+
+51
+00:03:15,480 --> 00:03:18,020
+It takes the numbers you have and puts them into
+
+52
+00:03:18,020 --> 00:03:20,990
+a different shape and that's what we need for this problem.
+
+53
+00:03:20,990 --> 00:03:23,930
+We have three numbers and three numbers are enough,
+
+54
+00:03:23,930 --> 00:03:28,475
+but we have in a 1D tensor and we need it in a 2D tensor.
+
+55
+00:03:28,475 --> 00:03:31,770
+We can do or reshape and send it along.

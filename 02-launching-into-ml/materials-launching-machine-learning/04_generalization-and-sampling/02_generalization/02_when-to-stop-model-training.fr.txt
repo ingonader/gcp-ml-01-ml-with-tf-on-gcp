@@ -1,0 +1,73 @@
+En plus de vous aider à choisir
+entre deux modèles de ML différents : "dois-je utiliser la régression linéaire
+ou un réseau de neurones ?", vous pouvez aussi utiliser
+vos données de validation pour ajuster les hyperparamètres
+d'un modèle unique, qui, vous vous en souvenez peut-être,
+sont définis avant l'entraînement. Ce processus d'ajustement passe
+par des entraînements successifs puis par la comparaison
+de ces entraînements aux données de validation indépendantes
+pour repérer le surapprentissage. Voici comment votre ensemble de validation
+va être utilisé pendant l'entraînement. Comme nous l'avons vu
+en parlant de l'optimisation, entraîner le modèle commence
+par le calcul de pondérations aléatoires, calculer la dérivée, regarder
+la direction de la courbe de perte, minimiser la métrique de perte,
+puis recommencer. Et, régulièrement,
+évaluer les performances d'un modèle avec des données non vues
+pendant l'entraînement, moment où nous utilisons
+l'ensemble de données de validation. Après un entraînement complet,
+valider les résultats de ce modèle avec les données de validation
+pour voir si les hyperparamètres sont bons ou s'il faut encore les ajuster. Et s'il n'y a pas d'écart important entre
+les métriques de perte de l'entraînement et celles de la validation, nous pouvons revenir en arrière
+et optimiser les hyperparamètres. Quand les métriques de notre modèle
+ont été suffisamment optimisées et ont réussi l'étape de validation,
+quand vous voyez cet écart et que le modèle
+n'est pas en surapprentissage, c'est le moment où vous devez arrêter et décider que le modèle est ajusté
+et prêt pour la production. Vous pouvez utiliser une boucle similaire pour choisir
+les paramètres de vos modèles, comme pour les hyperparamètres
+définis avant l'entraînement. Par exemple, les couches d'un réseau
+ou le nombre de nœuds que vous devriez utiliser. Vous entraînez avec une configuration, comme six nœuds
+dans le réseau de neurones, puis avec une autre,
+et vous évaluez ensuite laquelle fonctionne le mieux
+avec votre ensemble de validation. Vous choisissez une configuration
+qui obtient une perte plus faible dans l'ensemble de validation,
+et pas dans celui d'entraînement. Ultérieurement, nous allons vous montrer
+comment Cloud ML Engine peut réaliser une brève recherche bayésienne
+avec un espace d'hyperparamètres, pour que vous n'ayez pas
+à faire ce type d'expérimentation hyperparamètre par hyperparamètre. CMLE peut nous aider
+à réaliser ce type d'expérimentation de façon parallèle
+avec une stratégie optimisée différente. Une fois l'entraînement terminé, vous devez indiquer à votre chef
+les performances de votre modèle. Quel ensemble de données allez-vous
+utiliser pour l'évaluation finale ? Pouvez-vous simplement signaler la perte
+ou l'erreur sur vos données de validation même si elle est cohérente
+avec l'ensemble d'entraînement ? Vous ne pouvez pas. Mais pourquoi ? Parce que vous avez utilisé
+votre ensemble de données de validation pour choisir quand arrêter l'entraînement. Il n'est plus indépendant. Le modèle l'a vu. Que faire alors ? Vous devez séparer
+vos données en trois parties : l'entraînement, la validation
+et un nouveau silo complètement distinct appelé "test" ou "testing". Quand votre modèle
+a été entraîné et validé, vous pouvez l'écrire une seule fois
+avec l'ensemble de test indépendant. C'est la métrique de perte
+que vous indiquez à votre chef. Et c'est celle qui décide,
+avec votre ensemble de test, si le modèle doit
+être utilisé en production. Que se passe-t-il si vous échouez
+avec l'ensemble de test alors que la validation avait réussi ? Cela signifie que vous ne pouvez pas
+tester le même modèle, et vous devez entraîner un nouveau modèle, ou revenir à l'étude et collecter
+d'autres échantillons de données pour fournir de nouvelles données
+à votre modèle de ML. Il s'agit d'une bonne approche,
+mais elle présente un petit problème. Personne n'aime gaspiller les données, mais les données de test semblent l'être. Je ne les utilise qu'une fois,
+c'est tendu. Peut-on utiliser
+toutes les données à l'entraînement tout en obtenant une bonne indication
+des performances du modèle ? Oui, c'est possible. Le compromis entre ces méthodes est
+de séparer l'entraînement de la validation et de le faire plusieurs fois. Entraîner, puis calculer la perte
+dans l'ensemble de validation, en gardant à l'esprit que celui-ci
+peut consister en des points qui n'ont pas été utilisés
+lors du premier entraînement, puis séparer les données. Vos données d'entraînement
+peuvent contenir des points utilisés lors de la première validation, mais vous faites plusieurs itérations. Et après quelques tours de ceci, vous calculez la moyenne
+des métriques de perte de validation. Vous obtenez un écart type
+des pertes de validation, et cela vous aide à analyser cet écart
+et à vous arrêter sur un chiffre final. Ce processus est appelé "méthode
+d'autoamorçage" ou "validation croisée". Vous utilisez toutes les données, mais vous réalisez
+beaucoup plus d'entraînements, car vous créez plus de séparations. Au bout du compte,
+voici ce dont vous devez vous souvenir. Si vous avez beaucoup de données, utilisez un ensemble de données
+complètement indépendant, c'est prendre la décision
+de continuer ou d'arrêter. Si vous n'en avez pas beaucoup, utilisez la validation croisée. Mais comment séparer
+ces grands ensembles de données en ces silos dont nous avons tant parlé ? C'est le sujet de notre prochain
+cours sur l'échantillonnage.

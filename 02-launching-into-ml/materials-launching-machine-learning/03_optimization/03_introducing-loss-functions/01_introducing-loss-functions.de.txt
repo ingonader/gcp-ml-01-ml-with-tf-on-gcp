@@ -1,0 +1,88 @@
+Im vorigen Teil haben wir Modelle als mathematische Funktionen mit 
+Parametern und Hyperparametern definiert und die Parameter für
+lineare Modelle vorgestellt. Dann haben wir besprochen,
+dass analytische Methoden zum Finden der besten Reihe von
+Modellparametern nicht skalierbar sind und wie wir uns die Parameteroptimierung als Suche im
+Parameter-Raum vorstellen können. Doch zum Vergleichen
+von Punkten untereinander benötigen wir ein Maß. In diesem Teil sprechen wir über
+Verlustfunktionen und wie sie anhand der Qualität von Vorhersagen
+für eine Gruppe von Datenpunkten aus unserem
+Trainingssatz eine einzelne Zahl bilden, mit der die Qualität der aktuellen
+Modellparameter eingeschätzt werden kann. Ein Maß für die Qualität der Vorhersage
+an einem einzelnen Punkt ist einfach die Zeichen-Abweichung zwischen der
+Vorhersage und dem tatsächlichen Wert. Diese Abweichung nennt man den Fehler. Wie können wir ein Reihe
+von Fehlerwerten zusammenführen? Die einfachste Möglichkeit
+besteht darin, sie zu summieren. Bei Verwendung der Summenfunktion
+würde das resultierende Modell Fehler mit gegensätzlichen Vorzeichen allerdings
+als sich gegenseitig aufhebend behandeln. Unser Modell muss aber
+gegensätzliche Ergebnisse berücksichtigen und es ist nicht so, dass ein Modell, das die Differenz zwischen
+positiven und negativen Fehlern aufhebt, die perfekte Lösung bietet. Eine perfekte Lösung wäre
+ein Modell, in dem die Vorhersagen dem Label für alle Punkte im Datensatz
+entsprechen – nicht ein Modell, das Fehler mit unterschiedlichen Vorzeichen einander aufheben lässt. Die Summe der Absolutwerte des Fehlers
+mag als sinnvolle Alternative erscheinen, doch auch bei dieser Methode der
+Datenzusammenstellung gibt es Probleme, die wir in Kürze besprechen werden. Stattdessen wird oft der
+mittlere quadratische Fehler verwendet. Der mittlere quadratische Fehler oder MQF wird anhand der verschiedenen
+Fehler aus unserem Datensatz berechnet. Man bildet ihr Quadrat,
+um negative Zahlen zu eliminieren, und berechnet 
+den Durchschnitt der Quadrate. Der MQF ist 
+eine absolut stichhaltige Verlustfunktion, es gibt aber ein Problem. Die Fehler sind zwar in Pfund, Kilometern oder Dollar, der quadratische Fehler ist aber in Pfund, Kilometern oder Dollar zum Quadrat. Das kann die
+Interpretation des MQF erschweren. Daher wird oft
+die Quadratwurzel des MQF gezogen, um nachvollziehbare Einheiten zu erhalten. Die Wurzel des MQF
+wird mit RMSE abgekürzt. Je größer die Wurzel des MQF, desto schlechter
+die Qualität der Vorhersage. Deshalb möchten wir
+diesen Wert minimieren. Für die Notation wird hier ein ^ über dem Y verwendet, das
+die Vorhersage unseres Modells darstellt, und ein normales Y für das Label. Nun haben wir eine Metrik zum Vergleichen
+von zwei Punkten im Parameter-Raum. Zur Erinnerung: So werden die aktuellen
+Parameterwerte im linearen Modell codiert. Sehen Sie sich diese beiden
+Punktwolken und Regressionslinien für das Gewicht des Babys in Abhängigkeit vom
+Alter der Mutter für Mütter über 39 an. Es kann sehr schwer
+sein, visuell festzustellen, welche Linien für
+die zugrunde liegenden Daten besser passt. Hier helfen unsere Verlustmessgrößen,
+zu bestimmen, welches Modell besser ist. Das Modell links hat
+eine MQF-Wurzel von 0,145 und das Modell rechts hat
+eine MQF-Wurzel von 0,149. Die Verlustunfunktionen
+deuten also darauf hin, dass die Werte für Gewichtung und Bias links besser sind als rechts. Die MQF-Wurzel funktioniert zwar
+für lineare Regressionsprobleme, aber nicht als
+Verlustfunktion für die Klassifikation. Bei Klassifikationsproblemen ist
+das Label eine Kategorievariable und das Problem bei der Verwendung
+der MQF-Wurzel für die Klassifikation hängt mit der Darstellung dieser
+Kategorievariablen im Modell zusammen. Wie bereits erwähnt, werden Kategorievariablen oft
+als binäre Ganzzahlen dargestellt. Warum sich daraus ein Problem ergibt, wird aus den
+dargestellten Verlustkurven ersichtlich. Die x-Achse steht für die Vorhersage und die y-Achse für den Verlust
+in Anbetracht der jeweiligen Vorhersage. Das Label ist farblich gekennzeichnet. Bei grün war das Label eins und bei blau war das Label null. Was stimmt mit dieser Kurve nicht? Das Problem ist, dass wir erwarten würden,
+dass wirklich schlechte Vorhersagen viel stärker sanktioniert
+werden, und das geschieht hier nicht. Beachten Sie,
+dass eine Vorhersage von eins, wenn das Ziel null ist, rund dreimal schlechter ist als eine
+Vorhersage von 0,5 mit dem gleichen Ziel. Wir benötigen also
+eine andere Verlustfunktion anstelle der MQF-Wurzel. Eine, die entsprechend unseren Erwartungen
+für Klassifikationsprobleme sanktioniert. Eine der meistverwendeten
+Verlustfunktionen für die Klassifikation ist die Kreuzentropie
+(oder der logarithmische Verlust). Hier haben wir eine ähnliche
+Grafik wie auf der letzten Folie, allerdings wird anstelle des
+Verlusts auf Basis der MQF-Wurzel der Wert einer neuen Verlustfunktion
+dargestellt: der Kreuzentropie. Anders als bei der MQF-Wurzel werden schlechte Vorhersagen bei
+der Kreuzentropie sehr stark sanktioniert, sogar in diesem begrenzten Bereich. Sehen wir uns ein Beispiel an, um besser
+zu verstehen, wie die Formel funktioniert. Die Formel für die Kreuzentropie läuft
+auf zwei unterschiedliche Terme hinaus. Nur einer davon ist für den Verlust
+für einen bestimmten Datenpunkt relevant. Der erste Term wird
+bei positiven Beispielen einbezogen, also Beispiele,
+bei denen das Label Y eins ist. Der zweite Term wird
+einbezogen, wenn das Label null ist. Hier haben wir eine Tabelle mit den Labels und den Vorhersagen für zwei Bilder
+in einer Bildklassifikationsaufgabe. Das Label codiert, ob das Bild
+ein menschliches Gesicht darstellt. Das Modell scheint gut zu funktionieren. Die Vorhersage ist für das
+Beispiel oben bedeutend höher als für das Beispiel unten. Sehen wir uns das Prinzip der Funktion an. Die Verlustfunktion ist hier so aufgebaut, dass der negative Term
+aus dem ersten Beispiel und der positive Term
+aus dem zweiten Beispiel beide wegfallen. In Anbetracht von
+Vorhersagen von 0,7 und 0,2 für zwei Datenpunkte
+mit Label eins und null ist der Kreuzentropieverlust im Grunde der positive Term
+für den ersten Datenpunkt plus der negative Term
+für den zweiten Datenpunkt mal -0,5. Das Ergebnis ist 0,13. Was passiert, wenn unser
+Modell keine gute Vorhersage liefert? Hier scheint das negative Beispiel
+falsch klassifiziert worden zu sein, was eine Steigerung
+des Verlusts zur Folge hat. Und das ist auch sinnvoll, da der Verlust das ist,
+was wir minimieren möchten. Wir können jetzt bei Verwendung
+der MQF-Wurzel für Regression oder der Kreuzentropie für Klassifikation zwei
+Punkte im Parameter-Raum vergleichen. Unser Ziel ist es aber, die beste Reihe von Parametern oder den
+besten Punkt im Parameter-Raum zu finden. Wie können wir unser
+Wissen über das Vergleichen von zwei Reihen von Parametern
+in eine Suchstrategie umsetzen? Damit befassen wir uns im nächsten Teil.

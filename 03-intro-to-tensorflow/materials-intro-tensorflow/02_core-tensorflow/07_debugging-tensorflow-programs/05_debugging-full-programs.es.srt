@@ -1,0 +1,353 @@
+1
+00:00:01,110 --> 00:00:06,120
+En lecciones anteriores, hablamos
+de cómo depurar un programa de TensorFlow.
+
+2
+00:00:06,120 --> 00:00:09,930
+Analizamos el mensaje de error,
+aislamos el método problemático,
+
+3
+00:00:09,930 --> 00:00:13,190
+le inyectamos datos ficticios
+y luego solucionamos el error
+
+4
+00:00:13,190 --> 00:00:15,370
+una vez que entendemos qué ocurre.
+
+5
+00:00:15,370 --> 00:00:18,770
+Sin embargo,
+algunos problemas son más sutiles.
+
+6
+00:00:18,770 --> 00:00:22,900
+Solo ocurren con eventos específicos.
+
+7
+00:00:22,900 --> 00:00:26,990
+Y tal vez no pueda identificar
+por qué todo funciona bien
+
+8
+00:00:26,990 --> 00:00:31,019
+durante 5, 6 o 7 lotes
+hasta que, de pronto, se genera un error
+
+9
+00:00:31,019 --> 00:00:32,860
+y luego todo vuelve a la normalidad.
+
+10
+00:00:32,860 --> 00:00:35,380
+En otras palabras,
+cuando los errores están asociados
+
+11
+00:00:35,380 --> 00:00:40,850
+con valores de entrada específicos
+o una condición del sistema de ejecución.
+
+12
+00:00:41,860 --> 00:00:46,257
+En esa situación, es necesario
+depurar el programa completo
+
+13
+00:00:46,257 --> 00:00:48,982
+y hay tres métodos para hacerlo.
+
+14
+00:00:49,312 --> 00:00:53,244
+tf.Print() es una forma
+de mostrar los valores de los tensores
+
+15
+00:00:53,244 --> 00:00:56,025
+cuando se cumplen ciertas condiciones.
+
+16
+00:00:56,025 --> 00:01:00,561
+tfdbg es un depurador interactivo
+que puede ejecutarse desde una terminal
+
+17
+00:01:00,581 --> 00:01:04,240
+y adjuntar a una sesión local
+o remota de TensorFlow.
+
+18
+00:01:04,780 --> 00:01:08,130
+TensorBoard es
+una herramienta de supervisión visual.
+
+19
+00:01:08,130 --> 00:01:11,350
+Hablamos sobre esto
+como una forma de analizar el DAG
+
+20
+00:01:11,350 --> 00:01:14,830
+pero hay más métodos
+para solucionar problemas en TensorFlow.
+
+21
+00:01:14,830 --> 00:01:18,120
+Puede analizar métricas
+de evaluación, ver si hay sobreajuste
+
+22
+00:01:18,120 --> 00:01:20,170
+capas muertas, etcétera.
+
+23
+00:01:20,170 --> 00:01:23,274
+En otras palabras, depuración
+de alto nivel de redes neuronales.
+
+24
+00:01:23,274 --> 00:01:26,143
+Veremos TensorBoard
+en un próximo capítulo de este curso
+
+25
+00:01:26,143 --> 00:01:29,531
+pero por ahora,
+quiero destacarlo para que sepa
+
+26
+00:01:29,531 --> 00:01:32,922
+y recuerde que TensorBoard
+es una herramienta poderosa
+
+27
+00:01:32,922 --> 00:01:34,732
+para la solución de problemas.
+
+28
+00:01:34,732 --> 00:01:38,571
+Algo un poco tonto,
+pero que vale la pena mencionar
+
+29
+00:01:38,571 --> 00:01:43,110
+es que el nivel predeterminado
+de registros para programas de TensorFlow
+
+30
+00:01:43,110 --> 00:01:44,040
+es WARN.
+
+31
+00:01:44,040 --> 00:01:46,450
+Por lo que es bastante silencioso.
+
+32
+00:01:46,450 --> 00:01:50,500
+Cambie el nivel a INFO, para ver
+muchos más mensajes de registros
+
+33
+00:01:50,500 --> 00:01:52,550
+mientras TensorFlow entrena.
+
+34
+00:01:52,550 --> 00:01:55,970
+Para cambiar el nivel
+de registro, puede usar tf.logging
+
+35
+00:01:55,970 --> 00:01:57,743
+y ajustar el nivel de verbosity.
+
+36
+00:01:58,150 --> 00:02:04,060
+Los niveles son DEBUG, INFO,
+WARN, ERROR y FATAL, en ese orden.
+
+37
+00:02:04,060 --> 00:02:09,080
+DEBUG es el más verboso
+y FATAL el más silencioso
+
+38
+00:02:09,080 --> 00:02:15,240
+INFO es lo que uso normalmente
+en desarrollo y WARN" en producción.
+
+39
+00:02:15,240 --> 00:02:17,625
+Puede configurar
+un parámetro de línea de comandos
+
+40
+00:02:17,625 --> 00:02:19,045
+para cambiar del uno al otro.
+
+41
+00:02:20,555 --> 00:02:25,060
+tf.print se puede usar para registrar
+valores específicos de tensores.
+
+42
+00:02:25,739 --> 00:02:32,350
+Tal vez está dividiendo a entre b
+y obtiene NaN (Not a Number) en la salida.
+
+43
+00:02:32,560 --> 00:02:37,720
+Desea saber qué valores
+de a y b ocasionan el problema.
+
+44
+00:02:37,720 --> 00:02:42,591
+Con print a, solo obtendría la salida
+de depuración del tensor, no su valor.
+
+45
+00:02:42,800 --> 00:02:44,695
+Recuerde que usamos ejecución perezosa.
+
+46
+00:02:44,695 --> 00:02:47,645
+Hay que evaluar un tensor
+para obtener su valor.
+
+47
+00:02:47,935 --> 00:02:52,130
+No es necesario
+mostrar el valor de a cada vez.
+
+48
+00:02:52,130 --> 00:02:56,140
+La idea es que print_ab es un tensor.
+
+49
+00:02:56,140 --> 00:03:00,150
+Une s, y muestra a y b.
+
+50
+00:03:00,770 --> 00:03:07,380
+Luego, reemplazo s en el gráfico
+por print_ab, solo en los lotes
+
+51
+00:03:07,380 --> 00:03:08,860
+en los que s es NaN.
+
+52
+00:03:08,860 --> 00:03:11,510
+Por eso, solo eso se muestra.
+
+53
+00:03:12,220 --> 00:03:14,690
+Esto se debe hacer
+en un programa independiente
+
+54
+00:03:14,690 --> 00:03:17,658
+porque Datalab consume
+los mensajes de registro de TensorFlow.
+
+55
+00:03:17,658 --> 00:03:20,960
+Por ello, mi solución
+es escribir el código en un archivo
+
+56
+00:03:20,960 --> 00:03:23,030
+y luego ejecutarlo.
+
+57
+00:03:23,030 --> 00:03:26,780
+Se suele usar tf.Print
+en programas de TensorFlow en ejecución
+
+58
+00:03:26,780 --> 00:03:28,875
+para diagnosticar
+errores poco frecuences
+
+59
+00:03:28,875 --> 00:03:31,200
+y asegurarse
+de capturarlos en los registros.
+
+60
+00:03:31,200 --> 00:03:33,150
+Es un truco útil.
+
+61
+00:03:34,490 --> 00:03:38,310
+TensorFlow también tiene
+un depurador dinámico interactivo
+
+62
+00:03:38,310 --> 00:03:39,790
+llamado tf_debug.
+
+63
+00:03:39,790 --> 00:03:41,820
+Se lo ejecuta desde la línea de comandos.
+
+64
+00:03:41,820 --> 00:03:44,470
+Se ejecuta el programa
+de TensorFlow desde una terminal
+
+65
+00:03:44,470 --> 00:03:46,090
+como programa independiente.
+
+66
+00:03:46,090 --> 00:03:50,790
+Y cuando se ejecuta, se agrega
+la marca de línea de comandos --debug.
+
+67
+00:03:51,160 --> 00:03:55,740
+Esto también ayuda a depurar programas
+de TensorFlow ejecutados en forma remota.
+
+68
+00:03:55,740 --> 00:03:58,160
+En otras palabras,
+puede adjuntarlo al programa.
+
+69
+00:03:58,160 --> 00:04:00,417
+También hay hooks especiales de depuración
+
+70
+00:04:00,417 --> 00:04:03,760
+para programas
+de experimentación y de estimadores.
+
+71
+00:04:03,760 --> 00:04:05,570
+Y una vez que el programa se inicia
+
+72
+00:04:05,570 --> 00:04:08,480
+puede usar un depurador
+para ir paso por paso en el código
+
+73
+00:04:08,480 --> 00:04:10,560
+poner puntos de interrupción, etcétera.
+
+74
+00:04:10,560 --> 00:04:14,710
+Si alguna vez usó un depurador interactivo
+para cualquier otro lenguaje o entorno
+
+75
+00:04:14,730 --> 00:04:17,950
+la terminología
+(pasos, puntos de interrupción, etcétera)
+
+76
+00:04:17,950 --> 00:04:19,560
+debería resultarle familiar.

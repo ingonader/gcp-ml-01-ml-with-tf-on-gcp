@@ -1,0 +1,114 @@
+Nous allons parler ici de l'API Dataset,
+intégrée à TensorFlow, et conçue pour être utilisée
+avec les estimateurs. Nous allons voir pourquoi
+et comment vous pouvez l'utiliser. Nous savons comment choisir un modèle
+et l'alimenter avec des données en mémoire pour l'entraînement et les prédictions. Mais pour les modèles réels, nous devons
+résoudre quelques problèmes pratiques. L'API Estimator peut nous aider. Commençons par le premier problème,
+la taille des données. En situation réelle, vos données
+d'entraînement rentreront rarement en mémoire,
+et vous les chargerez progressivement à partir d'un disque
+pendant l'entraînement. Comment écrire une fonction d'entrée
+pour votre estimateur à cette fin ? Grâce à des ensembles de données,
+comme dans "tf.data.Dataset" ? Les ensembles de données volumineux sont
+souvent segmentés en plusieurs fichiers, qui peuvent être chargés progressivement. Souvenez-vous que l'entraînement
+se fait sur des mini-lots de données. Nous n'avons pas besoin de
+tout l'ensemble de données en mémoire. Nous n'avons besoin que d'un mini-lot
+pour une étape d'entraînement. Voici l'API Dataset. Elle va nous aider à créer
+des fonctions d'entrée pour notre modèle pour charger les données progressivement. Il existe des classes d'ensembles
+de données spécialisées, qui peuvent lire des données à partir
+de fichiers texte, comme des fichiers CSV, des enregistrements TF, ou des fichiers
+d'enregistrement de longueur fixe. Sinon, vous pouvez utiliser une clause
+d'ensemble de données générique et ajouter votre propre code de décodage. Voici un exemple dans lequel un ensemble
+de données de lignes de texte est utilisé pour charger des données
+à partir d'un fichier CSV. Analysons chaque étape. Cette partie du code indique
+à la classe d'ensemble de données comment organiser les données en lots d'entraînement de 128,
+répétées sur 15 itérations, et bien sûr brassées avec un tampon
+de brassage de 1 000 éléments. Ici, nous instancions l'ensemble
+de données de lignes de texte à partir d'un nom de fichier. Le fichier est alors chargé
+et divisé en lignes. L'ensemble de données ainsi obtenu
+est un ensemble de lignes de texte. Nous pouvons alors utiliser la fonction
+"map" pour transformer les lignes. Dans notre cas, nous voulons diviser
+chaque ligne en éléments de données. "map" applique indépendamment
+une fonction à chaque élément de l'ensemble de données. Dans cette fonction, nous utilisons
+la fonction "tf.decode_csv" pour extraire les valeurs séparées
+par des virgules des lignes de texte, et pour les formater en caractéristiques
+et libellés attendus par notre modèle. La fonction "map" est suivie
+d'un ensemble de données de paires caractéristiques/libellés. Enfin, nous créons la fonction d'entrée
+pour notre modèle. Ce code récurrent fait tout le travail. Vous vous demandez peut-être
+pourquoi on appelle cela un itérateur, à quoi sert la fonction "get_next", et
+ce qu'il se passe lors de l'entraînement. Analysons tout cela plus en détail
+pour mieux comprendre le processus. TensorFlow repose
+sur un principe d'exécution en différé. Les anciennes commandes
+de type "tf." écrites en Python ne traitent pas de données. Elles construisent un graphique
+des opérations en mémoire. Ce graphique sera exécuté
+lors de l'entraînement ou des prédictions. Lors de l'instanciation d'un estimateur,
+comme un régresseur linéaire, la même chose se produit. Un graphique TensorFlow représentant
+notre modèle est créé en mémoire. Il faut maintenant le connecter
+à une source de données. C'est là qu'interviennent
+les fonctions d'entrée. Les fonctions d'entrée renvoient
+un nœud TensorFlow, qui représente les caractéristiques
+et les libellés attendus par le modèle. Ce nœud sera connecté
+aux entrées du modèle. Son rôle est de fournir un nouveau lot
+de données à chaque exécution, pendant l'entraînement ou l'inférence. C'est là que l'API Dataset entre en jeu. Elle génère des nœuds d'entrée
+qui fournissent un lot de données à chaque étape d'entraînement. Ils s'assurent également que les données
+sont chargées progressivement et qu'elles ne font jamais
+saturer la mémoire. Lorsque vous appelez
+"dataset.make_iterator.get_next", vous n'obtenez pas réellement l'élément
+suivant dans l'ensemble de données, mais un nœud TensorFlow. À chaque fois qu'il est exécuté
+pendant l'entraînement, ce nœud renvoie un lot
+de données d'entraînement. Récapitulons. Les fonctions d'entrée sont appelées
+lorsqu'un modèle est instancié. Elles renvoient une paire de nœuds TF
+connectée aux entrées de votre modèle. Ces nœuds alimentent
+votre modèle en données pendant l'entraînement ou l'inférence. J'aimerais revenir sur quelques idées
+fausses concernant les fonctions d'entrée. Non, une fonction d'entrée
+n'est PAS appelée à chaque fois que votre modèle a besoin de données. Elle est appelée une seule fois,
+lors de la création du modèle. Et non, les fonctions d'entrée ne sont pas
+censées renvoyer des données réelles, même si ça y ressemble
+lorsque vous les écrivez. Elles renvoient des nœuds TensorFlow,
+qui renvoient des données lorsqu'ils sont exécutés. Vous pouvez placer du code
+arbitrairement complexe dans la fonction d'entrée
+pour transformer vos données, mais vous devez garder en tête
+qu'il ne s'exécutera qu'une seule fois. Quelles que soient les transformations
+que vous voulez appliquer, et que vous utilisiez l'API Dataset
+ou non, assurez-vous de les exprimer dans des commandes de type "tf."
+qui génèrent un graphique TensorFlow. Cela vous permet d'appliquer vos
+transformations à chaque lot de données lorsqu'il est chargé dans votre modèle, même si la fonction d'entrée elle-même
+n'est appelée qu'une seule fois. Voici à nouveau le code complet. Examinons-le à encore une fois,
+en commençant par le bas et en remontant. "model.train" lance
+la boucle d'entraînement. Le modèle reçoit des données
+de ses nœuds d'entrée, caractéristiques et libellés définis
+dans la fonction d'entrée. Ces nœuds lancent des itérations
+sur l'ensemble de données et renvoient un lot de données chaque fois qu'ils sont exécutés
+dans la boucle d'entraînement. Ceci explique le nom de l'API Dataset
+appelée pour les donner : dataset.make_one_short_iterator()get_next(). L'ensemble de données brasse
+les données, répète l'opération sur 15 itérations, puis forme
+des mini-lots de 128 éléments. L'ensemble de données a été produit
+en lisant les lignes d'un fichier texte et en décodant les valeurs séparées
+par des virgules qu'il contient. L'opération "map" transforme
+un ensemble de données de lignes de texte en ensemble de données
+de caractéristiques et libellés. Enfin, nous devons parler
+de notre problème initial, le chargement d'ensembles de données
+volumineux à partir de fichiers segmentés. Une ligne de code supplémentaire
+suffit pour cela. Nous commençons par analyser le disque
+et par charger un ensemble de données de noms de fichiers à l'aide
+de la fonction "Dataset.list_files". Cette fonction prend en charge
+une syntaxe de type glob qui associe les noms de fichiers
+à un format commun. Puis nous utilisons un ensemble
+de données de lignes de texte pour charger ces fichiers
+et transformer chaque nom de fichier en ensemble de données
+de lignes de texte. Nous effectuons une carte plate de tous
+ces éléments dans un ensemble de données. Puis, pour chaque ligne de texte,
+nous utilisons la fonction "map" pour appliquer l'algorithme d'analyse CSV
+et obtenir un ensemble de données de caractéristiques et de libellés. Pourquoi deux fonctions de mappage
+("map" et "flat_map") ? L'une d'entre elles concerne uniquement
+les transformations un à un, et l'autre les transformations
+un à plusieurs. L'analyse d'une ligne de texte
+est une transformation un à un, et nous l'appliquons donc avec "map". Lors d'un chargement de fichier
+avec un ensemble de données de lignes de texte, un nom de fichier
+devient une collection de lignes de texte. Il s'agit donc
+d'une transformation un à plusieurs, appliquée avec la fonction "flat_map" pour aplatir toutes les lignes de texte
+obtenues dans un ensemble de données. Vous savez maintenant comment
+utiliser les ensembles de données pour générer des fonctions d'entrée
+pour vos modèles et réaliser un entraînement sur des ensembles de données
+volumineux hors mémoire. Mais les ensembles de données
+offrent aussi une API riche pour exploiter et transformer vos données. Profitez-en.

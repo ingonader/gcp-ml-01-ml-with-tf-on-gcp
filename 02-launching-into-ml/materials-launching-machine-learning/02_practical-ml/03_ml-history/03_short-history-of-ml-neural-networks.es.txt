@@ -1,0 +1,121 @@
+¿Por qué solo perceptrones
+de una sola capa? ¿Por qué no enviar la salida de una capa
+como la entrada de la siguiente? La combinación de varias capas
+de perceptrones suena como un modelo mucho más poderoso. No obstante,
+sin funciones de activación no lineales las capas adicionales se pueden comprimir
+en una sola capa lineal. No hay un beneficio real. Se necesitan
+funciones de activación no lineales. Por lo tanto, se comenzaron
+a usar funciones de activación sigmoidal, tangente hiperbólica
+o tanh, por su no linealidad. En ese momento,
+estábamos limitados a ellas porque necesitábamos una función
+diferenciable, ya que eso se explota en la retropropagación
+para actualizar los pesos del modelo. Las funciones de activación modernas
+no son necesariamente diferenciables y las personas no sabían
+cómo trabajar con ellas. Esta limitación sobre la diferenciabilidad
+de las funciones de activación podría dificultar el entrenamiento
+de las redes. La efectividad de estos modelos
+también se limitó por la cantidad de datos los recursos informáticos disponibles
+y otras dificultades del entrenamiento. Por ejemplo, la optimización
+puede quedar atrapada en puntos de silla,
+en vez de encontrar la mínima global que esperábamos,
+durante el descenso de gradientes. No obstante,
+cuando se desarrolló la solución mediante el uso
+de unidades lineales rectificadas o ReLU se pudo acelerar el entrenamiento
+de ocho a diez veces con convergencia casi garantizada
+para la regresión logística. Si desarrollamos el perceptrón,
+al igual que el cerebro podemos conectar muchos
+de ellos para formar capas y crear redes neuronales prealimentadas. No ha habido muchos cambios
+con respecto a los componentes del perceptrón de una sola capa:
+hay entradas, sumas ponderadas, funciones de activación y salidas. Una diferencia es
+que las entradas a las neuronas que no están en la capa de entrada,
+no son entradas sin procesar sino las salidas de la capa anterior. Otra diferencia es que las vías
+que conectan a las neuronas entre capas
+ya no son vectores, sino una matriz debido a la conectividad completa
+de todas las neuronas entre capas. Por ejemplo, en el diagrama,
+la matriz de ponderaciones de la capa de entrada es de cuatro por dos
+y la de la capa oculta es de dos por uno. Aprenderemos más adelante
+que las redes neuronales no siempre tienen conectividad
+completa, pero tienen aplicaciones y un rendimiento increíble;
+por ejemplo, con las imágenes. También, hay funciones de activación
+diferentes de las unidades, como las funciones de activación sigmoidal
+y la tangente hiperbólica o tanh. Pueden considerar
+a cada neurona sin entradas (non-input) como una colección de tres pasos
+agrupados en una sola unidad. El primer componente
+es una suma ponderada, el segundo es la función de activación
+y el tercero es la salida de la función. Las redes neuronales
+pueden ser bastante complejas con todas las capas,
+las neuronas, las funciones de activación y los métodos para entrenarlas. En este curso,
+usaremos TensorFlow Playground para tener una idea más intuitiva
+de cómo la información fluye a través de una red neuronal. También es muy divertido;
+les permite personalizar muchos más hiperparámetros,
+así como visualizar las magnitudes de los pesos
+y cómo la función de pérdida evoluciona en el tiempo. Esta es la función de activación lineal. Básicamente, es una función de identidad
+porque la función de x simplemente es x. Esta era la función
+de activación original. No obstante, como dije antes,
+incluso con una red neuronal con miles de capas, en la que todas
+usan una función de activación lineal al final, la salida
+será una combinación lineal de los atributos de entrada. Esto se puede reducir
+a los atributos de entrada cada uno multiplicado por una constante. ¿Suena familiar? Es una regresión lineal simple. Por lo tanto, se necesitan
+funciones de activación no lineales para obtener las funciones
+complejas en cadena que permiten que las redes neuronales aprendan
+tan bien las distribuciones de los datos. Además de la función de activación lineal,
+en la que f de x es igual a x, las funciones de activación principales,
+que se usaban durante la época de oro de las redes neuronales eran las funciones
+de activación sigmoidal y tanh. La función de activación sigmoidal
+es una versión continua de la función escalón unitario,
+en la que la asíntota tiende a cero en el infinito negativo y la asíntota tiende a uno
+en el infinito positivo pero hay valores en todo el intermedio. La tangente hiperbólica o tanh
+es otra función de activación de uso común en ese punto,
+que básicamente es una sigmoidal escalada y en intervalo,
+ahora con un rango de menos uno a uno. Estas fueron excelentes opciones,
+porque eran diferenciables, monótonas y continuas. No obstante, ocurren problemas
+como saturación, debido a los valores de entrada altos o bajos en las funciones que terminarían
+en la meseta asintótica de la función. Ya que la curva
+es casi plana en estos puntos, las derivadas están muy cerca de cero. Por lo tanto, el entrenamiento
+de los pesos sería muy lento o incluso se detendría,
+ya que los gradientes estarían muy cerca de cero,
+lo que resultaría en pasos muy pequeños de descenso del gradiente. Las funciones de activación lineales eran diferenciables,
+monótonas y continuas. Pero, como mencioné antes,
+una combinación lineal de funciones lineales
+se pueden colapsar en una sola. Esto no nos permite crear la cadena
+compleja de funciones que necesitamos para describir bien nuestros datos. Hubo aproximaciones
+a la función de activación lineal pero no eran diferenciables
+en todas partes. Fue mucho más adelante que las personas
+supieron qué hacer con ellas. Hoy, la función de activación
+de unidad lineal rectificada o ReLU es muy popular. Es no lineal, por lo que pueden obtener
+el modelado complejo necesario y no tiene la saturación en la porción
+no negativa del espacio de entrada. Sin embargo, debido a que la porción
+negativa del espacio de entrada se traduce en cero activación,
+las capas ReLU podrían terminar muriendo o no activándose,
+lo que puede provocar que el entrenamiento sea lento o se detenga. Hay algunas soluciones para este problema, una de estas es usar
+otra función de activación llamada unidad exponencial lineal o ELU. Es casi lineal en la porción no negativa del espacio de entrada;
+es continua, monótona y, sobre todo, no es cero en la porción negativa
+del espacio de entrada. La desventaja principal de las ELU
+es que su computación es más costosa que las ReLU, debido a que
+se tiene que calcular el exponencial. Experimentaremos con esto
+mucho más en el siguiente módulo. Si quisiera que mis salidas
+estén en la forma de probabilidades, ¿qué función de activación
+debería elegir en la capa final? La respuesta correcta es
+A. La función de activación sigmoidal. Eso es porque el rango
+de la función sigmoidal está entre cero y uno, que también
+es el rango de la probabilidad. Además del rango, la función sigmoidal
+es la función de distribución acumulada de la distribución logística
+de la probabilidad cuya función cuantil
+es la inversa del logit que modela el logit de la probabilidad. Por eso se puede usar
+como una probabilidad verdadera. Hablaremos más sobre esas razones
+más adelante. B. Tanh es incorrecto,
+porque, aunque es una función que aplasta, similar a la sigmoidal,
+su rango está entre menos uno y uno que no es el mismo rango
+de la probabilidad. Además, aplastar tanh
+en una sigmoidal, no la convertirá mágicamente en una probabilidad,
+porque no tiene las mismas propiedades mencionadas
+que permiten que la salida de la sigmoide se pueda interpretar
+como una probabilidad. Para convertirla en una sigmoidal tendrían que sumar uno
+y luego dividir por dos para obtener el rango correcto. A la vez,
+para obtener la expansión correcta tendrían que dividir el argumento
+de tanh entre dos. Pero ya calcularon tanh.
+Estaríamos repitiendo el trabajo por lo que sería mejor
+usar una sigmoidal desde el principio. C. ReLU es incorrecto,
+porque su rango está entre cero e infinito lo que está muy lejos
+de la representación de una probabilidad. D. ELU también es incorrecto,
+porque su rango está entre infinito negativo e infinito.

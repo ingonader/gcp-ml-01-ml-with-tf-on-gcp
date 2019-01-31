@@ -1,0 +1,391 @@
+1
+00:00:00,130 --> 00:00:03,650
+This is a matrix you might have seen before when we discussed
+
+2
+00:00:03,650 --> 00:00:07,245
+inclusive ML and facial recognition in an earlier course.
+
+3
+00:00:07,245 --> 00:00:09,190
+In that example, we looked at
+
+4
+00:00:09,190 --> 00:00:13,555
+a face detection ML model which incorrectly predicted a statue as a human face,
+
+5
+00:00:13,555 --> 00:00:15,310
+which is called a false positive.
+
+6
+00:00:15,310 --> 00:00:20,005
+And also missed an actual face in the dataset when it was obscured with winter clothing,
+
+7
+00:00:20,005 --> 00:00:22,895
+and this miss is called a false negative.
+
+8
+00:00:22,895 --> 00:00:25,850
+A confusion matrix like this one will allow us to
+
+9
+00:00:25,850 --> 00:00:29,395
+quantifiably assess the performance of our classification model.
+
+10
+00:00:29,395 --> 00:00:31,090
+But now we have four numbers,
+
+11
+00:00:31,090 --> 00:00:35,090
+one for each quadrant, and business decision makers want to see only one.
+
+12
+00:00:35,090 --> 00:00:37,250
+Which one do we present?
+
+13
+00:00:37,250 --> 00:00:39,245
+To explore this a bit more,
+
+14
+00:00:39,245 --> 00:00:42,430
+let's take a look at another photo classification example.
+
+15
+00:00:42,430 --> 00:00:45,070
+If we know a parking spot is available,
+
+16
+00:00:45,070 --> 00:00:46,960
+that is its label is positive,
+
+17
+00:00:46,960 --> 00:00:49,375
+and the model also predicts that it is available,
+
+18
+00:00:49,375 --> 00:00:51,890
+we call that a true positive.
+
+19
+00:00:51,890 --> 00:00:55,070
+If we know that a parking spot is not available,
+
+20
+00:00:55,070 --> 00:00:56,730
+but the model predicts that it is,
+
+21
+00:00:56,730 --> 00:01:00,495
+we call this a false positive or type I error.
+
+22
+00:01:00,495 --> 00:01:04,430
+To compare how well our model did with its positive predictions,
+
+23
+00:01:04,430 --> 00:01:06,550
+we use a metric called precision.
+
+24
+00:01:06,550 --> 00:01:10,340
+With high precision, if I say a parking space is available,
+
+25
+00:01:10,340 --> 00:01:12,190
+I'm really sure it is.
+
+26
+00:01:12,190 --> 00:01:16,600
+A precision of 1.0 means that of the available spaces I've identified,
+
+27
+00:01:16,600 --> 00:01:18,585
+all of them are actually available.
+
+28
+00:01:18,585 --> 00:01:23,550
+But, I could have missed other available spaces which are called false negatives.
+
+29
+00:01:23,550 --> 00:01:25,720
+Precision is formally defined,
+
+30
+00:01:25,720 --> 00:01:30,460
+as the number of true positives divided by the total number classified as positive.
+
+31
+00:01:30,460 --> 00:01:36,635
+Looking at the matrix, an increase in what factor would drive down precision?
+
+32
+00:01:36,635 --> 00:01:40,430
+An increase in false positives.
+
+33
+00:01:40,430 --> 00:01:42,525
+In our parking lot example,
+
+34
+00:01:42,525 --> 00:01:44,350
+the more the model predicts spaces is
+
+35
+00:01:44,350 --> 00:01:48,455
+available which really aren't, the lower the precision.
+
+36
+00:01:48,455 --> 00:01:52,970
+Recall is often inversely related to precision.
+
+37
+00:01:52,970 --> 00:01:57,850
+With high recall, I'm rewarded for finding lots of actually available spots.
+
+38
+00:01:57,850 --> 00:02:02,675
+A recall at 1.0 would mean I found all 10 out of 10 available parking spots,
+
+39
+00:02:02,675 --> 00:02:06,690
+but I also could have had many spots I thought were available but weren't.
+
+40
+00:02:06,690 --> 00:02:09,770
+These are called false positives.
+
+41
+00:02:09,770 --> 00:02:13,285
+What was the recall of our parking lot example?
+
+42
+00:02:13,285 --> 00:02:16,245
+Remember, we had 10 actually available spaces,
+
+43
+00:02:16,245 --> 00:02:19,970
+and our model identified only one as available.
+
+44
+00:02:19,970 --> 00:02:25,265
+The answer is 1 out of 10 or 0.1.
+
+45
+00:02:25,265 --> 00:02:29,610
+Here, you're presented with a dataset of images.
+
+46
+00:02:29,610 --> 00:02:32,680
+Each image either has a cat or it doesn't.
+
+47
+00:02:32,680 --> 00:02:37,280
+Take a moment and see if you can spot which is which.
+
+48
+00:02:38,560 --> 00:02:43,990
+Hopefully, you found all the domestic cats as correctly shown here.
+
+49
+00:02:43,990 --> 00:02:46,340
+Note the hidden cat in red and that
+
+50
+00:02:46,340 --> 00:02:50,420
+the tiger for our purposes is not classified as a cat.
+
+51
+00:02:50,420 --> 00:02:54,650
+Now let's see how the model does the classifying.
+
+52
+00:02:54,650 --> 00:02:58,320
+And here's what our model came up with.
+
+53
+00:02:58,320 --> 00:03:02,885
+Let's compare the results against what we know to be true.
+
+54
+00:03:02,885 --> 00:03:09,175
+Now we have our properly labeled data points side by side with our model predictions.
+
+55
+00:03:09,175 --> 00:03:11,440
+In total, we have eight examples,
+
+56
+00:03:11,440 --> 00:03:13,955
+or instances that we have showed the model.
+
+57
+00:03:13,955 --> 00:03:18,320
+How many times did the model get it right?
+
+58
+00:03:18,320 --> 00:03:23,155
+Three out of a total of eight were accurately predicted.
+
+59
+00:03:23,155 --> 00:03:27,405
+This gives our model an accuracy 0.375.
+
+60
+00:03:27,405 --> 00:03:32,265
+Is accuracy the best metric for describing model performance?
+
+61
+00:03:32,265 --> 00:03:34,230
+Before we get into other ways,
+
+62
+00:03:34,230 --> 00:03:37,050
+let's first discuss a common pitfall.
+
+63
+00:03:37,050 --> 00:03:40,065
+Now revisiting our cat and no cat example,
+
+64
+00:03:40,065 --> 00:03:42,215
+what's the precision of the model?
+
+65
+00:03:42,215 --> 00:03:45,675
+The five images here were in the positive class.
+
+66
+00:03:45,675 --> 00:03:49,425
+How many are actually domestic cats?
+
+67
+00:03:49,425 --> 00:03:54,370
+Two out of the five, or a precision rate of 0.4.
+
+68
+00:03:54,370 --> 00:03:59,140
+Recall is like a person who never wants to be left out of a positive decision.
+
+69
+00:03:59,140 --> 00:04:02,740
+Here, you see all the true labeled examples of cats and
+
+70
+00:04:02,740 --> 00:04:06,655
+the model's performance against them. What was the recall?
+
+71
+00:04:06,655 --> 00:04:12,530
+Or say it another way, how many actual true positives did the model get right?
+
+72
+00:04:12,530 --> 00:04:20,920
+The model only got 2 out of the 4 actual cats correct for a recall of 0.5.
+
+73
+00:04:21,630 --> 00:04:27,545
+Let's do a quick wrap up of what you've learned so far about optimization.
+
+74
+00:04:27,545 --> 00:04:32,400
+First, we defined ML models as sets of parameters and hyper-parameters,
+
+75
+00:04:32,400 --> 00:04:36,915
+and tried to frame optimization as a search in parameter space.
+
+76
+00:04:36,915 --> 00:04:39,440
+Next, we introduce loss functions,
+
+77
+00:04:39,440 --> 00:04:41,750
+which is how we quantifiably measure and evaluate
+
+78
+00:04:41,750 --> 00:04:44,780
+the performance of our model with each training step.
+
+79
+00:04:44,780 --> 00:04:48,920
+Two examples of specific loss functions we discussed were RMSE for
+
+80
+00:04:48,920 --> 00:04:52,750
+linear regression and cross-entropy for our classification task.
+
+81
+00:04:52,750 --> 00:04:55,710
+We learned how to diverse our loss surfaces efficiently,
+
+82
+00:04:55,710 --> 00:04:58,385
+by analyzing the slopes of our loss functions,
+
+83
+00:04:58,385 --> 00:05:01,480
+which provide us direction and step magnitude.
+
+84
+00:05:01,480 --> 00:05:04,825
+This process is called gradient descent.
+
+85
+00:05:04,825 --> 00:05:09,265
+We experimented with different ML models inside of TensorFlow playground,
+
+86
+00:05:09,265 --> 00:05:11,570
+and saw how the linear models can learn
+
+87
+00:05:11,570 --> 00:05:14,710
+non-linear relationships when given non-linear features,
+
+88
+00:05:14,710 --> 00:05:18,175
+and how neural networks learned hierarchies of features.
+
+89
+00:05:18,175 --> 00:05:20,440
+We also saw how hyper-parameters like
+
+90
+00:05:20,440 --> 00:05:23,755
+learning rate and batch size affect gradient descent.
+
+91
+00:05:23,755 --> 00:05:27,985
+We then walked through how to choose between accuracy, precision, and recall,
+
+92
+00:05:27,985 --> 00:05:29,920
+through a classification model performance
+
+93
+00:05:29,920 --> 00:05:32,310
+depending on which problem you're trying to solve.
+
+94
+00:05:32,310 --> 00:05:34,330
+As you saw throughout this module,
+
+95
+00:05:34,330 --> 00:05:38,380
+our labeled training dataset was the driving force that the model learned from.
+
+96
+00:05:38,380 --> 00:05:40,015
+In the next module,
+
+97
+00:05:40,015 --> 00:05:44,310
+we'll cover how to effectively split your full dataset into training and evaluation,
+
+98
+00:05:44,310 --> 00:05:47,000
+and the pitfalls to avoid along the way.

@@ -1,0 +1,424 @@
+1
+00:00:00,680 --> 00:00:03,295
+Prenons l'exemple de l'immobilier.
+
+2
+00:00:03,525 --> 00:00:05,880
+Pouvons-nous prédire
+le prix d'une propriété ?
+
+3
+00:00:05,880 --> 00:00:08,260
+Nous devons d'abord
+choisir nos caractéristiques,
+
+4
+00:00:08,260 --> 00:00:11,475
+les données sur lesquelles nous allons
+baser nos prédictions.
+
+5
+00:00:11,475 --> 00:00:14,635
+Pourquoi ne pas essayer de construire
+un modèle qui prédit le prix
+
+6
+00:00:14,635 --> 00:00:18,160
+d'une maison ou d'un appartement
+en fonction de sa taille ?
+
+7
+00:00:18,160 --> 00:00:20,310
+Voici nos caractéristiques :
+
+8
+00:00:20,310 --> 00:00:22,410
+1) le nombre de pieds carrés, et
+
+9
+00:00:22,410 --> 00:00:25,225
+2) la catégorie (maison ou appartement).
+
+10
+00:00:25,225 --> 00:00:27,435
+Voici comment mettre cela en œuvre.
+
+11
+00:00:27,435 --> 00:00:30,215
+Nous pouvons utiliser l'API
+de colonnes de caractéristiques
+
+12
+00:00:30,215 --> 00:00:31,880
+pour définir nos caractéristiques :
+
+13
+00:00:31,880 --> 00:00:34,565
+une colonne numérique
+pour le nombre de pieds carrés,
+
+14
+00:00:34,565 --> 00:00:38,105
+et une colonne catégorique
+pour le type de propriété,
+
+15
+00:00:38,105 --> 00:00:42,405
+avec deux catégories possibles pour
+ce modèle simple (maison ou appartement).
+
+16
+00:00:42,940 --> 00:00:45,939
+Nous pouvons maintenant instancier
+un régresseur linéaire,
+
+17
+00:00:45,939 --> 00:00:49,315
+un des estimateurs prédéfinis,
+pour ces caractéristiques.
+
+18
+00:00:49,315 --> 00:00:52,230
+Un régresseur est un modèle qui
+donne un nombre,
+
+19
+00:00:52,230 --> 00:00:56,090
+dans notre cas
+le prix de vente estimé d'une propriété.
+
+20
+00:00:56,090 --> 00:00:58,785
+Pourquoi des colonnes
+de caractéristiques ?
+
+21
+00:00:58,785 --> 00:01:01,335
+Abordons le sujet plus en détail.
+
+22
+00:01:01,335 --> 00:01:05,325
+Un régresseur linéaire est un modèle
+qui fonctionne sur un vecteur de données.
+
+23
+00:01:05,325 --> 00:01:09,540
+Il calcule une somme pondérée
+de toutes les données d'entrée,
+
+24
+00:01:09,540 --> 00:01:14,255
+et peut être entraîné pour ajuster
+les pondérations selon votre problème,
+
+25
+00:01:14,255 --> 00:01:16,845
+ici la prédiction des prix de vente.
+
+26
+00:01:16,845 --> 00:01:21,365
+Mais comment regrouper nos données
+dans le vecteur d'entrée unique
+
+27
+00:01:21,365 --> 00:01:24,030
+que le régresseur linéaire attend ?
+
+28
+00:01:24,325 --> 00:01:28,705
+Cela dépend des données
+que nous regroupons.
+
+29
+00:01:29,160 --> 00:01:33,420
+C'est là que l'API de colonnes
+de caractéristiques entre en jeu.
+
+30
+00:01:33,420 --> 00:01:36,980
+Elle permet de regrouper des données
+dans des éléments de vecteur.
+
+31
+00:01:36,980 --> 00:01:38,710
+selon plusieurs méthodes standard.
+
+32
+00:01:39,130 --> 00:01:42,840
+Ici, les valeurs de notre colonne
+numérique ne sont que des nombres.
+
+33
+00:01:43,090 --> 00:01:48,615
+Elles peuvent être copiées, car elles sont
+dans un seul élément du vecteur d'entrée.
+
+34
+00:01:48,615 --> 00:01:53,745
+D'autre part, notre colonne catégorique
+est codée selon la méthode "one-hot".
+
+35
+00:01:53,745 --> 00:01:55,305
+Nous avons deux catégories.
+
+36
+00:01:55,305 --> 00:01:57,540
+Les maisons correspondent à "1, 0",
+
+37
+00:01:57,540 --> 00:02:00,625
+et les appartements deviennent "0, 1".
+
+38
+00:02:00,825 --> 00:02:04,670
+Une troisième catégorie
+serait codée "0, 0, 1", etc.
+
+39
+00:02:05,940 --> 00:02:09,505
+À présent, le régresseur linéaire sait
+comment prendre les caractéristiques
+
+40
+00:02:09,505 --> 00:02:12,660
+qui nous intéressent, les regrouper
+dans son vecteur d'entrée,
+
+41
+00:02:12,660 --> 00:02:16,010
+et appliquer ce qu'il a à appliquer.
+
+42
+00:02:16,700 --> 00:02:20,350
+Nous avons le choix parmi de nombreux
+types de colonnes de caractéristiques :
+
+43
+00:02:20,350 --> 00:02:23,480
+valeurs continues à mettre en bucket,
+
+44
+00:02:23,480 --> 00:02:25,470
+plongements de mots,
+
+45
+00:02:25,470 --> 00:02:27,450
+croisements de colonnes, etc.
+
+46
+00:02:27,450 --> 00:02:30,550
+Les transformations qui s'appliquent ici
+sont clairement décrites
+
+47
+00:02:30,550 --> 00:02:32,120
+dans la documentation TensorFlow.
+
+48
+00:02:32,120 --> 00:02:34,760
+Vous pouvez savoir tout ce qu'il se passe
+en permanence.
+
+49
+00:02:35,190 --> 00:02:39,090
+Pour entraîner le modèle, nous devons
+écrire une fonction d'entrée qui renverra
+
+50
+00:02:39,090 --> 00:02:42,690
+les caractéristiques, nommées comme dans
+les colonnes de caractéristiques.
+
+51
+00:02:42,820 --> 00:02:45,545
+Comme nous sommes en entraînement,
+nous avons aussi besoin
+
+52
+00:02:45,545 --> 00:02:47,180
+des bonnes réponses, les libellés.
+
+53
+00:02:47,180 --> 00:02:50,400
+Nous pouvons maintenant appeler
+la fonction d'entraînement
+
+54
+00:02:50,400 --> 00:02:54,775
+de notre estimateur, qui va entraîner
+le modèle en répétant 100 fois
+
+55
+00:02:54,775 --> 00:02:56,450
+cet ensemble de données.
+
+56
+00:02:56,600 --> 00:03:00,130
+Nous verrons plus tard comment
+fonctionne le traitement par lots.
+
+57
+00:03:00,130 --> 00:03:06,580
+Pour ceux qui connaissent déjà ce concept,
+le code écrit ici s'entraîne sur un seul
+
+58
+00:03:06,580 --> 00:03:12,220
+lot de données à chaque étape,
+qui contient tout l'ensemble de données.
+
+59
+00:03:13,035 --> 00:03:16,230
+Une fois entraîné, le modèle
+peut être utilisé pour les prédictions.
+
+60
+00:03:16,230 --> 00:03:18,180
+Nous avons besoin d'une fonction d'entrée
+
+61
+00:03:18,180 --> 00:03:20,250
+qui fournit les données
+pour la prédiction,
+
+62
+00:03:20,250 --> 00:03:24,970
+ici une maison de 1 500 pieds carrés
+et un appartement de 1 800 pieds carrés.
+
+63
+00:03:24,970 --> 00:03:28,040
+La fonction "predict" de l'API Estimator
+
+64
+00:03:28,040 --> 00:03:31,560
+renvoie un générateur Python
+qui permet d'effectuer des itérations
+
+65
+00:03:31,560 --> 00:03:32,945
+sur les prédictions.
+
+66
+00:03:33,615 --> 00:03:36,825
+Voici un résumé de l'API Estimator
+jusqu'à présent.
+
+67
+00:03:37,295 --> 00:03:40,915
+Nous avons utilisé des colonnes de
+caractéristiques pour former nos données
+
+68
+00:03:40,915 --> 00:03:43,200
+de sorte que notre modèle
+puisse les comprendre.
+
+69
+00:03:43,430 --> 00:03:45,875
+Nous avons instancié
+un régresseur linéaire
+
+70
+00:03:45,875 --> 00:03:49,970
+basé sur ces colonnes de caractéristiques,
+et nous avons appelé "train"
+
+71
+00:03:49,970 --> 00:03:52,450
+pour entraîner le modèle sur 100 étapes.
+
+72
+00:03:52,630 --> 00:03:56,120
+L'entraînement de données est assuré
+par une fonction d'entrée de données.
+
+73
+00:03:56,360 --> 00:04:00,150
+Nous avons appelé "predict" pour obtenir
+des prédictions, et pour cela,
+
+74
+00:04:00,160 --> 00:04:03,620
+les données ont aussi été fournies
+par une fonction d'entrée de données.
+
+75
+00:04:04,180 --> 00:04:07,860
+Nous en reparlerons en détail
+plus tard dans ce cours.
+
+76
+00:04:08,200 --> 00:04:11,575
+Pour utiliser un autre estimateur
+prédéfini, il suffit de changer
+
+77
+00:04:11,575 --> 00:04:15,330
+le nom de classe et de fournir les
+paramètres de configuration appropriés.
+
+78
+00:04:15,330 --> 00:04:17,449
+Par exemple, ici,
+nous pourrions utiliser
+
+79
+00:04:17,449 --> 00:04:21,000
+un régresseur de réseau de neurones dense
+avec deux couches cachées.
+
+80
+00:04:21,000 --> 00:04:24,585
+La première a trois neurones
+et la deuxième seulement deux.
+
+81
+00:04:24,585 --> 00:04:28,990
+Puis, un dernier neurone prédit
+le prix de la propriété.
+
+82
+00:04:28,990 --> 00:04:32,335
+Notez que le vecteur d'entrée
+est le même pour les deux modèles.
+
+83
+00:04:32,335 --> 00:04:35,310
+Nous pouvons réutiliser les mêmes
+colonnes de caractéristiques.
+
+84
+00:04:35,660 --> 00:04:38,430
+Sur un réseau de neurones dense,
+vous pouvez ajuster
+
+85
+00:04:38,430 --> 00:04:41,840
+le nombre et la taille
+des couches cachées,
+
+86
+00:04:41,840 --> 00:04:45,990
+le choix de la fonction d'activation,
+les paramètres de régularisation
+
+87
+00:04:45,990 --> 00:04:50,025
+comme le "drop-out", ou votre optimiseur
+préféré pour effectuer l'entraînement.
+
+88
+00:04:50,025 --> 00:04:55,175
+Surtout, la plupart de ces paramètres
+ont de bonnes valeurs par défaut.
+
+89
+00:04:55,175 --> 00:04:57,090
+Pour un régresseur DNN,
+
+90
+00:04:57,090 --> 00:05:00,560
+les seuls paramètres obligatoires
+sont les couches cachées.

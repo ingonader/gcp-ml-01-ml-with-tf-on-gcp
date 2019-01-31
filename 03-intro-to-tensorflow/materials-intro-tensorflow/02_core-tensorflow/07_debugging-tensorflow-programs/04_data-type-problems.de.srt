@@ -1,0 +1,163 @@
+1
+00:00:00,170 --> 00:00:03,714
+Neben den Formfehlern, die wir in den
+vorherigen Lektionen behandelt haben,
+
+2
+00:00:03,714 --> 00:00:08,385
+sind Datentypenfehler ein weiteres
+häufiges Problem bei der Entwicklung
+
+3
+00:00:08,385 --> 00:00:10,595
+von TensorFlow-Programmen.
+
+4
+00:00:10,595 --> 00:00:14,380
+Die Fehlermeldung hier sagt,
+dass alle Werte Ihres Tensors
+
+5
+00:00:14,380 --> 00:00:19,300
+als Ganzzahlenarray gespeichert sind;
+Sie geben ihn aber an eine Methode weiter,
+
+6
+00:00:19,300 --> 00:00:22,985
+die erwartet, dass ein 
+Tensor Gleitkommawerte hat.
+
+7
+00:00:22,985 --> 00:00:25,770
+Wo könnte so etwas vorkommen?
+
+8
+00:00:25,770 --> 00:00:28,720
+Sehen Sie sich 
+den Aufruftrace und die Codezeile an,
+
+9
+00:00:28,730 --> 00:00:33,710
+die in dieser Zusatzzeile
+identifiziert wird: s = a + b.
+
+10
+00:00:34,280 --> 00:00:35,935
+Eventuell ist a
+
+11
+00:00:35,935 --> 00:00:40,425
+ein Gleitkommawert-
+und b ein Ganzzahlenarray.
+
+12
+00:00:40,425 --> 00:00:43,799
+Sie denken, eine Gleitkomma-
+wertzahl zu einer Ganzzahl hinzuzufügen,
+
+13
+00:00:43,799 --> 00:00:46,240
+ist kein Problem,
+da dies automatisiert sein sollte.
+
+14
+00:00:46,240 --> 00:00:48,585
+Das Ergebnis wäre eine Gleitkommazahl.
+
+15
+00:00:48,585 --> 00:00:52,205
+Doch weder Python noch C++
+
+16
+00:00:52,205 --> 00:00:56,980
+lassen Sie von einem Gleitkomma- 
+zu einem Ganzzahlenarray wechseln.
+
+17
+00:00:56,980 --> 00:00:59,930
+Viele Speicheroptimierungen 
+sind hier involviert und wenn Sie
+
+18
+00:00:59,930 --> 00:01:03,170
+ein Ganzzahlenarray haben,
+werden Daten vielleicht auf einem Gerät
+
+19
+00:01:03,170 --> 00:01:06,190
+oder in einem Arbeitsspeicher-
+bereich gespeichert, wo keine
+
+20
+00:01:06,190 --> 00:01:07,790
+Gleitkommaarithmetik möglich ist.
+
+21
+00:01:07,790 --> 00:01:09,540
+Dieses Problem müssen Sie beheben.
+
+22
+00:01:09,540 --> 00:01:11,500
+Runden Sie die Gleitkommazahlen
+
+23
+00:01:11,500 --> 00:01:13,100
+auf Ganzzahlen auf oder ab?
+
+24
+00:01:13,100 --> 00:01:14,690
+Haben Sie einen Fehler gemacht
+
+25
+00:01:14,690 --> 00:01:18,295
+und das Gleitkommaarray sollte
+eigentlich ein Ganzzahlenarray sein?
+
+26
+00:01:18,295 --> 00:01:21,965
+Oder möchten Sie die Ganzzahlen 
+in Gleitkommerzahlen umwandeln und die
+
+27
+00:01:21,965 --> 00:01:26,330
+Addition durchführen mit dem Wissen, dass
+das Ergebnis nun ein Gletkommaaray ist?
+
+28
+00:01:26,330 --> 00:01:30,610
+Da es hier mehrere Möglichkeiten gibt,
+werden Sie von TensorFlow aufgefordert,
+
+29
+00:01:30,610 --> 00:01:31,660
+präziser zu ein.
+
+30
+00:01:31,660 --> 00:01:35,690
+Eine Möglichkeit, das Problem zu lösen,
+ist, das Ganzzahlenarray b zu nehmen
+
+31
+00:01:35,690 --> 00:01:40,730
+und zu sagen, dass dies nun ein
+Tensor mit Gleitkommawerten sein soll.
+
+32
+00:01:40,730 --> 00:01:46,270
+Der Aufruf tf.cast wird also in
+die Berechnungsgrafik eingefügt
+
+33
+00:01:46,270 --> 00:01:49,700
+und Optimierungen usw.
+werden dies berücksichtigen,
+
+34
+00:01:49,700 --> 00:01:54,610
+wenn es um das Speichern
+und Verschieben von b geht.
+
+35
+00:01:54,610 --> 00:01:59,840
+Hier fügen wir den Vorgang tf.cast in
+die Methode ein, um das Problem zu lösen.

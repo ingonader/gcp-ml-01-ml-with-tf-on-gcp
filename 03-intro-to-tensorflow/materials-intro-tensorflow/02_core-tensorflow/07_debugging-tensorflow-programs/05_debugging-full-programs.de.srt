@@ -1,0 +1,361 @@
+1
+00:00:01,110 --> 00:00:03,040
+In den vorherigen Kursen
+
+2
+00:00:03,040 --> 00:00:07,940
+haben wir uns Fehlermeldungen
+in TensorFlow-Programmen angesehen,
+
+3
+00:00:07,940 --> 00:00:10,110
+die fehlgeschlagene Methode isoliert
+
+4
+00:00:10,110 --> 00:00:15,370
+und fiktive Daten eingespeist,
+um den Fehler zu erkennen und zu beheben.
+
+5
+00:00:15,370 --> 00:00:18,770
+Manchmal sind die Probleme
+aber schwieriger zu erkennen.
+
+6
+00:00:18,770 --> 00:00:22,940
+Sie treten nur in
+bestimmten Fällen auf.
+
+7
+00:00:22,940 --> 00:00:24,710
+Möglicherweise erkennen Sie nicht,
+
+8
+00:00:24,710 --> 00:00:28,930
+warum fünf, sechs oder
+sieben Batches einwandfrei funktionieren,
+
+9
+00:00:28,930 --> 00:00:30,919
+plötzlich ein Fehler auftritt
+
+10
+00:00:30,919 --> 00:00:33,110
+und dann alles wieder
+einwandfrei funktioniert.
+
+11
+00:00:33,110 --> 00:00:38,380
+Fehler können mit bestimmten
+Eingabewerten oder Bedingungen
+
+12
+00:00:38,380 --> 00:00:40,990
+der Durchführung zusammenhängen.
+
+13
+00:00:41,860 --> 00:00:46,077
+In solchen Fällen müssen Sie Fehler
+im gesamten Programm beheben.
+
+14
+00:00:46,077 --> 00:00:49,272
+Dafür gibt es drei Methoden.
+
+15
+00:00:49,272 --> 00:00:50,514
+Mit tf.Print()
+
+16
+00:00:50,514 --> 00:00:53,374
+können Tensor-Werte ausgegeben werden,
+
+17
+00:00:53,374 --> 00:00:55,805
+wenn bestimmte Bedingungen gegeben sind.
+
+18
+00:00:55,805 --> 00:01:00,681
+Den interaktiven Debugger tfdbg
+können Sie von einem Terminal ausführen
+
+19
+00:01:00,681 --> 00:01:04,210
+und an eine lokale oder Remote-
+TensorFlow-Sitzung anhängen.
+
+20
+00:01:04,780 --> 00:01:08,130
+TensorBoard ist 
+ein visuelles Monitoringtool.
+
+21
+00:01:08,130 --> 00:01:11,230
+Damit können wir
+uns das Tag anschauen,
+
+22
+00:01:11,230 --> 00:01:14,830
+aber es gibt weitere Möglichkeiten
+zur Fehlerbehebung mit TensorBoard.
+
+23
+00:01:14,830 --> 00:01:16,860
+Sie können sich Bewertungsmesswerte,
+
+24
+00:01:16,860 --> 00:01:19,150
+Überanpassungen, tote Ebenen ansehen
+
+25
+00:01:19,150 --> 00:01:20,000
+und so weiter.
+
+26
+00:01:20,000 --> 00:01:23,344
+Es ist eine übergeordnete 
+Fehlerbehebung von neuronalen Netzwerken.
+
+27
+00:01:23,344 --> 00:01:26,283
+Wir sehen uns TensorBoard etwas später an.
+
+28
+00:01:26,283 --> 00:01:32,831
+Hier wollte ich nur daran erinnern,
+dass TensorBoard ein leistungsstarkes
+
+29
+00:01:32,831 --> 00:01:34,882
+Fehlerbehebungstool ist.
+
+30
+00:01:34,882 --> 00:01:38,151
+Es sollte erwähnt werden,
+
+31
+00:01:38,151 --> 00:01:44,230
+dass die Standardebene für das Logging
+von TensorFlow-Programmen "warn" ist.
+
+32
+00:01:44,230 --> 00:01:46,280
+Es läuft still.
+
+33
+00:01:46,280 --> 00:01:52,640
+Mit dem Loglevel "info" sehen Sie weitere
+Lognachrichten beim TensorFlow-Training.
+
+34
+00:01:52,640 --> 00:01:54,110
+Sie ändern die Logebene
+
+35
+00:01:54,110 --> 00:01:55,820
+mit tf.logging
+
+36
+00:01:55,820 --> 00:01:58,000
+und stellen den Ausführlichkeitsgrad ein.
+
+37
+00:01:58,000 --> 00:01:58,860
+Die Ebenen sind:
+
+38
+00:01:58,860 --> 00:02:02,770
+"debug", "info", 
+"warn", "error" und "fatal".
+
+39
+00:02:02,770 --> 00:02:04,370
+In dieser Reihenfolge.
+
+40
+00:02:04,370 --> 00:02:06,230
+"debug" ist am ausführlichsten,
+
+41
+00:02:06,230 --> 00:02:09,060
+und "fatal" ist am stillsten,
+
+42
+00:02:09,060 --> 00:02:11,910
+"info" wird für die Entwicklung genutzt
+
+43
+00:02:11,910 --> 00:02:14,410
+und "warn" für die Produktion.
+
+44
+00:02:14,980 --> 00:02:19,105
+Mit einem Befehlszeilenparameter
+können Sie zwischen ihnen wechseln.
+
+45
+00:02:20,395 --> 00:02:24,540
+Mit tf.Print können bestimmte
+Tensor-Werte geloggt werden.
+
+46
+00:02:25,550 --> 00:02:28,110
+Möglicherweise teilen Sie a durch b
+
+47
+00:02:28,110 --> 00:02:32,440
+und erhalten NaN 
+(keine Zahl) in der Ausgabe.
+
+48
+00:02:32,440 --> 00:02:37,770
+Sie möchten den Wert von a und b
+erhalten, um das Problem zu finden.
+
+49
+00:02:37,770 --> 00:02:38,951
+Wenn Sie a ausgeben,
+
+50
+00:02:38,951 --> 00:02:41,151
+erhalten Sie nur
+die Fehlerausgabe des Tensors,
+
+51
+00:02:41,151 --> 00:02:44,590
+aber nicht seinen Wert.
+Das ist die verzögerte Durchführung.
+
+52
+00:02:44,590 --> 00:02:46,170
+Sie müssen einen Tensor bewerten,
+
+53
+00:02:46,170 --> 00:02:47,690
+um den Wert zu erhalten,
+
+54
+00:02:47,690 --> 00:02:52,070
+also geben Sie 
+den Wert von A nicht jedes Mal aus.
+
+55
+00:02:52,070 --> 00:02:59,910
+Hier ist print_ab ein Tensor,
+der s umschließt und a und b ausgibt.
+
+56
+00:03:00,770 --> 00:03:05,800
+Ich ersetze s im Diagramm durch print_ab
+
+57
+00:03:05,800 --> 00:03:08,860
+nur für Batches, bei denen s NaN ist,
+
+58
+00:03:08,860 --> 00:03:12,130
+Also werden nur diese Dinge ausgegeben.
+
+59
+00:03:12,130 --> 00:03:14,470
+Dies muss in einem 
+Standalone-Programm passieren,
+
+60
+00:03:14,470 --> 00:03:17,778
+weil Datalab 
+die TensorFlow-Lognachrichten nutzt.
+
+61
+00:03:17,778 --> 00:03:21,670
+Ich umgehe das, indem ich den Code
+in eine Datei schreibe und dann ausführe.
+
+62
+00:03:23,010 --> 00:03:26,830
+Sie verwenden tf.Print meist
+für laufende TensorFlow-Programme,
+
+63
+00:03:26,830 --> 00:03:29,040
+um seltene Fehler zu erkennen
+
+64
+00:03:29,040 --> 00:03:31,420
+und alles in Logs zu erfassen.
+
+65
+00:03:31,420 --> 00:03:32,500
+Ein super Trick!
+
+66
+00:03:34,490 --> 00:03:36,970
+TensorFlow hat auch einen dynamischen
+
+67
+00:03:36,970 --> 00:03:40,010
+interaktiven Debugger: tf_debug.
+
+68
+00:03:40,010 --> 00:03:41,920
+Sie führen ihn von der Befehlszeile aus.
+
+69
+00:03:41,920 --> 00:03:46,070
+Sie führen das TensorFlow-Programm
+vom Terminal als Standalone-Programm aus.
+
+70
+00:03:46,070 --> 00:03:50,420
+Beim Ausführen fügen Sie das
+Befehlszeilen-Flag --debug hinzu.
+
+71
+00:03:51,340 --> 00:03:53,150
+Damit können Sie auch
+
+72
+00:03:53,150 --> 00:03:55,460
+remote ausgeführte
+TensorFlow-Programme beheben,
+
+73
+00:03:55,460 --> 00:03:57,950
+d. h. Sie können es an
+das Programm anhängen.
+
+74
+00:03:57,950 --> 00:04:00,957
+Es gibt auch Tricks 
+zum Beheben von Fehlern in Programmen
+
+75
+00:04:00,957 --> 00:04:03,760
+für Experimente und Schätzungen.
+
+76
+00:04:03,760 --> 00:04:06,760
+Wenn ein Programm startet,
+können Sie mit einem Debugger
+
+77
+00:04:06,760 --> 00:04:08,390
+schrittweise durch den Code gehen,
+
+78
+00:04:08,390 --> 00:04:10,500
+Breakpoints setzen, usw.
+
+79
+00:04:10,500 --> 00:04:12,620
+Wenn Sie schon einen interaktiven Debugger
+
+80
+00:04:12,620 --> 00:04:14,950
+für andere Sprachen
+oder Umgebungen genutzt haben,
+
+81
+00:04:14,950 --> 00:04:19,140
+kennen Sie bereits 
+Begriffe wie Breakpoint usw.

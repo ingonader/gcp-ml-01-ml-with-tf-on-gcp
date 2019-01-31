@@ -1,0 +1,387 @@
+1
+00:00:00,000 --> 00:00:02,370
+I hope that in the previous lab,
+
+2
+00:00:02,370 --> 00:00:06,975
+where we asked you to write some code to compute the area for a triangle,
+
+3
+00:00:06,975 --> 00:00:09,030
+you didn't just run the cells,
+
+4
+00:00:09,030 --> 00:00:13,815
+that you tried to write some TensorFlow code yourself from scratch.
+
+5
+00:00:13,815 --> 00:00:17,070
+If you did that and you're like most people,
+
+6
+00:00:17,070 --> 00:00:23,115
+you quickly ran into compiler and runtime errors and you started to wonder,
+
+7
+00:00:23,115 --> 00:00:26,715
+how would I debug a TensorFlow program?
+
+8
+00:00:26,715 --> 00:00:32,725
+Debugging a TensorFlow program can be tricky because of the lazy evaluation paradigm.
+
+9
+00:00:32,725 --> 00:00:35,020
+If you have errors in your graph,
+
+10
+00:00:35,020 --> 00:00:39,765
+you won't know about it until that part of the graph gets executed.
+
+11
+00:00:39,765 --> 00:00:43,160
+This is one of the reasons why we said tf.eager
+
+12
+00:00:43,160 --> 00:00:46,530
+can be helpful when developing TensorFlow programs.
+
+13
+00:00:46,530 --> 00:00:48,740
+It's not a panacea however,
+
+14
+00:00:48,740 --> 00:00:51,995
+you still need to know how to debug TensorFlow programs,
+
+15
+00:00:51,995 --> 00:00:55,670
+even if you developed the program interactively with tf.eager.
+
+16
+00:00:55,670 --> 00:01:01,900
+So let's look at how to debug lazy evaluation TensorFlow programs.
+
+17
+00:01:01,900 --> 00:01:06,600
+Debugging a TensorFlow program is similar to debugging any program.
+
+18
+00:01:06,600 --> 00:01:10,259
+You have to learn how to read the error messages
+
+19
+00:01:10,259 --> 00:01:15,660
+and use those error messages and stack traces to isolate the method.
+
+20
+00:01:15,660 --> 00:01:18,310
+The purpose of isolating the method,
+
+21
+00:01:18,310 --> 00:01:23,285
+the problematic method, is so that you can call the method all by itself.
+
+22
+00:01:23,285 --> 00:01:26,810
+You don't want to run the entire TensorFlow program on the data
+
+23
+00:01:26,810 --> 00:01:30,250
+set and try to debug the monolithic thing.
+
+24
+00:01:30,250 --> 00:01:33,870
+Instead, you will want to send made-up data into
+
+25
+00:01:33,870 --> 00:01:38,730
+the method and then you have a repeatable error that you can try to fix.
+
+26
+00:01:38,730 --> 00:01:41,535
+How would you fix the error though?
+
+27
+00:01:41,535 --> 00:01:46,430
+Obviously, we cannot show you all the possible errors you might run into,
+
+28
+00:01:46,430 --> 00:01:49,180
+but we'll cover some of the more common types of
+
+29
+00:01:49,180 --> 00:01:52,525
+error messages and ways that you'd address them.
+
+30
+00:01:52,525 --> 00:01:57,420
+The first step is to not let your eyes glaze over,
+
+31
+00:01:57,420 --> 00:01:59,860
+when you see a spew of error messages.
+
+32
+00:01:59,860 --> 00:02:02,425
+Look carefully at the error message.
+
+33
+00:02:02,425 --> 00:02:06,490
+In particular, you're looking for two pieces of information.
+
+34
+00:02:06,490 --> 00:02:09,205
+One, the stack trace.
+
+35
+00:02:09,205 --> 00:02:13,690
+This is the call stack of methods at the time the error was thrown.
+
+36
+00:02:13,690 --> 00:02:15,699
+In this case for example,
+
+37
+00:02:15,699 --> 00:02:19,405
+you see that the line S equals A plus B,
+
+38
+00:02:19,405 --> 00:02:23,390
+in the method, some method of data is a problem.
+
+39
+00:02:23,390 --> 00:02:28,880
+Obviously, the call stack will include a bunch of TensorFlow library methods too.
+
+40
+00:02:28,880 --> 00:02:31,575
+Your program is calling those methods,
+
+41
+00:02:31,575 --> 00:02:34,135
+so the trick is to hone in on your code.
+
+42
+00:02:34,135 --> 00:02:36,100
+Once you do that,
+
+43
+00:02:36,100 --> 00:02:38,480
+look for the second piece of information.
+
+44
+00:02:38,480 --> 00:02:40,795
+Look at the actual error message.
+
+45
+00:02:40,795 --> 00:02:45,685
+In this case, the error message is that a value error was encountered.
+
+46
+00:02:45,685 --> 00:02:49,155
+TensorFlow expects that the dimensions must be equal,
+
+47
+00:02:49,155 --> 00:02:50,700
+but it turns out that they're not.
+
+48
+00:02:50,700 --> 00:02:54,000
+What's going on?
+
+49
+00:02:54,000 --> 00:02:57,375
+Well, when you add A plus C,
+
+50
+00:02:57,375 --> 00:03:03,915
+that will only work if A is a 2D tensor and C is a 2D tensor.
+
+51
+00:03:03,915 --> 00:03:06,045
+Or if A is a 4D tensor,
+
+52
+00:03:06,045 --> 00:03:09,220
+then C also has to be a to 4D tensor.
+
+53
+00:03:09,220 --> 00:03:14,370
+In this case it turns out that one of them maybe A, maybe C,
+
+54
+00:03:14,370 --> 00:03:19,190
+is a 2D tensor of the shape four comma two and the other one maybe C,
+
+55
+00:03:19,190 --> 00:03:22,305
+is a 1D tensor of the shape four.
+
+56
+00:03:22,305 --> 00:03:25,020
+So that is a problem.
+
+57
+00:03:25,020 --> 00:03:28,335
+So obviously something in your program is wrong,
+
+58
+00:03:28,335 --> 00:03:31,020
+maybe you want both of them to be four comma two,
+
+59
+00:03:31,020 --> 00:03:33,855
+or maybe you want both of them to be four.
+
+60
+00:03:33,855 --> 00:03:37,750
+But finding the call stack and reading the error message,
+
+61
+00:03:37,750 --> 00:03:40,380
+helps you understand the problem.
+
+62
+00:03:40,380 --> 00:03:42,730
+By looking at the call stack,
+
+63
+00:03:42,730 --> 00:03:46,180
+you've found the line of code and the name of the method.
+
+64
+00:03:46,180 --> 00:03:48,790
+So now find the method and look at it.
+
+65
+00:03:48,790 --> 00:03:52,565
+Here, the method is called some_method,
+
+66
+00:03:52,565 --> 00:03:55,320
+and it takes in a tensor called data.
+
+67
+00:03:55,320 --> 00:04:01,075
+This is a tensor that you have to fake in order to get things working correctly.
+
+68
+00:04:01,075 --> 00:04:03,415
+Forget about the rest of your program.
+
+69
+00:04:03,415 --> 00:04:08,155
+Ignore how data actually gets read into your current program.
+
+70
+00:04:08,155 --> 00:04:11,305
+We'll invoke the method with fake data.
+
+71
+00:04:11,305 --> 00:04:15,580
+To invoke the method with fake data, create a session,
+
+72
+00:04:15,580 --> 00:04:19,190
+create a hard coded TensorArray, and in this case,
+
+73
+00:04:19,190 --> 00:04:23,090
+I'm created a four by three tensor called fake_data.
+
+74
+00:04:23,090 --> 00:04:27,360
+Do you see it? I'm taking the fake_data,
+
+75
+00:04:27,360 --> 00:04:31,105
+and passing it into some underscore method.
+
+76
+00:04:31,105 --> 00:04:37,885
+Notice that I've also heavily instrumented the code of some data with print statements.
+
+77
+00:04:37,885 --> 00:04:41,050
+It's a little old fashion to debug with print statements,
+
+78
+00:04:41,050 --> 00:04:44,260
+but that's the easiest way to diagnose shape errors.
+
+79
+00:04:44,260 --> 00:04:46,915
+So here we have two things that we're adding;
+
+80
+00:04:46,915 --> 00:04:49,780
+A and C, and this was a problem.
+
+81
+00:04:49,780 --> 00:04:52,840
+So I make sure to print out the shape of A,
+
+82
+00:04:52,840 --> 00:04:56,049
+and the shape of C. And when I run the program,
+
+83
+00:04:56,049 --> 00:04:59,160
+the first line prints out four comma two,
+
+84
+00:04:59,160 --> 00:05:02,085
+and the second line prints out four.
+
+85
+00:05:02,085 --> 00:05:04,955
+Just like the value error message was saying.
+
+86
+00:05:04,955 --> 00:05:07,365
+And now, it gets to intent.
+
+87
+00:05:07,365 --> 00:05:10,990
+Did you mean to slice out a four comma two matrix for C?
+
+88
+00:05:10,990 --> 00:05:14,395
+Or did you mean to slice out a 1D vector for A?
+
+89
+00:05:14,395 --> 00:05:18,355
+Whichever it is that you meant to do, do it.
+
+90
+00:05:18,355 --> 00:05:20,349
+When I run the program,
+
+91
+00:05:20,349 --> 00:05:23,590
+the first line prints out four comma two,
+
+92
+00:05:23,590 --> 00:05:26,430
+and the second line prints out four.
+
+93
+00:05:26,430 --> 00:05:28,995
+Just like the value error message was saying.
+
+94
+00:05:28,995 --> 00:05:31,620
+So now it gets to intent.
+
+95
+00:05:31,620 --> 00:05:35,410
+Did you mean to slice out off four comma two matrix for C?
+
+96
+00:05:35,410 --> 00:05:39,245
+Or did you mean to slice out a 1D vector for A?
+
+97
+00:05:39,245 --> 00:05:42,080
+Whichever it is that you meant to do-

@@ -1,0 +1,175 @@
+1
+00:00:00,000 --> 00:00:04,325
+Before we go into one of the first ways that researchers have addressed this problem,
+
+2
+00:00:04,325 --> 00:00:07,370
+let's put some of the things we've learned together.
+
+3
+00:00:07,370 --> 00:00:10,600
+Let's put ourselves into the shoes of our model,
+
+4
+00:00:10,600 --> 00:00:14,800
+and look at how loss might change over time during training.
+
+5
+00:00:14,800 --> 00:00:17,905
+Imagine that we're performing gradient descent,
+
+6
+00:00:17,905 --> 00:00:21,825
+and updating our model's parameters with respect to the derivative of the loss function,
+
+7
+00:00:21,825 --> 00:00:26,815
+and we've configured things that we can see how our loss is changing over time.
+
+8
+00:00:26,815 --> 00:00:29,850
+This is a common scenario in machine learning,
+
+9
+00:00:29,850 --> 00:00:32,545
+particularly when model training comprises hours,
+
+10
+00:00:32,545 --> 00:00:34,300
+or possibly even days.
+
+11
+00:00:34,300 --> 00:00:38,065
+You can imagine how important it is not to waste days of time.
+
+12
+00:00:38,065 --> 00:00:42,545
+So with that in mind, let's troubleshoot a loss curve.
+
+13
+00:00:42,545 --> 00:00:45,715
+Here is a common loss curve shape.
+
+14
+00:00:45,715 --> 00:00:49,210
+The loss drops off rapidly with our big steps down the gradient,
+
+15
+00:00:49,210 --> 00:00:51,570
+and then smooths out over time with
+
+16
+00:00:51,570 --> 00:00:56,040
+smaller steps as it reaches a minima on the loss surface.
+
+17
+00:00:56,040 --> 00:01:00,255
+What if you see a loss curve like this one?
+
+18
+00:01:00,255 --> 00:01:04,775
+Assume for a moment that the scale of the loss axis is large.
+
+19
+00:01:04,775 --> 00:01:06,850
+What does this tell you about your model,
+
+20
+00:01:06,850 --> 00:01:10,540
+and the way your search is going on the loss surface?
+
+21
+00:01:10,540 --> 00:01:14,340
+What it means is that our search is jumping all around,
+
+22
+00:01:14,340 --> 00:01:17,050
+and not as we'd like making steady progress toward
+
+23
+00:01:17,050 --> 00:01:22,170
+a particular minima. What about this one?
+
+24
+00:01:22,170 --> 00:01:25,630
+This one means we are probably still in the same valley,
+
+25
+00:01:25,630 --> 00:01:26,960
+but it will take a very,
+
+26
+00:01:26,960 --> 00:01:30,160
+very long time to reach the bottom.
+
+27
+00:01:30,160 --> 00:01:33,080
+In both these cases though,
+
+28
+00:01:33,080 --> 00:01:35,990
+the stepsize wasn't correct for the particular problem.
+
+29
+00:01:35,990 --> 00:01:38,715
+In the first case, the step size was too big,
+
+30
+00:01:38,715 --> 00:01:41,285
+in the second it was too small.
+
+31
+00:01:41,285 --> 00:01:44,375
+What we need then is a scaling parameter.
+
+32
+00:01:44,375 --> 00:01:47,735
+In the literature, this is referred to as the learning rate,
+
+33
+00:01:47,735 --> 00:01:52,000
+and with its introduction into our code we now have classic gradient descent.
+
+34
+00:01:52,000 --> 00:01:57,155
+Note how I've changed the line where we did our for loop updating the parameter values.
+
+35
+00:01:57,155 --> 00:02:01,640
+You can imagine using brute force to figure out the best value for learning rate.
+
+36
+00:02:01,640 --> 00:02:06,045
+But recall that learning rate is likely to have a problem specific best value.
+
+37
+00:02:06,045 --> 00:02:08,955
+Because it is said before learning begins,
+
+38
+00:02:08,955 --> 00:02:11,185
+learning the rate is a hyperparameter.
+
+39
+00:02:11,185 --> 00:02:13,850
+And to determine the best value for hyperparameters,
+
+40
+00:02:13,850 --> 00:02:17,980
+there is a better method available and it's called hyperparameter tuning.
+
+41
+00:02:17,980 --> 00:02:21,970
+We'll review how to do this in Cloud ML Engine in a later module.
+
+42
+00:02:21,970 --> 00:02:26,415
+Generally though, learning rate is a fraction significantly less than one.
+
+43
+00:02:26,415 --> 00:02:30,565
+For now, simply remember this formulation of gradient descent,
+
+44
+00:02:30,565 --> 00:02:34,840
+and that learning rate is a hyperparameter that is fixed during training.

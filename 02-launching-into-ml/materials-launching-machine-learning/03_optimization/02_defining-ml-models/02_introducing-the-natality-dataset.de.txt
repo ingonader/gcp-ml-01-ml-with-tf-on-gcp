@@ -1,0 +1,85 @@
+Babys sind ein Geschenk. Doch manche müssen direkt nach
+der Geburt dringend versorgt werden. Es gibt aber nur wenige
+Ärzte, die dazu imstande sind. In einer perfekten Welt würden
+wir genau wissen, wohin Ärzte geschickt werden müssen,
+damit diese Babys versorgt werden. Die Welt ist aber anders. Inwiefern ist das ein ML-Problem? Wenn wir vor der Geburt wüssten,
+welche Babys versorgt werden müssen, könnten wir dafür sorgen,
+dass die nötigen Ärzte da sind. Angenommen, wir möchten Vorhersagen
+vor der Geburt eines Babys machen: Welcher dieser Faktoren könnte
+ein Feature in unserem Modell sein? Alter der Mutter,
+Geburtszeit, Gewicht des Babys. Angenommen, wir möchten Vorhersagen
+vor der Geburt eines Babys machen, welcher dieser Faktoren könnte
+ein Label in unserem Modell sein? Alter der Mutter,
+Geburtszeit, Gewicht des Babys. Es ist in Ordnung, wenn Sie
+diese Fragen nicht beantworten konnten, denn dies ist doch ziemlich spezifisch. Was aber ein Indiz sein sollte,
+ist die Verfügbarkeit der Informationen in Anbetracht des Zeitpunkts,
+zu dem wir Vorhersagen treffen möchten. Hier kennen wir die Geburtszeit
+erst, wenn das Baby geboren ist. Das können wir also nicht verwenden. Das Gewicht ist auch ein wichtiger
+Indikator für die Gesundheit eines Babys. Das Alter der Mutter können wir ermitteln
+und es ist ein Prädiktor für das Gewicht. Das scheint also ein guter
+Kandidat für ein ML-Problem zu sein, denn wir möchten frühzeitig etwas
+ermitteln, um danach keinen zu hohen Preis zahlen zu müssen. Und die Gesundheit
+des Babys scheint vorhersagbar zu sein. Angenommen, wir haben das
+Gewicht des Babys als Label gewählt, welche Art von ML-Problem ist das? Ein Tipp: Denken Sie daran, dass
+das Gewicht eine fortlaufende Zahl ist. Behandeln wir das
+zunächst als Regressionsproblem. Und betrachten wir zur Vereinfachung
+nur das Feature "Alter der Mutter" und das Label "Gewicht des Babys". Diese Daten stammen aus einem von
+der US-Regierung erfassten Datensatz, der als Natalitätsdatensatz bezeichnet
+wird (Natalität bedeutet Geburt). Er ist als öffentlicher
+Datensatz in BigQuery verfügbar. Der erste Schritt bei der Modellierung
+von Daten ist oft die Betrachtung der Daten, um zu prüfen, ob es ein Signal
+gibt und nicht alles nur Rauschen ist. Hier habe ich das Gewicht des Babys
+in Abhängigkeit vom Alter der Mutter mit einer Punktwolke grafisch dargestellt. Punktwolken werden meistens auf Basis
+von Proben großer Datensätze erstellt, nicht basierend auf dem ganzen Datensatz. Warum Proben verwendet werden? Erstens, weil Punktwolken auf Basis zu
+vieler Daten rechnerisch unmöglich sind. Außerdem werden Punktwolken mit Unmengen
+von Daten visuell schwer interpretierbar. Beachten Sie, dass es
+anscheinend einen kleinen, positiven Zusammenhang zwischen dem Alter
+der Mutter und dem Gewicht des Babys gibt. Hier eine neue Art
+Diagramm mit denselben Variablen. Anders als bei der Punktwolke
+werden Daten hier aber nicht individuell, sondern als Gruppen von
+Daten dargestellt, nämlich Quantile. Demzufolge benötigen wir
+vor der Erstellung keine Probe und laufen also keine Gefahr, eine
+nicht repräsentative Probe zu erhalten. Ein weiteres Plus ist, dass
+die Ergebnisse wiederholbar und der Prozess parallelisierbar sind. Ich habe dieses Diagramm auf Basis von ca.
+22 GB Daten in wenigen Sekunden erstellt. Mit der Erstellung solcher
+Diagramme befassen wir uns später. Sehen Sie bei einfacher Betrachtung
+einen Zusammenhang zwischen den Daten? Sie haben vielleicht etwas bemerkt, das
+in der Punktwolke nicht ersichtlich war: Das Gewicht des Babys scheint am
+höchsten, wenn die Mütter um die 30 sind, und nimmt ab, je
+jünger oder älter sie sind. Das deutet auf einen
+nicht linearen Zusammenhang hin, und auch das war in der
+Punktwolke nicht ersichtlich. Das ist bedenklich, da wir beabsichtigen, diesen Zusammenhang
+mit einem linearen Modell zu modellieren. Unsere Absicht, eine nicht lineare
+Funktion mit einem linearen Modell zu modellieren,
+ist ein Beispiel für Underfitting. Sie fragen sich vielleicht, warum
+wir kein komplexeres Modell verwenden. Das hat hier pädagogische Gründe. Wir werden später über die Modellauswahl
+und das Overfitting-Konzept sprechen. Kurz gesagt gibt es Risiken, die
+proportional zur Modellkomplexität sind. Es scheint einen leicht positiven
+Zusammenhang zwischen dem Alter der Mutter und dem Gewicht des Babys zu geben. Wir werden hier eine
+Modellierung mit einer Linie durchführen. Da wir ein lineares Modell nutzen,
+ergibt unsere vorherige Erkenntnis eine ansteigende Linie mit
+einem positiven y-Achsenabschnitt. Wir haben die Daten
+begutachtet, um diese Linie zu wählen, doch woher wissen wir, ob die
+Linie höher oder niedriger sein sollte? Woher wissen wir,
+dass sie an der richtigen Stelle ist? Woher wissen wir z. B., dass
+sie besser ist als diese andere Linie? Wer sich mit Statistik befasst, kennt
+vielleicht den Prozess zum Ermitteln der besten Gewichtung für Linien:
+die Methode der kleinsten Quadrate. Es stimmt, dass es Möglichkeiten zum
+analytischen Ermitteln der bestmöglichen Gewichtungen für lineare Modelle gibt. Diese Lösungen funktionieren allerdings
+nur bis zu einer gewissen Größenordnung. Bei Verwendung wirklich großer Datensätze wird die zum analytischen Lösen dieses
+Problems nötige Berechnung unbrauchbar. Was tun, wenn eine analytische
+Lösung keine Option mehr ist? Man nutzt das Gradientenverfahren. Betrachten wir zunächst die
+Optimierung als Suche im Parameter-Raum. Denken Sie daran, dass unser einfaches
+lineares Modell zwei Parameter hat, den Gewichtungs-Term und den Bias-Term. Da sie beide reellwertig sind, können
+wir den Raum aller Wertkombinationen für diese beiden Parameter als
+Punkte im 2D-Raum betrachten. Aber denken Sie daran:
+Wir suchen den besten Wert. Wie ist also ein Punkt im
+Parameter-Raum hinsichtlich Qualität mit einem anderen vergleichbar? Zunächst müssen wir
+die Frage etwas neu umreißen. Da Eingaberäume, also der Raum, in dem die
+Daten sind, oft selbst unendlich sind, ist es nicht möglich, die Parameter für
+jeden Punkt im Eingaberaum zu evaluieren. Also gehen wir wie so oft vor und
+schätzen anhand unserer Trainingsdaten, wie die Berechnung aussehen würde. Dafür müssen wir die Qualität einer
+Vorhersage für einen einzelnen Datenpunkt ermitteln, was einfach der Fehler dieser
+Vorhersage ist, und dies mit einer Menge verallgemeinern, die repräsentativ
+für eine Gruppe von Vorhersagen ist. Die Funktionen, die das tun,
+werden als Verlustfunktionen bezeichnet.

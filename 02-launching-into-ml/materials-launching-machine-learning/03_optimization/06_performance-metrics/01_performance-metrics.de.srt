@@ -1,0 +1,313 @@
+1
+00:00:00,000 --> 00:00:04,610
+Im vorigen Abschnitt haben wir
+Modelle mit Gradientenabstieg trainiert.
+
+2
+00:00:04,610 --> 00:00:06,145
+Und die dabei erstellten Modelle
+
+3
+00:00:06,145 --> 00:00:08,920
+konnten komplexe nicht lineare Beziehungen
+
+4
+00:00:08,920 --> 00:00:11,295
+mithilfe einer Hierarchie
+von Merkmalen erlernen.
+
+5
+00:00:11,295 --> 00:00:14,000
+Am Ende des Abschnitts
+haben wir aber festgestellt,
+
+6
+00:00:14,000 --> 00:00:16,165
+dass unser derzeitiger 
+Ansatz Probleme hat.
+
+7
+00:00:16,165 --> 00:00:19,480
+Er führte etwa zu langen Trainingszeiten
+
+8
+00:00:19,480 --> 00:00:22,370
+sowie suboptimalen 
+und ungeeigneten Minima.
+
+9
+00:00:22,370 --> 00:00:26,710
+In diesem Teil erfahren Sie, 
+was ein ungeeignetes Minimum ist,
+
+10
+00:00:26,710 --> 00:00:31,265
+warum es existiert und wie uns Leistungs-
+messwerte bessere Ergebnisse ermöglichen.
+
+11
+00:00:31,265 --> 00:00:34,035
+Was also sind ungeeignete Minima?
+
+12
+00:00:34,035 --> 00:00:37,910
+Sie sind Punkte im Parameterbereich,
+die Strategien widerspiegeln,
+
+13
+00:00:37,910 --> 00:00:40,150
+die sich nicht
+gut übertragen lassen,
+
+14
+00:00:40,150 --> 00:00:43,645
+nicht die tatsächliche modellierte 
+Beziehung widerspiegeln, oder beides.
+
+15
+00:00:43,645 --> 00:00:46,820
+Nehmen wir an, wir wollen ein
+Modell trainieren, um vorherzusagen,
+
+16
+00:00:46,820 --> 00:00:49,960
+ob ein Parkplatz
+auf einem Parkplatzbild frei ist.
+
+17
+00:00:49,960 --> 00:00:55,765
+Eine ungeeignete Strategie wäre, einfach
+alle Plätze als besetzt vorherzusagen.
+
+18
+00:00:55,765 --> 00:01:00,225
+Bei einem Dataset, das aus derselben Zahl
+positiver und negativer Beispiele besteht,
+
+19
+00:01:00,225 --> 00:01:03,775
+würde eine solche Strategie 
+den Optimierungsprozess nicht überstehen.
+
+20
+00:01:03,775 --> 00:01:09,045
+Bei verzerrten Datasets mit weit mehr 
+von einer Klasse als der anderen,
+
+21
+00:01:09,045 --> 00:01:13,305
+könnte so eine Strategie
+plötzlich verlockend wirken.
+
+22
+00:01:13,305 --> 00:01:15,640
+Eine solche Strategie bemüht sich nicht
+
+23
+00:01:15,640 --> 00:01:19,110
+um ein Verständnis der tatsächlichen
+Beziehung zwischen Merkmal und Label,
+
+24
+00:01:19,110 --> 00:01:22,740
+die sinnvollerweise etwas mit den
+visuellen Eigenschaften eines leeren Platzes
+
+25
+00:01:22,740 --> 00:01:24,175
+zu tun haben müsste.
+
+26
+00:01:24,175 --> 00:01:27,520
+Folglich funktioniert eine Übertragung
+auf andere Parkplätze nicht gut,
+
+27
+00:01:27,520 --> 00:01:29,900
+wo die zugrunde
+liegende Beziehung dieselbe ist,
+
+28
+00:01:29,900 --> 00:01:32,955
+aber der Anteil
+der freien Plätze vielleicht nicht.
+
+29
+00:01:32,955 --> 00:01:35,470
+Es ist verlockend,
+die Existenz ungeeigneter Minima
+
+30
+00:01:35,470 --> 00:01:38,200
+als ein Problem
+der Verlustfunktion zu betrachten.
+
+31
+00:01:38,200 --> 00:01:40,705
+Wenn wir nur eine
+perfekte Verlustfunktion hätten,
+
+32
+00:01:40,705 --> 00:01:44,325
+eine, die nur die besten Strategien
+belohnt und die schlechten sanktioniert,
+
+33
+00:01:44,325 --> 00:01:46,285
+dann wäre alles gut.
+
+34
+00:01:46,285 --> 00:01:48,920
+Leider ist das nicht möglich.
+
+35
+00:01:48,920 --> 00:01:52,670
+Es wird immer eine Lücke zwischen den 
+Messwerten geben, die uns wichtig sind,
+
+36
+00:01:52,670 --> 00:01:55,955
+und den Messwerten, die gut mit
+einem Gradientenabstieg funktionieren.
+
+37
+00:01:55,955 --> 00:02:00,705
+Nehmen wir zum Beispiel an,
+wir klassifizieren immer noch Parkplätze.
+
+38
+00:02:00,705 --> 00:02:05,110
+Eine anscheinend perfekte Verlustfunktion 
+würde die falschen Vorhersagen minimieren.
+
+39
+00:02:05,110 --> 00:02:08,235
+Eine solche Verlustfunktion
+wäre jedoch stückweise polynomial.
+
+40
+00:02:08,235 --> 00:02:12,705
+Der mögliche Wertebereich enthielte
+also ganze Zahlen statt reeller Zahlen.
+
+41
+00:02:12,705 --> 00:02:15,515
+Überraschenderweise ist das problematisch.
+
+42
+00:02:15,515 --> 00:02:18,810
+Der Grund dafür ist Differenzierbarkeit.
+
+43
+00:02:18,810 --> 00:02:22,245
+Der Gradientenabstieg ändert 
+die Gewichtungen inkrementell.
+
+44
+00:02:22,245 --> 00:02:26,770
+Dies erfordert, dass Gewichtungen in
+Bezug auf den Verlust unterscheidbar sind.
+
+45
+00:02:26,770 --> 00:02:30,170
+Stückweise Funktionen haben
+jedoch Lücken in ihren Bereichen.
+
+46
+00:02:30,170 --> 00:02:32,640
+TensorFlow kann sie zwar ableiten,
+
+47
+00:02:32,640 --> 00:02:36,110
+aber die resultierende Verlustoberfläche
+würde Diskontinuitäten aufweisen,
+
+48
+00:02:36,110 --> 00:02:38,065
+die schwieriger zu polygonieren sind.
+
+49
+00:02:38,065 --> 00:02:40,380
+Wir müssen das Problem neu definieren.
+
+50
+00:02:40,380 --> 00:02:43,670
+Statt im Training
+die perfekte Verlustfunktion zu suchen,
+
+51
+00:02:43,670 --> 00:02:47,725
+verwenden wir einen neuen Messwert 
+nach dem Abschluss des Trainings.
+
+52
+00:02:47,725 --> 00:02:50,605
+Dieser neue Messwert ermöglicht es uns,
+
+53
+00:02:50,605 --> 00:02:53,625
+Modelle abzulehnen, die sich auf 
+ungeeignete Minima eingependelt haben.
+
+54
+00:02:55,325 --> 00:02:58,590
+Diese Messwerte heißen Leistungsmesswerte.
+
+55
+00:02:58,590 --> 00:03:02,370
+Leistungsmesswerte haben 
+gegenüber Verlustfunktionen zwei Vorteile.
+
+56
+00:03:02,370 --> 00:03:04,755
+Erstens sind sie leichter zu verstehen,
+
+57
+00:03:04,755 --> 00:03:09,070
+weil sie oft eine einfache Kombination
+aus abzählbaren Statistiken darstellen.
+
+58
+00:03:09,070 --> 00:03:13,520
+Zweitens sind Leistungsmesswerte
+direkt an Unternehmensziele gebunden.
+
+59
+00:03:13,520 --> 00:03:15,545
+Das ist nicht so offensichtlich,
+
+60
+00:03:15,545 --> 00:03:18,700
+aber es läuft darauf hinaus, dass 
+der Verlust und das angestrebte
+
+61
+00:03:18,700 --> 00:03:20,650
+Unternehmensziel zwar oft übereinstimmen,
+
+62
+00:03:20,650 --> 00:03:22,275
+aber leider nicht immer.
+
+63
+00:03:22,275 --> 00:03:24,745
+Manchmal kann man
+zwar den Verlust reduzieren,
+
+64
+00:03:24,745 --> 00:03:27,620
+aber dabei dem Unternehmensziel
+nur wenig näherkommen.
+
+65
+00:03:27,620 --> 00:03:30,655
+Wir werden
+drei Leistungsmesswerte besprechen.
+
+66
+00:03:30,655 --> 00:03:33,420
+Wahrheitsmatrix, Präzision und Recall,
+
+67
+00:03:33,420 --> 00:03:35,120
+und wann Sie was verwenden sollten.

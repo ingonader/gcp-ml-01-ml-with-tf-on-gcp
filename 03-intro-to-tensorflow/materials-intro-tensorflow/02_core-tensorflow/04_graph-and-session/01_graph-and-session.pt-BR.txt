@@ -1,0 +1,45 @@
+Agora vamos ver o gráfico e a sessão. O gráfico acíclico dirigido, ou DAG no TensorFlow, é como qualquer gráfico. Ele consiste em bordas e nós. As bordas representam dados, representam tensores, que, como sabemos
+agora, são matrizes N dimensionais. Os nós representam as operações
+do TensorFlow nesses tensores. Coisas como tf.add
+que resolvemos na aula anterior. Um DAG do TensorFlow consiste em
+tensores e operações nesses tensores. Então, por que o TensorFlow
+faz uma avaliação lenta? É porque a avaliação lenta permite muita flexibilidade e otimização quando você
+está executando o gráfico. O TensorFlow agora pode
+processar o gráfico, compilá-lo, inserir, enviar e receber nós
+no meio do DAG e também pode ser executado remotamente. O TensorFlow pode atribuir
+diferentes partes do DAG a dispositivos distintos, dependendo do limite de E/S ou da necessidade de recursos da GPU. Enquanto o gráfico está sendo processado, o TensorFlow pode adicionar
+quantização ou tipos de dados, pode adicionar nós de depuração, pode criar resumos para escrever valores, então o tensor pode lê-los,
+além de cálculos como soma, matmul, constantes, variáveis. Todas são operações,
+e o TensorFlow pode trabalhar com elas. Quando o gráfico está sendo compilado, o TensorFlow pode fazer duas operações
+e fundi-las para melhorar o desempenho. Por exemplo, você pode ter dois
+nós de adição consecutivos e o TensorFlow pode fundi-los
+em um único nó. O compilador XLA do TensorFlow
+pode usar as informações em um gráfico acíclico dirigido
+para gerar um código mais rápido. Este é um aspecto do motivo pelo qual
+você quer usar um DAG para otimização. Mas a parte mais interessante é que o DAG pode ser executado remotamente
+e atribuído a dispositivos. E é aí que os benefícios da abordagem
+com o DAG se tornam muito evidentes. Usando bordas explícitas para representar
+dependências entre operações, é fácil para o sistema identificar operações
+que podem ser executadas em paralelo. Usando bordas explícitas para representar
+os valores que fluem entre as operações, o TensorFlow pode particionar
+seu programa em vários dispositivos, CPUs, GPUs, TPUs etc., conectados
+até mesmo a máquinas diferentes. O TensorFlow insere
+a comunicação e a coordenação necessárias entre esses dispositivos. Então, observe as cores no diagrama. Várias partes do gráfico
+podem estar em dispositivos diferentes, não importa se é GPU
+ou computadores diferentes. Assim, um dos principais
+benefícios desse modelo, poder distribuir computação
+entre várias máquinas e muitos tipos de máquinas, é por causa do DAG. Nós apenas escrevemos
+o código Python e deixamos o sistema de execução do TensorFlow
+otimizar e distribuir o gráfico. A classe de sessão representa essa conexão
+entre o programa Python que escrevemos e o tempo de execução do C++. O objeto de sessão oferece acesso
+aos dispositivos na máquina local e a dispositivos remotos usando o ambiente
+de execução do TensorFlow do distribuidor. Ele também armazena
+informações sobre o gráfico, portanto, o mesmo cálculo
+pode ser executado várias vezes. Como vimos, executamos gráficos do
+TensorFlow chamando run em tf.Session e, quando fazemos isso, especificamos um tensor
+que queremos avaliar. Então, neste exemplo de código, estou definindo
+dois tensores de dados, x e y. Eles são constantes, são tensores 1D. O tensor z é um resultado
+da invocação de tf.add em x e y. Quando eu quero avaliar, chamo session.run em z. A sessão sess aqui
+é uma instância de tf.Session, e a instrução with em Python
+é como garantimos que a sessão seja fechada automaticamente
+quando terminarmos.

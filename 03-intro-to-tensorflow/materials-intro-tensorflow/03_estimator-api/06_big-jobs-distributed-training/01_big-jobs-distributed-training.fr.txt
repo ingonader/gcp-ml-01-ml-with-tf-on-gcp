@@ -1,0 +1,91 @@
+Nous allons voir comment traiter
+les tâches de ML importantes et nous allons parler des avantages
+de l'entraînement distribué. Nous pouvons cocher
+le premier élément de la liste des problèmes liés aux modèles réels,
+et passer au deuxième point, la vitesse. L'entraînement des modèles réels
+durent en effet très longtemps : des heures, des jours, voire des semaines. Chez Google, lorsque l'entraînement prend
+plusieurs semaines, on abandonne. Ce n'est pas possible d'optimiser
+un modèle dans ces conditions. Il faut le distribuer sur un cluster
+pour accélérer le processus. Cela peut paraître compliqué
+de passer d'une à plusieurs machines. Mais comme nous allons le voir,
+grâce à l'API Estimator et à ML Engine qui gèrent le cluster automatiquement, vous profitez
+d'une distribution prête à l'emploi. La fonction qui implémente
+l'entraînement distribué s'appelle "estimator.train_and_evaluate". Le nom de cette fonction montre
+aussi qu'il est important d'évaluer et de surveiller les tâches
+d'entraînement à grande échelle. Nous en reparlerons plus tard. Concentrons-nous
+pour l'instant sur la distribution. Le modèle de distribution traditionnel
+pour les réseaux de neurones d'entraînement s'appelle
+le "parallélisme de donnée". Votre modèle est répliqué
+sur plusieurs nœuds de calcul. À chaque étape d'entraînement,
+ces nœuds chargent un lot de données d'entraînement
+à chaque fois différent, calculent son gradient,
+puis l'envoient à un ou plusieurs serveurs de paramètres centraux, qui contiennent
+toutes les pondérations et tous les biais du modèle de réseau de neurones. Les gradients sont appliqués
+lorsqu'ils arrivent, et modifient
+les pondérations et les biais. Puis le modèle mis à jour
+est renvoyé aux nœuds pour la prochaine étape d'entraînement. De nombreuses étapes
+sont nécessaires pour arriver là. Les nœuds doivent être démarrés,
+puis recevoir leur copie du modèle. Les flux de données entre les nœuds et les serveurs de paramètres
+doivent être établis. Le système doit gérer
+les exceptions et les échecs, et redémarrer les nœuds de terrain là
+où ils se sont arrêtés en cas d'incident. Les points de contrôle sont aussi
+plus complexes avec tout cela. Heureusement pour vous, il vous suffira
+d'écrire un fichier de configuration pour assurer la distribution. Tout le code récurrent
+est déjà écrit dans l'API Estimator et dans la fonction
+"estimator.train_and_evaluate". Vous avez quatre choses à faire : choisir votre estimateur,
+fournir une configuration d'exécution, assurer l'entraînement et tester
+les données via les commandes "train_spec" et "eval_spec". Une fois tout cela configuré, il vous
+suffit d'appeler "train_and_evaluate". Si vous êtes sur ML Engine et si vous avez spécifié
+la taille du cluster, l'entraînement distribué se lancera. Voyons cela plus en détail, en commençant
+par la configuration d'exécution. C'est là que vous spécifiez le répertoire
+de sortie pour les points de contrôle. Vous pouvez la configurer directement
+lors de l'instanciation de l'estimateur. Mais c'est plus simple de l'avoir ici avec les autres paramètres
+de points de contrôle. En effet, c'est ici aussi
+que vous allez définir la fréquence des points de contrôle,
+mais aussi la fréquence des journaux d'entraînement
+ou de vos résumés. Nous y reviendrons plus tard. "train_spec" vous permet de transmettre
+votre fonction d'entrée de données pour les données d'entraînement. Utilisez l'API Dataset
+pour le configurer correctement. Vous pouvez aussi limiter l'entraînement
+à un certain nombre d'étapes. Par défaut, l'entraînement continue jusqu'à ce que l'ensemble
+de données d'entrée soit épuisé, ce qui peut arriver
+après plusieurs itérations, si vous avez
+choisi cette configuration. "eval_spec" vous permet d'associer
+votre ensemble de données de test. En effet, si vous voulez analyser
+les performances de votre modèle, vous devez utiliser un ensemble
+qu'il n'a pas utilisé à l'entraînement, généralement un sous-ensemble
+de vos données réservé au test. Les données de test sont intégrées
+via une fonction d'entrée "eval". Ici encore, utilisez l'API Dataset. Vous devez aussi spécifier combien de lots
+de données de test vous voulez utiliser pour l'évaluation,
+ainsi que la fréquence des évaluations. N'oubliez pas
+qu'avec l'entraînement distribué, l'évaluation
+se produit sur un serveur dédié, qui répond au modèle
+à partir du dernier point de contrôle, puis exécute l'évaluation. La fréquence des évaluations
+ne peut pas être supérieure à la fréquence des points de contrôle spécifiée
+dans la configuration d'exécution. Vous pouvez en revanche
+diminuer la fréquence en ajoutant le paramètre de limitation
+dans la commande "eval-spec". Vous pouvez voir que cette commande
+possède aussi un paramètre "exporters". Ce paramètre contrôle
+l'exportation d'un modèle pour le déploiement en production. Nous en parlerons
+dans le prochain chapitre. Récapitulons. Vous instanciez un estimateur, vous configurez son exécution qui vous permet de définir
+la fréquence et l'emplacement d'écriture des points de contrôle
+et des autres données de contrôle, puis vous configurez un ensemble de
+données d'entraînement et d'évaluation via les fonctions d'entrée de données
+de "train_spec" et "eval_spec". Vous êtes maintenant prêt à passer
+à l'entraînement et à l'évaluation. J'aimerais m'arrêter un instant
+sur un point pratique important : le brassage de données. L'algorithme de descente
+de gradient stochastique que les réseaux de neurones utilisent
+pour l'entraînement ne fonctionne que sur les données brassées. L'API Dataset possède une fonction
+de brassage qui peut être utile, mais certaines personnes
+pensent ne pas en avoir besoin, car elles estiment que leur ensemble de
+données est déjà bien brassé sur disque. Avec l'entraînement distribué, attention ! Même avec un ensemble de données
+bien brassé sur disque, si tous vos nœuds de calcul sont chargés
+à partir de cet ensemble de données, ils verront le même lot de données
+au même moment, et ils produiront les mêmes gradients. Les avantages de l'entraînement
+distribué sont alors perdus. Vos différents nœuds de calcul
+font exactement la même chose. Avec "dataset.shuffle",
+le brassage se produit indépendamment sur chaque nœud
+à l'aide d'une source aléatoire. Préférez donc cette méthode, même si vos données
+sont déjà brassées sur disque. Et pour être sûr de vous, vous pouvez
+aussi brasser la liste de noms de fichiers dans votre ensemble de données segmenté. "list_files" renvoie un ensemble
+de données de noms de fichiers. Il vous suffit donc
+d'appeler "shuffle" dessus.

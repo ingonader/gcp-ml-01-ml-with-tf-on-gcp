@@ -1,0 +1,80 @@
+Babies are precious. Some of them need urgent care
+immediately after they're born. The sorts of doctors who can provide
+such care, however, are scarce. In a perfect world, we'd know
+precisely where to send doctors so that the babies who need them
+can get the care that they need. But we don't live in that world. How might this be an ML problem? Well, if we knew which babies
+needed care before they were born, we can make sure we had doctors
+on hand to care for them. Assuming we want to make predictions
+before the baby is born, which of these could be
+a feature in our model? Mother's age, birth time, baby weight. Assuming we want to make predictions
+before the baby is born, which of these could be
+a label in our model? Mother's age, birth time, baby weight. If you didn't know the answers
+to these questions, that's okay, because a lot of this is
+quite domain specific. What you should have intuitions about,
+however, are when the information is available relative to when we want
+to actually make predictions. In this case, birth time is not available
+to us until well after the baby is born, and so we can't use it. Baby weight also happens to be
+an important indicator of baby health. Mother's age is something we can observe
+and which is predictive of baby weight. So this seems like a good
+candidate ML problem, because there is a demonstrated need
+to know something that is too expensive to wait for, baby health, and
+which seems to be predictable beforehand. Assuming that we've chosen
+baby weight as out label, what sort of ML problem is this? As a hint, remember that baby
+weight is a continuous number. For now,
+let's treat this as a regression problem. And to simplify things, let's consider
+only the feature mother's age and the label baby weight. This data comes from a data set
+collected by the US government and it's called the natality data set,
+because natality means birth. It's available as a public
+data set in BigQuery. Often the first step to modeling
+data is to look at the data to verify that there is some signal and
+that it's not all noise. Here I've graphed baby weight as
+a function of mother's age using a scatter plot. We usually make scatter plots
+from samples of large data sets, rather than from the whole thing. Why use samples? Firstly, because scatter plotting too
+much data is computationally infeasible. And secondly, with lots of data, scatter
+plots become visually hard to interpret. Note that there seems to be a small, positive relationship between
+mother's age and baby weight. Here is a new sort of plot that
+uses the same two variables, but unlike a scatter plot which
+represents data individually, this graph represents groups of data,
+specifically quantiles. As a result, we need in
+the sample before building it and there's consequently no risk of
+getting a non-representative sample. As an added bonus,
+the results are also repeatable, and the process parallelizable. I made this plot, which looks at about 22
+gigabytes of data, in just a few seconds. We'll cover how to create
+graphs like this later on. So do you see any relationship in
+the data just by looking at it? You might have noticed something that
+wasn't apparent on our scatter plot, baby weight seems to reach its
+maximum when mothers are around 30 and it tapers off as mothers
+get both older and younger. This suggests a non-linear relationship, which is both something that wasn't
+apparent in our scatter plot. And an ominous sign, given our intention to model this
+relationship with a linear model. In fact, our intention to model
+a non-linear function with a linear model is an example of what's
+called underfitting. You might wonder why we're not
+using a more complex type of model. Here it's for pedagogical reasons. We'll talk later about model selection and
+a concept known as overfitting. In short, there are risks that
+are proportional to model complexity. It appears that there is a slight positive
+relationship between mother's age and baby weight. We're going to model this with a line. Given that we're using a linear model,
+our earlier intuition translates into an upward sloping line with
+a positive y intercept. We've eyeballed the data
+to select this line, but how do we know whether the line
+should be higher or lower? How do we know it's in the right place? How, for example, do we know it's
+actually better than this other line? Those of you who have taken statistics
+may remember seeing a process for determining the best weights for
+a line called least squares regression. And it's true that there are ways of
+analytically determining the best possible weights for linear models. The problem is that these solutions
+only work up to a certain scale. Once you start using really big data sets, the computation required to analytically
+solve this problem becomes impractical. What do you do when an analytical
+solution is no longer an option? You use gradient descent. Let’s start by thinking about optimization
+as a search in parameter-space. Remember that our simple linear model
+has two parameters, a weight term and a bias term. Because they are both real valued, we can
+think of the space of all combinations of values for these two parameters
+as points in 2D space. But remember, we're looking for
+the best value. So how does one point in parameter-space
+compare to another with respect to quality? Well, first we need to reframe
+the question a little. Because input spaces, which are the space where the data live,
+are often themselves infinite, it's not possible to evaluate the
+parameters on every point in input space. And so, as we often do, we estimate
+what this calculation would look like using what we have, our training data. And to do that, we'll need to somehow
+generalize from the quality of a prediction for a single data point,
+which is simply the error of that prediction, to a number that captures
+the quality of a group of predictions. The functions that do this
+are known as loss functions.

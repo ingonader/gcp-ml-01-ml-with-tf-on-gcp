@@ -1,0 +1,256 @@
+1
+00:00:00,000 --> 00:00:05,076
+Let's start by exploring the components
+of the Estimator API, and how to handle
+
+2
+00:00:05,076 --> 00:00:11,230
+other common ML tasks, such as distributed
+training, monitoring, and serving.
+
+3
+00:00:11,230 --> 00:00:15,100
+Estimators are a part of
+the high level TensorFlow APIs.
+
+4
+00:00:15,100 --> 00:00:18,630
+Your first contact with
+TensorFlow in the previous module
+
+5
+00:00:18,630 --> 00:00:20,920
+was at the Core TensorFlow level.
+
+6
+00:00:20,920 --> 00:00:24,820
+But you essentially use TensorFlow
+as a numeric processing library.
+
+7
+00:00:24,820 --> 00:00:29,440
+Below this level sits a series of APIs
+that you do not typically interact with.
+
+8
+00:00:29,440 --> 00:00:32,740
+They handle the hardware,
+CPUs, GPUs, TPUs, or
+
+9
+00:00:32,740 --> 00:00:35,410
+alternative platforms like Android.
+
+10
+00:00:35,410 --> 00:00:38,050
+Above Core TensorFlow,
+you will find APIs for
+
+11
+00:00:38,050 --> 00:00:40,970
+all the typical bricks
+needed to build a model.
+
+12
+00:00:40,970 --> 00:00:45,160
+Different kinds of neural network layers,
+different loss functions, and so on.
+
+13
+00:00:45,160 --> 00:00:48,880
+And finally,
+to wrap it all up, Estimators.
+
+14
+00:00:48,880 --> 00:00:53,344
+A beginner level TensorFlow model usually
+involves a couple of neural electric
+
+15
+00:00:53,344 --> 00:00:55,004
+layers and a training loop.
+
+16
+00:00:55,004 --> 00:00:57,910
+And you might be thinking,
+why would I need help with that?
+
+17
+00:00:57,910 --> 00:00:59,990
+I'm a developer, I can write a loop.
+
+18
+00:00:59,990 --> 00:01:03,520
+And I tend to agree with you, but now for
+
+19
+00:01:03,520 --> 00:01:08,190
+even tiny prototyping models
+I tend to use estimators.
+
+20
+00:01:08,190 --> 00:01:10,700
+I like the fact that they
+are interchangeable and
+
+21
+00:01:10,700 --> 00:01:15,100
+let me test many standard pre-made
+estimator models in quick succession.
+
+22
+00:01:16,560 --> 00:01:20,960
+As data and training time grows,
+however, your needs will increase.
+
+23
+00:01:20,960 --> 00:01:24,170
+Do you need checkpoints to pause and
+resume your training?
+
+24
+00:01:24,170 --> 00:01:25,790
+Estimators have them.
+
+25
+00:01:25,790 --> 00:01:27,840
+Your data no longer fits in memory?
+
+26
+00:01:27,840 --> 00:01:33,090
+Estimators are designed with a data set
+API that handles out of memory data sets.
+
+27
+00:01:33,090 --> 00:01:36,180
+You can not train a large network
+without seeing how its doing.
+
+28
+00:01:36,180 --> 00:01:40,210
+Estimators automatically surface key
+metrics during training that you can
+
+29
+00:01:40,210 --> 00:01:42,150
+visualize in Tensor board.
+
+30
+00:01:42,150 --> 00:01:44,670
+Are you thinking now about
+distributed training?
+
+31
+00:01:44,670 --> 00:01:49,410
+Estimators come with the necessary
+cluster execution code already built in.
+
+32
+00:01:49,410 --> 00:01:53,012
+And finally, you will want to wrap
+your model to make it ready for
+
+33
+00:01:53,012 --> 00:01:56,360
+ML-Engine's hyper-parameter tuning,
+and maybe also push it
+
+34
+00:01:56,360 --> 00:02:00,780
+to production behind ML-Engine's managed
+and autoscaled prediction service.
+
+35
+00:02:00,780 --> 00:02:04,040
+The Estimator API has you
+covered there as well.
+
+36
+00:02:04,040 --> 00:02:08,010
+Now, tell me, do you still want to
+write your training loop yourself with
+
+37
+00:02:08,010 --> 00:02:12,240
+all this boiler plate code
+functionality repeat it every time?
+
+38
+00:02:12,240 --> 00:02:16,330
+I thought not, so let us have our
+first look at this estimator API.
+
+39
+00:02:17,600 --> 00:02:22,388
+The base class estimator lets you
+wrap your own model that you would
+
+40
+00:02:22,388 --> 00:02:25,480
+build from layers using the TF layers API.
+
+41
+00:02:25,480 --> 00:02:29,520
+But if you're building something
+fairly standard, no need to go there.
+
+42
+00:02:29,520 --> 00:02:34,140
+TensorFlow has a set of pre-made
+estimators that you can try out.
+
+43
+00:02:34,140 --> 00:02:39,230
+Linear or dense neural network classifiers
+to classify data into categories,
+
+44
+00:02:39,230 --> 00:02:43,120
+and similar regressors to
+predict continuous values.
+
+45
+00:02:43,120 --> 00:02:48,480
+And don't also forget the
+DNNLinearCombinedClassifier, also known as
+
+46
+00:02:48,480 --> 00:02:53,510
+the wide and deep model according to the
+Google research paper that popularized it.
+
+47
+00:02:53,510 --> 00:02:55,610
+This one is not trivial, we use it for
+
+48
+00:02:55,610 --> 00:02:59,300
+example to power the recommendation
+engine in Google Play.
+
+49
+00:02:59,300 --> 00:03:00,810
+But it is very flexible and
+
+50
+00:03:00,810 --> 00:03:06,096
+has times been described as the work
+horse of Enterprise Machine Learning.
+
+51
+00:03:06,096 --> 00:03:10,760
+It works for all kinds of structure
+data and you can use it out of the box.
+
+52
+00:03:10,760 --> 00:03:14,535
+The one thing to remember is
+that thanks to common API,
+
+53
+00:03:14,535 --> 00:03:17,550
+pre-made estimators are interchangeable.
+
+54
+00:03:17,550 --> 00:03:19,370
+It is easy to try and test them all.

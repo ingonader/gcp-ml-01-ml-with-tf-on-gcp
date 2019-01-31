@@ -1,0 +1,51 @@
+In the previous few lessons, we talked
+about how you can debug a TensorFlow program by looking at the error message,
+isolating the method in question, feeding it fake data, and then fixing the
+error once we understand what's going on. Sometimes, though,
+the problems are more subtle. They only happen when
+specific things happen. And you may not be able to identify
+why things are working for five, six, seven batches, and
+then all of a sudden you get an error, and then things will go back to normal. In other words,
+when the errors are associated with some specific input value or
+condition of the execution system. At that point, you need to debug
+the full-blown program, and there are three methods to do this. tf.Print() is a way to print
+out the values of tensors when specific conditions are met. tfdbg is an interactive debugger
+that you can run from a terminal and attach to a local or
+remote TensorFlow session. TensorBoard is a visual monitoring tool. We talked about this as a way
+to look at the tag, but there's more kinds of troubleshooting
+that you can do with TensorBoard. You can look at evaluation metrics,
+look for over-fitting, layers that are dead, etc. Higher level debugging of neural networks,
+in other words. We look at TensorBoard in a future
+chapter of this course, ubt for now I just wanted to drop in
+a placeholder so you know and you keep in mind that TensorBoard
+is a powerful troubleshooting tool. One sort of of silly thing but
+worth mentioning, the default level in terms of logging for
+TensorFlow programs is WARN. So it runs sort of quiet. Change the log level to INFO to see many
+more log messages as TensorFlow trains. You can change the log level
+by using tf.logging and setting the verbosity level. The levels are debug, info, warn,
+error, and fatal, in that order. Debug is the most verbose, and
+fatal is the most quiet, info is what I tend to use in development, and
+warn is what I tend to use in production. Of course, you can set up a command line
+parameter to switch from one to the other. tf.Print can be used to log
+specific tensor values. Perhaps you're dividing a by b and
+you're getting NAN, not a number, NAN, in the output and you want to figure out the value of a and
+the value of b that's causing the problem. Well, if you print a, you would only
+get the debug output of the tensor, you won't get its value. Lazy execution, remember, you have to
+evaluate a tensor to get its value, so you don't want to print the value
+of a every single time. The idea here is a print_ab is a tensor,
+it wraps s and prints out a and b. I then replace s in the graph by print_ab
+only for those batches where s is NAN. Ergo, only those things get printed. This has to be done in
+a standalone program, because Datalab consumes the tensor for
+log messages. Hence my workaround of writing the code
+to a file and then running it. You tend to use tf.Print on
+running TensorFlow programs to diagnose rare errors, and
+make sure to capture things in the logs. It's a neat trick. TensorFlow also has a dynamic
+interactive debugger called tf_debug. You run it from the command line. So you run the TensorFlow program from
+a terminal as a standalone program. And then when you run it, you would
+add the command line flag --debug. This is also helpful to debug
+remotely running TensorFlow programs, in other words,
+you can attach to the program. There are also special debug hooks for
+debugging experiment and estimator programs. And once a program starts, you can use
+a debugger to step through the code, set break points, etc. If you've ever used
+an interactive debugger for any other language or environment,
+the terminology, steps, break points, etc., they should all be pretty familiar.

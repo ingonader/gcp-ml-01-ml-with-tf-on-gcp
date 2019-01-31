@@ -1,0 +1,68 @@
+Veamos un ejemplo. Probemos con bienes raíces. ¿Podemos predecir
+el precio de una propiedad? Primero debemos elegir los atributos. Es decir, los datos que usaremos
+como base de nuestras predicciones. ¿Por qué no compilar
+un modelo que prediga el precio según el tamaño de una casa o apartamento? Nuestros atributos serán:
+uno, los pies cuadrados y, dos, la categoría:
+casa o apartamento. Lo implementamos así. Podemos usar la API
+de feature_column para definir los atributos. Primero, una columna numérica
+para los metros cuadrados luego, una columna categórica
+para el tipo de propiedad. Hay dos categorías posibles
+en este modelo simple: casa o apartamento. Ahora podemos
+instanciar un regresor lineal uno de los estimadores prediseñados
+para esos atributos. Un regresor es un modelo
+que tiene como salida un número en nuestro caso, el precio
+de venta previsto de la propiedad. Pero ¿para qué necesitamos
+columnas de atributos? Veamos con más detalle. Un regresor lineal es un modelo
+que funciona con un vector de datos. Calcula la suma ponderada
+de todos los elementos de datos de entrada y puede entrenarse para ajustar
+la ponderación para su problema en este caso, predecir el precio de venta. Pero ¿cómo podemos
+empaquetar nuestros datos en el vector único de entrada
+que el regresor lineal espera? La respuesta es: de varias formas,
+según los datos que estamos empaquetando y allí es donde resulta útil
+la API de feature_column. Implementa varias formas estándar
+de empaquetar datos en elementos vectoriales. Aquí, los valores de la columna numérica
+son solo números. Se copian tal como están
+a un elemento único del vector de entrada. Por otro lado, la columna categórica
+recibe una codificación de solo 1. Tenemos dos categorías. Casa será 1, 0 mientras que apartamento será 0, 1. Una tercera categoría
+se codificaría como 0, 0, 1, etcétera. El regresor lineal sabe
+cómo usar los atributos que nos importan empaquetarlos en su vector de entrada y aplicar lo que hace un regresor lineal. Hay muchos más tipos de columnas
+de atributos que puede escoger columnas para valores continuos
+que desee agrupar incorporaciones de palabras,
+combinaciones de columnas, etcétera. Las transformaciones que aplican
+se describen claramente en la documentación de TensorFlow,
+de modo que siempre sepa qué sucede. Para entrenar el modelo necesitamos
+escribir una función de entrada que mostrará los atributos
+con los mismos nombres que en las columnas de funciones. Ya que estamos entrenando también necesitamos
+las respuestas correctas o etiquetas. Ahora, podemos llamar
+a la función train de nuestro estimador que entrenará el modelo
+mediante la repetición de este conjunto de datos 100 veces. Veremos cómo funcionan
+los lotes más adelante pero si ya conoce el concepto de lotes. este código entrena
+con un único lote de datos en cada paso y este lote
+contiene el conjunto de datos completo. Una vez entrenado, el modelo
+se puede usar para las predicciones. Necesitaremos una función de entrada
+que proporcione datos para la predicción en este caso, una casa de 1,500 ft²
+y un apartamento de 1,800 ft². La función predict
+en la API de Estimator muestra un generador
+de Python que puede usarse para iterar en las predicciones. Este es un resumen de lo que hizo
+la API de Estimator hasta ahora. Usamos feature_column
+para cambiar nuestros datos a un formato
+que nuestro modelo pueda entender. Instanciamos un regresor lineal
+con base en estas columnas de atributos llamamos a train,
+para entrenar el modelo por 100 pasos. Los datos de entrenamiento se proporcionan
+mediante una función de entrada de datos. Llamamos a predict
+para obtener las predicciones. Nuevamente, los datos se obtuvieron
+mediante una función de entrada de datos. Hablaremos de eso
+en más detalle más adelante en el curso. Para usar un estimador
+prediseñado diferente simplemente cambie el nombre de la clase y proporcione los parámetros
+de configuración apropiados. Por ejemplo, aquí, 
+podríamos usar un regresor de red neuronal densa
+con dos capas ocultas. La primera tiene tres neuronas la segunda solo dos y terminamos en la neurona
+que predice el precio de la propiedad. Observen que el vector de entrada
+es el mismo en ambos modelos. Podemos volver a usar
+las mismas columnas de atributos. Estos son algunos de los elementos que pueden ajustarse
+en una red neuronal densa. La cantidad
+y el tamaño de las capas ocultas la función de activación elegida los parámetros de regularización,
+como los retirados o su optimizador favorito
+para realizar el entrenamiento. Lo más importante es que hay buenas configuraciones
+predeterminadas para casi todos. Para un regresor DNN los únicos parámetros obligatorios
+son las capas ocultas.

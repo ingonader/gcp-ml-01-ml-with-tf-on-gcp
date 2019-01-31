@@ -1,0 +1,81 @@
+Bebês são preciosos. Alguns precisam de cuidados
+urgentes logo após o nascimento. No entanto, os médicos que
+podem prestar essa assistência são raros. Em um mundo perfeito, saberíamos
+exatamente aonde enviar os médicos para que os bebês recebessem
+os cuidados necessários. Mas não vivemos em um mundo perfeito. Como esse pode ser um problema de ML? Se soubermos quais bebês precisarão
+de cuidados antes do nascimento, poderemos garantir que os médicos
+estarão prontos para atendê-los. Se quisermos fazer previsões
+antes do nascimento do bebê, quais destes valores poderiam
+ser uma característica no nosso modelo? Idade da mãe, hora
+do nascimento ou peso do bebê. Se quisermos fazer previsões
+antes do nascimento do bebê, quais destes valores poderiam
+ser um rótulo no nosso modelo? Idade da mãe, hora
+do nascimento ou peso do bebê. Se você não sabe as respostas
+dessas perguntas, não tem problema porque isso é muito
+específico de um domínio. Mas você deveria ter uma ideia de quando
+essas informações estarão disponíveis em relação a quando
+queremos fazer as previsões. Nesse caso, saberemos a hora
+do nascimento apenas depois do parto. Portanto, não podemos usá-la. O peso também é um indicador
+importante da saúde do bebê. A idade da mãe é um dado que podemos
+observar e ajuda a prever o peso do bebê. Portanto, esse é um bom
+exemplo de problema de ML porque há uma necessidade real de
+saber algo importante demais para esperar, a saúde do bebê, e aparentemente pode ser previsto. Suponha que escolhemos
+o peso do bebê como rótulo, que tipo de problema de ML é esse? Uma dica: o peso
+do bebê é um número contínuo. Por enquanto, vamos tratar esse
+problema como uma regressão. Para simplificar, usaremos apenas
+a idade da mãe como característica e o peso do bebê como rótulo. Esses dados pertencem a um conjunto
+de dados coletados pelo governo dos EUA chamado conjunto de dados
+de natalidade, que significa nascimento. Ele está disponível como
+um conjunto de dados público no BigQuery. Geralmente, o primeiro passo
+para modelar é analisar os dados para verificar se há algo notável ou
+não passam de informações sem importância. No gráfico, coloquei o peso do bebê
+como uma função da idade da mãe usando um gráfico de dispersão. Geralmente, gráficos de dispersão usam
+amostras de conjuntos de dados grandes, em vez de todos os dados. Por que usamos amostras? Primeiro, um gráfico de dispersão com muitos
+dados é inviável em termos computacionais. Segundo, um gráfico de dispersão com muitos
+dados é difícil de interpretar visualmente. Observe que parece haver uma pequena relação positiva entre
+a idade da mãe e o peso do bebê. Aqui temos um tipo novo de gráfico
+que usa as mesmas duas variáveis, mas ao contrário do gráfico de dispersão,
+que representa os dados individualmente, esse gráfico representa grupos
+de dados, quantis especificamente. Como resultado, não precisamos
+de uma amostra para criá-lo e, portanto, não corremos o risco
+de usar uma amostra não representativa. Como bônus, os resultados serão reproduzíveis e o processo poderá
+ser realizado em paralelo. Fiz esse gráfico, que analisa cerca de
+22 gigabytes de dados, em poucos segundos. Falaremos como criar gráficos
+como esse mais tarde. Percebeu alguma relação entre
+os dados apenas olhando para eles? Você deve ter percebido algo que não
+estava explícito no gráfico de dispersão. O peso do bebê parece atingir o valor
+máximo quando a mãe tem cerca de 30 anos e decresce conforme
+a idade da mãe aumenta ou diminui. Isso sugere uma relação não linear. É algo que não estava explícito
+no gráfico de dispersão e é um péssimo sinal porque pretendíamos modelar
+essa relação com um modelo linear. Nossa intenção de aplicar um modelo
+linear em uma função não linear é um exemplo do que
+chamamos de subajuste. Você deve estar se perguntando por que
+não usamos um modelo mais complexo. Por motivos pedagógicos. Mais tarde, falaremos sobre como selecionar 
+um modelo e o conceito de sobreajuste. Resumindo, os riscos são proporcionais
+à complexidade do modelo. Aparentemente, há uma relação
+ligeiramente positiva entre a idade da mãe e o peso do bebê. Vamos modelar isso com uma linha. Como estamos usando um modelo linear,
+nossa intuição anterior se traduz em uma linha com inclinação ascendente e
+valor positivo de ordenada na origem. Observamos os dados
+para selecionar essa linha. Mas como saber se a linha deve
+ficar mais acima ou abaixo? Como saber se ela está no lugar certo? Como saber se ela é melhor
+do que a outra linha? Quem já estudou estatística
+talvez se lembre de um processo para determinar os melhores pesos de uma linha
+chamado regressão de mínimos quadrados. É verdade que há como determinar
+analiticamente os melhores pesos possíveis para modelos lineares. O problema é que essas soluções
+funcionam apenas até certa escala. Em conjuntos de dados realmente grandes, é inviável solucionar analiticamente
+esse problema em termos computacionais. O que fazer quando uma solução
+analítica deixa de ser uma opção? Usa-se o método do gradiente descendente. Vamos começar pensando na otimização
+como uma pesquisa em parâmetro-espaço. Lembre-se de que nosso modelo linear
+simples tem dois parâmetros: um termo de peso e outro de tendência. Como ambos têm valor real, podemos pensar
+no espaço de todas as combinações de valores desses dois parâmetros como
+pontos no espaço bidimensional. Mas queremos encontrar o melhor valor. Como comparar dois pontos
+de parâmetro-espaço em termos de qualidade? Primeiro, precisamos
+reformular a pergunta. Como os espaços de entrada, que são onde os dados residem,
+muitas vezes são infinitos, não é possível avaliar os parâmetros
+em cada ponto do espaço de entrada. Assim, geralmente estimamos
+como seria esse cálculo usando o que temos,
+nossos dados de treinamento. Para fazer isso, precisamos
+generalizar a partir da qualidade de uma previsão de um único
+ponto de dados, que é o erro dessa previsão, para um número que capture
+a qualidade de um grupo de previsões. As funções que fazem isso são
+chamadas de funções de perda.

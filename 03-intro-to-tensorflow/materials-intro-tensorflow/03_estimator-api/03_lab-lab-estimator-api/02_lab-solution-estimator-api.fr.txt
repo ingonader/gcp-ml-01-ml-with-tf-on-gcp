@@ -1,0 +1,97 @@
+Réalisons ensemble notre premier atelier
+de programmation sur les estimateurs. Pour commencer, nous devons trouver
+les fichiers de l'atelier. Faisons-le ensemble. Accédez à cloud.google.com/console, puis
+connectez-vous à votre compte d'atelier. Je le fais aussi. Vous devez maintenant choisir un projet. Parfois, il est déjà sélectionné
+pour vous. Ouvrez Cloud Shell
+en cliquant sur cette icône. Dans Cloud Shell,
+nous saisissons "datalab create". Nous appelons
+notre instance d'atelier "mylab". Et nous allons créer le projet
+dans la zone "us-central1-a". Nous venons de créer
+notre première instance Datalab. Cela prend un peu de temps
+la première fois. Quelques minutes plus tard... La prochaine fois, vous n'aurez pas besoin
+de recréer l'instance Datalab. Il vous suffira de vous reconnecter
+en saisissant "datalab connect", suivi du nom de votre instance,
+dans mon cas "mylab". Cliquez maintenant sur l'icône
+"Web preview" située ici. Remplacez le port par "8081",
+utilisé par Datalab. Puis cliquez sur "Preview". Une interface familière
+de bloc-notes s'ouvre. Nous devons encore récupérer
+le code à partir de GitHub. Nous ouvrons le bloc-notes pour commencer
+à saisir des commandes bash, avec "%bash". Puis nous créons un clone git
+du dépôt de notre atelier de programmation
+dans le répertoire local. Dès que c'est fait,
+le répertoire local apparaît ici. C'est parti. Il s'appelle "training-data-analyst". Dans ce répertoire, nous cherchons
+un dossier nommé "courses", puis "machine_learning",
+"deepdive", et enfin "tensorflow". Notre premier atelier
+s'appelle "b_estimator.ipynb". Dans cet exemple, nous utiliserons Pandas
+pour lire nos données à partir de fichiers CSV contenant
+des informations sur les prix de courses de taxi : lieux de départ et d'arrivée,
+et nombre de passagers. Nous allons entraîner notre modèle
+pour prédire les prix des courses de taxi. Allons-y. Nous devons d'abord
+définir les noms des colonnes, ici : "fare_amount", "pickuplon",
+"pickuplat", etc. Puis nous utilisons Pandas pour
+lire ces données dans des fichiers CSV : un ensemble de données
+pour les données d'entraînement, et un autre pour les données
+de validation. Nous utilisons maintenant la
+fonctionnalité intégrée pour créer une fonction d'entrée
+à partir de Pandas : "tf.estimators.inputs.pandas_input_fn". Cette fonction nous permet de spécifier
+les caractéristiques sous "x" ici, et les libellés cibles sous "y" ici. Elle gère aussi tous les paramètres
+standard pour un ensemble de données d'entraînement : la taille des lots,
+le nombre d'instances, mais aussi le brassage,
+avec le paramètre "queue_capacity" qui correspond au tampon
+de la file d'attente de brassage. Exécutons la fonction. Puis, nous créons
+nos colonnes de caractéristiques. Ce sont toutes des colonnes numériques. Nous appelons pour chacune
+"tf.feature_column.numeric_column". La liste des colonnes
+de caractéristiques indique au modèle comment entrer les données
+dans son vecteur d'entrée. Le modèle est instancié ici. Nous lui donnons la liste des colonnes
+de caractéristiques, et un répertoire dans lequel toutes les données de sortie
+seront écrites, ici. Pour entraîner le modèle,
+nous appelons la fonction d'entraînement, en transmettant la fonction
+d'entrée de données, "train", puis "input_fn". Cette fonction permet de récupérer
+des données à partir d'un dataframe Pandas pour les mettre dans notre modèle. Le modèle s'exécute maintenant
+sur 10 itérations. On peut voir ici
+les journaux d'entraînement. L'entraînement est maintenant fini. Pour quel résultat ? Pourquoi ne pas l'essayer sur notre
+ensemble de données de validation. Pour cela, nous appelons
+"model.evaluate" ici, en transmettant cette fois la fonction
+d'entrée de données qui récupère les données dans le dataframe
+de validation Pandas "df_valid". Nous le transmettons ici. Nous obtenons nos résultats. La racine carrée de l'erreur quadratique 
+moyenne finale (RMSE) est de 10 $. Cela représente une erreur importante
+pour une course de taxi. Nous sommes loin
+de notre benchmark précédent de 6 $. Nous améliorerons cela plus tard. Maintenant, nous avons
+du code avec lequel travailler. Voyons si nous pouvons
+utiliser ce modèle pour les prédictions. Lorsque nous instancions à nouveau le
+modèle, il recherche un point de contrôle dans le répertoire du modèle
+et se recharge à partir de là. Comme nous venons de l'entraîner,
+nous avons un point de contrôle et le modèle est prêt
+pour les prédictions. Nous l'instancions ici, en transmettant
+le même répertoire de sortie. La fonction de prédiction, appelée ici,
+renvoie un générateur Python. Nous l'appelons dans une boucle
+pour obtenir les tarifs prédits. Les prédictions sont visibles ici. Cela explique peut-être pourquoi
+la RMSE était aussi élevée. Le modèle prédit essentiellement
+le même montant pour chaque trajet. Peut-être qu'un modèle plus complexe
+serait plus efficace. C'est ce que nous allons voir
+avec un réseau de neurones profond. Nous ne modifions rien des colonnes de
+caractéristiques et des fonctions d'entrée mais nous allons changer le modèle pour
+passer d'un régresseur linéaire à un régresseur DNN
+avec trois couches cachées. Allons-y. Nous instancions le régresseur DNN ici, et
+nous configurons les couches cachées ici. 32 nœuds dans le 1er, 8 nœuds dans le 2e,
+et 2 nœuds dans le dernier. Lançons l'entraînement,
+qui se fait encore sur 10 itérations. Enfin, nous appelons à nouveau
+la fonction "model.predict" avec la fonction « print_rmse ». L'entraînement se déroule. La validation s'effectue à présent. La RMSE sur l'ensemble de données
+de validation est maintenant de 11 $. Ce n'est pas encore ça. Aucun modèle ne nous permet
+d'atteindre notre modèle benchmark. Et maintenant ? Nous utilisons peut-être TensorFlow
+pour le machine learning, mais nous le faisons mal. C'est donc là l'objet
+du reste de notre cours. Nous devons choisir l'un des deux modèles. Nous choisissons celui qui présente
+la plus faible erreur de validation. Enfin, nous mesurons la RMSE sur
+les données test avec le modèle choisi. Cette RMSE finale peut être publiée
+comme les performances objectives de notre meilleur modèle. Voici la procédure standard
+en science des données : entraînement, validation, test, avec des ensembles de données
+spécifiques pour chaque étape. Essayons cela sur notre ensemble
+de données de benchmark. La RMSE sur l'ensemble de données
+de benchmark est de 9,41. Voilà, la RMSE sur l'ensemble de données
+de benchmark est de 10,5 $. Non seulement il est bien plus élevé
+que dans notre benchmark d'origine de 6 $, mais il n’atteint même pas notre RMSE
+basée sur des règles de distance de 8 $. Ne vous inquiétez pas. Nous avons appris à écrire
+un modèle TensorFlow, mais nous n'avons pas vu comment améliorer ce modèle
+pour le rendre plus performant. Nous verrons cela
+dans les chapitres suivants. Dans ce chapitre, en revanche,
+nous préparerons notre modèle TensorFlow à ces améliorations.

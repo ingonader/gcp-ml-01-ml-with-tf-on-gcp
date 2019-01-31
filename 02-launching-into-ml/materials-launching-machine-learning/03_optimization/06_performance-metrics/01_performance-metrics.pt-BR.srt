@@ -1,0 +1,315 @@
+1
+00:00:00,290 --> 00:00:04,610
+Na seção anterior, treinamos modelos
+no navegador usando o gradiente descendente.
+
+2
+00:00:04,610 --> 00:00:08,915
+Os modelos que criamos
+aprenderam relações não lineares complexas
+
+3
+00:00:08,915 --> 00:00:11,295
+usando uma hierarquia
+de características aprendida.
+
+4
+00:00:11,295 --> 00:00:13,860
+No entanto, descobrimos no final da seção
+
+5
+00:00:13,860 --> 00:00:16,165
+que a nossa abordagem
+atual tem alguns problemas
+
+6
+00:00:16,165 --> 00:00:19,480
+cujas consequências incluem
+tempos longos de treinamento,
+
+7
+00:00:19,480 --> 00:00:22,370
+mínimo não ideal e mínimo inadequado.
+
+8
+00:00:22,370 --> 00:00:26,710
+Nesta seção, aprenderemos
+o que é um mínimo inadequado,
+
+9
+00:00:26,710 --> 00:00:31,265
+porque ele existe e como as métricas de
+desempenho ajudam a ter resultados melhores.
+
+10
+00:00:31,265 --> 00:00:34,055
+O que é um mínimo inadequado?
+
+11
+00:00:34,055 --> 00:00:37,910
+Pense nele como pontos em
+parâmetro-espaço que revelam as estratégias
+
+12
+00:00:37,910 --> 00:00:39,830
+que não generalizarão bem,
+
+13
+00:00:39,830 --> 00:00:43,405
+que não refletem a relação verdadeira
+sendo modelada ou de ambos os tipos.
+
+14
+00:00:43,405 --> 00:00:45,810
+Por exemplo, imagine que
+estamos treinando um modelo
+
+15
+00:00:45,810 --> 00:00:50,600
+para prever se uma vaga de estacionamento
+está vazia a partir de uma imagem.
+
+16
+00:00:50,600 --> 00:00:55,045
+Uma estratégia inadequada seria simplesmente
+prever que todas as vagas estão ocupadas.
+
+17
+00:00:56,515 --> 00:01:00,225
+Com um conjunto de dados com número
+igual de exemplos positivos e negativos,
+
+18
+00:01:00,225 --> 00:01:03,775
+tal estratégia nunca sobreviveria
+ao processo de otimização.
+
+19
+00:01:03,775 --> 00:01:06,645
+No entanto, quando os conjuntos
+de dados são desequilibrados
+
+20
+00:01:06,645 --> 00:01:09,165
+e contêm muito mais exemplos
+de uma classe do que de outra,
+
+21
+00:01:09,165 --> 00:01:12,345
+as estratégias desse tipo
+podem se tornar muito mais atraentes.
+
+22
+00:01:14,135 --> 00:01:17,490
+Esse tipo de estratégia não se esforça
+em entender a verdadeira relação
+
+23
+00:01:17,490 --> 00:01:19,060
+entre as características e o rótulo,
+
+24
+00:01:19,060 --> 00:01:20,225
+que seria algo relacionado
+
+25
+00:01:20,225 --> 00:01:24,050
+com as características visuais
+de uma vaga vazia.
+
+26
+00:01:24,050 --> 00:01:26,430
+Por isso, ela não generaliza bem
+
+27
+00:01:26,430 --> 00:01:29,900
+ao analisar outros estacionamentos
+cuja relação subjacente é a mesma,
+
+28
+00:01:29,900 --> 00:01:32,955
+mas a proporção de vagas vazias é diferente.
+
+29
+00:01:32,955 --> 00:01:35,470
+É tentador pensar que a existência
+
+30
+00:01:35,470 --> 00:01:38,460
+de um mínimo inadequado resulta
+de um problema na função de perda.
+
+31
+00:01:38,460 --> 00:01:42,825
+Se tivéssemos uma função de perda perfeita,
+que recompensasse as melhores estratégias
+
+32
+00:01:42,825 --> 00:01:44,475
+e penalizasse as que não funcionam,
+
+33
+00:01:44,475 --> 00:01:46,285
+a vida seria maravilhosa.
+
+34
+00:01:46,285 --> 00:01:49,240
+Infelizmente, isso não é possível.
+
+35
+00:01:49,240 --> 00:01:52,090
+Sempre haverá uma lacuna
+entre as métricas que nos interessam
+
+36
+00:01:52,090 --> 00:01:54,775
+e aquelas que funcionam bem
+com o gradiente descendente.
+
+37
+00:01:56,415 --> 00:02:00,705
+Por exemplo, vamos supor que continuamos
+a classificar vagas de estacionamento.
+
+38
+00:02:00,705 --> 00:02:05,110
+Uma função de perda aparentemente perfeita
+minimizaria o número de previsões incorretas.
+
+39
+00:02:05,110 --> 00:02:08,235
+No entanto, essa função de perda
+seria uma função por partes,
+
+40
+00:02:08,235 --> 00:02:11,605
+ou seja, o intervalo de valores que
+ela aceita seria de números inteiros,
+
+41
+00:02:11,605 --> 00:02:12,705
+e não de números reais.
+
+42
+00:02:12,705 --> 00:02:14,985
+Curiosamente, isso é problemático.
+
+43
+00:02:16,035 --> 00:02:18,810
+O problema resume-se
+à diferenciabilidade.
+
+44
+00:02:18,810 --> 00:02:22,245
+O gradiente descendente faz
+alterações incrementais nos pesos.
+
+45
+00:02:22,245 --> 00:02:26,770
+Isso requer a diferenciação
+dos pesos com relação à perda.
+
+46
+00:02:26,770 --> 00:02:30,170
+No entanto, as funções por partes
+têm lacunas nos intervalos.
+
+47
+00:02:30,170 --> 00:02:32,640
+Ainda que o TensorFlow
+seja capaz de diferenciá-los,
+
+48
+00:02:32,640 --> 00:02:35,360
+a superfície de perda
+resultante terá descontinuidades
+
+49
+00:02:35,360 --> 00:02:38,065
+que dificultará muito a análise.
+
+50
+00:02:38,065 --> 00:02:40,380
+Então, precisamos reestruturar o problema.
+
+51
+00:02:40,380 --> 00:02:43,670
+Em vez de procurar uma função
+de perda perfeita durante o treinamento,
+
+52
+00:02:43,670 --> 00:02:47,725
+usaremos um tipo novo de métrica
+após a conclusão do treinamento.
+
+53
+00:02:47,725 --> 00:02:50,985
+Esse tipo novo de métrica
+permitirá rejeitar os modelos
+
+54
+00:02:50,985 --> 00:02:52,945
+que se resolveram em mínimos inadequados.
+
+55
+00:02:55,685 --> 00:02:58,590
+Essas métricas são chamadas
+de métricas de desempenho.
+
+56
+00:02:58,590 --> 00:03:02,370
+As métricas de desempenho têm duas
+vantagens com relação às funções de perda.
+
+57
+00:03:02,370 --> 00:03:04,755
+Primeiro, elas são mais fáceis de entender.
+
+58
+00:03:04,755 --> 00:03:09,070
+Isso porque elas geralmente são combinações
+simples de estatísticas contáveis.
+
+59
+00:03:09,070 --> 00:03:13,520
+Segundo, as métricas de desempenho estão
+conectadas diretamente às metas de negócios.
+
+60
+00:03:13,520 --> 00:03:15,545
+Esse é um ponto problemático,
+
+61
+00:03:15,545 --> 00:03:17,910
+mas se resume ao fato de que,
+apesar de a perda
+
+62
+00:03:17,910 --> 00:03:20,480
+e a meta de negócios desejada
+muitas vezes coincidirem,
+
+63
+00:03:20,480 --> 00:03:22,275
+isso nem sempre é acontece.
+
+64
+00:03:22,275 --> 00:03:24,505
+Às vezes, será possível reduzir a perda
+
+65
+00:03:24,505 --> 00:03:26,760
+ou progredir pouco em
+direção à meta de negócios.
+
+66
+00:03:28,110 --> 00:03:30,655
+Analisaremos três métricas de desempenho,
+
+67
+00:03:30,655 --> 00:03:33,560
+matrizes de confusão, precisão e revocação,
+
+68
+00:03:33,560 --> 00:03:35,080
+e quando devemos usá-las.

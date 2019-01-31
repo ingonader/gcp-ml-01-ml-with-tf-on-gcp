@@ -1,0 +1,47 @@
+Im vorigen Abschnitt haben wir
+Modelle mit Gradientenabstieg trainiert. Und die dabei erstellten Modelle konnten komplexe nicht lineare Beziehungen mithilfe einer Hierarchie
+von Merkmalen erlernen. Am Ende des Abschnitts
+haben wir aber festgestellt, dass unser derzeitiger 
+Ansatz Probleme hat. Er führte etwa zu langen Trainingszeiten sowie suboptimalen 
+und ungeeigneten Minima. In diesem Teil erfahren Sie, 
+was ein ungeeignetes Minimum ist, warum es existiert und wie uns Leistungs-
+messwerte bessere Ergebnisse ermöglichen. Was also sind ungeeignete Minima? Sie sind Punkte im Parameterbereich,
+die Strategien widerspiegeln, die sich nicht
+gut übertragen lassen, nicht die tatsächliche modellierte 
+Beziehung widerspiegeln, oder beides. Nehmen wir an, wir wollen ein
+Modell trainieren, um vorherzusagen, ob ein Parkplatz
+auf einem Parkplatzbild frei ist. Eine ungeeignete Strategie wäre, einfach
+alle Plätze als besetzt vorherzusagen. Bei einem Dataset, das aus derselben Zahl
+positiver und negativer Beispiele besteht, würde eine solche Strategie 
+den Optimierungsprozess nicht überstehen. Bei verzerrten Datasets mit weit mehr 
+von einer Klasse als der anderen, könnte so eine Strategie
+plötzlich verlockend wirken. Eine solche Strategie bemüht sich nicht um ein Verständnis der tatsächlichen
+Beziehung zwischen Merkmal und Label, die sinnvollerweise etwas mit den
+visuellen Eigenschaften eines leeren Platzes zu tun haben müsste. Folglich funktioniert eine Übertragung
+auf andere Parkplätze nicht gut, wo die zugrunde
+liegende Beziehung dieselbe ist, aber der Anteil
+der freien Plätze vielleicht nicht. Es ist verlockend,
+die Existenz ungeeigneter Minima als ein Problem
+der Verlustfunktion zu betrachten. Wenn wir nur eine
+perfekte Verlustfunktion hätten, eine, die nur die besten Strategien
+belohnt und die schlechten sanktioniert, dann wäre alles gut. Leider ist das nicht möglich. Es wird immer eine Lücke zwischen den 
+Messwerten geben, die uns wichtig sind, und den Messwerten, die gut mit
+einem Gradientenabstieg funktionieren. Nehmen wir zum Beispiel an,
+wir klassifizieren immer noch Parkplätze. Eine anscheinend perfekte Verlustfunktion 
+würde die falschen Vorhersagen minimieren. Eine solche Verlustfunktion
+wäre jedoch stückweise polynomial. Der mögliche Wertebereich enthielte
+also ganze Zahlen statt reeller Zahlen. Überraschenderweise ist das problematisch. Der Grund dafür ist Differenzierbarkeit. Der Gradientenabstieg ändert 
+die Gewichtungen inkrementell. Dies erfordert, dass Gewichtungen in
+Bezug auf den Verlust unterscheidbar sind. Stückweise Funktionen haben
+jedoch Lücken in ihren Bereichen. TensorFlow kann sie zwar ableiten, aber die resultierende Verlustoberfläche
+würde Diskontinuitäten aufweisen, die schwieriger zu polygonieren sind. Wir müssen das Problem neu definieren. Statt im Training
+die perfekte Verlustfunktion zu suchen, verwenden wir einen neuen Messwert 
+nach dem Abschluss des Trainings. Dieser neue Messwert ermöglicht es uns, Modelle abzulehnen, die sich auf 
+ungeeignete Minima eingependelt haben. Diese Messwerte heißen Leistungsmesswerte. Leistungsmesswerte haben 
+gegenüber Verlustfunktionen zwei Vorteile. Erstens sind sie leichter zu verstehen, weil sie oft eine einfache Kombination
+aus abzählbaren Statistiken darstellen. Zweitens sind Leistungsmesswerte
+direkt an Unternehmensziele gebunden. Das ist nicht so offensichtlich, aber es läuft darauf hinaus, dass 
+der Verlust und das angestrebte Unternehmensziel zwar oft übereinstimmen, aber leider nicht immer. Manchmal kann man
+zwar den Verlust reduzieren, aber dabei dem Unternehmensziel
+nur wenig näherkommen. Wir werden
+drei Leistungsmesswerte besprechen. Wahrheitsmatrix, Präzision und Recall, und wann Sie was verwenden sollten.

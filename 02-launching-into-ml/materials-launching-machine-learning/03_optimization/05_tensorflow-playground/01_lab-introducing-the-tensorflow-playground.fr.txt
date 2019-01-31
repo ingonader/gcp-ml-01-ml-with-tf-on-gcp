@@ -1,0 +1,89 @@
+Maintenant que nous avons expliqué
+le fonctionnement de la descente de gradient, nous allons la voir à l'œuvre grâce à
+un outil qui permet d'observer en temps réel plusieurs des phénomènes
+évoqués précédemment. L'outil TensorFlow Playground permet
+de visualiser le mode de fonctionnement des réseaux de neurones. Je sais bien que nous n'avons pas encore
+abordé les réseaux de neurones. N'ayez pas d'inquiétude,
+nous allons y venir. Pour certaines raisons que j'expliquerai,
+les réseaux de neurones les plus simples équivalent à des modèles linéaires
+sur le plan mathématique. Cet outil est idéal pour démontrer
+ce que vous avez appris jusqu'ici. Nous allons l'utiliser expérimentalement
+pour vérifier les informations théoriques abordées aujourd'hui, et confirmer 
+vos intuitions en matière de ML. Nous verrons quel est l'impact
+de la définition du taux d'apprentissage et comment le ML modélise
+les descentes de gradients. Cela concerne également des thèmes
+que nous aborderons ultérieurement. Commençons par l'interface. J'ai retiré
+certaines fonctionnalités de l'outil liées à des concepts
+que nous verrons ultérieurement, mais les possibilités de configuration
+restent nombreuses. Regardons d'abord la colonne
+des caractéristiques. Elle contient les entrées vues par le modèle. Les couleurs des différentes cases indiquent
+la valeur de chaque caractéristique. L'orange est négatif, et le bleu positif. La colonne des couches cachées
+contient les poids. Si vous passez le pointeur de la souris
+sur une ligne de poids, la valeur correspondante s'affiche. Lorsque que le modèle s'entraîne, l'épaisseur
+et l'opacité de ces lignes changent, pour vous donner un aperçu rapide
+des différentes valeurs. La colonne de la sortie contient à la fois
+les données d’entraînement et les prédictions actuelles des modèles pour tous les points
+de l'espace des caractéristiques. Vous pouvez également voir
+la perte actuelle de l'entraînement. Tout comme pour les caractéristiques,
+des couleurs représentent les valeurs. La barre de contrôle du haut
+contient des boutons permettant de réinitialiser l'entraînement,
+de le lancer, et de faire un seul pas. Il y a également une liste déroulante
+pour le taux d'apprentissage. La colonne des données permet de
+sélectionner différents ensembles de données et de contrôler la taille de lot. Commençons par entraîner un modèle linéaire
+afin de classifier des données. En cliquant sur ce lien,
+une fenêtre TensorFlow Playground ne contenant que les fonctions
+essentielles s'affiche. Pour le moment, ne vous occupez pas
+des couches cachées. Avec cette configuration de l'outil, le modèle accepte
+un vecteur de caractéristiques, calcule un produit scalaire
+avec un facteur de poids, ajoute un biais, puis utilise le signe d'une somme
+pour créer la frontière de décision. Vous pouvez donc considérer que
+cette configuration est un modèle linéaire. Nous allons commencer avec un modèle
+qui va tenter de classifier des données appartenant à deux clusters distincts. Cliquez sur le bouton du pas situé
+à droite du bouton de lecture, et regardez tout ce qui change
+dans l'interface. Le nombre d'itérations
+augmente d'une unité, les lignes représentant les poids
+changent de couleur et de taille, la valeur actuelle
+de la fonction de perte change, le graphique de la perte
+présente une pente descendante, et la frontière de décision change également
+dans la colonne de la sortie. Passez le pointeur de la souris
+sur le premier poids. La valeur du poids s'affiche. Cliquez maintenant sur le bouton de lecture
+pour que l'entraînement reprenne, mais mettez le traitement en pause
+dès que la perte passe sous la valeur 0,002, ce qui devrait se produire
+avant 200 itérations. Félicitations, vous venez d'entraîner
+votre premier modèle. Maintenant, commençons à ajouter
+un peu de complexité. Voyons tout d'abord comment trois différents
+taux d'apprentissage affectent le modèle pendant l'entraînement. Le taux d'apprentissage est notre
+hyperparamètre, qui est défini avant le début de l'entraînement du modèle. Il est multiplié par la dérivée
+pour déterminer l'ampleur de la modification des poids à appliquer à chaque itération de la boucle. Cliquez sur ce lien pour commencer
+à entraîner un modèle avec un très faible taux d'apprentissage. Attendez que la perte atteigne
+à peu près 100 itérations, ce qui devrait se produire
+après deux secondes seulement, puis mettez le modèle en pause. À combien s'élève la perte actuelle ? Quels sont les poids ayant fait l'objet
+d'un apprentissage ? Maintenant, augmentez
+le taux d'apprentissage sur 0,001. Relancez l'entraînement, puis arrêtez-le
+de nouveau vers 100 itérations. Quelle est la perte ? Cette fois, elle devrait être
+nettement moins importante. Notez également la valeur
+du premier poids. Augmentez le taux d'apprentissage
+sur 0,10, relancez l'entraînement du modèle, puis arrêtez-le de nouveau
+après 100 itérations. À quelle vitesse la courbe de perte
+a-t-elle baissé cette fois-ci ? Elle devrait avoir baissé très rapidement. Rassemblons ces différentes observations,
+et voyons si nous pouvons les expliquer en nous servant de ce que nous avons
+appris sur l'optimisation. Augmentez le taux d'apprentissage sur 10, relancez l'entraînement du modèle, puis commencez par faire un seul pas
+en cliquant sur le bouton approprié. Notez la magnitude du poids. Poursuivez l'entraînement
+jusqu'à 100 itérations. À quelle vitesse la courbe de perte
+a-t-elle baissé cette fois-ci ? Elle devrait avoir baissé
+à une vitesse vertigineuse. Rassemblons ces différentes observations,
+et voyons si nous pouvons les expliquer en nous servant de ce que nous avons
+appris sur l'optimisation. Voici un tableau contenant
+les résultats que j'ai obtenus. Les vôtres peuvent être légèrement
+différents, ce n'est pas un problème. Vous pourriez tout aussi bien obtenir
+d'autres résultats si vous relanciez l'entraînement. TensorFlow Playground initialise
+les poids de manière aléatoire. La recherche part donc d'une position
+aléatoire chaque fois qu’elle est lancée. Examinons la colonne
+du premier poids (Weight1). Voyez comme la magnitude des poids
+a augmenté au fur et à mesure de l'augmentation du taux d'apprentissage. À votre avis, pour quelle raison ? C'est parce que le modèle
+fait des pas plus grands. Lorsque le taux d'apprentissage
+était de 10, le premier pas s'est traduit par une très importante
+modification des poids. Examinons la colonne de l'évolution
+de la perte au fil du temps (Loss Over Time). Au fur et à mesure
+de l'augmentation du taux d'apprentissage, la courbe de perte est devenue plus abrupte. Nous avons déjà observé cet effet,
+mais par un moyen différent.

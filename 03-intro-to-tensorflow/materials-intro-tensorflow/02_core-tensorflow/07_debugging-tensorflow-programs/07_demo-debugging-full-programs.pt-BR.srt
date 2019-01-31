@@ -1,0 +1,345 @@
+1
+00:00:00,770 --> 00:00:03,735
+Estou no repositório do GitHub do curso.
+
+2
+00:00:03,735 --> 00:00:06,270
+Estou no 03_tensorflow,
+
+3
+00:00:06,270 --> 00:00:08,189
+esse capítulo que estamos fazendo.
+
+4
+00:00:08,189 --> 00:00:10,900
+Vamos em frente e abrir o debug_demo,
+
+5
+00:00:10,900 --> 00:00:16,885
+e veremos algumas coisas das quais
+já falamos no capítulo.
+
+6
+00:00:16,885 --> 00:00:21,505
+Vou em frente e importo o TensorFlow.
+
+7
+00:00:21,505 --> 00:00:24,430
+Aqui está o primeiro exemplo que vimos.
+
+8
+00:00:24,430 --> 00:00:29,420
+Tínhamos dados, estávamos cortando
+e conseguindo todas as linhas dos dados,
+
+9
+00:00:29,420 --> 00:00:31,670
+e estávamos conseguindo duas das colunas.
+
+10
+00:00:31,670 --> 00:00:34,895
+Veja que estamos conseguindo todas
+as linhas, mas apenas uma coluna.
+
+11
+00:00:34,895 --> 00:00:37,025
+Agora, quando adicionamos a e c,
+
+12
+00:00:37,025 --> 00:00:39,535
+nos deparamos com um erro de formato,
+
+13
+00:00:39,535 --> 00:00:41,570
+e é exatamente com isso que nos deparamos.
+
+14
+00:00:41,570 --> 00:00:48,070
+Perceba que, na parte inferior do
+rastreamento de pilha, a mensagem de erro,
+
+15
+00:00:48,070 --> 00:00:49,670
+você consegue seu erro de valor.
+
+16
+00:00:49,670 --> 00:00:51,255
+As dimensões precisam ser iguais,
+
+17
+00:00:51,255 --> 00:00:52,470
+mas são 2 e 4.
+
+18
+00:00:52,470 --> 00:00:55,805
+O primeiro é um tensor 2D, "4, 2",
+
+19
+00:00:55,805 --> 00:00:58,595
+o segundo é um tensor 1D de 4.
+
+20
+00:00:58,595 --> 00:01:01,180
+Quando você subir pelo
+rastreamento da pilha,
+
+21
+00:01:01,180 --> 00:01:03,330
+verá que esse em particular,
+
+22
+00:01:03,330 --> 00:01:05,910
+common_shapes.python, não é nosso,
+
+23
+00:01:05,910 --> 00:01:07,605
+isso é do TensorFlow.
+
+24
+00:01:07,605 --> 00:01:08,910
+Então podemos ignorar.
+
+25
+00:01:08,910 --> 00:01:11,895
+Este também é do TensorFlow,
+então podemos ignorá-lo.
+
+26
+00:01:11,895 --> 00:01:17,255
+Como este, que também é do TensorFlow.
+
+27
+00:01:17,255 --> 00:01:21,060
+Tudo isso é do TensorFlow,
+podemos continuar ignorando
+
+28
+00:01:21,060 --> 00:01:25,480
+e continuar rolando até encontrar
+algo no meu código.
+
+29
+00:01:25,480 --> 00:01:28,250
+Então, há o some_method
+que está no meu código
+
+30
+00:01:28,250 --> 00:01:31,870
+e há o método chamado s = (a + c),
+
+31
+00:01:31,870 --> 00:01:33,885
+que indica que este é o problema.
+
+32
+00:01:33,885 --> 00:01:37,160
+Isso, claro, é chamado de session.run,
+
+33
+00:01:37,160 --> 00:01:39,695
+mas vamos ignorar isso,
+porque esse é o problema aqui,
+
+34
+00:01:39,695 --> 00:01:41,150
+s = (a + c).
+
+35
+00:01:41,150 --> 00:01:44,505
+Vamos analisar onde o erro de valor
+pode ter acontecido.
+
+36
+00:01:44,505 --> 00:01:48,500
+Tudo bem com s = (a + c), certo?
+
+37
+00:01:48,500 --> 00:01:53,075
+Estamos somando dois itens e sabemos que,
+de acordo com as regras da álgebra linear,
+
+38
+00:01:53,075 --> 00:01:56,120
+quando somamos dois tensores, eles
+precisam ter o mesmo formato,
+
+39
+00:01:56,120 --> 00:01:57,630
+é a única maneira de funcionar.
+
+40
+00:01:57,630 --> 00:02:01,845
+Agora podemos ir em frente
+e tentar corrigi-lo.
+
+41
+00:02:01,845 --> 00:02:08,794
+Neste caso, agora vou criar dados falsos,
+
+42
+00:02:08,794 --> 00:02:12,150
+estou passando meus
+dados falsos que é minha...
+
+43
+00:02:12,150 --> 00:02:14,140
+Qual é o formato aqui?
+
+44
+00:02:14,140 --> 00:02:15,815
+É uma matriz 4x3.
+
+45
+00:02:15,815 --> 00:02:23,605
+Estou passando isso e conseguindo
+o formato de a, imprimindo o formato de c.
+
+46
+00:02:23,605 --> 00:02:25,865
+Agora executo esta célula.
+
+47
+00:02:25,865 --> 00:02:27,430
+Quando a executo,
+
+48
+00:02:27,430 --> 00:02:31,530
+basicamente vejo que o formato de a é 4, 2
+
+49
+00:02:31,530 --> 00:02:35,420
+e o formato de c é 4, e isso
+me diz que agora eu sei
+
+50
+00:02:35,420 --> 00:02:36,700
+qual foi o problema.
+
+51
+00:02:36,700 --> 00:02:39,680
+A pergunta é: como corrigi-lo?
+
+52
+00:02:39,680 --> 00:02:41,565
+E a maneira de corrigir
+
+53
+00:02:41,565 --> 00:02:44,450
+é basicamente garantir que
+ambos tenham o mesmo formato,
+
+54
+00:02:44,450 --> 00:02:47,590
+então posso pegar 0:2 no primeiro exemplo
+
+55
+00:02:47,590 --> 00:02:49,840
+e 1:3, em outras palavras,
+a janela deslizante,
+
+56
+00:02:49,840 --> 00:02:51,495
+estamos movendo um de cada vez.
+
+57
+00:02:51,495 --> 00:02:54,130
+O salto, quando falamos de imagens,
+
+58
+00:02:54,130 --> 00:02:56,150
+aprenderemos sobre esse termo, "salto".
+
+59
+00:02:56,150 --> 00:02:59,470
+Ele é 1 e o tamanho da minha janela é 2.
+
+60
+00:02:59,470 --> 00:03:01,150
+É isso que estou fazendo.
+
+61
+00:03:01,150 --> 00:03:02,620
+Agora, quando executo,
+
+62
+00:03:02,620 --> 00:03:05,800
+funcionará perfeitamente, e eu recupero
+
+63
+00:03:05,800 --> 00:03:08,800
+a soma que é
+resultado da janela deslizante.
+
+64
+00:03:08,800 --> 00:03:13,315
+Esse é o processo que você
+fará para depurar seu código.
+
+65
+00:03:13,315 --> 00:03:15,270
+Leia o rastreamento de chamadas,
+
+66
+00:03:15,270 --> 00:03:16,745
+leia a mensagem de erro,
+
+67
+00:03:16,745 --> 00:03:19,780
+descubra onde está o problema
+e, depois disso,
+
+68
+00:03:19,780 --> 00:03:23,165
+corrija-o, verifique se funciona
+nos dados falsos.
+
+69
+00:03:23,165 --> 00:03:28,265
+Aí você pode testá-lo no conjunto
+de dados completo e esperar que funcione.
+
+70
+00:03:28,265 --> 00:03:33,460
+Da mesma forma, falamos sobre o erro
+de tipo, e é exatamente o mesmo processo.
+
+71
+00:03:33,460 --> 00:03:35,555
+Neste caso, estou somando a e b,
+
+72
+00:03:35,555 --> 00:03:38,285
+a é basicamente números
+de ponto flutuante,
+
+73
+00:03:38,285 --> 00:03:40,029
+b é basicamente números inteiros,
+
+74
+00:03:40,029 --> 00:03:41,245
+não vai funcionar.
+
+75
+00:03:41,245 --> 00:03:43,730
+Vou analisar
+o rastreamento de pilha,
+
+76
+00:03:43,730 --> 00:03:46,825
+olhar para a mensagem de erro e aprender
+que, para corrigir isso,
+
+77
+00:03:46,825 --> 00:03:52,470
+uma maneira é pegar b, que é originalmente
+apenas inteiros, e fazer um cast.
+
+78
+00:03:52,470 --> 00:03:53,945
+E depois de fazer cast,
+
+79
+00:03:53,945 --> 00:03:56,990
+tudo funcionará,
+e essa é a ideia básica aqui.

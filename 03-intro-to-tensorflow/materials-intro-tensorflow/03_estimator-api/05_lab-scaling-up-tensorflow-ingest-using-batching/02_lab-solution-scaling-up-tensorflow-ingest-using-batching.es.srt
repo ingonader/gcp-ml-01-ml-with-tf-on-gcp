@@ -1,0 +1,338 @@
+1
+00:00:00,380 --> 00:00:02,703
+Hagamos este segundo codelab juntos.
+
+2
+00:00:02,703 --> 00:00:06,575
+Esta vez, veremos
+cómo usar la API de Dataset
+
+3
+00:00:06,575 --> 00:00:08,655
+para crear nuestras funciones de entrada.
+
+4
+00:00:08,665 --> 00:00:11,223
+Localicemos los archivos del lab.
+
+5
+00:00:12,063 --> 00:00:16,009
+Vamos a cloud.google.com/console
+
+6
+00:00:16,009 --> 00:00:20,260
+y accedemos a nuestra cuenta de lab.
+
+7
+00:00:28,109 --> 00:00:30,090
+Estamos en Console.
+
+8
+00:00:30,090 --> 00:00:32,280
+Podemos abrir Cloud Shell.
+
+9
+00:00:33,360 --> 00:00:37,190
+Y volvernos a conectarnos
+a nuestra instancia existente de Datalab
+
+10
+00:00:37,190 --> 00:00:43,468
+mediante datalab connect mylab.
+
+11
+00:00:50,883 --> 00:00:53,883
+Se estableció la conexión.
+
+12
+00:00:53,883 --> 00:00:57,710
+Hacemos clic en el botón "Web preview".
+
+13
+00:00:57,710 --> 00:01:01,788
+Cambiamos al puerto 8081,
+que es el que usa Datalab.
+
+14
+00:01:04,184 --> 00:01:09,761
+Ahora estamos
+en la interfaz de notebook habitual.
+
+15
+00:01:09,761 --> 00:01:15,507
+Crearemos un nuevo notebook
+para escribir unos comandos de Git
+
+16
+00:01:15,507 --> 00:01:17,483
+y obtener los códigos.
+
+17
+00:01:17,483 --> 00:01:20,645
+Entonces, escribimos %bash
+
+18
+00:01:21,725 --> 00:01:26,244
+y clonamos este repositorio.
+
+19
+00:01:29,722 --> 00:01:31,115
+Se está ejecutando.
+
+20
+00:01:31,115 --> 00:01:35,645
+El repositorio apareció aquí
+como "training-data-analyst".
+
+21
+00:01:35,925 --> 00:01:38,130
+Localicemos los archivos del lab.
+
+22
+00:01:38,130 --> 00:01:41,049
+Hacemos clic en "training-data-analyst".
+
+23
+00:01:41,389 --> 00:01:43,628
+Luego, en "courses".
+
+24
+00:01:44,228 --> 00:01:47,986
+Luego, en "machine_learning".
+
+25
+00:01:47,986 --> 00:01:54,050
+Luego, en "deepdive";
+y, finalmente, en "03_tensorflow".
+
+26
+00:01:55,813 --> 00:02:01,108
+Abrimos el segundo lab,
+que se llama "c_dataset.ipynb".
+
+27
+00:02:07,130 --> 00:02:09,298
+La API de Dataset se puede usar
+
+28
+00:02:09,298 --> 00:02:12,158
+para crear las funciones
+de entrada de su estimador.
+
+29
+00:02:12,158 --> 00:02:14,479
+Permite cargar datos de forma progresiva.
+
+30
+00:02:14,479 --> 00:02:18,049
+Úsela cuando tenga
+un conjunto de datos grande.
+
+31
+00:02:19,995 --> 00:02:22,845
+Comencemos analizando el código.
+
+32
+00:02:25,049 --> 00:02:27,384
+Nuestro conjunto de datos en el disco
+
+33
+00:02:27,384 --> 00:02:29,964
+es un conjunto
+de archivos CSV fragmentados.
+
+34
+00:02:29,964 --> 00:02:34,665
+Usamos la función Dataset.list_files
+para analizar el disco y obtener
+
+35
+00:02:34,665 --> 00:02:37,668
+un conjunto de datos
+de nombres de archivo.
+
+36
+00:02:37,668 --> 00:02:42,625
+La función TextLineDataset
+se puede usar para leer cada archivo
+
+37
+00:02:42,625 --> 00:02:45,467
+y transformarlo
+en un conjunto de líneas de texto.
+
+38
+00:02:45,467 --> 00:02:48,025
+Es una transformación de uno a varios.
+
+39
+00:02:48,025 --> 00:02:51,156
+Un nombre de archivo
+se convierte en varias líneas de texto.
+
+40
+00:02:51,156 --> 00:02:54,070
+Por eso, la aplicamos
+con la función flat_map.
+
+41
+00:02:54,070 --> 00:02:57,359
+Ahora, tenemos
+un conjunto de datos de líneas de texto
+
+42
+00:02:57,359 --> 00:03:00,836
+que obtuvimos
+del contenido de nuestros archivos.
+
+43
+00:03:00,836 --> 00:03:03,466
+Esto no es más
+que una representación conceptual.
+
+44
+00:03:03,466 --> 00:03:06,243
+Los archivos no se cargaron a la memoria.
+
+45
+00:03:06,243 --> 00:03:07,630
+No entrarían.
+
+46
+00:03:07,630 --> 00:03:10,110
+Finalmente, usamos la función map
+
+47
+00:03:10,110 --> 00:03:15,776
+para aplicar una transformación
+de uno a uno a las líneas de texto.
+
+48
+00:03:15,776 --> 00:03:21,958
+Cada línea se analiza como
+un conjunto de valores separados por comas
+
+49
+00:03:21,958 --> 00:03:24,597
+y se convierte en una lista de atributos.
+
+50
+00:03:24,597 --> 00:03:27,812
+La decodificación ocurre aquí.
+
+51
+00:03:27,812 --> 00:03:32,502
+Ahora, tenemos el conjunto de datos
+de atributos y etiquetas que queríamos.
+
+52
+00:03:36,039 --> 00:03:41,697
+Redistribuimos
+con un tamaño de búfer específico.
+
+53
+00:03:41,697 --> 00:03:46,364
+Lo repetimos
+durante cierta cantidad de ciclos
+
+54
+00:03:46,394 --> 00:03:50,811
+y dividimos en minilotes
+del tamaño batch_size.
+
+55
+00:03:51,441 --> 00:03:55,750
+Finalmente,
+llamamos a la función get_next
+
+56
+00:03:56,620 --> 00:04:00,638
+que muestra los atributos
+y etiquetas como un nodo de TensorFlow.
+
+57
+00:04:00,638 --> 00:04:02,593
+Es lo que nuestro modelo espera.
+
+58
+00:04:02,593 --> 00:04:06,693
+Cada vez que el modelo ejecute
+estos nodos durante el entrenamiento
+
+59
+00:04:06,693 --> 00:04:09,829
+mostrará el siguiente lote
+de atributos y etiquetas
+
+60
+00:04:09,829 --> 00:04:13,013
+y activará operaciones de carga
+de archivos de manera progresiva
+
+61
+00:04:13,013 --> 00:04:14,533
+solo cuando sea necesario.
+
+62
+00:04:15,303 --> 00:04:17,895
+Aquí, definimos las funciones de entrada
+
+63
+00:04:17,895 --> 00:04:25,338
+de los conjuntos de datos
+de entrenamiento, validación y prueba
+
+64
+00:04:25,945 --> 00:04:29,135
+mediante la carga
+de los archivos CSV correspondientes
+
+65
+00:04:29,135 --> 00:04:34,686
+"taxi-train.csv",
+"taxi-valid.csv" y "taxi-test.csv".
+
+66
+00:04:38,217 --> 00:04:39,847
+Ejecutemos esas celdas.
+
+67
+00:04:46,382 --> 00:04:50,066
+Dejamos nuestras columnas
+de atributos como están por ahora
+
+68
+00:04:50,066 --> 00:04:52,276
+y estamos listos para entrenar.
+
+69
+00:04:57,062 --> 00:04:59,074
+El entrenamiento se está ejecutando.
+
+70
+00:04:59,074 --> 00:05:03,891
+Para ello, como antes,
+llamamos a la función model.train
+
+71
+00:05:03,891 --> 00:05:06,010
+en la función de entrada
+
+72
+00:05:06,010 --> 00:05:08,750
+que obtiene el conjunto
+de datos de entrenamiento.
+
+73
+00:05:10,367 --> 00:05:12,703
+Ahora tenemos un modelo entrenado.
+
+74
+00:05:12,703 --> 00:05:19,305
+Finalmente, lo evaluamos
+y obtenemos las métricas de validación.
+
+75
+00:05:22,448 --> 00:05:27,170
+Aquí están.
+Y eso es todo para este codelab.

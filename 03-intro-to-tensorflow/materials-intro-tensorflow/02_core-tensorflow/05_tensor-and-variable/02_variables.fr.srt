@@ -1,0 +1,590 @@
+1
+00:00:00,000 --> 00:00:04,240
+Une variable est un Tensor
+dont la valeur est initialisée
+
+2
+00:00:04,240 --> 00:00:08,205
+avant de changer pendant
+l'exécution du programme.
+
+3
+00:00:08,205 --> 00:00:11,155
+Examinons attentivement cet exemple.
+
+4
+00:00:11,555 --> 00:00:14,200
+J'ai une fonction
+qui s'appelle forward_pass.
+
+5
+00:00:14,200 --> 00:00:19,040
+Elle prend deux paramètres,
+w et x, et les multiplie.
+
+6
+00:00:19,040 --> 00:00:22,705
+C'est une multiplication de matrices
+puisqu'il s'agit de Tensors,
+
+7
+00:00:22,705 --> 00:00:25,685
+mais w est multiplié par x.
+
+8
+00:00:25,685 --> 00:00:31,494
+Dans ma fonction train_loop,
+je crée le Tensor w,
+
+9
+00:00:31,494 --> 00:00:37,895
+mais ce w n'est pas une constante
+comme les Tensors que nous avons déjà vus.
+
+10
+00:00:37,895 --> 00:00:40,345
+C'est une variable.
+
+11
+00:00:40,345 --> 00:00:42,410
+Elle a un nom, weights.
+
+12
+00:00:42,410 --> 00:00:47,750
+Sa forme est 1,2, ce qui signifie
+qu'elle a une ligne et deux colonnes.
+
+13
+00:00:47,750 --> 00:00:50,060
+C'est une matrice 1, 2.
+
+14
+00:00:50,060 --> 00:00:52,810
+Et lorsque w est initialisé,
+
+15
+00:00:52,810 --> 00:00:55,670
+il n'est pas initialisé ici car,
+comme vous vous en souvenez,
+
+16
+00:00:55,670 --> 00:00:58,100
+TensorFlow est un framework
+d'évaluation paresseuse,
+
+17
+00:00:58,100 --> 00:01:00,390
+de sorte que nous ne faisons
+que créer le graphe.
+
+18
+00:01:00,390 --> 00:01:01,870
+Nous ne l'exécutons pas encore.
+
+19
+00:01:01,870 --> 00:01:04,310
+Lorsque w est initialisé,
+
+20
+00:01:04,310 --> 00:01:08,965
+il l'est par un initialiseur normal tronqué.
+
+21
+00:01:08,965 --> 00:01:11,230
+Il s'agit d'un initialiseur très courant
+
+22
+00:01:11,230 --> 00:01:14,470
+que vous verrez dans les programmes
+de réseau de neurones TensorFlow.
+
+23
+00:01:14,470 --> 00:01:17,410
+Il initialise une variable
+avec des nombres aléatoires,
+
+24
+00:01:17,410 --> 00:01:21,415
+mais ces nombres aléatoires
+ne sont pas uniformément distribués.
+
+25
+00:01:21,415 --> 00:01:22,182
+Au lieu de cela,
+
+26
+00:01:22,182 --> 00:01:27,090
+ils ont une distribution normale gaussienne
+de moyenne nulle et de variance unitaire.
+
+27
+00:01:27,090 --> 00:01:30,330
+Mais la loi normale gaussienne
+a une très longue traîne,
+
+28
+00:01:30,330 --> 00:01:32,570
+et vous pourriez obtenir
+des anomalies extrêmes.
+
+29
+00:01:32,570 --> 00:01:34,710
+C'est très peu probable,
+mais c'est possible.
+
+30
+00:01:34,710 --> 00:01:37,010
+Donc, ce que fait
+une loi normale tronquée,
+
+31
+00:01:37,010 --> 00:01:42,550
+c'est qu'elle tronque les valeurs
+au niveau des multiplications de sigma.
+
+32
+00:01:42,550 --> 00:01:46,875
+Enfin, nous disons
+que la variable w est entraînable.
+
+33
+00:01:46,875 --> 00:01:49,277
+Une variable est dite entraînable
+
+34
+00:01:49,277 --> 00:01:52,080
+lorsqu'elle peut être modifiée
+pendant l'entraînement.
+
+35
+00:01:52,080 --> 00:01:56,000
+Bien sûr, une variable est
+par nature modifiable,
+
+36
+00:01:56,000 --> 00:01:58,730
+de sorte que la plupart
+des variables sont entraînables.
+
+37
+00:01:58,730 --> 00:02:00,430
+Mais de temps en temps
+
+38
+00:02:00,430 --> 00:02:04,140
+(nous évoquerons cette question à propos
+de la réduction de la taille du modèle
+
+39
+00:02:04,140 --> 00:02:06,245
+et de l'apprentissage par transfert),
+
+40
+00:02:06,245 --> 00:02:08,105
+de temps en temps,
+
+41
+00:02:08,105 --> 00:02:13,660
+il peut être utile de geler un graphe
+pour éviter la modification des variables.
+
+42
+00:02:13,660 --> 00:02:16,375
+Cet indicateur booléen
+nous permet de le faire.
+
+43
+00:02:17,335 --> 00:02:21,900
+Remarquez que j'appelle
+tf.get_variable pour créer w.
+
+44
+00:02:22,530 --> 00:02:24,290
+Vous pourriez voir du code TensorFlow
+
+45
+00:02:24,290 --> 00:02:29,260
+créant directement une variable
+en appelant le constructeur tf.variable.
+
+46
+00:02:29,260 --> 00:02:32,725
+Il n'est pas recommandé d'appeler
+directement le constructeur.
+
+47
+00:02:32,725 --> 00:02:37,945
+Utilisez tf.get_variable parce que,
+comme nous le verrons dans le cours 9,
+
+48
+00:02:37,945 --> 00:02:41,145
+il peut être utile de pouvoir
+réutiliser des variables
+
+49
+00:02:41,145 --> 00:02:45,082
+ou de les créer de nouveau
+dans différentes situations,
+
+50
+00:02:45,082 --> 00:02:48,310
+et tf.get_variable nous permet de le faire.
+
+51
+00:02:48,310 --> 00:02:52,705
+Je vous recommande donc de prendre
+l'habitude d'utiliser tf.get_variable.
+
+52
+00:02:53,555 --> 00:02:57,290
+Nous exécutons ensuite
+le forward_pass à cinq reprises,
+
+53
+00:02:57,290 --> 00:03:00,280
+et nous stockons le résultat
+de la multiplication de matrices
+
+54
+00:03:00,280 --> 00:03:02,250
+à chaque itération.
+
+55
+00:03:02,250 --> 00:03:05,640
+Et après avoir calculé le produit,
+nous modifions la pondération.
+
+56
+00:03:05,640 --> 00:03:08,420
+Ici, nous y ajoutons 0.1.
+
+57
+00:03:08,420 --> 00:03:10,330
+C'est comme une mise à jour de gradient,
+
+58
+00:03:10,330 --> 00:03:12,755
+laquelle impliquerait
+bien sûr dans la réalité
+
+59
+00:03:12,755 --> 00:03:16,090
+de sélectionner les pondérations à modifier
+et le mode de modification.
+
+60
+00:03:16,090 --> 00:03:18,515
+Mais comme il ne s'agit ici
+que d'une démonstration,
+
+61
+00:03:18,515 --> 00:03:21,815
+je vais seulement ajouter 0.1
+aux pondérations à chaque fois.
+
+62
+00:03:21,815 --> 00:03:28,580
+Maintenant, à partir de la session,
+nous appelons train_loop en transmettant x.
+
+63
+00:03:28,580 --> 00:03:31,720
+Le x est une matrice 2, 3.
+
+64
+00:03:31,720 --> 00:03:33,450
+Donc, dans le forward_pass,
+
+65
+00:03:33,450 --> 00:03:38,220
+nous multiplions w par ce x,
+et w est une matrice 1, 2.
+
+66
+00:03:38,220 --> 00:03:41,232
+La multiplication d'une matrice 1, 2
+par une matrice 2, 3
+
+67
+00:03:41,232 --> 00:03:44,355
+nous donne une matrice 1, 3.
+
+68
+00:03:44,355 --> 00:03:47,030
+À ce stade, le graphe a été créé,
+
+69
+00:03:47,030 --> 00:03:49,360
+mais nous devons encore
+initialiser les variables.
+
+70
+00:03:49,360 --> 00:03:51,200
+Mais c'est le stade de l'exécution.
+
+71
+00:03:51,200 --> 00:03:56,210
+Nous initialisons généralement
+toutes les variables du graphe à la fois
+
+72
+00:03:56,210 --> 00:03:59,150
+en exécutant
+l'initialiseur de variables global.
+
+73
+00:03:59,150 --> 00:04:04,565
+Donc, si nous regardons maintenant la valeur
+du produit après chaque étape de la boucle,
+
+74
+00:04:04,565 --> 00:04:10,490
+nous remarquons que la matrice 1, 3 est,
+comme attendu, à chaque fois différente.
+
+75
+00:04:11,370 --> 00:04:13,900
+Résumons ce que vous venez d'apprendre.
+
+76
+00:04:14,190 --> 00:04:19,560
+1. Créez une variable
+en appelant get_variable.
+
+77
+00:04:20,000 --> 00:04:22,955
+J'ai oublié de parler
+d'une ligne de code tout à l'heure :
+
+78
+00:04:22,955 --> 00:04:24,960
+celle qui concerne le champ d'application.
+
+79
+00:04:24,960 --> 00:04:26,675
+Lorsque vous créez une variable,
+
+80
+00:04:26,675 --> 00:04:29,314
+vous pouvez en spécifier
+le champ d'application.
+
+81
+00:04:29,314 --> 00:04:33,825
+Ici, cela revient à indiquer à TensorFlow
+de réutiliser la variable à chaque fois
+
+82
+00:04:33,825 --> 00:04:36,245
+plutôt que d'en créer une nouvelle.
+
+83
+00:04:37,315 --> 00:04:40,035
+Ici, je n'appelle train_loop
+qu'une seule fois,
+
+84
+00:04:40,035 --> 00:04:41,335
+donc c'est sans importance.
+
+85
+00:04:41,335 --> 00:04:43,410
+Mais si je devais l'appeler à nouveau,
+
+86
+00:04:43,410 --> 00:04:46,810
+les pondérations repartiraient
+du niveau où elles étaient auparavant.
+
+87
+00:04:46,810 --> 00:04:48,860
+Nous ne créerions pas
+une nouvelle variable.
+
+88
+00:04:48,860 --> 00:04:50,245
+Nous réutiliserions celle-ci.
+
+89
+00:04:50,245 --> 00:04:54,295
+2. La deuxième chose que vous avez apprise,
+c'est que lorsque vous créez une variable,
+
+90
+00:04:54,295 --> 00:04:57,815
+vous devez choisir son mode d'initialisation.
+
+91
+00:04:57,815 --> 00:04:59,910
+Pour l'entraînement
+d'un réseau de neurones,
+
+92
+00:04:59,910 --> 00:05:02,340
+des nombres aléatoires
+avec une loi normale tronquée
+
+93
+00:05:02,340 --> 00:05:04,100
+constituent le choix le plus courant.
+
+94
+00:05:04,100 --> 00:05:09,195
+3. Utilisez la variable comme
+n'importe quel autre Tensor
+
+95
+00:05:09,195 --> 00:05:11,220
+lorsque vous créez le graphe.
+
+96
+00:05:11,220 --> 00:05:16,615
+4. Dans votre session,
+pensez à initialiser la variable.
+
+97
+00:05:16,615 --> 00:05:20,165
+En général, vous initialisez
+toutes les variables à la fois
+
+98
+00:05:20,165 --> 00:05:23,380
+en appelant
+l'initialiseur de variables global.
+
+99
+00:05:23,380 --> 00:05:27,355
+5. Une fois
+que les variables ont été initialisées,
+
+100
+00:05:27,355 --> 00:05:31,540
+vous pouvez évaluer n'importe quel Tensor.
+
+101
+00:05:32,710 --> 00:05:33,985
+Donc, dans cet exemple,
+
+102
+00:05:33,985 --> 00:05:39,110
+nous appelons train_loop avec le x,
+mais le x est une constante.
+
+103
+00:05:39,730 --> 00:05:41,890
+Dans quelle mesure est-ce réaliste ?
+
+104
+00:05:41,890 --> 00:05:45,220
+Est-ce que vous codez les valeurs d'entrée
+en dur dans vos programmes ?
+
+105
+00:05:45,520 --> 00:05:49,040
+Les espaces réservés vous permettent
+de charger des valeurs dans le graphe.
+
+106
+00:05:49,040 --> 00:05:53,115
+Par exemple, vous pouvez lire les valeurs
+d'un fichier texte dans une liste Python,
+
+107
+00:05:53,115 --> 00:05:56,080
+puis charger cette liste
+dans le graphe TensorFlow.
+
+108
+00:05:56,080 --> 00:06:00,150
+Donc, ici, a est un espace réservé
+destiné à contenir un scalaire.
+
+109
+00:06:00,150 --> 00:06:03,425
+b est égal à a multiplié par 4.
+
+110
+00:06:03,425 --> 00:06:06,710
+Si vous affichez a, vous obtiendrez
+la sortie du débogage d'un Tensor.
+
+111
+00:06:06,710 --> 00:06:10,330
+Vous apprendrez que ce Tensor
+est un espace réservé
+
+112
+00:06:10,330 --> 00:06:13,740
+destiné à contenir
+des nombres à virgule flottante.
+
+113
+00:06:13,740 --> 00:06:15,775
+Si vous voulez maintenant évaluer b,
+
+114
+00:06:15,775 --> 00:06:18,330
+vous ne pouvez pas simplement
+utiliser session.run(b).
+
+115
+00:06:18,330 --> 00:06:22,325
+Vous devez charger des valeurs
+pour les espaces réservés dont b dépend.
+
+116
+00:06:22,325 --> 00:06:23,720
+Donc, dans ce cas,
+
+117
+00:06:23,720 --> 00:06:27,005
+vous devez transmettre une liste
+ou un tableau NumPy de nombres
+
+118
+00:06:27,005 --> 00:06:28,790
+pour l'espace réservé a,
+
+119
+00:06:28,790 --> 00:06:32,445
+et vous faites cela en vous servant
+d'un feed_dict (un dictionnaire).
+
+120
+00:06:32,445 --> 00:06:34,960
+Un dictionnaire est
+un ensemble de paires clé/valeur.
+
+121
+00:06:34,960 --> 00:06:37,195
+La clé est un espace réservé.
+
+122
+00:06:37,195 --> 00:06:38,935
+Dans ce cas, il s'agit de a.
+
+123
+00:06:38,935 --> 00:06:41,655
+La valeur est une liste ou un tableau NumPy.
+
+124
+00:06:41,655 --> 00:06:44,970
+Et dans ce cas, c'est 1,2,3.
+
+125
+00:06:44,970 --> 00:06:46,825
+Ce sont les données que nous chargeons.
+
+126
+00:06:46,825 --> 00:06:48,505
+Donc, lors de l'évaluation de b,
+
+127
+00:06:48,505 --> 00:06:51,430
+vous obtenez le résultat
+de la multiplication de a par 4,
+
+128
+00:06:51,430 --> 00:06:53,800
+c'est-à-dire 4, 8, 12.

@@ -1,0 +1,164 @@
+1
+00:00:00,000 --> 00:00:03,844
+Além dos erros de formato que
+observamos nas lições anteriores,
+
+2
+00:00:03,844 --> 00:00:06,435
+outro erro comum que você encontrará
+
+3
+00:00:06,435 --> 00:00:10,325
+ao desenvolver os programas do TensorFlow
+são os erros de tipo de dados.
+
+4
+00:00:10,325 --> 00:00:13,170
+A mensagem de erro aqui diz que você tem
+
+5
+00:00:13,170 --> 00:00:17,490
+um tensor com valores armazenados como
+matrizes de número inteiro,
+
+6
+00:00:17,490 --> 00:00:19,965
+mas você está passando-o para um método
+
+7
+00:00:19,965 --> 00:00:22,695
+que espera que o tensor tenha
+valores de ponto flutuante.
+
+8
+00:00:22,695 --> 00:00:24,900
+Onde algo assim pode acontecer?
+
+9
+00:00:25,590 --> 00:00:28,780
+Talvez você olhe para o rastreamento
+da chamada, e a linha de código
+
+10
+00:00:28,780 --> 00:00:31,910
+que é identificada
+seja a linha de soma aqui,
+
+11
+00:00:31,910 --> 00:00:33,950
+s = (a + b).
+
+12
+00:00:33,950 --> 00:00:40,195
+Talvez a seja uma matriz de pontos
+flutuantes e b uma matriz de inteiros.
+
+13
+00:00:40,195 --> 00:00:43,959
+Você está pensando que pode adicionar um
+número de ponto flutuante a um inteiro,
+
+14
+00:00:43,959 --> 00:00:46,060
+não há problema, isso será automático,
+
+15
+00:00:46,060 --> 00:00:48,245
+o resultado é um número
+de ponto flutuante.
+
+16
+00:00:48,245 --> 00:00:53,060
+Mas nem Python nem C++ permitem sair
+
+17
+00:00:53,060 --> 00:00:56,540
+da matriz de ponto flutuante
+para uma de inteiros.
+
+18
+00:00:56,540 --> 00:00:59,600
+Há muitas otimizações
+de armazenamento envolvidas,
+
+19
+00:00:59,600 --> 00:01:01,740
+e se você tem uma matriz
+de números inteiros,
+
+20
+00:01:01,740 --> 00:01:03,980
+os dados podem ser
+armazenados em um dispositivo
+
+21
+00:01:03,980 --> 00:01:07,670
+ou em parte da memória em que não podemos
+fazer aritmética de ponto flutuante.
+
+22
+00:01:07,670 --> 00:01:09,230
+Você precisa corrigir isso.
+
+23
+00:01:09,230 --> 00:01:12,500
+Você arredondará os valores de ponto
+flutuante para números inteiros?
+
+24
+00:01:12,500 --> 00:01:14,690
+Então, será que você cometeu um erro
+
+25
+00:01:14,690 --> 00:01:18,235
+e a matriz de ponto flutuante realmente
+deveria ser de números inteiros?
+
+26
+00:01:18,235 --> 00:01:21,965
+Ou você quer transmitir os números
+inteiros para valores de ponto flutuante
+
+27
+00:01:21,965 --> 00:01:26,040
+e fazer a soma, sabendo que o resultado
+agora é uma matriz de ponto flutuante?
+
+28
+00:01:26,040 --> 00:01:28,860
+Como há várias opções possíveis,
+
+29
+00:01:28,860 --> 00:01:31,280
+o TensorFlow pede para
+você ser mais claro.
+
+30
+00:01:31,280 --> 00:01:35,690
+Uma maneira de corrigir o problema é pegar
+a matriz de números inteiros b
+
+31
+00:01:35,690 --> 00:01:40,730
+e dizer que agora queremos que ela seja um
+tensor de valores de ponto flutuante.
+
+32
+00:01:40,730 --> 00:01:46,430
+Essa chamada para tf.cast será inserida
+no gráfico de computação,
+
+33
+00:01:46,430 --> 00:01:49,880
+e as otimizações etc.
+levarão isso em consideração
+
+34
+00:01:49,880 --> 00:01:54,140
+ao decidir onde armazenar b
+e como mover b.
+
+35
+00:01:54,134 --> 00:01:59,774
+Aqui adicionamos a operação
+tf.cast no método para corrigir.

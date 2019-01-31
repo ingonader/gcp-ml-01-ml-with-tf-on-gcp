@@ -1,0 +1,83 @@
+Ahora, hablaremos sobre
+cómo procesar grandes trabajos de AA y los beneficios
+del entrenamiento distribuido. Ya podemos dar por resuelto
+el primer elemento de nuestra lista de problemas fastidiosos
+que tienen los modelos del mundo real y pasar al segundo, la velocidad. Sí. Entrenar un modelo real lleva
+muchísimo tiempo: horas, días o semanas. Cuando se requieren
+varias semanas de entrenamiento en Google nos damos por vencidos. Optimizar un modelo
+en esas condiciones no es práctico. Es necesario distribuirlo
+en un clúster para que sea más rápido. Pasar de una máquina a muchas puede parecer complicado,
+pero como veremos con la API de Estimator y ML Engine
+que administra el clúster automáticamente se obtiene distribución lista para usar. La función que implementa
+el entrenamiento distribuido se llama estimator.train_and_evaluate. El nombre de la función
+también destaca que será importante evaluar y supervisar un trabajo
+grande de entrenamiento. Veremos eso más adelante. Por ahora,
+enfoquémonos en la distribución. El modelo tradicional de distribución para el entrenamiento de redes neuronales
+se llama paralelismo de datos. Su modelo se replica
+en varios trabajadores. En cada paso de entrenamiento estos cargan
+un lote de datos de entrenamiento esperamos que uno diferente cada uno calculan los gradientes y los envían a uno o varios servidores
+centrales de parámetros que tienen todos los pesos
+y sesgos del modelo de la red neuronal. Los gradientes se aplican
+a medida que llegan cambian los pesos y los sesgos y el modelo actualizado
+se envía a los trabajadores para el siguiente paso
+en el entrenamiento. Hay mucho trabajo que hacer
+para que esto ocurra. Los trabajadores deben iniciarse
+y luego recibir su copia del modelo se deben establecer flujos de datos entre trabajadores
+y servidores de parámetros el sistema debe
+administrar excepciones y errores y reiniciar los trabajadores con errores desde donde se quedaron
+si ocurre un incidente. Y el manejo de los controles
+también se complica con todo esto. Por suerte, para el usuario
+la distribución es tan simple como escribir un archivo de configuración. Todo el código estándar
+ya está escrito en la API de Estimator y la función estimator.train_and_evaluate. Necesitará seguir cuatro pasos. Elegir el estimador, proporcionar
+una configuración de ejecución y proporcionar datos
+de entrenamiento y prueba mediante train_spec y eval_spec. Una vez que eso está configurado llame a train_and_evaluate. Si está usando ML Engine y especificó el tamaño del clúster se iniciará el entrenamiento distribuido. Veamos con más detalle. Primero, la configuración de ejecución. Aquí se especifica el directorio
+de salida para los controles. Puede configurarlos directamente
+cuando instancie el estimador pero es más ordenado hacerlo aquí
+con la demás configuración de controles. Aquí también se configuran
+la frecuencia de generación de controles y la frecuencia de los registros
+o resúmenes de entrenamiento. Regresaremos a este punto más adelante. TrainSpec es donde se pasa
+la función de entrada de datos para el entrenamiento. Es importante que use la API de Dataset
+para configurarla correctamente. De manera opcional,
+puede limitar el entrenamiento a una cantidad específica de pasos. De forma predeterminada,
+el entrenamiento continúa hasta que el conjunto
+de datos de entrada se agota lo que puede suceder
+tras varios ciclos si así lo configuró. EvalSpec es donde se introduce
+el conjunto de datos de prueba. Para verificar el rendimiento de su modelo deberá medirlo con datos
+que no haya visto en el entrenamiento. Por lo general, se usa un subconjunto
+de los datos separados para la prueba. Los datos de prueba ingresan
+mediante una función eval_input. Aquí también, es importante
+que use la API de Dataset para obtenerla. También puede especificar la cantidad de lotes de datos
+de prueba usados en la evaluación y la frecuencia
+con la que se hacen las evaluaciones Un detalle de implementación
+que debería tener en cuenta. es que en el entrenamiento distribuido la evaluación ocurre
+en un servidor dedicado que regenera el modelo
+desde el último control y luego ejecuta la evaluación. Por eso, no es posible
+realizar evaluaciones con más frecuencia que la frecuencia de los controles
+elegida en la configuración de ejecución. Sin embargo,
+sí puede hacerlas menos frecuentes mediante el parámetro
+de regulación en EvalSpec. Notarán que EvalSpec también
+tiene un parámetro para exportadores. Controlan cómo se exporta un modelo
+para su implementación en la producción. Hablaremos de eso en el próximo capítulo. Esto es lo que tenemos hasta ahora. Instanciamos un estimador usamos una configuración de ejecución en la que se puede definir la frecuencia
+y la carpeta de generación de controles y otros datos de supervisión. Luego, configuró un conjunto de datos
+de entrenamiento y uno de evaluación que se inyectan
+con las funciones de entrada de datos en TrainSpec y EvalSpec y entonces están listos
+para entrenar y evaluar. Quiero comentarles sobre una consideración
+práctica importante la redistribución de datos. El algoritmo estocástico
+de descenso de gradientes que las redes neuronales
+usan para el entrenamiento solo funciona
+con datos redistribuidos correctamente. La API de Dataset tiene una función
+de redistribución que puede ayudar pero algunas personas
+podrían no usarla si creen que su conjunto de datos
+ya está redistribuido en el disco. Tengan cuidado
+con el entrenamiento distribuido. Incluso con datos redistribuidos
+correctamente en el disco si todos los trabajadores están cargando
+directamente desde este conjunto verán el mismo lote de datos al mismo tiempo
+y producirán los mismos gradientes. En ese caso, se pierde el beneficio
+del entrenamiento distribuido porque todos los trabajadores
+hacen exactamente lo mismo. Con dataset.shuffle la redistribución
+ocurre independientemente en cada uno
+con distintas semillas aleatorias. Use esta función incluso si sus datos
+ya están redistribuidos en el disco. Para mayor seguridad,
+también puede redistribuir la lista de nombres de archivo
+en el conjunto de datos fragmentado. List_files muestra un conjunto
+de datos de nombres de archivo. Simplemente llame a shuffle en él.

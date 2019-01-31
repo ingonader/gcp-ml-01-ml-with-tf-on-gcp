@@ -1,0 +1,464 @@
+1
+00:00:00,000 --> 00:00:03,310
+Nous avons entraîné notre modèle
+sur un ensemble de données volumineux
+
+2
+00:00:03,310 --> 00:00:07,280
+à l'aide de l'entraînement distribué,
+et nos courbes TensorBoard sont correctes.
+
+3
+00:00:07,280 --> 00:00:09,510
+Il est temps de passer au déploiement.
+
+4
+00:00:09,510 --> 00:00:10,220
+C'est facile.
+
+5
+00:00:10,220 --> 00:00:12,930
+Il suffit de quelques clics
+sur la console Cloud ML Engine
+
+6
+00:00:12,930 --> 00:00:17,160
+pour que notre modèle d'entraînement
+s'exécute derrière une API REST
+
+7
+00:00:17,160 --> 00:00:20,290
+en autoscaling entièrement gérée,
+prêt à accepter le trafic JSON.
+
+8
+00:00:20,740 --> 00:00:22,520
+Vous avez dit JSON ?
+
+9
+00:00:23,030 --> 00:00:25,650
+Le modèle ne sait pas lire JSON.
+
+10
+00:00:25,910 --> 00:00:29,550
+Nous avons des fonctions d'entrée pour
+les données d'entraînement et de test,
+
+11
+00:00:29,550 --> 00:00:31,650
+mais pas pour les données JSON
+en temps réel
+
+12
+00:00:31,650 --> 00:00:33,710
+venant dans notre point
+de terminaison REST.
+
+13
+00:00:33,710 --> 00:00:35,300
+C'est le moment d'en ajouter une.
+
+14
+00:00:35,300 --> 00:00:40,590
+Rappelez-vous du paramètre "exporters"
+que nous avons ajouté à "EvalSpec".
+
+15
+00:00:40,760 --> 00:00:44,260
+C'est ce qui définit un modèle complet,
+prêt pour le déploiement
+
+16
+00:00:44,260 --> 00:00:47,440
+avec un point de contrôle
+sur des paramètres bien entraînés,
+
+17
+00:00:47,440 --> 00:00:50,910
+mais aussi une fonction d'entrée
+supplémentaire qui effectue
+
+18
+00:00:50,910 --> 00:00:53,230
+un mappage entre le JSON
+reçu par l'API REST
+
+19
+00:00:53,230 --> 00:00:56,310
+et les caractéristiques
+attendues par le modèle.
+
+20
+00:00:56,730 --> 00:01:00,050
+Il s'agit de la fonction "serving_input".
+
+21
+00:01:00,050 --> 00:01:01,410
+Voici un point important.
+
+22
+00:01:01,410 --> 00:01:06,020
+Les temps de diffusion et d'entraînement
+sont souvent très différents.
+
+23
+00:01:06,020 --> 00:01:10,080
+Pour comprendre ce qu'il se passe,
+analysons tout cela en détail à nouveau.
+
+24
+00:01:10,080 --> 00:01:13,050
+Dans TensorFlow, tout se présente
+sous la forme de graphiques.
+
+25
+00:01:13,050 --> 00:01:18,150
+Voici le graphique de modèle produit
+lors de l'instanciation de notre modèle.
+
+26
+00:01:18,150 --> 00:01:21,460
+C'est presque le même
+pour l'entraînement et l'inférence.
+
+27
+00:01:21,460 --> 00:01:23,898
+Bien qu'il soit
+un peu plus simple pour l'inférence,
+
+28
+00:01:23,898 --> 00:01:26,878
+il inclut des caractéristiques
+et produit des prédictions.
+
+29
+00:01:27,448 --> 00:01:29,728
+Connectons une source de données
+à ses entrées.
+
+30
+00:01:30,018 --> 00:01:34,222
+Lors de l'entraînement, cela se fait
+via la fonction "training_input".
+
+31
+00:01:34,222 --> 00:01:38,936
+Nous utilisons l'API Dataset
+pour créer un nœud d'entrée capable
+
+32
+00:01:38,936 --> 00:01:41,260
+de lire progressivement des fichiers CSV
+
+33
+00:01:41,260 --> 00:01:44,730
+et d'envoyer des lots de données
+d'entraînement dans le modèle.
+
+34
+00:01:45,135 --> 00:01:49,065
+Nous utiliserons un schéma similaire
+pour notre modèle déployé.
+
+35
+00:01:49,280 --> 00:01:53,350
+La fonction "serving_input" nous permet
+d'ajouter un ensemble de transformations
+
+36
+00:01:53,350 --> 00:01:56,109
+TensorFlow entre le JSON reçu
+par notre API REST
+
+37
+00:01:56,109 --> 00:01:58,569
+et les caractéristiques attendues
+par notre modèle.
+
+38
+00:01:59,089 --> 00:02:01,109
+Nous n'avons pas besoin
+d'analyser le JSON.
+
+39
+00:02:01,109 --> 00:02:03,689
+ML Engine s'en charge automatiquement.
+
+40
+00:02:03,950 --> 00:02:07,300
+En revanche, toutes les autres
+transformations doivent être écrites.
+
+41
+00:02:08,360 --> 00:02:11,940
+On pense souvent que la fonction
+"serving_input" sera appelée
+
+42
+00:02:11,940 --> 00:02:16,030
+sur chaque élément de données
+reçu par le point de terminaison REST.
+
+43
+00:02:16,030 --> 00:02:18,065
+Mais ça ne fonctionne pas comme ça.
+
+44
+00:02:18,065 --> 00:02:21,440
+Elle s'exécute une seule fois,
+lorsque le modèle est instancié,
+
+45
+00:02:21,440 --> 00:02:27,860
+et elle produit un graphique TensorFlow
+connecté d'une part à l'analyseur JSON,
+
+46
+00:02:27,860 --> 00:02:31,080
+et d'autre part à votre modèle.
+
+47
+00:02:31,080 --> 00:02:33,750
+C'est vous qui choisissez
+comment transformer vos données
+
+48
+00:02:33,750 --> 00:02:37,300
+à partir des valeurs JSON, mais pensez
+à utiliser des commandes TensorFlow
+
+49
+00:02:37,300 --> 00:02:41,059
+afin de renvoyer
+un graphique des transformations.
+
+50
+00:02:42,120 --> 00:02:44,920
+Quand est-ce que
+ces graphiques sont réunis ?
+
+51
+00:02:44,920 --> 00:02:49,140
+La connexion se fait quand vous spécifiez
+la fonction "serving_input"
+
+52
+00:02:49,140 --> 00:02:53,520
+dans votre exportateur et que vous ajoutez
+ce dernier dans "EvalSpec".
+
+53
+00:02:53,880 --> 00:02:57,290
+L'exportateur enregistrera une version
+avec point de contrôle du modèle,
+
+54
+00:02:57,290 --> 00:03:01,850
+avec les informations de transformation
+dans un fichier de modèle exporté
+
+55
+00:03:01,850 --> 00:03:03,550
+prêt à être déployé.
+
+56
+00:03:04,090 --> 00:03:06,120
+Quels points de contrôle
+sont enregistrés ?
+
+57
+00:03:06,360 --> 00:03:08,570
+Cela dépend du type d'exportateur.
+
+58
+00:03:08,890 --> 00:03:12,750
+Le plus simple, "LatestExporter", prend
+le dernier point de contrôle disponible.
+
+59
+00:03:12,750 --> 00:03:14,880
+C'est l'exportateur le plus simple.
+
+60
+00:03:15,885 --> 00:03:20,645
+On peut voir le modèle exporté
+sur disque dans le dossier "export".
+
+61
+00:03:20,810 --> 00:03:24,127
+Nous l'avons appelé
+"pricing" dans l'API.
+
+62
+00:03:24,127 --> 00:03:27,617
+Un sous-dossier "pricing" a donc été créé.
+
+63
+00:03:28,313 --> 00:03:33,153
+Chaque dossier numéroté correspond
+à un modèle prêt pour le déploiement.
+
+64
+00:03:33,990 --> 00:03:39,460
+Pour tester l'API REST, envoyez
+des données JSON au point de terminaison.
+
+65
+00:03:39,460 --> 00:03:44,948
+Le SDK Google Cloud offre la commande
+"gcloud ml-engine predict", qui permet
+
+66
+00:03:44,948 --> 00:03:48,900
+d'effectuer facilement des tests
+avec les données d'un fichier JSON.
+
+67
+00:03:48,900 --> 00:03:53,480
+La syntaxe doit être un champ JSON unique
+appelé "instances", qui contient
+
+68
+00:03:53,480 --> 00:03:59,950
+une liste d'objets JSON dans le format
+attendu par la fonction "serving_input",
+
+69
+00:03:59,950 --> 00:04:03,660
+ici le nombre de pieds carrés
+et le type de propriété.
+
+70
+00:04:03,660 --> 00:04:07,921
+Les instances de données de la liste
+sont automatiquement regroupées en lots,
+
+71
+00:04:07,921 --> 00:04:12,617
+et votre fonction "serving_input" reçoit
+une liste de nombres pour les pieds carrés
+
+72
+00:04:12,617 --> 00:04:15,044
+et une liste de chaînes
+pour le type de propriété.
+
+73
+00:04:16,084 --> 00:04:20,223
+Voici une méthode encore plus simple
+pour tester sans rien déployer.
+
+74
+00:04:20,223 --> 00:04:23,961
+La commande
+"gcloud ml-engine local predict"
+
+75
+00:04:23,961 --> 00:04:26,510
+vous permet d'obtenir
+des prédictions directement
+
+76
+00:04:26,510 --> 00:04:28,230
+depuis un modèle exporté sur disque.
+
+77
+00:04:28,230 --> 00:04:29,820
+Vous n'avez rien à déployer.
+
+78
+00:04:30,370 --> 00:04:33,870
+Notez le format légèrement différent
+attendu par cette commande :
+
+79
+00:04:33,870 --> 00:04:37,530
+une liste d'objets JSON dans un fichier,
+avec un objet par ligne.
+
+80
+00:04:38,820 --> 00:04:42,740
+Le décodage d'images JPEG
+est un autre cas d'utilisation typique
+
+81
+00:04:42,740 --> 00:04:44,600
+de la fonction "serving_input".
+
+82
+00:04:44,600 --> 00:04:47,270
+Si vous travaillez
+avec un modèle de traitement d'images,
+
+83
+00:04:47,270 --> 00:04:50,750
+vous enverrez toujours des images
+compressées sur le réseau,
+
+84
+00:04:50,750 --> 00:04:54,650
+mais votre modèle attendra toujours
+des images décompressées.
+
+85
+00:04:55,170 --> 00:04:58,380
+La fonction "serving_input"
+peut gérer la décompression.
+
+86
+00:04:58,380 --> 00:05:00,570
+Voici le code approprié.
+
+87
+00:05:00,910 --> 00:05:06,070
+L'image vient directement du flux
+JSON via "tf.string", qui désigne
+
+88
+00:05:06,070 --> 00:05:11,160
+dans la terminologie TensorFlow une chaîne
+d'octets, une liste d'octets aléatoires.
+
+89
+00:05:11,160 --> 00:05:15,480
+Le format JPEG est un format binaire,
+et le codage Base64 est nécessaire
+
+90
+00:05:15,480 --> 00:05:20,280
+pour le transformer en une chaîne de texte
+qui fonctionne avec JSON.
+
+91
+00:05:20,790 --> 00:05:24,703
+TensorFlow adopte une convention JSON
+personnalisée pour marquer ainsi
+
+92
+00:05:24,703 --> 00:05:29,390
+les chaînes binaires codées en Base64.
+
+93
+00:05:29,390 --> 00:05:32,140
+Le nom du champ doit
+se terminer par "_bytes",
+
+94
+00:05:32,140 --> 00:05:36,028
+et la valeur doit être
+un objet JSON appelé "b64",
+
+95
+00:05:36,028 --> 00:05:39,600
+avec la chaîne codée
+en Base64 comme valeur.
+
+96
+00:05:40,490 --> 00:05:45,310
+Avec cette convention, le décodage Base64
+se fait automatiquement.
+
+97
+00:05:45,310 --> 00:05:48,380
+Vous n'avez pas à le gérer
+dans votre fonction "serving_input".

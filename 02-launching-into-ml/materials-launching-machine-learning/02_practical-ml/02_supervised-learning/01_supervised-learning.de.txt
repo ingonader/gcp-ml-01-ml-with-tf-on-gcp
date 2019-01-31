@@ -1,0 +1,78 @@
+Wir haben ML als Prozess betrachtet
+und gesehen, dass Google verschiedene Philosophien vertritt, die für
+unseren ML-Erfolg ausschlaggebend sind. Wir haben uns aber noch nicht angesehen, was ML ist und wie es funktioniert.
+Das tun wir jetzt. In diesem Modul befassen wir uns mit dem
+überwachten Lernen, einem ML-Teilgebiet, bei dem das Modell mit Labels versehene
+Beispiele für das erhält, was es lernen soll. Außerdem sehen wir uns die
+Geschichte des ML und die Algorithmen der letzten 50 Jahre an, um die
+Beliebtheit neuronaler Netze zu erklären. Beginnen wir mit dem
+überwachten maschinellen Lernen. Zwei der gebräuchlichsten
+Klassen von ML-Modellen sind überwachte und unüberwachte Modelle. Der Hauptunterschied liegt darin,
+dass bei überwachten Modellen Labels vorliegen, also die Antworten auf das, was gelernt werden soll. Beim unüberwachten Lernen
+haben die Daten keine Labels. Dieses Diagramm ist ein
+Beispiel für die Art von Problemen, die ein unüberwachtes
+Modell zu lösen versuchen könnte. Wir betrachten hier
+Beschäftigungsdauer und Einkommen und gruppieren die Mitarbeiter, um zu
+sehen, ob jemand auf der Überholspur ist. Das Problem ist,
+dass es hier kein "Grundwissen" gibt. Die Geschäftsleitung hat,
+soweit wir wissen, keine Tabelle mit Leuten,
+die sie schnell befördern möchte, und jenen, die nicht
+befördert werden sollen. Folglich geht es bei unüberwachten
+Problemen ausschließlich ums Entdecken und darum, Rohdaten zu betrachten und zu
+sehen, ob sie sich in Gruppen einteilen lassen. Auf den ersten Blick
+sieht es aus, als gäbe es zwei Cluster oder Gruppen, die sich
+schön mit einer Linie trennen lassen. Aber in diesem Kurs konzentrieren wir uns auf
+überwachte ML-Probleme wie dieses hier. Der Hauptunterschied ist,
+dass wir beim überwachten Lernen ein Label oder eine uns wichtige Eigenschaft jedes Datenpunkts kennen. Dies ist typischerweise etwas, das wir aus historischen Daten
+ableiten, aber nicht in Echtzeit. Wir kennen andere Dinge,
+die wir "Prädiktoren" nennen und dazu verwenden,
+den uns unbekannten Faktor vorherzusagen. Stellen Sie sich zum Beispiel vor,
+Sie bedienen in einem Restaurant. Sie haben historische Daten über die Höhe
+der Rechnungen und Trinkgelder der Gäste. Jetzt sehen Sie die Gruppe am Ecktisch, Sie wissen, wie hoch ihre Rechnung ist,
+aber nicht, wie viel Trinkgeld sie zahlen. In den historischen Daten
+ist das Trinkgeld ein Label. Sie erstellen ein Modell zur Vorhersage
+des Trinkgelds aus dem Rechnungsbetrag. Dann versuchen Sie,
+das Trinkgeld vorherzusagen, in Echtzeit und auf der Grundlage der historischen Daten und der
+Werte, die Sie für diesen Tisch kennen. Beim überwachten ML gibt es zwei Arten von
+Problemen: Regression und Klassifikation. Um diese zu erklären, sehen wir
+uns diese Daten etwas genauer an. In diesem Datensatz von Trinkgeldern, einem Beispieldatensatz im
+Python-Paket Seaborn, hat jede Zeile viele Eigenschaften, wie Rechnungsbetrag,
+Trinkgeld und Geschlecht. Zeilen sind beim 
+maschinellen Lernen Beispiele. Wir wählen eine der Spalten als
+Eigenschaft aus, die wir vorhersagen möchten, also das Label. Und wir wählen einen Satz der anderen Spalten aus,
+die sogenannten Merkmale. In Modelloption 1 möchten wir den
+Trinkgeldbetrag vorhersagen, deshalb ist die Spalte
+"Trinkgeld" mein Label. Ich kann eine, alle oder beliebig viele Spalten als Merkmale
+zur Vorhersage des Trinkgelds verwenden. Dies ist ein Regressionsmodell, da das
+Trinkgeld ein kontinuierliches Label ist. In Modelloption 2 ist das Geschlecht des
+Kunden das Prognoseziel und somit die Spalte
+"Geschlecht" das Label. Ich verwende wieder
+einen Satz der restlichen Spalten als Merkmale, um das
+Geschlecht des Kunden vorherzusagen. Dies ist ein Klassifikationsmodell, da das Label "Geschlecht" eine geringe
+Anzahl von Werten oder Klassen hat. Kurz: Es hängt vom zu lösenden Problem,
+den vorliegenden Daten, der Erklärbarkeit usw. ab, welche Modelle des maschinellen Lernens
+Sie zur Lösungssuche verwenden. Ihre Daten sind nicht
+mit Labels gekennzeichnet? Dann können wir kein überwachtes Lernen
+verwenden und müssen auf die Clusteranalyse zurückgreifen, um bestimmte
+Eigenschaften der Daten zu entdecken. Ihre Daten sind gekennzeichnet 
+und das Label ist "Hunderasse", also eine überschaubare Menge, da es eine endliche
+Anzahl von Hunderassen gibt? Dann verwenden wir
+einen Klassifikationsalgorithmus. Wenn das Label hingegen "Hundegewicht" ist, also eine kontinuierliche Menge, verwenden wir einen
+Regressionsalgorithmus. Das Label ist, wie gesagt, das,
+was man versucht vorherzusagen. Beim überwachten Lernen haben wir
+einige Daten mit den richtigen Antworten. Stellen Sie sich vor, Sie arbeiten
+im Bankwesen und erstellen ein ML-Modell zum 
+Erkennen betrügerischer Transaktionen. Ist das Klassifikation oder Regression,
+und warum? Die richtige Antwort ist
+Klassifikation, kategorisches Label. Dies ist ein binäres 
+Klassifikationsproblem, da es zwei mögliche Klassen pro Transaktion gibt: betrügerisch oder nicht betrügerisch. In der Praxis haben Sie vielleicht
+sogar eine dritte Klasse: unsicher. So können Sie je nach Klassifikationsschwelle alle Fälle, die sich nicht eindeutig als betrügerisch oder nicht betrügerisch
+einordnen lassen, an einen Mitarbeiter senden. Beim maschinellen Lernen ist es oft eine
+gute Idee, einen Mitarbeiter prüfen zu lassen. Wir können "Regression, kategorisches Label" und "Klassifikation, kontinuierliches Label" ausschließen, da die Modelltypen
+den falschen Labeltyp haben. "Regression, kontinuierliches Label"
+ist zumindest eine richtige Paarung. Es ist aber die falsche Antwort,
+da es sich hier um ein Klassifikationsproblem handelt, weshalb
+wir keine Regression verwenden würden. Sie könnten auch ein
+Regressionsmodell erstellen, etwa zur Vorhersage der Anzahl
+der betrügerischen Transaktionen, des Betrags der
+betrügerischen Transaktionen usw.

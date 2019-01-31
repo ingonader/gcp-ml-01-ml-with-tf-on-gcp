@@ -1,0 +1,658 @@
+1
+00:00:00,790 --> 00:00:03,150
+Vous connaissez déjà ce graphique.
+
+2
+00:00:03,150 --> 00:00:06,310
+Vous savez que TF peut s'exécuter
+sur différents types de matériel.
+
+3
+00:00:06,310 --> 00:00:09,090
+Vous pouvez le programmer
+sur une API C++ de bas niveau,
+
+4
+00:00:09,090 --> 00:00:13,065
+et surtout utiliser l'API Python,
+comme nous allons le voir dans ce cours.
+
+5
+00:00:13,395 --> 00:00:16,230
+Et vous avez déjà vu
+les différentes couches d'abstraction
+
+6
+00:00:16,230 --> 00:00:17,760
+pour l'entraînement distribué.
+
+7
+00:00:18,160 --> 00:00:22,005
+Mais comme vous exécutez l'entraînement
+distribué à grande échelle en production,
+
+8
+00:00:22,005 --> 00:00:25,630
+nous devons alors parler de
+Cloud Machine Learning Engine.
+
+9
+00:00:26,140 --> 00:00:27,720
+Lorsque nous découvrons le ML,
+
+10
+00:00:27,720 --> 00:00:30,500
+nous commençons souvent
+avec de petits ensembles de données
+
+11
+00:00:30,500 --> 00:00:32,695
+en mémoire,
+mais ce n'est pas le cas au final.
+
+12
+00:00:32,695 --> 00:00:34,810
+Avec ces ensembles de données
+d'introduction,
+
+13
+00:00:34,810 --> 00:00:36,859
+presque tous les frameworks
+de ML suffisent.
+
+14
+00:00:36,859 --> 00:00:39,365
+Python, comme de nombreux autres langages,
+
+15
+00:00:39,365 --> 00:00:43,100
+dispose de packages statistiques
+qui n'ont besoin que de trois
+
+16
+00:00:43,100 --> 00:00:45,710
+ou quatre lignes de code
+pour pouvoir s'exécuter.
+
+17
+00:00:45,710 --> 00:00:47,830
+Un Estimator TensorFlow
+propose une API
+
+18
+00:00:47,830 --> 00:00:50,600
+qui peut décider d'apprendre,
+ce qui est simple et efficace
+
+19
+00:00:50,600 --> 00:00:52,354
+sur de petits ensembles de données
+
+20
+00:00:52,524 --> 00:00:55,440
+Mais bien sûr, nous voulons gérer
+des ensembles de données
+
+21
+00:00:55,440 --> 00:00:57,865
+en production à l'échelle de l'entreprise.
+
+22
+00:00:57,865 --> 00:01:00,815
+Ces ensembles sont trop volumineux
+pour tenir dans la mémoire.
+
+23
+00:01:00,955 --> 00:01:04,430
+Nous devons alors adopter
+des packages plus sophistiqués.
+
+24
+00:01:04,600 --> 00:01:07,490
+Maintenant que nos ensembles de données
+sont trop volumineux,
+
+25
+00:01:07,490 --> 00:01:10,950
+nous devons effectuer plusieurs
+itérations pendant l'entraînement.
+
+26
+00:01:10,950 --> 00:01:13,105
+Même si c'est possible
+avec une seule machine,
+
+27
+00:01:13,105 --> 00:01:14,390
+c'est loin d'être idéal.
+
+28
+00:01:14,390 --> 00:01:18,225
+Imaginez devoir attendre des semaines
+pour voir si l'entraînement a convergé.
+
+29
+00:01:19,175 --> 00:01:22,280
+Nous devons distribuer l'entraînement
+sur de nombreuses machines.
+
+30
+00:01:22,280 --> 00:01:24,784
+Ce n'est pas aussi simple
+que MapReduce
+
+31
+00:01:24,784 --> 00:01:26,574
+où tout est parallèle.
+
+32
+00:01:26,574 --> 00:01:29,680
+Les algorithmes, comme l'optimisation
+de la descente de gradient,
+
+33
+00:01:29,680 --> 00:01:30,415
+sont complexes.
+
+34
+00:01:30,415 --> 00:01:34,915
+Il nous faut des serveurs de paramètres
+pour aider les équipes d'entraînement.
+
+35
+00:01:34,915 --> 00:01:38,220
+Ces serveurs forment un type
+de mémoire partagée,
+
+36
+00:01:38,220 --> 00:01:41,340
+et aident chaque outil d'entraînement
+à apprendre des autres.
+
+37
+00:01:41,340 --> 00:01:44,060
+Il est tentant d'essayer d'éviter
+l'entraînement distribué
+
+38
+00:01:44,060 --> 00:01:47,340
+à l'aide d'une énorme machine
+avec beaucoup de GPU.
+
+39
+00:01:47,340 --> 00:01:51,170
+Mais au final cela n'a pas grand intérêt,
+car les ensembles de données
+
+40
+00:01:51,170 --> 00:01:54,445
+s'accroissent souvent plus vite
+que les capacités d'une machine.
+
+41
+00:01:54,445 --> 00:01:57,690
+Le scaling horizontal,
+et non vertical, est là pour nous aider.
+
+42
+00:01:58,040 --> 00:02:00,935
+Les gens tentent souvent aussi
+d'échantillonner les données
+
+43
+00:02:00,935 --> 00:02:02,524
+pour réduire leur taille
+
+44
+00:02:02,524 --> 00:02:05,124
+et permettre le ML
+sur le matériel existant.
+
+45
+00:02:05,124 --> 00:02:08,159
+Cela entraîne des questions
+de performances.
+
+46
+00:02:08,159 --> 00:02:11,970
+Il faut utiliser toutes les données
+disponibles, et définir un plan
+
+47
+00:02:11,970 --> 00:02:14,710
+permettant de collecter
+10 fois plus de données que cela
+
+48
+00:02:14,710 --> 00:02:17,720
+pour garantir l'efficacité du ML.
+
+49
+00:02:18,060 --> 00:02:21,410
+Vous construisez souvent des modèles de ML
+dans un domaine où l'homme
+
+50
+00:02:21,410 --> 00:02:24,470
+sait améliorer les performances
+au-delà de l'entraînement,
+
+51
+00:02:24,470 --> 00:02:25,905
+juste sur les données brutes.
+
+52
+00:02:25,905 --> 00:02:28,670
+Ce savoir se présente,
+quand les experts connaissent déjà
+
+53
+00:02:28,670 --> 00:02:31,570
+le problème, sous la forme
+de nouvelles caractéristiques.
+
+54
+00:02:31,570 --> 00:02:35,555
+Ces caractéristiques sont ajoutées juste
+après le prétraitement des données brutes,
+
+55
+00:02:35,555 --> 00:02:38,830
+au moment du scaling,
+du codage, etc.
+
+56
+00:02:39,505 --> 00:02:42,980
+Pour pouvoir travailler avec les volumes
+de données qui nous intéressent,
+
+57
+00:02:42,980 --> 00:02:46,445
+ces deux choses doivent être
+distribuées et effectuées sur le cloud.
+
+58
+00:02:46,445 --> 00:02:49,780
+Lorsque vous faites du ML,
+vous devez souvent faire de nombreux choix
+
+59
+00:02:49,780 --> 00:02:53,435
+arbitraires : nombre de nœuds,
+intégration et valeur de stride
+
+60
+00:02:53,435 --> 00:02:55,050
+de la couche de convolution, etc.
+
+61
+00:02:55,050 --> 00:02:58,480
+Plus votre modèle devient complexe,
+plus vous vous demandez si vous avez
+
+62
+00:02:58,480 --> 00:02:59,790
+choisi les bonnes valeurs.
+
+63
+00:02:59,790 --> 00:03:03,650
+Manuellement ou automatiquement,
+vous devez faire des recherches
+
+64
+00:03:03,650 --> 00:03:06,530
+sur l'espace d'hyperparamètres
+pour voir si vous auriez pu
+
+65
+00:03:06,530 --> 00:03:08,425
+faire de meilleurs choix,
+
+66
+00:03:08,425 --> 00:03:12,200
+par exemple sur le nombre de couches
+ou le nombre de nœuds.
+
+67
+00:03:12,200 --> 00:03:15,650
+Mais comme vous allez le voir,
+il faut aussi vérifier les éléments
+
+68
+00:03:15,650 --> 00:03:17,835
+de prétraitement,
+comme le nombre de buckets,
+
+69
+00:03:17,835 --> 00:03:19,790
+et les traiter comme des hyperparamètres.
+
+70
+00:03:20,090 --> 00:03:22,790
+Pour l'instant, nous n'avons parlé
+que de l'entraînement.
+
+71
+00:03:22,790 --> 00:03:25,650
+Mais à quoi sert un modèle entraîné
+s'il est inutilisable
+
+72
+00:03:25,650 --> 00:03:26,600
+pour l'inférence ?
+
+73
+00:03:26,600 --> 00:03:30,690
+Souvent, nous ne voulons et ne pouvons pas
+intégrer directement notre modèle de ML
+
+74
+00:03:30,690 --> 00:03:33,670
+dans l'application qui a besoin
+des caractéristiques prédites.
+
+75
+00:03:33,670 --> 00:03:37,010
+Il convient alors d'intégrer le modèle
+dans son propre microservice,
+
+76
+00:03:37,010 --> 00:03:39,935
+et de le faire communiquer
+avec tous les autres microservices,
+
+77
+00:03:39,935 --> 00:03:41,605
+comme toute autre application Web.
+
+78
+00:03:41,605 --> 00:03:45,020
+Vous pouvez aussi
+mettre à jour votre modèle,
+
+79
+00:03:45,020 --> 00:03:49,030
+lancer des tests A/B, sans changer
+la logique de base de votre application,
+
+80
+00:03:49,030 --> 00:03:50,550
+mais seulement le microservice.
+
+81
+00:03:51,525 --> 00:03:54,660
+Mais comment provisionner
+la bonne quantité de matériel nécessaire
+
+82
+00:03:54,660 --> 00:03:55,440
+pour ce modèle ?
+
+83
+00:03:55,440 --> 00:03:59,070
+Les systèmes évoluent automatiquement
+pour fournir le nombre de machines
+
+84
+00:03:59,070 --> 00:04:00,320
+nécessaires au bon moment.
+
+85
+00:04:00,320 --> 00:04:03,770
+Dans le cloud, on peut passer de zéro
+à autant de machines que nécessaire
+
+86
+00:04:03,770 --> 00:04:06,170
+pour gérer un grand nombre
+de requêtes par seconde.
+
+87
+00:04:06,170 --> 00:04:08,195
+Laissez-moi vous éviter
+quelques migraines.
+
+88
+00:04:08,195 --> 00:04:11,774
+Nous avons parlé du prétraitement
+de vos examples avant l'entraînement.
+
+89
+00:04:11,774 --> 00:04:12,804
+Mais attention !
+
+90
+00:04:13,054 --> 00:04:15,980
+Car vous devez vérifier
+que le même prétraitement
+
+91
+00:04:15,980 --> 00:04:17,560
+a lieu lors de la prédiction.
+
+92
+00:04:17,940 --> 00:04:21,270
+Après le prétraitement,
+votre modèle entraîné
+
+93
+00:04:21,270 --> 00:04:24,190
+peut différer de votre prédiction
+pour de nombreuses raisons.
+
+94
+00:04:24,190 --> 00:04:28,760
+Cloud Machine Learning Engine
+aide à éviter ces problèmes.
+
+95
+00:04:29,260 --> 00:04:33,540
+On ne parle pas assez souvent
+de la différence souvent subtile
+
+96
+00:04:33,540 --> 00:04:37,790
+et indétectable entre vos entrées
+de prédiction et celles en entraînement.
+
+97
+00:04:38,330 --> 00:04:40,430
+La moyenne d'une colonne
+peut avoir changé,
+
+98
+00:04:40,430 --> 00:04:42,440
+ou la variance a pu évoluer avec le temps.
+
+99
+00:04:42,440 --> 00:04:45,420
+La collecte et l'examen continus
+des données sont nécessaires
+
+100
+00:04:45,420 --> 00:04:48,430
+pour détecter ce phénomène de
+"décalage entraînement-service".
+
+101
+00:04:48,950 --> 00:04:51,565
+TensorFlow peut être difficile à utiliser.
+
+102
+00:04:51,565 --> 00:04:54,465
+Vous devez installer des pilotes,
+trouver les bonnes machines,
+
+103
+00:04:54,465 --> 00:04:57,645
+suivre l'ordre de prétraitement
+des opérations,
+
+104
+00:04:57,645 --> 00:05:00,015
+les paramètres de scaling, etc.
+
+105
+00:05:00,395 --> 00:05:01,875
+Google Cloud peut vous aider.
+
+106
+00:05:01,875 --> 00:05:03,970
+Nous offrons plusieurs services
+de big data.
+
+107
+00:05:03,970 --> 00:05:07,635
+Aujourd'hui, j'aimerais me concentrer
+sur Cloud Machine Learning Engine,
+
+108
+00:05:07,635 --> 00:05:08,740
+ou CMLE.
+
+109
+00:05:09,260 --> 00:05:12,310
+CMLE vous donne les machines
+dont vous avez besoin au bon moment,
+
+110
+00:05:12,310 --> 00:05:15,175
+simplifie la comptabilité
+et garantit que le modèle entraîné
+
+111
+00:05:15,175 --> 00:05:17,415
+correspond à l'exécution
+pendant la prédiction.
+
+112
+00:05:17,715 --> 00:05:22,075
+Ce service haute évolutivité simplifie
+la diffusion et l'entraînement distribué.
+
+113
+00:05:22,475 --> 00:05:24,640
+CMLE aide à distribuer le prétraitement,
+
+114
+00:05:24,640 --> 00:05:28,500
+à trouver les serveurs de paramètres
+et même à régler les hyperparamètres.
+
+115
+00:05:28,500 --> 00:05:32,440
+Pour les prédictions, le modèle de ML
+est accessible via une API REST
+
+116
+00:05:32,440 --> 00:05:35,610
+et comprend toutes les caractéristiques
+de prétraitement créées.
+
+117
+00:05:35,610 --> 00:05:39,080
+Le code client peut donc fournir
+simplement les variables d'entrée brutes,
+
+118
+00:05:39,080 --> 00:05:41,590
+ce que vous avez collecté
+dans les fichiers journaux,
+
+119
+00:05:41,590 --> 00:05:44,695
+les capteurs, les bases de données,
+puis retourner une prédiction.
+
+120
+00:05:44,695 --> 00:05:47,735
+CMLE fait aussi évoluer votre service
+avec le nombre de machines
+
+121
+00:05:47,735 --> 00:05:48,535
+que vous voulez,
+
+122
+00:05:48,535 --> 00:05:50,920
+pour un plus grand nombre
+de requêtes par seconde.
+
+123
+00:05:51,470 --> 00:05:52,495
+C'est très important.
+
+124
+00:05:52,495 --> 00:05:56,640
+Vous avez besoin d'une exécution efficace
+à l'entraînement et en prédiction.
+
+125
+00:05:57,290 --> 00:06:00,035
+Le calcul avec le modèle TensorFlow
+est peu onéreux.
+
+126
+00:06:00,035 --> 00:06:04,605
+Le modèle de ML permet d'obtenir
+de nombreuses prédictions.
+
+127
+00:06:05,865 --> 00:06:09,080
+Les blocs-notes comme Cloud Datalab
+de Google, ou les kernels Kaggle
+
+128
+00:06:09,080 --> 00:06:13,210
+permettent de se lancer et de développer
+rapidement des modèles.
+
+129
+00:06:13,350 --> 00:06:16,455
+Ils vous permettent d'explorer
+les données de manière interactive,
+
+130
+00:06:16,455 --> 00:06:19,025
+pour définir et vérifier
+de nouvelles caractéristiques,
+
+131
+00:06:19,025 --> 00:06:21,240
+et même pour lancer
+des tâches d'entraînement.
+
+132
+00:06:21,240 --> 00:06:25,085
+L'interface combine code, résultats
+et documents dans un format lisible.
+
+133
+00:06:25,085 --> 00:06:28,400
+Et comme vous êtes dans le cloud,
+vous bénéficiez d'une aide précieuse
+
+134
+00:06:28,400 --> 00:06:31,655
+pour le partage et la collaboration,
+ainsi que de nombreux tutoriels.
+
+135
+00:06:31,655 --> 00:06:35,310
+Datalab permet de se lancer facilement,
+puis de faire évoluer les calculs
+
+136
+00:06:35,310 --> 00:06:38,930
+de manière fluide, avec une variété
+de services Google Cloud.
+
+137
+00:06:39,480 --> 00:06:42,625
+Dans cet exemple, nous lançons une tâche
+Apache Beam sur Dataflow,
+
+138
+00:06:42,625 --> 00:06:46,880
+qui peut effectuer la distribution
+sur de nombreuses VM.

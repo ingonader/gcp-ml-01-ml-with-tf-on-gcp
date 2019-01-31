@@ -1,0 +1,62 @@
+Il a précédemment été question
+de ce qu'est TensorFlow et de la hiérarchie de l'API TensorFlow. Dans la leçon précédente, vous avez vu
+le graphe orienté acyclique (DAG) et son mode d'exécution dans une session. Il a été indiqué qu'un DAG
+est constitué de Tensors et d'opérations effectuées sur ces Tensors. Je vais maintenant revenir de manière
+plus détaillée sur ce que sont les Tensors. Vous vous souvenez qu'un Tensor est
+un tableau de données à n dimensions. Lorsque vous créez un Tensor,
+vous spécifiez généralement sa forme. Il peut toutefois arriver
+que vous ne le fassiez pas complètement, par exemple si le premier élément
+de la forme est variable. Mais nous allons ignorer
+ce cas particulier pour le moment. Donc ici, je crée tf.constant(3). C'est un Tensor de rang 0. Il s'agit juste d'un nombre.
+C'est un scalaire. La forme, indiquée dans la sortie
+du débogage du Tensor, sera simplement (). C'est un Tensor de rang 0. D'autre part, qu'en est-il si je transmets
+une liste 3, 5, 7 à tf.constant ? Nous avons maintenant
+un Tensor unidimensionnel (1D). Nous avons un vecteur.
+Et je peux continuer. Ici, je transmets un tableau 2D (3, 5, 7 dans la première ligne,
+et 4, 6, 8 dans la deuxième ligne). La forme du Tensor obtenu est 2, 3.
+2 lignes, 3 colonnes, rang 2. Vous pouvez voir une matrice
+comme une pile de Tensors 1D. Le premier de la pile est un vecteur 3, 5, 7,
+et le deuxième un vecteur 4, 6, 8. Nous pouvons de la même façon
+créer une matrice 3D en empilant des matrices 2D
+les unes sur les autres. Vous voyez ici que j'empile la matrice commençant
+par 3, 5, 7 sur celle commençant par 1, 2, 3. Étant donné que j'ai empilé
+deux matrices 2, 3, la forme du Tensor obtenu est 2, 2, 3. Bien sûr, il est aussi possible
+d'effectuer l'empilement avec du code, ce qui évite d'avoir à compter
+toutes ces parenthèses. Donc ici, x1 est une constante créée
+à partir d'une simple liste 2, 3, 4. Ça en fait un vecteur de longueur 3. x2 est créé par l'empilement de x1 sur x1,
+ce qui en fait une matrice 2, 3. x3 est créé par l'empilement
+de quatre x2 les uns sur les autres. Et étant donné que chaque x2
+était une matrice 2, 3, cela fait de x3 un Tensor 3D
+dont la forme est 4, 2, 3. x4 est créé par l'empilement de x3 sur x3, ce qui fait qu'il est constitué
+de deux Tensors 4, 2, 3. C'est-à-dire que c'est un Tensor 4D
+dont la forme est 2, 4, 2, 3. Vous pouvez ainsi empiler les Tensors
+les uns sur les autres pour créer des Tensors
+de plus grandes dimensions. Il est également possible
+de scinder un Tensor pour extraire des Tensors
+de plus petites dimensions. Alors ici, quelle est la forme de x ? C'est 2, 3. 2 lignes, 3 colonnes. Regardez maintenant le code de y. Il scinde x. Le deux-points indique
+que nous récupérons toutes les lignes, et le 1 que nous ne récupérons
+que la colonne 1, ce qui, étant donné que l'indexation
+commence à 0 en Python, correspond en fait à la deuxième colonne (0, puis 1). Donc, lorsque nous évaluons y, nous obtenons la valeur
+de la deuxième colonne pour toutes les lignes. C'est la raison pour laquelle
+le résultat affiché est 5, 6. Alors, un petit quiz :
+quel serait le résultat de x[1, :] ? Et x[1, 0:2] ? Qu'est-ce que ça donnerait ? Alors ? Avec x[1, :], vous obtiendriez
+la deuxième ligne. Avec l'indexation à partir de 0, le 1 correspond à la deuxième ligne.
+Et vous récupéreriez toutes les colonnes. Vous obtiendriez donc 4, 6, 8. Et quelles colonnes
+obtiendrions-nous avec 0:2 ? C'est très similaire
+à la fonction xrange en Python. Cela signifie que le programme
+doit partir de 0 et aller jusqu'à 2, mais sans inclure 2. Cela correspond donc à 0 et à 1. Cela veut dire que vous obtiendriez
+les deux lignes, ce qui revient au même. Vous obtiendriez toujours 4, 6, 8
+pour ces données. Une fois que les données sont
+dans un Tensor, il est possible de toutes les prendre
+et de redimensionner le Tensor. Donc, x est un Tensor 2D.
+Quelle est sa forme ? C'est ça, 2, 3. Si je le redimensionne en utilisant 3, 2,
+que va-t-il se passer ? Ce que je veux,
+c'est avoir les six valeurs dans x, mais je veux qu'elles se présentent
+sous la forme de 3 lignes et 2 colonnes. Python va donc lire
+le Tensor d'entrée ligne par ligne et mettre les nombres
+dans le Tensor de sortie. Il va donc récupérer
+les deux premières valeurs et les mettre dans la première ligne, de sorte que nous obtiendrons 3 et 5. Les deux valeurs suivantes, 7 et 4,
+iront dans la deuxième ligne, et les deux dernières valeurs, 6 et 8,
+iront dans la troisième ligne. Voilà à quoi correspond le redimensionnement. Nous pouvons procéder à un redimensionnement ou à une scission. Donc là, j'effectue un redimensionnement
+en utilisant 3, 2 comme précédemment, puis une scission de façon à obtenir
+uniquement la deuxième ligne et toutes les colonnes. Et c'est pour cela que j'obtiens 7, 4.

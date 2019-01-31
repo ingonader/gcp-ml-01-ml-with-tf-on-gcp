@@ -1,0 +1,95 @@
+En la sección anterior,
+definimos los modelos como funciones matemáticas
+con parámetros e hiperparámetros y presentamos los
+parámetros para los modelos lineales. Luego, vimos cómo los métodos analíticos para encontrar el mejor
+conjunto de parámetros no escalan. Y cómo podemos
+optimizar nuestros parámetros cuando buscamos
+por el espacio de parámetros. Pero para comparar un punto con otro necesitaremos algún tipo de medida. Aquí hablaremos sobre las funciones
+de pérdida, que pueden tomar la calidad de las predicciones
+para un grupo de puntos de datos del conjunto de entrenamiento
+e integrarlos en un solo número con el que estimamos la calidad
+de los parámetros actuales del modelo. Una medida de la calidad
+de la predicción en un punto único es esta diferencia de signo
+entre la predicción y el valor real. A esta diferencia se la llama error. ¿Cómo podríamos
+agrupar varios valores de error? La forma más sencilla es
+integrarlos como una suma. Pero si usamos la función de suma
+para integrar nuestros términos de error el modelo asumirá que los de signos
+opuestos se cancelan mutuamente. Y aunque nuestro modelo tiene
+que lidiar con evidencia contradictoria no quiere decir que un modelo que divide la diferencia
+entre errores positivos y negativos encontró la solución perfecta. En su lugar, queremos reservar
+esa designación para un modelo donde las predicciones coincidan
+con la etiqueta en todos los puntos y no para un modelo
+que realice errores de signos que se cancelan entre ellos. La suma de los valores absolutos
+del error parece una alternativa razonable pero este método para componer
+datos también tiene problemas y los analizaremos pronto. En cambio, lo que se suele
+usar es el error cuadrático medio (MSE). El MSE se calcula con el conjunto
+de términos de error de nuestro conjunto. Se elevan al cuadrado
+para eliminar los negativos y se calcula el promedio de los cuadrados. El MSE es una función
+de pérdida perfectamente válida pero tiene un problema. Aunque los errores estén
+en libras, kilómetros o dólares el error cuadrático estará en libras kilómetros o dólares al cuadrado. Eso puede hacer que sea
+algo difícil interpretar el MSE. A veces, tomamos su raíz cuadrada
+para ver unidades que podamos comprender. RMSE es la raíz
+del error cuadrático medio. Mientras más grande sea la RMSE,
+peor será la calidad de las predicciones. Lo que deberíamos
+hacer es minimizar la RMSE. La notación aquí es usar el símbolo ^ sobre la “Y”
+que representa la predicción del modelo y usar una “Y” sencilla
+para representar a la etiqueta. Ahora tenemos una métrica
+para comparar dos puntos en el espacio de parámetros.
+Si recuerdan, así codificamos los valores actuales del parámetro
+en nuestro modelo lineal. Observen en estos dos gráficos
+de dispersión y líneas de regresión el peso del bebé y la edad de la madre,
+para las que tienen más de 39 años. Puede ser muy difícil detectar visualmente cuál es la mejor línea
+para los datos subyacentes. Y aquí nuestras métricas de pérdida
+ayudan a decidir cuál es el mejor modelo. El modelo de la izquierda
+tiene una RMSE de .145 y el modelo de la derecha
+tiene una RMSE de .149. Así, las funciones de pérdida indican que los valores del peso
+y la ordenada al origen de la izquierda son mejores que los de la derecha. Aunque la RMSE funciona bien
+para los problemas de regresión lineal no sirve como función
+de pérdida para la clasificación. En los problemas de clasificación
+la etiqueta es una variable categórica. El problema de usar
+RMSE para la clasificación es cómo se representan estas
+variables categóricas en nuestro modelo. Como mencionamos antes las variables categóricas se
+suelen representar como enteros binarios. Para entender por qué esto
+podría ser un problema vean las curvas
+de pérdida que representamos. El dominio en el eje “X”
+representa la predicción el rango del eje “Y” representa
+la pérdida, según esa predicción. El color representa a la etiqueta. El verde indica que la etiqueta era 1 y el azul que la etiqueta era 0. ¿Qué tiene de malo esta curva? El problema es que no logra
+capturar nuestra intuición de que las predicciones muy malas
+se deberían penalizar con más fuerza. Observen cómo una predicción de 1,
+cuando el objetivo es 0 es tres veces peor que una
+predicción de .5 para el mismo objetivo. Entonces, en vez de usar RMSE,
+necesitamos una nueva función de pérdida. Una que penalice según nuestras
+intuiciones de problemas de clasificación. Una de las funciones
+de pérdida más comunes para la clasificación se llama
+entropía cruzada o pérdida logarítmica. Aquí tenemos un gráfico similar
+al de la última diapositiva solo que en lugar
+de mostrar la pérdida para RMSE se muestra el valor de una nueva
+función, denominada entropía cruzada. Observen que, a diferencia de RMSE la entropía cruzada penaliza
+fuertemente las malas predicciones aún en este dominio limitado. Veamos un ejemplo para entender
+mejor cómo funciona la fórmula. La fórmula para la entropía cruzada
+se reduce a dos términos diferentes. Solo uno de ellos participará
+en la pérdida de un cierto punto de datos. El primer término
+participa en los ejemplos positivos es decir, ejemplos
+donde la etiqueta “Y” es 1. El segundo término
+participa cuando la etiqueta es 0. Aquí tenemos una tabla
+que muestra tanto las etiquetas como las predicciones para dos
+imágenes en una tarea de clasificación. La etiqueta codifica si
+la imagen incluye un rostro humano. El modelo parece realizar un buen trabajo. La predicción es mayor
+para el ejemplo de la parte superior comparado
+con el de la parte inferior. Veamos cómo opera la función. Aquí vemos cómo
+se construye la función de pérdida. El término negativo del primer ejemplo y el término positivo
+del segundo ejemplo quedan fuera. Según las predicciones de .7 y .2 para dos puntos
+de datos con las etiquetas 1 y 0 la pérdida
+de entropía cruzada es, realmente el término positivo
+para el primer punto de datos más el término negativo
+para el segundo punto de datos multiplicado por - ½. El resultado es .13. ¿Qué ocurre cuando nuestro
+modelo no realiza una buena predicción? Aquí, parece que se clasificó mal
+el ejemplo negativo y, como resultado aumentó la pérdida, lo que tiene sentido. Recuerden que
+intentamos minimizar la pérdida. Ahora sabemos cómo comparar
+dos puntos en un espacio de parámetros ya sea con RMSE para la regresión
+o entropía cruzada para la clasificación. Pero recuerden que nuestra
+meta es encontrar el mejor conjunto de parámetros o el mejor punto
+en el espacio de parámetros. ¿Cómo podemos usar
+nuestro conocimiento y comparar dos conjuntos de parámetros
+para crear una estrategia de búsqueda? Es lo que haremos
+en la siguiente sección.

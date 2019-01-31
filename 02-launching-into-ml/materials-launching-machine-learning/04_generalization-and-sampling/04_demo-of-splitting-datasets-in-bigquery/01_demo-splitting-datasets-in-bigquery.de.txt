@@ -1,0 +1,108 @@
+Wir haben die Theorie behandelt und
+Sie kennen den Code in SQL schon etwas, aber Sie sollten alles
+in BigQuery durchlaufen, um Ihr Wissen zum Aufteilen 
+der Datasets in Buckets zu festigen. Bevor Sie mit dem
+Code für Moduloperatoren arbeiten und Datasets in
+SQL-WHERE-Klauseln aufteilen, zeige ich Ihnen, 
+wie wir dieses Dataset aufteilen. Auf dem Bild sehen Sie ein großes Dataset
+mit insgesamt 70 Millionen Flügen. Es könnten auch 7 Milliarden sein, aber Sie müssen dieses
+Dataset wiederholbar verkleinern. Wir können keine Stichproben
+verwenden, sondern brauchen einen intelligenten
+WHERE-Klausel-Filter. Nehmen wir also ein oder zwei Prozent, wie im orangefarbigen
+Kasten, und arbeiten uns vor bis 50 Prozent von diesem 
+1 Prozent für unsere Partner. Zum Beispiel sind im
+orangefarbigen Kasten Ihre Trainingsdaten, 50 Prozent davon wären Ihr 
+Validierungs-Dataset und den Rest können Sie als
+Test-Dataset verwenden, also das Ja-oder-Nein-Dataset. Wie funktioniert 
+das in Google BigQuery? Diesen Code können Sie auch in 
+zukünftigen Projekten verwenden. In Google BigQuery gibt es eine vorgefertigte Abfrage, die wir Schritt für
+Schritt durchgehen. Das ist die BigQuery-Oberfläche, die Sie vielleicht 
+schon mal gesehen haben. Obwohl hier steht, 
+dass es 70 Millionen einzelne Flüge gibt, brauchen wir nähere 
+Informationen zur Quelldatentabelle. Deaktivieren Sie unter 
+"Optionen anzeigen" den alten SQL-Dialekt. Sie können die Befehls- oder Windows-Taste gedrückt 
+halten und auf die Tabelle klicken. Das ist überall innerhalb
+von SQL eine Abkürzung, wenn Sie Details zu 
+Ihrer Tabelle brauchen. Hier können Sie alle Felder sehen. Wenn Sie auf "Details" klicken, sehen Sie die Anzahl 
+der Einträge innerhalb eines Fluges. Hier sind die 70 Millionen
+Flüge in diesem Dataset, ungefähr acht Gigabyte, und Sie können sich eine 
+Vorschau des Datasets ansehen. Hier sind die verschiedenen Flugdaten, die Abflughäfen und viele
+andere Informationen, die in einem Dataset einer
+Fluggesellschaft zu erwarten sind. Zusätzlich zu den
+einfachen, allgemeinen Feldern, die wir aus den Daten hier bilden, habe ich noch drei andere hinzugefügt. Bevor wir mit der Filterung beginnen, 
+die Sie in Zeile 17 zum WHERE-Klausel-
+Filter sehen können, zeige ich Ihnen ein Beispiel.
+Danach können Sie den Code in einem markierten Block ausführen, 
+indem Sie auf den Abwärtspfeil klicken und die Abfrage ausführen. 
+Das zeigt Ihnen genaue Details zu diesem Datum an,
+z. B. der 30. Juni 2008. Wie bereits in
+diesem Beispiel erwähnt, funktioniert eine 
+Farm-Fingerprint-Funktion so, dass sie diesen String in eine
+Reihe von Zahlen umwandelt. Es ist eine einseitige Hashfunktion,
+die wir ohne Einschränkung nutzen können, aber in jedem Fall wird 
+der 30. Juni 2008, so geschrieben, immer diesen Wert hashen. Der einzige Unterschied nach
+dem Hash mit Farm Fingerprint: In Zeilen 5 und 6
+möchten wir sehen, ob dieser Hash durch 
+70 oder 700 teilbar ist. Der Grund dafür ist, dass wir einen von 70 Einträgen 
+mit einem Rest von 0 abrufen wollen, das sind die 1 oder 2 Prozent der 70 Millionen Flüge,
+die für das Sub-Dataset gefiltert wurden. Hier sehen Sie ein Feld, das "remainder divide by 70" heißt. Wenn dieser Wert 0 entspricht, was genau in einem von 70 Fällen passiert, richten wir den ersten Filter ein. Ich setze das
+Limit weiter herunter. Beim Filtern in SQL werden Einträge mit einer
+WHERE-Klausel gefiltert, wie Sie im
+Kommentar in Zeile 15 sehen. Wir wählen eine von
+70 Zeilen aus, genau dort, wo das Feld 
+"remainder divided by 70" gleich null ist, und legen
+das Limit auf 10 fest. Jeder Wert in der Spalte "remainder divided by 70"
+sollte jetzt null betragen. Sie haben jetzt erfolgreich
+ca. 98 % der Daten ignoriert. Jetzt haben wir die erste Aufteilung der Daten
+geschafft, wie in der Grafik gezeigt. Davon haben wir
+ungefähr 842.000 Zeilen im orangefarbigen Kasten,
+den ich vorhin gezeigt habe. Das wird unser Trainings-Dataset. Sie erinnern sich, dass Sie ein 
+Trainings-, ein Validierungs- und eventuell ein Test-Dataset zur 
+zusätzlichen Filterung benötigen. Wir können "remainder
+divided by 70" nicht zu viel nutzen, also kann man auch 
+nicht "remainder divided by 7" nehmen, weil das schon null beträgt. Das haben wir schon verwendet und nutzen deshalb die
+zweite Filteroption an der Stelle, wo wir 700 verwenden. Ob 70 oder 700 ist eigentlich egal.
+Es hängt von der Größe des Buckets ab, den Sie für die Dataset-
+Splits verwenden möchten. Als Zweites verkleinern
+wir das Dataset um 98 Prozent. Jetzt müssen wir die
+restlichen 800.000 Einträge aufteilen und eine Wand zwischen dem Test- und dem Validierungsdataset 
+und dann das Trainingsdataset errichten. An dieser Stelle richten
+wir einen weiteren Filter für die WHERE-Klausel ein und ignorieren
+50 Prozent des restlichen Datasets. So sieht das dann aus. In dieser Spalte verwenden
+wir "remainder divided by 700", das könnte alles zwischen 0 und
+700 beim zweiten Modulvorgang sein. Wir möchten irgendeinen Wert dazwischen. Wir haben die
+Datensätze zwischen 0 und 700. Der Mittelpunkt 
+zwischen 0 und 700 ist 350. Es gibt also Einträge zwischen 0 und
+350 und Einträge zwischen 350 und 700. Durch das Teilen in der Mitte 
+erhalten wir dieses größer/gleich 350. Der Wert, den Sie hier 
+sehen – 630 – ist größer als 350. Deshalb ist er hier enthalten. Wenn wir uns diese Daten ansehen, handelt es sich nur um
+Flüge vom 13. Juni 2005, und sie haben alle denselben Hash. Das ist eine
+interessante und oft knifflige Sache bei dieser Funktion. Wie vorhin erwähnt,
+wenn wir ein Dataset mit nur zwei
+Datumsangaben wie dem 13. Juli 2005 und dem 14. Juli 2005 hätten, könnten wir keinen 
+80/20-Split machen, weil es in diesem Fall 
+nur diese zwei Hashes gäbe. Deshalb ist ein gut verteiltes Dataset besser für diese Splits, 
+weil die Hashes immer den gleichen Wert zurückgeben
+werden, anders als die Funktion "Random". Als Letztes wollen 
+wir das Subset weiter aufteilen, bis es nur
+50 Prozent davon enthält, was 25 Prozent der
+gesamten Trainingsdaten entspricht, die Sie für das
+Testen reservieren. Dazu benötigen Sie
+wieder den Mittelpunkt, also in diesem Fall
+jeder Wert unter 525, also der neue
+Mittelpunkt zwischen 350 und 700. Wenn Sie diesen
+Datenblock herausnehmen, ergeben sich 25 Prozent 
+des ursprünglichen Datasets. Das Schwierigste ist
+nicht die SQL-Syntax, sondern sich zu überlegen, wo man diese Abgrenzungen errichtet und wo die Mittelpunkte
+und Hash-Funktionen sind, die Sie verwenden möchten. Am Ende haben Sie diese
+zehn Einträge, die ich Ihnen jetzt zeige. Sie sollten alle durch 70 teilbar sein und es sollten Ihnen 
+überall Nullen angezeigt werden. Das "remainder divide by 700"
+für das endgültige Test-Dataset sind die 25 Prozent, 
+die wir für das Testen aufheben wollen. Alle Werte sollten kleiner sein. Sie sollten größer/gleich 350, aber weniger als 525 betragen. 
+Das ist hier mit dem Wert 420 erfüllt. Wenn Sie es anders herum angehen und auf die Werte zwischen 
+525 und 700 zugreifen wollen, wandeln Sie das Zeichen
+einfach in ein "größer als" 525 um. Dann speichern Sie die Ergebnisse an drei
+verschiedenen Orten: Training, Validierung und Testen.
+Danach können Sie diese importieren und in 
+ML-Modelle einspeisen. Sie üben das noch in den Labs und werden auf
+verschiedene Fallstricke stoßen, aber Sie verstehen jetzt das Grundkonzept. Also zurück an die Arbeit.

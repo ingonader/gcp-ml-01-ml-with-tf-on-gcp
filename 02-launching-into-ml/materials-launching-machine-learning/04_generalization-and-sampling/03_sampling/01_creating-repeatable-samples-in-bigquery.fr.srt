@@ -1,0 +1,621 @@
+1
+00:00:00,150 --> 00:00:02,799
+Comme vous venez de le voir,
+diviser les données permet
+
+2
+00:00:02,799 --> 00:00:06,245
+de tester sa modélisation
+avec des données réelles simulées,
+
+3
+00:00:06,245 --> 00:00:09,105
+en n'utilisant pas ces sous-ensembles
+lors de l'entraînement.
+
+4
+00:00:09,375 --> 00:00:12,710
+Mais où diviser l'ensemble de départ ?
+
+5
+00:00:12,910 --> 00:00:15,070
+Et si cet ensemble est énorme ?
+
+6
+00:00:15,710 --> 00:00:18,785
+Devons-nous entraîner et tester
+pour tous les points de données ?
+
+7
+00:00:18,905 --> 00:00:20,625
+Dans ce cours sur l'échantillonnage,
+
+8
+00:00:20,625 --> 00:00:24,380
+je vais vous montrer comment diviser
+vos données de façon reproductible,
+
+9
+00:00:24,380 --> 00:00:28,515
+avec Google Big Query,
+ainsi que les principaux pièges à éviter.
+
+10
+00:00:28,515 --> 00:00:31,435
+Vous vous y entraînerez
+lors du prochain atelier.
+
+11
+00:00:32,695 --> 00:00:33,760
+Commençons.
+
+12
+00:00:34,930 --> 00:00:37,555
+Avant de parler de la division
+des ensembles de données,
+
+13
+00:00:37,555 --> 00:00:39,425
+nous devons en choisir un.
+
+14
+00:00:39,905 --> 00:00:43,620
+Nous allons utiliser des données sur
+les performances de compagnies aériennes
+
+15
+00:00:43,620 --> 00:00:46,425
+du Bureau of Transportation Statistics.
+
+16
+00:00:46,965 --> 00:00:50,240
+Google a mis ses données
+à la disposition de tous dans BigQuery
+
+17
+00:00:50,240 --> 00:00:53,435
+sous le nom
+airlineontimedata.flightsdataset.
+
+18
+00:00:53,685 --> 00:00:57,160
+Ces données contiennent les retards
+de vols au départ et à l'arrivée,
+
+19
+00:00:57,160 --> 00:01:00,705
+et ce pour 70 millions de vols.
+
+20
+00:01:01,185 --> 00:01:04,685
+Voyons comment échantillonner
+les données d'entraînement, de validation
+
+21
+00:01:04,685 --> 00:01:09,150
+et de test à partir de cet ensemble,
+de façon uniforme et reproductible.
+
+22
+00:01:10,350 --> 00:01:13,555
+SQL ou Structured Query Language,
+et donc BigQuery,
+
+23
+00:01:13,555 --> 00:01:16,805
+puisqu'on exécute SQL sur BigQuery,
+ont la fonction RAND(),
+
+24
+00:01:16,805 --> 00:01:19,460
+et cela génère
+une valeur située entre 0 et 1.
+
+25
+00:01:19,790 --> 00:01:22,210
+Vous pouvez obtenir 80 % de votre ensemble
+
+26
+00:01:22,210 --> 00:01:25,550
+en appliquant
+une clause SQL WHERE simple.
+
+27
+00:01:26,270 --> 00:01:28,760
+Vous remarquerez peut-être
+des problèmes manifestes.
+
+28
+00:01:29,140 --> 00:01:31,360
+Ce processus sera-t-il reproductible
+
+29
+00:01:31,360 --> 00:01:33,465
+si un collègue veut
+répéter votre expérience
+
+30
+00:01:33,465 --> 00:01:36,555
+avec les mêmes 80 % de votre ensemble ?
+
+31
+00:01:36,745 --> 00:01:39,030
+Et si cet ensemble
+contenait 70 millions de vols,
+
+32
+00:01:39,030 --> 00:01:41,600
+obtiendrait-il
+les mêmes 56 millions de vols
+
+33
+00:01:41,600 --> 00:01:44,630
+ou 80 % du même
+ensemble d'entraînement ?
+
+34
+00:01:45,670 --> 00:01:47,625
+Nous avons besoin d'une meilleure méthode
+
+35
+00:01:47,625 --> 00:01:50,630
+pour déterminer quelles données
+appartiennent à quel bucket :
+
+36
+00:01:50,630 --> 00:01:52,440
+entraînement, validation et test.
+
+37
+00:01:52,950 --> 00:01:57,100
+Cela nous permettra
+de reproduire nos expériences,
+
+38
+00:01:57,100 --> 00:01:59,435
+en utilisant les mêmes données
+pour chaque bucket.
+
+39
+00:01:59,975 --> 00:02:01,500
+Comme vous avez pu le deviner,
+
+40
+00:02:01,500 --> 00:02:04,520
+une simple fonction Random
+prendrait un nouvel ensemble
+
+41
+00:02:04,520 --> 00:02:08,120
+de cinq lignes sélectionnées au hasard,
+à chaque nouvelle requête.
+
+42
+00:02:08,840 --> 00:02:11,420
+Il est alors très difficile,
+voire impossible,
+
+43
+00:02:11,420 --> 00:02:14,215
+d'identifier et de diviser
+les 20 % restants de vos données
+
+44
+00:02:14,215 --> 00:02:16,225
+pour les buckets de validation et de test.
+
+45
+00:02:16,295 --> 00:02:18,440
+En outre, l'ensemble
+de données peut être trié
+
+46
+00:02:18,440 --> 00:02:20,445
+et ajouter des biais à votre échantillon.
+
+47
+00:02:20,445 --> 00:02:23,670
+Et le tri apporte
+aussi son lot de problèmes
+
+48
+00:02:23,670 --> 00:02:26,335
+en cas de descente de gradient
+par mini-lot, par exemple.
+
+49
+00:02:27,705 --> 00:02:33,210
+Pour le ML, vous voulez pouvoir
+créer ces échantillons reproductibles.
+
+50
+00:02:33,720 --> 00:02:36,390
+Pour ce faire, vous pouvez
+utiliser les derniers chiffres
+
+51
+00:02:36,390 --> 00:02:39,055
+d'une fonction de hachage
+sur le champ que vous utilisez
+
+52
+00:02:39,055 --> 00:02:41,080
+pour diviser vos données en buckets.
+
+53
+00:02:41,500 --> 00:02:45,565
+La fonction de hachage disponible
+dans BigQuery s'appelle Farm Fingerprint.
+
+54
+00:02:46,195 --> 00:02:49,840
+Farm Fingerprint a
+la valeur "10 décembre 2018",
+
+55
+00:02:49,840 --> 00:02:52,285
+qui est transformée
+en une chaîne de chiffres,
+
+56
+00:02:52,285 --> 00:02:54,270
+et cette valeur de hachage est identique
+
+57
+00:02:54,270 --> 00:02:57,380
+pour toutes les valeurs 10 décembre 2018
+de l'ensemble de données.
+
+58
+00:02:57,810 --> 00:03:01,305
+Vous créez un algorithme de ML
+pour prévoir les retards à l'arrivée.
+
+59
+00:03:01,825 --> 00:03:03,860
+Vous voulez diviser vos données par date,
+
+60
+00:03:03,860 --> 00:03:09,030
+et obtenir environ 80 % des jours
+dans votre ensemble d'entraînement.
+
+61
+00:03:09,300 --> 00:03:10,835
+C'est reproductible,
+
+62
+00:03:10,835 --> 00:03:13,585
+car la fonction de hachage
+Farm Fingerprint renvoie
+
+63
+00:03:13,585 --> 00:03:17,520
+la même valeur chaque fois
+qu'une date spécifique est choisie.
+
+64
+00:03:17,520 --> 00:03:23,405
+Vous obtiendrez les mêmes 80 %,
+ou à peu près, à chaque fois.
+
+65
+00:03:23,405 --> 00:03:25,805
+Si vous divisez vos données
+par aéroport d'arrivée,
+
+66
+00:03:25,805 --> 00:03:28,700
+80 % des aéroports sont
+dans l'ensemble d'entraînement
+
+67
+00:03:28,700 --> 00:03:31,320
+et le reste dans les ensembles
+de test et de validation,
+
+68
+00:03:31,320 --> 00:03:34,570
+vous utiliseriez la fonction
+de hachage sur l'aéroport d'arrivée.
+
+69
+00:03:34,940 --> 00:03:36,435
+Dans cette requête,
+
+70
+00:03:36,435 --> 00:03:39,480
+comment obtenir un nouvel échantillon
+de 10 % pour l'évaluation ?
+
+71
+00:03:40,160 --> 00:03:44,100
+Il faut modifier inférieur à 8
+en égal à 8 pour tester les données,
+
+72
+00:03:44,100 --> 00:03:49,555
+ou égal à 8 ou 9 pour un autre 10 %
+pour l'évaluation ou le test.
+
+73
+00:03:49,555 --> 00:03:51,515
+C'est ainsi que vous divisez ces buckets.
+
+74
+00:03:51,975 --> 00:03:55,690
+Nous voulons prédire les retards des vols
+en fonction de la compagnie aérienne,
+
+75
+00:03:55,690 --> 00:03:58,405
+l'heure, le temps
+et les caractéristiques de l'aéroport,
+
+76
+00:03:58,405 --> 00:04:00,360
+comme le nombre de pistes de l'aéroport.
+
+77
+00:04:00,360 --> 00:04:02,597
+En fonction de quels champs
+diviser l'ensemble ?
+
+78
+00:04:02,597 --> 00:04:04,955
+La date ? L'aéroport ? La compagnie ?
+
+79
+00:04:05,600 --> 00:04:08,445
+Divisez donc vos données
+en des ensembles valides
+
+80
+00:04:08,445 --> 00:04:10,865
+en fonction d'un champ
+que vous pouvez perdre.
+
+81
+00:04:10,865 --> 00:04:13,170
+Par exemple, si vous divisez
+vos données par date
+
+82
+00:04:13,170 --> 00:04:14,885
+pour prédire les retards à l'arrivée
+
+83
+00:04:14,885 --> 00:04:17,360
+et qu'il n'y a de vols
+que sur deux jours différents,
+
+84
+00:04:17,360 --> 00:04:20,070
+vous ne pouvez pas les diviser
+plus précisément que 50/50.
+
+85
+00:04:20,070 --> 00:04:22,735
+Le hachage est à sens unique,
+vous n'aurez qu'une valeur.
+
+86
+00:04:22,735 --> 00:04:25,025
+Vous ne pouvez pas
+obtenir 80/20 avec deux dates.
+
+87
+00:04:25,635 --> 00:04:27,875
+Examinons chacune de ces options.
+
+88
+00:04:28,545 --> 00:04:32,340
+Et si nous créons des buckets
+en fonction de la date ?
+
+89
+00:04:32,450 --> 00:04:33,890
+Pas de problème.
+
+90
+00:04:33,890 --> 00:04:38,280
+Mais vous ne pourrez plus faire
+de prédictions en fonction des fêtes,
+
+91
+00:04:38,280 --> 00:04:39,970
+comme Noël ou Thanksgiving.
+
+92
+00:04:39,970 --> 00:04:43,910
+Les principaux facteurs de la prédiction
+ne doivent pas avoir de rapport à la date,
+
+93
+00:04:43,910 --> 00:04:46,500
+car la création des buckets
+est basée sur la date.
+
+94
+00:04:46,740 --> 00:04:50,165
+Que se passe-t-il si nous hachons
+et divisons en fonction de l'aéroport ?
+
+95
+00:04:50,225 --> 00:04:52,655
+D'accord,
+tant que les données comportent du bruit.
+
+96
+00:04:52,655 --> 00:04:56,610
+Vous ne pouvez plus faire de prédictions
+spécifiques à un aéroport, par exemple.
+
+97
+00:04:56,990 --> 00:04:59,740
+Les vols de 17h à partir de JFK
+sont toujours en retard.
+
+98
+00:04:59,740 --> 00:05:01,310
+Vous ne pouvez plus utiliser JFK,
+
+99
+00:05:01,310 --> 00:05:03,260
+car vous avez divisé
+à partir de celui-ci.
+
+100
+00:05:03,260 --> 00:05:05,550
+Et si nous divisons
+en fonction de la compagnie ?
+
+101
+00:05:05,550 --> 00:05:10,245
+Il n'y avait que 11 compagnies,
+et si vous voulez diviser les données,
+
+102
+00:05:10,245 --> 00:05:14,410
+ce n'est pas assez bien distribué
+pour obtenir une division précise.
+
+103
+00:05:14,680 --> 00:05:18,080
+Au lieu de 80/20,
+vous risquez d'obtenir 60/40,
+
+104
+00:05:18,080 --> 00:05:20,035
+ce qui n'est peut-être pas assez bon.
+
+105
+00:05:20,925 --> 00:05:22,890
+Si vous débutez dans le développement ML,
+
+106
+00:05:22,890 --> 00:05:26,630
+il vaut mieux développer votre code
+Tensorflow sur un petit sous-ensemble,
+
+107
+00:05:26,630 --> 00:05:30,275
+puis le faire évoluer dans le cloud
+pour la véritable productisation.
+
+108
+00:05:30,955 --> 00:05:33,300
+Imaginez que vous développez
+une application ML.
+
+109
+00:05:33,300 --> 00:05:36,270
+À chaque modification,
+vous devez la relancer.
+
+110
+00:05:36,780 --> 00:05:38,500
+Si vous utilisez l'ensemble complet,
+
+111
+00:05:38,500 --> 00:05:40,640
+cela peut prendre
+des heures, voire des jours.
+
+112
+00:05:40,640 --> 00:05:44,055
+Il s'agit de pétaoctets, et il n'est pas
+possible de développer ainsi.
+
+113
+00:05:44,725 --> 00:05:48,130
+Il faut un petit ensemble de données,
+pour vérifier rapidement le code,
+
+114
+00:05:48,130 --> 00:05:50,345
+le déboguer et l'exécuter à nouveau.
+
+115
+00:05:50,625 --> 00:05:53,725
+Quand l'application fonctionne,
+vous pouvez l'exécuter une fois,
+
+116
+00:05:53,725 --> 00:05:56,490
+ou le nombre de fois de votre choix
+sur l'ensemble complet.
+
+117
+00:05:56,490 --> 00:05:57,780
+C'est comme le prototypage.
+
+118
+00:05:57,780 --> 00:06:01,660
+Voyons comment échantillonner
+uniformément un sous-ensemble plus petit
+
+119
+00:06:01,660 --> 00:06:03,850
+de nos données
+sur les compagnies aériennes.
+
+120
+00:06:03,850 --> 00:06:05,190
+Nous avons créé les buckets,
+
+121
+00:06:05,190 --> 00:06:06,860
+mais nous voulons moins de données.
+
+122
+00:06:07,750 --> 00:06:10,930
+Les données relatives aux vols
+comportent 70 millions de lignes.
+
+123
+00:06:11,340 --> 00:06:13,485
+Vous vouliez peut-être
+un ensemble plus petit,
+
+124
+00:06:13,485 --> 00:06:14,677
+comme un million de vols.
+
+125
+00:06:14,677 --> 00:06:16,680
+Je me répète,
+cela doit être reproductible.
+
+126
+00:06:16,680 --> 00:06:21,110
+Comment choisir un vol sur 70,
+puis 80 % de ceux-ci pour l'entraînement ?
+
+127
+00:06:21,940 --> 00:06:26,625
+Vous ne pouvez pas choisir 1 vol sur 70,
+puis 1 sur 10 à partir des résultats.
+
+128
+00:06:26,625 --> 00:06:27,630
+Savez-vous pourquoi ?
+
+129
+00:06:28,940 --> 00:06:31,650
+Si vous prenez
+des nombres divisibles par 70,
+
+130
+00:06:31,650 --> 00:06:33,890
+ils seront aussi divisibles par 10.
+
+131
+00:06:34,460 --> 00:06:37,830
+La deuxième opération modulo
+ne sert à rien.
+
+132
+00:06:38,765 --> 00:06:42,505
+Je vais faire une brève démonstration
+pour tout vous expliquer.

@@ -1,0 +1,33 @@
+Let's go through this
+second code lab together. So this time, we will see how to use the
+dataset API to create our input functions. Let's locate to the lab files. We go to cloud.goole.com/console, and log with our lab account. Here we are in the console. We can open Cloud Shell. And reconnect to our existing data lab instance by typing datalab connect mylab. The connection is established. Now we go to this button where Preview. Change the port to 8081,
+that is what data lab uses And here we are in our
+usual notebook interface. We will create a new notebook just to
+type in a couple of Git commands and get the codes down. So %bash, and we clone this repository. It's running, and the repository has
+appeared here as training-data-analyst. Let's locate our lab files. So we click on training-data-analyst,
+then courses. Then machine_learning. Then deepdive, and finally tensorflow. The second lab is called c_dataset,
+let's open that. The dataset API can be used to create
+the input functions for your estimator. It handles progressive loading, so please
+use it anytime you have a large data set. Let us start looking at the code here. Our data set on disk is
+a set of sharded CSV files. We use the Dataset.list_files
+function to scan the disk and obtain a data set of file names. The TextLineDataset function can
+then be used to read each file and transform it into a set of text lines. This is a one to many transformation. One file name becomes
+multiple lines of text. So we apply it with the flat map function. We now have a single data set
+of text lines obtained from the contents of all of our files. This is only a conceptual representation. The files have not all
+been loaded into memory. They would not fit. Finally, we use the map
+function to apply a one to one transformation to the text lines. Each line is parsed as a set of CSV comma separated values and
+become a feature list. The decoding itself happens here. We now have the dataset of features and
+labels that we wanted right here. We shuffle it with a given
+shuffle buffer size. We repeat it for
+a given number of epochs and split it in mini batches of batch size. Finally, we call this
+get_next function which returns the features and
+labels as a TensorFlow note. This is what our model expects. Every time the model will run
+these notes during training, they will deliver the next
+batch of features and labels, triggering file load operations
+progressively only when needed. Here, we define
+the training validation and test dataset input functions by
+loading the corresponding CSV files. taxi-train.csv, taxi-valid.csv and taxi-text.csv Let's run those cells. We leave our feature columns as they
+are for now, and we are ready to train. The training is running. For that we called as before
+the model.train function on our input function getting the training dataset. We have a trained model. And now finally we evaluate it,
+and get our validation metrics. Here they are, and
+that is it for this code lab.

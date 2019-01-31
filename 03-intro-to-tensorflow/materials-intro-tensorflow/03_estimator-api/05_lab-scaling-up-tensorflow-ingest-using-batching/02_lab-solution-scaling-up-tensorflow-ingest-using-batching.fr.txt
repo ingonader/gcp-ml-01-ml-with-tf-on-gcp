@@ -1,0 +1,45 @@
+Suivons ensemble
+ce deuxième atelier de programmation. Cette fois, nous allons voir
+comment utiliser l'API Dataset pour créer nos fonctions d'entrée. Recherchons les fichiers de l'atelier. Accédez à cloud.google.com/console, puis connectez-vous
+avec votre compte d'atelier. Nous sommes maintenant dans la console. Nous pouvons ouvrir Cloud Shell et nous reconnecter
+à notre instance Datalab existante en saisissant "datalab connect mylab". La connexion est établie. Cliquez sur le bouton "Web preview", puis remplacez le port par "8081",
+celui utilisé par Datalab. Nous sommes maintenant
+dans l'interface de bloc-notes habituelle. Nous allons créer un nouveau bloc-notes
+pour saisir quelques commandes Git et récupérer le code
+en saisissant "%bash". Puis nous clonons ce dépôt. La commande s'exécute, et le dépôt
+"training-data-analyst" apparaît ici. Recherchons les fichiers de notre atelier. Cliquez sur "training-data-analyst",
+"courses", "machine_learning", "deepdive", et enfin "tensorflow". Le deuxième atelier s'appelle "c_dataset". Ouvrons-le. L'API Dataset vous permet de créer
+les fonctions d'entrée de l'estimateur. Elle gère le chargement progressif. Utilisez-la à chaque fois que vous avez
+un ensemble de données volumineux. Examinons ce code. Notre ensemble de données sur disque
+se compose de fichiers CSV partitionnés. Nous allons utiliser
+la fonction "Dataset.list_files" pour analyser le disque et obtenir un ensemble
+de données de noms de fichiers. La fonction "TextLineDataset"
+vous permet ensuite de lire chaque fichier pour les transformer
+en un ensemble de lignes de texte. On parle alors
+de transformation un à plusieurs : un nom de fichier se transforme
+en plusieurs lignes de texte. Nous l'appliquons donc
+avec la fonction "flat_map". Nous avons maintenant
+un ensemble de données de lignes de texte obtenu à partir du contenu
+de tous nos fichiers. Il ne s'agit là que
+d'une représentation conceptuelle. Les fichiers n'ont pas tous
+été chargés en mémoire. Ils ne rentreraient pas. Enfin, la fonction "map" nous permet
+d'appliquer une transformation un à un aux lignes de texte. Chaque ligne est analysée
+comme un ensemble de valeurs séparées par des virgules et devient
+une liste de caractéristiques. Le décodage lui-même se produit ici. Nous avons maintenant l'ensemble
+de données de caractéristiques et de libellés dont nous avons besoin. Nous le brassons avec une taille
+de tampon de brassage donnée. Nous répétons l'opération
+sur un nombre d'itérations défini, et nous divisons l'ensemble
+en mini-lots d'une taille définie. Enfin, nous appelons
+la fonction "get_next" qui renvoie les caractéristiques et les libellés
+sous la forme d'un nœud TensorFlow. C'est ce que notre modèle attend. À chaque fois que le modèle
+exécute ces nœuds pendant l'entraînement, ils délivrent le lot suivant
+de caractéristiques et libellés, en déclenchant progressivement
+des opérations de chargement de fichiers en cas de besoin. Ici, nous définissons les fonctions
+d'entrée d'entraînement, de validation et de test, en chargeant
+les fichiers CSV correspondants : "taxi-train.csv",
+"taxi-valid.csv" et "taxi-test.csv". Exécutons ces cellules. Pour l'instant, nous laissons nos colonnes
+de caractéristiques en l'état, et nous pouvons passer à l'entraînement. L'entraînement s'exécute. Pour cela, nous avons appelé la fonction
+"model.train" sur la fonction d'entrée qui récupère l'ensemble
+de données d'entraînement. Nous avons notre modèle entraîné. Et enfin, nous allons l'évaluer
+et obtenir nos métriques de validation. Et voilà, nous avons terminé
+cet atelier de programmation.

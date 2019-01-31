@@ -1,0 +1,75 @@
+Les bébés nous sont chers. Certains nécessitent des soins urgents
+dès leur naissance. Les médecins spécialisés
+sont cependant rares. Dans un monde parfait, on saurait
+précisément où envoyer ces médecins, pour qu'ils soignent ces bébés malades. Malheureusement, ce monde n'existe pas. Comment le ML peut-il résoudre ce problème ? Si on pouvait identifier les bébés
+à risque avant leur naissance, on pourrait garantir
+la disponibilité des médecins. Pour faire des prédictions
+avant la naissance d'un bébé, quelle caractéristique pouvons-nous
+utiliser dans notre modèle ? L'âge de la mère, l'heure de naissance,
+le poids du bébé ? Pour faire des prédictions
+avant la naissance d'un bébé, quelle étiquette pouvons-nous
+utiliser dans notre modèle ? L'âge de la mère, l'heure de naissance,
+le poids du bébé ? Vous ne devez pas forcément connaître
+les réponses à ces questions, qui sont vraiment spécifiques. Mais, vous devez savoir
+si ces informations sont disponibles au moment où nous souhaitons
+faire des prédictions. Dans cet exemple, on ne peut pas
+connaître l'heure de naissance à l'avance, donc cette donnée est inutilisable. Le poids est un très bon
+indicateur de la santé d'un bébé. L'âge de la mère est facile à connaître,
+et permet de prédire le poids du bébé. Voilà donc un bon exemple pour le ML, car il existe un besoin réel d'obtenir
+rapidement des données permettant d'assurer la santé du bébé,
+et qui semblent être prédictibles. Si nous choisissons le poids du bébé
+comme étiquette, quel type de problème de ML
+devons-nous résoudre ? Rappelez-vous que le poids du bébé
+est une valeur continue. Pour l'instant, traitons le problème
+en tant que régression. Pour simplifier, utilisons l'âge de la mère
+comme caractéristique, et le poids du bébé comme étiquette. Ces données sont issues de l'ensemble
+de données de natalité collectées par le gouvernement
+des États-Unis. Il est disponible
+publiquement dans BigQuery. Pour modéliser des données, il faut
+souvent commencer par les examiner afin d'isoler les indicateurs du bruit. J'ai représenté le poids du bébé
+en fonction de l'âge de la mère dans un graphique en nuage. Ce type de graphique est généralement
+créé à partir d'échantillons de grands ensembles de données. Pourquoi des échantillons ? Il est tout d'abord impossible de
+créer ces graphiques avec trop de données. En outre, ils sont difficiles à interpréter
+s'ils présentent beaucoup de données. Notez qu'il semble y avoir
+une petite relation positive entre l'âge de la mère et le poids du bébé. Voici un autre type de graphique
+qui utilise les mêmes variables. Contrairement à un nuage de points qui
+représente les données de façon individuelle, celui-ci les représente en groupes,
+plus précisément en quantiles. On doit donc disposer d'un échantillon
+pour créer ce graphique, qui sera forcément représentatif. De plus, les résultats sont reproductibles, et le processus est parallélisable. Ce graphique analyse
+22 Go de données, en quelques secondes. On verra plus tard comment
+créer ce type de graphiques. Constatez-vous un lien entre les données
+dans ce graphique ? Un élément qui était invisible
+dans le nuage de points se dégage. Le poids du bébé atteint la valeur maximale
+lorsque les mères ont environ 30 ans, et diminue quand elles sont
+plus âgées ou plus jeunes. Ceci indique une relation non linéaire, qui n’apparaissait pas
+dans notre nuage de points. C'est mauvais signe, car nous voulions utiliser
+un modèle linéaire pour cette relation. Le fait de vouloir utiliser un modèle
+linéaire pour une fonction non linéaire est un exemple parfait
+de sous-apprentissage. Pourquoi n'utilisons-nous pas
+un type de modèle plus complexe ? Pour des raisons pédagogiques. Le choix des modèles et le concept de
+surapprentissage seront abordés plus tard. Pour résumer, les risques sont
+proportionnels à la complexité du modèle. Il y a donc une petite relation positive
+entre l'âge de la mère et le poids du bébé. On va la modéliser avec une droite. Comme on utilise un modèle linéaire,
+notre première intuition se traduit par une droite vers le haut
+avec une ordonnée à l'origine positive. On a choisi cette droite à vue de nez. Mais ne devrait-elle pas être située
+plus haut ou plus bas ? Se trouve-t-elle au bon endroit ? Est-elle plus précise
+que cette autre droite ? Si vous avez étudié les statistiques,
+vous vous rappelez sans doute comment déterminer les poids optimaux
+avec la régression par les moindres carrés. Elle permet en effet de déterminer de manière
+analytique les poids les plus précis dans des modèles linéaires. Mais, ces solutions ne fonctionnent
+qu'à une certaine échelle. Les très grands ensembles de données nécessitent trop de puissance de calcul
+pour résoudre le problème. Alors que faire si le problème est
+insoluble de manière analytique ? Il faut utiliser la descente de gradient. Envisageons l'optimisation comme
+une recherche dans un espace de paramètres. Notre modèle linéaire compte
+deux paramètres : une valeur de poids, et une valeur de biais. Comme ce sont deux valeurs réelles, on
+peut représenter toutes les combinaisons de valeurs de ces paramètres sous forme
+de points dans un espace en 2D. N'oubliez pas que
+nous cherchons la valeur optimale. Comment comparer
+la qualité d'un point à celle d'un autre dans l'espace de paramètres ? Il faut d'abord reformuler le problème. Les espaces d'entrée, qui contiennent les données,
+sont souvent infinis. Il est donc impossible d'y évaluer les
+paramètres pour chaque point. En général, on estime ces calculs
+en fonction des données disponibles, c'est-à-dire nos données d'apprentissage. On effectue alors une généralisation
+en se basant sur la qualité d'une prédiction pour un point de données unique,
+qui est l'erreur de cette prédiction, pour obtenir un nombre représentatif
+de la qualité d'un groupe de prédictions. Pour ce faire, on utilise
+des fonctions de perte.

@@ -1,0 +1,50 @@
+Falamos sobre o que é o TensorFlow e sobre a hierarquia
+de APIs do TensorFlow. Na aula anterior, falamos sobre o
+gráfico acíclico direcionado, ou DAG, e como ele é executado em uma sessão. Dissemos que um DAG consiste em tensores
+e operações nesses tensores. Vamos examinar mais detalhadamente
+o que são os tensores agora. Lembre-se, um tensor
+é uma matriz N dimensional de dados. Quando você cria um tensor,
+normalmente especifica a forma dele. Bem, às vezes, você não especificará
+a forma completamente. Por exemplo, o primeiro elemento da forma
+pode ser variável, mas por enquanto
+vamos ignorar esse caso especial. Então, vou criar aqui um tf.constant(3). Este é um tensor de classificação 0. É só um número, um escalar. A forma, quando você olha para a saída de
+depuração do tensor, será simplesmente (). É classificação 0. Por outro lado, e se eu tivesse passado
+uma lista 3, 5, 7 para tf.constant? Agora, temos um tensor unidimensional. Temos um vetor, então posso continuar. Aqui, estou passando
+uma matriz 2D, 3, 5, 7 na primeira linha e 4, 6, 8 na segunda. A forma do tensor resultante é 2, 3, 2 linhas, 3 colunas, a classificação é 2. Você pode pensar em uma matriz
+como uma pilha de tensores 1D. O primeiro tensor é um vetor 3, 5, 7 e o segundo tensor 1D que
+está sendo empilhado é um vetor 4, 6, 8. Podemos, da mesma forma, criar
+uma matriz 3D empilhando matrizes 2D, uma sobre a outra. Você me vê aqui empilhando a matriz
+3, 5, 7 etc. em cima da matriz 1, 2, 3. Como empilhei duas matrizes 2x3, a forma resultante do tensor é 2, 2, 3. Claro, posso fazer
+o empilhamento no código em vez de contar todos esses parênteses. Aqui, x1 é uma constante e é criada
+de uma lista 2, 3, 4 simples. Isso faz com que seja
+um vetor de comprimento 3. x2 é criado ao empilharmos x1
+em cima de x1, então isso faz
+com que seja uma matriz 2x3. x3 é criado ao empilharmos quatro x2
+em cima uns dos outros. E como cada x2 era uma matriz 2x3, isso faz de x3 um tensor 3D
+com forma de 4x2x3. x4 é criado ao empilharmos
+x3 em cima de x3, de modo que isso torna
+dois deles tensores 4x2x3, ou um tensor 4D
+que tem a forma 2, 4, 2, 3. Assim, você pode empilhar tensores
+um sobre o outro para criar tensores
+de dimensões maiores. Você também pode cortar um tensor para
+extrair tensores dimensionais inferiores. Então, aqui, qual é a forma de x? É 2x3. Duas linhas, três colunas. Agora, dê uma olhada no código para y. Está cortando x. Os dois-pontos indicam que
+estamos conseguindo todas as linhas, e o 1 indica que estamos conseguindo
+apenas a coluna 1. Como o Python é indexado em zero, é na verdade a segunda coluna, 01,
+portanto, a segunda coluna. Quando avaliamos y, conseguimos o valor
+da segunda coluna para todas as linhas. E é por isso que 5, 6 está sendo impresso. Teste rápido: o que x[1, :] faria? Que tal x[1, 0:2]? O que isso faria? Alguma resposta? Quando você faz x[1, : ],
+recebe a segunda linha. Lembra da indexação zero? Então 1 é a segunda linha. E você conseguirá todas as colunas. Então conseguiremos [4, 6, 8]. Quais colunas serão trazidas por 0:2? Isso é muito semelhante
+à função x range em Python. Significa que começa em 0 e vai até 2,
+mas não inclui 2. Então, isso significa 0 e 1. E significa que você terá as duas linhas,
+então é na verdade a mesma coisa. Ainda teremos 4, 6, 8 nesses dados. Depois que você tiver
+os dados em um tensor, poderá pegar todos os dados,
+e isso poderá reformular o tensor. Então x é um tensor 2D,
+qual é a forma dele? É isso mesmo, 2x3. Se eu o reformular para 3, 2,
+o que acontecerá? O que eu quero
+são os seis valores em x, mas quero que eles sejam colocados
+em três linhas e duas colunas. Então, essencialmente, o Python lerá
+o tensor de entrada, linha por linha, e colocará os números no tensor de saída. Escolheria os dois primeiros
+valores e os colocaria na primeira linha, então recebemos 3 e 5. Os próximos dois valores, 7 e 4,
+vão para a segunda linha, e os dois últimos, 6 e 8,
+vão para a terceira. É isso que a reformulação faz. Podemos reformular e podemos cortar. Aqui, estou reformulando
+para 3x2, como antes, e depois estou cortando, recebendo
+apenas a segunda linha e todas as colunas. E é por isso que recebo 7, 4.

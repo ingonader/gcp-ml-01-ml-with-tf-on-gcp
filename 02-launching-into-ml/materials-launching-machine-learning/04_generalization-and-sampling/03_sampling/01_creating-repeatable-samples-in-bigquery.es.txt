@@ -1,0 +1,106 @@
+Como acaban de aprender dividir sus datos
+les permite probar su modelo con el conjunto de datos
+de simulación del mundo real mediante la exclusión
+de esos subconjuntos del entrenamiento. Pero ¿cómo sabemos en realidad
+en qué parte dividir el conjunto original? ¿Y si el conjunto de datos es gigantesco? ¿Necesitamos entrenar y probar
+en cada uno de los puntos de datos? En esta lección sobre muestreo,
+los guiaré en la división de los datos de una forma repetible
+mediante Google BigQuery y les mostraré los obstáculos
+qué deben evitar. Luego, lo practicarán
+en el siguiente lab. Comencemos. Antes de hablar sobre la división
+de un conjuntos de datos necesitamos uno
+que podamos dividir. Para este ejemplo, usaremos
+los datos de rendimiento de Airline Ontime de la Oficina
+de Transporte y Estadísticas de los EE.UU. Google puso este conjunto de datos
+público a disposición de los usuarios en BigQuery, como
+airlineontimedata.flightsdataset. Este conjunto de datos
+hizo el seguimiento de los retrasos en las llegadas y las salidas
+de 70 millones de vuelos. Hablemos de cómo hacer el muestreo
+para el entrenamiento, validación y prueba a partir de este conjunto de datos,
+de forma eficaz, uniforme y repetible. SQL, es decir lenguaje estructurado
+de consultas y, por lo tanto, en BigQuery porque ahí es donde se ejecuta SQL,
+tiene la función RAND que generará un valor entre cero y uno. Pueden obtener
+el 80% de sus datos con facilidad mediante una simple consulta WHERE de SQL,
+como se muestra aquí. Verán algunos problemas obvios con esto. Piensen si este proceso sería repetible si un colega
+quisiera repetir el experimento con el mismo 80% de los datos
+que usaron en el entrenamiento. Suponiendo que el conjunto
+es de 70 millones de vuelos ¿obtendrían los mismos 56 millones
+de vuelos o el 80% en el mismo conjunto de datos
+de entrenamiento que ustedes? Necesitamos una mejor forma
+de saber qué datos pertenecen a qué grupo: entrenamiento,
+validación y prueba. Y esto nos permitirá
+repetir los experimentos con los mismos datos de cada grupo. Como habrán adivinado,
+una función aleatoria simple capturaría un nuevo conjunto de filas seleccionadas de forma aleatoria
+como se muestra aquí cada vez que se ejecute la consulta. Esto hace que sea muy difícil,
+casi imposible identificar y dividir el restante 20% de los datos
+para los grupos de validación y prueba. Además,
+el conjunto también se puede ordenar lo que puede agregar sesgo a su muestra. Solo agregar un ORDER BY
+tiene sus propios problemas cuando se hace algo como
+un descenso de gradientes en minilote. En el aprendizaje automático,
+debe ser posible crear muestras de datos que sean repetibles. Una forma de hacerlo,
+es usar los últimos dígitos de una función Hash
+en el campo que están usando para dividir o agrupar los datos. Una de esas funciones Hash disponible
+para el público en BigQuery es FARM_FINGERPRINT,
+una simple función Hash. FARM_FINGERPRINT tomará un valor
+como 10 de diciembre de 2018 lo convertirá
+en una cadena larga de dígitos. Este valor Hash será idéntico para todos
+los valores 10 de diciembre de 2018 en el conjunto de datos. Supongamos
+que estamos creando un algoritmo de AA para predecir
+los retrasos en las llegadas. Tendrían que dividir los datos
+por fecha y obtener cerca del 80% de los días
+en un conjunto de datos el conjunto de datos de entrenamiento. Esto es repetible,
+porque la función hash FARM_FINGERPRINT muestra el mismo valor cada vez
+que se asocia a una fecha específica. Pueden estar seguros de que
+obtendrán el mismo 80% o casi el 80% de los datos cada vez. Si dividen los datos
+por aeropuerto de llegada y el 80% de los aeropuertos
+están en el conjunto de entrenamiento y los demás en los de validación y prueba,
+entonces usarían la función Hash en el aeropuerto de llegada. Si observamos la consulta,
+¿cómo obtendrían una nueva muestra del 10% para la evaluación? Cambiarían "< 8" a "= 8"
+para los datos de la prueba o "= 8" o "= 9" para el otro 10%
+de la evaluación o la prueba. Así se dividen esos grupos. Supongamos que quieren predecir
+los retrasos de vuelos según la compañía aérea,
+la hora del día, el clima y las características del aeropuerto,
+como la cantidad de pistas. ¿Según qué campos
+deberíamos dividir el conjunto? ¿Fecha? ¿Aeropuerto? ¿Compañía aérea? Asegúrense de dividir sus datos
+en estos conjuntos válidos según una columna
+que puedan darse el lujo de perder. Por ejemplo, si quieren dividir
+según la fecha para predecir los retrasos en las llegadas
+y su conjunto solo tiene vuelos de 2 días no podrían dividir más allá de 50-50. Recuerden que la función Hash
+es de ida, de modo que les dará un valor. No podrán obtener 80-20
+si solo tienen dos días. Veamos estas opciones una por una. ¿Y si agrupamos o usamos Hash
+y dividimos según la fecha? Está bien.
+Pero comprendan que ya no podrán realizar predicciones con base
+en los feriados, como Navidad o Acción de Gracias, por ejemplo. Asegúrense de que el objetivo
+de su predicción no tenga que ver con fechas, porque los grupos
+se crearon de esa manera. ¿Qué pasa si usamos Hash y dividimos
+según el nombre del aeropuerto? Está bien,
+mientras esté distribuido y tenga ruido pero tengan en cuenta
+que no podrán realizar predicciones para aeropuertos específicos. Por ejemplo, los vuelos de JFK
+de las 5 p.m. siempre están retrasados. Ya no pueden usar JFK
+porque dividieron según ese nombre. ¿Y si usamos Hash y dividimos
+según el nombre de la compañía aérea? Solo existen 11 compañías aéreas
+y si quieren dividir los datos según eso no estarán muy bien distribuidos
+como para obtener una división detallada. En lugar de 80-20,
+es posible que obtengan 60-40 que tal vez
+no sea suficiente para ustedes. Cuando se comienza con el desarrollo
+del AA, es mejor desarrollar el código de TensorFlow
+en un pequeño subconjunto de datos y, luego, escalarlo a la nube
+para la producción real. Supongamos
+que están desarrollando una aplicación de AA. Cada vez que hagan un cambio
+deberán volver a ejecutar la aplicación. Si usan el conjunto de datos completo,
+esto podría llevar horas o incluso días. Estamos hablando de petabytes de datos
+y no se puede desarrollar software así. Deben tener un pequeño conjunto de datos
+de modo que puedan ejecutar su código depurarlo y, luego, ejecutarlo de nuevo. Una vez que la aplicación
+esté funcionando bien podrán ejecutarla una vez
+o las veces que deseen en el conjunto de datos completo;
+es como crear un prototipo. A continuación, veamos
+cómo podemos crear una muestra uniforme de un subconjunto
+más pequeño de nuestro conjunto de datos de vuelos que usamos antes. Creamos los grupos,
+pero ahora queremos menos datos. Los datos de vuelos
+contienen 70 millones de filas. Tal vez quieran un conjunto más pequeño,
+digamos un millón de vuelos y debe ser repetible. ¿Cómo elegirían uno de 70 vuelos?
+Y luego ¿un 80% de esos para el entrenamiento? No pueden elegir 1 de 70
+y luego escoger 1 de 10 de los resultados. ¿Se dan cuenta por qué? Si eligen números divisibles por 70
+también serán divisibles por 10. La segunda operación modulo aquí,
+como ven, es inútil. Hagamos una demostración rápida
+y les mostraré lo que esto significa.

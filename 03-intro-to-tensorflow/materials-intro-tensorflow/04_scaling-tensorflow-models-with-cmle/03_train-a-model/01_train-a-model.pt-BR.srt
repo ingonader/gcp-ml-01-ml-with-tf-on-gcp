@@ -1,0 +1,221 @@
+1
+00:00:00,000 --> 00:00:04,425
+Veremos como funciona o treinamento do
+Machine Learning Engine modelo.
+
+2
+00:00:04,425 --> 00:00:05,760
+Antes de começar a treinar,
+
+3
+00:00:05,760 --> 00:00:07,575
+primeiro,
+
+4
+00:00:07,575 --> 00:00:09,800
+reúna e prepare seus
+dados de treinamento,
+
+5
+00:00:09,800 --> 00:00:13,545
+limpe, divida e crie recursos
+pré-processados.
+
+6
+00:00:13,545 --> 00:00:17,080
+Em seguida, coloque esses dados de
+treinamento em uma fonte on-line
+
+7
+00:00:17,080 --> 00:00:20,955
+que o Cloud Machine Learning Engine
+possa acessar, como o Cloud Storage.
+
+8
+00:00:20,955 --> 00:00:24,070
+Ao enviar jobs de treino para o
+Cloud Machine Learning Engine,
+
+9
+00:00:24,070 --> 00:00:29,910
+é comum dividir a maior parte da lógica
+em arquivos task.py e model.py.
+
+10
+00:00:29,910 --> 00:00:33,150
+Task.py é o ponto de entrada
+para o código que,
+
+11
+00:00:33,150 --> 00:00:36,555
+aparentemente, começará nos detalhes
+do nível do job, por exemplo, em
+
+12
+00:00:36,555 --> 00:00:40,030
+como analisar argumentos da linha de
+comando, por quanto tempo executar,
+
+13
+00:00:40,030 --> 00:00:41,120
+onde gravar as saídas,
+
+14
+00:00:41,120 --> 00:00:43,920
+como interagir com o
+ajuste de hiperparâmetros etc.
+
+15
+00:00:43,920 --> 00:00:45,765
+Para fazer o ML principal,
+
+16
+00:00:45,765 --> 00:00:48,750
+o task.py invocará o model.py.
+
+17
+00:00:48,750 --> 00:00:53,655
+O model.py se concentra nas tarefas
+principais de ML, como buscar os dados,
+
+18
+00:00:53,655 --> 00:00:56,940
+definir os recursos, configurar 
+a assinatura do serviço
+
+19
+00:00:56,940 --> 00:00:59,400
+e, é claro, o treinamento
+real e o loop eval.
+
+20
+00:00:59,400 --> 00:01:03,900
+Compartilhar códigos entre computadores
+envolve algum tipo de empacotamento.
+
+21
+00:01:03,900 --> 00:01:07,050
+Enviar um modelo para o CMLE
+para treinamento não é diferente.
+
+22
+00:01:07,050 --> 00:01:09,644
+TensorFlow e principalmente Python
+
+23
+00:01:09,644 --> 00:01:13,605
+exigem especificamente o pacote e
+a estrutura padronizados mostrados aqui.
+
+24
+00:01:13,605 --> 00:01:18,465
+É recomendável fazer um teste local para
+ver se o pacote funciona como esperado.
+
+25
+00:01:18,465 --> 00:01:21,480
+Tente chamar diretamente com python -m
+
+26
+00:01:21,480 --> 00:01:24,360
+para verificar se todas as
+importações estão certas.
+
+27
+00:01:24,360 --> 00:01:28,320
+Em seguida, vamos usar o GCloud para
+testar nosso código localmente.
+
+28
+00:01:28,320 --> 00:01:31,980
+Isso fará algumas verificações para ver
+se a estrutura de pacote está correta.
+
+29
+00:01:31,980 --> 00:01:37,385
+Depois, enviamos o job de treinamento
+para lançar a tarefa no Cloud e escalonar.
+
+30
+00:01:37,385 --> 00:01:41,430
+As linhas de comando principais
+adicionadas aqui são o caminho do pacote,
+
+31
+00:01:41,430 --> 00:01:45,165
+para especificar onde o código está
+localizado, o nome do módulo,
+
+32
+00:01:45,165 --> 00:01:48,390
+para especificar
+qual dos arquivos no pacote executar,
+
+33
+00:01:48,390 --> 00:01:53,615
+e nível de escalonamento, para especificar
+em qual hardware o código será executado.
+
+34
+00:01:53,615 --> 00:01:58,215
+Você definiria nível de escalonamento
+igual a básico para executar uma máquina,
+
+35
+00:01:58,215 --> 00:02:01,590
+nível de escalonamento igual a padrão
+para executar um cluster pequeno.
+
+36
+00:02:01,590 --> 00:02:03,900
+Nível de escalonamento igual a GPU básica
+
+37
+00:02:03,900 --> 00:02:05,505
+para executar em uma única GPU.
+
+38
+00:02:05,505 --> 00:02:07,200
+Você quer executar em uma TPU?
+
+39
+00:02:07,200 --> 00:02:10,875
+Isso mesmo. Nível de escalonamento
+igual a TPU básica.
+
+40
+00:02:10,875 --> 00:02:15,205
+Você também pode especificar níveis
+personalizados e definir tipos de máquina.
+
+41
+00:02:15,205 --> 00:02:17,315
+Esses níveis continuam se expandindo.
+
+42
+00:02:17,315 --> 00:02:21,375
+Veja as opções atuais na documentação
+do Cloud Machine Learning Engine.
+
+43
+00:02:21,375 --> 00:02:22,660
+Uma dica profissional:
+
+44
+00:02:22,660 --> 00:02:24,850
+para melhorar
+o desempenho dos jobs de ML,
+
+45
+00:02:24,850 --> 00:02:28,380
+selecione um intervalo de região única
+no Google Cloud Storage.
+
+46
+00:02:28,380 --> 00:02:30,345
+O padrão é multirregional,
+
+47
+00:02:30,345 --> 00:02:33,440
+mais adequado para suprimento
+na Web do que treinamento de ML.

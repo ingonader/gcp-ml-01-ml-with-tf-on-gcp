@@ -1,0 +1,47 @@
+Espero que no laboratório anterior, em que você escreveu um código
+para calcular a área de um triângulo, você não tenha apenas
+executado as células, mas sim tentado escrever algum
+código do TensorFlow sozinho e do zero. Se fez isso, como a maioria das pessoas, encontrou erros de compilador e de tempo
+de execução e se perguntou: "Como eu depuraria
+um programa do TensorFlow?" Essa depuração pode ser complicada
+devido ao paradigma de avaliação lenta. Se você tiver erros no gráfico, não saberá disso até que essa parte
+do gráfico seja executada. Essa é uma das razões pelas
+quais dissemos que tf.eager pode ser útil ao desenvolver
+programas do TensorFlow. Mas isso não resolve tudo. Você ainda precisa saber como depurar
+os programas do TensorFlow, mesmo que tenha desenvolvido o programa
+interativamente com o tf.eager. Então, veremos como depurar os programas
+do TensorFlow de avaliação lenta. A depuração de um programa do TensorFlow é
+semelhante à de qualquer programa. Você precisa aprender
+a ler as mensagens de erro e usar essas mensagens e rastreamentos
+de pilha para isolar o método. O propósito de isolar o método,
+o método problemático, é para que você possa chamá-lo sozinho. Você não quer executar todo
+o programa do TensorFlow no conjunto de dados
+e tentar depurar a coisa monolítica. Em vez disso, você quer enviar
+dados fictícios para o método e, em seguida, terá um
+erro repetível que poderá tentar corrigir. Como você resolveria o erro? Obviamente, não podemos mostrar todos
+os possíveis erros que podem ocorrer, mas veremos alguns
+dos tipos mais comuns de mensagens de erro
+e as formas de abordá-los. O primeiro passo é
+não arregalar seus olhos ao ver uma série de mensagens de erro. Observe a mensagem atentamente. Em particular, você procura
+por duas informações. Primeira: o rastreamento de pilha. Esta é a pilha de chamadas de métodos
+no momento em que o erro foi lançado. Neste caso, por exemplo, você vê que a linha s = (a + c) em algum método
+de dados é um problema. A pilha de chamadas também incluirá
+métodos de biblioteca do TensorFlow. O programa está chamando esses métodos, então o truque é aprimorar o código. Depois de fazer isso, procure a segunda informação. Veja a verdadeira mensagem de erro. Nesse caso, a mensagem é que
+um erro de valor foi encontrado. O TensorFlow espera que
+as dimensões sejam iguais, mas acontece que elas não são. O que está acontecendo? Quando você soma a + c, isso só funciona se a for um tensor 2D
+e c for um tensor 2D. Ou se a é um tensor 4D, então c também precisa ser um tensor 4D. Neste caso, um deles,
+seja a ou c, é um tensor 2D de formato 4,2
+e o outro, talvez c, é um tensor 1D de formato 4. Isso é um problema. Obviamente, algo está errado no programa. Talvez você queira que os dois sejam 4,2 ou que sejam 4. Mas encontrar a pilha de chamadas
+e ler a mensagem de erro ajuda a entender o problema. Observando a pilha de chamadas, você encontrou a linha de código
+e o nome do método. Então agora encontre o método e observe-o. Aqui, o método é chamado some_method e recebe um tensor chamado data. Este é o tensor que você precisa simular
+para fazer tudo funcionar corretamente. Esqueça o resto do programa. Ignore como os dados são realmente lidos
+no programa atual. Vamos invocar o método com dados falsos. Para fazer isso, crie uma sessão, crie um TensorArray
+com código fixo, e neste caso, eu criei um tensor 4x3
+chamado fake_data. Você vê? Estou pegando o fake_data e passando em some_method. Eu também instrumentei o código de
+alguns dados com instruções de impressão. É um pouco antiquado depurar
+com instruções de impressão, mas essa é a maneira mais fácil
+de diagnosticar formas de erros. Então, temos dois itens
+que estamos somando: a e c, e esse foi o problema. Então me asseguro de imprimir
+o formato de a e de c. E quando executo o programa, a primeira linha imprime 4,2 e a segunda linha imprime 4. Exatamente como a mensagem
+de erro de valor estava dizendo. E agora, chegamos ao intent. Você quis cortar uma matriz 4,2 para c? Ou quis cortar um vetor 1D para a? Qualquer que seja sua intenção, faça. Quando executo o programa, a primeira linha imprime 4,2 e a segunda imprime 4. Exatamente como a mensagem
+de erro de valor estava dizendo. E agora, chegamos ao intent. Você quis cortar uma matriz 4,2 para c? Ou quis cortar um vetor 1D para a? Qualquer que seja a sua intenção...

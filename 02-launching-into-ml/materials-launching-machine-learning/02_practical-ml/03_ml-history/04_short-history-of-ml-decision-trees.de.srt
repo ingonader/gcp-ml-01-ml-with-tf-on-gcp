@@ -1,0 +1,502 @@
+1
+00:00:00,000 --> 00:00:02,715
+Entscheidungsbaum-Algorithmen wie ID3
+
+2
+00:00:02,715 --> 00:00:06,130
+und C4.5 wurden in den 80er-
+und 90er-Jahren erfunden.
+
+3
+00:00:06,130 --> 00:00:09,075
+Sie sind für bestimmte Probleme
+besser als lineare Regression
+
+4
+00:00:09,075 --> 00:00:11,450
+und sehr leicht für
+den Menschen interpretierbar.
+
+5
+00:00:11,450 --> 00:00:15,755
+Eine optimale Aufteilung beim Erstellen
+der Bäume ist ein NP-hartes Problem,
+
+6
+00:00:15,755 --> 00:00:18,260
+deshalb wurden
+Greedy-Algorithmen verwendet, um
+
+7
+00:00:18,260 --> 00:00:21,920
+Bäume so nahe wie möglich
+am Optimum zu erstellen.
+
+8
+00:00:21,920 --> 00:00:24,900
+Sie bilden schrittweise
+eine Entscheidungsfläche,
+
+9
+00:00:24,900 --> 00:00:27,535
+die im Grunde dasselbe
+wie eine ReLU-Schicht liefert.
+
+10
+00:00:27,535 --> 00:00:30,695
+Aber mit DNNs oder Deep Neural Networks
+
+11
+00:00:30,695 --> 00:00:34,885
+kombinieren sich die echten Schichten zu
+einer Hyperebene als Entscheidungsebene,
+
+12
+00:00:34,885 --> 00:00:36,825
+die viel leistungsstärker sein kann.
+
+13
+00:00:36,825 --> 00:00:40,640
+Aber ich greife vor, weshalb DNNs
+besser als Entscheidungsbäume sein können.
+
+14
+00:00:40,640 --> 00:00:43,435
+Betrachten wir zuerst Entscheidungsbäume.
+
+15
+00:00:43,435 --> 00:00:47,890
+Entscheidungsbäume gehören
+zu den intuitivsten ML-Algorithmen.
+
+16
+00:00:47,890 --> 00:00:51,785
+Sie können für Klassifikation
+und Regression verwendet werden.
+
+17
+00:00:51,785 --> 00:00:53,330
+Nehmen wir ein Dataset.
+
+18
+00:00:53,330 --> 00:00:57,155
+Wir möchten ermitteln, wie die Daten in
+verschiedene Mengen aufgeteilt werden.
+
+19
+00:00:57,155 --> 00:00:58,760
+Als Erstes sollten wir uns
+
+20
+00:00:58,760 --> 00:01:02,080
+interessante Fragen zur
+Abfrage des Datasets überlegen.
+
+21
+00:01:02,080 --> 00:01:04,560
+Gehen wir einmal ein Beispiel durch.
+
+22
+00:01:04,560 --> 00:01:10,810
+Hier das bekannte Problem, die Opfer und
+Überlebenden der Titanic vorherzusagen.
+
+23
+00:01:10,810 --> 00:01:13,915
+An Bord waren Menschen
+aus allen Gesellschaftsschichten,
+
+24
+00:01:13,915 --> 00:01:16,465
+aller Hintergründe, Lebenssituationen usw.
+
+25
+00:01:16,465 --> 00:01:20,170
+Ich möchte sehen, ob eines dieser
+möglichen Merkmale meine Daten
+
+26
+00:01:20,170 --> 00:01:25,580
+so aufteilen kann, dass ich sehr genau
+voraussagen kann, wer überlebte.
+
+27
+00:01:25,580 --> 00:01:30,225
+Ein erstes mögliches Merkmal ist
+wohl das Geschlecht des Passagiers.
+
+28
+00:01:30,225 --> 00:01:33,675
+Deshalb könnte ich fragen:
+Ist das Geschlecht männlich?
+
+29
+00:01:33,675 --> 00:01:37,300
+Ich teile die Daten also so auf, dass
+männliche Passagiere in einen Bucket
+
+30
+00:01:37,300 --> 00:01:39,480
+und der Rest in einen
+anderen Bucket kommen.
+
+31
+00:01:39,480 --> 00:01:41,560
+64 % der Daten kamen in den Bucket
+
+32
+00:01:41,560 --> 00:01:44,595
+der männlichen
+Passagiere, 36 % in den anderen.
+
+33
+00:01:44,595 --> 00:01:47,455
+Machen wir erst einmal mit
+der männlichen Teilmenge weiter.
+
+34
+00:01:47,455 --> 00:01:52,315
+Ich könnte auch noch fragen, in welcher
+Klasse die einzelnen Passagiere reisten.
+
+35
+00:01:52,315 --> 00:01:56,890
+Bei unserer Aufteilung haben wir jetzt
+14 % aller Passagiere, die männlich waren
+
+36
+00:01:56,890 --> 00:01:58,880
+und in der 
+niedrigsten Klasse reisten,
+
+37
+00:01:58,880 --> 00:02:01,290
+und 50 % aller Passagiere,
+die männlich waren
+
+38
+00:02:01,290 --> 00:02:03,290
+und in den zwei höheren Klassen reisten.
+
+39
+00:02:03,290 --> 00:02:07,730
+Dieselbe Art der Aufteilung kann im
+weiblichen Zweig fortgesetzt werden.
+
+40
+00:02:07,730 --> 00:02:09,215
+Ich gehe einen Schritt zurück.
+
+41
+00:02:09,215 --> 00:02:12,675
+Verständlich, dass der Algorithmus
+für den Aufbau des Entscheidungsbaums
+
+42
+00:02:12,675 --> 00:02:17,035
+das Geschlecht in zwei Zweige aufteilt,
+da es nur zwei mögliche Werte gibt.
+
+43
+00:02:17,035 --> 00:02:18,660
+Aber weshalb die Aufteilung
+
+44
+00:02:18,660 --> 00:02:22,030
+der Passagierklasse in
+eine Klasse, die nach links
+
+45
+00:02:22,030 --> 00:02:24,925
+und zwei Klassen,
+die nach rechts abzweigen?
+
+46
+00:02:24,925 --> 00:02:30,330
+Beim einfachen Klassifikations- und
+Regressionsbaum oder CART-Algorithmus,
+
+47
+00:02:30,330 --> 00:02:33,480
+zum Beispiel, versucht der
+Algorithmus ein Paar aus Merkmal und
+
+48
+00:02:33,480 --> 00:02:37,450
+Schwellenwert zu wählen, das bei der
+Trennung die reinsten Teilmengen erzeugt.
+
+49
+00:02:37,450 --> 00:02:41,960
+Bei Klassifikationsbäumen wird häufig
+die Gini-Unreinheit als Maß verwendet,
+
+50
+00:02:41,960 --> 00:02:43,835
+aber es gibt auch Entropie.
+
+51
+00:02:43,835 --> 00:02:45,850
+Nachdem eine gute Aufteilung erfolgt ist,
+
+52
+00:02:45,850 --> 00:02:48,495
+wird ein weiteres
+Merkmal/Schwellenwert-Paar gesucht
+
+53
+00:02:48,495 --> 00:02:50,735
+und ebenfalls in Untergruppen aufgeteilt.
+
+54
+00:02:50,735 --> 00:02:53,860
+Dieser Prozess geht rekursiv weiter, bis
+
+55
+00:02:53,860 --> 00:02:57,015
+entweder die festgelegte
+maximale Tiefe des Baums erreicht wird
+
+56
+00:02:57,015 --> 00:03:00,400
+oder keine weiteren Aufteilungen
+die Unreinheit reduzieren können.
+
+57
+00:03:00,400 --> 00:03:04,355
+Bei Regressionsbäumen ist die mittlere
+quadratische Abweichung ein übliches Maß.
+
+58
+00:03:04,355 --> 00:03:08,955
+Hört sich die Entscheidung, die Daten in
+zwei Teilmengen aufzuteilen, bekannt an?
+
+59
+00:03:08,955 --> 00:03:12,970
+Jede Aufteilung ist eigentlich nur
+ein binärer linearer Klassifikator, der
+
+60
+00:03:12,970 --> 00:03:17,135
+eine Hyperebene findet, die entlang einer
+Merkmalsdimension bei einem Wert teilt,
+
+61
+00:03:17,135 --> 00:03:20,130
+der als Schwellenwert
+gewählt wurde, um die Mitglieder der
+
+62
+00:03:20,130 --> 00:03:24,015
+Klasse zu minimieren, die auf die Seite
+der Hyperebene der anderen Klassen fallen.
+
+63
+00:03:24,015 --> 00:03:26,830
+Die rekursive Bildung
+dieser Hyperebenen in einem Baum ist
+
+64
+00:03:26,830 --> 00:03:30,725
+analog zu Schichten von linearen
+Klassifikatorknoten in neuronalen Netzen.
+
+65
+00:03:30,725 --> 00:03:32,685
+Sehr interessant.
+
+66
+00:03:32,685 --> 00:03:35,270
+Jetzt, da wir wissen, wie man
+Entscheidungsbäume baut,
+
+67
+00:03:35,270 --> 00:03:37,910
+führen wir diesen
+Baum ein wenig weiter.
+
+68
+00:03:37,910 --> 00:03:42,055
+Vielleicht hilft ein Altersschwellenwert
+bei der Aufteilung meiner Daten für
+
+69
+00:03:42,055 --> 00:03:43,570
+dieses Klassifikationsproblem.
+
+70
+00:03:43,570 --> 00:03:47,675
+Ich könnte fragen,
+ob das Alter über 17,5 Jahren liegt.
+
+71
+00:03:47,675 --> 00:03:50,940
+Im Zweig der niedrigsten
+Klasse männlicher Passagiere
+
+72
+00:03:50,940 --> 00:03:54,715
+sind jetzt nur noch 13 % der
+Passagiere älter als 18 Jahre
+
+73
+00:03:54,715 --> 00:03:56,745
+und nur 1 % jünger.
+
+74
+00:03:56,745 --> 00:03:59,680
+Beim Blick auf die Klasse der
+verschiedenen Knoten sehen wir,
+
+75
+00:03:59,680 --> 00:04:04,495
+dass nur dieser Knoten im männlichen
+Zweig als "überlebt" klassifiziert wurde.
+
+76
+00:04:04,495 --> 00:04:06,180
+Wir könnten die Tiefe steigern
+
+77
+00:04:06,180 --> 00:04:09,360
+und/oder andere Merkmale wählen,
+um den Baum so lange zu erweitern,
+
+78
+00:04:09,360 --> 00:04:14,570
+bis jeder Knoten nur noch Passagiere hat,
+die überlebt haben oder gestorben sind.
+
+79
+00:04:14,570 --> 00:04:18,220
+Das ist jedoch problematisch,
+da ich eigentlich
+
+80
+00:04:18,220 --> 00:04:19,769
+nur meine Daten speichere
+
+81
+00:04:19,769 --> 00:04:21,904
+und den Baum perfekt daran anpasse.
+
+82
+00:04:21,904 --> 00:04:25,815
+In der Praxis möchten wir
+das auf neue Daten verallgemeinern
+
+83
+00:04:25,815 --> 00:04:28,240
+und ein Modell, das die Lerndaten
+gespeichert hat,
+
+84
+00:04:28,240 --> 00:04:30,925
+bringt wahrscheinlich
+keine sehr gute Leistung.
+
+85
+00:04:30,925 --> 00:04:33,440
+Es gibt Methoden,
+um dies zu regeln, zum Beispiel
+
+86
+00:04:33,440 --> 00:04:36,190
+eine Mindestanzahl Stichproben
+pro Blattknoten festlegen,
+
+87
+00:04:36,190 --> 00:04:37,985
+eine Höchstanzahl von Blattknoten
+
+88
+00:04:37,985 --> 00:04:39,945
+oder eine maximale Merkmalanzahl.
+
+89
+00:04:39,945 --> 00:04:41,820
+Sie können auch den ganzen Baum bilden
+
+90
+00:04:41,820 --> 00:04:44,185
+und dann unnötige Knoten abschneiden.
+
+91
+00:04:44,185 --> 00:04:46,210
+Um Bäume wirklich optimal zu nutzen,
+
+92
+00:04:46,210 --> 00:04:48,410
+sollte man sie meistens
+zu Wäldern kombinieren.
+
+93
+00:04:48,410 --> 00:04:50,700
+Darüber reden wir sehr bald.
+
+94
+00:04:50,700 --> 00:04:53,560
+Woraus besteht in einem
+Entscheidungs-Klassifikationsbaum
+
+95
+00:04:53,560 --> 00:04:57,625
+jede Entscheidung bzw. jeder Knoten?
+
+96
+00:04:57,625 --> 00:05:02,910
+Die richtige Antwort lautet:
+linearer Klassifikator eines Merkmals.
+
+97
+00:05:02,910 --> 00:05:05,160
+Wie gesagt wählt
+der Algorithmus an jedem Knoten
+
+98
+00:05:05,160 --> 00:05:10,450
+im Baum ein Merkmal/Schwellenwert-Paar, um
+die Daten in zwei Teilmengen aufzuteilen,
+
+99
+00:05:10,450 --> 00:05:12,255
+und wiederholt dies rekursiv.
+
+100
+00:05:12,255 --> 00:05:14,550
+Viele Merkmale
+werden schließlich aufgeteilt,
+
+101
+00:05:14,550 --> 00:05:17,260
+sofern eine maximale Tiefe
+von mehr als 1 festgelegt ist,
+
+102
+00:05:17,260 --> 00:05:19,840
+aber nur jeweils ein Merkmal pro Tiefe.
+
+103
+00:05:19,840 --> 00:05:22,915
+Deshalb ist ein linearer
+Klassifikator aller Merkmale falsch,
+
+104
+00:05:22,915 --> 00:05:26,535
+da jeder Knoten
+nur jeweils ein Merkmal aufteilt.
+
+105
+00:05:26,535 --> 00:05:28,430
+Minimierung der MQA und
+
+106
+00:05:28,430 --> 00:05:31,250
+Minimierung der euklidischen
+Distanz sind fast identisch und
+
+107
+00:05:31,250 --> 00:05:34,210
+werden in der Regression 
+anstatt der Klassifikation verwendet.

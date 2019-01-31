@@ -1,0 +1,254 @@
+Dies ist das letzte Lab, das wir in diesem Modul zu
+Generalisierung und Sampling durchgehen, und es ist ziemlich umfassend. Falls es eine Weile gedauert hat, alle Schritte
+durchzuarbeiten, ist das völlig normal. Sehen wir uns jetzt eine Lösung an. Wenn Sie es noch nicht probiert haben, rufen Sie jetzt das
+Datenlab-IPython-Notizbuch auf, gehen Sie den Code 
+dort in den Zellen durch und kehren Sie zu diesem Video zurück. Wir sehen uns jetzt das Ganze an. Hier habe ich das Bewertungs-Notizbuch
+von Google Cloud Taxicab aufgerufen. Wir wollen diese Daten untersuchen. Erinnern Sie sich an die drei Schritte: Wir müssen die Daten untersuchen, wir müssen Datasets erstellen, damit wir mit diesen grundlegenden
+Funktionen wirklich vertraut sind, und schließlich haben wir
+wieder ein Trainings-Dataset, ein Validierungs-Dataset
+und ein Test-Dataset. Zum Schluss kommt
+etwas, das neu sein könnte: Benchmarks erstellen. Darauf kommen wir später zurück, wenn 
+Sie mehr über maschinelles Lernen wissen, und statt diesem
+vereinfachten Modell einige der fortgeschrittenen Themen
+aus künftigen Kursen einsetzen, wie etwa ein neuronales Deep-
+Learning-Netzwerk mit TensorFlow aufbauen. Zunächst müssen wir ganz vorn anfangen und uns schrittweise vorarbeiten. Als Erstes brauchen
+wir, wie Sie hier sehen, eine Datenprobe. BigQuery hat viele öffentliche Datasets. Und genau wie die Flugdaten sind auch hier die 
+Taxidaten vorhanden. Wir rufen alle
+Taxifahrten in New York City auf. Die finden wir
+in diesem öffentlichen Dataset. Da sind die Felder, die wir brauchen. Wir sehen uns hier
+ein bisschen Feature-Engineering an und lassen es schließlich
+in unser Modell einfließen. Was wäre Ihrer Ansicht nach in Bezug auf die Vorhersage
+von Taxifahrten interessant? Das könnten
+zum Beispiel der Abholzeitpunkt, die genauen Koordinaten
+des Abhol- und Absetzpunkts und die Anzahl der Fahrgäste sein. Es könnte auch
+unterschiedliche Fahrpreise oder Preisstufen je nach
+Mitfahrer und Fahrtdauer geben, oder wenn eine der Brücken
+in New York überquert wird. Das ist die Brückenmaut. Der Gesamtbetrag setzt
+sich aus Fahrpreis und Trinkgeld oder Ermessensausgaben zusammen. Wir erfahren also, welche dieser Faktoren letztlich den Gesamtpreis
+einer Taxifahrt bestimmen, noch bevor wir einsteigen oder vor die Tür gehen. Als Erstes benötigen wir die Daten. Um in Cloud Data
+Lab Daten zu erhalten, starten wir eine BigQuery-
+Abfrage, wie Sie hier sehen, und zwar aus dem BigQuery-Beispiel. Wir haben hier New York
+City, Fahrten mit gelben Taxis, wir haben alle genannten Felder abgerufen und sehen uns nun 
+einen sehr kleinen Teil der Daten an. So wie wir nur eine
+Ein-Prozent-Stichprobe bei den Flugdaten für das
+letzte Lab verwendet haben, verwenden wir nur
+einen kleinen Teil der Stadt. Hier ist die erste Abfrage. Wir haben einen Datensatz mit 100.000 Einträgen,
+aus denen wir auswählen. Von denen wollen wir nur
+10.000 Taxifahrten verwenden. Das sind die
+Parameter der SQL-Abfrage. Sie können das so parametrisieren,
+als würden Sie einen String ersetzen. Als Abfragetyp wählen wir Rohdatenabfrage, weil wir das hier als
+Rohdaten angegeben haben, all n werden ersetzt,
+hier werden Datensätze abgerufen. Eine Probennahme erfolgt für alle n und insgesamt sind
+es 100.000 Datensätze. Zum Schluss wird die
+Abfrage ausgegeben und ausgeführt. Hier wird die Abfrage ausgeführt. Das Sampling erfolgt hier,
+wobei der Rest der Funktion 1 ist, und jetzt bleiben 
+10.000 Taxifahrten übrig. Wir möchten das Sampling wiederholen, da die ersten 1.000
+bestellt sein könnten, was eine Verzerrung der Daten erzeugt. Ein gutes Beispiel 
+in Bezug auf Taxidaten wäre eine Sortierung, die
+mit den letzten Fahrten beginnt. Wenn Sie in Ihren Daten zuerst
+die letzten 3.000 Fahrten untersuchen, können die Ergebnisse verzerrt werden, weil es vielleicht kürzlich eine
+Fahrpreiserhöhung oder -senkung gab, die Sie allein mit diesen Daten
+nicht so einfach erkennen würden. Wir nennen das Rezenzeffekt. Wir haben das
+Sampling effektiv gestaltet und sind zu diesem Ergebnis gekommen. Bis jetzt haben wir
+noch nichts gemacht. Das ist nur das Feld, das wir aus
+den Datasets abgerufen haben. Im nächsten Schritt
+müssen wir es untersuchen. Hier sehen Sie die Fahrgastanzahl, hier sind einige Beispiele von 1 bis 5. Dies sind die
+Fahrstrecken. Sehr interessant. Hier ist die Fahrstrecke
+gleich null, die Angabe ist in Meilen, das ist seltsam. Keine Maut, das ist nachvollziehbar, Fahrpreis 2,50 $ und Gesamtpreis 2,50 $ Die Daten sehen interessant aus. Mal sehen, ob wir sie etwas 
+schneller untersuchen können. Die beste Methode
+ist eine Datenvisualisierung. Beim maschinellen Lernen
+wird häufig ein Streudiagramm erstellt, um einige der
+vorhandenen Punkte zu betrachten. Hier wird die Fahrstrecke
+dem Fahrpreis gegenübergestellt. Man könnte meinen, dass eine längere Fahrstrecke zu einem höheren Fahrpreis führt. Bei längeren
+Fahrstrecken, z. B. 40 Meilen, ist der Fahrpreis mit 100 $ hoch. Aber es fallen zwei oder mehrere Anomalien
+in den dargestellten Daten auf. Man sieht sehr viele sehr kurze Fahrten, oder Fahrten mit null Meilen, die direkt auf dieser Linie liegen. Diese Anomalie muss aus dem
+Dataset herausgefiltert werden. Eine Taxifahrt von null
+Meilen kann ich mir nicht vorstellen. Vielleicht, wenn man einsteigt
+und direkt wieder hinausgeworfen wird. Daher müssen die Nullpunkte
+auf dieser Linie geprüft werden. Außerdem auch Punkte, die eine solche
+gerade diagonale Linie bilden. Es sieht wie eine Linie aus, aber sie setzt sich aus
+sehr vielen Punkten zusammen. Das liegt an der Natur der Daten. Es ist interessant, 
+weil man in New York am Flughafen JFK ein Taxi zum Festpreis nehmen kann,
+egal wohin man in Manhattan möchte. Das ist ein echter Festpreis. Sie kennen in diesem 
+Moment schon den Preis, unabhängig von der Fahrtstrecke. Deshalb kann diese Beziehung
+so leicht nachgebildet werden und ergibt eine Linie. Aber wir wollen nicht nur
+Vorhersagen für Reisende vom JFK, wir wollen alle Fahrten 
+innerhalb von New York vorhersagen. Sehr interessant, nicht wahr? Betrachten wir einige Möglichkeiten, diese
+Daten aufzubereiten und zu bereinigen, bevor wir sie in ein Trainings-Dataset, ein Validierungs-Dataset
+und ein Test-Dataset einteilen. Die Datasets sollten 
+nicht eingeteilt werden, bevor die Daten bereinigt wurden. Wenn Sie Datenmüll in Datasets aufteilen, erhalten Sie ein
+nutzloses Modell als Ergebnis, mit dem kein reales
+Verhalten vorgesagt werden kann. Als Faustregel gilt,
+dass alle Daten unrein sind. Man braucht saubere Daten, die in gutem Zustand sind,
+bevor sie in das Modell gelangen. Nur hochwertige Daten gehören ins Modell. Sehen wir uns einige Fahrten an, z. B. alle Fahrten über Brücken. Also die, bei denen
+die Maut größer null sind. Wir betrachten an einem 
+bestimmten Tag die Abholzeiten. In diesem Fall am 20. Mai 2014. Beim Überfliegen
+der Daten fällt auf, dass man einen
+Abholort mit Längengrad null oder einen mit Breitengrad null sieht. Das sind eindeutig
+falsche, unreine Daten. Alle Fahrten ohne realen
+Abholort müssen herausgefiltert werden. Das Dataset darf zum Schluss
+nur noch korrekte Daten enthalten und keine Einträge,
+die völlig falsch aussehen. Auffällig ist auch,
+dass wir für den Gesamtpreis nirgendwo in den
+verfügbaren Spalten sehen können, ob der Gast ein Trinkgeld oder Bargeld
+hinterlassen hat. Es ist nicht vermerkt. Für die Zwecke dieses
+Modells ist das eine Unbekannte. Trinkgeld ist freiwillig und nicht im
+ursprünglichen Fahrpreis enthalten. Das sagen wir nicht voraus. Wir legen daher einen neuen Gesamtpreis mit dem neuen Fahrpreis
+auf Basis der Fahrstrecke und der fälligen Maut fest. In diesem Beispiel hier
+besteht der Fahrpreis von 8,5 $ nur aus der Fahrtstecke, also 2,22 $ sowie der Brückenmaut: 5,33 $. Wir berechnen das neu, indem wir nur diese beiden addieren. Das ist jetzt der neue Gesamtpreis. Trinkgeld wird ignoriert. Sie können die
+Funktion ".describe" einsetzen und sich so mit einigen der Grenzen oder Bereichen der
+vorhandenen Spalten vertraut machen. Sehr hilfreich für Statistiken. Betrachten wir die
+Minima und Maxima für Werte, falls diese unklar waren. Für Werte wie Längen- und
+Breitengrad des Abholorts gleich null können Sie sehen, dass Maxima und Minima jeweils null betragen. Sie können nun Anomalien betrachten. Was sofort auffällt, ist ein Minima
+für den Fahrpreis von minus 10. Das ist nicht möglich. Niemand bezahlt Sie
+dafür, dass Sie in ein Taxi steigen und sich fahren lassen.
+Sie müssen dafür bezahlen. Ermitteln wir beispielsweise das Maximum für die Zahl der Fahrgäste. Das ist hier erfreulicherweise 6. Wenn es aber 12 wären, dann wäre das für ein Taxi nicht möglich,
+es sei denn, Busse wurden miteinbezogen. Das kann hier auch auftreten. Unser Ziel ist, nach und nach das gesamte Dataset zu bereinigen. Diese Phase heißt "Aufbereitung". Am Schluss soll alles für eine
+Aufteilung in drei Buckets bereit sein, und schließlich eine ganz
+einfache Benchmark erstellt werden, die wir später übertreffen müssen. Sie müssen alle Daten
+durcharbeiten und verstehen. Das kann Wochen dauern. Wenn Sie Ihr Dataset nicht gut kennen oder kein Experte
+auf dem Fachgebiet sind, es aber mit Hunderten von Spalten oder Milliarden
+von Datensätzen zu tun haben, holen Sie sich Hilfe von einem SME, einem Fachmann,
+der die Daten gut kennt. Sie müssen die Beziehungen
+innerhalb der Daten vollständig verstehen, sie dann visualisieren, verschiedene Visualisierungsmethoden
+und statistische Funktionen einsetzen, bevor Sie mit dem
+maschinellen Lernen beginnen. Sie müssen Ihre Daten
+hundertprozentig verstehen. Obwohl wir hier dafür nur
+fünf Minuten gebraucht haben, kann das Erkunden
+im maschinellen Lernen, um Datasets zu verstehen,
+Wochen oder Monate dauern. Betrachten wir einige Einzelfahrten. Hier sind sie sehr schön dargestellt. Sie können die Fahrten selbst
+sehen, mit Längen- und Breitengrad. Das sind die Fahrtenlinien. Hier sehen Sie auch, dass
+längere Linien häufig Maut beinhalten. Das ist nachvollziehbar, denn wer
+eine Brücke überquert, will wahrscheinlich eine längere Strecke zurücklegen. Es ist unwahrscheinlich, dass
+jemand vor der Brücke in ein Taxi steigt, um es hinter der Brücke
+sofort wieder zu verlassen. Das sind gute Informationen. Diese ganzen Daten werden
+auf folgende Weise bereinigt. Über diese fünf
+Informationen haben wir schon gesprochen. Wir haben
+berücksichtigt, dass die Längen- und Breitengrade von New York
+City zwischen -74 und 41 liegen. Die Zahl der Fahrgäste
+kann nicht gleich null sein. Sie kann eigentlich auch nicht
+über einer bestimmten Zahl liegen, aber wir legen vorerst nur
+fest, dass sie nicht null sein darf. Wir haben auch über Trinkgeld gesprochen und berechnen daher den Gesamtbetrag neu, wobei nur Fahrpreis und Maut
+berücksichtigt werden, wie hier zu sehen. Als Nächstes müssen wir beachten, dass wir die Abhol- und Absetzorte kennen, aber nicht die Fahrstrecke. Das ist einer der
+Fallstricke, über den viele stolpern, wenn sie Trainings-
+Datasets für ML-Modelle erstellen. Was zur Produktionszeit nicht
+bekannt ist, kann nicht trainiert werden. Es ist daher nicht möglich, zu sagen: Die Fahrtstrecke betrug 5,5 Meilen, eine Meile kostet einen Dollar, also würde ein einfaches Modell ergeben,
+dass die Fahrt insgesamt 5,50 $ kostet. Das liegt am Verhalten,
+wenn Sie neue Daten erhalten. Sie rufen etwa ein Taxi. Daraufhin fragt Sie das Modell,
+wie lange Sie unterwegs waren. Sie sind aber noch 
+nicht einmal eingestiegen. Es versucht die Zukunft
+zu kennen, bevor sie passiert. Sie können keine
+zukünftigen Daten verwenden, um das Modell zu trainieren. Deswegen entfernen wir diese Daten auch aus dem Feature-Dataset. Das ist ein sehr wichtiger Punkt. Daten, die jetzt vorhanden sind, sind auch vorhanden, wenn
+das Modell in die Produktionsphase geht. Es gibt viele WHERE-Klausel-
+Filter in dieser BigQuery-Abfrage hier. Wir berechnen
+den Fahrpreis neu. Hier können Sie die
+verschiedenen Spalten sehen. Wir benennen Sie mit Aliasen um und erstellen diese Funktion, die im Wesentlichen
+eine parameterisierte Abfrage ist, aus der wir letztlich
+Proben dieser Bereiche entnehmen. Hier sehen Sie alle Filter,
+über die wir vorher gesprochen haben. Hier sehen Sie unsere
+Modulo-Funktionen in Gestalt von Fingerabdruck-Hash-Funktionen. Wir hashen "pickup_datetime". Es ist sehr wichtig zu
+wissen, dass alle gehashten Daten verloren gehen werden. Wir geben also die "pickup_datetime" auf, damit diese Spalte als Barriere zwischen diesen
+Buckets genutzt werden kann. Training, Validierung und Test. Das bedeutet, dass
+wir die Abholzeit als unwichtig für die Fähigkeit einstufen, die
+Höhe des Fahrpreises vorauszusagen. Wir haben eine Abfrage erstellt,
+die parameterisiert werden kann, und wir legen fest, dass wir in der
+Trainingsphase diese Abfrage dreimal wiederholen werden,
+um die drei Datasets zu erstellen: Training, Validierung und Test. In der Trainingsphase wollen wir 70 Prozent der Daten verwenden, eine Teilprobe zwischen
+0 und 70 Prozent entnehmen. Hier die Abfrage "sample_between",
+die wir zuvor erstellt haben, mit a, b. Dieses a, b wird hier
+in a und b eingesetzt, das funktioniert für die
+Modulo-Funktion hier für jedes n. Für das Training verwenden wir 70 Prozent.
+Für die Validierung verwenden wir die Daten zwischen 70 und 85,
+durch Subtrahieren dieser beiden. Wir haben folglich weitere 15 Prozent
+des Training-Datasets zur Verfügung, und die letzten 15 Prozent zwischen
+85 und 100 verwenden wir für das Testen. Jetzt ist alles startbereit. So würde eine Abfrage
+aussehen, wenn wir sie ausführen. Dafür geben wir an dieser Stelle an, wo die Ausgabedaten gespeichert werden. Wir brauchen eine CSV-Datei oder etwas Ähnliches,
+auf das das ML-Modell zugreifen kann, um diese Trainings-, 
+Validierungs- und Testdaten abzurufen. Dafür brauchen wir eine
+Funktion, die diese CSV-Dateien erstellt. In diesem Fall erfolgt das Training lokal. In Data Lab erstellen und
+speichern wir diese CSV-Dateien. In späteren Modulen erfahren Sie
+mehr über Cloud Machine Learning Engine. Das hier ist mehr ein Prototyping-Schritt,
+da wir versuchen, das komplett lokal in Cloud Data Lab zu lösen. Aber wie Sie sehen, 
+können Daten direkt aus der Abfrage und Google Cloud-Speichern wie Google
+Storage-Buckets referenziert werden. Hier sind die
+CSV-Dateien, die wir erstellen. Wir lassen den Fahrpreis entfernen und fügen stattdessen
+den neuen aus der CSV-Datei ein. Hier sind alle Features, die wir einfügen, also fast alles,
+was in der Abfrage zuvor enthalten war. Hier sehen Sie die entscheidende Schleife. Für den Einstieg,
+das Training, die Validierung und das Testen wird die Abfrage
+für die Stichprobe von 100.000 aufgerufen, dann die BigQuery-Abfrage ausgeführt, und die Ergebnisse an einen Datenframe für
+Iterationen und Funktionen zurückgegeben. Mit diesen Ergebnissen wird der Datenframe mit dem
+Präfix taxi- wiederhergestellt, was dann der Name des Datasets ist. Es sind dann
+"taxi-train", "taxi-validation", "taxi-test" im Speicher
+der CSV-Dateien enthalten. Das ist genau, was hier passiert. Vertrauen ist gut, Kontrolle ist besser. Wir müssen sichergehen, 
+dass diese Datensätze wirklich existieren. Mit einer einfachen ls-Abfrage
+der vorhandenen Dateien können wir sehen, dass es 58.000
+Taxifahrten im Test-Dataset gibt. Es sind 400.000 im Training und 100.000 in der Validierung. Das entspricht der vorgenannten Aufteilung von 70, 15 und 15. Wenn sie sich fragen, warum Test
+und Validierung unterschiedlich groß sind: Das liegt an der Verteilung der Daten. Diese ist eventuell nicht gleichmäßig, da Daten zeitlich gehäuft sein können. Das Problem bestünde auch 
+beim Hashen nur eines Tages, zum Beispiel dem 01.01.2018. Das Datenrauschen ist zu gering. Selbst bei einer
+angestrebten Verteilung von 70, 15, 15 muss in Blocks gehasht werden,
+weil beispielsweise am Neujahrstag sehr viele Taxifahrten erfolgten. Diese müssen alle 
+demselben Bucket zugeordnet werden. Ein einzelner Tag kann nicht auf zwei
+verschiedene Buckets aufgeteilt werden. Sehen wir uns hier die Aufteilungen an. Jetzt sind alle Daten in den
+drei getrennten Buckets bereit und wir können endlich ein
+sogenanntes Platzhaltermodell erstellen. Das ist unsere Benchmark. Es ist nur eine einfache
+Schätzung des Fahrpreises für ein Taxi. Dabei wird weder
+das Wetter berücksichtigt, noch ob man von
+einem Flughafen abgeholt wird. Diese und komplexere
+Features und Erkenntnisse können in ein höher entwickeltes
+Modell integriert werden. Damit befassen wir uns später, wenn wir den Umgang mit TensorFlow und richtiges Feature-Engineering erlernen. Im Moment genügt uns
+ein ganz einfaches Modell mit dem Ziel, 
+eine Benchmark für den RMSE oder den Verlustmesswert
+des höher entwickelten Modells zu bieten. Wie sieht das einfache Modell aus? Das Wichtigste ist, dass wir die Fahrtstrecke
+richtig vorhersagen können. Das wird das einfache Modell tun. Dazu wird der Gesamtpreis der Fahrt durch die Gesamtstrecke der Fahrt geteilt. Wir verwenden
+einfach einen Preis pro Meile oder pro Kilometer oder etwas Ähnliches. Dann wollen wir bestimmen, was wir
+wissen, auf Basis des Trainings-Datasets, wo alle Daten ein Label haben, sodass wir schließlich
+den Fahrpreis kennen. So können wir den 
+Verlustmesswert der Daten berechnen, wir verwenden dabei RMSE, weil dies ein 
+lineares Modell ist, also mit Gleitkomma. So gehen wir dabei vor. Wir definieren eine Reihe verschiedener
+Funktionen für die Entfernung zwischen Längen- und
+Breitengrad oder Abhol- und Absetzorten. Wir schätzen die
+Entfernung zwischen diesen beiden und erhalten eine Zahl entsprechend
+der zurückgelegten Entfernung des Taxis. Wir haben diese Informationen im Training, aber da wir sie vorhersagen, können wir diese Spalten nicht verwenden. Wir sagen das noch einmal voraus. Dann berechnen wir den RMSE
+mit der hier aufgeführten Gleichung. Dann geben wir das aus und übergeben die Features an das Modell. Wir wollen unser Ziel voraussagen. Wir wollen den Fahrpreis voraussagen. Wir werden die Features auflisten und schließlich
+die Datenframes definieren, die wir jeweils für Training,
+Validierung und Testen verwenden. Diese drei Datasets sind vorhanden. Danach beginnt das Training. Wir trainieren ein ganz einfaches Modell, das den Fahrpreis als 
+Durchschnittswert voraussagt. Der berechnete Wert ist
+einfach der Durchschnittspreis. Wenn die Taxifahrt
+10 Dollar gekostet hat, wird dieser Wert durch die
+durchschnittliche Entfernung geteilt. Zeile 28 ist die einzige,
+auf der gerade modelliert wird. Wir beschäftigen uns seit 15–20 Minuten mit dieser Lab-Demo und nur auf Zeile 28 wird eine Vorhersage
+getroffen oder modelliert. Es hat so lange gedauert, die Datasets zu erstellen und
+die Daten zu bereinigen und aufzubereiten. Um die CSV-Dateien für die leichte
+Aufnahme durch das Modell vorzubereiten und schließlich das Modell als Benchmark
+für künftige Modellleistung vorzubereiten. Dieses Verhältnis von 99 Prozent Erkunden,
+Aufbereiten, Erstellen neuer Datasets und Festlegen der Benchmarks
+zu einem Prozent Modellierung wird sich verschieben, sobald wir uns
+in Zukunft mehr mit Modellierung befassen und damit, wie man
+ausgefeiltere Modelle erstellt und wie Feature-Engineering funktioniert. Im Moment ist das einfach eine Benchmark. Das ist also der Fahrpreis
+je Kilometer, den wir errechnet haben. Der Preis beträgt 
+2,60 $ je Kilometer, den Sie Taxi fahren. Das hier sind die RMSE-Werte, wir haben also im Training
+einen Verlustmesswert von 7,45 in der Validierung von 9,35 und im Test ergab sich
+überraschend mit 5,44 der beste Wert. Unabhängig davon 
+ist dies jetzt unsere Benchmark. Global gesehen kostet
+eine Taxifahrt 2,61 pro Kilometer, egal wohin Sie fahren,
+ohne Verkehrsaufkommen, unabhängig vom Zielort in Manhattan und ohne Brückenmaut. Es gibt keine Parameter dafür, ob eine Brücke
+überquert werden muss oder nicht. Die Tageszeit wird nicht berücksichtigt. Man kann nicht 2,6-mal die 
+Kilometerzahl im Code festschreiben. All diese Erkenntnisse bauen
+wir in komplexere Modelle ein, die am Ende hoffentlich
+weit bessere Ergebnisse liefern, weil wir zahlreiche
+zusätzliche Informationen miteinbeziehen. Wir kehren später zu diesem
+Modell zurück, um die 5,44 zu übertreffen. Das ist der Benchmark-
+RMSE, den es zu übertreffen gilt. Der RSME ergibt sich schließlich, wenn wir den
+tatsächlichen Preis mal 5,44 nehmen, kommen wir auf... Nein, tut mir leid. Das war eigentlich etwas anders. Die 5,44 gelten für dieses Dataset hier. Das Ergebnis kann
+bei Ihnen etwas anders ausfallen. Damit sind wir am Ende
+dieses Labs angekommen. Ich empfehle Ihnen, auch die folgenden
+Kurse dieser Weiterbildung zu absolvieren. Sie haben schon so viel gelernt,
+es wäre schade, jetzt aufzuhören. Sie wissen jetzt, 
+wie man Daten aufbereitet, die Daten abruft, verarbeitet
+und ein Benchmark-Modell erstellt. Sie müssen an den Punkt kommen, an dem Sie bereit sind,
+komplexere Modelle zu bauen und all die spannenden
+Lernmöglichkeiten zu nutzen, um ausgefeiltere Ergebnisse zu erzielen und den RMSE
+dieses Modells hier zu übertreffen. Nehmen Sie auch an den
+zukünftigen Schulungen zu TensorFlow teil, um zu erfahren,
+wie Sie diesen RMSE übertreffen können. Sie haben drei Versuche für dieses Lab. wiederholen Sie ruhig und
+bearbeiten Sie den Code nach Bedarf in Ihren Data Lab Taxi-Notizbüchern. Gut gemacht. Bis bald!

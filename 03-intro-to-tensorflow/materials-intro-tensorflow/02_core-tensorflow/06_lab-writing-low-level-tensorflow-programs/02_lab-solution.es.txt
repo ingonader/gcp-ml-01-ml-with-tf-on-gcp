@@ -1,0 +1,69 @@
+En este lab, como en los anteriores entramos en GCP Console a Cloud Shell para iniciar Datalab. Cuando estamos en Datalab navegamos al notebook
+para comenzar a usar TensorFlow. La primera celda de este notebook es para importar
+los paquetes de Numpy y TensorFlow porque usaremos ambos. Ejecutamos esa celda y me dice que estoy ejecutando
+TensorFlow 1.4 en esta instancia. Ahora, le mostraré
+cómo sumar dos matrices de Numpy. Tengo una matriz de Numpy que es a y otra que es b. En este caso, hago la suma np.add (a, b) y luego uso y print c. Debido a que esto es Numpy,
+todo el código se evalúa de inmediato. Cuando lo ejecuto obtengo [8, 2, 10]. Esa es mi lista. El código equivalente
+en TensorFlow tiene dos pasos. Ejecutemos solo el primero. En el primer paso, de nuevo,
+como en Numpy, creamos a. Donde teníamos np.array,
+ahora tenemos tf.constant. Creo una matriz de constante a y otra b. Llamo a tf.add (a, b) pero, esta vez, cuando ejecute print c no aparece la lista [8, 2, 10]. ¿Qué aparece? Aparece
+la salida de depuración del tensor. En este caso, vemos que c
+es el resultado de la operación Add. Incluirá tres números
+y todos serán enteros. Ese es el primer paso, crear el gráfico. Intentemos otra operación. Cambiemos esto a 5.0, por ejemplo. Ahora, a ya no es una matriz de enteros sino una matriz
+de valores de coma flotante. Ejecutemos print no solo de c sino de a también
+para que vea lo que quiero decir. Cuando lo ejecuto puede ver que a es de tipo float y ya no podemos sumar a y b,
+porque a es del tipo float y b es int y por eso aparece este error. Pero puedo cambiar esto
+para que también sea flotante y cuando lo ejecute,
+c será del tipo float. Debemos recordar esto. Lo cambiaré de nuevo a entero
+para ir al siguiente paso. En este caso, tengo a y c y el próximo paso de mi gráfico es evaluar el valor de c.
+Obtendré los números de este modo. Recuerde, primero se crea
+el gráfico y después se lo ejecuta. En este caso, ejecutaré
+sess.run(c) y luego print result. El resultado será un matriz regular. Cuando ejecuto print, obtengo [8, 2, 10]. Lo que debemos recordar es
+que TensorFlow usa evaluación perezosa. El paso uno es crear el gráfico. El paso dos es ejecutarlo. En este caso,
+todo en mi gráfico estaba hard-coded. Normalmente,
+tendríamos marcadores de posición para poder inyectar información
+durante el tiempo de ejecución. En mi caso, creo a
+como marcador de posición que incluirá una lista y b será otro marcador
+que incluirá una lista. Ejecutaré add(a, b) y pasaré [3, 4, 5]
+durante el tiempo de ejecución. Cuando ejecute la sesión, pasaré
+[3, 4, 5] para a y [-1, 2, 3] para b. Entonces, con print result,
+obtendré [2, 6, 8], porque 3 - 1 es 2. Pero en este caso,
+recuerde que estas tres líneas son para crear el gráfico:
+a b y c son para compilar el gráfico. El resto es para ejecutar el gráfico y cuando lo hago, inyecto los valores. Ahora, podemos combinar
+ambos conceptos para hacer algo útil. Lo que haremos es,
+partiendo de los lados de un triángulo calcularemos el área. Hay una fórmula
+llamada de Herón, que es esta y es lo que implementaremos en TensorFlow. De nuevo, TensorFlow
+no es solo para redes neuronales, sino para cualquier programación numérica. Por eso, podemos calcular
+el área de un triángulo en TensorFlow. Tengo mi método mi función para calcular el área,
+cuando los lados son conocidos. Algo que debemos
+recordar es que no usaremos TensorFlow para calcular
+el área de un solo triángulo. Lo usaremos para calcular
+el área de muchos triángulos. No será un solo conjunto de tres números serán muchos conjuntos de tres números. Obtendremos una cantidad de triángulos y ahora queremos obtener
+sus tres lados: a, b y c. a dividirá esos lados,
+que será el tamaño de lote la cantidad de triángulos que tenemos multiplicado por 3,
+porque tenemos tres de ellos. La primera columna será a la segunda, b y la tercera, c. En este caso, obtengo
+la primera columna, que es a la segunda, que es b y la tercera, que es c. Si pasamos una matriz de 2 x 3… Es 2 x 3 porque son dos triángulos. Cada uno tiene tres lados. El primer conjunto
+de lados es 5 y 2.3, es a 3 y 4.1, es b 7.1 y 4.8, es c. Ahora, tenemos a, b y c. Calculamos la mitad del perímetro entonces a + b + c,
+dividido entre 2 y luego usamos esa fórmula
+para calcular el cuadrado del área la raíz cuadrada y la mostramos. Todo esto es parte
+de la creación del gráfico. Para ejecutarlo, escribimos sess.run. Pero esta vez quiero calcular
+la variable o tensor de TensorFlow area y la forma de hacerlo es llamar
+a compute_area y pasar estos valores. Si ejecuto eso obtendré el área de dos triángulos. Por eso obtengo dos números. Pero los números están hard-coded. En otros casos,
+sería preferible inyectarlos. Eso es lo que tenemos aquí al final. Muestra cómo usar el mismo compute_area pero, en este caso,
+los lados se inyectan al gráfico. Como ve, sides es un marcador de posición ya no una constante tf. Y cuando lo ejecutemos
+y queramos evaluar el área pasaremos un par clave-valor. La clave es
+el nombre del tensor, sides y el valor es ahora la matriz 2D porque estamos pasando
+una matriz de triángulos. Ahora ejecutamos esto
+y se muestra el mismo resultado. La última parte del notebook
+muestra cómo podemos evitar estos dos pasos: crear el gráfico
+y después ejecutarlo, usando tf.eager. Para hacer eso, aquí llamamos
+a enable_eager_execution(). Cuando lo hacemos,
+nos aseguramos de que no haya dos pasos. Ya no se crea el gráfico
+y se ejecuta después. En el proceso de creación del gráfico,
+todos los pasos se evalúan de inmediato. En este caso, creo el compute_area. Exactamente como antes. Y digo: area = compute_area print area Si no tuviera eager_execution… Convertiré esta línea
+en comentario para que lo vea. Si no tengo eager_execution
+y ejecuto print area solo obtengo la salida
+de depuración del tensor. Esa es la salida de depuración. No obtengo los valores aquí solo veo que incluirá
+la respuesta de dos triángulos. Pero si habilito
+eager_execution y lo ejecuto. Cuando lo hago, notará
+que la salida incluye los valores reales. Sigo llamando a print area. No llamé a session.run print area. Pero esta vez, obtengo la respuesta.

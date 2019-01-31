@@ -1,0 +1,95 @@
+Dans la pratique, il arrive couramment que l'on réutilise le code
+d'un modèle précédent en pensant qu'il va produire
+le même résultat, et que l'on constate
+que tel n'est pas le cas. Les programmeurs ont souvent pour habitude
+d'utiliser des configurations déterministes. En ML, ceci n'est pas toujours adapté. Pour de nombreux modèles,
+si vous procédez à un second entraînement, et ce même avec des réglages
+d'hyperparamètres identiques, les réglages de paramètres que vous obtenez
+peuvent être très différents. Au début, cela peut être déconcertant. Or, nous recherchons bien le meilleur
+ensemble de paramètres. Est-ce la descente de gradient qui
+ne fonctionne pas, ou la mise en place qui
+n'a pas été effectuée correctement ? Pas forcément.
+Ce que cela pourrait signifier, c'est qu'au lieu d'analyser une surface
+de perte comme celle de gauche, nous analysons des surfaces
+comme celle de droite. Notez que la surface de gauche
+n'a qu'un seul minimum, alors que celle de droite en a plusieurs. Le terme consacré pour désigner
+cette propriété est "convexité". La surface de gauche est convexe,
+tandis que celle de droite ne l'est pas. Pourquoi la surface de perte d'un modèle
+de ML pourrait-elle avoir plusieurs minima ? Parce qu'il existe un certain nombre
+de points équivalents ou presque équivalents dans l'espace des paramètres, c'est-à-dire des réglages de paramètres
+qui produisent des modèles dotés de la même capacité
+à faire des prédictions. Nous y reviendrons lorsque je présenterai
+les réseaux de neurones, qui sont un parfait exemple
+de situation où cela se produit. Ne vous inquiétez pas si tout n'est pas
+totalement clair. Retenez simplement que les surfaces de perte
+varient en fonction du nombre de minima qu'elles comportent. Parfois, les modèles ne sont pas
+suffisamment rapides. Personne n'aime attendre la fin
+de l'entraînement des modèles. Y a-t-il un moyen d'accélérer 
+cet entraînement ? Oui, mais pour identifier
+les options dont nous disposons, mieux vaut examiner les étapes
+de haut niveau de notre algorithme et leurs sources de complexité temporelle. Vous voyez ici les trois principales étapes
+de notre algorithme. Lorsque nous calculons la dérivée, le coût du calcul est proportionnel
+au nombre de points de données incorporés dans notre fonction de perte, ainsi qu'au nombre de paramètres
+de notre modèle. Dans la pratique,
+les modèles peuvent comporter plusieurs dizaines voire centaines
+de millions de paramètres. De même, les ensembles de données
+peuvent comporter quelques milliers voire plusieurs centaines
+de milliards de points. La mise à jour des paramètres des modèles
+se fait une fois par boucle, et le coût de l'opération dépend seulement
+du nombre de paramètres du modèle. Toutefois, le coût de la mise à jour
+est généralement peu élevé par rapport à celui des autres étapes. Reste l'étape de contrôle de la perte. Sa complexité temporelle est proportionnelle
+au nombre de points de données de l'ensemble que nous utilisons pour évaluer
+la perte et la complexité de notre modèle. Bien que ce processus soit représenté
+sous la forme d'une boucle, il est étonnant que la perte doive être
+contrôlée à chaque passage. C'est parce que la plupart des modifications
+de la fonction de perte sont incrémentielles. Alors, que pouvons-nous modifier
+pour réduire le temps d'entraînement ? Le nombre de paramètres affectés
+dans un modèle est généralement fixe, même si nous verrons plus tard
+comment le faire varier dans un module consacré à la régularisation. En outre, même s'il peut sembler intéressant de réduire le nombre de points de données
+utilisés pour contrôler la perte, cela n'est généralement pas recommandé. Pour réduire le temps d'entraînement,
+nous pouvons agir sur le nombre des points de données
+pour lesquels nous calculons la dérivée, et sur la fréquence de contrôle de la perte. Examinons d'abord le nombre
+de points de données pour lesquels nous calculons la dérivée. Souvenez-vous que la dérivée
+vient de notre fonction de perte, qui elle-même constitue l'erreur
+associée au regroupement d'un certain nombre de prédictions. Cette méthode permet surtout de réduire
+le nombre de points de données utilisés pour alimenter
+la fonction de perte à chaque itération de l'algorithme. Selon vous, pourquoi cela pourrait-il
+encore fonctionner ? Parce qu'il est possible d'extraire
+de nos données d'entraînement des échantillons qui, en moyenne,
+se compensent. Nous aborderons les risques liés à
+l'échantillonnage dans de prochains modules, et nous verrons comment les éviter. Retenez simplement qu'avec
+notre stratégie d'échantillonnage, la sélection s'effectue avec une probabilité
+uniforme dans l'ensemble d'apprentissage. Toutes les instances ont donc la même chance
+d'être vues par le modèle. En ML, cet échantillonnage
+effectué pendant l'entraînement à partir de l'ensemble d'apprentissage
+est appelé traitement par mini-lots. Cette variante de descente de gradient s'appelle descente de gradient par mini-lots. Enfin, on parle de lots
+pour désigner les échantillons. La descente de gradient par mini-lots permet
+non seulement de gagner du temps, mais aussi d'utiliser moins de mémoire,
+et peut être facilement traitée en parallèle. Juste une rapide parenthèse à ce sujet.
+Vous entendrez peut-être parler de descente de gradient "par lot". Il n'est ici question que
+de traitement par lot, et l'opération porte sur l'intégralité
+de l'ensemble de données. Cela n'a donc rien à voir
+avec la descente de gradient par mini-lots dont nous parlons ici. On parle souvent de taille des lots,
+alors qu'on fait référence à la taille des mini-lots,
+ce qui peut prêter à confusion. C'est le cas dans TensorFlow. Nous ferons donc de même. Dans la suite de cette spécialisation,
+lorsque nous parlerons de la taille des lots, nous ferons référence
+à celle des échantillons de la descente de gradient par mini-lots. Alors, quelle doit être la taille
+de ces mini-lots ? Tout comme le taux d'apprentissage,
+la taille des lots est un hyperparamètre. Sa valeur optimale est donc
+dépendante du problème, et peut être trouvée
+à l'aide du réglage d'hyperparamètres dont nous parlerons ultérieurement. Généralement, chaque lot comprend
+de 10 à 100 exemples. Tout comme le taux d'apprentissage,
+la taille des lots est un hyperparamètre. Sa valeur optimale est donc
+dépendante du problème, et peut être trouvée
+à l'aide du réglage d'hyperparamètres dont nous parlerons ultérieurement. Généralement, chaque lot comprend
+de 10 à 1 000 exemples. L'autre élément sur lequel nous pouvons agir
+pour accélérer l'entraînement de modèle est la fréquence de contrôle de la perte. Bien qu'il puisse sembler intéressant de simplement contrôler la perte
+sur un sous-ensemble des données, cela n'est pas une bonne idée. La mise en place est simple. Nous ajoutons une logique de traitement indiquant que la fonction de calcul
+de la perte doit être exécutée moins souvent. Certaines stratégies utilisées
+pour obtenir une fonction de perte prête à être mise à jour sont basées
+sur le temps et sur les pas. Par exemple, avec une exécution
+tous les 1 000 pas ou toutes les 30 minutes. Avec la réduction de la fréquence
+de contrôle de la perte et le traitement par mini-lots, nous avons commencé à dissocier
+les deux aspects fondamentaux de l'entraînement de modèle :
+modification des paramètres du modèle et vérification pour voir quand
+les bonnes modifications ont été apportées.

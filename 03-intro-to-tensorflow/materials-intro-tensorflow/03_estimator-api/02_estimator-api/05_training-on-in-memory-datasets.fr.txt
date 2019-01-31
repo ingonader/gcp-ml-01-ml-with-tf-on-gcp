@@ -1,0 +1,40 @@
+Passons maintenant aux vraies données
+et laissons de côté les constantes que nous avons utilisées
+pour illustrer l'API Estimator. Si vos données rentrent en mémoire sous la forme de tableaux
+NumPy ou Pandas, l'API Estimator est dotée
+de fonctions pratiques pour les importer dans votre modèle : "estimator.inputs.numpy_input_fn"
+et "estimator.inputs.pandas_input_fn". Vous spécifiez votre dictionnaire
+de caractéristiques sous "x" en reprenant les noms utilisés pour
+définir les colonnes de caractéristiques, et vos libellés sous "y". Lors de la lecture depuis Pandas, ces noms de caractéristiques
+ne sont même pas obligatoires. L'API prendra les colonnes appropriées
+dans le dataframe Pandas en fonction des noms utilisés pour définir
+les colonnes de caractéristiques. Ces fonctions d'entrée implémentent
+les fonctionnalités clés nécessaires pour l'entraînement
+de modèles de réseau de neurones. En général, l'entraînement fonctionne
+mieux lorsqu'une étape est effectuée sur un mini-lot de données d'entrée
+à la fois, et non sur un seul élément de données ni sur tout
+l'ensemble de données. Vous pouvez spécifier ici
+la taille du lot. Vous pouvez aussi indiquer combien de fois
+vous voulez répéter l'ensemble de données pendant l'entraînement,
+c'est-à-dire le nombre d'itérations. Enfin, il est important de bien
+brasser vos données. Vous pouvez demander
+à l'API Estimator de s'en charger. Et pour éviter la réplication
+de l'ensemble de données en mémoire, vous pouvez spécifier la taille
+de la file d'attente de brassage. Par défaut, l'entraînement s'exécute
+jusqu'à ce que vos données d'entraînement soient épuisées, ou épuisées n fois
+si vous spécifiez que vous voulez n itérations dans votre fonction d'entrée. Vous pouvez aussi définir
+un nombre explicite d'étapes lorsque vous appelez
+la fonction d'entraînement. Il existe deux manières
+de définir les étapes. "steps=1000" exécutera 1 000 étapes
+d'entraînement supplémentaires à partir du dernier point de contrôle. Ici, une étape correspond à
+un lot de données d'entrée. "max_steps=1000" recommence
+à partir du dernier point de contrôle, lit le nombre d'étapes atteint
+lors de l'exécution précédente, et continue jusqu'à ce que le nombre
+d'étapes atteigne la valeur "max_steps". Cela peut donc être inefficace si
+le point de contrôle y était déjà arrivé. Voici le code complet avec les colonnes
+de caractéristiques, un modèle, une fonction d'entrée qui lit les données
+à partir du dataframe Pandas, et l'entraînement lui-même. Vous voulez ajouter
+une nouvelle caractéristique, comme le nombre de chambres
+dans la maison ? Vous pouvez l'ajouter à la liste
+de colonnes de caractéristiques et vérifier qu'elle est présente, avec le même nom que
+dans le dataframe Pandas.

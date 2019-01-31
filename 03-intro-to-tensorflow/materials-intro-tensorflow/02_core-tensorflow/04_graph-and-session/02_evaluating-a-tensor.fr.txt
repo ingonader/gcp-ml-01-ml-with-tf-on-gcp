@@ -1,0 +1,26 @@
+Vous pouvez appeler sess.run(z) ou z.eval pour évaluer z dans le contexte
+de la session par défaut. z.eval est seulement un raccourci, et vous le verrez souvent dans le code. Cela revient au même que lorsque
+vous appelez run pour la session par défaut. Vous pouvez appeler session.run
+en transmettant un unique Tensor, mais vous pouvez également transmettre
+une liste de Tensors à évaluer. TensorFlow identifiera les parties du graphe
+à évaluer, et procédera à l'évaluation. Pour chaque Tensor d'entrée, il y a un tableau NumPy
+correspondant dans la sortie. Étant donné que
+nous avons transmis z1 et z3, nous obtenons deux tableaux NumPy
+que j'appelle a1 et a3. Notez que ce code montre également que vous n'avez pas besoin
+d'écrire tf.add( x, y). Il vous suffit d'indiquer "x + y", car les opérations arithmétiques
+courantes sont surchargées. J'ai rapidement mentionné
+tf.eager précédemment. Les programmes TensorFlow ont en général
+recours à l'évaluation paresseuse, et c'est ce que je vous recommande d'utiliser
+lorsque vous écrivez du code de production. Toutefois, lorsque vous procédez
+au développement et au débogage, il peut parfois être pratique
+d'exécuter le code immédiatement. C'est pourquoi je vous montre
+comment utiliser tf.eager. Vous importez tf.eager, puis vous activez
+l'exécution "eager" (dynamique). Veillez toutefois à ne le faire
+qu'une seule fois. Vous le faites généralement
+au début de votre main(). Je crée donc ici les deux Tensors x et y, et j'affiche le résultat de x-y. Si nous n'étions pas en mode "eager", qu'est-ce qui serait affiché ? Uniquement la sortie
+du débogage du Tensor. Elle comprendrait un nom unique
+affecté par le système pour le nœud se trouvant dans le DAG, ainsi que la forme et
+le type de données de la valeur qui s'afficherait lors de l'exécution du DAG. Mais vu que nous sommes en mode "eager", nous n'avons pas à attendre
+que la session soit exécutée pour obtenir le véritable résultat
+de la soustraction. C'est la raison pour laquelle l'exécution du code x-y se traduit
+par l'affichage de la liste 2, 3, 4.

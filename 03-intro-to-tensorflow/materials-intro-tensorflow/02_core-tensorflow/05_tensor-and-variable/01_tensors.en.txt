@@ -1,0 +1,44 @@
+We have talked about what tensor flow is,
+and we have talked about
+the tensor flow API hierarchy. In the previous lesson, we talked about
+the directed acyclic graph, the DAG, and how it's executed within a session. We said that a DAG consists of tensors and
+operations on those tensors. Now, let's look in more
+detail at what tensors are. A tensor, remember,
+is a n-dimensional array of data. When you create a tensor,
+you typically specify its shape. Well occasionally,
+you will not specify the shape completely. For example, the first element of
+the shape could be variable, but let's ignore that special case for now. So here, I'm creating a tf.constant(3). This is 0 rank tensor. It's just a number, it's a scalar. The shape, when you look at the tensor,
+debug output, will be simply (). It's 0 rank. On the other hand, what if a past
+on the list 3, 5, 7 to tf.constant? Now, we have a one-dimensional tensor. We have a vector, so I can go on. So here, I'm passing a 2D array, 3, 5, 7 in the first row and 4,
+6, 8 in the second row. The shape of the resulting tensor is 2, 3, 2 rows, 3 columns, the rank is 2. You can think of a matrix as
+essentially a stack of 1D tensors. The first tensor is a vector 3, 5, 7, and the second 1D tensor that's being
+stacked is a vector 4, 6, 8. We can similarly create a 3D
+matrix by stacking 2D matrices, one on top of each other. You see me here stacking the 3, 5, 7,
+etc., matrix on top of the 1, 2, 3 matrix. Since I stacked 2, 2 by 3 matrices, the resulting shape of the tensor is 2,
+2, 3. Of course,
+I can do the stacking in code instead, instead of counting all those parenthesis. So here, x1 is a constant and it's
+constructed from a simple list 2, 3, 4. So that makes it a vector of length 3. x2 is constructed by
+stacking x1 on top of x1, so that makes it a 2 by 3 matrix. x3 is constructed by stacking
+four x2s on top of each other. And since each x2 was a 2 by 3 matrix, this makes x3 a 3D tensor
+whose shape is 4 by 2 by 3. x4 is constructed by
+stacking x3 on top of x3, so that makes it two of
+those 4 by 2 by 3 tensors, or a 4D tensor that is of shape 2,
+4, 2, 3. So you can stack tensors on top of
+each other to create tensors of higher dimensions. You can also slice a tensor to pull
+out lower dimensional tensors. So here, what is the shape of x? It's 2 by 3. 2 rows, 3 columns. Now take a look at the code for y. It's slicing x. The colon indicates that we're
+getting all the rows, and the one that indicates that we're
+getting just column one, which because Python is zero indexed, is actually
+the second column 01, so second column. So when we evaluate y, we get the value
+of the second column for all the rows. And that's why 5, 6 is being printed out. So quick quiz, what would x[1, :], what would that do? How about x[1, 0:2], what would that do? So answers? When you do x[1, : ],
+you will get the second row. Remember zero indexing? So one is the second row? And you will get all the columns. So we'll get [4, 6, 8]. So which columns will 0:2 pull? Now, this is very similar to
+the x range function in Python. It means, start at 0 and
+go up 2, but not including 2. So this means, 0 and 1. And this means that you will get both
+the rows, so it's actually the same thing. We will still get 4, 6, 8 on this data. Once you have the data into a tensor, you can take all that data and
+it can reshape the tensor. So x is a 2D tensor, what's its shape? That's right, 2 by 3. If I reshape it as 3, 2, what will happen? What I want is that,
+I want the six values in x, but I want them put into 3 rows and 2 columns. So essentially, Python will read
+the input tensor row by row, and put the numbers into the output tensor. So it would pick the first two values and
+put it in the first row, so we get 3 and 5. The next two values, 7 and 4,
+will go in to the second row, and the last two values, 6 and
+8, go into the third row. So that's what reshaping does. We can reshape, and we can slice. So here,
+I'm reshaping it to 3 by 2 as before, and then I'm slicing it, so I'm getting
+only the second row and all the columns. And that's why I get 7, 4.

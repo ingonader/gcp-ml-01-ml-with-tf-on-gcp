@@ -1,0 +1,45 @@
+Vamos ver este segundo
+laboratório de código juntos. Desta vez, veremos como usar a API Dataset
+para criar funções de entrada. Vamos localizar os
+arquivos do laboratório. Acessamos cloud.goole.com/console e entramos com nossa
+conta de laboratório. Aqui estamos no console. Podemos abrir o Cloud Shell e reconectar à nossa instância
+do Datalab existente digitando datalab connect mylab. A conexão é estabelecida. Agora vá para o botão "Preview" e altere a porta para 8081,
+que é a que o Datalab usa. E aqui estamos na interface
+usual do bloco de notas. Vamos criar um novo bloco de notas só
+para digitar alguns comandos git e baixar os códigos. Então %bash e clonamos este repositório. Ele está em execução, e o repositório
+apareceu aqui como training-data-analyst. Vamos localizar nossos
+arquivos de laboratório. Clicamos em "training-data-analyst",
+depois em "courses", em "machine_learning", depois em "deepdive".
+E, por fim, em "TensorFlow". O segundo laboratório se chama c_dataset.
+Vamos abri-lo. A API Dataset pode ser usada para criar
+as funções de entrada para o estimador. Ela faz o carregamento progressivo.
+Use-a se tiver um grande conjunto de dados. Vamos olhar para o código aqui. Nosso conjunto de dados no disco é
+um conjunto de arquivos CSV fragmentados. Usamos a função dataset.list_files
+para verificar o disco e conseguir um conjunto de dados
+de nomes de arquivos. A função TextLineDataset pode ser
+usada para ler cada arquivo e transformá-lo em um conjunto
+de linhas de texto. Essa é uma tranformação
+um para muitos. Um nome de arquivo se torna
+várias linhas de texto. Nós aplicamos com a função flat map. Agora temos um único conjunto de dados
+de linhas de texto geradas do conteúdo de todos os arquivos. Esta é apenas uma
+representação conceitual. Os arquivos não foram todos
+carregados na memória. Eles não caberiam. Por fim, usamos a função map para
+aplicar uma transformação de um para um
+às linhas de texto. Cada linha é analisada como
+um conjunto de valores separados por vírgula (CSV),
+e se torna uma lista de atributos. A decodificação em si acontece aqui. Agora temos o conjunto de dados
+de atributos e rótulos que queríamos aqui. Aplicamos a função shuffle em um
+determinado tamanho de buffer de shuffle. Repetimos para um determinado
+número de épocas e dividimos em minilotes. Finalmente, chamamos a função get_next, que retorna os atributos e rótulos como
+uma nota do TensorFlow. É isso que nosso modelo espera. Toda vez que o modelo executar
+essas anotações durante o treinamento, ele entregará o próximo lote
+de atributos e rótulos, acionando operações de carregamento
+de arquivos quando necessário. Aqui, nós definimos as funções
+de validação de treino e de entrada de conjunto de dados de teste
+carregando arquivos CSV correspondentes. taxi-train.csv, taxi-valid.csv
+e taxi-text.csv Vamos executar essas células. Deixamos as colunas de atributo como
+estão, e estamos prontos para treinar. O treinamento está sendo executado. Chamamos a função model.train,
+como antes, em nossa função de entrada, para obter o conjunto de
+dados de treinamento. Nós temos um modelo treinado. E agora, finalmente, avaliamos e
+conseguimos nossas métricas de validação. Aqui estão elas. E isso é tudo para este
+laboratório de código.

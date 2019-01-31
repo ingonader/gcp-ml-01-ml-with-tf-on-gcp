@@ -1,0 +1,223 @@
+1
+00:00:00,000 --> 00:00:04,425
+Voyons maintenant comment fonctionne
+l'entraînement d'un modèle dans CMLE.
+
+2
+00:00:04,425 --> 00:00:08,690
+Avant de commencer l'entraînement,
+veillez à bien rassembler et préparer
+
+3
+00:00:08,690 --> 00:00:09,965
+vos données d'entraînement
+
+4
+00:00:09,965 --> 00:00:13,795
+(caractéristiques de nettoyage,
+de tri, extraites et prétraitées),
+
+5
+00:00:13,795 --> 00:00:17,080
+et à mettre ces données d'entraînement
+dans une source en ligne
+
+6
+00:00:17,080 --> 00:00:20,955
+accessible par CMLE,
+telle que Cloud Storage.
+
+7
+00:00:20,955 --> 00:00:23,820
+Pour envoyer
+des tâches d'entraînement à CMLE,
+
+8
+00:00:23,820 --> 00:00:29,910
+il est fréquent de diviser la logique
+entre des fichiers task.py et model.py.
+
+9
+00:00:29,910 --> 00:00:34,230
+Le fichier task.py est le point d'entrée
+pour votre code que CMLE démarrera dans
+
+10
+00:00:34,230 --> 00:00:37,475
+des détails au niveau des tâches,
+comme le traitement des arguments
+
+11
+00:00:37,475 --> 00:00:40,940
+de ligne de commande, la durée
+d'exécution, l'emplacement des sorties,
+
+12
+00:00:40,940 --> 00:00:43,780
+l'interaction avec le réglage
+des hyperparamètres, etc.
+
+13
+00:00:44,060 --> 00:00:48,505
+Pour effectuer le ML, le fichier
+task.py appellera le fichier model.py.
+
+14
+00:00:48,750 --> 00:00:52,525
+Ce dernier se concentre sur les tâches
+de ML de base comme la récupération
+
+15
+00:00:52,525 --> 00:00:55,590
+des données, la définition
+des caractéristiques, la configuration
+
+16
+00:00:55,590 --> 00:00:59,400
+de la signature de service et bien sûr,
+la boucle d'entraînement et d'évaluation.
+
+17
+00:00:59,400 --> 00:01:03,630
+Le partage de code entre des ordinateurs
+implique toujours un type d'empaquetage.
+
+18
+00:01:03,630 --> 00:01:07,050
+Idem pour l'envoi d'un modèle à CMLE
+pour l'entraînement.
+
+19
+00:01:07,050 --> 00:01:09,644
+TensorFlow, et notamment Python,
+
+20
+00:01:09,644 --> 00:01:13,215
+nécessitent des structures d'empaquetage
+très spécifiques, mais normalisées,
+
+21
+00:01:13,215 --> 00:01:13,985
+présentées ici.
+
+22
+00:01:13,985 --> 00:01:17,615
+Il est important de faire un test local
+pour vérifier que votre empaquetage
+
+23
+00:01:17,615 --> 00:01:18,740
+fonctionne comme prévu.
+
+24
+00:01:18,740 --> 00:01:20,950
+Essayez de l'appeler directement
+avec python -m
+
+25
+00:01:20,950 --> 00:01:23,960
+pour vérifier que toutes les importations
+sont correctes.
+
+26
+00:01:24,675 --> 00:01:28,300
+Nous allons ensuite utiliser Google Cloud
+pour tester notre code en local.
+
+27
+00:01:28,300 --> 00:01:32,020
+Cela permet de vérifier rapidement
+la structure de notre package.
+
+28
+00:01:32,020 --> 00:01:35,155
+Lorsque c'est bon, nous pouvons soumettre
+une tâche d'entraînement
+
+29
+00:01:35,155 --> 00:01:37,700
+pour faire évoluer la tâche
+dans le cloud.
+
+30
+00:01:37,700 --> 00:01:41,435
+Les principales lignes de commande sont
+package-path, pour spécifier
+
+31
+00:01:41,435 --> 00:01:46,940
+l'emplacement du code, module-name,
+pour spécifier les fichiers à exécuter
+
+32
+00:01:46,940 --> 00:01:51,395
+dans le package, et scale-tier,
+pour spécifier le type de matériel
+
+33
+00:01:51,395 --> 00:01:53,655
+sur lequel vous voulez
+que le code soit exécuté.
+
+34
+00:01:54,045 --> 00:01:57,970
+Vous pouvez spécifier scale-tier=BASIC
+pour l'exécuter sur une machine,
+
+35
+00:01:57,970 --> 00:02:01,210
+scale-tier=STANDARD
+pour l'exécuter sur un petit cluster,
+
+36
+00:02:01,210 --> 00:02:05,565
+ou scale-tier=BASIC_GPU
+pour l'exécuter sur un seul GPU.
+
+37
+00:02:05,565 --> 00:02:10,510
+Et pour l'exécuter sur un TPU,
+scale-tier=BASIC_TPU.
+
+38
+00:02:10,875 --> 00:02:13,425
+Vous pouvez aussi spécifier
+des niveaux personnalisés
+
+39
+00:02:13,425 --> 00:02:15,105
+et définir chaque type de machine.
+
+40
+00:02:15,105 --> 00:02:17,635
+Les niveaux d'évolutivité
+ne cessent de se développer.
+
+41
+00:02:17,635 --> 00:02:21,350
+Consultez la documentation de CMLE
+pour connaître les options disponibles.
+
+42
+00:02:21,350 --> 00:02:24,110
+Un petit conseil : pour obtenir
+les meilleures performances
+
+43
+00:02:24,110 --> 00:02:27,140
+dans vos tâches de ML, veillez
+à sélectionner un bucket régional
+
+44
+00:02:27,140 --> 00:02:28,395
+dans Google Cloud Storage.
+
+45
+00:02:28,395 --> 00:02:30,964
+Un bucket multirégional,
+plus adapté à la diffusion Web
+
+46
+00:02:30,964 --> 00:02:33,434
+qu'à l'entraînement ML,
+est sélectionné par défaut.

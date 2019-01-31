@@ -1,0 +1,359 @@
+1
+00:00:00,340 --> 00:00:02,715
+Ahora hablemos de grafos y sesiones.
+
+2
+00:00:03,405 --> 00:00:07,090
+El grafo acíclico dirigido,
+también llamado DAG, en TensorFlow
+
+3
+00:00:07,260 --> 00:00:08,680
+es como cualquier grafo.
+
+4
+00:00:09,040 --> 00:00:11,665
+Consiste de aristas y nodos.
+
+5
+00:00:12,165 --> 00:00:14,685
+Las aristas representan datos.
+
+6
+00:00:14,825 --> 00:00:16,315
+Representan tensores
+
+7
+00:00:16,735 --> 00:00:19,745
+que, como sabemos,
+son arreglos de n dimensiones.
+
+8
+00:00:20,315 --> 00:00:24,780
+Los nodos representan operaciones
+de TensorFlow que usan esos tensores
+
+9
+00:00:25,120 --> 00:00:29,035
+como tf.add y otras similares
+que vimos en la lección anterior.
+
+10
+00:00:29,525 --> 00:00:35,720
+Un DAG de TensorFlow consta de tensores
+y las operaciones que se les aplican.
+
+11
+00:00:37,100 --> 00:00:40,180
+¿Por qué TensorFlow
+usa la evaluación reactiva?
+
+12
+00:00:40,990 --> 00:00:45,420
+Porque la evaluación reactiva
+permite mucha flexibilidad
+
+13
+00:00:45,600 --> 00:00:48,475
+y optimización
+en la ejecución del grafo.
+
+14
+00:00:49,115 --> 00:00:52,170
+TensorFlow ahora puede
+procesar el grafo, compilarlo
+
+15
+00:00:52,310 --> 00:00:55,650
+o insertar nodos de envío
+y recepción en medio del DAG
+
+16
+00:00:56,020 --> 00:00:58,395
+de manera que se pueda ejecutar
+de forma remota.
+
+17
+00:00:58,815 --> 00:01:02,540
+TensorFlow puede asignar diferentes
+partes del DAG a diferentes dispositivos
+
+18
+00:01:02,840 --> 00:01:04,945
+según si está vinculado a E/S
+
+19
+00:01:05,045 --> 00:01:07,735
+o si requerirá capacidades de GPU.
+
+20
+00:01:08,885 --> 00:01:10,915
+Mientras el grafo se procesa
+
+21
+00:01:11,165 --> 00:01:14,285
+TensorFlow puede agregar
+cuantificaciones o tipos de datos
+
+22
+00:01:14,435 --> 00:01:15,950
+nodos de depuración
+
+23
+00:01:15,950 --> 00:01:18,650
+y puede crear
+resúmenes para escribir valores
+
+24
+00:01:18,860 --> 00:01:20,485
+para que TensorBoard pueda leerlos.
+
+25
+00:01:20,705 --> 00:01:24,970
+Además, los cálculos como Add,
+MatMul, constantes, variables
+
+26
+00:01:24,970 --> 00:01:27,510
+son operaciones y TensorFlow
+puede trabajar con ellas.
+
+27
+00:01:28,225 --> 00:01:30,120
+Cuando el grafo se compila
+
+28
+00:01:30,370 --> 00:01:34,345
+TensorFlow puede tomar dos operaciones
+y unirlas para mejorar el rendimiento.
+
+29
+00:01:34,785 --> 00:01:38,255
+Por ejemplo, supongamos
+que hay dos nodos add consecutivos.
+
+30
+00:01:38,505 --> 00:01:41,005
+TensorFlow puede unirlos en uno solo.
+
+31
+00:01:41,785 --> 00:01:44,110
+El compilador XLA de TensorFlow
+
+32
+00:01:44,340 --> 00:01:47,410
+puede usar la información
+del grafo acíclico dirigido
+
+33
+00:01:47,600 --> 00:01:49,660
+para generar código más veloz.
+
+34
+00:01:50,360 --> 00:01:55,745
+Ese es uno de los motivos
+para usar un DAG: la optimización.
+
+35
+00:01:56,135 --> 00:01:57,980
+Pero lo más interesante
+
+36
+00:01:58,120 --> 00:02:02,370
+es que el DAG puede ejecutarse remotamente
+y asignarse a dispositivos.
+
+37
+00:02:02,830 --> 00:02:08,200
+Y ahí es donde los beneficios del DAG
+se vuelven muy claros.
+
+38
+00:02:08,770 --> 00:02:11,105
+Mediante el uso de aristas explícitas
+
+39
+00:02:11,385 --> 00:02:14,847
+para representar dependencias
+entre operaciones
+
+40
+00:02:15,107 --> 00:02:18,550
+es sencillo para el sistema
+identificar operaciones
+
+41
+00:02:18,680 --> 00:02:20,840
+que se pueden ejecutar en paralelo.
+
+42
+00:02:21,190 --> 00:02:23,030
+Y mediante las artistas explícitas
+
+43
+00:02:23,030 --> 00:02:25,960
+para representar los valores
+que fluyen entre operaciones
+
+44
+00:02:26,370 --> 00:02:31,970
+TensorFlow puede dividir
+su programa entre varios dispositivos
+
+45
+00:02:32,160 --> 00:02:37,565
+CPU, GPU, TPU, etc. que están
+vinculados a diferentes máquinas.
+
+46
+00:02:38,125 --> 00:02:43,800
+TensorFlow inserta la comunicación necesaria
+y la coordinación entre estos dispositivos.
+
+47
+00:02:44,150 --> 00:02:46,060
+Observe los colores del diagrama.
+
+48
+00:02:46,200 --> 00:02:49,110
+Varias partes del grafo
+pueden estar en diferentes dispositivos
+
+49
+00:02:49,380 --> 00:02:52,170
+sin importar si es un GPU
+o diferentes computadoras.
+
+50
+00:02:52,930 --> 00:02:55,300
+Un beneficio clave de este modelo
+
+51
+00:02:55,530 --> 00:02:58,780
+poder distribuir el cálculo
+entre muchas máquinas
+
+52
+00:02:58,930 --> 00:03:00,610
+y muchos tipos de máquinas
+
+53
+00:03:00,755 --> 00:03:02,170
+se debe al DAG.
+
+54
+00:03:02,810 --> 00:03:05,230
+Nosotros solo escribimos
+el código en Python
+
+55
+00:03:05,510 --> 00:03:07,865
+y dejamos que el sistema
+de ejecución de TensorFlow
+
+56
+00:03:08,085 --> 00:03:10,795
+optimice y distribuya el grafo.
+
+57
+00:03:11,815 --> 00:03:14,955
+La clase session representa la conexión
+
+58
+00:03:14,955 --> 00:03:17,225
+entre el programa
+en Python que escribimos
+
+59
+00:03:17,435 --> 00:03:19,100
+y el entorno de ejecución de C++.
+
+60
+00:03:19,520 --> 00:03:24,339
+El objeto session provee acceso
+a los dispositivos de la máquina local
+
+61
+00:03:25,059 --> 00:03:26,795
+y a los dispositivos remotos
+
+62
+00:03:26,935 --> 00:03:29,375
+con el entorno de ejecución
+distribuido de TensorFlow.
+
+63
+00:03:29,585 --> 00:03:32,510
+También almacena
+la información del grafo en caché
+
+64
+00:03:32,640 --> 00:03:35,765
+de manera que el mismo cálculo
+pueda ejecutarse varias veces.
+
+65
+00:03:36,715 --> 00:03:37,705
+Como vimos
+
+66
+00:03:38,155 --> 00:03:41,235
+para ejecutar grafos de TensorFlow,
+llamamos a run
+
+67
+00:03:41,765 --> 00:03:43,195
+en una tf.session.
+
+68
+00:03:43,525 --> 00:03:44,615
+Y cuando lo hacemos
+
+69
+00:03:44,815 --> 00:03:47,780
+especificamos el tensor
+que queremos evaluar.
+
+70
+00:03:48,290 --> 00:03:50,150
+En este código de ejemplo
+
+71
+00:03:50,400 --> 00:03:53,740
+defino dos tensores de datos: x y y.
+
+72
+00:03:54,120 --> 00:03:56,725
+Son constantes o tensores 1D.
+
+73
+00:03:57,305 --> 00:03:58,700
+El tensor z
+
+74
+00:03:59,440 --> 00:04:05,215
+es el resultado
+de invocar tf.add en x y y.
+
+75
+00:04:05,765 --> 00:04:10,550
+Cuando quiero evaluar,
+llamo a sess.run en z.
+
+76
+00:04:11,490 --> 00:04:16,160
+Aquí, la sesión o sess,
+es una instancia de tf.session
+
+77
+00:04:16,730 --> 00:04:19,030
+y la declaración with en Python
+
+78
+00:04:19,180 --> 00:04:20,978
+es como nos aseguramos de que la sesión
+
+79
+00:04:20,978 --> 00:04:23,368
+se cierre automáticamente
+cuando terminemos.

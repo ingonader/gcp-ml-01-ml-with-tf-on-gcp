@@ -1,0 +1,47 @@
+Dans les prochaines leçons, nous verrons comment résoudre
+des problèmes courants. Nous allons commencer
+par les erreurs de forme, puis nous nous intéresserons
+à une variante des erreurs de forme liée à l'erreur de correspondance
+scalaire/vecteur. Et enfin, nous verrons les problèmes
+liés aux types de données. Nous avons regardé ce code
+lors de la leçon précédente, et vu que la raison pour laquelle
+l'addition ne fonctionnait pas est que a et c devaient être de même forme. La forme correcte est celle qui correspondait
+à ce que le développeur voulait faire. Dans ce cas, la méthode
+partait de la matrice 4, 3 d'origine, et devait créer des fenêtres glissantes
+de taille constante (4, 2). C'était donc a qui était correct,
+et c qui ne l'était pas. Alors, comment pourriez-vous faire en sorte
+que c ait également pour valeur 4, 2 ? Vous pourriez modifier c
+pour faire en sorte que la scission, plutôt que toutes les lignes
+et uniquement la colonne 1, récupère toutes les lignes
+et les colonnes 1 et 2. Tout comme avec la fonction xrange de Python, le premier nombre est inclus,
+mais le dernier ne l'est pas. Donc, a récupère les colonnes 0 et 1,
+et c les colonnes 1 et 3, ce qui correspond à des fenêtres
+de deux colonnes à chaque fois. Maintenant, lorsque nous exécutons
+le programme, tout fonctionne correctement. Les problèmes de forme peuvent
+également être liés à la taille du lot. Souvenez-vous que, lorsque
+j'ai parlé des formes des Tensors, j'ai dit qu'il arrive parfois qu'une ou plusieurs des dimensions
+puissent être de longueur variable. Il arrive notamment couramment que l'on utilise des Tensors
+de longueur variable lorsque le programme traite des lots. Les lots sont généralement
+tous de même taille. Imaginez que vous ayez
+64 exemples à chaque fois, sauf lorsque la fin
+du fichier d'entrée est atteinte. À ce stade, il est possible qu'il n'y ait pas
+64 exemples pour remplir le lot, de sorte que vous pourriez créer un Tensor
+contenant uniquement, disons, 42 exemples. C'est la raison pour laquelle la forme
+de l'espace réservé X figurant dans le code est None pour la première dimension. None signifie qu'il y a
+une longueur variable. Si vous affichez la valeur de X, vous obtenez la sortie du débogage du Tensor, laquelle vous permet de voir qu'il s'agit
+d'un Tensor 2D, avec l'indication ?, 3. Cela signifie que la matrice
+a toujours trois colonnes, mais que le nombre de lignes peut varier. Maintenant, lorsque vous essayez
+de charger des données fictives, vous devez vous demander
+quelle en est la forme. C'est un Tensor 1D. Il comporte certes trois éléments,
+mais il est unidimensionnel, et l'espace réservé est destiné
+à contenir une matrice 2D. Vous pouvez avoir autant de lignes
+que vous le souhaitez, et même une seule, mais uniquement sous la forme
+d'une matrice 2D. Donc, comment pouvons-nous
+résoudre ce problème ? Ce n'est pas aussi simple que
+la correction de la scission, n'est-ce pas ? La réponse est que
+vous devez modifier la forme. Cela peut être effectué avec ces méthodes. Nous avons déjà vu la méthode tf.reshape. Elle réorganise vos nombres
+de façon à obtenir une forme différente. C'est ce dont nous avons
+besoin pour ce problème. Nous disposons de trois nombres,
+ce qui est suffisant. Mais nous avons un Tensor 1D
+que nous devons transformer en Tensor 2D. Nous pouvons le modifier
+avec tf.reshape, et l'envoyer.

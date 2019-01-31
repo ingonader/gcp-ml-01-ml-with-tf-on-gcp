@@ -1,0 +1,24 @@
+Además de los errores de forma
+que vimos en las lecciones anteriores otro error común que encontrará cuando desarrolle programas de TensorFlow son los errores de tipo de datos. El mensaje de error aquí dice que tiene un tensor cuyos valores
+están almacenados como matrices de enteros pero lo está pasando
+a un método que espera un tensor con valores de punto flotante.
+¿En qué caso ocurriría algo así? Tal vez si mira
+el seguimiento de las llamadas y la línea de código identificada
+es esta suma de aquí, s = a + b. Tal vez a es una matriz de flotantes mientras que b es una de enteros. Tal vez piense que puede sumar
+un número de punto flotante a un entero. ¿Cuál es el problema?
+Debería ser automático. El resultado
+es un número de punto flotante. Sin embargo, ni Python ni C++ permiten
+sumar una matriz de punto flotante a una de números enteros. Hay muchas optimizaciones
+de almacenamiento involucradas y si tiene una matriz de enteros,
+los datos podrían encontrarse en un dispositivo o una parte
+de la memoria donde simplemente no es posible realizar
+aritmética de puntos flotantes. Hay que corregirlo. ¿Redondeará los valores
+de punto flotante a enteros? ¿O tal vez cometió un error y la matriz de punto flotante
+en realidad debía ser una de enteros? ¿O tal vez prefiere convertir
+los enteros en valores de punto flotante y hacer la suma sabiendo que el resultado será una matriz de punto flotante? Debido a que hay varias opciones TensorFlow le pide que sea más claro. Una forma de corregir el problema
+es tomar la matriz de enteros b y decir que ahora queremos que sea
+un tensor de valores de punto flotante. Esta llamada a tf.cast
+se insertará en el gráfico de computación y las optimizaciones, etc.,
+tomarán eso en cuenta cuando decidan
+dónde almacenar b y cómo moverla. Aquí, agregamos al método
+la operación tf.cast para corregirlo.

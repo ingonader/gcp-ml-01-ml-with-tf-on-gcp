@@ -1,0 +1,438 @@
+1
+00:00:00,000 --> 00:00:03,555
+Gehen wir gemeinsam
+das dritte Code-Lab durch.
+
+2
+00:00:03,555 --> 00:00:07,250
+Es geht um "train_und_evaluate".
+
+3
+00:00:07,250 --> 00:00:11,400
+Als Erstes suchen wir
+wieder die Lab-Dateien.
+
+4
+00:00:11,400 --> 00:00:16,030
+Wir rufen clouds.google.com/console auf
+
+5
+00:00:16,030 --> 00:00:23,670
+und melden uns mit dem Lab-Konto an.
+
+6
+00:00:32,150 --> 00:00:38,300
+Wenn Sie drin sind, können Sie mit diesem
+kleinen Button die Cloud-Shell öffnen
+
+7
+00:00:38,300 --> 00:00:41,120
+und sich wieder mit
+Ihrer Data-Lab-Instanz verbinden,
+
+8
+00:00:41,120 --> 00:00:45,090
+indem Sie "datalab connect" und
+den Namen Ihrer Instanz eingeben,
+
+9
+00:00:51,230 --> 00:00:55,450
+in meinem Fall "mylab".
+
+10
+00:01:01,160 --> 00:01:05,069
+Die Verbindung
+wird hergestellt. Wenn sie steht,
+
+11
+00:01:05,069 --> 00:01:07,560
+verwenden Sie den
+Preview-Button.
+
+12
+00:01:07,560 --> 00:01:11,640
+Wir müssen den Port
+zu 8081 ändern,
+
+13
+00:01:11,640 --> 00:01:18,045
+da Datalab diesen verwendet, und wir sind
+in der vertrauten Notebook-Umgebung.
+
+14
+00:01:18,045 --> 00:01:22,170
+Wir erstellen ein neues Notebook,
+um einige Bash-Befehle einzugeben
+
+15
+00:01:22,170 --> 00:01:26,285
+und um unseren Code abzurufen.
+
+16
+00:01:26,285 --> 00:01:33,900
+Wir kopieren dieses Repository mit
+"git clone" und sobald das erledigt ist,
+
+17
+00:01:33,900 --> 00:01:38,970
+befindet sich das Repository hier
+unter "training-data-analyst".
+
+18
+00:01:38,970 --> 00:01:42,150
+Die Dateien für dieses
+dritte Code-Lab finden Sie unter
+
+19
+00:01:42,150 --> 00:01:50,020
+"training-data-analyst", "courses",
+"machine_learning",
+
+20
+00:01:50,020 --> 00:01:55,530
+"deepdive" und schließlich "tensorflow".
+
+21
+00:01:55,530 --> 00:02:00,340
+Dieses Code-Lab heißt "d_traineval".
+
+22
+00:02:00,340 --> 00:02:04,360
+Öffnen wir es.
+
+23
+00:02:04,360 --> 00:02:08,509
+Hier geben wir unserem
+Modell den letzten Schliff.
+
+24
+00:02:08,509 --> 00:02:13,150
+Gehen wir es durch.
+
+25
+00:02:13,150 --> 00:02:18,035
+Beim Laden von Daten
+muss nichts geändert werden.
+
+26
+00:02:18,035 --> 00:02:19,837
+Das wurde bereits abgeschlossen.
+
+27
+00:02:19,837 --> 00:02:25,430
+Wir verwenden Datasets, um CSV-Daten
+aus mehreren CSV-Teildateien zu laden.
+
+28
+00:02:25,430 --> 00:02:29,795
+Wir ändern auch nicht unsere Features.
+
+29
+00:02:29,795 --> 00:02:32,570
+Fürs Erste bleiben sie so.
+
+30
+00:02:32,570 --> 00:02:34,945
+Das hier ist neu.
+Die Funktion "serving_input_fn".
+
+31
+00:02:34,945 --> 00:02:37,975
+Mit ihr wird das
+Modell einsatzbereit gemacht.
+
+32
+00:02:37,975 --> 00:02:41,610
+Wenn das Modell über eine
+REST API Vorhersagen bereitstellt,
+
+33
+00:02:41,610 --> 00:02:45,215
+erhält es Daten als JSON-Feed.
+
+34
+00:02:45,215 --> 00:02:48,530
+Glücklicherweise zwingt uns die API nicht,
+
+35
+00:02:48,530 --> 00:02:52,735
+einen JSON-Feed zu verwenden, der
+genau wie die CSV-Trainingsdaten aussieht.
+
+36
+00:02:52,735 --> 00:02:56,600
+Mit der Funktion "serving_input_fn" nehmen
+wir die notwendigen Anpassungen vor.
+
+37
+00:02:56,600 --> 00:03:04,805
+Hier definieren Sie jedoch
+die erwartete Form Ihres JSON-Feeds
+
+38
+00:03:04,805 --> 00:03:08,240
+mit den zu erwartenden
+Namen, der Form und
+
+39
+00:03:08,240 --> 00:03:12,680
+dem Typ der Werte, die als
+TensorFlow-Platzhalter angegeben sind.
+
+40
+00:03:12,680 --> 00:03:17,090
+Diese Platzhalter erhalten die
+vom JSON-Feed gelesenen Werte.
+
+41
+00:03:17,090 --> 00:03:19,545
+In diesem Fall sagen wir,
+
+42
+00:03:19,545 --> 00:03:23,255
+dass wir keine
+zusätzlichen Transformationen benötigen,
+
+43
+00:03:23,255 --> 00:03:25,820
+dass also die Features
+genau dieselben sind,
+
+44
+00:03:25,820 --> 00:03:28,400
+wie die gerade
+definierten Feature-Platzhalter.
+
+45
+00:03:28,400 --> 00:03:33,775
+Das Modell kann dieses Feature-Verzeichnis
+so verstehen, wie es ist.
+
+46
+00:03:33,775 --> 00:03:38,655
+Gleich können wir
+"train_and_evaluate" aufrufen.
+
+47
+00:03:38,655 --> 00:03:42,520
+Es muss nur noch
+ein wenig konfiguriert werden.
+
+48
+00:03:42,520 --> 00:03:47,290
+Wir wählen ein Modell,
+in diesem Fall einen linearen Regressor.
+
+49
+00:03:47,330 --> 00:03:50,415
+Wir definieren ein TrainSpec.
+
+50
+00:03:50,415 --> 00:03:57,090
+An dieser Stelle wird die
+Funktion "train.input_fn" eingebunden.
+
+51
+00:03:57,090 --> 00:03:58,719
+Wir definieren auch einen Exporter,
+
+52
+00:03:58,719 --> 00:04:02,390
+hier den LatestExporter.
+Das bedeutet, dass wir das Modell
+
+53
+00:04:02,390 --> 00:04:06,995
+am Ende des Trainings zur
+Bereitstellung exportieren wollen.
+
+54
+00:04:06,995 --> 00:04:12,245
+Der Exporter muss die
+Funktion "serving_input_fn" kennen,
+
+55
+00:04:12,245 --> 00:04:16,359
+die wir gerade hier definiert haben.
+
+56
+00:04:16,359 --> 00:04:19,890
+Dann definieren wir die EvalSpec.
+
+57
+00:04:19,890 --> 00:04:23,260
+An dieser Stelle kommt die
+Funktion "eval_data_input_fn" ins Spiel
+
+58
+00:04:23,260 --> 00:04:28,090
+und da sowohl Validierungen als auch
+Exporte nur nach Checkpoints erfolgen,
+
+59
+00:04:28,090 --> 00:04:31,925
+ist es sinnvoll, auch hier
+unseren Exporter einzubinden.
+
+60
+00:04:31,925 --> 00:04:36,620
+Jetzt ist alles bereit und konfiguriert.
+
+61
+00:04:36,620 --> 00:04:43,820
+Starten wir jetzt TensorBoard.
+
+62
+00:04:49,010 --> 00:04:55,150
+TensorBoard wurde gestartet.
+Wir können hier klicken, um es zu öffnen,
+
+63
+00:04:55,150 --> 00:04:59,635
+und sehen ein zunächst leeres Dashboard.
+
+64
+00:04:59,635 --> 00:05:02,465
+Wir haben noch nicht
+mit dem Training begonnen.
+
+65
+00:05:02,465 --> 00:05:05,980
+Tun wir das jetzt.
+
+66
+00:05:08,030 --> 00:05:12,750
+Starten wir die
+Funktion "train_and_evaluate".
+
+67
+00:05:17,070 --> 00:05:21,810
+Die im Training erzeugten Matrizen werden
+im üblichen Ausgabeverzeichnis abgelegt,
+
+68
+00:05:21,810 --> 00:05:25,920
+und TensorBoard
+muss wissen, wo sie zu finden sind.
+
+69
+00:05:25,920 --> 00:05:30,270
+Das haben gleich zu Beginn hier angegeben.
+
+70
+00:05:30,270 --> 00:05:33,060
+Da wir mit dem Training begonnen haben,
+
+71
+00:05:33,060 --> 00:05:39,255
+sehen wir hier unsere Training-Logs.
+Wir sollten auf der Tensorboard-Seite hier
+
+72
+00:05:39,255 --> 00:05:41,580
+auch die Kurven sehen – und da sind sie.
+
+73
+00:05:41,580 --> 00:05:44,250
+Hier ist unser durchschnittlicher Verlust.
+
+74
+00:05:44,250 --> 00:05:47,535
+Nach kurzer Zeit sehen wir den
+durchschnittlichen Verlust, der
+
+75
+00:05:47,535 --> 00:05:50,820
+gleichzeitig mit dem Trainingsdataset und
+
+76
+00:05:50,820 --> 00:05:53,670
+dem Evaluierungsdataset berechnet wurde.
+
+77
+00:05:53,670 --> 00:05:57,800
+Das liegt daran, dass wir
+gleichzeitig trainieren und validieren.
+
+78
+00:06:00,800 --> 00:06:04,215
+Dieses Modell trainiert also noch.
+
+79
+00:06:04,215 --> 00:06:07,340
+Warten wir, bis es fertig ist.
+
+80
+00:06:13,490 --> 00:06:16,785
+Während des Trainings kann TensorBoard
+
+81
+00:06:16,785 --> 00:06:20,830
+automatisch aktualisiert werden,
+
+82
+00:06:20,830 --> 00:06:23,250
+das finden Sie
+unter dieser Einstellung hier:
+
+83
+00:06:23,250 --> 00:06:25,380
+"Daten alle 30 Sekunden neu laden".
+
+84
+00:06:25,380 --> 00:06:29,250
+Sie können auch den Button
+"Refresh" anklicken, um die Daten
+
+85
+00:06:29,250 --> 00:06:36,130
+zu aktualisieren und die Trainingskurven
+während des Trainings anzuzeigen.
+
+86
+00:06:45,310 --> 00:06:48,810
+Das Modell ist jetzt fertig trainiert.
+
+87
+00:06:48,810 --> 00:06:51,470
+Wenn ich das letzte Mal hier aktualisiere,
+
+88
+00:06:51,470 --> 00:06:54,850
+sehe ich die endgültigen Trainingskurven.
+
+89
+00:06:56,030 --> 00:06:57,855
+Das war's.
+
+90
+00:06:57,855 --> 00:07:01,110
+Was alles in diesen Trainingskurven
+steckt, erfahren Sie später.
+
+91
+00:07:01,110 --> 00:07:05,190
+Im Moment sehen wir nur, dass
+unser Modell nicht sehr gut trainiert ist.
+
+92
+00:07:05,190 --> 00:07:08,235
+Der Validierungsverlust
+hat sich nicht verbessert.
+
+93
+00:07:08,235 --> 00:07:10,605
+Aber das wussten wir schon.
+
+94
+00:07:10,605 --> 00:07:14,175
+Jetzt, wo der Code funktioniert,
+Daten geladen werden,
+
+95
+00:07:14,175 --> 00:07:16,440
+und wir in TensorBoard sehen, was abläuft,
+
+96
+00:07:16,440 --> 00:07:19,900
+können wir Data Science anwenden.

@@ -1,0 +1,72 @@
+Entrenamos nuestro modelo
+con un gran conjunto de datos mediante el entrenamiento distribuido y nuestras curvas
+de TensorBoard son correctas. Llegó el momento de implementar. Eso es fácil. Un par de clics
+en ML Engine en Cloud Console y nuestro modelo entrenado estará en vivo detrás de una API de REST
+con escalamiento automático completamente administrada,
+lista para aceptar tráfico JSON. Un momento, ¿dijo JSON? El modelo no sabe leer JSON. Tenemos funciones de entrada
+para datos de entrenamiento y prueba pero no para datos JSON en vivo
+que lleguen al extremo REST. Es momento de agregar una. Recuerde el parámetro exporters
+que mencionamos antes en EvalSpec. Esto es lo que define un modelo completo. Listo para la implementación no solo con un control
+en parámetros bien entrenados sino también
+con una función de entrada adicional que correlacione
+el JSON recibido mediante la API de REST y los atrubutos que espera el modelo. Esta es la función serving_input. Este es el punto clave. Las entradas de entrega
+y entrenamiento suelen ser muy diferentes. Para entender lo que ocurre,
+veamos con más detalle. En TensorFlow, todo es un gráfico. Este es el gráfico de nuestro modelo,
+que se produjo cuando lo instanciamos. Es básicamente igual en el momento
+del entrenamiento y de la inferencia. Es un poco más simple para la inferencia.
+Recibe atributos y genera predicciones. Conectemos una fuente
+de datos a sus entradas. Durante el entrenamiento,
+se hace con la función training_input. Usamos la API de Dataset
+para crear un nodo de entrada que lea progresivamente de archivos CSV y envíe lotes de datos
+de entrenamiento al modelo. Usaremos un patrón similar
+para nuestro modelo implementado. La función serving_input
+nos permite agregar un conjunto de transformaciones de TensorFlow entre el JSON que recibe la API de REST y los atributos que espera el modelo. No necesitamos analizar el JSON,
+ya que ML Engine lo hace automáticamente pero cualquier otra transformación
+debe escribirse allí. Un error común es creer
+que la función serving_input se llamará para cada dato
+que reciba el extremo REST. No funciona así. Se ejecuta solo una vez,
+cuando se instancia el modelo. Y produce un gráfico de TensorFlow
+conectado en un extremo al analizador JSON
+y, en el otro extremo, al modelo. La manera de transformar los datos de valores JSON
+a atributos depende de usted pero recuerde hacerlo
+con comandos de TensorFlow de modo que se muestre
+un gráfico de transformaciones. ¿En qué momento
+se unen estas piezas del gráfico? La conexión ocurre cuando se especifica
+la función serving_input en su exportador y lo agregan a eval_spec. El exportador guardará
+una versión del modelo con controles junto con la información
+de la transformación en un archivo de modelo exportado
+listo para implementarse. ¿Qué control se guarda? Depende del tipo de exportador. El más simple,
+que usamos aquí, es LatestExporter. Usa el control más reciente disponible. Podemos ver el modelo exportado
+en el disco, en la carpeta "export". A este exportador
+lo llamamos "pricing" en la API y por eso se creó
+una subcarpeta "pricing". En ella, cada carpeta numerada
+es un modelo listo para implementarse. Para probar la API de REST,
+solo envíe datos JSON al extremo. El SDK de Google Cloud incluye
+el comando gcloud ml-engine predict que permite hacer pruebas
+con datos de un archivo JSON fácilmente. La sintaxis debe ser
+un campo JSON único llamado instances que contenga una lista de objetos JSON con el formato
+que espera la función serving_input. En este caso, la superficie
+en pies cuadrados y el tipo de propiedad. Las instancias de datos en la lista
+se agruparán en lotes automáticamente y la función serving_input recibirá
+una lista de cifras de pies cuadrados y una lista de strings
+de tipos de propiedad. Hay una manera aún más fácil
+de probar sin implementar. El comando
+gcloud ml-engine local predict permite obtener predicciones directamente
+desde un modelo exportado en el disco. Sin necesidad de implementar. Observe el formato ligeramente
+diferente que espera este comando. Una lista de objetos JSON
+en un archivo, con un objeto por línea. Este es otro uso muy común
+de la función serving_input la decodificación de imágenes JPEG. Si trabaja con un modelo
+que procesa imágenes siempre las enviará comprimidas a la red. Pero el modelo siempre esperará
+que estén descomprimidas. La función serving_input
+puede manejar la descompresión. Este es el código de muestra para ello. Como ve, la imagen
+proviene del feed JSON como tf.string que en terminología
+de TensorFlow designa un ByteString una lista de bytes aleatorios. Sí. JPEG es un formato binario
+y se requiere codificación Base 64 para convertirlo en una string
+de texto que funcione en JSON. TensorFlow adopta
+una convención JSON personalizada para marcar strings binarias
+codificadas en Base 64. El nombre del campo
+debe terminar en "_bytes" y el valor debe ser
+un objeto JSON llamado b64 con la string codificada
+en Base 64 como su valor. Con esta convención, la decodificación
+de Base 64 ocurre automáticamente. No hace falta manejarla
+en la función serving_input.

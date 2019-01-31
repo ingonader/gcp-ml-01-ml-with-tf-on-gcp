@@ -1,0 +1,85 @@
+Jetzt haben wir gesehen, 
+wie der Gradientenabstieg funktioniert. Betrachten wir das in Aktion, 
+indem wir die Tools benutzen, die uns viele der besprochenen 
+Phänomene in Echtzeit zeigen. TensorFlow Playground
+ist ein leistungsstarkes Tool, das die Funktionsweise
+neuronaler Netzwerke veranschaulicht. Darüber haben wir 
+bisher noch nicht gesprochen, aber das werden wir bald. Aus Gründen, die ich noch erkläre,
+sind die einfachsten neuronalen Netzwerke mathematisch äquivalent 
+zu linearen Modellen. Daher ist dieses Tool auch gut geeignet, 
+um das bisher Gelernte zu verdeutlichen. Wir werden es verwenden, 
+um den heute besprochenen Theorieteil experimentell zu überprüfen, damit Sie Ihre
+ML-Kenntnisse vertiefen können. Sie sehen aus erster Hand die Auswirkungen der Lernrate und wie ML-Modelle
+den Gradientenabstieg durchführen. Ich nenne auch Verbindungen zu Themen, die in diesem und in
+späteren Kursen vertieft werden. Sprechen wir zuerst über die Oberfläche. Ich habe einige der 
+Funktionen des Tools entfernt, weil sie sich auf Themen
+beziehen, die wir später behandeln, aber es gibt noch viele 
+interessante Stellschrauben für uns. Zuerst haben wir die Merkmalspalte. Das sind die
+Eingaben, die Ihr Modell sieht. Die Färbung in jedem Merkmalfeld 
+stellt jeweils den Wert des Merkmals dar. Orange bedeutet negativ 
+und blau bedeutet positiv. Das ist die Spalte mit den versteckten 
+Schichten, in der die Gewichtungen sind. Bewegen Sie den Mauszeiger über eine 
+Gewichtungslinie, um deren Wert zu sehen. Wenn das Modell trainiert wird, ändern sich die Breite 
+und Deckkraft dieser Linien, sodass Sie schnell einen 
+Überblick über die Werte erhalten. Dann gibt es die
+Ausgabespalte, in der Sie sowohl die Trainingsdaten als
+auch die aktuellen Vorhersagen des Modells für alle Punkte im 
+Merkmalsraum sehen können. Sie können auch den
+aktuellen Trainingsverlust sehen. Wie bei den Merkmalen werden Farben 
+verwendet, um den Wert darzustellen. Die obere Steuerleiste enthält 
+Schaltflächen zum Zurücksetzen und zum Starten des Trainings 
+sowie zum Ausführen einzelner Schritte. Es gibt auch ein 
+Drop-down-Feld für die Lernrate. In der Datenspalte können Sie aus Datasets
+wählen und die Batch-Größe steuern. Trainieren wir zuerst ein lineares 
+Modell, um einige Daten zu klassifizieren. Mit einem Klick auf diesen Link wird
+ein TensorFlow Playground-Fenster mit nur dem Notwendigsten angezeigt. Die 
+versteckten Ebenen sind vorerst unwichtig. In dieser Konfiguration des Tools akzeptiert das 
+Modell einen Merkmalvektor, berechnet ein Skalarprodukt 
+mit einem Gewichtungsfaktor, fügt einen Gewichtungsterm hinzu
+und verwendet das Vorzeichen einer Summe, um die
+Entscheidungsgrenze zu konstruieren. Sie können sich diese Konfiguration
+also als lineares Modell vorstellen. Wir beginnen 
+mit einem Modell, das versucht, Daten zu klassifizieren, die zu
+zwei verschiedenen Clustern gehören. Klicken Sie auf die Schritt-Schaltfläche
+rechts neben der Wiedergabe-Schaltfläche und achten Sie auf alle 
+Änderungen an der Benutzeroberfläche. Die Anzahl der Abschnitte steigt um eins, die Linien für die Gewichtung
+ändern ihre Farbe und Größe, der aktuelle Wert der 
+Verlustfunktion ändert sich, die Verlustkurve zeigt eine Abwärtsneigung und die Entscheidungsgrenze 
+der Ausgabe ändert sich ebenfalls. Bewegen Sie die Maus über 
+die Linie, die Gewichtung 1 darstellt, und beachten Sie, dass Sie den
+Wert dieser Gewichtung sehen können. Klicken Sie auf Wiedergabe-Schaltfläche,
+um mit dem Training fortzufahren. Pausieren Sie jedoch kurz 
+nachdem der Verlust unter 0,002 fällt, was weniger als 
+200 Abschnitte dauern sollte. Glückwunsch, Sie haben 
+gerade Ihr erstes Modell trainiert. Machen wir das Ganze jetzt komplexer. Betrachten wir zuerst,
+wie drei verschiedene Lernraten das Modell im Training beeinflussen. Denken Sie daran, 
+dass die Lernrate ein Hyperparameter ist, der festgelegt wird,
+bevor das Modelltraining beginnt, und der mit der Ableitung
+multipliziert wird, um zu bestimmen, wie stark wir die Gewichtung bei
+jeder Iteration unserer Schleife ändern. Folgen Sie diesem Link, um ein Modell mit 
+einer sehr kleinen Lernrate zu trainieren. Warten Sie, bis der Verlust 
+ungefähr 100 Abschnitte erreicht, was schon nach etwa
+zwei Sekunden geschehen sollte, und pausieren Sie dann das Modell. Wie entwickelt sich der aktuelle Verlust? Und welche Gewichtungen wurden gelernt? Erhöhen Sie jetzt die Lernrate auf
+0,001, starten Sie das Training neu und stoppen Sie wieder
+nach 100 Abschnitten. Wie ist der Verlust? Er sollte diesmal deutlich geringer sein. Beachten Sie auch
+den Wert für Gewichtung 1. Erhöhen Sie nun die Lernrate auf 0,10, starten Sie das Modelltraining neu und trainieren Sie 
+wieder 100 Abschnitte lang. Wie schnell ist die
+Verlustkurve diesmal gefallen? Sie sollte sehr schnell gefallen sein. Lassen Sie uns diese Beobachtungen 
+zusammennehmen und feststellen, ob wir sie damit erklären können, 
+was wir über Optimierung gelernt haben. Erhöhen Sie nun die Lernrate auf 10, starten Sie das Modelltraining neu und machen Sie zuerst einen einzigen 
+Schritt mit der Schritt-Schaltfläche. Beachten Sie den Umfang der Gewichtung. Trainieren Sie nun 100 Abschnitte lang. Wie schnell ist 
+die Verlustkurve diesmal gefallen? Sie sollte sehr schnell gefallen sein. Lassen Sie uns diese Beobachtungen 
+zusammennehmen und feststellen, ob wir sie damit erklären können,
+was wir über Optimierung gelernt haben. Hier habe ich eine Tabelle mit dem 
+Ergebnis meines Modelltrainings erstellt. Ihr Ergebnis sieht vielleicht 
+etwas anders aus und das ist in Ordnung. Der Grund dafür, dass 
+es anders aussehen kann, ist derselbe, aus dem das Experiment andere Ergebnisse 
+erbringen würde, wenn Sie es neu starten. TensorFlow Playground 
+initialisiert die Gewichtungen zufällig, was bedeutet, dass unsere Suche jedes
+Mal an einer zufälligen Position beginnt. Lassen Sie uns über die 
+Spalte "Weight1" sprechen. Beachten Sie, wie die Gewichtung
+steigt, wenn die Lernrate steigt. Was denken Sie, warum das so ist? Das liegt daran, 
+dass das Modell größere Schritte macht. Wenn die Lernrate 10 ist, ändert der erste Schritt 
+die Gewichtung dramatisch. Lassen Sie uns über die
+Spalte "Loss Over Time" sprechen. Mit steigender Lernrate wurde die Verlustkurve steiler. Das ist derselbe Effekt, den wir zuvor 
+beobachtet haben, nur anders wahrgenommen.

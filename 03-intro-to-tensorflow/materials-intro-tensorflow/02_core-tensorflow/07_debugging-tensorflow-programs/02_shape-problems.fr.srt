@@ -1,0 +1,281 @@
+1
+00:00:00,000 --> 00:00:02,080
+Dans les prochaines leçons,
+
+2
+00:00:02,080 --> 00:00:05,385
+nous verrons comment résoudre
+des problèmes courants.
+
+3
+00:00:05,385 --> 00:00:07,700
+Nous allons commencer
+par les erreurs de forme,
+
+4
+00:00:07,700 --> 00:00:10,707
+puis nous nous intéresserons
+à une variante des erreurs de forme
+
+5
+00:00:10,707 --> 00:00:13,395
+liée à l'erreur de correspondance
+scalaire/vecteur.
+
+6
+00:00:13,395 --> 00:00:17,440
+Et enfin, nous verrons les problèmes
+liés aux types de données.
+
+7
+00:00:18,430 --> 00:00:21,060
+Nous avons regardé ce code
+lors de la leçon précédente,
+
+8
+00:00:21,060 --> 00:00:24,062
+et vu que la raison pour laquelle
+l'addition ne fonctionnait pas
+
+9
+00:00:24,062 --> 00:00:28,075
+est que a et c devaient être de même forme.
+
+10
+00:00:28,595 --> 00:00:32,960
+La forme correcte est celle qui correspondait
+à ce que le développeur voulait faire.
+
+11
+00:00:33,330 --> 00:00:38,490
+Dans ce cas, la méthode
+partait de la matrice 4, 3 d'origine,
+
+12
+00:00:38,490 --> 00:00:46,155
+et devait créer des fenêtres glissantes
+de taille constante (4, 2).
+
+13
+00:00:46,155 --> 00:00:49,480
+C'était donc a qui était correct,
+et c qui ne l'était pas.
+
+14
+00:00:49,910 --> 00:00:54,415
+Alors, comment pourriez-vous faire en sorte
+que c ait également pour valeur 4, 2 ?
+
+15
+00:00:56,035 --> 00:00:58,892
+Vous pourriez modifier c
+pour faire en sorte que la scission,
+
+16
+00:00:58,892 --> 00:01:01,510
+plutôt que toutes les lignes
+et uniquement la colonne 1,
+
+17
+00:01:01,510 --> 00:01:06,225
+récupère toutes les lignes
+et les colonnes 1 et 2.
+
+18
+00:01:06,685 --> 00:01:08,830
+Tout comme avec la fonction xrange de Python,
+
+19
+00:01:08,830 --> 00:01:12,135
+le premier nombre est inclus,
+mais le dernier ne l'est pas.
+
+20
+00:01:12,135 --> 00:01:18,370
+Donc, a récupère les colonnes 0 et 1,
+et c les colonnes 1 et 3,
+
+21
+00:01:18,370 --> 00:01:21,935
+ce qui correspond à des fenêtres
+de deux colonnes à chaque fois.
+
+22
+00:01:21,935 --> 00:01:25,595
+Maintenant, lorsque nous exécutons
+le programme, tout fonctionne correctement.
+
+23
+00:01:26,485 --> 00:01:31,260
+Les problèmes de forme peuvent
+également être liés à la taille du lot.
+
+24
+00:01:31,800 --> 00:01:35,060
+Souvenez-vous que, lorsque
+j'ai parlé des formes des Tensors,
+
+25
+00:01:35,060 --> 00:01:36,510
+j'ai dit qu'il arrive parfois
+
+26
+00:01:36,510 --> 00:01:39,945
+qu'une ou plusieurs des dimensions
+puissent être de longueur variable.
+
+27
+00:01:40,305 --> 00:01:41,735
+Il arrive notamment couramment
+
+28
+00:01:41,735 --> 00:01:44,025
+que l'on utilise des Tensors
+de longueur variable
+
+29
+00:01:44,025 --> 00:01:47,150
+lorsque le programme traite des lots.
+
+30
+00:01:47,510 --> 00:01:50,145
+Les lots sont généralement
+tous de même taille.
+
+31
+00:01:50,145 --> 00:01:53,570
+Imaginez que vous ayez
+64 exemples à chaque fois,
+
+32
+00:01:53,570 --> 00:01:57,065
+sauf lorsque la fin
+du fichier d'entrée est atteinte.
+
+33
+00:01:57,065 --> 00:02:02,045
+À ce stade, il est possible qu'il n'y ait pas
+64 exemples pour remplir le lot,
+
+34
+00:02:02,045 --> 00:02:07,600
+de sorte que vous pourriez créer un Tensor
+contenant uniquement, disons, 42 exemples.
+
+35
+00:02:08,040 --> 00:02:12,255
+C'est la raison pour laquelle la forme
+de l'espace réservé X figurant dans le code
+
+36
+00:02:12,255 --> 00:02:15,000
+est None pour la première dimension.
+
+37
+00:02:15,000 --> 00:02:17,520
+None signifie qu'il y a
+une longueur variable.
+
+38
+00:02:17,520 --> 00:02:20,207
+Si vous affichez la valeur de X,
+
+39
+00:02:20,207 --> 00:02:23,115
+vous obtenez la sortie du débogage du Tensor,
+
+40
+00:02:23,115 --> 00:02:28,770
+laquelle vous permet de voir qu'il s'agit
+d'un Tensor 2D, avec l'indication ?, 3.
+
+41
+00:02:28,770 --> 00:02:32,145
+Cela signifie que la matrice
+a toujours trois colonnes,
+
+42
+00:02:32,145 --> 00:02:35,105
+mais que le nombre de lignes peut varier.
+
+43
+00:02:36,085 --> 00:02:39,300
+Maintenant, lorsque vous essayez
+de charger des données fictives,
+
+44
+00:02:39,300 --> 00:02:41,565
+vous devez vous demander
+quelle en est la forme.
+
+45
+00:02:41,815 --> 00:02:43,510
+C'est un Tensor 1D.
+
+46
+00:02:43,510 --> 00:02:47,135
+Il comporte certes trois éléments,
+mais il est unidimensionnel,
+
+47
+00:02:47,135 --> 00:02:50,515
+et l'espace réservé est destiné
+à contenir une matrice 2D.
+
+48
+00:02:50,905 --> 00:02:54,785
+Vous pouvez avoir autant de lignes
+que vous le souhaitez, et même une seule,
+
+49
+00:02:54,785 --> 00:02:57,340
+mais uniquement sous la forme
+d'une matrice 2D.
+
+50
+00:02:57,900 --> 00:03:00,420
+Donc, comment pouvons-nous
+résoudre ce problème ?
+
+51
+00:03:00,420 --> 00:03:03,910
+Ce n'est pas aussi simple que
+la correction de la scission, n'est-ce pas ?
+
+52
+00:03:04,960 --> 00:03:07,865
+La réponse est que
+vous devez modifier la forme.
+
+53
+00:03:08,845 --> 00:03:12,460
+Cela peut être effectué avec ces méthodes.
+
+54
+00:03:13,310 --> 00:03:15,915
+Nous avons déjà vu la méthode tf.reshape.
+
+55
+00:03:15,915 --> 00:03:19,120
+Elle réorganise vos nombres
+de façon à obtenir une forme différente.
+
+56
+00:03:19,120 --> 00:03:21,410
+C'est ce dont nous avons
+besoin pour ce problème.
+
+57
+00:03:21,410 --> 00:03:24,080
+Nous disposons de trois nombres,
+ce qui est suffisant.
+
+58
+00:03:24,080 --> 00:03:28,750
+Mais nous avons un Tensor 1D
+que nous devons transformer en Tensor 2D.
+
+59
+00:03:28,750 --> 00:03:31,725
+Nous pouvons le modifier
+avec tf.reshape, et l'envoyer.

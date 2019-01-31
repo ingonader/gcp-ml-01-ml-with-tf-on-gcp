@@ -1,0 +1,84 @@
+Parlons d'abord de la généralisation, qui nous aide à répondre à la question : quand ne doit-on pas choisir
+le modèle de ML le plus juste ? Nous utilisons ici aussi
+un ensemble de données sur la natalité, mais nous utilisons
+la prise de poids de la mère sur l'axe X pour prédire la durée
+de la grossesse sur l'axe Y. Qu'observez-vous
+sur le schéma de données ? Elles semblent très corrélées : plus la mère gagne de poids,
+plus la grossesse est longue, ce qui semble logique
+puisque le bébé grandit. Pour modéliser ce comportement
+et prouver une corrélation, quel modèle utiliseriez-vous ? Un modèle de régression linéaire. Comme nous l'avons vu
+avec les problèmes de régression, les métriques de perte
+que nous voulons optimiser sont en général l'erreur quadratique moyenne, MSE ou RMSE, la racine carrée
+de l'erreur quadratique moyenne. L'erreur quadratique moyenne
+indique la proximité entre une droite de régression
+et l'ensemble des points. Elle calcule cette valeur en prenant
+la distance entre les points et la droite. Ces distances sont appelées les erreurs.
+Puis elle les élève au carré. Élever au carré est nécessaire
+pour supprimer les signes négatifs. La MSE alloue une plus grande pondération
+à ces écarts plus grands avec la ligne. La racine carrée de la MSE est la RMSE,
+qui est la distance moyenne entre un point de données et la droite
+ajustée mesurée sur une ligne verticale. La RMSE est directement interprétée
+en termes d'unités de mesure sur l'axe Y. C'est donc une meilleure mesure
+du degré d'ajustement qu'un coefficient de corrélation. Pour ces deux mesures d'erreur, une valeur inférieure indique
+un modèle plus performant, et plus l'erreur est proche de zéro,
+plus grandes sont ses performances. Nous utilisons ici
+un modèle de régression linéaire, qui trace cette droite de régression
+pour minimiser l'erreur. Notre RMSE finale est 2,224. Pour notre problème, c'est plutôt bien. Mais écoutez ça. Et si vous utilisiez
+un modèle plus complexe ? Un modèle plus complexe pourrait
+avoir plus de paramètres libres. Les paramètres libres nous permettent de capturer toutes les variations
+de cet ensemble de données. Nous réduisons notre RMSE à 0,
+et le modèle est ainsi parfaitement juste. Avons-nous terminé ? Est-ce le meilleur modèle ? Pouvons-nous l'implémenter ? Vous trouvez peut-être
+ce deuxième modèle louche. Mais comment le savoir ? En ML, on fait souvent face à beaucoup
+de données, mais pas d'intuition. Un réseau de neurones à huit nœuds
+est-il mieux qu'un réseau à douze nœuds ? Un réseau à 16 nœuds
+a une RMSE inférieure. Devons-nous choisir celui-ci ? Cet exemple peut être
+un polynôme de degré 100, ou un réseau de neurones
+avec des centaines de nœuds. Comme dans l'exemple de la spirale, à la fin du dernier cours
+sur l'optimisation, un modèle plus complexe a plus
+de paramètres pouvant être optimisés. Les modèles aident à ajuster des données
+plus complexes, comme une spirale, ou à mémoriser des ensembles de données
+plus simples et plus petits. À quel moment devons-nous dire
+à un modèle d'arrêter l'entraînement, qu'il mémorise l'ensemble de données
+et qu'il est en surapprentissage ? L'une des meilleures façons
+d'évaluer la qualité d'un modèle est d'observer ses performances
+avec des données qu'il ne connaît pas. Puis nous pouvons déterminer si ce modèle
+est adapté à la généralisation. C'est une bonne approximation
+pour la production de données réelles. Revenons au modèle de régression linéaire
+et aux modèles de réseau de neurones, et voyons où ils en sont. La généralisation de notre modèle
+de régression linéaire se passe bien. La RMSE est comparable
+à ce que nous avons vu avant, et l'absence de surprises
+est une bonne chose ici. Nous voulons des performances constantes
+pour l'entraînement et la validation. Pour le deuxième modèle,
+la généralisation ne se passe pas bien avec le nouvel ensemble.
+C'est très alarmant. La RMSE est passée de 0 à 3,2,
+ce qui est un énorme problème. Cela indique que le modèle
+était en surapprentissage avec les données d'entraînement fournies. Il est trop instable ou ne peut pas
+supporter une généralisation. Comment être sûr que votre modèle
+n'est pas en surapprentissage ? Comment savoir
+quand arrêter l'entraînement ? La réponse est étonnamment simple,
+nous allons diviser vos données. Si vous divisez vos ensembles d'origine
+en des groupes totalement distincts, vous pouvez à nouveau
+entraîner votre modèle et l'entraîner
+avec les données d'entraînement, et quand l'entraînement est terminé,
+comparer ses performances par rapport à un ensemble de données
+de validation indépendant. Et si la généralisation se passe bien, les métriques de perte
+ou valeurs d'erreurs sont similaires pour l'entraînement et la validation. Dès que les performances
+de vos modèles ne sont pas bonnes avec vos données de validation, si vos métriques de perte
+augmentent ou grimpent, il est temps d'arrêter. Pour entraîner et évaluer
+des modèles de ML, il faut trouver le modèle
+généralisable et les paramètres qui conviennent à votre ensemble
+d'entraînement, sans mémoriser. Comme vous le voyez ici, nous avons un modèle linéaire simpliste qui ne correspond pas
+aux relations avec les données. Vous pouvez voir à quel point
+c'est visuellement mauvais. Il y a pas mal de points
+en dehors de la forme de la droite. Le modèle est en sous-apprentissage. À l'opposé et légèrement plus dangereux, il y a le surapprentissage. C'est illustré à l'extrême droite. Nous avons fortement augmenté
+la complexité du modèle linéaire interprété comme un polynôme de degré n
+qui semble aider le modèle, et s'adapter aux données et variations
+dont nous parlions tout à l'heure. C'est là que vos données
+d'évaluation entrent en jeu, et vous allez déterminer si les paramètres
+entraînent un surapprentissage. Est-ce trop complexe ? Le surapprentissage ou la mémorisation
+peut être bien pire que d'avoir un modèle qui ne correspond
+que convenablement à vos données. Parfois, vous ne le voyez
+qu'en production, c'est ce que nous validons. Entre le sous- et le surapprentissage,
+il y a le bon niveau de complexité. Voyons comment utiliser
+nos données de validation pour savoir quand arrêter l'entraînement
+et éviter le surapprentissage.

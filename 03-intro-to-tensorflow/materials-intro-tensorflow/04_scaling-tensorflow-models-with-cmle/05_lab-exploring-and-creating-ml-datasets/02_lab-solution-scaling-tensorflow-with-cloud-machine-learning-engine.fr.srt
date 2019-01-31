@@ -1,0 +1,1208 @@
+1
+00:00:00,000 --> 00:00:03,403
+Je me suis connecté à Qwiklabs
+et j'ai lancé l'atelier.
+
+2
+00:00:03,403 --> 00:00:07,451
+Je me suis connecté à la console GCP
+avec mon nom d'utilisateur
+
+3
+00:00:07,451 --> 00:00:09,638
+et mon mot de passe.
+
+4
+00:00:10,688 --> 00:00:13,580
+J'ai aussi lancé Datalab.
+
+5
+00:00:14,060 --> 00:00:19,360
+Tout d'abord, je dois cloner le dépôt
+dans lequel se trouvent nos blocs-notes.
+
+6
+00:00:19,890 --> 00:00:24,470
+Pour cela, je peux utiliser
+l'icône Git située ici,
+
+7
+00:00:24,470 --> 00:00:31,180
+ou je peux créer un nouveau bloc-notes
+et utiliser la fonction bash.
+
+8
+00:00:31,180 --> 00:00:35,980
+Je saisis "bash",
+puis "git clone"…
+
+9
+00:00:48,392 --> 00:00:52,034
+J'ai créé un clone Git du dépôt d'analyse
+des données d'entraînement
+
+10
+00:00:52,034 --> 00:00:55,640
+qui contient le bloc-notes
+que nous allons utiliser dans cet atelier.
+
+11
+00:00:59,647 --> 00:01:04,369
+Le dépôt "training-data-analyst"
+s'affiche maintenant ici.
+
+12
+00:01:04,970 --> 00:01:11,300
+Nous allons ouvrir ce dépôt
+et accéder au dossier
+
+13
+00:01:11,300 --> 00:01:15,180
+qui contient le bloc-notes,
+à savoir "deepdive".
+
+14
+00:01:15,950 --> 00:01:21,550
+Nous sommes dans le troisième cours
+et nous parlons de Cloud ML Engine.
+
+15
+00:01:22,810 --> 00:01:24,650
+Voici Cloud ML Engine.
+
+16
+00:01:24,930 --> 00:01:30,300
+Dans cet atelier, nous allons surtout
+faire évoluer notre modèle TensorFlow,
+
+17
+00:01:30,300 --> 00:01:33,791
+le même que celui que nous avions,
+sauf que nous l'avons transformé
+
+18
+00:01:33,791 --> 00:01:37,669
+en module Python, et nous allons
+l'exécuter sur ML Engine.
+
+19
+00:01:37,909 --> 00:01:41,409
+Premièrement, comme nous allons
+l'exécuter dans le cloud,
+
+20
+00:01:41,409 --> 00:01:45,295
+nous devons spécifier le projet
+que nous allons développer.
+
+21
+00:01:45,385 --> 00:01:49,324
+Qwiklabs nous a donné un ID de projet.
+
+22
+00:01:50,184 --> 00:01:55,883
+Nous allons utiliser cet ID de projet
+pour le projet que nous allons développer
+
+23
+00:01:55,883 --> 00:01:58,870
+et pour le bucket.
+Mais qu'est-ce qu'un bucket ?
+
+24
+00:01:58,870 --> 00:02:00,270
+Nous devons créer un bucket.
+
+25
+00:02:00,270 --> 00:02:04,440
+Pour cela, nous pouvons accéder
+à la console GCP,
+
+26
+00:02:04,440 --> 00:02:13,160
+aller dans Storage > Browser,
+puis vérifier qu'un bucket existe.
+
+27
+00:02:13,160 --> 00:02:15,260
+Sinon, nous devons en créer un.
+
+28
+00:02:15,820 --> 00:02:18,030
+Les noms de bucket doivent être uniques.
+
+29
+00:02:18,310 --> 00:02:21,110
+Comment faire
+pour avoir des noms uniques ?
+
+30
+00:02:21,520 --> 00:02:26,080
+Nous pouvons utiliser un nom de bucket
+identique au nom du projet.
+
+31
+00:02:26,080 --> 00:02:29,610
+Il faudrait vraiment être malchanceux
+pour que quelqu'un ait déjà créé
+
+32
+00:02:29,610 --> 00:02:31,140
+un bucket portant ce nom.
+
+33
+00:02:31,500 --> 00:02:34,050
+Je vais donc créer un bucket avec ce nom.
+
+34
+00:02:34,050 --> 00:02:36,810
+Je peux créer un bucket multirégional.
+
+35
+00:02:36,810 --> 00:02:41,390
+C'est parti. Le bucket est créé.
+
+36
+00:02:41,650 --> 00:02:46,480
+Il porte le même nom que le projet,
+ce qui simplifie les choses.
+
+37
+00:02:46,910 --> 00:02:53,060
+Je vais maintenant spécifier
+le nom du bucket et la région
+
+38
+00:02:53,420 --> 00:02:55,020
+La région est très importante.
+
+39
+00:02:55,220 --> 00:02:59,330
+C'est là que vous allez lancer
+votre tâche ML Engine.
+
+40
+00:02:59,950 --> 00:03:03,660
+Si vous aviez un bucket régional,
+votre ordinateur devrait se trouver
+
+41
+00:03:03,660 --> 00:03:05,100
+dans cette région.
+
+42
+00:03:05,100 --> 00:03:08,790
+Ici, nous avons un bucket multirégional,
+donc cela n'a pas d'importance.
+
+43
+00:03:08,790 --> 00:03:12,230
+Nous pouvons effectuer nos calculs
+dans n'importe quelle région.
+
+44
+00:03:12,530 --> 00:03:14,340
+Je vais donc garder "us-central1".
+
+45
+00:03:14,340 --> 00:03:18,960
+En l'occurrence, j'ai lancé Datalab
+avec cette région, mais l'instance Datalab
+
+46
+00:03:18,960 --> 00:03:23,280
+et les tâches ML Engine n'ont pas besoin
+de s'exécuter dans la même région.
+
+47
+00:03:23,280 --> 00:03:25,790
+Ils peuvent s'exécuter
+dans des régions différentes.
+
+48
+00:03:25,790 --> 00:03:28,986
+Nous allons juste envoyer une tâche,
+et toutes les machines
+
+49
+00:03:28,986 --> 00:03:31,210
+que nous allons créer pour l'exécuter
+
+50
+00:03:31,210 --> 00:03:33,810
+se trouveront
+dans la région "us-central1".
+
+51
+00:03:33,810 --> 00:03:36,520
+Je peux enregistrer le bloc-notes
+pour ne pas le perdre.
+
+52
+00:03:36,520 --> 00:03:38,380
+Voici mon projet.
+
+53
+00:03:38,380 --> 00:03:41,080
+Je peux cliquer sur "Run".
+
+54
+00:03:41,270 --> 00:03:43,750
+À partir de maintenant,
+j'appuierai sur Maj + Entrée,
+
+55
+00:03:43,750 --> 00:03:45,170
+ce qui revient au même.
+
+56
+00:03:45,280 --> 00:03:49,370
+Cela crée un bucket de projet
+et des variables de région en Python.
+
+57
+00:03:49,710 --> 00:03:56,880
+La cellule suivante définit exactement
+les mêmes variables, mais en bash.
+
+58
+00:03:57,310 --> 00:04:01,650
+Nous lançons la commande Python
+"os.environ", qui définit
+
+59
+00:04:01,650 --> 00:04:02,950
+une variable bash.
+
+60
+00:04:03,150 --> 00:04:08,140
+Désormais, chaque fois que nous saisissons
+"$project" ou "$bucket"
+
+61
+00:04:08,140 --> 00:04:13,449
+dans le bloc-notes, nous recevons la
+variable appropriée dans le script bash.
+
+62
+00:04:13,729 --> 00:04:15,860
+Nous allons surtout utiliser ça.
+
+63
+00:04:15,860 --> 00:04:19,840
+Google Cloud peut simuler,
+définir le projet sur ce projet défini
+
+64
+00:04:19,840 --> 00:04:23,960
+et définir la région de calcul
+sur cette région définie.
+
+65
+00:04:23,960 --> 00:04:29,010
+Le projet principal et la région de calcul
+sont maintenant mis à jour.
+
+66
+00:04:29,010 --> 00:04:33,600
+CMLE s'exécute dans un projet fictif.
+
+67
+00:04:34,560 --> 00:04:40,990
+Nous voulons fournir à ML Engine
+un accès à tous nos fichiers de données.
+
+68
+00:04:40,990 --> 00:04:45,680
+ML Engine est un compte robot,
+un compte automatisé.
+
+69
+00:04:45,680 --> 00:04:50,710
+C'est un compte de service,
+et nous voulons lui donner l'accès
+
+70
+00:04:50,710 --> 00:04:54,040
+pour qu'il puisse lire les fichiers
+de notre bucket.
+
+71
+00:04:54,040 --> 00:04:55,600
+Et c'est ce que nous faisons là.
+
+72
+00:04:55,600 --> 00:05:00,320
+En gros, nous demandons de donner
+à ML Engine un accès aux fichiers
+
+73
+00:05:00,320 --> 00:05:08,070
+présents dans le bucket
+et aux fichiers qui vont être créés,
+
+74
+00:05:08,070 --> 00:05:11,210
+car nous allons stocker des choses
+comme des points de contrôle
+
+75
+00:05:11,210 --> 00:05:13,550
+et des sorties de modèle
+dans ce bucket.
+
+76
+00:05:13,550 --> 00:05:15,400
+C'est ce que vous faites.
+
+77
+00:05:15,600 --> 00:05:20,650
+Une bonne pratique consiste à
+insérer uniquement des données
+
+78
+00:05:20,650 --> 00:05:24,800
+essentielles dans le bucket,
+de sorte que ML Engine puisse y accéder
+
+79
+00:05:24,800 --> 00:05:25,730
+et les lire.
+
+80
+00:05:25,730 --> 00:05:28,970
+Typiquement, vous n'allez pas
+créer un bucket dans lequel vous allez
+
+81
+00:05:28,970 --> 00:05:30,590
+conserver toutes vos données.
+
+82
+00:05:30,590 --> 00:05:34,610
+Vous allez créer des buckets spécifiques
+au machine learning, et garder
+
+83
+00:05:34,610 --> 00:05:36,273
+ces fichiers dedans.
+
+84
+00:05:36,273 --> 00:05:39,260
+Cela permet de renforcer la sécurité.
+
+85
+00:05:39,670 --> 00:05:43,170
+Nous allons faire cela,
+puis nous allons donner à ML Engine
+
+86
+00:05:43,170 --> 00:05:46,890
+un accès en lecture et en écriture
+dans ce bucket.
+
+87
+00:05:50,203 --> 00:05:55,011
+Une fois cela fait,
+nous avons autorisé le compte de service
+
+88
+00:05:55,011 --> 00:06:00,280
+ML Engine, qui se traduit par
+la commande "service-".
+
+89
+00:06:00,280 --> 00:06:01,980
+Voici l'ID de projet.
+
+90
+00:06:01,980 --> 00:06:06,520
+Vous pouvez le trouver
+dans la console GCP.
+
+91
+00:06:06,520 --> 00:06:10,960
+Sur la page d'accueil,
+
+92
+00:06:10,960 --> 00:06:13,010
+vous avez le numéro de projet.
+
+93
+00:06:13,010 --> 00:06:15,010
+Mais vous n'avez pas besoin
+de savoir ça.
+
+94
+00:06:15,010 --> 00:06:18,270
+Nous pouvons rédiger un script
+pour l'obtenir.
+
+95
+00:06:18,270 --> 00:06:24,310
+Pour cela, il suffit simplement
+d'utiliser l'appel JSON
+
+96
+00:06:24,310 --> 00:06:26,779
+"response['serviceAccount']".
+
+97
+00:06:28,900 --> 00:06:33,042
+Ensuite, nous devons prendre notre code.
+
+98
+00:06:33,042 --> 00:06:36,446
+Dans les ateliers précédents, notre
+code se trouvait dans un bloc-notes,
+
+99
+00:06:36,446 --> 00:06:40,584
+car nous faisions des expériences,
+nous construisions des choses.
+
+100
+00:06:40,584 --> 00:06:43,486
+Mais maintenant, nous voulons
+l'exécuter à grande échelle.
+
+101
+00:06:43,486 --> 00:06:48,589
+Quand vous voulez exécuter du code,
+celui-ci se trouve dans un package Python.
+
+102
+00:06:48,589 --> 00:06:50,400
+C'est ce que nous faisons ici.
+
+103
+00:06:50,400 --> 00:06:53,830
+Nous sommes en train de créer
+un package Python,
+
+104
+00:06:53,830 --> 00:06:58,110
+que j'appelle "taxifare",
+et qui contient tous ces fichiers.
+
+105
+00:06:58,110 --> 00:07:01,630
+Vous pouvez les consulter dans Datalab.
+
+106
+00:07:02,400 --> 00:07:07,580
+Dans le dossier "taxifare",
+vous pouvez voir un dossier
+
+107
+00:07:07,580 --> 00:07:13,806
+nommé "trainer", qui contient
+les deux fichiers dont nous avons parlé :
+
+108
+00:07:14,276 --> 00:07:16,510
+"task.py" et "model.py".
+
+109
+00:07:16,510 --> 00:07:19,470
+Le fichier "task.py"
+contient les données principales.
+
+110
+00:07:19,470 --> 00:07:22,370
+C'est lui qui lance toute l'analyse
+des lignes de commande.
+
+111
+00:07:22,810 --> 00:07:25,620
+Il recherche des chemins
+des données d'entraînement,
+
+112
+00:07:25,620 --> 00:07:27,550
+la taille des lots d'entraînement, etc.
+
+113
+00:07:27,550 --> 00:07:30,070
+Ces informations proviennent
+de la ligne de commande.
+
+114
+00:07:30,070 --> 00:07:33,310
+Le fichier "model.py"
+contient le noyau du modèle.
+
+115
+00:07:33,310 --> 00:07:36,730
+C'est lui qui crée
+la régression appropriée,
+
+116
+00:07:36,730 --> 00:07:39,870
+qui possède les fonctions d'entrée
+pour lire les données, etc.
+
+117
+00:07:41,280 --> 00:07:47,090
+Nous avons maintenant
+notre package en Python,
+
+118
+00:07:47,090 --> 00:07:50,760
+qui est essentiellement une structure
+de dossiers contenant tous les fichiers
+
+119
+00:07:50,760 --> 00:07:51,890
+dont nous avons besoin.
+
+120
+00:07:51,975 --> 00:07:56,145
+Nous pouvons regarder "model.py",
+qui contient essentiellement
+
+121
+00:07:56,145 --> 00:07:59,980
+le code qui était auparavant
+dans les blocs-notes Datalab,
+
+122
+00:07:59,980 --> 00:08:04,350
+et que nous avons mis
+dans un package Python.
+
+123
+00:08:04,350 --> 00:08:08,380
+À présent, comment faire
+pour mettre du code Python
+
+124
+00:08:08,380 --> 00:08:10,280
+dans un package Python ?
+
+125
+00:08:10,280 --> 00:08:12,270
+Nous allons voir une méthode simple.
+
+126
+00:08:12,270 --> 00:08:14,690
+Recherchons du code en Python.
+
+127
+00:08:14,950 --> 00:08:18,530
+Imaginons que nous voulons
+écrire ce code dans un fichier.
+
+128
+00:08:18,530 --> 00:08:21,970
+Une méthode simple consiste
+à utiliser la commande magique de Jupyter,
+
+129
+00:08:21,970 --> 00:08:22,740
+"writefile".
+
+130
+00:08:22,740 --> 00:08:28,270
+Je saisis "%writefile tensorboard.py",
+et lorsque j'exécute cet appel,
+
+131
+00:08:28,270 --> 00:08:32,940
+tout le code ici est écrit
+dans "tensorboard.py".
+
+132
+00:08:32,940 --> 00:08:38,409
+C'est un moyen simple d'écrire du code
+du bloc-notes Python
+
+133
+00:08:38,409 --> 00:08:42,820
+dans un autre fichier Python
+dans un package Python.
+
+134
+00:08:42,820 --> 00:08:45,910
+La commande "writefile"
+possède aussi une option d'ajout.
+
+135
+00:08:45,910 --> 00:08:49,310
+Vous pouvez ainsi ajouter
+des lignes supplémentaires
+
+136
+00:08:49,310 --> 00:08:50,540
+à "python.py".
+
+137
+00:08:50,540 --> 00:08:53,540
+Je vais supprimer cette option,
+puisque nous voulons l'exécuter,
+
+138
+00:08:53,540 --> 00:08:56,530
+mais pour vous montrer
+que tensorboard.py a bien été rempli,
+
+139
+00:08:56,530 --> 00:09:00,846
+nous pouvons revenir dans le dépôt.
+
+140
+00:09:00,846 --> 00:09:06,760
+Dans "03_tensorflow", vous devriez voir
+"tensorboard.py".
+
+141
+00:09:06,760 --> 00:09:11,902
+C'est le fichier que j'ai rempli
+avec la commande "%writefile".
+
+142
+00:09:13,440 --> 00:09:15,540
+Revenons là où nous en étions.
+
+143
+00:09:16,050 --> 00:09:20,240
+Nous avons pour l'instant créé
+un package Python, et nous pouvons
+
+144
+00:09:20,240 --> 00:09:24,500
+vérifier que nous avons
+nos fichiers de données.
+
+145
+00:09:24,500 --> 00:09:26,760
+Voici un fichier de données.
+
+146
+00:09:26,760 --> 00:09:29,340
+Dans Datalab, tout est mappé
+avec "/content".
+
+147
+00:09:29,340 --> 00:09:31,505
+Voici donc le dépôt concerné.
+
+148
+00:09:31,505 --> 00:09:35,765
+Et nous avons imprimé une ligne
+du fichier d'entrée d'entraînement
+
+149
+00:09:35,765 --> 00:09:38,640
+et une ligne
+du fichier d'entrée de validation.
+
+150
+00:09:38,640 --> 00:09:44,850
+Maintenant que j'ai un package Python,
+je peux essayer de l'exécuter.
+
+151
+00:09:44,850 --> 00:09:48,190
+L'exécution du package Python
+n'a rien à voir avec ML Engine.
+
+152
+00:09:48,190 --> 00:09:51,450
+Pour exécuter un package Python,
+
+153
+00:09:51,450 --> 00:09:56,310
+il suffit d'écrire "python-m"
+et de transmettre le module.
+
+154
+00:09:56,310 --> 00:09:58,440
+Le module s'appelle "task",
+
+155
+00:09:58,440 --> 00:10:00,390
+et il se trouve
+dans le package "trainer",
+
+156
+00:10:00,390 --> 00:10:03,150
+mais pour cela, nous devons indiquer
+à Python l'emplacement
+
+157
+00:10:03,150 --> 00:10:10,140
+en définissant un chemin "PYTHONPATH"
+sur le répertoire actuel "/taxifare",
+
+158
+00:10:10,140 --> 00:10:12,900
+car c'est là que se trouve
+l'application d'entraînement.
+
+159
+00:10:12,900 --> 00:10:16,710
+Je spécifie donc le chemin "PYTHONPATH",
+et j'exécute le programme Python,
+
+160
+00:10:16,710 --> 00:10:20,240
+en transmettant "taxi-train*"
+et "taxi-valid",
+
+161
+00:10:20,240 --> 00:10:25,100
+en m'assurant que ces chemins
+de ligne de commande fonctionnent,
+
+162
+00:10:25,100 --> 00:10:29,760
+et en spécifiant un répertoire de sortie
+et quelques étapes d'entraînement.
+
+163
+00:10:29,760 --> 00:10:32,690
+Je pourrais même ne spécifier
+que 10 étapes si je le voulais.
+
+164
+00:10:32,690 --> 00:10:35,830
+Je peux maintenant lancer l'exécution
+en appuyant sur Maj + Entrée.
+
+165
+00:10:35,830 --> 00:10:39,240
+Le module Python s'exécute
+
+166
+00:10:39,240 --> 00:10:41,500
+et nous pouvons nous assurer
+qu'il fonctionne.
+
+167
+00:10:41,910 --> 00:10:48,200
+Lorsque c'est bon, nous pouvons vérifier
+que quelque chose a bien été écrit.
+
+168
+00:10:48,500 --> 00:10:50,730
+Tout s'exécute,
+
+169
+00:10:50,730 --> 00:10:54,760
+et vous pouvez voir
+qu'un modèle enregistré a été écrit.
+
+170
+00:10:54,760 --> 00:10:57,515
+C'est important,
+car nous voulons nous assurer
+
+171
+00:10:57,515 --> 00:11:00,940
+que l'entraînement a fonctionné,
+et que nous avons un modèle enregistré.
+
+172
+00:11:00,940 --> 00:11:05,630
+Nous pouvons vérifier cela
+en appelant "export/exporter"
+
+173
+00:11:05,630 --> 00:11:07,646
+pour voir si le modèle enregistré existe.
+
+174
+00:11:07,646 --> 00:11:11,759
+Il est bien présent dans le répertoire,
+et nous pouvons maintenant
+
+175
+00:11:11,759 --> 00:11:14,693
+vérifier que tout fonctionne correctement.
+
+176
+00:11:14,693 --> 00:11:17,091
+Notez que je n'ai encore rien fait
+avec ML Engine.
+
+177
+00:11:17,091 --> 00:11:18,964
+Je suis toujours dans Datalab.
+
+178
+00:11:18,964 --> 00:11:24,994
+Je vérifie que le module Python fonctionne
+et que j'ai un fichier "test.json".
+
+179
+00:11:24,994 --> 00:11:27,810
+Notez que j'utilise ici
+la commande "writefile"
+
+180
+00:11:27,810 --> 00:11:31,710
+pour écrire cette ligne
+sous "test.json".
+
+181
+00:11:32,440 --> 00:11:39,620
+Puis, à l'aide de la commande "gcloud",
+avec le répertoire local exporté,
+
+182
+00:11:39,620 --> 00:11:45,560
+je transmets "test.json" pour m'assurer
+que l'exportation et les prédictions
+
+183
+00:11:45,560 --> 00:11:49,510
+fonctionnent, et que
+toute cette séquence
+
+184
+00:11:49,510 --> 00:11:53,060
+fonctionne comme un module Python
+et s'exécute localement.
+
+185
+00:11:53,060 --> 00:11:56,930
+La prédiction ne va pas être très précise,
+je ne l'ai entraînée que sur 10 étapes.
+
+186
+00:11:56,930 --> 00:11:59,050
+Mais nous savons
+que tout le code fonctionne,
+
+187
+00:11:59,050 --> 00:12:01,866
+que nous avons entraîné le modèle,
+que nous l'avons exporté,
+
+188
+00:12:01,866 --> 00:12:04,240
+que nous pouvons transmettre
+une entrée JSON,
+
+189
+00:12:04,240 --> 00:12:06,960
+et que nous pouvons l'utiliser
+pour faire des prédictions.
+
+190
+00:12:06,960 --> 00:12:09,940
+Nous pouvons alors, si nous le voulons
+
+191
+00:12:09,940 --> 00:12:14,190
+faire un entraînement local
+à l'aide de Google Cloud ML Engine.
+
+192
+00:12:14,190 --> 00:12:18,720
+C'est exactement comme
+la commande "python-m".
+
+193
+00:12:18,720 --> 00:12:22,200
+La différence est que nous spécifions
+le nom du module et le chemin
+
+194
+00:12:22,200 --> 00:12:25,740
+du package différemment,
+et nous n'avons pas besoin
+
+195
+00:12:25,740 --> 00:12:29,520
+de spécifier de chemin Python,
+car ML Engine peut le faire tout seul.
+
+196
+00:12:29,520 --> 00:12:32,990
+De plus, nous pouvons spécifier
+tous ces paramètres,
+
+197
+00:12:32,990 --> 00:12:36,440
+que notre modèle prend en compte.
+
+198
+00:12:36,440 --> 00:12:40,740
+Une fois cela fait, peu importe
+la méthode utilisée, avec "gcloud"
+
+199
+00:12:40,740 --> 00:12:47,140
+ou avec "python-m", vous pouvez exécuter
+TensorBoard pour visualiser le modèle.
+
+200
+00:12:47,140 --> 00:12:55,400
+Je vais lancer TensorBoard…
+Il devrait se trouver ici.
+
+201
+00:12:55,690 --> 00:12:59,481
+Nous voulons transmettre
+le répertoire actuel.
+
+202
+00:13:02,241 --> 00:13:04,639
+Nous n'avons pas besoin de tout ça.
+
+203
+00:13:10,398 --> 00:13:11,990
+Nous lançons ça.
+
+204
+00:13:14,950 --> 00:13:18,267
+TensorBoard est maintenant lancé,
+
+205
+00:13:18,267 --> 00:13:20,873
+et nous pouvons cliquer ici
+pour y accéder.
+
+206
+00:13:20,873 --> 00:13:25,520
+Nous voyons alors, même si nous n'avons
+effectué que 10 étapes,
+
+207
+00:13:25,520 --> 00:13:27,570
+les variations de perte.
+
+208
+00:13:28,185 --> 00:13:32,195
+C'est très utile si on revient l'exécuter
+sur ML Engine.
+
+209
+00:13:32,460 --> 00:13:36,290
+Nous pouvons pointer vers un répertoire
+Google Cloud Storage,
+
+210
+00:13:36,290 --> 00:13:40,130
+et nous pouvons voir
+l'évolution de la fonction de perte
+
+211
+00:13:40,130 --> 00:13:44,230
+durant l'entraînement.
+Descendons un peu et arrêtons-nous
+
+212
+00:13:44,230 --> 00:13:48,300
+pour vous montrer
+que vous pouvez l'utiliser, même en local.
+
+213
+00:13:48,300 --> 00:13:50,630
+Nous nous arrêtons à "4122".
+
+214
+00:13:50,630 --> 00:13:55,800
+Nous allons maintenant l'exécuter
+sur le cloud.
+
+215
+00:13:55,800 --> 00:13:58,720
+Lorsque vous l'exécutez sur le cloud,
+et c'est très important,
+
+216
+00:13:58,720 --> 00:14:01,170
+les données doivent aussi
+être sur le cloud.
+
+217
+00:14:01,450 --> 00:14:06,120
+Je vais donc copier
+les fichiers d'entrée dans le cloud.
+
+218
+00:14:06,510 --> 00:14:10,570
+Je copie les fichiers CSV dans le cloud.
+
+219
+00:14:10,990 --> 00:14:15,180
+Une fois cela terminé,
+une fois les fichiers copiés,
+
+220
+00:14:15,180 --> 00:14:19,080
+je peux maintenant envoyer
+la tâche d'entraînement à ML Engine.
+
+221
+00:14:19,080 --> 00:14:22,810
+J'envoie la tâche d'entraînement
+à ML Engine pour effectuer
+
+222
+00:14:22,810 --> 00:14:26,300
+beaucoup plus d'étapes
+sur toutes ces entrées.
+
+223
+00:14:26,300 --> 00:14:28,990
+La tâche est mise en attente.
+
+224
+00:14:29,880 --> 00:14:35,180
+Nous pouvons revenir à la console GCP,
+
+225
+00:14:35,180 --> 00:14:38,820
+et faire défiler le menu
+jusqu'à ML Engine.
+
+226
+00:14:40,330 --> 00:14:42,000
+Regardez les tâches.
+
+227
+00:14:42,000 --> 00:14:47,810
+Vous verrez qu'il y en a maintenant
+une sur le point de démarrer.
+
+228
+00:14:47,980 --> 00:14:51,220
+Pendant qu'elle s'exécute, vous pouvez
+consulter les journaux
+
+229
+00:14:51,220 --> 00:14:57,780
+et voir tout ce que la tâche produit
+pendant son exécution.
+
+230
+00:14:58,210 --> 00:15:03,290
+À la fin, vous pouvez alors
+déployer ce modèle.
+
+231
+00:15:03,290 --> 00:15:05,510
+Vous pouvez aussi
+faire des prédictions avec,
+
+232
+00:15:05,510 --> 00:15:08,090
+exactement comme nous l'avons fait
+de manière locale,
+
+233
+00:15:08,090 --> 00:15:11,080
+à ceci près qu'il s'agit ici
+d'un modèle entièrement entraîné.
+
+234
+00:15:11,080 --> 00:15:14,350
+Il a été entraîné sur plusieurs étapes
+et il est prêt à être utilisé.
+
+235
+00:15:14,410 --> 00:15:18,510
+Maintenant qu'il est déployé, nous pouvons
+essayer de faire des prédictions,
+
+236
+00:15:18,510 --> 00:15:20,910
+non seulement depuis
+Cloud ML Engine, mais aussi
+
+237
+00:15:20,910 --> 00:15:28,110
+comme un programme client le ferait,
+c'est-à-dire en créant une entrée JSON
+
+238
+00:15:28,110 --> 00:15:32,360
+à partir d'un programme Python,
+et en utilisant cette API Python
+
+239
+00:15:32,360 --> 00:15:36,230
+pour appeler la fonction de prédiction
+et obtenir une réponse.
+
+240
+00:15:36,830 --> 00:15:40,330
+Nous n'avons pas obtenu de modèle miracle.
+
+241
+00:15:40,480 --> 00:15:42,810
+Nous avons seulement pris
+des données brutes
+
+242
+00:15:42,810 --> 00:15:44,690
+et nous les avons mises dans le modèle.
+
+243
+00:15:44,690 --> 00:15:48,170
+Dans le prochain atelier, nous aborderons
+l'extraction de caractéristiques
+
+244
+00:15:48,170 --> 00:15:49,510
+pour améliorer notre modèle.
+
+245
+00:15:49,510 --> 00:15:52,040
+Pour vous montrer les performances
+de cette technique,
+
+246
+00:15:52,040 --> 00:15:55,680
+nous pourrions réaliser l'entraînement
+sur un ensemble de données plus grand.
+
+247
+00:15:55,680 --> 00:15:57,260
+Cela ne nous aidera pas beaucoup.
+
+248
+00:15:57,260 --> 00:15:59,550
+Notre modèle n'est pas génial,
+il ne contient pas
+
+249
+00:15:59,550 --> 00:16:00,740
+d'insights humains.
+
+250
+00:16:00,740 --> 00:16:03,510
+Nous pourrions aussi exécuter
+un entraînement dans le cloud
+
+251
+00:16:03,510 --> 00:16:07,560
+sur un ensemble de données plus grand,
+mais cela ne changerait rien du tout.
+
+252
+00:16:08,590 --> 00:16:11,930
+Si vous en avez le temps,
+et si vous voulez vous lancer un défi,
+
+253
+00:16:11,930 --> 00:16:16,660
+modifiez votre solution
+comme dans l'exercice précédent.
+
+254
+00:16:16,660 --> 00:16:21,460
+Je vous encourage vivement
+à essayer les défis et à venir
+
+255
+00:16:21,460 --> 00:16:24,105
+en discuter sur les forums Coursera.
+
+256
+00:16:24,475 --> 00:16:25,300
+Merci.

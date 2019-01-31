@@ -1,0 +1,79 @@
+Agora, discutiremos o que fazer em relação a grandes jobs de AM e os benefícios
+do treinamento distribuído. Podemos riscar o primeiro item
+na lista de problemas que os modelos reais têm, e passar para o segundo: a velocidade. Sim. Modelos reais treinam por eras,
+horas, dias, semanas. Quando chega a várias semanas
+de treinamento, no Google, nós desistimos mesmo. Otimizar um modelo nessas
+condições não é viável. Você precisa distribuí-lo em um cluster
+para torná-lo mais rápido. Ir de uma máquina para muitas pode parecer complicado, mas como veremos, com a API Estimator e o mecanismo de AM
+gerenciando o cluster automaticamente, você tem a distribuição pronta para uso. A função que realiza o treino distribuído
+é chamada estimator.train_and_evaluate. O nome da função também
+destaca que avaliar e monitorar um grande job de
+treinamento será importante. Veremos isso mais tarde. Vamos nos concentrar na distribuição. O modelo de distribuição tradicional para o treinamento de redes neurais é
+chamado de paralelismo de dados. O modelo é replicado em
+vários workers. Em cada etapa de treinamento, eles carregam um lote de
+dados de treinamento, um diferente em cada, gradientes de computador, e os enviam
+para um ou mais servidores de parâmetros centrais, que contêm todos os
+pesos e vieses do modelo de rede neural. Os gradientes são aplicados
+à medida que chegam. Altere os pesos e vieses, e o modelo atualizado é enviado de volta
+aos workers para a próxima etapa. Há muito trabalho a fazer
+para que isso aconteça. Os workers
+precisam ser iniciados, receber a cópia do modelo, os fluxos de dados entre workers e servidores de parâmetros
+precisam ser criados. O sistema ainda trata as
+exceções e falhas, e reinicia os pesquisadores
+de campo de onde eles pararam, e, se ocorrer um incidente, o uso de pontos de verificação fica
+um pouco mais complicado quando tudo isso está acontecendo. Felizmente, a distribuição é tão simples
+quanto gravar um arquivo de configuração. Todo o código boilerplate já
+está gravado na API Estimator e na função estimator.train_and_evaluate. Você precisará realizar
+quatro ações. Escolha seu estimador,
+configure a execução, forneça treino e dados de teste por meio
+de um TrainSpec e um EvalSpec. Depois de configurado, chame o treinamento e avalie. Se você está executando no
+ML Engine e especificou o tamanho do cluster, o treinamento distribuído será ativado. Vamos dar uma olhada mais de perto. Primeiro, a configuração de execução. É aqui que você especifica o diretório de
+saída dos pontos de verificação. Você ainda pode configurá-lo diretamente ao instanciar o estimador, mas é melhor tê-lo aqui, com outras configurações
+de ponto de verificação. É também onde você define a frequência
+em que quer ver os pontos de verificação e também a frequência dos resumos
+ou registros de treinamento. Veremos isso mais tarde. O TrainSpec é onde você passa sua função
+de entrada de dados para dados de treino. Use a API Dataset para
+configurá-lo corretamente. Outra opção é limitar o treinamento a um
+determinado número de etapas. Por padrão, ele continua até o conjunto
+de dados de entrada ser esgotado. O que pode acontecer depois de vários
+e-bugs, se é assim que você configura. EvalSpec é onde você conecta o
+conjunto de dados de teste. Sim, se você quiser ver o
+desempenho do modelo, é preciso medir isso em um conjunto de
+dados que não foi visto durante o treino. Normalmente, um subconjunto de dados
+que você separa para testes. Os dados de teste chegam por meio da
+função de entrada eval e, novamente, use a API Dataset
+para conseguir isso. Você também pode especificar quantos lotes
+de dados de teste quer avaliar e com que frequência as
+avaliações ocorrem. Um detalhe de implementação
+importante: no treinamento distribuído, a avaliação acontece em um
+servidor dedicado, que responde ao modelo do último ponto
+de verificação e, depois, executa o eval. Então, você não pode conseguir avaliações
+com mais frequência do que a frequência dos pontos de
+verificação da configuração de execução. Você pode, no entanto, tê-los com
+menos frequência, adicionando o parâmetro de
+limitação no EvalSpec. Você percebe que o EvalSpec também
+tem um parâmetro para exportadores. Eles controlam como um modelo é exportado
+para implantação na produção e os abordaremos no próximo capítulo. Aqui está o que temos até agora. Você instancia um estimador, dá a ele uma configuração de execução
+em que você pode definir a frequência e a pasta em que quer gravar pontos de
+verificação e dados de monitoramento, e então configura um conjunto de dados
+de treinamento e avaliação, que você canaliza por meio das funções de
+entrada de dados no TrainSpec e EvalSpec. Você está pronto, então,
+para treinar e avaliar. Quero dizer algumas palavras sobre uma consideração importante:
+o embaralhamento de dados. O algoritmo de gradiente descente
+estocástico que redes neurais usam para treinamento só funciona em dados
+bem embaralhados. A API Dataset tem uma função
+de embaralhamento que pode ajudar, mas algumas pessoas podem
+não usá-la se acharem que o conjunto de dados já está bem
+embaralhado no disco. Com o treinamento distribuído, cuidado. Mesmo com um conjunto de dados
+bem embaralhado no disco, se todos os workers estiverem carregando
+diretamente desse conjunto de dados, eles verão o mesmo lote de dados, ao mesmo tempo, e produzirão
+os mesmos gradientes. Os benefícios do treinamento
+distribuído serão desperdiçados. Todos os workers farão
+exatamente o mesmo. Com a função de embaralhamento, o embaralhamento é
+independente em cada worker e usa uma sugestão
+aleatória diferente. Então, use-a. Mesmo que os dados já
+estejam embaralhados no disco. E se você quiser ter mais certeza,
+também pode embaralhar a lista de nomes de arquivos
+no conjunto de dados mais curto. Listar arquivos retorna um conjunto de
+dados de nomes de arquivos, portanto, apenas chame as
+linhas aleatoriamente.

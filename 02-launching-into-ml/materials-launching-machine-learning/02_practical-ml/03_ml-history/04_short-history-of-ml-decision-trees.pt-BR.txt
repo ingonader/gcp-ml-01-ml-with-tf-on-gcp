@@ -1,0 +1,67 @@
+Algoritmos de árvore, como ID3 e C 4.5, foram inventados nas décadas de 80 e 90. Eles são melhores para lidar
+com problemas na regressão linear e fáceis de serem
+interpretados pelas pessoas. Encontrar a divisão ideal
+ao criar árvores é um difícil problema NP. Por isso, algoritmos gulosos foram usados para criar árvores o mais
+próximo possível do ideal. Eles produzem uma superfície
+de decisões linear por partes, que é, essencialmente,
+o que a camada de ReLUs garante. Mas com DNNs ou redes neurais profundas, cada camada se combina criando
+uma superfície de decisão hiperplana, que pode ser muito mais poderosa. Mas pergunto a você por que as DNNs são
+melhores que as árvores de decisão. Vamos primeiro
+falar das árvores de decisão. Elas são um dos algoritmos
+de aprendizado de máquina mais intuitivos. É possível usá-las na classificação e
+regressão. Pense em um conjunto de dados, você quer determinar como os dados são
+todos divididos em diferentes intervalos. A primeira coisa a se fazer é pensar em questões interessantes
+para consultar no conjunto de dados. Vamos ver um exemplo. Este é o famoso problema para
+prever sobreviventes e vítimas do Titanic. Havia pessoas a bordo de diferentes
+níveis sociais, origens, situações etc. Então vamos analisar se alguma dessas
+características pode particionar os dados para prever sobreviventes
+com alta precisão. A primeira hipótese de característica
+pode ser o gênero do viajante. Portanto, é possível fazer
+a pergunta "é do gênero masculino?". Assim, divido os dados
+colocando homens em um intervalo e o restante em outro. 64% dos dados vão para o intervalo
+do gênero masculino, e 36% para o outro. Vamos continuar na partição
+do intervalo do gênero masculino. Outra pergunta a ser feita é
+sobre a classe em que o viajante estava. Com o particionamento, 14% dos
+viajantes são homens da classe mais baixa, enquanto 50% de todos os viajantes são
+homens e das duas classes mais superiores. É possível realizar esse particionamento
+na ramificação de mulheres. Voltando um pouco, a árvore de decisão que cria o algoritmo
+separou o gênero em duas ramificações porque há somente dois valores possíveis. Mas por que ela dividiu
+a classe dos viajantes em uma ramificação à esquerda
+e duas à direita? Por exemplo, na árvore simples
+de classificação e regressão ou CART, o algoritmo escolhe
+o par de características e limites que produzirá os conjuntos
+mais puros de dados quando divididos. Nas árvores de classificação, uma métrica
+de coluna a ser usada é a impureza Gini, mas também há entropia. Depois de realizar a divisão, ela busca outro par
+de limite de características e o divide em subconjuntos. Esse processo se repete até que a profundidade máxima
+definida da árvore seja alcançada ou até que não haja
+mais divisões que reduzam a impureza. Nas árvores de regressão, o erro
+quadrático médio é uma métrica comum. Soa familiar essa forma de escolher
+a divisão de dados em dois subconjuntos? Cada divisão é essencialmente
+um classificador linear binário que encontra um hiperplano que corta
+a dimensão do recurso em algum valor, sendo o limite escolhido para que
+membros de uma classe não caiam em outra. Criar esses hiperplanos em uma árvore
+é similar às camadas de nodes de classificador linear
+em uma rede neural. Muito interessante! Agora que sabemos
+como é feita a árvore de decisão, vamos continuar a criá-la um pouco mais. Talvez haja um limite de idade que pode ajudar na divisão
+dos dados no problema de classificação. Podemos perguntar
+se a idade é maior do que 17,5 anos. Analisando a ramificação
+da classe mais inferior dos homens, apenas 13% dos viajantes
+tinham mais de 18 anos, enquanto apenas 1% era mais jovem. Olhando para as classes
+associadas a cada node, só esta na ramificação masculina
+é classificada como sobreviventes. É possível ampliar a profundidade ou escolher diferentes características
+para continuar aumentando a árvore até que cada node
+tenha apenas mortos e sobreviventes. No entanto, há problemas nisso
+porque, essencialmente, estamos apenas memorizando dados
+e os encaixando na árvore com perfeição. Na prática, vamos querer
+generalizar isso em novos dados. O modelo que memorizou
+o conjunto de treinamento talvez não tenha bom desempenho fora dele. Há alguns métodos de regularização como citar o número mínimo
+de amostras por node de folha, o máximo desses nodes
+ou o total de características. Também é possível criar toda a árvore
+e remover os nodes desnecessários. Para aproveitar as árvores ao máximo, é melhor combiná-las em florestas, que abordaremos em breve. Em uma árvore de classificação de decisão, o que forma cada node ou decisão? Resposta correta: "Classificador
+linear de uma característica". Lembre-se de que, em cada node na árvore, o algoritmo escolhe característica e
+limite para dividir dados em subconjuntos e repete esse processo muitas vezes. Muitas características são divididas, supondo a profundidade
+máxima para mais de uma, mas só uma por profundidade de cada vez. Portanto, o classificador linear
+de todas as características é incorreto porque cada node divide
+apenas uma característica por vez. Redutores de erro quadrático médio
+e de distância euclidiana são o mesmo, usados na regressão,
+não na classificação.

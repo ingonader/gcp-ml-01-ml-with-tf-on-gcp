@@ -1,0 +1,198 @@
+This point, I've logged in to Qwiklabs,
+I've started the lab and I now have a username and password and
+using that I've logged in to the GCP console, I've started data lab and
+I have data lab running. So the first thing that I'm going to do is
+I need to clone the repository in which all of our notebooks exist. So, an easy way to do that, one way to do
+that is to use the git icon up here but another way to do this
+to just go ahead and create a new notebook and
+use the bash capability. So, I can basically say bash and
+git clone the, So at this point,
+I'm git cloning the training data analyst repository that contains the notebook
+that we want to use for this lab. And now if we go here, we see that there is a training data
+analyst that has just shown up. So we'll go into training data analyst,
+go to the folder that contains the notebook, so deep dive and we're in the third course and
+we're looking at cloud ML engine. So here's cloud ML engine and
+what we're doing in this lab is that we're essentially scaling up
+our transfer flow model. The same model that we had except that
+we've made it now a python model and we're going to be running it on ML Engine. So the first thing to do is that because
+we're going to be running it on the cloud, we need to specify the project
+that is going to get built. And Qwiklabs gave us a project ID,
+here's a project ID. So we will use that project ID as
+the project that is going to get built and the bucket, what is a bucket? We need to create a bucket, so
+one thing that we can do is to go into the GCP console and
+go down into storage, and into browser. And check if there's a bucket already
+that exists, if not, we will create one. Bucket names have to be unique and
+so how do we get a unique bucket? One way is to use a bucket name that
+is the same name of the project and unless we are extremely unlucky, someone
+hasn't created a bucket with this name. So I'll go ahead and create that bucket name, and
+I can create a multi original bucket. And, go ahead and create the bucket,
+and at this point, the bucket exists. The bucket is the same name as
+the project, so that makes it quite easy. I will go ahead, and in where the bucket is needed, I'll
+specify the bucket name and the region. Now, the region is extremely important, the region is a region in which you're
+going to be submitting your ML engine job. If you had a single region bucket, you will want your computer
+to be in that same region. Ours is a multi region bucket,
+so it doesn't really matter, we can use whichever region that
+we want to do our compute in so I will leave it as US central. That happens to be the same region
+that I started data lab in but there is no necessity that the data lab
+instance and the ML engine jobs have to run in the same region,
+they could run in different regions. All that we're doing is, we're submitting
+a job and all of the machines that they're going to create to run the job are
+going to be in the region US central one. So I can save the notebook to
+make sure I don't lose it, so there's my project and one way to
+is to basically go ahead and click run. From now on I'll just do shift enter and
+that's essentially running it as well. So this creates a project bucket and
+region variables and python. The next cell essentially sets that
+the same exact variables but in bash. So we're doing os.environ, that's a Python
+command that sets a bash variable. So at this point now, anytime in
+the notebook we do dollar project or dollar bucket, we will get the appropriate
+variable in the bash script. And so we're essentially using that here,
+we're saying GCloud can fake, set the project to be this
+project that they've set and set the compute region to be
+this region that we have set. So at this point, it has updated
+the core project and the compute region. Now one thing is, Cloud ML Engine
+actually runs in a shadow project, and we want to basically provide access to
+all of our data files to ML engine. ML engine is not us, ML engine is a robot
+account, it's an automated account. It's a service account and we want
+to give that service account access to be able to read files in our bucket so
+that's what this is doing. It's basically saying, go ahead and give ML engine access to any files that
+are existing in the bucket and to new files that are going to be created in
+the bucket and also give it right access. Because we're going to be storing
+things like checkpoint and model output in that bucket as well,
+so that's exactly what you're doing. So, a good practice here is to
+ensure that you put in only essential data in the bucket so that ML
+engine can have access to it, can read it. So typically, you don't go ahead and create a bucket
+that you keep all your data in. You want to create buckets that
+are specific for machine learning and keep just those files in there, it helps
+keep your security more constraint. So we're going to do that, and we're going to give ML engine access
+to read and write into this bucket. And then, once that's done, so at this
+point what that's done is it's authorized the ML engine service account, the service
+account is essentially a service hyphen. This is the project ID and you can find the project ID by
+going into the GCP console. If you go into the home,
+there is a project ID in here, project number here,
+that is the same project number. But you don't need to know this,
+we can script it in such a way that we can get it and the way we're scripting
+it is to basically go ahead and look at the response service account
+by using a simple JSON call. And having done that, next thing to
+do is that we have to take our code, the earlier labs our
+code was in a notebook, was right in the notebook
+because we were experimenting. We're building things, but
+now we want to run it at scale and whenever you want to
+submit code to be run, that code will be in a Python package,
+so that's what we're doing here. We are creating a Python package and
+the Python package, I'm calling it taxifare, and
+it contains all of these files. You can look at them in data lab, by going
+into data lab, and if you look inside taxifare, in that folder you see that
+there is a folder called trainer, and trainer contains the two files
+that we talked about in the slides. Task.py and model.py,
+task.py is the one that contains main, it basically does all of the command
+line per sync and it basically looks for train data paths, train batch size etc. That come in from the command line and
+model.py contains a core of the model. This is what basically creates
+appropriate regressure, it has the input functions
+to read the data, etc. And so, at this point, we have our
+package and the package in Python is essentially just a folder structure
+that has all of these files that we need. And we can go ahead and
+look at model.py, and this is essentially all the code that
+was in the data lab notebooks before that we are now essentially
+putting into a Python package. So, one question that we get is
+how do you take Python code and put it into a Python package? One easy way to do this, so
+let's look for something that has Python. So let's say this is the code that
+we want to write into a file, one easy way to do this is to use
+Jupiter Magic called write file. I can say writefile tensorboard.py and when I execute this, all of the code in
+here will get written into tensorboard.py. So that is an easy way that you can
+take code that's in the Python notebook, and write it out into a separate
+Python file into a Python package. Writefile also has the option to append,
+so you can actually add extra lines
+if you wanted, to python.py. So I'll just remove this because
+we actually want to run it, but to show you that tensorboard.py
+actually got written, we can go back into the directory and in 03_tensorflow you should
+see a tensorboard.py. So this was essentially the file
+that got written by me writing percent right file, so
+let's go back here where we were. So we have at this point,
+created a Python package, and we can essentially make sure
+that we have our data files. Here's the data file, everything in
+data lab is mapped to slash content, so that is the directory that it's at. And we basically printed out one
+line of the training input file and one line of the validation input file. And now I have a Python package,
+one good idea is to always try to run it, run the Python package,
+it has nothing to do with ML engine. You have a Python package and you want
+to run it and the way you run a Python package is to basically go python-m,
+passing in the module. The name of the module is task,
+it's in the package trainer but in order to do that we have to
+tell Python where to find it and the way you do that is
+by setting a PYTHONPATH. And you set it to be
+the current directory/taxifare, because that's where trainer was,
+so, I specify the PYTHONPATH and I run the Python program, passing in
+taxi-traine, passing in taxi-valid. So making sure that these command line
+paths work as intended, specifying an output directory, and specifying
+a small number of training steps. I could specify even just
+ten steps if I wanted, and now I can basically run it
+by hitting shift enter. And at this point,
+that Python module is getting run and we make sure that it works,
+and once it works, we can make sure that we can check that
+something actually did get written out. So the whole thing gets run, and you noticed that a saved model got
+written up, that is a key thing. We want to make sure,
+that the training happened and we got a saved model,
+and we can check this by looking inside export/exporter to
+make sure that the saved model exist. So it exist in that directory and
+one of the things that we can do, is that we can try to make sure
+that everything works, not so this point I have not done ML engine at
+all, I'm still running inside data lab. I'm checking to make sure
+that the python module works, that I have a tested JSON,
+notice that I'm using the writefile here, though essentially write
+this line as test.json. And then, using the gcloud command, with the local directory that's
+being exported, and I'm passing in the test.json to make sure that the
+exporting works that the predictions work. And this whole sequence here works as
+a Python module, just running locally. The prediction is not going to be very
+accurate, I just trained for 10 steps but we know that all the code works, that we
+have trained the model, we have exported it and we're able pass an adjacent input
+and we're able to predict with it. And at that point,
+we can also, if we wanted, train locally using GCloud ML engine, this is exactly the same
+as doing python-m. The difference here is that we
+specify the module name and the package path in
+a slightly different way and, we don't need to specify a python path
+because ML engine knows how to do that. And, we can specify all
+of those parameters that our model actually it takes. Once we do that, regardless of how you do
+it, whether you use it with GCloud or you use it with python-m, you can basically
+run tensor board to visualize the model. So I'll go ahead and start tensor board,
+okay, it should be here. We want to pass in the current directory. Actually we don't need any of that,
+let's just do this. So we start this, And at this point,
+TensorBoard has been started, and we can click there to access TensorBoard
+and this now shows you, of course, we just ran it for ten steps, but
+this shows you how the loss varies. Where this is going to be useful, is when
+we go back and we run it on ML engine, we can also point it at a google
+cloud storage directory and we can watch the last function
+that has change during training. So let's go down here and
+actually just stop it because this is just to show you that
+you could use it even locally. And it stopped 4122, so at this point, let's go ahead and run it on the cloud,
+when you want to run it on the cloud, there is one key thing,
+the data needs to be on the cloud as well. So what I'm going to do here
+is that I'm going to copy the input files into the cloud, so
+that's basically what I'm doing, I'm copying the CSV files into the cloud. And then having done that,
+having copy all those files over, now I can submit the training
+job to ML engine. So at this point, I'm submitting the
+training job to ML engine for many more steps on all of these inputs and at this
+point it tells you that the job is queued, and we can go back to the GCP console, scroll down to where ML engine exits. Here it is, ML engine,
+look at the jobs and you will see that there is now the job
+that is in the process of getting started. And while the job is running you
+can go ahead and view the logs, and you can see the things that are being
+produced by the job as it runs, and at the end, right, you will be
+able to basically deploy this model. And you'll be able to predict with it
+exactly the same way as we did locally except that now this is
+a fully trained model, it's been trained on multiple steps and
+it's ready to go. Having deployed it, we can also try
+predicting not just from GCloud ML engine, but to do it the way a client
+program would do it. And the way a client program would do it
+is that they would basically create a JSON input from some kind of Python program,
+and use this Python API to basically call the
+predict function and get back a response. Now, at this point we haven't actually
+gotten a great model, all we still have is taking the raw data and throwing it
+into the model, we haven't done what we will do in the next course which is
+feature engineering to improve our model. And just to show you what
+the performance of this is, we could also train on a larger data set,
+it's not going to help us much, our model isn't great, we haven't
+actually brought in human insight. You could also run cloud training
+on a much larger data set, these are just running exactly the same
+things so I'm going to skip all this. But, if you have time,
+you want to give yourself a challenge, go ahead and modify your solution
+to the previous challenge exercise. Again, I strongly encourage you to
+try out the challenge exercises, and go back and discuss them on
+the Corsera forums, thank you

@@ -1,0 +1,58 @@
+En la sección anterior planteamos la optimización como
+búsqueda en el espacio de parámetros. Luego, presentamos las funciones
+de pérdida para comparar estos puntos. ¿Cómo podemos convertir una función
+de pérdida en una estrategia de búsqueda? Aquí entra el descenso de gradientes. El descenso de gradientes es el proceso
+de descender por la superficie que se forma con el uso de la función
+de pérdida en todos los puntos del espacio y esa superficie podría verse así. Por supuesto, esto es lo que
+verían con la información perfecta con el conocimiento completo del gráfico. En realidad, solo conoceremos
+los valores de pérdida en los puntos del espacio de parámetros
+donde hemos evaluado nuestra función de pérdida. O, en este caso, solo los dos
+puntos en el cuadro rojo que vemos. De alguna forma, tenemos
+que decidir dónde ir a continuación para encontrar el mínimo. Resulta que el problema
+de encontrar el fondo se puede separar en dos preguntas importantes. ¿Qué dirección debería tomar? Y ¿qué tan lejos debo llegar? Por ahora, crearemos
+una hipótesis simplificada y solo usaremos
+un paso de tamaño fijo. Esto nos llevará a un algoritmo sencillo. Si la pérdida es mayor que una
+constante mínima, calcular la dirección. Y para cada parámetro del modelo,
+configurar el valor a su valor anterior más el producto
+del tamaño del paso y la dirección. Después, volver a calcular la pérdida. Una superficie de pérdida
+es como un mapa topográfico o de contorno. Cada línea representa
+una profundidad específica. Mientras más juntas estén las líneas,
+más inclinada estará la superficie ahí. El algoritmo da pasos,
+que representé como puntos. En este caso, el algoritmo
+comenzó en el borde superior y descendió hacia el mínimo, en el centro. Observen cómo el algoritmo da pasos
+de tamaño fijo en dirección al mínimo. Dejemos de lado la dirección. Si el tamaño del paso es muy pequeño,
+el entrenamiento podría demorar demasiado. Pero es seguro que encontrarán el mínimo. Y dije “el” mínimo
+porque por ahora asumiremos que hay uno solo. Sin embargo,
+en el futuro podría haber más. Hablaremos sobre eso más adelante. Si el tamaño del paso es muy grande podrían pasar de una pared
+a otra en la superficie de pérdida o salir por completo y pasar a una
+parte nueva de la superficie de pérdida. Debido a esto, cuando
+el tamaño del paso es muy grande no se garantiza
+la convergencia del proceso. Si el tamaño del paso es el correcto,
+significa que todo está listo. Independientemente
+del valor del tamaño del paso es poco probable que sirva
+para un problema diferente. Observen que el tamaño del paso
+que funciona en la curva izquierda falla completamente en la curva derecha. En realidad, un tamaño único
+no es para todos los modelos. ¿Cómo debemos variar el tamaño del paso? Por suerte, la pendiente o la tasa
+a la que cambia la curva nos da una idea del tamaño del paso y la dirección. Fíjense en la subtrama inferior
+que muestra el valor de la pendiente en varios puntos a lo largo
+de la curva de pérdida de peso. Observen que,
+cuando los valores son mayores por lo general,
+estamos más lejos del fondo que cuando la pendiente es pequeña. Noten que
+cuando la pendiente es negativa el fondo del gráfico superior
+queda a la derecha y cuando la pendiente
+es positiva, queda a la izquierda. Aquí hay otro ejemplo. Observen el punto B,
+¿tiene una pendiente positiva o negativa? Positiva, lo que nos lleva
+a la izquierda para encontrar el mínimo. La pendiente es profunda,
+por lo que necesitamos dar un gran paso. Fíjense en el punto C
+en la superficie de pérdida. ¿Tiene una pendiente positiva o negativa? ¿Qué tan inclinada es? El punto C tiene una pendiente
+positiva; hay que ir hacia la izquierda. Aquí, la pendiente es mucho más gradual. Así que daremos pasos más pequeños para no pisar el mínimo. Reemplazamos el tamaño del paso
+constante y la llamada para calcular la dirección por una llamada
+a la nueva función, computeDerivative. Y actualizamos nuestro bucle para actualizar los parámetros del modelo
+y configurar cada uno a su valor anterior menos el derivado parcial de ese
+parámetro con relación a la pérdida. ¿Ya terminamos? Parece que encontramos la forma
+de dar pasos en la dirección correcta con el tamaño de paso correcto. ¿Qué podría salir mal? Bueno, el rendimiento empírico. Con respecto al conjunto
+de problemas en los que trabajan los investigadores de AA como el conjunto de superficies
+en el que aplicamos este procedimiento nuestro algoritmo básico se demora,
+tiene un mínimo subóptimo o no termina. Para ser claro, esto no significa
+que nuestro algoritmo no funcione solo que tendemos a no encontrar
+el tipo de problema donde se destaca.

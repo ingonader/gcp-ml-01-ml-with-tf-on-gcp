@@ -1,0 +1,444 @@
+1
+00:00:00,430 --> 00:00:02,370
+Espero que en el lab anterior
+
+2
+00:00:02,370 --> 00:00:05,115
+en el que le pedimos
+que escribiera un poco de código
+
+3
+00:00:05,115 --> 00:00:09,030
+para calcular el área de un triángulo,
+no solo haya ejecutado las celdas
+
+4
+00:00:09,030 --> 00:00:14,185
+sino que haya intentado escribir
+de código de TensorFlow desde cero.
+
+5
+00:00:14,185 --> 00:00:17,070
+Si lo hizo, como la mayoría
+
+6
+00:00:17,070 --> 00:00:21,495
+rápidamente se encontró con problemas
+de compilación y tiempo de ejecución.
+
+7
+00:00:21,495 --> 00:00:26,605
+Y eso le generó la duda
+de cómo depurar un programa de TensorFlow.
+
+8
+00:00:27,135 --> 00:00:30,025
+La depuración
+en TensorFlow puede ser difícil
+
+9
+00:00:30,025 --> 00:00:32,965
+debido al paradigma
+de evaluación perezosa.
+
+10
+00:00:32,965 --> 00:00:36,400
+Si su gráfico
+contiene errores, no lo sabrá
+
+11
+00:00:36,400 --> 00:00:40,005
+hasta que se ejecute
+esa parte del gráfico.
+
+12
+00:00:40,005 --> 00:00:43,160
+Esta es una de las razones
+por las que dijimos que tf.eager
+
+13
+00:00:43,160 --> 00:00:46,530
+puede ser útil para desarrollar
+programas de TensorFlow.
+
+14
+00:00:46,530 --> 00:00:48,740
+Sin embargo,
+tampoco es una solución para todo.
+
+15
+00:00:48,740 --> 00:00:51,995
+Igual necesitará saber cómo depurar
+
+16
+00:00:51,995 --> 00:00:56,080
+incluso si desarrolló el programa
+de forma interactiva con tf.eager.
+
+17
+00:00:56,080 --> 00:01:01,190
+Veamos cómo depurar programas
+de TensorFlow de evaluación perezosa.
+
+18
+00:01:02,690 --> 00:01:07,230
+Hacerlo es similar
+a depurar cualquier programa.
+
+19
+00:01:07,230 --> 00:01:10,489
+Debe aprender
+a interpretar los mensajes de error
+
+20
+00:01:10,489 --> 00:01:13,820
+y usar esos mensajes de error
+y seguimientos de pila
+
+21
+00:01:13,820 --> 00:01:16,310
+para aislar el método.
+
+22
+00:01:16,310 --> 00:01:19,940
+El propósito
+de aislar el método problemático
+
+23
+00:01:19,940 --> 00:01:23,645
+es que pueda llamar solo a ese método.
+
+24
+00:01:23,645 --> 00:01:27,470
+No conviene ejecutar todo el programa
+de TensorFlow en el conjunto de datos
+
+25
+00:01:27,470 --> 00:01:30,510
+y tratar de depurarlo como un todo.
+
+26
+00:01:30,510 --> 00:01:34,860
+En vez, deben enviar
+datos ficticios al método
+
+27
+00:01:34,860 --> 00:01:38,530
+para obtener un error repetible
+que podrá tratar de corregir.
+
+28
+00:01:39,100 --> 00:01:41,985
+¿Cómo se corrige el error?
+
+29
+00:01:41,985 --> 00:01:46,370
+Obviamente, no podemos
+mostrar todos los errores posibles
+
+30
+00:01:46,370 --> 00:01:50,200
+pero veremos algunos
+de los mensajes de error más comunes
+
+31
+00:01:50,200 --> 00:01:52,525
+y cómo abordarlos.
+
+32
+00:01:53,025 --> 00:01:57,420
+El primer paso
+es no poner la mente en blanco
+
+33
+00:01:57,420 --> 00:01:59,990
+cuando vea un montón
+de mensajes de error.
+
+34
+00:01:59,990 --> 00:02:02,665
+Analice el mensaje de error con atención.
+
+35
+00:02:02,665 --> 00:02:06,670
+En particular,
+hay dos datos que nos interesan.
+
+36
+00:02:06,670 --> 00:02:09,205
+La primera, el seguimiento de pila.
+
+37
+00:02:09,205 --> 00:02:13,900
+Esta es la pila de llamadas de métodos
+en el momento que se generó el error.
+
+38
+00:02:13,900 --> 00:02:15,849
+En ese caso, por ejemplo
+
+39
+00:02:15,849 --> 00:02:19,285
+vemos que la línea s = (a + c)
+
+40
+00:02:19,365 --> 00:02:23,230
+en el método,
+some_method(data), es un problema.
+
+41
+00:02:23,840 --> 00:02:26,950
+Obviamente, la pila de llamadas
+también incluirá un montón
+
+42
+00:02:26,950 --> 00:02:29,340
+de métodos de la biblioteca de TensorFlow.
+
+43
+00:02:29,340 --> 00:02:31,575
+Su programa llama a esos métodos
+
+44
+00:02:31,575 --> 00:02:34,395
+entonces el truco
+es enfocarse en el código.
+
+45
+00:02:34,395 --> 00:02:36,100
+Una vez que lo haga
+
+46
+00:02:36,100 --> 00:02:38,730
+busque el segundo dato.
+
+47
+00:02:38,730 --> 00:02:40,795
+Vea el mensaje de error en sí.
+
+48
+00:02:40,795 --> 00:02:46,055
+En este caso, el mensaje señala
+que se encontró un error de valor.
+
+49
+00:02:46,055 --> 00:02:49,155
+TensorFlow espera
+que las dimensiones sean iguales
+
+50
+00:02:49,155 --> 00:02:51,010
+pero resulta que no lo son.
+
+51
+00:02:51,730 --> 00:02:54,000
+¿Qué está ocurriendo?
+
+52
+00:02:54,000 --> 00:02:57,375
+Bueno, cuando sumamos a + c
+
+53
+00:02:57,375 --> 00:03:04,155
+eso solo funciona
+si tanto a como c son tensores 2D.
+
+54
+00:03:04,155 --> 00:03:06,045
+Si a es un tensor 4D
+
+55
+00:03:06,045 --> 00:03:09,220
+entonces c también debe serlo.
+
+56
+00:03:09,220 --> 00:03:14,370
+En este caso, resulta
+que uno de ellos, tal vez a, tal vez c
+
+57
+00:03:14,370 --> 00:03:17,547
+es un tensor 2D con la forma [4, 2]
+
+58
+00:03:17,547 --> 00:03:22,585
+y el otro, tal vez c,
+es un tensor 1D con la forma [4].
+
+59
+00:03:22,585 --> 00:03:25,020
+Ese es el problema.
+
+60
+00:03:25,600 --> 00:03:28,655
+Obviamente,
+algo no está bien en su programa
+
+61
+00:03:28,655 --> 00:03:31,510
+tal vez quería que ambos sean [4, 2]
+
+62
+00:03:31,510 --> 00:03:34,295
+o tal vez que ambos sean [4].
+
+63
+00:03:34,295 --> 00:03:37,750
+Encontrar la pila de llamadas
+y leer el mensaje de error
+
+64
+00:03:37,750 --> 00:03:40,380
+lo ayudará a entender el problema.
+
+65
+00:03:40,890 --> 00:03:42,730
+El análisis de la pila de llamadas
+
+66
+00:03:42,730 --> 00:03:46,430
+permite encontrar la línea
+de código y el nombre del método.
+
+67
+00:03:46,430 --> 00:03:49,110
+Ahora, deberá
+buscar el método y analizarlo.
+
+68
+00:03:49,110 --> 00:03:52,565
+Aquí, el método se llama some_method
+
+69
+00:03:52,565 --> 00:03:55,800
+y tiene un tensor llamado data.
+
+70
+00:03:55,800 --> 00:04:01,285
+Este es el tensor que deberá reemplazar
+con datos falsos para solucionar el error.
+
+71
+00:04:01,285 --> 00:04:03,695
+Olvídese del resto del programa.
+
+72
+00:04:03,695 --> 00:04:08,625
+Ignore cómo se leen realmente
+los datos en su programa actual.
+
+73
+00:04:08,625 --> 00:04:11,305
+Invocaremos el método con datos ficticios.
+
+74
+00:04:11,305 --> 00:04:18,090
+Para hacerlo, creamos una sesión
+y una matriz de tensores hard-coded.
+
+75
+00:04:18,120 --> 00:04:23,090
+En este caso, crearé
+un tensor de 4 x 3 llamado fake_data.
+
+76
+00:04:23,090 --> 00:04:25,225
+¿Puede verlo?
+
+77
+00:04:25,225 --> 00:04:31,370
+Tomo fake_data y se lo paso a some_method.
+
+78
+00:04:31,495 --> 00:04:38,135
+Observe que agregué
+varios print al código de some_method.
+
+79
+00:04:38,205 --> 00:04:41,380
+Es un poco anticuado
+depurar con declaraciones print
+
+80
+00:04:41,380 --> 00:04:44,260
+pero es la manera más fácil
+de diagnosticar errores de forma.
+
+81
+00:04:44,260 --> 00:04:48,145
+Estamos sumando dos elementos: a y c.
+
+82
+00:04:48,145 --> 00:04:49,780
+Esto generó un problema.
+
+83
+00:04:49,780 --> 00:04:54,450
+Por eso, me aseguro de hacer
+print de la forma de a y de c.
+
+84
+00:04:54,450 --> 00:04:56,049
+Cuando ejecuto el programa
+
+85
+00:04:56,049 --> 00:04:59,460
+la primera línea muestra [4, 2]
+
+86
+00:04:59,460 --> 00:05:02,085
+y la segunda, [4].
+
+87
+00:05:02,085 --> 00:05:05,475
+Tal como señalaba
+el mensaje de error de valores.
+
+88
+00:05:05,475 --> 00:05:07,365
+Y ahora, es un problema de intención.
+
+89
+00:05:07,365 --> 00:05:10,990
+¿Quería dividir una matriz [4, 2] para c?
+
+90
+00:05:10,990 --> 00:05:14,395
+¿O quería dividir un vector 1D para a?
+
+91
+00:05:14,395 --> 00:05:17,985
+Lo que sea que intentaba hacer, hágalo
+
+92
+00:05:18,505 --> 00:05:20,349
+Cuando ejecuto el programa
+
+93
+00:05:20,349 --> 00:05:23,590
+la primera línea muestra [4, 2]
+
+94
+00:05:23,590 --> 00:05:26,430
+y la segunda, [4].
+
+95
+00:05:26,430 --> 00:05:28,995
+Tal como señalaba
+el mensaje de error de valores.
+
+96
+00:05:28,995 --> 00:05:32,170
+Y ahora, es un problema de intención.
+
+97
+00:05:32,170 --> 00:05:36,070
+¿Quería dividir un matriz [4, 2] para c?
+
+98
+00:05:36,070 --> 00:05:39,245
+¿O quería dividir un vector 1D para a?
+
+99
+00:05:39,245 --> 00:05:41,930
+Lo que sea que intentaba hacer…

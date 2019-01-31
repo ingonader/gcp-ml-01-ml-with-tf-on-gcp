@@ -1,0 +1,30 @@
+Ich habe jetzt das GitHub-
+Repository des Kurses geöffnet. Ich bin in 03_TensorFlow, das ist unser aktuelles Kursthema. Jetzt öffne ich debug_demo. Schauen wir uns ein paar Sachen an, die wir gerade besprochen haben. Ich importiere also schnell TensorFlow. Hier ist ein erstes Beispiel, das wir erörtert haben. Wir haben ein Slicing
+der Daten durchgeführt. Wir haben alle Datenzeilen
+und zwei der Spalten erhalten. Bei c haben wir alle Zeilen,
+aber nur eine Spalte erhalten. Wenn wir jetzt a und c addieren, wird ein ShapeError generiert. Das passiert genau hier. Am Ende des Stacktrace
+sehen Sie die Fehlermeldung Es wird ein ValueError angezeigt. Die Dimensionen sind nicht gleich, sondern 2 und 4. Nummer Eins ist ein 2D-Tensor mit 4,2. Nummer Zwei ist ein 1D-Tensor mit 4. Weiter oben im Stacktrace
+sehen Sie genau das hier: common_shapes.python gehört nicht zu uns. Das ist irgendwo in TensorFlow. Wir können es ignorieren. Auch dies hier ist in TensorFlow und kann ignoriert werden. Dasselbe gilt für das hier. Und auch das ist TensorFlow. All dies ist TensorFlow
+und kann ignoriert werden. Ich gehe weiter nach oben,
+bis ich etwas in meinem Code finde. Hier ist some_method in meinem Code. Die Methode lautet s = (a + c). Hier ist das Problem markiert. Dies hier wird von session.run aufgerufen, aber wir ignorieren das,
+da das Problem bei s = (a + c) liegt. Finden wir also heraus,
+wo der ValueError aufgetreten sein könnte. Schauen wir es uns an.
+Wir finden s = (a + c). Okay. Wenn man zwei Dinge addiert, dann besagen 
+die Regeln der linearen Algebra, dass die Form von zwei
+addierten Tensoren identisch sein muss. Sonst geht es nicht. Jetzt können wir versuchen, den Fehler zu beheben. Ich mache also Folgendes:
+Ich erstelle fake data oder Testdaten. Ich füge diese fake data in meine Matrix ein. Wie ist die Form? Es ist eine 4x3-Matrix. Ich füge sie ein und rufe mit print
+die Form von a und von c ab. Jetzt führe ich diese Zelle aus. Wenn ich diese Zelle ausführe, sehe ich: die Form von a ist 4,2
+und die Form von c ist 4. Damit weiß ich, worin das Problem lag. Wie kann ich nun das Problem beheben? Sie können das Problem beheben, indem Sie dafür sorgen,
+dass beide dieselbe Form haben. Ich habe hier 0:2 in der
+ersten Instanz und hier 1:3. Es ist also ein Schiebefenster, jedes Mal mit 1. Bei Bildern spricht man auch
+vom "Schreiten" oder "dem Schritt". Der Schritt ist 1 und
+meine Fenstergröße ist 2. Das ist genau, was ich tue. Wenn ich es jetzt ausführe,
+sollte es perfekt funktionieren. Ich sollte die Summe erhalten,
+die das Ergebnis des Schiebefensters ist. Mit diesem Verfahren
+können Sie Ihren Code korigieren. Prüfen Sie den Calltrace, lesen Sie die Fehlermeldung, finden Sie das Problem
+und wenn Sie es gefunden haben, beheben Sie es und
+prüfen Sie es gegen Ihre Testdaten. Prüfen Sie dann, ob es auch
+mit Ihrem vollen Datensatz funktioniert. Was es hoffentlich tut. Wir haben auch über Typfehler gesprochen. Der Prozess ist genau derselbe. In diesem Fall addiere ich a + b. a besteht aus Gleitkommazahlen, b sind Ganzzahlen. Das funktioniert nicht. Ich prüfe also den Stacktrace
+und schaue mir die Fehlermeldung an. Ich sehe, dass ich den Fehler
+beispielsweise beheben kann, indem ich die Ganzzahlen von b umwandle. Wenn ich den Datentyp umwandle, dann funktioniert es,
+und das ist die Grundidee hier.

@@ -1,0 +1,220 @@
+1
+00:00:00,071 --> 00:00:02,532
+Bevor wir eine der 
+ersten Möglichkeiten betrachten,
+
+2
+00:00:02,532 --> 00:00:05,132
+mit denen dieses Problem angegangen wurde,
+
+3
+00:00:05,132 --> 00:00:07,595
+gehen wir einiges vom Gelernten durch.
+
+4
+00:00:08,295 --> 00:00:10,367
+Versetzen wir uns in das Modell
+
+5
+00:00:10,367 --> 00:00:13,938
+und sehen uns die
+Verlustentwicklung im Trainnigsverlauf an.
+
+6
+00:00:15,508 --> 00:00:18,150
+Angenommen, wir machen
+einen Gradientenabstieg
+
+7
+00:00:18,150 --> 00:00:21,580
+und aktualisieren die Parameter
+anhand der Ableitung der Verlustfunktion.
+
+8
+00:00:21,580 --> 00:00:24,305
+Wir haben das so konfiguriert, 
+dass wir sehen können,
+
+9
+00:00:24,305 --> 00:00:26,625
+wie sich der Verlust 
+im Laufe der Zeit verändert.
+
+10
+00:00:27,485 --> 00:00:29,645
+Das kommt beim 
+Machine Learning häufig vor,
+
+11
+00:00:29,645 --> 00:00:32,415
+vor allem wenn das Modelltraining Stunden
+
+12
+00:00:32,415 --> 00:00:34,390
+oder gar Tage dauert.
+
+13
+00:00:34,390 --> 00:00:38,175
+Sie können sich vorstellen, wie wichtig
+es ist, nicht mehrere Tage zu verlieren.
+
+14
+00:00:38,175 --> 00:00:41,660
+Also untersuchen wir eine Verlustkurve.
+
+15
+00:00:43,440 --> 00:00:45,615
+Das hier ist eine typische Verlustkurve.
+
+16
+00:00:45,615 --> 00:00:49,385
+Der Verlust fällt stark,
+mit diesen großen Schritten am Gradienten,
+
+17
+00:00:49,385 --> 00:00:51,455
+und flacht im Laufe der Zeit ab.
+
+18
+00:00:51,455 --> 00:00:54,870
+Mit kleinen Schritten erreicht er 
+das Minimum an der Verlustoberfläche.
+
+19
+00:00:57,260 --> 00:01:00,870
+Was, wenn Sie eine 
+Verlustkurve wie diese sehen?
+
+20
+00:01:00,870 --> 00:01:04,620
+Angenommen, der
+Maßstab der Verlustachse ist groß.
+
+21
+00:01:04,620 --> 00:01:06,855
+Was sagt Ihnen das über Ihr Modell
+
+22
+00:01:06,855 --> 00:01:09,845
+und den Verlauf Ihrer
+Suche an der Verlustoberfläche?
+
+23
+00:01:11,835 --> 00:01:14,580
+Es bedeutet, dass die Suche
+von Punkt zu Punkt springt
+
+24
+00:01:14,580 --> 00:01:17,780
+und sich nicht stetig in
+Richtung eines bestimmten
+
+25
+00:01:17,780 --> 00:01:18,830
+Minimums bewegt.
+
+26
+00:01:20,670 --> 00:01:22,060
+Was ist mit dieser hier?
+
+27
+00:01:23,010 --> 00:01:25,720
+Wir sind wohl noch im selben Tal,
+
+28
+00:01:25,720 --> 00:01:27,280
+aber es wird sehr,
+
+29
+00:01:27,280 --> 00:01:29,670
+sehr lange dauern, 
+die Untergrenze zu erreichen.
+
+30
+00:01:31,430 --> 00:01:33,170
+In diesen beiden Fällen war jedoch
+
+31
+00:01:33,170 --> 00:01:35,940
+die Schrittgröße nicht 
+für das spezielle Problem geeignet.
+
+32
+00:01:35,940 --> 00:01:38,690
+Im ersten Fall waren die Schritte zu groß,
+
+33
+00:01:38,690 --> 00:01:40,470
+im zweiten zu klein.
+
+34
+00:01:41,910 --> 00:01:44,335
+Wir brauchen also 
+einen Parameter für den Maßstab.
+
+35
+00:01:44,335 --> 00:01:47,785
+In der Literatur 
+wird das Lernrate genannt.
+
+36
+00:01:47,785 --> 00:01:51,705
+Übernehmen wir diese in den Code, haben
+wir einen klassischen Gradientenabstieg.
+
+37
+00:01:52,365 --> 00:01:56,885
+Beachten Sie die Änderungen der Zeile 
+mit den aktualisierten Parameterwerten.
+
+38
+00:01:57,745 --> 00:02:01,520
+Sicher könnte man mit Brute Force den 
+besten Wert für die Lernrate ermitteln.
+
+39
+00:02:01,520 --> 00:02:05,335
+Bedenken Sie aber, dass der beste Wert 
+für die Lernrate problemspezifisch ist.
+
+40
+00:02:06,215 --> 00:02:09,620
+Weil sie feststeht, 
+bevor das Lernen beginnt,
+
+41
+00:02:09,620 --> 00:02:11,575
+ist die Lernrate ein Hyperparameter.
+
+42
+00:02:11,575 --> 00:02:15,325
+Die bessere Methode, um den besten
+Wert eines Hyperparameters zu ermitteln,
+
+43
+00:02:15,325 --> 00:02:17,725
+ist das Hyperparameter-Tuning.
+
+44
+00:02:17,725 --> 00:02:20,760
+Wie das in der Cloud ML Engine 
+funktioniert, wird in einem
+
+45
+00:02:20,760 --> 00:02:22,440
+späteren Modul erklärt.
+
+46
+00:02:22,440 --> 00:02:25,960
+Allgemein gesagt ist die
+Lernrate aber deutlich kleiner als eins.
+
+47
+00:02:26,970 --> 00:02:31,130
+Merken Sie sich vorerst 
+diese Formel des Gradientenabstiegs,
+
+48
+00:02:31,130 --> 00:02:34,915
+und dass die Lernrate ein Hyperparameter 
+ist, der im Training festgelegt wird.

@@ -1,0 +1,52 @@
+Dans les leçons précédentes, il a été question de ce qu'est TensorFlow. Intéressons-nous maintenant
+à la hiérarchie de l'API TensorFlow. Comme la plupart
+des bibliothèques de logiciels, TensorFlow comporte un certain nombre
+de couches d'abstraction. Le niveau d'abstraction le plus bas
+est celui d'une couche mise en œuvre pour assurer l'adaptabilité à différentes
+plates-formes matérielles. À moins que votre entreprise
+ne fabrique du matériel, il est peu probable que vous ayez
+beaucoup à vous en occuper. Le niveau suivant est celui
+d'une API C++ de TensorFlow. Elle vous permet d'écrire une application
+TensorFlow personnalisée. Il vous suffit pour cela de mettre
+la fonction de votre choix en œuvre en C++, et de l'enregistrer
+comme opération TensorFlow. Reportez-vous à la documentation de TensorFlow
+relative à l'extension d'une application. TensorFlow vous fournira alors
+un wrapper Python que vous pourrez utiliser tout comme
+vous utiliseriez une fonction existante. Dans cette spécialisation toutefois, nous considérerons
+que vous n'êtes pas chercheur en ML et que vous n'avez donc pas à faire ça. Mais si vous devez un jour mettre en œuvre
+votre propre application personnalisée, vous pouvez le faire en C++, et ce n'est pas très compliqué. C'est ainsi que vous pouvez procéder
+à l'extension de TensorFlow. L'API Core Python, le niveau suivant, contient la majeure partie
+du code de traitement numérique : les additions, les soustractions, les divisions ou encore
+les multiplications de matrices, la création de variables ou de Tensors, ou encore l'obtention de la forme
+et de toutes les dimensions d'un Tensor. Toutes ces opérations de traitement
+numérique de base se trouvent dans l'API Python. Il y a ensuite
+un ensemble de modules Python ayant une représentation de haut niveau
+de composants de réseau de neurones utiles. Il peut par exemple s'agir d'une façon
+de créer une couche de neurones cachés assortie d'une fonction d'activation
+ReLU (dans tf.layers), d'une façon de calculer la racine carrée
+de l'erreur quadratique moyenne de données entrantes (dans tf.metrics), ou encore d'une façon de calculer
+l'entropie croisée avec logits (une mesure de la perte courante
+pour les problèmes de classification qui se trouve dans tf.losses). Ces modèles fournissent
+des composants utiles pour la création de modèles
+de réseaux de neurones personnalisés. Pour quelle raison
+est-ce que je mets l'accent sur la notion de personnalisation ? Parce que la plupart du temps, vous n'avez pas besoin d'un modèle
+de réseau de neurones personnalisé. Vous pouvez bien souvent
+vous contenter, pour vos modèles, d'un mode d'entraînement, d'évaluation
+et de diffusion relativement standard. Vous n'avez pas besoin de définir
+un mode d'entraînement personnalisé. Utilisez l'une des possibilités offertes par une famille d'optimiseurs
+de descente de gradient et effectuez une propagation amont
+des pondérations de manière itérative. Dans ce cas, n'écrivez pas
+de boucle de session de bas niveau. Utilisez simplement un Estimator. L'Estimator est l'API
+de haut niveau de TensorFlow. Elle sait comment répartir l'entraînement, procéder à l'évaluation,
+créer un point de contrôle, enregistrer un modèle, ou encore configurer la diffusion. Elle contient des informations
+permettant de tout effectuer correctement pour la plupart des modèles
+de machine learning utilisés en production. Donc, si vous voyez sur Internet
+un exemple de code TensorFlow n'utilisant pas l'API Estimator, ignorez-le. Passez votre chemin. Il ne vaut pas la peine
+que vous vous y intéressiez. Vous aurez à écrire beaucoup de code
+pour affecter les appareils ainsi que pour gérer et répartir la mémoire. Laissez l'Estimator s'en charger pour vous. Nous venons donc de voir
+les niveaux d'abstraction de TensorFlow. Cloud Machine Learning Engine est disponible
+pour tous les niveaux de cette hiérarchie. Quelle que soit la couche d'abstraction pour laquelle vous écrivez
+votre code TensorFlow, CMLE vous permet
+de bénéficier d'un service géré. C'est la version hébergée de TensorFlow. Elle vous permet d'exécuter TensorFlow
+dans le cloud sur un cluster de machines sans avoir à installer de logiciel
+ni à gérer des serveurs.

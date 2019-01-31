@@ -1,0 +1,106 @@
+Por que usar só uma camada de perceptron? Por que não enviar a saída de
+uma camada como a entrada da próxima? Várias camadas de perceptron combinadas
+parecem um modelo muito mais poderoso. No entanto, sem usar
+funções de ativação não lineares, todas as camadas adicionais
+podem voltar a ser comprimidas em apenas uma,
+e não há benefício real. São necessárias 
+funções de ativação não lineares. Portanto, a sigmoide 
+ou tangente hiperbólica, ou "tan" na forma abreviada, são funções de ativação que
+começaram a ser usadas em não linearidade. Éramos limitados 
+apenas a elas porque precisávamos de uma função diferenciável, já que ela é explorada na propagação de retorno,
+para ser os pesos do modelo. As funções de ativação modernas
+não são necessariamente diferenciáveis, e as pessoas não sabiam
+como trabalhar com elas. Essa limitação, com funções de
+ativação diferenciáveis, dificultava o treinamento das redes. A eficácia dos modelos também
+era limitada pela quantidade de dados, recursos computacionais disponíveis
+e outras complicações no treinamento. Por exemplo, a otimização
+costumava cair em pontos de sela. Ela não encontrava o mínimo global e achávamos que isso
+acontecesse no gradiente descendente. No entanto, com a criação de
+unidades lineares retificadas ou ReLUs, foi possível realizar treinamentos
+até 10 vezes mais rápidos, com convergência na regressão
+logística quase garantida. Ao criar o perceptron, como o cérebro, podemos conectar
+várias delas para formar camadas e produzir redes neurais feedforward. Pouco mudou nos componentes
+do perceptron de camada única, ainda há entradas, somas ponderadas,
+funções de ativação e saídas. A diferença é que entradas nos neurônios
+que não estão na camada de entrada não são as entradas originais, 
+mas as saídas da camada anterior. Outra diferença é que os pesos que
+conectam os neurônios entre camadas não são mais um vetor,
+mas uma matriz por conta do caráter
+de conexão total desses neurônios. Por exemplo, no diagrama, quatro
+matrizes de peso na camada de entrada são divididas em duas,
+e na camada oculta, duas divididas em uma. Vamos aprender depois que
+as redes neurais nem sempre têm conectividade total, o que garante aplicativos e desempenho incríveis,
+como no trabalho com imagens. Há também outras funções de ativação
+além das de passos da unidade como sigmoide e tangente hiperbólica
+ou funções de ativação tan. Consideramos cada neurônio
+que não é entrada como um conjunto de três passos
+comprimidos em uma unidade. O primeiro componente é a soma ponderada, o segundo é a função de ativação, e o terceiro é a saída dessa função. As redes neurais se tornam
+complexas com todas as camadas, neurônios, funções de ativação
+e formas de treiná-las. Durante o curso, usaremos
+o TensorFlow Playground para ter uma ideia mais intuitiva de como
+é o fluxo de informação pela rede neural. É também muito divertido, com a personalização
+de mais hiperparâmetros, além de imagens da magnitude de espera e como a função de perda
+evolui ao longo do tempo. Esta é a função de ativação linear, que é uma de identidade
+porque a função de X retorna X. Esta era a função de ativação original. No entanto, como dito antes, mesmo em uma rede neural
+com milhares de camadas, e todas com função de ativação linear, o resultado é apenas uma
+combinação linear dos recursos da entrada. Isso é reduzido a cada recurso de entrada
+multiplicado por uma constante. Soa familiar para você? É simplesmente uma regressão linear. Portanto, as funções de ativação
+não lineares são necessárias para ter as funções complexas de cadeia para que redes neurais
+aprendam distribuições de dados. Além da função de ativação linear,
+em que f de X é igual a X, as principais funções de ativação
+quando as redes neurais estavam na primeira era dourada
+eram sigmoide e tan. A sigmoide é uma versão simplificada
+da função de passo da unidade em que a assíntota é 0 no
+infinito negativo e até um no positivo. Mas há valores intermediários
+entre tudo isso. A tangente hiperbólica ou
+tan na forma abreviada é outra função de ativação
+muito usada neste momento, que é basicamente uma sigmoide
+ em escala e transferida, agora com intervalo
+negativo de um para um. Estas eram ótimas opções
+por serem diferenciáveis em todos os lugares,
+monotônicas e simples. No entanto, problemas
+como saturação ocorriam por conta de valores altos ou baixos
+de entrada nas funções, gerando estabilização assintótica. Como a curva é quase plana nesses pontos, as derivadas são quase zero. Portanto, como os
+gradientes eram quase zero, o treinamento dos pesos
+era muito lento ou até mesmo interrompido resultando em tamanhos de passo
+muito pequenos no gradiente descendente. As funções de ativação linear eram
+diferenciáveis, monotônicas e simples. No entanto, como dito antes, é possível reduzir a combinação linear
+dessas funções pelos neurônios em uma. Isso não possibilita a criação da cadeia complexa de funções necessária
+para descrever a linha de dados. A função de ativação linear
+tinha aproximações, mas elas não eram
+diferenciáveis em qualquer lugar. Só muito depois as pessoas
+saberiam como lidar com elas. Muito famosa hoje é a unidade linear
+retificada ou função de ativação ReLU. Não é linear, então é possível
+conseguir o modelo complexo necessário, e ela não gera saturação na parte
+não negativa do espaço de entrada. No entanto, a parte negativa do espaço de
+entrada se transforma em zero de ativação, o que pode levar as camadas de ReLU 
+a desaparecer ou não serem mais ativadas, causando também lentidão
+ou interrupção no treinamento. Há maneiras
+de resolver esse problema, uma delas é usar
+outra função de ativação chamada de unidade linear exponencial ou ELU. É quase linear na parte
+não negativa do espaço de entrada e é simples, monotônica e, principalmente, diferente de zero
+na parte negativa do espaço de entrada. A principal desvantagem das ELUs é
+que são mais caras na computação do que as ReLUs,
+devido à exponencial calculada. Falaremos mais
+sobre isso no próximo módulo. Para que minhas saídas
+estejam na forma de probabilidade, qual função de ativação
+é necessária na camada final? A resposta correta é
+função de ativação "Sigmoide". Isso acontece porque o intervalo
+da função sigmoide é entre zero e um, que também é o da probabilidade. Além do intervalo, a sigmoide é a função
+de distribuição cumulativa da probabilidade logística
+em que a função quantil é o inverso da lógica que cria
+o modelo das probabilidades de registro. É por isso que pode ser usada
+como probabilidade verdadeira. Falaremos mais sobre
+esses motivos mais adiante no curso. "Tan" está incorreta porque, mesmo sendo
+uma função comprimida como sigmoide, tem intervalo entre um negativo e um, que não é o mesmo
+intervalo da probabilidade. Além disso, comprimir tan em uma sigmoide não
+a transformará em uma probabilidade porque ela não tem 
+as mesmas propriedades mencionadas que possibilitam que a saída seja
+interpretada como probabilidade. Para fazer a conversão
+correta em uma sigmoide, é necessário adicionar um e dividir por
+dois, gerando o intervalo correto. E para conseguir o espalhamento certo, é necessário dividir
+o argumento da tan por dois. Mas a tan já foi calculada, então você terá mais trabalho e poderia ter usado
+uma sigmoide desde o início. "ReLU" é incorreta porque
+o intervalo dela é entre zero e infinito, o que vai muito além
+da representação de probabilidade. "ELU" é incorreta por ter intervalo
+entre infinito negativo e positivo.

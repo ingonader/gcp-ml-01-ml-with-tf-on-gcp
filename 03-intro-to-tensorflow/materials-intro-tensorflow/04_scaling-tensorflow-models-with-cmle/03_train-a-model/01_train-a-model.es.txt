@@ -1,0 +1,36 @@
+Ahora veamos cómo entrenar
+un modelo en Machine Learning Engine. Antes de comenzar
+el entrenamiento, haga lo siguiente. Reúna y prepare
+sus datos de entrenamiento. Límpielos, divídalos, diseñe funciones
+y haga procesamiento previo. Segundo, coloque
+esos datos de entrenamiento en una fuente en línea
+accesible para CMLE, como Cloud Storage. Cuando se envían trabajos
+de entrenamiento a CMLE es común dividir la mayoría de la lógica
+en los archivos task.py y model.py. Task.py es el punto de entrada
+a su código que usará CMLE. Contiene detalles del nivel de trabajo de cómo pasar argumentos
+de línea de comandos, por cuánto ejecutar dónde escribir las entradas o cómo interactuar
+con el ajuste de hiperparámetros. Para realizar el AA básico task.py invocará a model.py. Model.py se enfoca más
+en las tareas básicas del AA como la obtención de datos,
+la definición de las funciones la configuración de la firma del servicio y, por supuesto, el bucle
+de entrenamiento y evaluación en sí. Siempre que compartamos código
+entre computadoras, hay que empaquetarlo. Lo mismo pasa cuando enviamos
+un modelo a CMLE para su entrenamiento. TensorFlow,
+y en especial Python, requieren una estructura de paquete estándar
+y muy específica, que se muestra aquí. Es recomendable probar localmente
+que el empaquetado funcione correctamente. Intente llamar directamente a python-m para revisar que todas
+las importaciones estén bien. A continuación, usaremos gcloud
+para una prueba local de nuestro código. Esto realizará pruebas de estado rápidas
+para revisar la estructura del paquete. Luego, podemos enviar la tarea a la nube
+mediante un trabajo de entrenamiento. Los argumentos clave
+de la línea de comandos son package-path,
+para especificar la ubicación del código module-name, para especificar
+los archivos del paquete que se ejecutarán y scale-tier, para especificar el tipo
+de hardware en el que ejecutará el código. Puede especificar scale-tier=BASIC
+para ejecutarlo en una máquina. Use =STANDARD para ejecutarlo
+en un clúster relativamente pequeño. Con =BASIC_GPU,
+se ejecuta en una sola GPU. ¿Y si quiere usar una TPU? En ese caso, escriba scale-tier=BASIC_TPU. También puede definir
+niveles personalizados y definir cada tipo de máquina. Seguimos agregando opciones de scale-tier. Revise la documentación
+de CMLE para ver sus opciones actuales. Un consejo: Para obtener el mejor
+rendimiento de los trabajos de AA seleccione un depósito de una
+sola región en Google Cloud Storage. La opción predeterminada es multirregión que es mejor para la entrega web
+que para el entrenamiento de AA.

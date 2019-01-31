@@ -1,0 +1,64 @@
+Una variable es un tensor
+cuyo valor se inicializa y luego cambia
+a medida que el programa se ejecuta. Veamos este ejemplo en detalle. Tengo una función
+que se llama forward_pass. Toma dos parámetros,
+w y x, y los multiplica. Es una multiplicación de matrices
+porque son tensores pero multiplica w y x. En mi función train_loop creo el tensor w solo que no es una constante como los tensores
+que hemos visto hasta ahora. w es una variable. Tiene el nombre "weights". Su forma es [1, 2] lo que significa
+que tiene una fila y dos columnas. Es una matriz de 1 x 2. Y cuando se inicializa w… No lo hacemos aquí,
+porque recuerde que TensorFlow es un marco de trabajo
+de evaluación perezosa y ahora estamos
+creando el gráfico. Todavía no lo ejecutamos. Cuando se inicialice w lo hará
+con un inicializador normal truncado. Este es un inicializador muy común que verá en los programas
+de redes neuronales de TensorFlow. Inicializa una variable
+con números aleatorios. Pero estos números aleatorios
+no tienen una distribución uniforme. En su lugar, tienen
+una distribución gaussiana normal con media cero y varianza de unidad. Pero esta distribución
+tiene una cola muy larga y podrían obtenerse
+valores atípicos extremos. Es poco probable, pero podría suceder. ¿Qué hace un normal truncado? Hace un corte en algún múltiplo de sigma. Finalmente, decimos
+que la variable w es entrenable. Una variable entrenable
+se puede cambiar durante el entrenamiento. La idea de una variable es que se pueda cambiar,
+de modo que la mayoría serán entrenables. Pero de vez en cuando… Hablaremos de esto en la sección sobre la reducción de tamaño
+del modelo y aprendizaje transferido. De vez en cuando puede ser útil congelar un gráfico,
+de modo que las variables no cambien. Esta marca booleana nos permite hacerlo. Observe que llamo
+a tf.get_variable para crear w. Es posible que vea código de TensorFlow
+que crea una variable directamente mediante la llamada
+al constructor tf.variable. No se recomienda llamar
+al constructor directamente. Use tf.get_variable
+porque, como veremos en el curso 9 puede ser útil reutilizar
+variables o crearlas de cero según los diferentes casos.
+y esta función nos permite hacerlo. Le recomiendo
+que se acostumbre a usar tf.get_variable. Luego, ejecutamos forward_pass cinco veces y almacenamos los resultados
+de la multiplicación de la matriz en cada iteración. Luego de obtener
+el producto, cambiamos el peso. Aquí, agregamos 0.1. Es como una actualización del gradiente. En realidad, claro en la actualización del gradiente, 
+elegiríamos qué pesos cambiar y cómo. Aquí, para la demostración,
+solo agregaré 0.1 a los pesos cada vez. Ahora, desde la sesión llamamos a train_loop y pasamos x. x es una matriz de 2 x 3. En forward_pass multiplicamos w por esta x.
+w es una matriz de 1 x 2. Si multiplicamos una matriz de 1 x 2
+por una de 2 x 3, obtenemos una de 1 x 3. En este punto, el gráfico está listo,
+pero debemos inicializar las variables. Eso es en la etapa de ejecución. Por lo general, solo inicializamos
+todas las variables del gráfico de una vez con el inicializador de variables global. Ahora, cuando vemos el valor del producto,
+después de cada paso del bucle observamos que la matriz de 1 x 3
+es diferente cada vez, como es de esperar. Resumamos lo que aprendimos. Primero, se crea una variable
+mediante una llamada a get_variable. Omití una línea de código
+durante la explicación: el alcance. Cuando se crea una variable
+se puede especificar el alcance. Ahí es donde le instruyo
+a TensorFlow que reutilice la variable en lugar de crear una nueva cada vez. Aquí, llamo a train_loop solo una vez,
+así que no hace diferencia en este caso pero si llamara a train_loop de nuevo los pesos se reanudarían
+donde se quedaron. No crearíamos una nueva variable,
+sino que la reutilizaríamos. Segundo, cuando se crea una variable es necesario decidir cómo inicializarla. En el entrenamiento de redes neuronales la opción más común es
+la distribución normal aleatoria truncada. Tercero, use la variable
+como cualquier otro tensor cuando cree el gráfico. Cuarto, en su sesión recuerde inicializar la variable Por lo general,
+inicializará todas las variables juntas mediante una llamada
+al inicializador de variables global. Y, después que se inicialicen y este es el quinto punto puede evaluar
+cualquier tensor que desee. En este ejemplo llamamos a train_loop con x pero x es una constante. ¿Es realista? ¿Usa valores de entrada hard-coded
+en sus programas? Los marcadores de posición
+permiten introducir valores al gráfico. Por ejemplo, puede leer valores
+desde un archivo de texto a una lista de Python
+y, luego, inyectar esa lista en el gráfico de TensorFlow. Aquí, a es un marcador de posición. Tendrá un escalar. Y b es a multiplicado por 4. Si ejecuta print a, obtendrá
+la salida de depuración del tensor. Descubrirá que este tensor en particular es un marcador de posición
+que espera números de punto flotante. Para evaluar b, no podemos
+escribir simplemente session.run(b). Tenemos que brindar valores
+para los marcadores de posición que b necesita. En este caso, hay que pasar una lista
+o una matriz de Numpy para el marcador a. Esto se hace
+con un feed_dict, un diccionario. Un diccionario contiene pares clave-valor. La clave es un marcador. En este caso, a. El valor es una lista o matriz de Numpy. En este caso, es [1, 2, 3]. Eso es lo que inyectamos y cuando se evalúa b obtenemos el valor
+de a multiplicado por 4 es decir, obtenemos [4, 8,12].

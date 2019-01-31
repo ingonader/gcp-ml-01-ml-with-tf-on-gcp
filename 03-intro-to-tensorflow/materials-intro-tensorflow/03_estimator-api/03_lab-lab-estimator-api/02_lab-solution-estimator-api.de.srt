@@ -1,0 +1,602 @@
+1
+00:00:00,190 --> 00:00:03,732
+Schauen wir uns unser erstes
+Code-Lab zu Estimators an.
+
+2
+00:00:03,732 --> 00:00:07,920
+Damit wir anfangen können,
+müssen wir die Code-Lab-Dateien finden.
+
+3
+00:00:07,920 --> 00:00:09,980
+Machen wir das gemeinsam.
+
+4
+00:00:09,980 --> 00:00:17,450
+Gehen Sie auf cloud.google.com/console und
+melden Sie sich mit Ihrem Lab-Konto an.
+
+5
+00:00:17,450 --> 00:00:19,170
+Das mache ich auch.
+
+6
+00:00:30,700 --> 00:00:34,120
+Wählen Sie jetzt ein Projekt aus.
+
+7
+00:00:34,120 --> 00:00:36,650
+Manchmal ist es
+bereits für Sie ausgewählt.
+
+8
+00:00:36,650 --> 00:00:39,760
+Öffnen Sie die Cloud Shell
+über dieses Symbol hier.
+
+9
+00:00:44,109 --> 00:00:50,836
+In der Cloud Shell
+geben wir "datalab create" ein.
+
+10
+00:00:54,831 --> 00:00:59,050
+Nennen wir unsere
+Data Lab-Instanz "mylab".
+
+11
+00:01:01,110 --> 00:01:07,604
+Wir erstellen sie
+in der Zone "us-central1-a".
+
+12
+00:01:09,814 --> 00:01:12,920
+Damit wird unsere
+erste Data Lab-Instanz erstellt.
+
+13
+00:01:14,750 --> 00:01:18,759
+Beim ersten Mal dauert es eine Weile.
+
+14
+00:01:21,886 --> 00:01:26,948
+Beim nächsten Mal müssen Sie
+die Daten der Instanz nicht neu erstellen.
+
+15
+00:01:26,948 --> 00:01:30,815
+Verbinden Sie sich einfach wieder,
+indem Sie "datalab connect"
+
+16
+00:01:30,815 --> 00:01:33,959
+und den Instanznamen
+eingeben, in meinem Fall "mylab".
+
+17
+00:01:47,098 --> 00:01:52,030
+Wählen Sie jetzt
+diese Web-Vorschau-Schaltfläche.
+
+18
+00:01:53,140 --> 00:01:57,559
+Ändern Sie den Port zu 8081.
+Diesen verwendet Data Lab.
+
+19
+00:01:57,559 --> 00:02:01,129
+Klicken Sie dann auf "preview".
+
+20
+00:02:01,129 --> 00:02:03,430
+Das öffnet ein
+vertrautes Notebook-Interface.
+
+21
+00:02:06,700 --> 00:02:10,168
+Hier müssen wir noch
+den Code von GitHub abrufen.
+
+22
+00:02:10,168 --> 00:02:19,359
+Also öffnen wir ein Notebook,
+um Bash-Befehle eingeben zu können.
+
+23
+00:02:19,359 --> 00:02:21,895
+%bash.
+
+24
+00:02:21,895 --> 00:02:27,040
+Wir werden außerdem
+unser Code-Lab-Repository
+
+25
+00:02:27,040 --> 00:02:32,419
+mit dem Befehl "git clone" in
+das lokale Verzeichnis kopieren.
+
+26
+00:02:32,419 --> 00:02:35,961
+Sobald das abgeschlossen ist,
+
+27
+00:02:35,961 --> 00:02:39,570
+wird das lokale Verzeichnis angezeigt.
+
+28
+00:02:48,001 --> 00:02:50,830
+Es kann losgehen.
+
+29
+00:02:50,830 --> 00:02:53,224
+Es heißt "training-data-analyst", und
+
+30
+00:02:53,224 --> 00:02:58,644
+dort suchen Sie das Verzeichnis "courses",
+
+31
+00:02:58,644 --> 00:03:04,974
+dann "machine_learning" und "deepdive".
+
+32
+00:03:07,254 --> 00:03:09,460
+Dann "tensorflow".
+
+33
+00:03:09,460 --> 00:03:15,794
+Unser erstes Lab ist "b_estimator.ipynb".
+
+34
+00:03:16,707 --> 00:03:22,213
+In diesem Beispiel verwenden wir Pandas,
+um unsere Daten aus CSV-Dateien zu lesen,
+
+35
+00:03:22,213 --> 00:03:25,260
+die Informationen
+über Taxifahrten enthalten.
+
+36
+00:03:25,260 --> 00:03:29,630
+Abholort, Absetzort und
+die Anzahl der Fahrgäste.
+
+37
+00:03:29,630 --> 00:03:33,059
+Wir werden unser Modell trainieren,
+um den Taxifahrpreis vorherzusagen.
+
+38
+00:03:34,580 --> 00:03:36,610
+Schauen wir es uns an.
+
+39
+00:03:37,816 --> 00:03:42,589
+Zuerst definieren wir hier unsere
+Spaltennamen: fare amount, pickuplon,
+
+40
+00:03:42,589 --> 00:03:46,140
+pickuplat und so weiter.
+
+41
+00:03:46,167 --> 00:03:52,890
+Wir verwenden Pandas,
+um diese Daten aus CSV-Dateien zu lesen.
+
+42
+00:03:52,890 --> 00:03:57,590
+Ein Dataset für Trainingsdaten,
+eines für Validierungsdaten.
+
+43
+00:04:00,880 --> 00:04:05,201
+Als nächstes nutzen wir die in Estimators
+
+44
+00:04:05,201 --> 00:04:10,597
+eingebaute Funktionalität, um aus
+Pandas eine Eingabefunktion zu erstellen.
+
+45
+00:04:10,597 --> 00:04:15,594
+Sie heißt
+tf.estimators.inputs.pandas_input_fn.
+
+46
+00:04:15,594 --> 00:04:20,702
+Mit der Funktion können
+wir hier die Features als x
+
+47
+00:04:20,702 --> 00:04:24,920
+und hier die
+Ziellabels als y angeben.
+
+48
+00:04:24,920 --> 00:04:28,750
+Sie nimmt auch alle Standardeinstellungen
+für ein Trainingsdataset vor,
+
+49
+00:04:28,750 --> 00:04:32,497
+die Batchgröße, die Anzahl
+der Epochen und auch das Mischen
+
+50
+00:04:32,497 --> 00:04:35,693
+mit der "queue_capacity" hier,
+die einfach der Zwischenspeicher
+
+51
+00:04:35,693 --> 00:04:38,380
+der Zufallswarteschlange ist.
+
+52
+00:04:38,380 --> 00:04:41,470
+Starten wir es einmal.
+
+53
+00:04:41,470 --> 00:04:44,560
+Als Nächstes erstellen
+wir unsere Featurespalten.
+
+54
+00:04:44,560 --> 00:04:46,580
+Alle sind numerische Spalten.
+
+55
+00:04:46,580 --> 00:04:48,455
+Wir rufen also
+
+56
+00:04:48,455 --> 00:04:51,170
+für jede
+tf.feature_column.numeric_column auf.
+
+57
+00:04:51,170 --> 00:04:54,850
+Die Featurespaltenliste teilt
+dem Modell mit, wie die Daten in den
+
+58
+00:04:54,850 --> 00:04:57,210
+Eingabevektor geschrieben werden.
+
+59
+00:05:00,069 --> 00:05:05,450
+Das Modell wird genau hier instanziiert.
+
+60
+00:05:05,450 --> 00:05:07,770
+Wir übergeben ihm hier
+die Featurespaltenliste
+
+61
+00:05:07,770 --> 00:05:13,990
+und ein Verzeichnis, in das alle
+Ausgabedaten geschrieben werden.
+
+62
+00:05:13,990 --> 00:05:15,480
+Wir trainieren das Modell
+
+63
+00:05:15,480 --> 00:05:19,830
+durch Aufruf der Funktion "train" und
+fügen die Funktion zur Dateneingabe ein.
+
+64
+00:05:19,830 --> 00:05:23,122
+Die Funktionen "train" und "input_fn".
+
+65
+00:05:25,359 --> 00:05:30,609
+Diese holt die Daten aus dem
+Pandas-Dataframe in unser Modell.
+
+66
+00:05:33,596 --> 00:05:36,760
+Das Modell läuft nun für zehn Schritte.
+
+67
+00:05:36,760 --> 00:05:40,220
+Die Trainingsprotokolle finden Sie hier.
+
+68
+00:05:40,220 --> 00:05:42,500
+Es ist fertig und damit trainiert.
+
+69
+00:05:42,500 --> 00:05:43,672
+Wie gut ist es?
+
+70
+00:05:43,672 --> 00:05:46,710
+Testen wir das mit
+unserem Validierungsdataset.
+
+71
+00:05:46,710 --> 00:05:51,251
+Dafür rufen wir
+"model.evaluate" hier auf.
+
+72
+00:05:51,251 --> 00:05:56,247
+Diesmal fügen wir
+die Dateneingabefunktion ein,
+
+73
+00:05:56,247 --> 00:06:01,800
+die die Daten aus dem Validierungs-
+Dataframe "df_valid" von Pandas holt.
+
+74
+00:06:01,800 --> 00:06:04,480
+Also fügen wir es hier ein.
+
+75
+00:06:07,756 --> 00:06:10,770
+Damit erhalten wir unsere Ergebnisse.
+
+76
+00:06:10,770 --> 00:06:17,428
+Der endgültige RMSE, der 
+Root-Mean-Square-Error, beträgt 10 $.
+
+77
+00:06:17,428 --> 00:06:20,740
+10 $ ist für einen
+Taxifahrpreis eine große Abweichung.
+
+78
+00:06:20,740 --> 00:06:23,800
+Und weit von der vorherigen
+Benchmark von 6 $ entfernt.
+
+79
+00:06:23,800 --> 00:06:29,790
+Das verbessern wir später. Jetzt haben
+wir erstmal einen funktionierenden Code.
+
+80
+00:06:29,790 --> 00:06:33,439
+Mal sehen, ob wir dieses Modell
+für Vorhersagen verwenden können.
+
+81
+00:06:38,591 --> 00:06:41,402
+Wenn wir das Modell
+erneut instanziieren, sucht es
+
+82
+00:06:41,402 --> 00:06:45,590
+nach einem Checkpoint im
+Modellverzeichnis und lädt von dort neu.
+
+83
+00:06:45,590 --> 00:06:49,780
+Da wir das Modell gerade trainiert
+haben, hat es jetzt einen Checkpoint
+
+84
+00:06:49,780 --> 00:06:53,259
+und ist bereit für Vorhersagen.
+
+85
+00:06:53,259 --> 00:06:58,980
+Wir instanziieren es hier und
+übergeben ihm dasselbe Ausgabeverzeichnis.
+
+86
+00:07:01,852 --> 00:07:09,300
+Die hier aufgerufene Vorhersagefunktion
+gibt einen Python-Generator zurück.
+
+87
+00:07:09,300 --> 00:07:14,214
+Wir rufen ihn in einer Schleife auf,
+um Preisvorhersagen zu bekommen.
+
+88
+00:07:14,214 --> 00:07:18,570
+Genau hier, und Sie sehen
+die Preisvorhersagen hier.
+
+89
+00:07:18,570 --> 00:07:22,690
+Vielleicht erklärt das,
+warum der RMSE so hoch war.
+
+90
+00:07:22,690 --> 00:07:26,550
+Das Modell sagt im Grunde
+für jede Fahrt den gleichen Betrag voraus.
+
+91
+00:07:26,550 --> 00:07:28,860
+Würde ein komplexeres Modell helfen?
+
+92
+00:07:28,860 --> 00:07:31,780
+Probieren wir es mit einem 
+neuronalen Deep-Learning-Netzwerk.
+
+93
+00:07:31,780 --> 00:07:35,680
+Wir lassen alles so wie es ist,
+Featurespalten, Eingabefunktionen,
+
+94
+00:07:35,680 --> 00:07:40,400
+und haben das Modell von einem
+linearen Regressor zu einen DNN-Regressor
+
+95
+00:07:40,400 --> 00:07:42,940
+mit drei versteckten Schichten geändert.
+
+96
+00:07:45,930 --> 00:07:48,230
+Machen wir das so.
+
+97
+00:07:48,230 --> 00:07:51,226
+Wir instanziieren hier den
+DNN-Regressor und konfigurieren hier
+
+98
+00:07:51,226 --> 00:07:53,822
+die versteckten Schichten.
+
+99
+00:07:53,822 --> 00:07:57,779
+Also 32 Knoten in der ersten, 8 Knoten
+in der zweiten, 2 Knoten in der letzten.
+
+100
+00:08:00,022 --> 00:08:01,740
+Trainieren wir es.
+
+101
+00:08:01,740 --> 00:08:04,248
+Das Training erfolgt
+wieder für zehn Epochen.
+
+102
+00:08:05,948 --> 00:08:14,374
+Am Ende rufen wir
+die Funktion model.predict
+
+103
+00:08:14,374 --> 00:08:18,869
+über den Helfer print_rmse auf.
+
+104
+00:08:25,165 --> 00:08:28,180
+Das Training läuft und läuft.
+
+105
+00:08:32,106 --> 00:08:35,679
+Jetzt kommt die Validierung.
+
+106
+00:08:35,679 --> 00:08:41,196
+Und der RMSE des
+Validierungsdataset ist jetzt 11 $.
+
+107
+00:08:41,196 --> 00:08:44,020
+Das ist immer noch schlecht.
+
+108
+00:08:44,020 --> 00:08:47,010
+Keines der beiden Modelle
+übertrifft unser Benchmark-Modell.
+
+109
+00:08:47,010 --> 00:08:47,720
+Wieso?
+
+110
+00:08:47,720 --> 00:08:51,727
+Wir verwenden zwar
+TensorFlow für maschinelles Lernen,
+
+111
+00:08:51,727 --> 00:08:53,583
+wir nutzen es
+aber noch nicht gut genug.
+
+112
+00:08:53,583 --> 00:08:56,980
+Darum geht es im Rest dieses Kurses.
+
+113
+00:08:56,980 --> 00:09:00,800
+Wenn wir aber zwischen den
+beiden Modellen wählen müssten,
+
+114
+00:09:00,800 --> 00:09:05,150
+würden wir das mit dem
+geringsten Validierungsfehler wählen.
+
+115
+00:09:05,150 --> 00:09:10,650
+Letztlich würden wir den RMSE der
+Testdaten am gewählten Modell messen.
+
+116
+00:09:10,650 --> 00:09:14,100
+Der finale RMSE kann als
+objektive Leistung des besten Modells
+
+117
+00:09:14,100 --> 00:09:16,010
+veröffentlicht werden.
+
+118
+00:09:16,010 --> 00:09:20,780
+Das ist das Standardverfahren der
+Data Science: Training, Validierung
+
+119
+00:09:20,780 --> 00:09:23,820
+und Test mit jeweils separatem Dataset.
+
+120
+00:09:23,820 --> 00:09:27,101
+Versuchen wir es mit
+unserem Benchmark-Dataset.
+
+121
+00:09:27,101 --> 00:09:35,478
+Der RMSE für das
+Benchmark-Dataset beträgt 9,41.
+
+122
+00:09:57,647 --> 00:10:03,774
+Und jetzt ist der RMSE des
+Benchmark-Datasets 10,50 $.
+
+123
+00:10:03,774 --> 00:10:09,074
+Dies ist nicht nur viel mehr als unser
+ursprünglicher Benchmarkwert von 6 $.
+
+124
+00:10:09,074 --> 00:10:14,644
+Er trifft nicht einmal annähernd
+den entfernungsbasierten RMSE von 8 $.
+
+125
+00:10:14,644 --> 00:10:18,550
+Sie haben aber nun gelernt,
+ein TensorFlow-Modell zu schreiben.
+
+126
+00:10:18,550 --> 00:10:23,350
+Es fehlen nur noch einige die Dinge,
+um Ihr Modell zu verbessern und
+
+127
+00:10:23,350 --> 00:10:24,790
+es leistungsstark zu machen.
+
+128
+00:10:24,790 --> 00:10:27,690
+Damit beschäftigen wir 
+uns in den nächsten Kapiteln.
+
+129
+00:10:27,690 --> 00:10:30,665
+In diesem Kapitel bereiten wir
+das TensorFlow-Modell jedoch
+
+130
+00:10:30,665 --> 00:10:32,325
+auf diese Verbesserungen vor.

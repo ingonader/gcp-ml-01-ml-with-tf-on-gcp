@@ -1,0 +1,26 @@
+Além dos erros de formato que
+observamos nas lições anteriores, outro erro comum que você encontrará ao desenvolver os programas do TensorFlow
+são os erros de tipo de dados. A mensagem de erro aqui diz que você tem um tensor com valores armazenados como
+matrizes de número inteiro, mas você está passando-o para um método que espera que o tensor tenha
+valores de ponto flutuante. Onde algo assim pode acontecer? Talvez você olhe para o rastreamento
+da chamada, e a linha de código que é identificada
+seja a linha de soma aqui, s = (a + b). Talvez a seja uma matriz de pontos
+flutuantes e b uma matriz de inteiros. Você está pensando que pode adicionar um
+número de ponto flutuante a um inteiro, não há problema, isso será automático, o resultado é um número
+de ponto flutuante. Mas nem Python nem C++ permitem sair da matriz de ponto flutuante
+para uma de inteiros. Há muitas otimizações
+de armazenamento envolvidas, e se você tem uma matriz
+de números inteiros, os dados podem ser
+armazenados em um dispositivo ou em parte da memória em que não podemos
+fazer aritmética de ponto flutuante. Você precisa corrigir isso. Você arredondará os valores de ponto
+flutuante para números inteiros? Então, será que você cometeu um erro e a matriz de ponto flutuante realmente
+deveria ser de números inteiros? Ou você quer transmitir os números
+inteiros para valores de ponto flutuante e fazer a soma, sabendo que o resultado
+agora é uma matriz de ponto flutuante? Como há várias opções possíveis, o TensorFlow pede para
+você ser mais claro. Uma maneira de corrigir o problema é pegar
+a matriz de números inteiros b e dizer que agora queremos que ela seja um
+tensor de valores de ponto flutuante. Essa chamada para tf.cast será inserida
+no gráfico de computação, e as otimizações etc.
+levarão isso em consideração ao decidir onde armazenar b
+e como mover b. Aqui adicionamos a operação
+tf.cast no método para corrigir.

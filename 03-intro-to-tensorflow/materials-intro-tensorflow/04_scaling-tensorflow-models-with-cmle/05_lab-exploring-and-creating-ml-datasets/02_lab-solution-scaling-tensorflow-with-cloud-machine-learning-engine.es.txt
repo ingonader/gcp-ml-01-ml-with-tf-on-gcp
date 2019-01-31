@@ -1,0 +1,156 @@
+Inicié sesión
+en Qwiklabs, comencé el lab y ahora tengo un nombre
+de usuario y una contraseña con los que accedí a GCP Console. Inicié Datalab y lo tengo en ejecución. Lo primero que haré será clonar
+el repositorio que contiene los notebooks. Una forma sencilla
+de hacerlo es usar este icono de git. Otra forma es simplemente crear
+un notebook nuevo y usar la función bash. Básicamente, aquí puedo poner
+bash y hacer una clonación git de…. Estoy realizando una clonación git
+del repositorio training-data-analyst que contiene el notebook
+que usaremos en el lab. Aquí podemos ver
+que apareció training-data-analyst. Entramos en training-data-analyst. Vamos a la carpeta
+que contiene el notebook. Abrimos deepdive y vamos al tercer curso. Ahí está Cloud ML Engine. Aquí tenemos Cloud ML Engine
+y lo que haremos en este lab es escalar nuestro modelo de TensorFlow. El mismo modelo que teníamos,
+pero convertido en un módulo de Python y lo ejecutaremos en ML Engine. Lo primero que hay que hacer,
+ya que lo ejecutaremos en la nube es especificar
+el proyecto que se compilará. Qwiklabs nos asignó
+un ID de proyecto, como este. Usaremos ese ID de proyecto
+para identificar al que se compilará. Y el depósito… ¿Qué es un depósito? Tenemos que crear uno. Para ello, podemos ir a GCP Console. Navegamos a Storage, Browser. Revisamos si ya hay un depósito.
+Si no hay uno, lo crearemos. Los nombres tienen que ser únicos.
+¿Cómo conseguimos un depósito único? Una forma es usar un nombre
+de depósito igual al nombre del proyecto. Salvo que tengamos muy mala suerte,
+no debería haber depósitos con ese nombre. Crearé un depósito con ese nombre. Puede ser multirregional. Cuando creo el depósito,
+comienza a existir. El depósito tiene el mismo nombre
+que el proyecto, lo que es conveniente. En el espacio que requiere el depósito,
+especificaré su nombre y región. La región es muy importante. Es donde enviará su trabajo de ML Engine. Si tiene un depósito de una sola región le conviene que el procesamiento
+se realice en la misma región. Nuestro depósito es multirregional,
+así que esto no importa mucho. Podemos usar cualquier región
+que queramos para el procesamiento así que lo dejaré en us-central. Esa es la misma región
+en la que inicié Datalab pero no es necesario que la instancia
+de Datalab y los trabajos de ML Engine se ejecuten en la misma región.
+Puede usar regiones diferentes. El punto es que cuando enviemos un trabajo todas las máquinas que se creen
+para ejecutarlo estarán en us-central1. Puedo guardar
+el notebook para no perderlo. Aquí está mi proyecto
+y una forma de verlo es hacer clic en Run. Desde ahora, usaré Mayúsculas + Intro
+para ejecutarlo, también funciona. Esto crea el depósito, la región
+y las variables del proyecto en Python. La siguiente celda establece
+las mismas variables, pero en bash. Usamos os.environ, el comando de Python
+que establece una variable de bash. A estas alturas, en cualquier lugar
+del notebook donde usemos $PROJECT o $BUCKET, obtendremos la variable
+correcta en la secuencia de comandos bash. Y eso es lo que estamos usando,
+podemos decir que gcloud puede fingir y establecer el proyecto
+como este proyecto que se envió establecer que la región
+de procesamiento sea la que establecimos. Ahora actualizó el proyecto
+básico y la región de procesamiento. Cloud ML Engine en realidad
+se ejecuta en un proyecto oculto y queremos proporcionarle acceso
+a todos nuestros archivos de datos. ML Engine no somos nosotros,
+es una cuenta robot automatizada. Es una cuenta de servicio
+a la que debemos darle acceso para que lea archivos de nuestro depósito. Para eso hacemos esto. Básicamente, dice
+que le proporcionemos acceso a ML Engine para acceder a los
+archivos existentes en nuestro depósito y a los archivos nuevos que se crearán. También necesitará acceso
+de escritura, ya que también almacenaremos puntos de control
+y resultados del modelo en ese depósito. Eso haremos. Lo recomendable es poner
+solo los datos esenciales en el depósito para que ML Engine tenga acceso y los lea. No es conveniente crear
+un solo depósito para todos sus datos. Le conviene crear depósitos
+específicos para el aprendizaje automático y conservar allí
+solo los archivos necesarios. Es más seguro de esa manera. Eso es lo que haremos. Y le daremos a ML Engine acceso
+de lectura y escritura en este depósito. Después de eso,
+lo que ocurre es que se autoriza a la cuenta de servicio de ML Engine que es básicamente service-
+seguido del ID del proyecto que puede encontrar en GCP Console. Si va a Home, verá un ID de proyecto y el número del proyecto,
+que es el mismo número. No es necesario que sepa esto. Podemos
+obtenerlo con una secuencia de comandos. Para ello, revisaremos
+la respuesta serviceAccount con una llamada JSON sencilla. Después de eso, lo que tenemos
+que hacer es tomar nuestro código… En los primeros labs
+el código estaba en un notebook. Estaba ahí porque estábamos
+experimentando y compilando. Pero ahora queremos ejecutarlo a escala. Siempre que vayamos
+a enviar código para ejecutar ese código estará en un paquete de Python. Eso es lo que haremos ahora. Crearemos un paquete de Python que denominaré taxifare
+y que contiene todos estos archivos. Puede verlos en Datalab. Solo tiene que ir
+a Datalab y revisar taxifare. En esa carpeta encontrará
+otra denominada trainer que contiene los dos archivos mencionados
+en las diapositivas: task.py y model.py. Task.py contiene lo principal y básicamente realiza todo el
+análisis de la línea de comandos y busca rutas de datos de entrenamiento,
+tamaños de lote de entrenamiento, etc. que provienen de la línea de comandos
+y model.py contiene lo básico del modelo. Esto es lo que crea el regresor adecuado tiene las funciones de entrada
+para leer los datos, entre otras cosas. Ahora tenemos nuestro
+paquete y el paquete en Python es como una estructura de carpetas
+que tiene los archivos que necesitamos. Si miramos model.py encontraremos básicamente todo el código
+que estaba en los notebooks de Datalab y que ahora
+ponemos en un paquete de Python. A menudo nos preguntan cómo convertir
+el código de Python en un paquete. Hay una forma sencilla de hacerlo…
+Busquemos algo que tenga Python. Digamos que este es el código
+que queremos escribir en un archivo. Una forma sencilla es usar
+el comando de Jupyter writefile. Puedo escribir writefile tensorboard.py y luego ejecutarlo, todo el
+código se escribirá en tensorboard.py. Esa es una forma sencilla de tomar
+el código de un notebook de Python y exportarlo a un archivo
+de Python independiente, un paquete. Writefile también
+tiene la opción de adjuntar así que, si lo desea, puede
+agregar líneas extra a python.py. Quitaré esto, ya que queremos ejecutarlo pero para mostrarle
+que sí se escribió tensorboard.py podemos volver al directorio. En 03_tensorflow,
+debería ver tensorboard.py. Este archivo se generó
+cuando escribí %writefile. Así que regresemos donde estábamos. Ya creamos un paquete de Python y podemos asegurarnos
+de tener nuestros archivos de datos. Aquí está el archivo de datos…
+En Datalab, todo se asigna a /content. Se encuentra en ese directorio. Imprimimos una línea
+del archivo de entrada de entrenamiento y una línea del archivo
+de entrada de validación. Ahora tengo un paquete de Python
+y siempre es buena idea ejecutarlo. La ejecución no tiene
+nada que ver con ML Engine. Tiene un paquete
+de Python y quiere ejecutarlo. Para ello, tiene que escribir
+python-m y pasar el módulo. El nombre del módulo es task,
+que está en el paquete trainer pero para hacer eso tenemos
+que decirle a Python dónde encontrarlo. Para ello, definimos PYTHONPATH como directorio actual/taxifare. Ahí es donde estaba trainer. Especifico PYTHONPATH y ejecuto el programa
+de Python con taxi-train y taxi-valid. Así revisamos que estas rutas
+de la línea de comandos funcionen bien. Especificamos un directorio de salida y una cantidad reducida
+de pasos de entrenamiento. Podría especificar
+solo diez pasos si quisiera. Para ejecutarlo, uso Mayúsculas + Intro. Ahora, el módulo
+de Python se está ejecutando y sabemos que funciona. Si funcionó, podemos
+revisar que se generó un resultado. Se ejecuta todo y observa que el modelo
+guardado se escribió, eso es algo clave. Queremos asegurarnos
+de que se llevó a cabo el entrenamiento y tenemos un modelo guardado. Para ello, revisamos export/exporter
+y nos fijamos si hay un modelo guardado. Existe en ese directorio
+y algo que podemos hacer es intentar revisar que todo funcione. Todavía no trabajé
+con ML Engine. Sigo en en Datalab. Estoy revisando
+que funcione el módulo de Python que tengo un JSON probado. Observe que estoy usando writefile
+y escribí esta línea como test.json. Luego, uso el comando gcloud
+con el directorio local que se exportará y paso test.json para revisar si funcionan
+la exportación y la predicción funcionan. Reviso que toda esta secuencia funcione
+como módulo de Python de ejecución local. La predicción no será muy precisa,
+porque entrené solo durante 10 pasos pero sabemos que todo el código funciona,
+que entrenamos el modelo, lo exportamos y podemos pasar una
+entrada JSON y generar predicciones. Ahora también podemos entrenar
+en forma local con Cloud ML Engine. Es igual que usar python-m. La diferencia es
+que especificamos el nombre del módulo y la ruta del paquete de forma diferente y no tenemos que especificar una ruta
+de Python porque ML Engine sabe hacerlo. Podemos especificar todos los parámetros que acepta nuestro modelo. Después de eso, sin importar
+cómo lo haga, ya sea que use gcloud o python-m, puede ejecutar
+TensorBoard para visualizar el modelo. Iniciaré TensorBoard. Debería estar aquí. Queremos pasarle el directorio actual. En realidad, eso no hace falta.
+Hagamos lo siguiente… Lo iniciamos… Ahora, TensorBoard se inició y podemos hacer clic
+ahí para acceder a TensorBoard. Y aunque ejecutamos por solo 10 pasos,
+esto nos muestra cómo varía la pérdida. Esto será útil
+cuando lo ejecutemos en ML Engine. También podremos dirigirlo
+a un directorio de Google Cloud Storage y ver cómo varía la función
+de pérdida durante el entrenamiento. Vamos a ir aquí y detenerlo. Esto fue solo para demostrar
+que puede usarse de forma local. Se detuvo en 4122. Ahora, ejecutémoslo en la nube. Para ejecutar el modelo en la nube es fundamental que los datos
+también estén en la nube. Lo que haré ahora será copiar los archivos de entrada a la nube. Voy a copiar los archivos CSV a la nube. Después de copiar todos los archivos puedo enviar el trabajo
+de entrenamiento a ML Engine. En este momento, estoy enviando
+el trabajo de entrenamiento a ML Engine para que realice muchos más pasos
+con todas estas entradas. Me dice que el trabajo está en cola. Podemos regresar a GCP Console y desplazarnos hasta ML Engine. Aquí está. Si consulta la lista de trabajos, verá
+el que acabamos de poner en marcha. Mientras el trabajo
+se ejecuta puede revisar los registros y ver lo que produce
+el trabajo mientras se ejecuta. Al final, podrá implementar este modelo. Y podrá usarlo para predecir de la
+misma forma que lo hicimos localmente pero ahora es un
+modelo completamente entrenado. Se entrenó con varios pasos y está listo. Después de implementarlo,
+podemos tratar de predecir no solo desde Cloud ML Engine,
+sino como lo haría un programa cliente. En ese caso, crearíamos una entrada JSON
+desde algún tipo de programa de Python y usaríamos la API de Python
+para llamar a la función de predicción y obtener una respuesta. Por ahora, no tenemos un modelo muy bueno. Lo único que hicimos fue pasarle
+los datos sin procesar al modelo. Falta lo que veremos
+en el siguiente curso ingeniería de funciones,
+que mejorará nuestro modelo. Y solo para mostrarle
+cómo sería su rendimiento podríamos entrenar
+con un conjunto de datos mayor. Pero no serviría de mucho,
+porque el modelo no es muy bueno. Aún no agregamos
+la información de origen humano. También puede entrenar
+en la nube en un conjunto de datos mayor. Es lo mismo que hicimos antes,
+así que omitiré esas actividades. Pero si tiene tiempo
+y quiere ponerse un desafío modifique su solución
+al ejercicio de desafío anterior. Le recomiendo que pruebe
+los ejercicios de desafío y los comente en los foros
+de Coursera. Muchas gracias.

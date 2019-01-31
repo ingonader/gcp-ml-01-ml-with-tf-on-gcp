@@ -1,0 +1,105 @@
+Pourquoi utiliser
+une seule couche de perceptron ? Pourquoi ne pas envoyer la sortie
+sur une couche et l'entrée sur une autre ? Le perceptron multicouche semble
+être un modèle beaucoup plus performant. Mais, si vous n'utilisez pas de
+fonction d'activation non linéaire, toutes les couches peuvent être
+compressées en une seule linéaire, et n'apportent ainsi aucun avantage. Vous avez besoin de fonctions
+d'activation non linéaires. Ainsi, les fonctions d'activation sigmoïde
+et tangente hyperbolique, ou tanh, ont commencé à être utilisées
+pour les données non linéaires. À l'époque, on n'utilisait que celles-ci, car on avait besoin
+d'une fonction différentiable utilisée lors de la rétropropagation
+pour les poids du modèle. Les fonctions d'activation actuelles
+ne sont pas forcément différentiables. Et les gens ne savaient pas les utiliser. La contrainte d'utiliser des fonctions
+d'activation différentiables pouvait compliquer
+l'entraînement des réseaux. L'efficacité de ces modèles était
+aussi limitée par le volume de données, les ressources de calcul disponibles
+et d'autres problèmes d'entraînement. Par exemple, l'optimisation est souvent
+obtenue au niveau des points-selles, plutôt qu'en trouvant
+le minimum global espéré durant la descente de gradient. Mais, avec le développement de la fonction
+d'unité de rectification linéaire ou ReLu, l'entraînement était
+huit à dix fois plus rapide, et la convergence garantie
+pour la régression logistique. Tout comme le cerveau,
+le développement du perceptron a permis de connecter plusieurs couches pour créer des réseaux de
+neurones à propagation avant. Les composants sont presque identiques
+à ceux du perceptron monocouche. Il y a toujours des entrées,
+des sommes pondérées, des fonctions d'activation et des sorties. En revanche, les entrées des neurones
+qui ne sont pas dans la couche d'entrée ne sont pas les entrées brutes,
+mais les sorties de la couche précédente. L'autre différence est que le mode de
+connexion des neurones entre les couches n'est plus un vecteur, mais une matrice, en raison de la connectivité totale
+de tous les neurones entre les couches. Par exemple, dans ce schéma, la matrice de poids
+de la couche d'entrée est de 4 par 2, et celle de la couche
+cachée est de 2 par 1. Nous verrons plus tard que
+les réseaux de neurones n'offrent pas toujours
+une connectivité totale, ce qui est utile dans certaines
+applications, comme les images. Il y a d'autres fonctions d'activation
+que la fonction échelon-unité, comme les fonctions sigmoïde et
+tangente hyperbolique, ou tanh. Chaque neurone qui n'est pas en entrée regroupe 3 étapes dans une seule unité. La première est la somme pondérée. La deuxième est la fonction d'activation. La troisième est la sortie
+de la fonction d'activation. Un réseau de neurones peut être complexe
+en raison du nombre de couches, de neurones, de fonctions d'activation
+et de façons de les entraîner possible. Pendant ce cours, on utilisera
+l'outil intuitif TensorFlow Playground pour découvrir le flux des informations
+dans un réseau de neurones. Cet outil ludique vous permet de
+personnaliser plus d'hyperparamètres, et de visualiser la magnitude des poids ainsi que l'évolution de
+la fonction de perte au fil du temps. Voici la fonction d'activation linéaire. Il s'agit d'une fonction identité,
+car la fonction de x est égale à x. C'est la fonction d'activation d'origine. Comme je l'ai déjà indiqué, même avec un réseau de milliers de couches utilisant toutes une fonction
+d'activation linéaire, la sortie sera juste une combinaison
+linéaire des attributs d'entrée. Cela peut être réduit en multipliant
+les attributs par une constante. Ça vous rappelle quelque chose ? Il s'agit d'une régression linéaire. Des fonctions d'activation non linéaires
+sont donc nécessaires pour une chaîne complexe de fonctions qui permet aux réseaux de neurones
+de comprendre la distribution des données. Outre la fonction d'activation linéaire, où f de x est égal à x, les principales fonctions d'activation
+utilisées au premier âge d'or des réseaux de neurones étaient
+les fonctions sigmoïde et tanh. La fonction sigmoïde est une version
+lisse de la fonction échelon-unité, avec une asymptote
+égale à 0 en moins l'infini, et une asymptote
+égale à 1 en plus l'infini, mais avec des valeurs
+intermédiaires entre les deux. La tangente hyperbolique ou tanh était une autre fonction
+d'activation très utilisée. Elle correspond à une fonction sigmoïde évoluée et décalée avec une plage
+moins l'infini égale à 1. Ces fonctions étaient idéales, car elles étaient différentiables partout,
+monotones et lisses. Cependant, des problèmes
+de saturation survenaient si le nombre de valeurs d'entrée
+était trop faible ou trop élevé, et créaient des plateaux asymptotiques. Comme la courbe est
+quasiment plate à ces points, les dérivées sont proches de 0. L'apprentissage des poids
+était donc très lent, ou s'arrêtait même, comme les gradients
+étaient tous très proches de 0, générant de faibles pas d'apprentissage
+en bas pendant la descente de gradient. Les fonctions linéaires sont
+différentiables, monotones et lisses. Mais, comme déjà expliqué, une combinaison de fonctions linéaires
+peut réduire le nombre de neurones à un. Cela ne nous permet pas de créer
+la chaîne complexe de fonctions nécessaire pour décrire nos données. Il existait des itérations
+de fonctions linéaires, mais non différentiables partout. Elles n'ont donc commencé
+à être utilisées que bien plus tard. La fonction d'unité de rectification
+linéaire est désormais très utilisée. Elle est non linéaire et offre donc
+la modélisation complexe nécessaire. Elle évite toute saturation dans la plage
+non négative de l'espace d'entrée. Mais, comme les valeurs négatives
+se traduisent par une activation nulle, les couches ReLu peuvent disparaître
+ou ne plus s'activer, ce qui entraîne le ralentissement
+ou l'arrêt de l'entraînement. Plusieurs solutions permettent
+de résoudre ce problème, comme l'utilisation de la fonction
+d'unité exponentielle linéaire ou ELU. Elle est à peu près linéaire sur la plage
+non négative de l'espace d'entrée. Elle est lisse, monotone, et surtout non égale à 0
+sur la zone négative de l'espace d'entrée. L'inconvénient majeur de cette fonction
+est qu'elle est plus coûteuse en calcul que la fonction ReLu
+de par sa nature exponentielle. Ces fonctions seront détaillées
+dans le prochain module. Si je veux que mes résultats
+soient des probabilités, quelle fonction d'activation dois-je
+utiliser dans la dernière couche ? La bonne réponse est
+une fonction d'activation sigmoïde. En effet, les limites de
+cette fonction vont de 0 à 1, et correspondent
+aux limites de probabilité. Au-delà de ses limites, cette fonction est la fonction
+de distribution cumulative de la répartition logistique
+des probabilités dont la fonction quantile est l'inverse
+de la logique modélisant les prédictions. Elle peut donc être utilisée
+comme une probabilité de confiance. Ces raisons seront détaillées
+plus tard dans la spécialisation. Bien qu'étant aussi de type "écrasement",
+la fonction tanh n'est pas adaptée, car ses limites vont de -1 à 1, et sont différentes
+de celles de la probabilité. De plus, écraser la fonction tanh
+en fonction sigmoïde ne va pas la transformer
+par magie en probabilité, car elle n'a pas les propriétés,
+comme déjà indiqué, permettant d'interpréter
+les résultats en probabilité. Pour la convertir
+en fonction sigmoïde, vous devez d'abord ajouter 1, puis diviser
+par 2 pour obtenir les bonnes limites. De plus, pour obtenir le bon écart, vous devez diviser l'argument tanh par 2. Comme vous avez déjà
+calculé la fonction tanh, vous devez refaire certaines tâches, et vous auriez pu utiliser
+une fonction sigmoïde au début. La fonction ReLu est inadaptée,
+car ses limites vont de 0 à plus l'infini, ce qui est très éloigné
+de la représentation de probabilité. La fonction ELU est aussi inadaptée, car
+ses limites vont de moins à plus l'infini.
