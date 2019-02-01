@@ -11,7 +11,7 @@
 # <br/>
 # The Pandas function in the previous notebook first read the whole data into memory -- on a large dataset, this won't be an option.
 
-# In[25]:
+# In[2]:
 
 
 import datalab.bigquery as bq
@@ -25,7 +25,7 @@ print(tf.__version__)
 # 
 # Read data created in Lab1a, but this time make it more general, so that we can later handle large datasets. We use the Dataset API for this. It ensures that, as data gets delivered to the model in mini-batches, it is loaded from disk only when needed.
 
-# In[26]:
+# In[6]:
 
 
 CSV_COLUMNS = ['fare_amount', 'pickuplon','pickuplat','dropofflon','dropofflat','passengers', 'key']
@@ -39,7 +39,7 @@ def read_dataset(filename, mode, batch_size = 512):
         features = dict(zip(CSV_COLUMNS, columns))
         label = features.pop('fare_amount')
         return features, label
-
+      
     ## read list of file names:
     filenames_dataset = tf.data.Dataset.list_files(filename, shuffle = False)
     ## read lines from this dataset:
@@ -52,23 +52,22 @@ def read_dataset(filename, mode, batch_size = 512):
     # Note:
     # use tf.data.Dataset.flat_map to apply one to many transformations (here: filename -> text lines)
     # use tf.data.Dataset.map      to apply one to one  transformations (here: text line -> feature list)
-    
+
     if mode == tf.estimator.ModeKeys.TRAIN:
         num_epochs = None ## loop indefinitely
         dataset = dataset.shuffle(buffer_size = 10 * batch_size, seed = 2) ## and shuffle for training
     else:
         num_epochs = 1 ## only loop once through dataset
-        
+    
     ## repeat data set as needed (training) and form batches of data:
     dataset = dataset.repeat(num_epochs).batch(batch_size)
     return dataset
-
-     
+  
 def get_train_input_fn():
-    return read_dataset('./taxi-train.csv', mode = tf.estimator.ModeKeys.TRAIN)
+  return read_dataset('./taxi-train.csv', mode = tf.estimator.ModeKeys.TRAIN)
 
 def get_valid_input_fn():
-    return read_dataset('./taxi-valid.csv', mode = tf.estimator.ModeKeys.EVAL)
+  return read_dataset('./taxi-valid.csv', mode = tf.estimator.ModeKeys.EVAL)
 
 
 # <h2> 2. Refactor the way features are created. </h2>
@@ -130,8 +129,14 @@ print('RMSE on dataset = {}'.format(np.sqrt(metrics['average_loss'])))
 # 
 # Now modify the "noise" so that instead of just rounding off the value, there is up to a 10% error (uniformly distributed) in the measurement followed by rounding off.
 
-# In[20]:
+# In[1]:
 
+
+import datalab.bigquery as bq
+import tensorflow as tf
+import numpy as np
+import shutil
+print(tf.__version__)
 
 import math
 import pandas as pd
@@ -155,75 +160,125 @@ dat_test = gen_data(1000)
 dat.head(n = 2)
 
 
-# In[21]:
+# In[2]:
 
 
-FEATURES = ['h', 'r']
-LABEL = 'v'
+## write data to file:
+dat.to_csv('dat-cyl-train.csv', header = False, index = False)
+dat_eval.to_csv('dat-cyl-eval.csv', header = False, index = False)
+dat_test.to_csv('dat-cyl-test.csv', header = False, index = False)
 
-featcols = [
-  tf.feature_column.numeric_column("h"),
-  tf.feature_column.numeric_column("r")
+
+# In[3]:
+
+
+get_ipython().system('ls -l dat-cyl*.csv')
+
+
+# In[4]:
+
+
+get_ipython().system('head -n 5 dat-cyl-train.csv')
+
+
+# In[12]:
+
+
+CSV_COLUMNS = ['h', 'r', 'v']
+DEFAULTS = [[0.0], [0.0], [0.0]]
+LABEL_COLUMN = 'v'
+
+## create a function to read the dataset from disk:
+def read_dataset(filename, mode, batch_size = 512):
+  ## Add CSV decoder function: 
+  def decode_csv(row):
+    columns = tf.decode_csv(row, record_defaults = DEFAULTS)
+    features = dict(zip(CSV_COLUMNS, columns))
+    label = features.pop(LABEL_COLUMN)
+    return features, label
+  
+  ## create dataset:
+  ## read list of file names:
+  filenames_dataset = tf.data.Dataset.list_files(filename, shuffle = False)
+  ## read lines from this dataset list:
+  textlines_dataset = filenames_dataset.flat_map(
+    tf.data.TextLineDataset   ## function that returns individual text lines of the file
+  )
+  ## then, decode each line:
+  dataset = textlines_dataset.map(decode_csv)
+
+  # Note:
+  # use tf.data.Dataset.flat_map to apply one to many transformations (here: filename -> text lines)
+  # use tf.data.Dataset.map      to apply one to one  transformations (here: text line -> feature list)
+
+  if mode == tf.estimator.ModeKeys.TRAIN:
+    num_epochs = None ## loop indefinitely
+    dataset = dataset.shuffle(buffer_size = 10 * batch_size, seed = 2) ## and shuffle for training
+  else:
+    num_epochs = 1 ## only loop once through dataset
+    
+  ## repeat data set as needed (training) and form batches of data:
+  dataset = dataset.repeat(num_epochs).batch(batch_size)
+  return dataset
+
+## define function that gets training input, using the read_dataset function above:
+
+def get_train_input_fn():
+  return read_dataset('./dat-cyl-train.csv', mode = tf.estimator.ModeKeys.TRAIN)
+
+def get_valid_input_fn():
+  return read_dataset('./dat-cyl-eval.csv', mode = tf.estimator.ModeKeys.EVAL)
+
+
+# In[13]:
+
+
+## create features:
+INPUT_COLUMNS = [
+  tf.feature_column.numeric_column('h'),
+  tf.feature_column.numeric_column('r'),
 ]
 
-def make_train_input_fn(df, num_epochs):
-  return tf.estimator.inputs.pandas_input_fn(
-    x = df,
-    y = df[LABEL],
-    batch_size = 128,
-    num_epochs = num_epochs,
-    shuffle = True
-  )
+def add_more_features(feats):
+  # Nothing to add (yet!)
+  return feats
 
-def make_eval_input_fn(df):
-  return tf.estimator.inputs.pandas_input_fn(
-    x = df,
-    y = df[LABEL],
-    batch_size = 128,
-    shuffle = False
-  )
+## currently, don't apply any feature transformations:
+feature_cols = add_more_features(INPUT_COLUMNS)
 
-def make_prediction_input_fn(df):
-  return tf.estimator.inputs.pandas_input_fn(
-    x = df,
-    batch_size = 128,
-    shuffle = False
-  )
 
-tf.logging.set_verbosity(tf.logging.INFO)
-#tf.logging.set_verbosity(tf.logging.WARN)
+# In[19]:
 
+
+## (re-)set model output directory
 OUTDIR = 'cyl_trained'
 shutil.rmtree(OUTDIR, ignore_errors = True) # start fresh each time
 
-# TODO: Train a linear regression model
-#model = tf.estimator.LinearRegressor(featcols, OUTDIR) #ADD CODE HERE
-model = tf.estimator.DNNRegressor(feature_columns = featcols, hidden_units = [4, 8, 4], model_dir = OUTDIR) #ADD CODE HERE
-
-model.train(  #ADD CODE HERE
-  make_train_input_fn(dat, num_epochs = 10), 
-  max_steps = 100000
-)
+## create and train the model:
+model = tf.estimator.DNNRegressor(
+  feature_columns = feature_cols, 
+  hidden_units = [4, 8, 4], 
+  model_dir = OUTDIR)
+model.train(input_fn = get_train_input_fn, steps = 500)
 
 
-# In[22]:
+# In[20]:
 
 
 ## RMSE:
-def print_rmse(model, df):
-  metrics = model.evaluate(input_fn = make_eval_input_fn(df))
-  #print('RMSE on dataset = {}'.format(name, np.sqrt(metrics['average_loss'])))
-  print('RMSE on dataset = {}'.format(np.sqrt(metrics['average_loss'])))
-print_rmse(model, dat_eval)
+metrics = model.evaluate(input_fn = get_valid_input_fn, steps = None)
+print('RMSE on dataset = {}'.format(np.sqrt(metrics['average_loss'])))
 
 
 # In[23]:
 
 
-## predict some values and get correlation:
-pred_iter = model.predict(make_prediction_input_fn(dat_eval))
+## make prediction iterator:
+pred_iter = model.predict(get_valid_input_fn)
 dat_pred = pd.DataFrame(columns = ['v_true', 'v_pred'])
-for i in range(20):
+
+## predict a few values to get correlation:
+for i in range(1000):
   dat_pred = dat_pred.append({
     'v_true' : dat_eval['v'][i],
     'v_pred' : next(pred_iter)['predictions'][0]
