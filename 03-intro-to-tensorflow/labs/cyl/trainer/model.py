@@ -25,13 +25,13 @@ import shutil
 tf.logging.set_verbosity(tf.logging.INFO)
 
 # List the CSV columns
-CSV_COLUMNS = ['fare_amount', 'pickuplon','pickuplat','dropofflon','dropofflat','passengers', 'key']
+CSV_COLUMNS = ['h', 'r', 'v']
 
 #Choose which column is your label
-LABEL_COLUMN = 'fare_amount'
+LABEL_COLUMN = 'v'
 
 # Set the default values for each CSV column in case there is a missing value
-DEFAULTS = [[0.0], [-74.0], [40.0], [-74.0], [40.7], [1.0], ['nokey']]
+DEFAULTS = [[0.0], [0.0], [0.0]]
 
 # Create an input function that stores your data into a dataset
 # TODO: Add input function
@@ -67,11 +67,8 @@ def read_dataset(filename, mode, batch_size = 512):
 
 # Define your feature columns
 INPUT_COLUMNS = [
-    tf.feature_column.numeric_column('pickuplon'),
-    tf.feature_column.numeric_column('pickuplat'),
-    tf.feature_column.numeric_column('dropofflat'),
-    tf.feature_column.numeric_column('dropofflon'),
-    tf.feature_column.numeric_column('passengers'),
+  tf.feature_column.numeric_column('h'),
+  tf.feature_column.numeric_column('r'),
 ]
 
 # Create a function that will augment your feature set
