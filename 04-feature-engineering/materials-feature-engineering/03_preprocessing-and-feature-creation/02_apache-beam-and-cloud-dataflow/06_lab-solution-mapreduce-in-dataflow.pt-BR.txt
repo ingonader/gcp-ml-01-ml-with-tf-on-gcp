@@ -1,0 +1,49 @@
+Certo. Para começar este laboratório, verifique se o navegador está aberto
+no painel do Google Cloud Platform. Comece clicando em
+"Ativar o Google Cloud Shell". É essencial que você tenha o ambiente
+do Cloud Shell preparado com o código-fonte e os
+pacotes necessários para executá-lo. Se você concluiu recentemente
+o laboratório anterior, já deve ter o código
+e os pacotes instalados. No entanto, se você acha
+que está perdendo o diretório do analista de dados de
+treinamento no ambiente do Cloud Shell, pare aqui e conclua o laboratório anterior
+antes de avançar. Se o ambiente do Cloud Shell
+estiver configurado, você poderá usar o editor de código
+do Cloud Shell para abrir o código-fonte do canal do
+Apache Beam usado neste laboratório. Você pode encontrá-lo em
+training-data-analyst, courses, data analysis, lab2, diretório Python, no arquivo
+is_popular.py. Há mais código neste arquivo agora
+em comparação com o laboratório anterior. Então, em seguida, você verá
+o código com mais detalhes. Se rolar para baixo até
+o corpo do método principal, observe o argumento
+de entrada para o código. Como entrada, o canal usa
+os arquivos de código-fonte Java no diretório de ajuda do Java. Além disso, observe que a saída
+do canal será armazenada no diretório /tmp,
+sendo que os arquivos têm prefixo de saída por padrão, mas claro que
+é possível sobrescrever a configuração. Depois que os dados são lidos do
+Google Cloud Storage, a próxima etapa desse canal é verificar
+as linhas que começam com o termo-chave. Como você lembra do laboratório anterior, o termo-chave para esse canal
+é a palavra-chave "import". Em seguida, o canal processa os nomes
+dos pacotes importados. Observe que isso depende do método
+usado pelo pacote, que, por sua vez, busca pelos nomes dos pacotes na instrução de importação
+e extrai o nome do pacote em si, removendo a palavra-chave "import" e o caractere de ponto e vírgula
+de fechamento. Finalmente, quando o nome
+do pacote é encontrado, a função de separação do nome do pacote
+retorna os prefixos para cada nome. Por exemplo, para um pacote
+com.example.appname, a função retornará prefixos com,
+com.example, com.example.appname. Para cada um desses pacotes,
+o método retorna um par: o prefixo do pacote
+e um dígito 1 para cada ocorrência. As ocorrências são adicionadas usando a operação combined.perKey
+e a função de soma como argumento. Os cinco principais
+combinadores identificam os cinco principais pacotes
+importados com mais frequência. Em seguida, você pode executar
+o arquivo is_popular.py. Uma vez que o canal termina
+a execução, você pode olhar o diretório de saída e, se você listar
+o conteúdo do arquivo de saída, poderá ver os pacotes mais conhecidos,
+especificamente org, org.apache, org.apache.beam
+e org.apache.beam.sdk. Observe que, nesta implementação do canal, é possível modificar o destino da saída. Por exemplo, se você substituir os
+padrões para solicitar que o canal grave os resultados no diretório /tmp,
+sendo myoutput o prefixo, você pode executar o canal novamente
+e encontrará as novas instâncias da saída. As novas instâncias do arquivo de saída
+terão o prefixo myoutput. Tudo certo.
+Isso é tudo para este laboratório.

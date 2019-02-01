@@ -1,0 +1,43 @@
+Bien. Para comenzar con este lab asegúrense de que su navegador
+esté en el panel de control de GCP. Primero, hagan clic
+en Activate Google Cloud Shell. Es esencial que preparen
+su entorno de Cloud Shell con el código fuente y los paquetes
+que son necesarios para ejecutarlo. Si completaron 
+el lab anterior recientemente el código y los paquetes
+ya deberían estar instalados. Sin embargo, si no tienen
+el directorio training-data-analyst en su entorno de Cloud Shell deténganse aquí y completen
+el lab anterior antes de continuar. Si el entorno de Cloud Shell está listo pueden usar el editor de código
+de Cloud Shell para abrir el código fuente de la canalización de Apache Beam
+que usamos en este lab. Lo pueden encontrar en la ruta:
+training-data-analyst, courses data_analysis, lab2, python,
+en el archivo is_popular.py. Ahora, este archivo contiene
+más código que en el lab anterior. Ahora, verán el código en más detalle. Si bajan al cuerpo del método principal verán el argumento
+de entrada del código. Como entrada, la canalización toma
+los archivos de código fuente de Java del directorio /javahelp. Vean que la salida de la canalización
+se almacenará en el directorio /tmp donde los archivos llevarán
+un prefijo de salida predeterminado aunque podemos anular esa configuración. Una vez que se leen los datos
+desde Google Cloud Storage el siguiente paso es revisar las líneas
+que comienzan con el término clave. Como recordarán del lab anterior el término clave de esta canalización
+es la palabra "import". Luego, la canalización procesa
+los nombres de los paquetes importados. Fíjense en que esto depende
+del método packageUse, que, a su vez revisa los nombre de los paquetes
+en la instrucción de importación y extrae el nombre del paquete pero quita la palabra clave "import"
+y el punto y coma de cierre. Por último, cuando se encuentra
+el nombre del paquete la función splitPackageName muestra
+los prefijos de cada nombre de paquete. Por ejemplo, para un paquete
+llamado com.example.appname la función mostrará los prefijos com,
+com.example y com.example.appname. Para cada uno de esos paquetes el método muestra un par
+compuesto de un prefijo y un número entero por cada instancia. Las instancia se suman
+con la operación CombinePerKey y la función sum como argumento. El combinador Top_5
+identifica los 5 paquetes que se importan con más frecuencia. Luego, podemos ejecutar
+el archivo is_popular.py. Cuando termina
+de ejecutarse la canalización podemos revisar el directorio de salida
+y solicitar ver el contenido del archivo para ver los paquetes más populares:
+org, org.apache, org.apache.beam y org.apache.beam.sdk. Observen que,
+en esta implementación de la canalización podemos modificar el destino de la salida. Por ejemplo, si anulamos
+la configuración predeterminada para que la canalización
+escriba los resultados en el directorio /tmp,
+con el prefijo my_output podemos volver
+a ejecutarla la canalización y encontrar
+nuevas instancias de la salida. Las nuevas instancias de los archivos
+de salida tendrán el prefijo my_output. Con esto, terminamos el lab.

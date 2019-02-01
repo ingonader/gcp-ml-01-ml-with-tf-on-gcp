@@ -1,0 +1,38 @@
+Wir wollen uns jetzt
+die Analyse genauer ansehen. Dazu bedienen wir uns
+des Trainings-Datasets. Wir teilen nun Beam mit,
+welche Art von Daten es erwarten soll. Dafür richten wir ein Schema ein. In der ersten Zeile
+richte ich ein Wörterbuch mit dem Namen
+"raw_data_schema" ein. Ich füge Einträge
+für alle Stringspalten ein. Der String in diesem Fall
+ist der TensorFlow-Datatype. Dann aktualisiere ich das Schema, indem ich
+die tf.float 32-Spalten hinzufüge. So erhalte ich ein Rohdatenschema, in dessen Dataset
+alle Spalten enthalten sind. Das Dataset wird dann 
+auf Dataflow von Beam verarbeitet und mithilfe des Rohdatenschemas
+wird eine Metadatenvorlage erstellt. Wir führen nun das PTransform
+"analyze-and-transform" durch. Dadurch erhalten wir
+vorverarbeitete Trainingsdaten und die Funktion für Transformation. Zuerst führen wir "beam.io.read" aus,
+um die Trainingsdaten einzupflegen. Dies ähnelt den Beam-Pipelines,
+die wir aus dem Modul zu "Beam" kennen. Ich lese hier Daten aus BigQuery. Dann filtern wir die Daten heraus,
+die wir für das Training nicht brauchen. Ich nehme dafür die Funktion "is_valid", auf die ich später noch näher eingehe. Nun benötigen wir die Rohdaten 
+aus dem Filter- und Leseprozess und die Rohdaten-Metadaten
+von der vorherigen Folie. Die leiten wir jetzt weiter 
+an PTransform "analyze-and-transform". Beam führt diesen Befehl
+in mehreren Teilen aus. Alle Analysen werden bei 
+der Methode "pre-process" durchgeführt. Auch darauf gehen wir 
+später noch genauer ein. Die Methoden 
+"is_valid"- und "pre-process" werden jetzt von Beam 
+auf das Trainings-Dataset angewandt, um die Daten zu filtern
+und vorzuverarbeiten. Die vorverarbeiteten Daten
+kommen in Form einer PCollection zurück. Diese Parallelsammlung
+nenne ich "transformiertes Dataset". Die Transformationen, die Sie 
+bei der Vorverarbeitung durchgeführt haben, werden im zweiten
+Rückgabewert gespeichert, in "transform function".
+Das ist für uns wichtig. Die transformierten Daten
+lassen wir nun ausgeben. In diesem Fall als "TFRecords",
+das effizienteste Format für Tensorflow. Das gelingt mir durch 
+Verwenden der Rechte für TFRecord, die ich mit der 
+TensorFlow-Transformation erhalte. Die Dateien werden
+automatisch fragmentiert. Aber welches Schema wird genutzt? Nicht das für Rohdaten,
+sondern das für Transformationen. Warum ist das so? Weil wir natürlich Daten erhalten,
+die transformiert und vorverarbeitet sind, und nicht Rohdaten.

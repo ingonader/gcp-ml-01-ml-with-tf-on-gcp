@@ -1,0 +1,131 @@
+Na próxima parte da sessão, você aprenderá
+mais sobre o Google Cloud Dataflow, que é uma tecnologia complementar
+ao Apache Beam. E ambos podem ajudá-lo a criar e
+executar pré-processamento e engenharia de atributos. Então, em primeiro lugar,
+o que é o Cloud Dataflow? Uma das maneiras de pensar
+sobre o pré-processamento de atributos, ou até mesmo qualquer transformação
+de dados, é pensar em termos de canais. Quando digo canal, quero dizer uma sequência de etapas
+que mudam dados de um formato para outro. Suponha que você tenha dados em um
+armazenamento de dados, como o BigQuery. Então, você pode usar o BigQuery
+como uma entrada para seu canal. Faça uma sequência de etapas
+para transformar os dados, talvez introduza alguns novos atributos
+como parte da transformação. Por fim, salve o resultado em um álbum,
+como o Google Cloud Storage. O Cloud Dataflow é uma plataforma que permite executar esses tipos de canais
+de processamento de dados. Ele pode executar canais escritos em
+linguagens de programação Python e Java. O Dataflow define-se também
+como uma plataforma para transformações de dados, porque é uma
+oferta do Google, totalmente gerenciada e sem servidor, que executa canais
+de processamento de dados em escala. Como desenvolvedor, você não precisa se
+preocupar em gerenciar o tamanho do cluster que executa o canal. O Dataflow pode alterar a quantidade
+de atributos do computador, o número de servidores que executará o
+canal, e fazer isso de maneira elástica, dependendo da quantidade de dados
+que o canal precisa processar. A maneira como você grava o código para o Dataflow é usando uma biblioteca
+de código aberto chamada Apache Beam. Para implementar um canal de processamento
+de dados, você grava o código usando as APIs do Apache Beam e, em seguida,
+implanta o código no Cloud Dataflow. Algo que torna o Apache Beam fácil
+de usar é que o código escrito para o Beam é semelhante ao que as pessoas pensam
+sobre canais de processamento de dados. Dê uma olhada no canal no centro do slide. Esta amostra de código Python analisa
+o número de palavras em linhas de texto em documentos. Então, como uma entrada para o canal, você pode querer ler arquivos de texto
+do Google Cloud Storage. Aí, você transforma os dados, descobre o
+número de palavras em cada linha de texto. Explicarei em breve que esse tipo de
+transformação pode ser escalonado automaticamente pelo Dataflow,
+para ser executado em paralelo. Depois, no canal, agrupe as linhas pelo
+número de palavras, usando o agrupamento e outras operações de agregação. Você também pode filtrar valores. Por exemplo, para ignorar linhas
+com menos de dez palavras. Depois que as operações de transformação,
+agrupamento e filtragem são concluídas, o canal grava o resultado
+no Google Cloud Storage. Observe que essa implementação
+separa a definição do canal da execução dele. Todas etapas que você vê, antes de chamar
+o método p.run, estão apenas definindo o que o canal deveria fazer. O canal é executado apenas quando
+você chama esse método. Um ponto legal do Apache Beam é que ele
+é compatível com processamento de dados em lote e streaming,
+usando o mesmo código de canal. Na verdade, o nome da biblioteca, Beam,
+vem da contração de "batch" e "stream". Então por que você deveria se preocupar? Isso significa que, independente dos dados
+serem provenientes de uma fonte em lote, como o Google Cloud Storage, ou de uma
+fonte de dados de streaming, como o Pub/Sub, você pode reutilizar
+a mesma lógica de canal. Você também pode enviar dados para
+destinos em lote e em streaming. Você também pode alterar facilmente
+essas fontes de dados no canal, sem ter que alterar a lógica da
+implementação do canal. Veja como. Observe no código na tela que
+as operações de leitura e gravação são feitas usando
+os métodos beam.io. Esses métodos usam conectores diferentes. Por exemplo, o conector Pub/Sub pode ler o conteúdo das mensagens que
+são transmitidas para o canal. Outros conectores podem remover texto do
+Cloud Storage ou do sistema de arquivos. O Apache Beam tem vários conectores para ajudar você a usar serviços no
+Google Cloud, como o BigQuery. Além disso, como o Apache Beam é
+um projeto de código aberto, as empresas podem implementar
+conectores próprios. Antes de irmos além,
+vamos abordar algumas terminologias que eu vou usar várias vezes
+neste módulo. Você já sabe sobre canais de processamento
+que podem ser executados no Dataflow. No lado direito do slide, você pode ver
+o gráfico para o canal. Vamos explorar os canais do Apache Beam
+mais detalhadamente. O canal precisa ter uma fonte, que é onde
+ele consegue os dados de entrada. O canal tem uma série de etapas. Cada uma delas no Beam
+é chamada de transformação. Cada transformação funciona em uma
+estrutura de dados chamada PCollection. Darei uma explicação detalhada
+das PCollections em breve. Por ora, lembre-se que cada transformação
+tem uma PCollection como entrada e envia o resultado
+para outra PCollection. O resultado da última transformação
+em um canal é importante. Ele vai para um coletor,
+que é a saída do canal. Para executar um canal, você precisa
+de algo chamado executor. O executor pega o código do canal
+e o executa. Executores são específicos da plataforma,
+ou seja, há um executor do Dataflow para executar um canal no Cloud Dataflow. Há outro executor se você quiser usar o
+Apache Spark para executar o canal. Há também um executor direto, que
+executará um canal no computador local. Se quiser, você pode implementar
+seu próprio executor personalizado para sua própria plataforma
+de computação distribuída. Então, como você implementa
+esses canais? Se você olhar no código no slide, notará que a operação do
+canal no método principal é o beam.pipeline
+que cria uma instância do canal. Depois de criada, cada transformação é implementada como um argumento
+para o método apply do canal. Na versão Python
+da biblioteca Apache Beam, o operador do canal está sobrecarregado
+para chamar o método apply. Por isso temos essa sintaxe com operadores
+de canal em cima uns dos outros. Eu gosto, é muito mais fácil ler assim. As strings, como read, countwords e write,
+são apenas os nomes legíveis que você pode especificar
+para cada transformação no canal. Observe que este canal está lendo
+do Google Cloud Storage e gravando nele. E, como indiquei anteriormente, nenhum dos operadores de canal
+realmente o administra. Quando você precisa que o canal
+processe alguns dados, é necessário chamar o método de execução
+na instância do canal para executá-lo. Como mencionei anteriormente, toda vez
+que você usa o operador de canal, fornece uma estrutura de dados PCollection
+como entrada e retorna uma como saída. Algo importante sobre PCollections é que,
+diferente de muitas estruturas de dados, a PCollection não armazena todos os
+dados na memória. Lembre-se, o Dataflow é elástico e pode usar um cluster de servidores
+por meio de um canal. Portanto, PCollection é como uma estrutura
+de dados com ponteiros para onde o cluster do Dataflow armazena dados. É assim que o Dataflow pode fornecer
+escalonamento elástico do canal. Digamos que temos uma
+PCollection de linhas. Por exemplo, as linhas podem vir
+de um arquivo do Google Cloud Storage. Um meio de implementar a transformação
+é fazer uma PCollection de strings, chamadas de linhas no código, e retornar
+uma PCollection de números inteiros. Essa etapa de transformação específica no
+código calcula o comprimento das linhas. Como você já sabe, o SDK do Apache Beam
+vem com uma variedade de conectores que permitem que o Dataflow leia
+de muitas fontes de dados, incluindo arquivos de texto no Google
+Cloud Storage ou sistemas de arquivos. Com diferentes conectores, é possível
+ler até de fontes de dados de streaming em tempo real, como o Google
+Cloud Pub/Sub ou Kafka. Um dos conectores é para o armazenamento
+de dados do BigQuery no GCP. Ao usar o conector do BigQuery,
+você precisa especificar a instrução SQL que o BigQuery avaliará para retornar uma
+tabela com linhas de resultados. As linhas da tabela são passadas para
+o canal em uma PCollection para exportar o resultado de um canal. Há conectores para o Cloud Storage,
+Pub/Sub, BigQuery e muito mais. Claro, você pode apenas gravar
+os resultados no sistema de arquivos. Algo importante ao gravar em um sistema
+de arquivos é que o Dataflow pode distribuir a execução do canal
+por meio de um cluster de servidores. Isso significa que pode
+haver vários servidores tentando gravar resultados
+no sistema de arquivos. Para evitar problemas de contenção em que
+vários servidores tentam um bloqueio de arquivo no mesmo arquivo ao mesmo tempo,
+por padrão, o conector de E/S de texto fragmentará a saída gravando os resultados
+em vários arquivos no sistema de arquivos. Por exemplo, aqui, o canal está gravando
+o resultado em um arquivo com a saída de prefixo
+no conector de dados. Digamos que haja um total de 10
+arquivos que serão gravados. Assim, o Dataflow gravará arquivos como
+saída 0 de 10 txt, saída 1 de 10 txt etc. Tenha em mente que, se você fizer isso, terá o problema de contenção de
+bloqueio de arquivo que mencionei antes. Portanto, só faz sentido usar as gravações
+ao trabalhar com conjuntos de dados menores que podem ser processados
+em um único nó. Com um canal implementado em Python, você pode executar o código diretamente
+no Shell usando o comando Python. Para enviar o canal como um job a ser
+executado no Dataflow no GCP, você precisa fornecer algumas
+informações adicionais. Você precisa incluir argumentos com o
+nome do projeto do GCP, local no intervalo do Google Cloud Storage, onde o Dataflow
+manterá dados de teste e temporários. E você também precisa especificar
+o nome do executor, que neste caso é o DataflowRunner.

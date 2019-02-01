@@ -1,0 +1,48 @@
+Usamos uma função de
+transformação para transformar o conjunto de dados de avaliação
+e gravamos os dados transformados. Em qual tipo de dados usamos
+o conjunto analisado e transformado? Isso, nos dados de treinamento. E usamos o conjunto de dados de
+transformação para os dados de avaliação. Embora criamos os recursos
+pré-processados com o Beam, o método não pode
+ter código Python arbitrário. Ele precisa ter apenas
+funções do TensorFlow. O motivo para essas
+funções precisarem ser do TensorFlow é que elas
+fazem parte do gráfico de previsão. Por que elas
+fazem parte do gráfico? Para que o usuário
+possa fornecer ao modelo dados brutos e para que o modelo
+faça o pré-processamento necessário. Como o modelo sabe
+quais funções chamar? Para que ele saiba
+quais funções chamar, precisamos salvar a
+função de transformação. É isso que estou fazendo aqui. Estou salvando a
+função de transformação em um diretório chamado "metadata"
+junto ao modelo de treinamento. Em seguida, dizemos à função de
+entrada para acessar os metadados. Qual função de entrada?
+As três. Primeiro, vamos ver as funções de
+entrada de treinamento e de avaliação. Elas leem os recursos
+pré-processados. Eu especifico que o esquema corresponde
+aos metadados transformados. Altere as funções de entrada
+para ler os recursos pré-processados. O TensorFlow tem a função auxiliar
+"buil_training_input_fn". Eu a uso para treinamento
+e avaliação, basta alterar a variável de caminho de entrada para
+o caminho dos dados de treinamento ou de avaliação,
+dependendo do modelo. A função de entrada de
+disponibilização aceita dados brutos. Eu forneço os
+metadados brutos, não os transformados. Só os dados brutos
+não são o bastante, podemos ter funções
+arbitrárias do TensorFlow no código de
+pré-processamento. Essas operações são
+salvas em "saved_model.pb". Há outra função auxiliar
+de transformação do TensorFlow: a função de entrada com
+disponibilização, transformação e análise. Analise o JSON com base no
+esquema de dados brutos. Transforme os
+dados brutos com base nas operações do TensorFlow
+em "saved_model.pb" e envie-os para o modelo. O código do cliente só precisa
+enviar as variáveis de entrada brutas, isso continua igual. A função de entrada de disponibilização
+recebe as variáveis e continua como antes. Ela aceita os dados brutos
+e os envia para o modelo. Por que o modelo funciona? O regressor DNN ou outro modelo
+não processa uma string no DHU. O modelo funciona porque
+o código do pré-processamento agora faz parte do gráfico. Isso ocorre porque
+o modelo lê os metadados e inclui um código
+de pré-processamento. É assim que a transformação
+do TensorFlow funciona. Agora, vamos usá-la em um problema
+de previsão de tarifas de táxi.

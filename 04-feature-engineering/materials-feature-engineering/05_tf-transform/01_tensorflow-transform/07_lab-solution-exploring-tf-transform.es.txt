@@ -1,0 +1,180 @@
+En este lab probamos tf.Transform. Lo usamos porque nos permite realizar el procesamiento previo
+con Apache Beam pero ejecutarlo en TensorFlow. La idea es crear conjuntos de datos de procesamiento previo a escala
+durante el entrenamiento y la evaluación. Y luego podemos aplicar
+ese procesamiento previo en los datos que ingresan
+para las predicciones y lo podemos hacer como parte
+del gráfico de TensorFlow. Veamos cómo se hace. Primero, tf.Transform
+no es parte de TensorFlow en sí es una biblioteca
+de código abierto pero es una biblioteca independiente. Entonces, primero voy a instalar una versión específica
+de TensorFlow Transform. Debemos ver qué versión
+de TensorFlow estamos usando y la versión
+correspondiente de tf.Transform. Cuando grabé este video usaba TensorFlow 1.5 y la versión correspondiente
+de tf.Transform era tf.Transform 0.5. Es posible que esto cambie
+cuando lo hagan ustedes. Actualizaremos el notebook
+para que tenga la versión correcta correspondiente a la versión
+de TensorFlow instalada en los notebooks. En este caso, instalaré tf.Transform 0.5 e instalaré el paquete Apache Beam [GCP]. Para asegurarnos
+de que todo se comprenda bien viene con Dataflow lo desinstalaremos porque
+Apache Beam [GCP] y Google Cloud Dataflow, son esencialmente lo mismo. Pero, en este caso usaremos solo
+los elementos de código abierto. Usaré "pip uninstall" y "pip install". Demorará unos minutos
+y cuando finalice nos aseguraremos de que el notebook
+seleccione los paquetes de pip correctos. Para hacerlo hay que seleccionar Reset. Debemos esperar a que el circulo
+negro se habilite es decir, que esta celda termine de ejecutarse y las instalaciones
+de pip estén listas. Esperemos un momento. Listo, finalizó. El círculo negro ahora está habilitado. Eso significa que la celda finalizó. Si miramos la celda podemos ver que ejecutó varios comandos. Hacia el final debería ver que desinstaló
+algunas cosas e instaló otras y obtenemos tf.Transform 0.5. Entonces… Lo que podemos hacer primero es asegurarnos que se seleccione. Para ello debemos restablecer. Hago clic en Reset para reiniciar la sesión y ahora se seleccionarán
+los paquetes pip nuevos. Podemos ir hacia abajo y hay una celda que
+dice "pip freeze" que dice lo que hay en el contenedor de Docker
+donde se ejecuta el notebook y uso "grep", en busca de un paquete
+con la palabra "flow" o "beam". La barra vertical significa "o". Haré eso y deberíamos ver TensorFlow Transform
+y Apache Beam instalados. TensorFlow está instalado también está TensorBoard
+y Apache Airflow aunque no los necesitamos. Pero están allí. Ahora podemos importar TensorFlow con "import tensorflow_transform as tft" y luego hay que asegurarse de cambiar el depósito de su proyecto
+al depósito de Qwiklabs. Eso ya lo hice. Ahora, ejecutaré esa celda
+y me aseguraré de que la pueda seleccionar Bash
+que es lo que hace un entorno de SO. Me aseguro de que el proyecto y región 
+de computación sean correctos. Lo próximo que haré es obtener los datos de BigQuery. Pero a diferencia del ejemplo anterior no vamos a filtrar la latitud,
+la longitud, etc. sino que filtraremos con Apache Beam. Así, no aseguramos de que,
+si durante las predicciones, alguien proporciona una entrada incorrecta
+no obtengamos el host. Vamos a seleccionar algunas cosas. Haremos un procesamiento previo
+para obtener el importe de la tarifa, etc. Pero la consulta será más simple aquí porque hicimos algo
+del procesamiento en Apache Beam. Esta vez, vamos a crear un marco de datos válido para mostrarle lo que sucede. Ejecuto la consulta y creo un marco de datos de Panda y una vez que está listo voy a llamar "head"
+que nos darás las primeras líneas y llamaré "describe" que me dará el promedio
+y otras estadísticas como la desviación estándar y los cuantiles
+de este marco de datos en particular. Listo. Ahora tenemos nuestro "df_valid"
+y, como puede ver tiene 11,181 columnas
+de importes de tarifa hora del día, etc. Podemos ver que la consulta es correcta. así que la usaremos para crear un conjunto
+de datos de aprendizaje automático. Esta vez uso tf.Transform y Dataflow. A diferencia del trabajo
+de Dataflow que hicimos ahora debo instalar un paquete adicional
+en las máquinas para ejecutar Dataflow. Para hacerlo escribo un "requirements.txt". Recuerde que en la instalación de pip usamos TensorFlow Transform 0.5.0. Eso es lo que haremos aquí. Escribimos "requirements.txt" En este archivo, indicamos que queremos
+instalar TensorFlow Transform 0.5.0 Y ahora que escribimos
+el archivo de requisitos podemos ejecutar nuestro
+trabajo de Dataflow con "requirements.txt"
+como un archivo de requisitos. Esto le indica a Dataflow que debe pasar
+por el archivo de requisitos e instalar todos los paquetes
+de Python que necesitamos. ¿Qué estamos haciendo en este trabajo? En este trabajo,
+al igual que en los anteriores vamos a leer desde BigQuery vamos a crear registros. Pero a diferencia de antes cuando creamos registros en CSV en este caso, voy a crear
+ejemplos de TensorFlow porque son más eficientes. ¿Cómo funciona? También crearemos el conjunto de datos de
+entrenamiento y el conjunto de evaluación Veamos esto paso a paso. Lo primero es decidir qué tipo
+de procesamiento previo queremos hacer. Hay dos tipos de procesamiento previo un tipo sirve si queremos verificar si la fila de entradas
+que obtenemos es válida. Lo que obtenemos de BigQuery es un diccionario de entradas y, durante la predicción,
+también obtenemos un diccionario de JSON. Así que el mismo código funcionará en el conjunto de datos
+de BigQuery y en el de JSON. ¿Qué haremos? Vamos a obtener entradas la longitud de recogida y destino
+la latitud de recogida y destino la hora del día el día de la semana, etc. Intentaremos obtener todo esto pero si no pudiéramos obtener alguna diremos que no es válida. Así que usaremos
+"try" y "except". Procesaremos todo esto y si alguna entrada
+es una excepción diremos que no es válida. Cuando las obtengamos,
+diremos que es válida si reúne todas estas condiciones. Si la tarifa es mayor que 2.5 la longitud de recogida
+es mayor que -78, etc. En todas estas pruebas si todas son correctas las entradas serán válidas. Para el procesamiento previo tomaremos los datos y mejoraremos el entrenamiento
+de la red neuronal. ¿Qué haremos? Tomaremos las entradas de tarifas
+y las pasaremos sin cambios. Pueden ser las tarifas
+o cualquier otra función como esta. En este caso, llamo "tf.identity". El día de la semana es un número entero. BigQuery nos da un número entero
+como 1, 2, 3, 4. En el lab anterior de ingeniería de funciones ¿qué hicimos? Lo ingresamos hard-coded
+en el vocabulario. En este caso, le indicaremos
+a TensorFlow Transform que aprenda el vocabulario de un conjunto
+de datos de entrenamiento. Por ahora, no sabemos
+qué significa este número pero sabemos que lo que
+se obtenga de la predicción se convertirá automáticamente. Tomaremos el día de la semana y
+convertiremos esa string en un número entero
+en base al vocabulario. Eso es lo que hace
+"string_to_int". La hora del día
+ya es un número entero así que la pasamos sin cambios. La longitud de recogida
+es un número de punto flotante así que lo podemos usar sin cambios pero sabemos que el entrenamiento
+de redes neuronales funciona mejor y el descenso de gradientes
+funciona mejor si los valores de entrada
+son números pequeños si están en el rango de,
+por ejemplo, cero a uno. Eso es lo que queremos
+que haga TensorFlow Transform que ajuste este valor
+de cero a uno. Recuerde que para
+ajustar de cero a uno TensorFlow Transform debe conocer
+el valor mínimo y el máximo. Lo obtendrá del conjunto de datos. Por eso tenemos las dos fases tenemos la fase de análisis
+y la fase de transformación. Entonces, aunque escribimos
+que Transform ajuste de cero a uno sabe que para hacerlo
+en la fase de análisis debe encontrar
+el valor mínimo y el máximo. Hacemos lo mismo
+para todos los elementos y luego configuramos
+"cast (inputs ['passengers']" como punto flotante y en las entradas de pasajeros
+usamos "ones_like" para obtener una cantidad igual de unos
+y los transmitimos como una string. En este caso, todas nuestras claves
+son en esencia la string 1. Pero es solo un ejemplo de que puede llamar funciones
+de TensorFlow arbitrarias. Lo clave es que el procesamiento previo
+sean todas funciones de TensorFlow. Una vez que terminamos
+aplicamos ingeniería nuevamente
+con las funciones de TensorFlow. En este caso, tomo las latitudes
+de recogida y destino las extraigo y tomo
+la longitud de recogida y de destino
+y las extraigo. Luego, tomo la diferencia de latitud
+y longitud calculadas y las ajusto. No tenemos que preocuparnos por cuál la diferencia o el ajuste TensorFlow Transform averigua cuál es el mínimo y máximo
+para el ajuste correcto. Luego, tomo estos valores ajustados y los proceso con la distancia
+euclidiana de los valores ajustados. No tenemos que volver a ajustarlos porque sabemos que si las distancias
+están entre cero y uno la raíz cuadrada también
+será de entre cero y uno. De hecho, podría ser de un poco más como de 1.4 si ambos son 1,
+pero está cerca. Son número pequeños, entonces
+no debemos ajustar. Ahora que la función de procesamiento
+previo está lista. Aún debemos llamar al método "is_valid"
+y al método "preprocess_tft". Llamamos a ambos métodos
+desde la transformación de Beam. ¿Cómo lo hacemos? Primero, configuramos los metadatos de los datos sin procesar
+que vamos a leer. ¿qué son los datos sin procesar? Son los datos que vienen de BigQuery. Digamos que el día de la semana y la clave son strings y el importe de la tarifa la longitud y latitud de recogida todas estas cosas, son
+puntos flotantes creamos un esquema
+de datos sin procesar que es básicamente
+un diccionario con el nombre de la columna, ya sea
+una string, un punto flotante o un número. La hora del día y los pasajeros
+son números enteros. Son datos sin procesar. Esto proviene de BigQuery Tomamos los datos sin procesar e indicamos que escriba los metadatos
+de los datos sin procesar. Lo escribimos para que la entrada de JSON que ingresa el usuario también pertenezca
+a estos metadatos de datos sin procesar. Es decir, que tenga esta forma y que lo note la función
+de entrada de entrega. Entonces, indicamos que lea los datos de BigQuery
+con la consulta que creamos y los filtre con el método "is_valid". Para esto sirve este método Se llama como parte de un filtro de Beam. El filtro de Beam se usa con las reglas
+que especificamos en la función "is_valid". Así, llamamos "AnalizeAndTransformDataset". Debemos especificar
+la función de transformación. Esta función es
+"preprocess_tft" es la que hace el ajuste. Ahora, recibimos el conjunto de datos
+transformado y la función de transformación y tomamos "transformed_data"
+y lo escribimos como "tf.record" con el sufijo .gz es decir, comprimidos
+para ahorrar espacio. Hacemos lo mismo
+con los datos de prueba. En los datos
+de entrenamiento creé una consulta de 1 y en los datos de prueba
+cree la consulta de 2 para configurarla, indiqué que
+según si pasa 1 o 2 esa es la fase tomo las primeras líneas de los depósitos
+de hash o las últimas líneas. Así obtengo mi conjunto de datos
+de entrenamiento o de evaluación. Vayamos hacia abajo. Una vez que hicimos eso escribo mi conjunto de datos de prueba transformado
+y también lo escribo en la evaluación. Esto es muy importante tenemos que escribir los metadatos
+de las transformaciones. Así, todos los métodos de TF que llamamos se almacenan en el gráfico. Lo que hace es escribir un modelo. Un modelo no es algo que entrena sino que está compuesto
+de operaciones de TensorFlow que se colocaran enfrente
+del gráfico del modelo normal para que las entradas
+que ingrese el usuario pasen por las funciones de transformación
+de TensorFlow hacia su modelo normal. Con esto, estamos listos para crear un conjunto de datos
+de procesamiento previo. Si lo configuro como verdadero crearé un pequeño conjunto de datos
+pero lo configuraré como falso. Esto se ejecutará en Dataflow y lo creará. Si vuelve a recibir el error de que
+la API de Dataflow no está habilitada vaya al proyecto de Qwiklabs
+y habilítela. Así, el trabajo de Dataflow debería
+iniciarse y cuando finalice debería poder ver
+los archivos en preprocess.tft. Cuando termine, el entrenamiento
+es parecido al que había antes pero veámoslo busquemos las diferencias. Veamos la transformación de TensorFlow
+debajo de "taxifare.txt" y abramos "model.py" ¿Cuál es la diferencia aquí? Las columnas de entrada
+están igual que antes. La agrupación en depósitos,
+la ingeniería de funciones se crearon las columnas amplias y las columnas profundas todo esto es idéntico a lo que había
+antes del procesamiento previo cuando lo hicimos con Dataflow. También teníamos una función de ingeniería
+adicional que llamamos para tres lugares. En este caso no necesitamos hacer eso. No tenemos
+la función de ingeniería adicional lo que hacía esa función ahora lo hace TensorFlow Transform
+como parte del gráfico. Indicamos que cuando alguien me da
+una función de entrega leeré desde
+esta función de transformación todas las operaciones
+que realizamos tomaré los datos sin procesar que ingresa,
+que son estos y aplicaré todo lo que sucede
+en la función TensorFlow Transform, todo lo que hicimos. Es decir, todo el código que llamamos
+en "preprocess.tft". Le indicamos que aplique eso
+a mis funciones en el marcador de posición
+de mi función. Lo aplico en los marcadores de posición obtiene los atributos y ahora ese es el par de elementos
+que obtenemos. Los marcadores de posición de atributos
+es lo que nos proporciona el usuario lo que estaba en JSON. Los atributos son el resultado
+de tomar lo que estaba en JSON y aplicarlo en la función
+de transformación tf.transform. Aplica todas esas operaciones en los marcadores de posición
+de atributos y muestra eso. Ahora, tenemos una función
+de entrada de entrega. Cuando leemos el conjunto de datos
+¿qué tenemos que hacer? Cuando leemos el conjunto de datos tenemos que aplicar
+estas transformaciones. Por suerte, no tenemos
+que escribir ese código ya que TensorFlow Transform tiene un compositor
+de funciones de entrada al que le pedimos que cree
+una función de entrada de entrenamiento que aplique todo esto en
+"transformed_metadata" y que lo lea con gzip y eso es todo. Tiene una función de entrada
+de entrenamiento incorporada que sabe cómo leer
+los registros de TensorFlow. Así que no tenemos que escribir
+todo el código que necesitaríamos para leer un conjunto de datos y aplicar un CSV para decodificar todo eso no es necesario. Simplemente usamos la función de entrada de entrenamiento
+para que haga el trabajo. El entrenamiento y la evaluación
+son iguales que antes creamos "train_spec" creamos "eval_spec" y pasamos el estimador "train_spec" y eval_spec". La diferencia es que como leemos Gzip la función de lectura es Gzip. que es un "TFRecordReader"
+que lee Gzip. Eso es todo.

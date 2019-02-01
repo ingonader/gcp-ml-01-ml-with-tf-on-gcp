@@ -1,0 +1,65 @@
+Wir befinden uns
+hier im TensorFlow Playground. Wir haben 
+einige Datasets, die so aussehen. Wir haben blaue Punkte oben rechts, orange Punkte unten links. Wir möchten eine Trennungslinie zeichnen,
+die diese beiden Farben separiert. Dazu haben wir als Eingaben x1, x2, x1 zum Quadrat, x2 zum Quadrat und x1 mal x2. Zuerst müssen wir klären,
+welche davon Roheingaben sind und welche erstellte Merkmale sind. x1 und x2 sind die Roheingaben. x1 zum Quadrat,
+x2 zum Quadrat und x1x2 sind Merkmale, die wir aus den Roheingaben x1
+und x2 erstellt haben. Welche sind Merkmalkreuzungen? Offensichtlich
+ist x1x2 eine Merkmalkreuzung. Wenn Sie genauer hinsehen, erkennen Sie, dass x1 zum Quadrat
+auch eine Merkmalkreuzung ist, eine Selbstkreuzung, eine Zusammenführung mit sich selbst. Sie kreuzen x1 mit x1,
+um x1 zum Quadrat zu erhalten. Eine Betrachtungsweise wäre daher,
+dass wir zwei Roheingaben x1 und x2 haben und die drei Merkmalkreuzungen x1 zum Quadrat, x2 zum Quadrat und x1x2. Das ist aber nur Terminologie. Sie können x1 Quadrat und x2 Quadrat stattdessen auch
+als Transformation der Eingabe betrachten. Das ist kein Problem. Unser Modell hat also fünf Eingaben. Wir möchten es trainieren. Also machen wir das jetzt. Ich starte hier
+und wir beginnen mit dem Training. Sehen Sie das Seltsame? Hier unten in der linken Ecke. Sehen Sie den blauen Bereich? Er ist nach einiger Zeit verschwunden, aber stellen Sie sich vor,
+wir hätten diese Option nicht. Versuchen wir es noch einmal. Wir wissen nicht,
+wie lange wir trainieren werden. Sagen wir,
+wir haben bis 230 Epochen trainiert. Eine lange Zeit. Wir haben 230 Epochen trainiert
+und erhalten etwas Seltsames. Was? Den Bereich hier. Das Dreieck
+ist ein Anzeichen für Überanpassung. Es gibt dafür wirklich keine Daten. Es ist also eine plausible Erklärung. Wir versuchen nicht, das Modell
+einfacher zu gestalten, als es sein muss. Es läuft und erstellt hier Werte. Einer der Gründe,
+warum dies passiert, besteht darin, dass wir
+dem Modell Überanpassung gestatten. Eine Möglichkeit, dies zu tun, ist, dem Modell dieselben Daten
+auf unterschiedliche Weise zu übergeben, Was passiert, wenn ich x1x2 deaktiviere? Jetzt haben wir nur noch x1, x2, x1 zum Quadrat und x2 zum Quadrat. Ich starte noch einmal. Und wieder sehen Sie diese seltsame Grenze
+in der frühen Trainingsphase. Noch einmal. Wir starten
+und stoppen dann bei ca. 200 Epochen. Da sind wir. Wieder sehen Sie bei 200 Epochen,
+dass die Grenze nicht gerade toll ist und das wir hier
+diesen seltsamen weißen Bereich haben. Das liegt an den zusätzlichen Merkmalen
+x1 zum Quadrat und x2 zum Quadrat. Was ist, wenn wir diese zwei deaktivieren? Nun haben wir nur die Rohdaten x1 und x2. Ich starte
+und ich stoppe wieder bei ca. 200 Epochen. Sie sehen jetzt
+ein ziemlich perfektes Modell. Wir haben nur diese Linie. Ihnen sollte also bewusst sein,
+dass es auch zu viel des Guten gibt und dass Merkmalkreuzungen ein
+Modell verleiten können, überanzupassen. Wir haben auch noch gesehen, was passiert,
+wenn Sie sehr lange trainieren. Deaktivieren wir diese
+und fangen wir wie eben an. Wenn wir sehr lange trainieren, scheint das Modell besser zu werden, doch bewirkt
+die Überanpassung diese gebogene Grenze. Das ist
+ein weiteres Symptom für Überanpassung. Wenn wir
+für eine sehr lange Zeit trainieren, verschwindet
+dieses Artefakt in der Ecke unten links, wir erhalten aber diese gebogene Grenze. Sie erhalten keine Gerade
+für das einfachste effektive Modell, sondern eine Kurve, da wir
+dem Modell viele Freiheiten gegeben haben. Wenn Sie sich dies ansehen, bemerken Sie,
+dass die Gewichtungen von x1 und x2 deutlich höher sind als die der anderen. Doch da die Merkmalkreuzung x1 mal x2 eine gewisse Gewichtung erhält, kann sie für Chaos sorgen. Die Entscheidungsgrenze des Modells
+sieht irgendwie seltsam aus. Insbesondere weist
+diese Region unten links auf blau hin, auch wenn keine Daten
+dies sichtbar unterstützen. TensorFlow Playground
+verwendet einen zufälligen Startpunkt, Ihr Ergebnis könnte anders ausfallen. Daher habe ich
+mein Ergebnis im Bild festgehalten. Sie haben vielleicht
+etwas anderes erhalten. Beachten Sie die relative Dicke
+der fünf Linien von Eingabe zu Ausgabe. Diese Linien zeigen
+die relative Gewichtung der fünf Merkmale. Die Linien von x1
+und x2 sind wesentlich dicker als die von den Merkmalkreuzungen. Die Merkmalkreuzungen tragen also
+weitaus weniger zum Modell bei als die normalen 
+nicht gekreuzten Merkmale, doch tragen sie genug bei,
+um die Generalisierung zu stören. Was wäre, wenn wir
+die Merkmalkreuzungen komplett entfernen? Wenn wir nur die Rohdaten verwenden? Wenn Sie alle Merkmalkreuzungen entfernen, erhalten Sie ein vernünftigeres Modell. Die gebogene Grenze, die auf Überanpassung
+hinweist, ist nicht mehr vorhanden. Nach 1.000 Durchläufen
+sollte der Testverlust etwas geringer sein als bei Verwendung der Merkmalkreuzungen. Ihre Ergebnisse können jedoch
+abhängig vom Dataset ein wenig variieren. Die Daten in dieser Übung sind
+im Grunde lineare Daten plus Rauschen. Wenn wir für solch einfache Daten
+ein zu komplexes Modell verwenden, wenn wir ein Modell
+mit zu vielen Merkmalkreuzungen verwenden, lassen wir zu, dass es sich
+an das Rauschen in den Daten anpasst. Sie können dies häufig erkennen, indem Sie sich die Modellleistung
+bei unabhängigen Testdaten ansehen. Wir behandeln Regularisierung später
+im Kurs zu Kunst und Wissenschaft des ML, aber dies erklärt auch zufällig, warum L1-Regularisierung
+so eine tolle Sache sein kann. L1-Regularisierung setzt die Gewichtung
+eines Merkmals gegebenenfalls auf null. Anders gesagt kann
+die L1-Regularisierung Merkmale entfernen.

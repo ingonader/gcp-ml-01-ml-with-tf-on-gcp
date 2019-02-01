@@ -1,0 +1,195 @@
+Inicié Datalab abrí featureengineering.ipythonnotebook y ahora lo usaremos juntos. Este es el notebook aprenderemos a trabajar
+con las columnas de funciones agregaremos combinaciones
+de funciones en TensorFlow. Vamos a leer
+nuestros datos en BigQuery crear conjuntos de datos en Dataflow y usaremos un modelo
+amplio y profundo. Vamos a combinar todas
+estas actividades que mencionamos del modelo amplio y profundo
+no hablamos pero lo haremos ahora. Aquí está el problema. Hasta ahora creamos
+un modelo de un taxi pero no incluimos
+información valiosa humana en él. Eso es lo que haremos ahora. Básicamente, vamos a aprovechar nuestro conocimiento
+sobre cómo funcionan los taxis sobre el diseño de Nueva York y le daremos sugerencias al modelo para que pueda
+aprender más de esas cosas. A medida que avanzamos hablaré sobre el origen
+de la información valiosa. Lo primero que haré es… obtener la importación. Asegúrese de cambiar su proyecto. Cambié mi proyecto para que
+se asigne a mi proyecto de Qwiklabs cambié mi depósito para que
+se asigne a mi depósito de Qwiklabs y configuré la región para que se asigne
+donde quiero que se ejecute el código Ahora, ejecutemos la consulta. La consulta realiza una limpieza Aquí, me aseguro de que estemos obteniendo solo
+los datos con distancias positivas el importe de la tarifa sea mayor que 2.5 que la longitud de recogida la latitud de recogida, etc. tengan recuentos razonables y que haya pasajeros en el taxi. Queremos asegurarnos de que
+los datos que se recopilaron de un viaje en taxi en particular
+sean correctos antes de usarlos para el entrenamiento. Voy a dividir los datos,
+como lo comentamos antes cuando analizamos
+cómo crear conjuntos de datos según el hash de la hora
+y fecha de la recogida. Una vez que lo hice,
+creo la consulta. Mi consulta tomará el importe
+del peaje y de la tarifa y lo llamará el importe de la tarifa. Así que estamos averiguando
+los costos totales del viaje. Y tomamos el día de la semana. ¿Por qué lo hacemos? Porque sabemos que las condiciones
+del tránsito varían según el día. Sabemos que los viernes
+hay más tránsito que los domingos. Sabemos que la hora del día
+es importante. A las 2 a.m. de un viernes probablemente
+no haya tanto tránsito como a las 4 p.m. ¿Por qué es importante? Porque en Nueva York y esto es algo que aporta
+el conocimiento humano las personas pagan por la cantidad de tiempo
+que pasan en el taxi además de la distancia. Entonces, si el taxi está
+atascado en el tránsito tendrá que pagar por ese tiempo
+porque está ocupando el taxi y el taxista no puede
+recoger a otros pasajeros. Por eso la hora es importante el tiempo que
+demora el viaje importa. Antes de que comience el viaje no sabemos cuánto tiempo tardará. Queremos que el modelo de aprendizaje
+automático averigüe este dato y sabemos que un determinante clave
+para la duración del viaje es el momento en que
+se recoge al pasajero. No cuándo se baja,
+porque no sabemos dónde se bajará pero sabemos cuándo se sube al taxi. Usaremos la fecha y hora de la recogida el día de la semana y la hora del día
+como entradas para nuestro modelo. También sabemos en qué lugar
+se recogerán los pasajeros. Y sabemos dónde quieren bajarse. No sabemos la hora en que se bajará pero sabemos el lugar al que irá. Así que, sabemos la longitud
+y la latitud del destino. Esas serán nuestras entradas. Tomaremos un recuento de pasajeros y crearemos una clave. No usaremos esta clave pero si quisiéramos hacer algo
+como una predicción por lotes enviaríamos muchos datos y es útil si cada una de las filas en
+el conjunto de datos tiene un ID único. Esta es una especie de ID único
+de todas las columnas de entradas. Estoy haciendo esto
+donde todos los datos son válidos. En este momento estoy listo para crear
+nuestro conjunto de datos. Para crearlo eliminaremos cualquier conjunto
+de datos que pueda haber. Una vez hecho, seguiré y crearé un archivo CSV
+de todas estas columnas. Lo primero es asegurarse de que
+las columnas sean el importe de la tarifa el día de la semana, la hora, etc. Esas son las columnas que usaremos pero, si usamos BigQuery, el día
+de la semana en el conjunto de datos será un número, como el dos. No queremos usar un número
+porque no sabemos qué día de la semana es el dos. ¿La semana comienza el domingo? ¿el lunes o el martes? No queremos que nuestro cliente se tenga que preocupar por eso. Entonces, lo que haremos es reemplazar esos números con los nombres
+de los días de la semana. Entonces, el día uno es el domingo. Si es el día dos entonces es lunes, etc. Eso es lo que estoy haciendo aquí. Tomo el resultado de BigQuery el día de la semana que es un número y lo reemplazo con una string y, ahora, los adjunto
+con una coma como separador y ese es el resultado del archivo CSV. Para escribirlo voy a leer los datos desde BigQuery con la consulta
+que creamos recién los convertiré a un CSV
+con esa función que mencioné. El único cambio que implementamos es en los días de la semana,
+de números a strings. Luego los escribimos en un archivo
+de texto, un archivo CSV. Cuando lo ejecuto el código hace el procesamiento previo y, en la próxima celda llamo el procesamiento previo
+en el "DataflowRunner", si lo deseo o puedo crear un conjunto de datos
+más pequeño en el "DirectRunner" para ejecutarlo de forma local. En este caso, uso el ejecutor de Dataflow se ejecutará y tomará unos minutos. Vamos a Console y veremos en el ejecutor de Dataflow
+que se inició el trabajo. Vamos a Dataflow… veamos qué dice… Aquí está. La API de Dataflow no se usó
+ni se habilitó. Lo que tendremos que hacer
+es dirigirnos aquí. Si ven ese error deberán ir a APIs & Services y seleccionar "Enable APIs and Services". La que queremos habilitar
+se llama Dataflow. Así obtenemos la API de Dataflow y la habilitaremos. Una vez que se habilita la API esperamos a que se habilite… deberíamos poder volver
+a ejecutar esta celda. Listo, se habilitó. Ahora volvemos al Datalab Notebook
+y ejecutamos esta celda. Esperemos que esta vez funcione. Correcto, se inició. Ahora puedo volver a la sección
+de Dataflow del menú y verá que el código se está ejecutando. Esta ejecución tardará unos minutos y cuando finalice en Cloud, en su depósito tendrá los archivos de entrenamiento
+que podrá usar para entrenar. Desplacémonos hacia abajo… Podríamos hacer esto, pero en su lugar esperemos que finalice y cuando esté listo podremos volver. Pausaré el video ahora. Volveremos y comenzaremos
+cuando el trabajo de Dataflow esté listo. Este trabajo demoró unos ocho minutos el último paso finalizó correctamente y, en este momento la cantidad de trabajadores
+está disminuyendo. Su rendimiento variará según la cantidad
+de trabajadores que tenga disponible y cuántos trabajadores se estén
+ejecutando en su trabajo. Pero una vez que está listo puede volver al notebook para ver
+que estén los archivos de salida. Eso es lo que estoy haciendo ahora. Uso "gs" en "gsutil" en el depósito y vemos que hay un archivo "train.csv" y uno llamado "valid.csv". Es decir que tenemos un archivo
+de entrenamiento y uno de validación y, directamente, podemos usar "cat" "cat" es un comando de Unix
+que enumera todas las líneas y hace una canalización para obtener las primeras líneas. Como esperábamos el día de la semana es una string:
+viernes, miércoles, etc. Después, tenemos las latitudes longitudes, puntos
+de recogida y de descenso. La última columna es una clave que ignoraremos en este modelo pero está allí por si queremos un ID único
+para cada fila del conjunto de datos. Entonces, tenemos este archivo y, ahora, podemos usarlo
+para desarrollar nuestro modelo. Para poder desarrollarlo es ideal no tener
+que volver a Cloud todo el tiempo. Entonces, crearé un directorio
+llamado "sample" y copiaré solo uno de los archivos allí. Dado que tenemos archivos acortados copiaré solo la primera parte del archivo
+acortado en el directorio local. Ahora, podemos avanzar
+y ver el código en sí. Así que examinemos el código. Podemos hacerlo en el notebook pero veámoslo desde afuera. Tenemos la tarifa de taxi. Igual que antes, para la tarifa tendremos un entrenador y, como antes, tendremos
+"model.pi" y "tasks.pi". Pero, en este caso, "model.pi" no será solo una entrada sin procesar sino que tendrá
+ingeniería de funciones en él. Estas son las columnas note que tenemos columnas adicionales
+que no teníamos antes tenemos el día de la semana la hora del día, etc. Entonces, estas son
+mis columnas de entrada tengo el día de la semana tiene un vocabulario que es: domingo, lunes, martes, etc. La hora del día también es
+una columna categórica pero tiene una identidad. En otras palabras, ya es un número entero. Es decir, uno, dos, tres, cuatro, etc. Luego, tenemos columnas numéricas
+para la longitud de la recogida la latitud de la recogida y del destino la longitud de destino, etc. También voy a crear unas columnas de ingeniería
+y lo veremos luego en el código pero las columnas de ingeniería
+marcarán la diferencia en la latitud. ¿Por qué es importante? La diferencia en latitud nos dice
+si vamos al norte o al sur de Manhattan. Nos da una idea
+de cuánto cambió la latitud. La diferencia es longitud es muy útil porque la Ciudad de Nueva York
+no es extensa al sur y todos los puentes en los que se paga
+peaje cambian drásticamente la longitud. Entonces, saber la diferencia
+en longitud es muy útil y agrego una distancia euclidiana
+que se conoce como "a vuelo de pájaro" entre el punto de recogida
+y el punto de destino. Es una buena función para usar porque de esa forma el modelo
+no tiene que aprender las distancias ya se le proporciona
+la distancia directamente. Así que aplicamos
+esta ingeniería de funciones y estamos listos
+para crear el estimador. En el estimador, tomamos
+todas nuestras columnas de entrada. Esas son las columnas
+de entrada que tenemos como hicimos en el ejercicio de ingeniería
+de funciones con los datos de las casas agrupamos los depósitos
+de latitud y los de longitud. Tomamos la latitud de recogida y la
+agrupamos en un depósito entre 38 y 42. Y la longitud desde -76 a -72 ya que esos son los límites
+de la Ciudad de Nueva York. Obtenemos un depósito
+de la latitud de recogida y uno de la latitud de destino y hacemos lo mismo
+con las longitudes. La longitud de recogida y la de destino agrupadas en depósitos. Una vez que tenemos los depósitos ¿Para qué sirve
+el agrupamiento en depósitos? Discretiza los elementos, es decir,
+toma un valor numérico y lo convierte en categórico,
+ya que está en uno de esos depósitos. Tomamos esos valores categóricos y hacemos una combinación
+de funciones en ellos. ¿Qué pasa cuando combinamos las funciones
+de la latitud y la longitud de recogida? Tenemos la latitud y la longitud realizamos una combinación
+de funciones colocamos la ubicación de recogida la celda de la cuadrícula
+que corresponde a la ubicación de recogida eso es Ploc. Ploc es como una celda de cuadrícula. De forma similar, Dloc es una celda
+de cuadrícula que corresponde al destino ambas son puntos
+de celdas de una cuadrícula. Ahora, hago una combinación de funciones
+de la ubicación de recogida y del destino. Lo que buscamos es aprender de todos los viajes en taxi
+desde esta ubicación a esta otra ¿Cuánto cuestan? La única forma de hacerlo y es algo que repetimos continuamente es con la combinación de funciones,
+que es muy potente pero solo funciona
+si tiene suficientes datos porque la combinación
+de funciones es memorización y funciona si tiene suficientes datos
+en cada uno de los depósitos. En este caso, tenemos millones
+de viajes en taxi así que tenemos datos suficientes
+para poder hacerlo. Agrupamos la longitud de recogida y la longitud del destino en depósitos y los usamos para crear
+la ubicación de recogida y la ubicación de destino.
+Combinamos esas funciones y obtenemos un par de recogida y destino. que también es
+una combinación de funciones y luego lo hacemos con el día y la hora porque el tránsito
+depende del día y la hora. Un viernes a las 3 p.m. es distinto
+a un miércoles a las 3 p.m. o a un domingo a las 3 p.m. Hacemos la combinación y debemos decidir
+la cantidad de depósitos que usaremos. Puede elegir cualquier cantidad,
+hasta el doble de la cantidad total de valores posibles hasta
+la raíz cuadrada de los valores posibles. En este caso, usaré la cantidad total
+de valores. 24 por 7 para la cantidad de depósitos pero esto es algo que debe probar y deberá ajustar los hiperparámetros. No hay una sola respuesta correcta
+para cuántos depósitos de hash debe usar. Volveremos y observaremos
+todos nuestros datos y veremos cuáles son
+dispersos y categóricos y cuáles son densos y numéricos. Las columnas dispersas y categóricas
+van en la parte amplia de la red porque los modelos lineales
+funcionan mejor con ellas. Las columnas densas y numéricas y las columnas incorporadas son un ejemplo de columnas densas
+porque toman los datos dispersos y los condensan esos son ejemplos útiles
+de columnas densas. Tomamos todas las columnas dispersas
+y las colocamos en columnas anchas y tomamos todos los datos densos y los colocamos en las columnas profundas y creamos lo que se llama
+un "DNN linear combined regressor". Este es una potencia adicional que
+podemos darle al modelo, si lo deseamos. puede solo usar solo un regresor DNN y analizar todo como columnas profundas
+y está bien. Pero el "DNN linear combined regressor" nos permite tratar los datos dispersos
+diferente a los datos densos usa un optimizador distinto
+para los dispersos que para los densos. Se ajusta a la idea de que si tengo
+un conjunto de datos del mundo real algunas funciones serán densas
+y otras serán dispersas así que, este tipo de regresor
+funciona muy bien con esos datos. Ahora estamos analizando cuáles
+funciones necesitan un modelo lineal y cuáles necesitan un modelo
+de red neuronal profunda. Especificamos la cantidad de unidades
+que queremos para nuestro modelo de DNN. Aquí está nuestro modelo pero recuerde que mencionamos
+la ingeniería de funciones. No queremos usar
+los datos sin procesar queremos agregarles cosas y ya tenemos las columnas
+de ingeniería de funciones " latdiff", "londiff", etc. Así las procesamos. "latdiff" es la diferencia
+entre dos latitudes "londiff" es la diferencia
+entre dos longitudes. Luego, especificamos la función
+de entrada de entrega que son los datos que nos debe
+proporcionar el usuario final. El usuario final no debe brindarnos
+la diferencia de latitud o longitud no saben cómo procesar
+esos datos solo deben darnos
+datos sin procesar. Vamos a tomar
+todas las columnas de entrada excepto las primeras dos que son el importe de la tarifa
+que es una etiqueta y no una entrada y la segunda columna
+que vamos a ignorar Veamos las columnas de entrada que vamos a ignorar son estas dos. Ignoramos el día de la semana
+y la hora del día. Tomaremos todo lo demás que son todos
+números de punto flotante el día de la semana es una string la hora del día es "int32" y los usaremos para crear
+un receptor de entrada de entrega. Además de agregar las funciones
+que nos brinda el usuario final asegúrese de agregar la ingeniería
+de funciones para que el modelo vea todo. Leer los datos es similar
+a lo que ya hicimos el entrenamiento y la evaluación
+son similares también así que lo podemos ejecutarlo. Volvamos aquí y probemos nuestro modelo
+con un conjunto de datos pequeño y luego lo podemos entrenar
+en Cloud. Así que podemos usar
+"gcloud ml-engine" y ejecutarlo. debería obtener un RMSE
+un poco mejor pero en sí, ya tenemos
+un modelo mejor. Lo próximo que haremos es ajustar los hiperparámetros
+para encontrar los parámetros útiles del modelo. Para ello realizaremos
+un ajuste de hiperparámetros con lo que se obtienen
+los parámetros para esos modelos. En este caso,
+estos son los mejores parámetros. Una vez que hicimos esto podemos ejecutarlo en un conjunto
+de datos mucho más grande. Uno de los aspectos clave
+del aprendizaje automático es que obtiene el mejor rendimiento
+en el entrenamiento de conjuntos de datos grandes. Antes ejecuté un trabajo de Dataflow
+que demoró unos 10 minutos para poder continuar. Ahora ejecutaremos
+un trabajo de Dataflow que demorará una hora
+y que creará un conjunto de datos
+mucho más grande con millones de filas. Cuando esté listo obtendrá un RMSE mucho mejor. La idea central es tomar
+los datos sin procesar usar la ingeniería de atributos
+para agregar conocimiento humano en los aspectos importantes como el tránsito, la distancia del viaje si se cruzan los límites si van de este a oeste
+o de norte a sur la diferencia de longitud, latitud,
+la distancia euclidiana y la combinación de funciones. Todo esto ayudará
+a mejorar nuestro modelo.

@@ -1,0 +1,277 @@
+1
+00:00:00,620 --> 00:00:01,589
+Bien.
+
+2
+00:00:01,589 --> 00:00:03,320
+Para comenzar con este lab
+
+3
+00:00:03,320 --> 00:00:07,375
+asegúrense de que su navegador
+esté en el panel de control de GCP.
+
+4
+00:00:07,805 --> 00:00:11,755
+Primero, hagan clic
+en Activate Google Cloud Shell.
+
+5
+00:00:12,425 --> 00:00:15,950
+Es esencial que preparen
+su entorno de Cloud Shell
+
+6
+00:00:15,950 --> 00:00:19,285
+con el código fuente y los paquetes
+que son necesarios para ejecutarlo.
+
+7
+00:00:19,285 --> 00:00:21,620
+Si completaron 
+el lab anterior recientemente
+
+8
+00:00:21,620 --> 00:00:24,605
+el código y los paquetes
+ya deberían estar instalados.
+
+9
+00:00:24,605 --> 00:00:28,750
+Sin embargo, si no tienen
+el directorio training-data-analyst
+
+10
+00:00:28,750 --> 00:00:30,490
+en su entorno de Cloud Shell
+
+11
+00:00:30,490 --> 00:00:35,090
+deténganse aquí y completen
+el lab anterior antes de continuar.
+
+12
+00:00:35,400 --> 00:00:37,280
+Si el entorno de Cloud Shell está listo
+
+13
+00:00:37,280 --> 00:00:41,480
+pueden usar el editor de código
+de Cloud Shell para abrir el código fuente
+
+14
+00:00:41,480 --> 00:00:44,650
+de la canalización de Apache Beam
+que usamos en este lab.
+
+15
+00:00:45,150 --> 00:00:49,520
+Lo pueden encontrar en la ruta:
+training-data-analyst, courses
+
+16
+00:00:49,520 --> 00:00:56,510
+data_analysis, lab2, python,
+en el archivo is_popular.py.
+
+17
+00:00:57,460 --> 00:01:01,045
+Ahora, este archivo contiene
+más código que en el lab anterior.
+
+18
+00:01:01,045 --> 00:01:05,140
+Ahora, verán el código en más detalle.
+
+19
+00:01:05,820 --> 00:01:08,770
+Si bajan al cuerpo del método principal
+
+20
+00:01:08,770 --> 00:01:11,330
+verán el argumento
+de entrada del código.
+
+21
+00:01:11,740 --> 00:01:15,607
+Como entrada, la canalización toma
+los archivos de código fuente de Java
+
+22
+00:01:15,607 --> 00:01:17,475
+del directorio /javahelp.
+
+23
+00:01:18,195 --> 00:01:23,820
+Vean que la salida de la canalización
+se almacenará en el directorio /tmp
+
+24
+00:01:23,820 --> 00:01:27,240
+donde los archivos llevarán
+un prefijo de salida predeterminado
+
+25
+00:01:27,240 --> 00:01:29,990
+aunque podemos anular esa configuración.
+
+26
+00:01:29,990 --> 00:01:32,610
+Una vez que se leen los datos
+desde Google Cloud Storage
+
+27
+00:01:32,610 --> 00:01:37,440
+el siguiente paso es revisar las líneas
+que comienzan con el término clave.
+
+28
+00:01:37,960 --> 00:01:40,360
+Como recordarán del lab anterior
+
+29
+00:01:40,360 --> 00:01:43,915
+el término clave de esta canalización
+es la palabra "import".
+
+30
+00:01:44,505 --> 00:01:49,245
+Luego, la canalización procesa
+los nombres de los paquetes importados.
+
+31
+00:01:49,965 --> 00:01:54,480
+Fíjense en que esto depende
+del método packageUse, que, a su vez
+
+32
+00:01:54,480 --> 00:01:58,060
+revisa los nombre de los paquetes
+en la instrucción de importación
+
+33
+00:01:58,060 --> 00:02:00,480
+y extrae el nombre del paquete
+
+34
+00:02:00,480 --> 00:02:04,240
+pero quita la palabra clave "import"
+y el punto y coma de cierre.
+
+35
+00:02:04,575 --> 00:02:07,500
+Por último, cuando se encuentra
+el nombre del paquete
+
+36
+00:02:07,500 --> 00:02:13,280
+la función splitPackageName muestra
+los prefijos de cada nombre de paquete.
+
+37
+00:02:13,800 --> 00:02:18,480
+Por ejemplo, para un paquete
+llamado com.example.appname
+
+38
+00:02:18,480 --> 00:02:24,980
+la función mostrará los prefijos com,
+com.example y com.example.appname.
+
+39
+00:02:25,370 --> 00:02:27,090
+Para cada uno de esos paquetes
+
+40
+00:02:27,090 --> 00:02:30,070
+el método muestra un par
+compuesto de un prefijo
+
+41
+00:02:30,070 --> 00:02:32,520
+y un número entero por cada instancia.
+
+42
+00:02:32,860 --> 00:02:37,080
+Las instancia se suman
+con la operación CombinePerKey
+
+43
+00:02:37,080 --> 00:02:39,620
+y la función sum como argumento.
+
+44
+00:02:40,150 --> 00:02:43,280
+El combinador Top_5
+identifica los 5 paquetes
+
+45
+00:02:43,280 --> 00:02:45,290
+que se importan con más frecuencia.
+
+46
+00:02:45,290 --> 00:02:50,060
+Luego, podemos ejecutar
+el archivo is_popular.py.
+
+47
+00:02:51,050 --> 00:02:53,100
+Cuando termina
+de ejecutarse la canalización
+
+48
+00:02:53,100 --> 00:02:57,780
+podemos revisar el directorio de salida
+y solicitar ver el contenido del archivo
+
+49
+00:02:57,780 --> 00:03:05,240
+para ver los paquetes más populares:
+org, org.apache, org.apache.beam
+
+50
+00:03:05,240 --> 00:03:08,250
+y org.apache.beam.sdk.
+
+51
+00:03:09,425 --> 00:03:12,520
+Observen que,
+en esta implementación de la canalización
+
+52
+00:03:12,520 --> 00:03:15,775
+podemos modificar el destino de la salida.
+
+53
+00:03:16,305 --> 00:03:19,142
+Por ejemplo, si anulamos
+la configuración predeterminada
+
+54
+00:03:19,142 --> 00:03:21,760
+para que la canalización
+escriba los resultados
+
+55
+00:03:21,760 --> 00:03:26,305
+en el directorio /tmp,
+con el prefijo my_output
+
+56
+00:03:26,305 --> 00:03:28,352
+podemos volver
+a ejecutarla la canalización
+
+57
+00:03:28,352 --> 00:03:31,160
+y encontrar
+nuevas instancias de la salida.
+
+58
+00:03:31,490 --> 00:03:36,070
+Las nuevas instancias de los archivos
+de salida tendrán el prefijo my_output.
+
+59
+00:03:36,540 --> 00:03:38,730
+Con esto, terminamos el lab.

@@ -1,0 +1,779 @@
+1
+00:00:00,000 --> 00:00:03,370
+Als Nächstes stellen wir
+Funktionen anhand realer Beispiele dar.
+
+2
+00:00:03,370 --> 00:00:05,800
+Sehen Sie sich dieses Beispiel an.
+
+3
+00:00:05,800 --> 00:00:07,365
+Das sind meine Rohdaten.
+
+4
+00:00:07,365 --> 00:00:08,790
+Es geht um eine Eisdiele.
+
+5
+00:00:08,790 --> 00:00:12,100
+Ich möchte herausfinden,
+ob ein bestimmter Mitarbeiter bedient,
+
+6
+00:00:12,100 --> 00:00:15,520
+ob der Kunde
+1,4 Sekunden oder 1,4 Minuten gewartet hat
+
+7
+00:00:15,520 --> 00:00:17,385
+und was für eine Bewertung er abgibt.
+
+8
+00:00:17,385 --> 00:00:19,425
+Ich möchte diese Bewertung vorhersagen.
+
+9
+00:00:19,425 --> 00:00:22,785
+Wie zufrieden wird mein Kunde sein,
+je nachdem, von wem er bedient wird,
+
+10
+00:00:22,785 --> 00:00:24,210
+wie lang er warten musste,
+
+11
+00:00:24,210 --> 00:00:25,675
+was er gekauft hat,
+
+12
+00:00:25,675 --> 00:00:28,080
+wo sich das Geschäft befindet usw.
+
+13
+00:00:28,080 --> 00:00:30,585
+Das sind unsere Daten.
+
+14
+00:00:30,585 --> 00:00:32,944
+Jetzt müssen diese Trainingsdaten
+
+15
+00:00:32,944 --> 00:00:35,805
+in Zahlen umgewandelt werden.
+
+16
+00:00:35,805 --> 00:00:37,705
+Alle Werte müssen numerisch sein,
+
+17
+00:00:37,705 --> 00:00:40,810
+da neuronale Netzwerke Zahlen verarbeiten.
+
+18
+00:00:40,810 --> 00:00:44,400
+Ich wandle also alle Daten in
+Zahlen um und erhalte folgende Funktionen.
+
+19
+00:00:44,400 --> 00:00:47,790
+In TensorFlow
+rufe ich diese JSON-Eingabe
+
+20
+00:00:47,790 --> 00:00:51,500
+aus meiner Webanwendung ab,
+die auf ein Data Warehouse zugreift,
+
+21
+00:00:51,500 --> 00:00:53,675
+und erstelle die numerischen Werte.
+
+22
+00:00:53,675 --> 00:00:56,865
+In TensorFlow
+werden diese Spalten zu Funktionsspalten.
+
+23
+00:00:56,865 --> 00:01:00,570
+Wie machen wir
+aus diesen Daten Funktionsspalten?
+
+24
+00:01:00,570 --> 00:01:02,720
+Wie werden daraus Zahlenwerte?
+
+25
+00:01:02,720 --> 00:01:06,190
+Werte wie "price" oder "waitTime"
+
+26
+00:01:06,190 --> 00:01:07,860
+sind bereits numerisch.
+
+27
+00:01:07,860 --> 00:01:10,350
+Praktisch.
+Diese Werte lassen sich leicht codieren.
+
+28
+00:01:10,350 --> 00:01:12,410
+Wir übernehmen Sie einfach unverändert.
+
+29
+00:01:12,410 --> 00:01:15,180
+Sie sind numerisch
+und haben eine aussagekräftige Größe.
+
+30
+00:01:15,180 --> 00:01:21,535
+Eine Wartezeit von 2,5
+oder 1,4 kann TensorFlow leicht lernen.
+
+31
+00:01:21,535 --> 00:01:25,540
+Dies wird als Realwertspalte bezeichnet.
+
+32
+00:01:25,540 --> 00:01:29,475
+Ich gebe also Ebenen
+wie Realwertspalte "price"
+
+33
+00:01:29,475 --> 00:01:32,210
+und Realwertspalte "waitTime" an.
+
+34
+00:01:32,210 --> 00:01:37,425
+Diese Zahlen können wir einfach
+übernehmen und als Realwertspalten nutzen.
+
+35
+00:01:37,425 --> 00:01:39,900
+Wie sieht es mit dieser Eingabe aus?
+
+36
+00:01:39,900 --> 00:01:42,585
+"transactionId" ist gleich 42.
+
+37
+00:01:42,585 --> 00:01:44,340
+Das ist viel zu spezifisch
+
+38
+00:01:44,340 --> 00:01:47,230
+und deshalb als Funktion unbrauchbar.
+
+39
+00:01:47,230 --> 00:01:49,940
+Was ist mit der Mitarbeiternummer?
+
+40
+00:01:49,940 --> 00:01:54,045
+"employeeId" ist gleich 72365.
+
+41
+00:01:54,045 --> 00:01:57,180
+Ist das numerisch?
+Es ist zwar eine Zahl,
+
+42
+00:01:57,180 --> 00:01:59,515
+doch ist die Zahl aussagekräftig?
+
+43
+00:01:59,515 --> 00:02:03,310
+Ist ein Mitarbeiter mit der Nummer 72365
+
+44
+00:02:03,310 --> 00:02:07,510
+doppelt so gut
+wie ein Mitarbeiter mit der Nummer 36182?
+
+45
+00:02:07,510 --> 00:02:09,235
+Nein.
+
+46
+00:02:09,235 --> 00:02:11,949
+Ich kann die Nummer
+also nicht einfach übernehmen.
+
+47
+00:02:11,949 --> 00:02:14,345
+Sie muss zuerst bearbeitet werden.
+
+48
+00:02:14,345 --> 00:02:17,175
+In meiner Eisdiele arbeiten 5 Angestellte.
+
+49
+00:02:17,175 --> 00:02:22,980
+Mitarbeiternummer 8345, 72365 usw.
+
+50
+00:02:22,980 --> 00:02:26,585
+Ich kann die Mitarbeiternummer 72365
+
+51
+00:02:26,585 --> 00:02:31,455
+mit dem hier gezeigten Vektor darstellen.
+
+52
+00:02:31,455 --> 00:02:35,380
+Der Vektor lautet 01000,
+
+53
+00:02:35,380 --> 00:02:40,375
+da ich dem Mitarbeiter 72635
+die zweite Spalte zugeordnet habe.
+
+54
+00:02:40,375 --> 00:02:43,655
+Das ist fast wie bei einer Bitmaske.
+
+55
+00:02:43,655 --> 00:02:48,340
+Diese Mitarbeiterspalte
+hat den Wert 1, alle anderen sind 0.
+
+56
+00:02:48,340 --> 00:02:50,770
+Dies nennt sich 1-aus-n-Code.
+
+57
+00:02:50,770 --> 00:02:52,435
+Eine Spalte entspricht "1"
+
+58
+00:02:52,435 --> 00:02:54,230
+und alle anderen sind "0".
+
+59
+00:02:54,230 --> 00:02:56,800
+Bei 5 Mitarbeitern in einer Eisdiele
+
+60
+00:02:56,800 --> 00:02:58,995
+haben Sie demnach 5 Spalten.
+
+61
+00:02:58,995 --> 00:03:03,875
+Eigentlich wären es aus Gründen der
+linearen Unabhängigkeit nur 4 Spalten.
+
+62
+00:03:03,875 --> 00:03:07,635
+Darauf verzichten wir jetzt aber
+und nehmen 5 Spalten für 5 Mitarbeiter.
+
+63
+00:03:07,635 --> 00:03:10,510
+In TensorFlow
+wird dies als Sparse-Spalte bezeichnet.
+
+64
+00:03:10,510 --> 00:03:13,740
+Sie erstellen einfach
+eine Sparse-Spalte mit den Schlüsseln.
+
+65
+00:03:13,740 --> 00:03:16,065
+"employeeId" ist der Spaltenname
+
+66
+00:03:16,065 --> 00:03:21,160
+und die Mitarbeiternummern
+sind die Schlüssel 8345, 72365 usw.
+
+67
+00:03:21,160 --> 00:03:23,970
+Wir übergeben einfach
+die Strings für jeden der Schlüssel.
+
+68
+00:03:23,970 --> 00:03:28,095
+TensorFlow berechnet
+daraus eine direkte Trainingszeit,
+
+69
+00:03:28,095 --> 00:03:31,230
+unsere Vorhersagezeit,
+und codiert diese Werte,
+
+70
+00:03:31,230 --> 00:03:33,390
+damit Sie numerisch vorliegen.
+
+71
+00:03:33,390 --> 00:03:37,200
+Wir verwenden
+die Mitarbeiternummer als Sparse-Spalte.
+
+72
+00:03:37,200 --> 00:03:41,285
+In diesem Fall
+waren uns die Schlüssel bekannt.
+
+73
+00:03:41,285 --> 00:03:44,800
+Wie gehen wir vor,
+wenn wir die Schlüssel noch nicht kennen?
+
+74
+00:03:44,800 --> 00:03:47,520
+Sie müssen die Eingabedaten
+
+75
+00:03:47,520 --> 00:03:50,080
+einer Vorverarbeitung unterziehen
+
+76
+00:03:50,080 --> 00:03:52,630
+und alle Schlüssel
+in einem Trainings-Dataset suchen,
+
+77
+00:03:52,630 --> 00:03:55,635
+um ein sogenanntes
+Schlüsselverzeichnis zu erstellen.
+
+78
+00:03:55,635 --> 00:03:58,760
+Das ist der
+erste Schritt – die Vorverarbeitung.
+
+79
+00:03:58,760 --> 00:04:02,150
+Diese Aufgabe muss
+vor dem Trainieren erledigt werden.
+
+80
+00:04:02,150 --> 00:04:06,150
+Dann erstellen Sie ein neues Dataset,
+in dem die Werte genutzt werden können.
+
+81
+00:04:06,150 --> 00:04:09,250
+Bevor Sie Ihr Modell trainieren können,
+
+82
+00:04:09,250 --> 00:04:11,800
+müssen Sie
+dieses Schlüsselverzeichnis erstellen.
+
+83
+00:04:11,800 --> 00:04:14,755
+Es muss zum
+Zeitpunkt der Vorhersage verfügbar sein,
+
+84
+00:04:14,755 --> 00:04:18,635
+da Sie bei der Ausführung lediglich
+eine Mitarbeiternummer anfordern,
+
+85
+00:04:18,635 --> 00:04:20,540
+zum Beispiel 72365.
+
+86
+00:04:20,540 --> 00:04:22,885
+Das Modell muss dann wissen,
+
+87
+00:04:22,885 --> 00:04:28,300
+das "72365" die
+zweite Spalte mit dem 1-aus-n-Code ist.
+
+88
+00:04:28,300 --> 00:04:30,170
+Dafür müssen das Verzeichnis
+
+89
+00:04:30,170 --> 00:04:32,540
+und die Zuordnung der Verzeichniseinträge
+
+90
+00:04:32,540 --> 00:04:35,260
+zum Trainings- und
+Vorhersagezeitpunkt identisch sein.
+
+91
+00:04:35,260 --> 00:04:37,210
+Sonst funktioniert es nicht.
+
+92
+00:04:37,210 --> 00:04:38,890
+Und was mache ich,
+
+93
+00:04:38,890 --> 00:04:41,460
+wenn ein neuer
+Mitarbeiter eingestellt wird.
+
+94
+00:04:41,460 --> 00:04:43,270
+Bleibt das Modell dasselbe?
+
+95
+00:04:43,270 --> 00:04:46,440
+Im aktuellen Modell kann kein
+neuer Mitarbeiter aufgenommen werden.
+
+96
+00:04:46,440 --> 00:04:50,030
+Sie können für diesen
+also auch keine Vorhersagen machen.
+
+97
+00:04:50,030 --> 00:04:53,114
+Für Szenarien
+wie diese müssen Sie vorausplanen.
+
+98
+00:04:53,114 --> 00:04:55,005
+Sie müssten sich überlegen,
+
+99
+00:04:55,005 --> 00:04:59,205
+was mit Mitarbeitern passiert, die noch
+nicht vorhanden oder unauffindbar sind.
+
+100
+00:04:59,205 --> 00:05:03,115
+Sie würden dann vielleicht einen
+Mittelwert aller Mitarbeiter errechnen
+
+101
+00:05:03,115 --> 00:05:06,165
+und diese Zahl
+verwenden – einen imputierten Wert.
+
+102
+00:05:06,165 --> 00:05:09,850
+Sie erfassen Daten zu den
+Arbeitszeiten dieses Mitarbeiters,
+
+103
+00:05:09,850 --> 00:05:12,300
+der Zufriedenheit
+der Kunden mit diesem Mitarbeiter,
+
+104
+00:05:12,300 --> 00:05:13,780
+zu verschiedenen Wartezeiten,
+
+105
+00:05:13,780 --> 00:05:15,510
+und den
+Produkten, die er serviert.
+
+106
+00:05:15,510 --> 00:05:18,955
+Diese Daten können dann
+für die Vorhersage genutzt werden.
+
+107
+00:05:19,925 --> 00:05:23,030
+Wenn Sie den Schlüssel schon kennen,
+
+108
+00:05:23,030 --> 00:05:25,830
+erstellen Sie einfach
+die Sparse-Spalte mit den Schlüsseln,
+
+109
+00:05:25,830 --> 00:05:28,540
+übergeben die Schlüssel
+und programmieren Sie ein.
+
+110
+00:05:28,540 --> 00:05:31,470
+Das sind die Optionen
+zum Erstellen einer Sparse-Spalte.
+
+111
+00:05:31,470 --> 00:05:34,950
+In manchen Fällen
+sind Ihre Daten schon indexiert.
+
+112
+00:05:34,950 --> 00:05:36,870
+Welche Daten betrifft das?
+
+113
+00:05:36,870 --> 00:05:39,240
+Werte wie die Mitarbeiternummer,
+
+114
+00:05:39,240 --> 00:05:41,820
+die zufällig Zahlen von 1 bis 1.000 sind,
+
+115
+00:05:41,820 --> 00:05:44,015
+sind bereits indexiert.
+
+116
+00:05:44,015 --> 00:05:47,760
+Es sind willkürliche große Zahlen,
+die nur hinzugefügt werden müssen.
+
+117
+00:05:47,760 --> 00:05:50,220
+In dem Fall wird eine Sparse-Spalte
+
+118
+00:05:50,220 --> 00:05:52,730
+mit der ganzzahligen
+Funktion "employeeId" erstellt.
+
+119
+00:05:52,730 --> 00:05:55,435
+Und es gibt 5 Mitarbeiter.
+
+120
+00:05:55,435 --> 00:06:00,200
+In unserem Steuerbeispiel
+lässt sich das für die Uhrzeit einsetzen,
+
+121
+00:06:00,200 --> 00:06:04,495
+da diese automatisch
+als Ganzzahlen von 0 bis 23 vorliegt.
+
+122
+00:06:04,495 --> 00:06:06,910
+Die Uhrzeit ist
+die perfekte ganzzahlige Funktion,
+
+123
+00:06:06,910 --> 00:06:08,600
+da sie nicht numerisch ist.
+
+124
+00:06:08,600 --> 00:06:10,380
+Sie ist nicht vollständig numerisch,
+
+125
+00:06:10,380 --> 00:06:13,605
+da die 23 sehr nah an der 0 und der 1 ist.
+
+126
+00:06:13,605 --> 00:06:15,895
+Es liegen nur 2 Stunden dazwischen.
+
+127
+00:06:15,895 --> 00:06:18,165
+Wir kommen zur dritten Möglichkeit.
+
+128
+00:06:18,165 --> 00:06:20,760
+Nehmen wir an, Sie haben kein Verzeichnis
+
+129
+00:06:20,760 --> 00:06:22,990
+und keine ganzzahligen Daten.
+
+130
+00:06:22,990 --> 00:06:24,995
+Sie können einen Trick anwenden.
+
+131
+00:06:24,995 --> 00:06:28,420
+Wenn Sie kein Verzeichnis erstellen wollen,
+
+132
+00:06:28,420 --> 00:06:31,790
+können Sie die Mitarbeiternummer hashen,
+
+133
+00:06:31,790 --> 00:06:35,100
+den Hash der Nummer berechnen
+
+134
+00:06:35,100 --> 00:06:38,820
+und das Ergebnis in 500 Buckets aufteilen.
+
+135
+00:06:38,820 --> 00:06:41,490
+Warum sollten Sie das tun?
+
+136
+00:06:41,490 --> 00:06:45,350
+Wenn ein Unternehmen 100 Mitarbeiter hat
+und Sie die Daten in 500 Buckets hashen,
+
+137
+00:06:45,350 --> 00:06:50,040
+sodass sich in jedem Bucket
+entweder 0 oder 1 Mitarbeiter befindet,
+
+138
+00:06:50,040 --> 00:06:52,110
+ist das fast wie 1-aus-n-Code,
+
+139
+00:06:52,110 --> 00:06:54,180
+bzw. 500-aus-n-Code.
+
+140
+00:06:54,180 --> 00:06:59,355
+Damit erreiche ich dasselbe Ziel,
+muss aber kein Verzeichnis erstellen.
+
+141
+00:06:59,355 --> 00:07:01,855
+Jetzt zur Kundenbewertung.
+
+142
+00:07:01,855 --> 00:07:03,675
+Was stellen wir damit an?
+
+143
+00:07:03,675 --> 00:07:05,990
+Die Vorhersage der Kundenbewertung
+
+144
+00:07:05,990 --> 00:07:08,465
+sollte kein
+Problem sein, da es ein Label ist.
+
+145
+00:07:08,465 --> 00:07:10,740
+Wir könnten es aber als Eingabe verwenden,
+
+146
+00:07:10,740 --> 00:07:13,020
+um etwas anderes vorherzusagen.
+
+147
+00:07:13,020 --> 00:07:16,619
+Um einen rating-Wert
+als Eingabefunktion zu verwenden,
+
+148
+00:07:16,619 --> 00:07:18,835
+haben Sie zwei Möglichkeiten.
+
+149
+00:07:18,835 --> 00:07:21,820
+Sie könnten ihn
+als Nummer behandeln: 1 bis 5.
+
+150
+00:07:21,820 --> 00:07:26,070
+Das ist numerisch
+und hat eine aussagekräftige Größe.
+
+151
+00:07:26,070 --> 00:07:30,230
+3 ist mehr als 2,
+4 Sterne ist schlechter als 5 Sterne,
+
+152
+00:07:30,230 --> 00:07:32,475
+2 Sterne ist noch schlechter.
+
+153
+00:07:32,475 --> 00:07:34,925
+Das ist einfach 1-aus-n-Code.
+
+154
+00:07:34,925 --> 00:07:37,125
+In einigen Fällen haben Sie Optionen
+
+155
+00:07:37,125 --> 00:07:39,805
+und können die
+Kundenbewertung entweder als 1-aus-n-Code
+
+156
+00:07:39,805 --> 00:07:41,695
+oder als Nummer behandeln.
+
+157
+00:07:41,695 --> 00:07:45,040
+Sie müssen entscheiden,
+wie Sie mit der Bewertung umgehen wollen.
+
+158
+00:07:45,040 --> 00:07:47,560
+Sie sollten jedoch berücksichtigen,
+
+159
+00:07:47,560 --> 00:07:51,720
+dass nicht jeder Kunde
+immer eine Bewertung abgibt.
+
+160
+00:07:51,720 --> 00:07:55,345
+Zum Beispiel bei einer Umfrage,
+die ein Kunde nicht ausgefüllt hat.
+
+161
+00:07:55,345 --> 00:07:57,820
+Wie gehen Sie mit fehlenden Daten um?
+
+162
+00:07:57,820 --> 00:08:00,090
+Sie könnten einfach 2 Spalten verwenden,
+
+163
+00:08:00,090 --> 00:08:03,765
+eine für die Bewertung, die andere
+für das Vorhandensein einer Bewertung.
+
+164
+00:08:03,765 --> 00:08:07,290
+In diesem Fall
+ist die Zahl 4 die Bewertung eines Kunden
+
+165
+00:08:07,290 --> 00:08:10,480
+und 1 zeigt an, dass
+der Kunde eine Bewertung abgegeben hat.
+
+166
+00:08:10,480 --> 00:08:13,735
+Eine 0 bedeutet,
+dass keine Bewertung vorhanden ist.
+
+167
+00:08:13,735 --> 00:08:16,930
+Mit 1-aus-n-Code
+könnten Sie es auch anders machen.
+
+168
+00:08:16,930 --> 00:08:20,260
+Eine Bewertung mit 4 Punkten wäre 0001
+
+169
+00:08:20,260 --> 00:08:24,285
+und keine Bewertung wäre 0000.
+
+170
+00:08:24,285 --> 00:08:28,480
+Vergessen Sie bloß nicht
+die zweite Spalte mit 0 oder 1,
+
+171
+00:08:28,480 --> 00:08:31,845
+da Sie sonst theoretische
+Zahlen mit realen Werten vermischen.
+
+172
+00:08:31,845 --> 00:08:36,384
+Sie müssen eine Extraspalte hinzufügen,
+um anzugeben, ob der Wert ermittelt wurde.
+
+173
+00:08:36,384 --> 00:08:38,470
+Wenn Sie also fehlende Daten haben,
+
+174
+00:08:38,470 --> 00:08:40,080
+ob lange oder kurze Werte,
+
+175
+00:08:40,080 --> 00:08:41,940
+benötigen Sie eine weitere Spalte.

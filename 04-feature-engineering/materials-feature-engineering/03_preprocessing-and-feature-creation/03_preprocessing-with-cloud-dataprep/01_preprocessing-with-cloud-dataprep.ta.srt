@@ -1,0 +1,487 @@
+1
+00:00:00,000 --> 00:00:01,890
+Early in this module,
+
+2
+00:00:01,890 --> 00:00:04,050
+you learned about techniques for implementing
+
+3
+00:00:04,050 --> 00:00:07,290
+the code to do Preprocessing and feature creation.
+
+4
+00:00:07,290 --> 00:00:08,880
+To use these techniques,
+
+5
+00:00:08,880 --> 00:00:12,495
+you need to have a pretty good understanding of the domain of your problem,
+
+6
+00:00:12,495 --> 00:00:16,200
+and you also need to know quite a bit about your raw input data.
+
+7
+00:00:16,200 --> 00:00:20,080
+In practice, you may not always have that knowledge and understanding,
+
+8
+00:00:20,080 --> 00:00:23,955
+you may need to do feature engineering and data science in unfamiliar domains,
+
+9
+00:00:23,955 --> 00:00:28,125
+and you may need to know little or nothing about your raw input data.
+
+10
+00:00:28,125 --> 00:00:30,570
+So, in the rest of this module,
+
+11
+00:00:30,570 --> 00:00:33,060
+you will take a look at tools and techniques that can
+
+12
+00:00:33,060 --> 00:00:35,820
+help you if you're starting with data science from scratch.
+
+13
+00:00:35,820 --> 00:00:40,205
+Previously, you can use tools like Apache beam and Cloud Dataflow.
+
+14
+00:00:40,205 --> 00:00:43,950
+Next, you will learn about a tool called Cloud Dataprep,
+
+15
+00:00:43,950 --> 00:00:46,034
+which lets you use an interactive,
+
+16
+00:00:46,034 --> 00:00:49,170
+graphical user interface to better understand,
+
+17
+00:00:49,170 --> 00:00:51,390
+visualize and preprocess your data.
+
+18
+00:00:51,390 --> 00:00:53,910
+When done right, feature engineering can
+
+19
+00:00:53,910 --> 00:00:57,045
+significantly improve the performance of your machine learning system.
+
+20
+00:00:57,045 --> 00:00:59,355
+And to succeed with feature engineering,
+
+21
+00:00:59,355 --> 00:01:02,355
+It is important to have domain knowledge for your system.
+
+22
+00:01:02,355 --> 00:01:07,140
+And specifically, to understand your raw input data. So, what does this mean?
+
+23
+00:01:07,140 --> 00:01:11,055
+How can you even start to understand a data set with millions,
+
+24
+00:01:11,055 --> 00:01:13,010
+or billions of records.
+
+25
+00:01:13,010 --> 00:01:16,750
+When working with a data set that you have never seen before,
+
+26
+00:01:16,750 --> 00:01:19,300
+you should start with an exploratory analysis,
+
+27
+00:01:19,300 --> 00:01:22,025
+you should visualize the values of the data set,
+
+28
+00:01:22,025 --> 00:01:25,870
+understand which values happened frequently and infrequently,
+
+29
+00:01:25,870 --> 00:01:28,765
+find outliers and look for missing values.
+
+30
+00:01:28,765 --> 00:01:32,560
+You definitely want to know the statistics of the data set, averages,
+
+31
+00:01:32,560 --> 00:01:35,240
+standard deviation for different variables in your data,
+
+32
+00:01:35,240 --> 00:01:37,715
+there are minimum and maximum values,
+
+33
+00:01:37,715 --> 00:01:41,550
+and you want to explore the distributions of these values.
+
+34
+00:01:41,550 --> 00:01:44,945
+Also, when working on machine learning,
+
+35
+00:01:44,945 --> 00:01:48,789
+chances are you working with a team that can include data scientists,
+
+36
+00:01:48,789 --> 00:01:51,355
+software developers, and business analysts.
+
+37
+00:01:51,355 --> 00:01:54,430
+This means that you should have a way to share the results
+
+38
+00:01:54,430 --> 00:01:57,640
+of your learnings about the data set with others,
+
+39
+00:01:57,640 --> 00:02:01,165
+and also tap into the knowledge of your team for insights.
+
+40
+00:02:01,165 --> 00:02:04,960
+The rest of this module we'll cover two complementary approaches.
+
+41
+00:02:04,960 --> 00:02:10,090
+Let's start with exploring a data set and move on to preprocessing and feature creation.
+
+42
+00:02:10,090 --> 00:02:14,890
+The first approach, we'll use the tools that you have already seen including BigQuery,
+
+43
+00:02:14,890 --> 00:02:17,305
+Cloud Dataflow and Tenserflow.
+
+44
+00:02:17,305 --> 00:02:20,800
+The second approach, we'll introduce Cloud Dataprep,
+
+45
+00:02:20,800 --> 00:02:26,275
+and show you how Dataprep can help with both exploratory analysis and data processing.
+
+46
+00:02:26,275 --> 00:02:28,120
+Let's start with the first approach,
+
+47
+00:02:28,120 --> 00:02:30,990
+where you will use the tools you already know to explore your data.
+
+48
+00:02:30,990 --> 00:02:32,195
+Early in this course,
+
+49
+00:02:32,195 --> 00:02:34,735
+you have seen examples of using graphing libraries
+
+50
+00:02:34,735 --> 00:02:37,875
+like Seabourn to visualize data and Cloud Datalab.
+
+51
+00:02:37,875 --> 00:02:41,080
+The example in your screen shows a plot of data from
+
+52
+00:02:41,080 --> 00:02:44,710
+the New York City taxi fare data set available in BigQuery.
+
+53
+00:02:44,710 --> 00:02:47,050
+In this case, the diagram graphs
+
+54
+00:02:47,050 --> 00:02:50,450
+the taxi trip distance against a fair amount for the trips.
+
+55
+00:02:50,450 --> 00:02:55,300
+Now, using a notebook in Datalab to explore and visualize your data set,
+
+56
+00:02:55,300 --> 00:02:57,190
+may seem like a practical approach.
+
+57
+00:02:57,190 --> 00:03:01,045
+However, remember that the default Datalab environment
+
+58
+00:03:01,045 --> 00:03:05,190
+is running in a single virtual server with a limited amount of memory.
+
+59
+00:03:05,190 --> 00:03:07,640
+In case of the taxi fare dataset,
+
+60
+00:03:07,640 --> 00:03:09,460
+there are billions of data points.
+
+61
+00:03:09,460 --> 00:03:12,235
+So, it will be impractical or too expensive,
+
+62
+00:03:12,235 --> 00:03:17,285
+to plot and analyze all of them using just a single no datalab environment.
+
+63
+00:03:17,285 --> 00:03:20,230
+Instead of loading the billions of records of
+
+64
+00:03:20,230 --> 00:03:23,875
+the entire taxi fare data set in the data lab environment,
+
+65
+00:03:23,875 --> 00:03:28,415
+you can use SQL and calculate summary statistics using BigQuery.
+
+66
+00:03:28,415 --> 00:03:30,390
+As shown in this diagram,
+
+67
+00:03:30,390 --> 00:03:33,705
+you can still use datalab to write you SQL code,
+
+68
+00:03:33,705 --> 00:03:35,315
+once the code is ready,
+
+69
+00:03:35,315 --> 00:03:40,645
+you submit the SQL statement to BigQuery via the APIs and get back the result.
+
+70
+00:03:40,645 --> 00:03:44,350
+Since the summary statistics are just a few rows of data,
+
+71
+00:03:44,350 --> 00:03:47,620
+you can easily plot them in datalab using Seaborne,
+
+72
+00:03:47,620 --> 00:03:50,210
+or other Python visualization libraries.
+
+73
+00:03:50,210 --> 00:03:53,860
+Also, as you learned from the earlier sections of this module,
+
+74
+00:03:53,860 --> 00:03:57,760
+you can use Apache beam APIs and Cloud Dataflow to implement
+
+75
+00:03:57,760 --> 00:04:01,825
+calculations of summary statistics and other data preprocessing jobs,
+
+76
+00:04:01,825 --> 00:04:06,460
+you can use Python or Java to write the code for your data processing pipeline.
+
+77
+00:04:06,460 --> 00:04:09,265
+Next, let's take a look at the second approach,
+
+78
+00:04:09,265 --> 00:04:14,170
+where you will use Cloud Dataprep to develop a better understanding of your input data,
+
+79
+00:04:14,170 --> 00:04:18,190
+and to do feature engineering using an interactive visual interface,
+
+80
+00:04:18,190 --> 00:04:20,065
+instead of writing low level code.
+
+81
+00:04:20,065 --> 00:04:22,810
+So, what is Cloud Dataprep?
+
+82
+00:04:22,810 --> 00:04:26,260
+It is a fully managed service available from GCP,
+
+83
+00:04:26,260 --> 00:04:28,825
+and it lets you explore and transform your data
+
+84
+00:04:28,825 --> 00:04:32,680
+interactively using a web browser with a minimal amount of code,
+
+85
+00:04:32,680 --> 00:04:35,880
+Dataprep can get data from
+
+86
+00:04:35,880 --> 00:04:39,855
+a variety of sources including Google Cloud storage, and BigQuery.
+
+87
+00:04:39,855 --> 00:04:42,840
+You can also upload your own data to Dataprep.
+
+88
+00:04:42,840 --> 00:04:45,930
+Once Dataprep knows where to get your data,
+
+89
+00:04:45,930 --> 00:04:49,595
+you can use this graphical UI to explore your data,
+
+90
+00:04:49,595 --> 00:04:51,635
+and create data visualizations.
+
+91
+00:04:51,635 --> 00:04:55,085
+For example, you can view histograms of data values
+
+92
+00:04:55,085 --> 00:04:59,600
+and get statistical summaries like averages, percentile values.
+
+93
+00:04:59,600 --> 00:05:03,055
+After you have explored and understood your dataset,
+
+94
+00:05:03,055 --> 00:05:07,555
+you can use Dataprep to compute flows of data transformations.
+
+95
+00:05:07,555 --> 00:05:12,655
+The flows are similar to the pipelines that you have seen in dataflow.
+
+96
+00:05:12,655 --> 00:05:15,870
+In fact, the flows are compatible with dataflow.
+
+97
+00:05:15,870 --> 00:05:17,900
+You can take a Dataprep flow,
+
+98
+00:05:17,900 --> 00:05:21,085
+and run it as a pipeline on the data flow platform.
+
+99
+00:05:21,085 --> 00:05:25,880
+In Dataprep, the flows are implemented as a sequence of recipes,
+
+100
+00:05:25,880 --> 00:05:31,375
+the recipes are data processing steps built from a library of so called wranglers.
+
+101
+00:05:31,375 --> 00:05:36,260
+Dataprep has Wranglers for many common data processing tasks shown on the left.
+
+102
+00:05:36,260 --> 00:05:39,890
+You will see specific examples of Wranglers shortly.
+
+103
+00:05:39,890 --> 00:05:42,920
+Keep in mind that instead of you having to
+
+104
+00:05:42,920 --> 00:05:46,210
+implement these data processing steps and code yourself,
+
+105
+00:05:46,210 --> 00:05:47,835
+if you use the wranglers,
+
+106
+00:05:47,835 --> 00:05:50,450
+Dataprep can take your flow and its recipes,
+
+107
+00:05:50,450 --> 00:05:53,240
+and convert them to a dataflow pipeline.
+
+108
+00:05:53,240 --> 00:05:56,495
+Then, using the same Dataprep interface,
+
+109
+00:05:56,495 --> 00:05:57,760
+you can take the flow,
+
+110
+00:05:57,760 --> 00:06:01,950
+run it as a job on Dataflow and monitor the progress of the job.
+
+111
+00:06:01,950 --> 00:06:06,780
+Dataprep library has a variety of pre-built Wranglers for common data processing tasks.
+
+112
+00:06:06,780 --> 00:06:11,850
+You can clean up data using duplication of filter out missing an outlier values,
+
+113
+00:06:11,850 --> 00:06:16,170
+or you can do common aggregations like counting or summing up values,
+
+114
+00:06:16,170 --> 00:06:19,560
+or you can join a union different data tables together,
+
+115
+00:06:19,560 --> 00:06:23,760
+and you can transform data into different types like strings or integers.
+
+116
+00:06:23,760 --> 00:06:25,710
+While the flow is executing,
+
+117
+00:06:25,710 --> 00:06:29,715
+you can use the Dataflow interface to monitor the details of the jobs progress,
+
+118
+00:06:29,715 --> 00:06:31,275
+and once the job is done,
+
+119
+00:06:31,275 --> 00:06:34,230
+you can get a summary of the job status in Dataprep.
+
+120
+00:06:34,230 --> 00:06:37,270
+As you can see from the screenshot of the completed job,
+
+121
+00:06:37,270 --> 00:06:40,760
+the summary includes the statistics and visualizations,
+
+122
+00:06:40,760 --> 00:06:44,120
+that you can get for any dataset in Dataprep.

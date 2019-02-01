@@ -1,0 +1,70 @@
+Estamos en TensorFlow Playground. Tenemos un conjunto de datos
+que se ve así. Tenemos los puntos azules
+en la esquina superior derecha los naranjas
+en la esquina inferior izquierda y estamos tratando de trazar
+una línea de separación entre ambos. Y para hacerlo,
+tenemos estas entradas x1, x2 x1² y x2² y x1 por x2. Primero,
+¿cuáles de estas son entradas sin procesar y cuáles son atributos creados? Bueno, x1 y x2
+son las entradas sin procesar. x1², x2² y x1x2 son atributos que creamos a partir
+de las entradas sin procesar x1 y x2. ¿Cuáles son combinaciones de atributos? x1 por x2 es obviamente
+una combinación de atributos pero si observan con cuidado
+podrán ver que x1² también es una combinación de atributos. Es una autocombinación.
+Es un "self JOIN", por así decirlo. Se toman x1 y x1
+y se combinan para obtener x1². Una forma de verlo es que tenemos
+dos entradas sin procesar, x1 y x2 y tenemos tres combinaciones de atributos x1², x2² y x1x2. Pero solo es terminología. Pueden llamar a x1² y x2² una transformación de la entrada
+en lugar de una combinación de atributos. No hay problema. Tenemos cinco entradas en nuestro modelo y deseamos entrenarlo. Hagámoslo. Apretaré el botón de reproducir
+y comenzará el entrenamiento. Observen que algo extraño ocurre. Aquí abajo,
+en la esquina inferior izquierda ¿vieron eso azul? Desapareció después de un rato,
+pero imaginen que eso no hubiera sucedido. Intentemos de nuevo. No sabemos
+por cuánto tiempo entrenaremos. Supongamos que entrenamos hasta aquí por 230 repeticiones. Eso es mucho tiempo. Entrenamos por 230 repeticiones
+y vemos algo extraño. Esto. Ese triángulo
+es un indicador de sobreajuste. En realidad, no hay datos ahí por lo que es una explicación factible y no estamos tratando
+de simplificar el modelo. Entonces, el modelo coloca datos ahí. Una de las razones es porque estamos permitiendo
+que el modelo se sobreajuste. Una manera de hacer que esto pase es alimentar los mismos datos
+de varias formas. ¿Qué ocurre si desactivo x1x2? Ahora, solo tenemos
+x1, x2, x1² y x2². Reinicio y ahora, de nuevo observen que hay un límite extraño que ocurre
+en la etapa temprana del entrenamiento. Hagámoslo de nuevo.
+Lo reiniciamos y lo interrumpiremos
+alrededor de las 200 repeticiones. Alrededor de las 200 repeticiones,
+observamos que el límite no es tan bueno todavía hay esto blanco y extraño aquí debido a los atributos adicionales,
+x1² y x2². ¿Qué ocurre si quito x1² y x2²? Ahora solo tenemos los datos
+sin procesar, x1 y x2. Reinicio el entrenamiento y lo interrumpo
+alrededor de las 200 repeticiones. Notarán que ahora es casi perfecto. Solo tengo esta línea
+y eso es algo que deben tomar en cuenta que pueden tener mucho de algo bueno y que las combinaciones de atributos
+son una tentación para el sobreajuste. Pero también observamos algo más que si entrenan durante mucho tiempo… quitemos esto,
+es con lo que comenzamos. Si entrenamos durante mucho tiempo tiende a mejorar,
+pero sabemos que hay sobreajuste porque tenemos este límite curvo ese es otro síntoma del sobreajuste. Si entrenamos durante mucho tiempo esto desaparece este artefacto
+en la esquina inferior izquierda pero aún tenemos este límite curvo
+y la razón por la que tenemos esto en lugar de una línea recta que sabemos que es el modelo
+más simple y eficaz es porque permitimos al modelo
+varios grados de libertad. Para ser franco, si observan esto los pesos de x1 y x2 son mucho más altos
+que cualquiera de estos tres. Pero x1 por x2, esa combinación obtiene un peso y por esa razón,
+puede tener un efecto negativo. Sorprendentemente, el límite de decisión
+del modelo se ve un poco extraño. En particular, esta región
+en la parte inferior izquierda que tiende al azul, aunque no hay
+un respaldo visible en los datos. TensorFlow Playground
+usa puntos de inicio aleatorios por lo que sus resultados
+podrían ser diferentes. Por eso muestro una imagen
+de lo que obtuve. Es posible que tengan algo diferente. Observen el grosor relativo
+de las cinco líneas que van de la entrada a la salida. Estas líneas muestran los pesos relativos
+de los cinco atributos. Estas líneas que salen de x1 y x2 son mucho más gruesas
+que las que salen de las combinaciones. Entonces, las combinaciones de atributos contribuyen mucho menos al modelo
+que los atributos normales pero contribuyen lo suficiente
+como para afectar la generalización. ¿Y si quitamos las combinaciones
+de atributos por completo? En otras palabras, ¿si solo usamos
+datos sin procesar? Quitar todas las combinaciones produce un modelo más sensato. Ya no hay el límite curvo
+que sugiere un sobreajuste. Luego de 1,000 iteraciones,
+la pérdida de prueba debería ser un valor ligeramente menor
+que cuando se usan las combinaciones aunque sus resultados pueden variar
+un poco según el conjunto de datos. Los datos de este ejercicio
+son lineales más ruido. Si usamos un modelo que es
+muy complicado para datos tan simples si usamos un modelo
+con demasiadas combinaciones le damos la oportunidad
+de ajustarse al ruido en los datos de entrenamiento. A menudo, pueden diagnosticar esto
+si observan el rendimiento del modelo en datos
+de prueba independientes. A propósito… y hablaremos
+sobre la regularización más tarde en este curso
+sobre el arte y la ciencia del AA. A propósito, esto explica
+por qué la regularización L1 puede ser algo tan bueno. Lo que la regularización L1 hace es convertir el peso de un atributo
+en 0, si es necesario. En otras palabras, el objetivo
+de la regularización L1 es quitar atributos.

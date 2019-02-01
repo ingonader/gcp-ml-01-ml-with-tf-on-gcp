@@ -1,0 +1,401 @@
+1
+00:00:00,000 --> 00:00:04,360
+Maintenant que vous comprenez ce que sont
+les caractéristiques et leur intérêt,
+
+2
+00:00:04,360 --> 00:00:09,070
+passons à la mise en œuvre
+des croisements de caractéristiques.
+
+3
+00:00:09,070 --> 00:00:12,415
+Pour créer un croisement
+de caractéristiques avec TensorFlow,
+
+4
+00:00:12,415 --> 00:00:17,447
+utilisez la méthode "crossed_column"
+dans le module "tf.feature_column",
+
+5
+00:00:17,460 --> 00:00:20,550
+soit le module dans lequel
+vous avez obtenu une colonne numérique
+
+6
+00:00:20,550 --> 00:00:23,580
+et une colonne catégorique
+avec une liste de vocabulaire.
+
+7
+00:00:23,580 --> 00:00:26,030
+C'est le module d'où
+ces éléments viennent.
+
+8
+00:00:26,030 --> 00:00:31,050
+Le premier argument de mon exemple est
+la liste des colonnes catégoriques.
+
+9
+00:00:31,050 --> 00:00:34,050
+Vous transmettez une liste
+
+10
+00:00:34,050 --> 00:00:37,500
+afin de croiser
+un certain nombre de colonnes.
+
+11
+00:00:37,500 --> 00:00:42,020
+Souvenez-vous qu'il s'agit
+de colonnes catégoriques.
+
+12
+00:00:42,020 --> 00:00:44,105
+Si vous disposez de données numériques,
+
+13
+00:00:44,105 --> 00:00:47,950
+divisez-les en buckets avant d'effectuer
+le croisement de caractéristiques.
+
+14
+00:00:47,950 --> 00:00:50,760
+Lorsque vous divisez une colonne numérique
+en buckets,
+
+15
+00:00:50,760 --> 00:00:53,850
+vous tracez les lignes noires
+dont nous parlions précédemment.
+
+16
+00:00:53,850 --> 00:00:56,685
+Vous discrétisez la colonne.
+
+17
+00:00:56,685 --> 00:00:58,910
+Quel est le second argument ?
+
+18
+00:00:58,910 --> 00:01:04,245
+24 fois 7 est le nombre total
+de buckets de hachage.
+
+19
+00:01:04,245 --> 00:01:08,670
+TensorFlow effectue
+un croisement de caractéristiques,
+
+20
+00:01:08,670 --> 00:01:11,460
+puis calcule un hachage de celui-ci
+
+21
+00:01:11,460 --> 00:01:15,375
+et le place dans l'un des buckets.
+
+22
+00:01:15,375 --> 00:01:19,350
+Même si j'ai indiqué 24 fois 7 ici,
+
+23
+00:01:19,350 --> 00:01:22,335
+il n'est pas garanti
+qu'il n'y aura pas de collision.
+
+24
+00:01:22,335 --> 00:01:29,050
+Il est tout à fait possible que le hachage
+du mercredi à 15h, module 168,
+
+25
+00:01:29,050 --> 00:01:34,230
+soit identique à celui
+du dimanche à 16h, module 168.
+
+26
+00:01:34,230 --> 00:01:40,380
+Dans ce cas, ces deux combinaisons
+jour/heure seront traitées ensemble.
+
+27
+00:01:40,380 --> 00:01:43,195
+Approfondissons un peu cette idée.
+
+28
+00:01:43,195 --> 00:01:45,590
+Maintenant,
+TensorFlow va ignorer ces étapes
+
+29
+00:01:45,590 --> 00:01:49,680
+et passer directement à la représentation
+du croisement de caractéristiques haché,
+
+30
+00:01:49,680 --> 00:01:52,900
+mais il est bon de penser
+à ce qui se produit.
+
+31
+00:01:52,900 --> 00:01:58,395
+Pour faire simple, imaginons
+qu'au lieu de 24 fois 7,
+
+32
+00:01:58,395 --> 00:02:02,580
+j'aie indiqué ici six. Que se passe-t-il ?
+
+33
+00:02:02,580 --> 00:02:05,095
+Lors du croisement de caractéristiques,
+
+34
+00:02:05,095 --> 00:02:07,610
+nous transmettons
+deux colonnes catégoriques.
+
+35
+00:02:07,610 --> 00:02:10,975
+"dayofweek" a sept valeurs uniques,
+
+36
+00:02:10,975 --> 00:02:14,440
+"hourofday" en a 24.
+
+37
+00:02:14,440 --> 00:02:21,495
+Le croisement de caractéristiques a donc
+24×7=168 valeurs uniques.
+
+38
+00:02:21,495 --> 00:02:24,615
+Prenons maintenant le mercredi à 15h.
+
+39
+00:02:24,615 --> 00:02:26,520
+Disons que 15h
+
+40
+00:02:26,520 --> 00:02:28,260
+est notre numéro 15
+
+41
+00:02:28,260 --> 00:02:30,570
+et mercredi
+
+42
+00:02:30,570 --> 00:02:31,995
+notre jour numéro trois.
+
+43
+00:02:31,995 --> 00:02:35,595
+La valeur de la caractéristique croisée
+
+44
+00:02:35,595 --> 00:02:40,130
+sera donc 87 sur 168.
+
+45
+00:02:40,130 --> 00:02:46,185
+Je calcule alors le hachage de 87
+et je fais un module six.
+
+46
+00:02:46,185 --> 00:02:49,072
+Supposons que j'obtienne
+la case numéro trois
+
+47
+00:02:49,072 --> 00:02:51,960
+pour ce croisement
+de caractéristiques haché.
+
+48
+00:02:51,960 --> 00:02:55,875
+C'est ce que la colonne
+de la caractéristique jour/heure
+
+49
+00:02:55,875 --> 00:02:57,855
+contiendra pour le mercredi à 15h.
+
+50
+00:02:57,855 --> 00:03:02,545
+Une valeur encodée en mode one-hot
+correspondant au numéro trois.
+
+51
+00:03:02,545 --> 00:03:05,639
+Encore une fois, TensorFlow n'effectue pas
+réellement ces étapes.
+
+52
+00:03:05,639 --> 00:03:07,732
+Il n'a pas besoin d'encoder
+en mode one-hot
+
+53
+00:03:07,732 --> 00:03:09,805
+avant le croisement de caractéristiques.
+
+54
+00:03:09,805 --> 00:03:13,220
+S'il le faisait, il ne serait pas
+très efficace en termes de mémoire.
+
+55
+00:03:13,220 --> 00:03:16,810
+Mais vous voyez ainsi ce qui se passe
+d'un point de vue conceptuel.
+
+56
+00:03:16,810 --> 00:03:23,305
+Le nombre de buckets de hachage contrôle
+la parcimonie et les collisions.
+
+57
+00:03:23,305 --> 00:03:26,440
+Si, comme dans la diapositive précédente,
+
+58
+00:03:26,440 --> 00:03:28,915
+nous donnions au bucket de hachage
+
+59
+00:03:28,915 --> 00:03:31,530
+une valeur très inférieure
+au nombre de valeurs uniques
+
+60
+00:03:31,530 --> 00:03:33,460
+du croisement de caractéristiques,
+
+61
+00:03:33,460 --> 00:03:35,440
+de nombreuses collisions se produiraient.
+
+62
+00:03:35,440 --> 00:03:37,020
+Le mercredi à 15h,
+
+63
+00:03:37,020 --> 00:03:39,280
+le mercredi à 19h, le mardi à 2h, etc.
+
+64
+00:03:39,280 --> 00:03:43,915
+se retrouveraient dans le même bucket
+et seraient traités de la même façon.
+
+65
+00:03:43,915 --> 00:03:50,995
+En moyenne, un sixième du croisement
+de caractéristiques sera dans un bucket.
+
+66
+00:03:50,995 --> 00:03:56,095
+Comme nous avons en moyenne
+168 valeurs uniques,
+
+67
+00:03:56,095 --> 00:04:01,765
+chaque bucket contiendra
+28 combinaisons jour/heure différentes.
+
+68
+00:04:01,765 --> 00:04:04,860
+C'est pourquoi la quantité de données
+
+69
+00:04:04,860 --> 00:04:08,710
+que le croisement de caractéristiques
+peut mémoriser est limitée.
+
+70
+00:04:08,710 --> 00:04:13,095
+Mais la mémoire utilisée est
+également très faible.
+
+71
+00:04:13,095 --> 00:04:14,865
+Il n'y a que six buckets.
+
+72
+00:04:14,865 --> 00:04:18,322
+D'une certaine manière, nous regroupons
+
+73
+00:04:18,322 --> 00:04:21,779
+des combinaisons jour/heure
+dans un bucket.
+
+74
+00:04:21,779 --> 00:04:26,970
+Et si nous passions à l'autre extrême
+et que nous définissions
+
+75
+00:04:26,970 --> 00:04:29,955
+un nombre de buckets de hachage si élevé
+
+76
+00:04:29,955 --> 00:04:32,940
+que le risque
+de collision devienne minime ?
+
+77
+00:04:32,940 --> 00:04:36,915
+Définissons-le par exemple sur 300.
+
+78
+00:04:36,915 --> 00:04:41,040
+En moyenne, un bucket contiendra
+
+79
+00:04:41,040 --> 00:04:45,345
+une ou zéro combinaison jour/heure.
+
+80
+00:04:45,345 --> 00:04:47,785
+Il pourrait en contenir deux,
+
+81
+00:04:47,785 --> 00:04:50,110
+mais c'est très peu probable.
+
+82
+00:04:50,110 --> 00:04:52,875
+Utiliser une valeur élevée
+
+83
+00:04:52,875 --> 00:04:56,650
+pour les buckets de hachage donne donc
+une représentation clairsemée
+
+84
+00:04:56,650 --> 00:04:58,650
+du croisement de caractéristiques.
+
+85
+00:04:58,650 --> 00:05:03,155
+En pratique, je choisis
+généralement un nombre
+
+86
+00:05:03,155 --> 00:05:06,925
+entre la moitié de la racine carrée de n
+et le double de n,
+
+87
+00:05:06,925 --> 00:05:11,475
+selon que je veux privilégier
+la mémorisation ou la parcimonie,
+
+88
+00:05:11,475 --> 00:05:14,030
+mais c'est juste
+une bonne pratique personnelle.

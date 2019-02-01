@@ -1,0 +1,44 @@
+Nous avons utilisé une fonction
+de transformation pour transformer l'ensemble de données d'évaluation et
+nous avons écrit les données transformées. Pour quel type de données avons-nous
+utilisé AnalyzeAndTransformDataset ? Les données d'entraînement. Nous avons utilisé TransformDataset
+pour les données d'évaluation. Même si nous avons créé les
+caractéristiques prétraitées avec Beam, la méthode prétraitée ne pouvait pas
+correspondre à du code Python arbitraire. Elle devait consister uniquement
+en des fonctions TensorFlow. La raison derrière ceci est qu'elles font partie
+du graphique de prédiction. Pourquoi font-elles partie
+du graphique de prédiction ? Pour que l'utilisateur final puisse
+donner les données brutes au modèle afin qu'il effectue
+le prétraitement nécessaire. Mais comment le modèle sait-il
+quelles fonctions appeler ? Pour que le modèle sache
+quelles fonctions appeler, nous devons enregistrer
+la fonction de transformation. C'est ce que je fais ici. J'enregistre la fonction de transformation dans un répertoire nommé "metadata"
+avec mon modèle entraîné. Je demande ensuite à la fonction d'entrée
+de récupérer les métadonnées. Quelle fonction d'entrée ? Les trois. Voyons d'abord les fonctions d'entrée
+d'entraînement et d'évaluation. Ce sont elles qui lisent
+les caractéristiques prétraitées. J'ai indiqué que le schéma correspondait
+aux métadonnées transformées. Modifiez les fonctions d'entrée
+d'entraînement et d'évaluation pour qu'elles lisent
+les caractéristiques prétraitées. TensorFlow Transform inclut une fonction d'aide pratique
+nommée "build_training_input". Je l'utilise
+pour l'entraînement et l'évaluation en modifiant la variable
+"input_paths" pour qu'elle redirige vers "train_data_path"
+ou vers "eval_data_path" selon le mode. La fonction d'entrée de diffusion accepte
+les données brutes. Je transmets donc ici
+les métadonnées des données brutes, et non les métadonnées transformées. Si les données brutes
+ne suffisent pas, nous pouvons ajouter des fonctions TensorFlow
+arbitraires au code de prétraitement. Ces opérations sont stockées
+dans saved_model.pb. Nous disposons à nouveau d'une fonction
+d'aide pratique de TensorFlow Transform, "build_parsing
+_transforming_serving_input". Analysez le JSON
+d'après le schéma des données brutes. Transformez les données brutes avec les
+opérations TensorFlow de saved_model.pb, puis envoyez-les avec le modèle. Le code du client n'a plus qu'à envoyer
+les variables des données d'entrée brutes. Ceci ne change pas. La fonction d'entrée de diffusion reçoit
+les variables d'entrée et reste identique. Elle accepte les données brutes
+et les envoie au modèle. Alors pourquoi un modèle fonctionne-t-il ? Le régresseur DNN ou tout autre modèle
+ne peut pas gérer une chaîne comme "Thu". S'il fonctionne, c'est parce que le code
+que vous avez écrit pour le prétraitement fait maintenant partie
+du graphique du modèle. Ceci se produit parce que
+le modèle lit les métadonnées et inclut un code de prétraitement. C'est ainsi que
+TensorFlow Transform fonctionne. Utilisons-le maintenant
+pour prédire le prix de courses en taxi.

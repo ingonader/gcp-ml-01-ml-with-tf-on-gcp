@@ -1,0 +1,98 @@
+Au début de ce module, vous avez appris
+les techniques de mise en œuvre du code de prétraitement
+et de création des caractéristiques. Pour utiliser ces techniques, vous devez bien connaître
+le domaine de votre problème et vos données d'entrée brutes. Dans la pratique, vous n'avez pas
+forcément toujours ces connaissances. Vous pouvez avoir besoin
+d'extraire des caractéristiques d'ensembles de données dans
+des domaines que vous ne maîtrisez pas, en ne sachant rien, ou presque,
+des données d'entrée brutes. Dans le reste de ce module, nous verrons des outils et techniques qui vous aideront si vous travaillez
+sur des ensembles de données inconnus. Précédemment, vous avez utilisé des outils
+comme Apache Beam et Cloud Dataflow. Vous allez maintenant
+découvrir Cloud Dataprep, un outil qui offre une interface utilisateur
+graphique interactive permettant de comprendre, de visualiser
+et de prétraiter les données. Si elle est bien faite,
+l'extraction de caractéristiques peut nettement améliorer les performances
+d'un système de machine learning. Pour la réussir, il est important de connaître
+le domaine de ce système, en particulier les données
+d'entrée brutes. Qu'est-ce que cela signifie ? Comment se familiariser avec un ensemble
+de données comportant des millions, voire des milliards d'enregistrements ? Lorsque vous travaillez avec un ensemble
+de données que vous n'aviez jamais vu, vous devez commencer
+par une analyse exploratoire. Vous devez visualiser les valeurs
+de l'ensemble de données, comprendre quelles valeurs sont
+fréquentes ou rares, et rechercher les valeurs
+aberrantes et manquantes. Il est bon de connaître les statistiques
+de l'ensemble de données, les moyennes, l'écart type des différentes variables
+dans vos données, les valeurs minimale et maximale, ainsi que d'explorer
+la distribution de ces valeurs. Lorsque vous faites du machine learning, vous travaillez probablement avec
+une équipe comprenant des data scientists, des développeurs de logiciels
+et des analystes de veille stratégique. Vous avez donc besoin
+de partager vos découvertes relatives à l'ensemble de données
+avec d'autres personnes et d'exploiter les connaissances
+de votre équipe pour obtenir des insights. Dans le reste de ce module, nous verrons
+deux approches complémentaires. Commençons par explorer
+un ensemble de données, puis passons au prétraitement
+et à la création de caractéristiques. Avec la première approche,
+nous utiliserons des outils déjà explorés, comme BigQuery,
+Cloud Dataflow et TensorFlow. Avec la seconde approche,
+nous introduirons Cloud Dataprep, pour voir comment il permet l'analyse
+exploratoire et le traitement des données. Commençons par la première approche, et explorons les données
+avec les outils que nous connaissons. Au début de ce cours, vous avez vu des exemples
+de bibliothèques graphiques comme Seaborn, utilisées pour visualiser
+les données dans Cloud Datalab. L'exemple à l'écran
+est un graphique de données issues de l'ensemble de données sur
+le prix des courses en taxi à New York disponible dans BigQuery. Dans ce cas, le schéma illustre le rapport entre la distance
+et le prix équitable des courses. L'exploration et la visualisation
+de votre ensemble de données dans un bloc-notes Datalab
+peut sembler pratique. Cependant, souvenez-vous
+que l'environnement Datalab par défaut s'exécute dans un seul serveur virtuel
+disposant d'une mémoire limitée. Or, l'ensemble de données
+sur les taxis contient des millions de points de données. Il serait donc compliqué et trop cher de les tracer et de les analyser tous
+dans un environnement Datalab à un nœud. Au lieu de charger
+les millions d'enregistrements de l'ensemble de données sur les taxis
+dans l'environnement Datalab, vous pouvez utiliser SQL et calculer des statistiques
+récapitulatives avec BigQuery. Comme le montre ce schéma, vous pouvez quand même utiliser
+Datalab pour écrire votre code SQL. Une fois le code prêt, vous envoyez l'instruction SQL à BigQuery par le biais des API
+et obtenez le résultat. Comme les statistiques
+récapitulatives ne comptent que quelques lignes de données, vous pouvez facilement
+les tracer dans Datalab avec Seaborn ou d'autres bibliothèques
+de visualisation Python. Comme vous l'avez appris
+précédemment dans ce module, vous pouvez utiliser les API Apache Beam
+et Cloud Dataflow pour mettre en œuvre des calculs
+de statistiques récapitulatives et d'autres tâches de prétraitement. Vous pouvez utiliser Python ou Java pour écrire le code de votre pipeline
+de traitement des données. Voyons maintenant
+la seconde approche, qui consiste à utiliser Cloud Dataprep
+pour mieux comprendre vos données d'entrée et à extraire des caractéristiques
+avec une interface visuelle interactive au lieu d'écrire du code de bas niveau. Qu'est-ce que Cloud Dataprep ? C'est un service entièrement géré de GCP qui permet d'explorer
+et de transformer des données de façon interactive
+avec un navigateur Web en utilisant un minimum de code. Dataprep peut récupérer les données depuis différentes sources
+telles que Cloud Storage et BigQuery. Vous pouvez aussi importer
+vos propres données dans Dataprep. Une fois que Dataprep sait
+où récupérer les données, vous pouvez utiliser
+l'interface graphique pour les explorer et créer des visualisations. Par exemple, vous pouvez
+afficher des histogrammes de valeurs et obtenir
+des statistiques récapitulatives, comme des moyennes ou des centiles. Une fois que vous avez exploré
+et compris votre ensemble de données, vous pouvez utiliser Dataprep pour créer
+des flux de transformation des données. Les flux sont semblables aux pipelines
+que vous avez vus dans Dataflow. En fait, les flux sont
+compatibles avec Dataflow. Vous pouvez exécuter un flux Dataprep en tant que pipeline
+sur la plate-forme Dataflow. Dans Dataprep, les flux sont mis en œuvre
+sous la forme d'une suite de combinaisons, qui sont des étapes
+de traitement de données créées à partir d'une bibliothèque
+d'outils de préparation. Dataprep offre ce type d'outil
+pour de nombreuses tâches de traitement des données courantes,
+illustrées à gauche. Nous verrons sous peu
+des exemples d'outils de préparation. Si vous utilisez ces outils, vous n'avez plus besoin de mettre en œuvre les étapes de traitement
+de données et le code vous-même. Dataprep peut convertir
+votre flux et ses combinaisons en pipeline Dataflow. Toujours avec l'interface Dataprep, vous pouvez prendre le flux, l'exécuter en tant que tâche
+sur Dataflow et suivre sa progression. La bibliothèque Dataprep dispose de
+plusieurs outils de préparation prédéfinis pour les tâches
+de traitement courantes : nettoyer les données
+avec la déduplication, exclure les valeurs
+aberrantes et manquantes, réaliser des opérations
+d'agrégation courantes, comme les décomptes ou les additions, joindre ou unir différentes tables et convertir
+des données en différents types, comme des chaînes ou des nombres entiers. Pendant l'exécution du flux, vous pouvez utiliser l'interface Dataflow
+pour suivre la progression de la tâche. Une fois la tâche terminée, vous pouvez obtenir un résumé
+de son état dans Dataprep. Comme le montre cette capture
+d'écran de la tâche terminée, le résumé inclut
+les statistiques et les visualisations que vous pouvez obtenir pour
+tout ensemble de données dans Dataprep.

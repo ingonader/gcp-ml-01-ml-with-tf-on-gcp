@@ -1,0 +1,283 @@
+1
+00:00:00,000 --> 00:00:01,050
+Okay.
+
+2
+00:00:01,050 --> 00:00:03,210
+The second aspect of a good feature,
+
+3
+00:00:03,210 --> 00:00:07,155
+you need to know the value at the time that you're actually predicting.
+
+4
+00:00:07,155 --> 00:00:09,180
+Remember that the whole reason to build
+
+5
+00:00:09,180 --> 00:00:11,840
+the machine learning model is so that you can actually predict with it.
+
+6
+00:00:11,840 --> 00:00:13,480
+If you can't predict with it,
+
+7
+00:00:13,480 --> 00:00:16,320
+there's no point in building the machine learning model in the first place.
+
+8
+00:00:16,320 --> 00:00:18,720
+So, here's one of my favorite things.
+
+9
+00:00:18,720 --> 00:00:21,660
+A common mistake that a lot of people make is just to look at
+
+10
+00:00:21,660 --> 00:00:24,870
+their data warehouse and just take all the data you find in there,
+
+11
+00:00:24,870 --> 00:00:26,130
+all the related fields,
+
+12
+00:00:26,130 --> 00:00:27,705
+and then throw them all of the model.
+
+13
+00:00:27,705 --> 00:00:29,445
+The machine is going to figure it out, right?
+
+14
+00:00:29,445 --> 00:00:32,230
+So, if you take all these fields use it in a machine learning model,
+
+15
+00:00:32,230 --> 00:00:34,560
+what happens when you're going to go predict with it?
+
+16
+00:00:34,560 --> 00:00:36,180
+Well, it turns out,
+
+17
+00:00:36,180 --> 00:00:37,230
+when you go predict with it,
+
+18
+00:00:37,230 --> 00:00:41,490
+maybe that you discovered that the data inside of your warehouse had, say, sales data.
+
+19
+00:00:41,490 --> 00:00:43,680
+So, that's going to be an input for our model.
+
+20
+00:00:43,680 --> 00:00:46,230
+How many things were sold in the previous day?
+
+21
+00:00:46,230 --> 00:00:48,000
+That's going to be an input for our model.
+
+22
+00:00:48,000 --> 00:00:49,790
+But, here's the rub.
+
+23
+00:00:49,790 --> 00:00:54,825
+It turns out that the daily sales data actually comes in a month later.
+
+24
+00:00:54,825 --> 00:00:58,335
+It takes some time for the information to come out from your store.
+
+25
+00:00:58,335 --> 00:01:01,200
+And there's a delay in collecting and processing this data.
+
+26
+00:01:01,200 --> 00:01:05,640
+And your data warehouse has the information because somebody has already gone through
+
+27
+00:01:05,640 --> 00:01:07,740
+the trouble of taking all the data or joining
+
+28
+00:01:07,740 --> 00:01:10,785
+all the tables together and putting on an pre-processing in there.
+
+29
+00:01:10,785 --> 00:01:12,980
+But at prediction time,
+
+30
+00:01:12,980 --> 00:01:15,810
+in real-time, you don't have it.
+
+31
+00:01:15,810 --> 00:01:17,220
+So, therefore, you can't use it.
+
+32
+00:01:17,220 --> 00:01:21,089
+So, some of the information in this data warehouse is known immediately,
+
+33
+00:01:21,089 --> 00:01:23,790
+and some of the information is not known in real time.
+
+34
+00:01:23,790 --> 00:01:28,020
+So, if you use this data that's not known at prediction time,
+
+35
+00:01:28,020 --> 00:01:30,165
+if you use this input to your model,
+
+36
+00:01:30,165 --> 00:01:33,270
+now your whole model is unfortunately useless because you
+
+37
+00:01:33,270 --> 00:01:36,570
+don't have a numeric value for that input for what your model needs.
+
+38
+00:01:36,570 --> 00:01:39,460
+Remember again that sales data comes in a month later and
+
+39
+00:01:39,460 --> 00:01:42,330
+if your machine learning model is using that fuel that comes in a month later,
+
+40
+00:01:42,330 --> 00:01:44,895
+it's not going to know that at prediction time.
+
+41
+00:01:44,895 --> 00:01:46,380
+So, the key point here is,
+
+42
+00:01:46,380 --> 00:01:49,000
+make sure that for every input that you're using for your model,
+
+43
+00:01:49,000 --> 00:01:53,550
+for every feature, make sure that you have them the actual prediction time.
+
+44
+00:01:53,550 --> 00:01:57,360
+You want to make sure that those input variables are even available.
+
+45
+00:01:57,360 --> 00:01:59,625
+So, you're collecting in a timely manner.
+
+46
+00:01:59,625 --> 00:02:02,400
+Many cases, you'll have to worry about whether or not it's legal or
+
+47
+00:02:02,400 --> 00:02:05,370
+ethical to collect this data at the time that you're doing the prediction.
+
+48
+00:02:05,370 --> 00:02:09,080
+Sometimes, that's all the information they have available to you and your data warehouse,
+
+49
+00:02:09,080 --> 00:02:13,170
+but you can't collect it from the user at the time you're trying to do the prediction.
+
+50
+00:02:13,170 --> 00:02:16,410
+Again, if you can't collect it at the time you're doing prediction,
+
+51
+00:02:16,410 --> 00:02:18,725
+you can't use it in your ML model.
+
+52
+00:02:18,725 --> 00:02:20,440
+So let's take another example here.
+
+53
+00:02:20,440 --> 00:02:22,770
+An easy example to remember is,
+
+54
+00:02:22,770 --> 00:02:24,450
+say, let's go back to that building,
+
+55
+00:02:24,450 --> 00:02:26,400
+the housing price prediction model.
+
+56
+00:02:26,400 --> 00:02:30,720
+If we simply had today's sale price of the house and the model and data set,
+
+57
+00:02:30,720 --> 00:02:33,420
+the model could just output what that price was and be
+
+58
+00:02:33,420 --> 00:02:36,360
+perfectly accurate during the training data set because there,
+
+59
+00:02:36,360 --> 00:02:39,985
+it has this magic data field of house sale price.
+
+60
+00:02:39,985 --> 00:02:41,555
+But come prediction time,
+
+61
+00:02:41,555 --> 00:02:45,240
+your new houses for sale won't have already been sold,
+
+62
+00:02:45,240 --> 00:02:49,890
+so your model is useless because you can't feed it what you do not know at prediction.
+
+63
+00:02:49,890 --> 00:02:53,750
+So, I want us to do a bit of a discussion question.
+
+64
+00:02:53,750 --> 00:03:00,075
+Why is the second field here a bad feature? What could go wrong?
+
+65
+00:03:00,075 --> 00:03:03,270
+As a hint, what happens if the cluster ID was,
+
+66
+00:03:03,270 --> 00:03:05,140
+say, take it from another model?
+
+67
+00:03:05,140 --> 00:03:07,440
+What if that model updates without telling you?
+
+68
+00:03:07,440 --> 00:03:11,070
+Will you still be able to train or learn anything from your training data set?
+
+69
+00:03:11,070 --> 00:03:13,760
+Well, the ultimate answer is that
+
+70
+00:03:13,760 --> 00:03:17,975
+feature definitions themselves should not change over time,
+
+71
+00:03:17,975 --> 00:03:20,400
+and also, you have to update your model.

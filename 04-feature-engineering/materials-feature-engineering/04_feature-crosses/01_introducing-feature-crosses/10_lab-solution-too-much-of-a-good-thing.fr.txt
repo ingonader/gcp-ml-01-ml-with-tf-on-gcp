@@ -1,0 +1,68 @@
+Nous sommes donc dans
+TensorFlow Playground. Nous avons un ensemble de données
+qui ressemble à ceci. Nous avons
+les points bleus en haut à droite et les points orange en bas à gauche,
+et nous essayons de tracer une ligne pour les séparer. Pour ce faire, nous avons les valeurs d'entrée x1, x2, x1², x2² et x1 fois x2. Pour commencer, lesquelles sont
+des valeurs d'entrée brutes et lesquelles sont
+des caractéristiques créées ? x1 et x2 sont les valeurs d'entrée brutes. x1², x2² et x1x2 sont des caractéristiques créées à partir
+des valeurs d'entrée brutes x1 et x2. Lesquelles sont des croisements
+de caractéristiques ? x1x2 est évidemment
+un croisement de caractéristiques, mais, si vous poussez un petit peu
+le raisonnement, vous pouvez voir que x1² en est un aussi. La valeur est croisée avec elle-même. C'est un peu une jointure réflexive. Vous prenez x1 et x1,
+et vous les croisez pour obtenir x1². Nous avons donc les deux valeurs
+d'entrée brutes x1 et x2, et les trois croisements
+de caractéristiques x1², x2² et x1x2. Cependant, ce ne sont que des termes. Vous pouvez appeler x1² et x2²
+une transformation de la valeur d'entrée plutôt qu'un croisement
+de caractéristiques. Aucun problème. Nous avons donc cinq valeurs d'entrée
+pour notre modèle et nous voulons l'entraîner. Commençons. J'appuie sur le bouton de lecture pour démarrer l'entraînement. Je remarque
+qu'il se produit quelque chose d'étrange. Vous voyez cette couleur bleue qui apparaît en bas à gauche ? Elle a fini par disparaître,
+mais imaginez que ce ne soit pas le cas. Réessayons. Nous ne savons pas combien de temps
+l'entraînement va durer. Disons que nous avons effectué
+l'entraînement jusqu'ici, pendant 230 itérations.
+C'est plutôt long. Suite à ces 230 itérations,
+nous avons obtenu quelque chose d'étrange. Ce triangle ici. C'est un signe de surapprentissage. Il n'y a pas de données à cet endroit. C'est donc une explication plausible. Nous ne cherchons pas à simplifier
+les choses plus que nécessaire. Le modèle a donc choisi
+d'y mettre quelque chose. L'une des raisons de ce phénomène est que nous avons laissé
+le modèle surapprendre. Le surapprentissage peut se produire quand on fournit au modèle
+les mêmes données de plusieurs façons. Que se passe-t-il si je désactive x1x2 ? Il ne me reste plus que x1, x2, x1² et x2². Je redémarre et je remarque cette fois cette étrange frontière qui apparaît
+au début de l'entraînement. Recommençons. Je démarre ceci. Je vais l'arrêter
+à 200 itérations environ. Voilà. À 200 itérations, vous pouvez voir
+à nouveau que la frontière est bancale, avec du blanc dans cette zone bizarre. Nous avons toujours des caractéristiques
+supplémentaires, x1 et x2. Que se passe-t-il si je les enlève ? Il ne nous reste plus
+que les données brutes x1 et x2. Je redémarre et j'arrête à nouveau
+à 200 itérations environ. Vous voyez que c'est maintenant
+presque parfait. J'ai seulement cette ligne. Il faut donc être conscient
+de ce problème. Le mieux est l'ennemi du bien. Un croisement de caractéristiques peut
+causer un surapprentissage du modèle. Un autre point important est la durée d'entraînement. Supprimons ces valeurs.
+Revenons à notre point de départ. Si vous entraînez le modèle
+très longtemps, le problème a tendance à s'améliorer. Cependant, en raison du surapprentissage,
+vous avez toujours cette frontière courbe C'est un autre signe de surapprentissage. Si vous entraînez très longtemps, le triangle, l'artefact en bas à gauche, disparaît, mais il y a toujours la frontière courbe. Si nous obtenons cette ligne courbe au lieu d'une ligne droite,
+qui est le modèle efficace le plus simple, c'est parce que nous avons donné
+beaucoup de liberté au modèle. À vrai dire, les pondérations de x1 et x2 sont bien
+supérieures à celles de ces trois valeurs. Mais le croisement de caractéristiques
+x1x2 possède une pondération. C'est pour cette raison qu'il peut semer la confusion. Étonnamment, la frontière de décision
+du modèle semble bizarre. Par exemple, cette zone en bas à gauche contient du bleu, même si rien
+dans les données n'appuie ce phénomène. TensorFlow Playground utilise
+un point de départ aléatoire. Votre résultat peut donc être différent. C'est pourquoi je vous montre le mien. Vous avez peut-être obtenu
+quelque chose de légèrement différent. Notez l'épaisseur relative des cinq lignes
+entre les valeurs d'entrée et le résultat. Ces lignes indiquent la pondération
+relative des cinq caractéristiques. Les lignes partant de x1 et x2 sont bien plus épaisses que celles partant
+des croisements de caractéristiques. Ces derniers contribuent donc beaucoup moins au modèle
+que les caractéristiques normales, mais suffisamment pour compromettre
+la généralisation. Que se passe-t-il
+si on les supprime complètement, c'est-à-dire si on utilise uniquement
+les données brutes ? Supprimer tous les croisements
+de caractéristiques donne un modèle plus sensé. Il n'y a plus de frontière courbe
+indiquant un surapprentissage. Après 1 000 itérations, la perte de test devrait être légèrement inférieure qu'avec
+les croisements de caractéristiques. Vos résultats peuvent varier quelque peu
+en fonction de l'ensemble de données. Les données de cet exercice sont
+des données linéaires avec du bruit. Si nous utilisons un modèle trop compliqué
+pour des données aussi simples, par exemple avec trop de croisements
+de caractéristiques, nous lui donnons l'opportunité d'intégrer
+le bruit aux données d'entraînement. Ce problème se diagnostique souvent
+en regardant les performances du modèle
+sur des données de test indépendantes. Par la suite, dans le cours
+"Art et science du ML", nous parlerons de la régularisation. Ceci explique les avantages
+de la régularisation L1. Cette dernière remet à zéro la pondération
+d'une caractéristique si nécessaire. En d'autres termes,
+elle supprime des caractéristiques.

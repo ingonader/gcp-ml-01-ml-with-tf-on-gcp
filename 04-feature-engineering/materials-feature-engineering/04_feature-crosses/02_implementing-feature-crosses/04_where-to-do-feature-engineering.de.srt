@@ -1,0 +1,474 @@
+1
+00:00:00,000 --> 00:00:02,930
+Wir haben uns
+einige Möglichkeiten angesehen,
+
+2
+00:00:02,930 --> 00:00:05,900
+Merkmale darzustellen
+und Feature Engineering anzuwenden:
+
+3
+00:00:05,900 --> 00:00:08,245
+Skalierung, Merkmalkreuzungen,
+
+4
+00:00:08,245 --> 00:00:10,420
+Erstellen von Einbettungen usw.
+
+5
+00:00:10,420 --> 00:00:13,770
+Wohin gehören diese Sachen nun
+in ein Modell für maschinelles Lernen?
+
+6
+00:00:13,770 --> 00:00:17,595
+Unser Modell besteht aus folgenden Teilen:
+
+7
+00:00:17,595 --> 00:00:20,805
+eine Eingabefunktion
+zum Einlesen der Daten,
+
+8
+00:00:20,805 --> 00:00:25,200
+Merkmalspalten, die Platzhalter
+für die einzulesenden Daten sind,
+
+9
+00:00:25,200 --> 00:00:29,055
+ein Estimator, von Ihnen erstellt
+durch Übergabe der Merkmalspalten,
+
+10
+00:00:29,055 --> 00:00:33,130
+Einrichtung von Trainings- und
+Bewertungsspezifikationen, Exporter usw.
+
+11
+00:00:33,130 --> 00:00:35,590
+und am Ende rufen Sie
+Training und Bewertung auf.
+
+12
+00:00:35,590 --> 00:00:39,480
+Wo passt hier das Feature Engineering?
+
+13
+00:00:39,480 --> 00:00:42,570
+Es gibt drei mögliche Orte
+für das Feature Engineering.
+
+14
+00:00:42,570 --> 00:00:45,510
+Sie können es
+beim Einlesen der Daten anwenden,
+
+15
+00:00:45,510 --> 00:00:47,350
+in der Eingabefunktion selbst
+
+16
+00:00:47,350 --> 00:00:49,575
+oder durch Erstellen von Merkmalspalten.
+
+17
+00:00:49,575 --> 00:00:54,600
+Alternativ können Sie vor dem Training
+einen separaten Schritt dafür einfügen.
+
+18
+00:00:54,600 --> 00:00:58,110
+Dann liest Ihre Eingabefunktion
+die vorverarbeiteten Merkmale.
+
+19
+00:00:58,110 --> 00:01:01,740
+Wenn Sie dafür einen separaten
+Vorverarbeitungsschritt verwenden,
+
+20
+00:01:01,740 --> 00:01:04,560
+erledigen Sie
+die Vorverarbeitung in Dataflow,
+
+21
+00:01:04,560 --> 00:01:07,920
+sodass Sie große Datenmengen
+verteilt verarbeiten können.
+
+22
+00:01:07,920 --> 00:01:10,725
+Sie können dies
+in normalem Python programmieren,
+
+23
+00:01:10,725 --> 00:01:16,740
+tun Sie dies aber nur, wenn Dataflow
+Teil Ihrer Bereitstellungspipeline ist.
+
+24
+00:01:16,740 --> 00:01:18,630
+Anders gesagt,
+führen Sie den Vorhersagejob
+
+25
+00:01:18,630 --> 00:01:20,520
+als Batch oder Stream aus.
+
+26
+00:01:20,520 --> 00:01:22,852
+Sie können
+die gleichen Vorverarbeitungsschritte
+
+27
+00:01:22,852 --> 00:01:25,185
+auf die Eingaben
+für die Bereitstellung anwenden.
+
+28
+00:01:25,185 --> 00:01:29,940
+Die dritte Option ist,
+die Vorverarbeitung in Dataflow zu machen
+
+29
+00:01:29,940 --> 00:01:32,775
+und vorverarbeitete Merkmale zu erstellen.
+
+30
+00:01:32,775 --> 00:01:34,790
+Teilen Sie dem Vorhersagegraphen aber mit,
+
+31
+00:01:34,790 --> 00:01:37,117
+dass die gleichen Transformationen
+
+32
+00:01:37,117 --> 00:01:41,145
+während der Bereitstellung
+in TensorFlow ausgeführt werden sollen.
+
+33
+00:01:41,145 --> 00:01:44,625
+Dies tun Sie mit TesorFlow Transform.
+
+34
+00:01:44,625 --> 00:01:47,280
+Wie wir 
+im vorigen Abschnitt gesehen haben,
+
+35
+00:01:47,280 --> 00:01:50,600
+können Sie in TensorFlow
+einen Teil der Vorverarbeitung erledigen,
+
+36
+00:01:50,600 --> 00:01:52,860
+indem Sie
+eine neue Merkmalspalte erstellen.
+
+37
+00:01:52,860 --> 00:01:56,410
+Wenn Sie eine Spalte
+in Bucket-Form neu erstellen,
+
+38
+00:01:56,410 --> 00:01:58,200
+ist dies bereits Vorverarbeitung.
+
+39
+00:01:58,200 --> 00:02:02,460
+Das ist dann eine Merkmalspalte,
+die Sie an den Estimator senden.
+
+40
+00:02:02,460 --> 00:02:07,050
+Ich teile die Merkmalspalte "sq_Footage"
+
+41
+00:02:07,050 --> 00:02:09,990
+hier in vier Bereiche auf.
+
+42
+00:02:09,990 --> 00:02:14,760
+Der erste Bereich ist Wohnungen
+mit unter 500 Quadratfuß (ca. 46 qm).
+
+43
+00:02:14,760 --> 00:02:18,555
+Der zweite ist 500
+bis 1.000 Quadratfuß (ca. 46–93 qm).
+
+44
+00:02:18,555 --> 00:02:22,410
+Der dritte ist Wohnungen zwischen
+1.000 und 2.500 Quadratfuß (ca. 92–232 qm)
+
+45
+00:02:22,410 --> 00:02:27,060
+und der letzte ist Wohnungen
+mit mehr als 2.500 Quadratfuß (ca. 232 qm).
+
+46
+00:02:27,060 --> 00:02:32,910
+Ich hänge die Spalte in Bucket-Form
+an die ursprünglichen Merkmalspalten an.
+
+47
+00:02:32,910 --> 00:02:40,555
+Der lineare Regressor
+sieht dann "sq_footage" in zwei Formaten:
+
+48
+00:02:40,555 --> 00:02:43,125
+als reellwertige numerische Spalte
+
+49
+00:02:43,125 --> 00:02:46,725
+und als
+kategorische Spalte in Bucket-Form.
+
+50
+00:02:46,725 --> 00:02:49,050
+Ich könnte natürlich nach Belieben
+
+51
+00:02:49,050 --> 00:02:52,605
+die numerische Spalte durch eine
+in Buckets aufgeteilte Spalte ersetzen.
+
+52
+00:02:52,605 --> 00:02:57,635
+Der lineare Regressor sieht dann
+"sq_footage" nur in kategorischer Form.
+
+53
+00:02:57,635 --> 00:02:59,450
+Das mache ich hier.
+
+54
+00:02:59,450 --> 00:03:05,040
+Ich ersetze "featcols [0]"
+durch die in Buckets aufgeteilte Version.
+
+55
+00:03:05,040 --> 00:03:09,745
+Hier folgt
+noch ein Beispiel für Merkmalkreuzungen,
+
+56
+00:03:09,745 --> 00:03:13,360
+aber dieses Mal in einer Einbettung.
+
+57
+00:03:13,360 --> 00:03:17,560
+Wir können für Breitengrade
+und Längengrade der Wohnungen
+
+58
+00:03:17,560 --> 00:03:21,220
+Bereiche definieren,
+in die sie diskretisiert werden sollen.
+
+59
+00:03:21,220 --> 00:03:26,860
+Ich verwende hier
+nbuckets gleich große Bereiche.
+
+60
+00:03:26,860 --> 00:03:30,045
+Eine Methode, die ich
+zum Auffinden der Grenzen verwendet habe,
+
+61
+00:03:30,045 --> 00:03:33,550
+ist APPROX_QUANTILES,
+eine BigQuery SQL-Funktion.
+
+62
+00:03:33,550 --> 00:03:37,960
+So kann jede Sammlung
+gleich viele Trainingsbeispiele enthalten.
+
+63
+00:03:37,960 --> 00:03:40,850
+Es ist egal, wie wir die Grenzen erhalten.
+
+64
+00:03:40,850 --> 00:03:42,794
+Sobald wir die Grenzen haben,
+
+65
+00:03:42,794 --> 00:03:45,665
+bei mir "latbuckets" und "lonbuckets",
+
+66
+00:03:45,665 --> 00:03:51,470
+teilen wir die Längen- bzw. Breitengrade
+der Wohnung in "b_lat" und "b_lon" auf.
+
+67
+00:03:51,470 --> 00:03:54,010
+Dann können wir wie besprochen
+
+68
+00:03:54,010 --> 00:03:58,675
+die kategorischen Merkmalspalten
+"b_lat" und "b_lon" kreuzen.
+
+69
+00:03:58,675 --> 00:04:04,990
+Für die Anzahl der Hash-Buckets
+wähle ich das Quadrat von nbuckets aus.
+
+70
+00:04:04,990 --> 00:04:11,005
+Im Mittel enthält dann jeder Hash-Bucket
+nur einen Wert der Merkmalkreuzung.
+
+71
+00:04:11,005 --> 00:04:13,960
+Das liegt innerhalb
+der Faustregel aus der vorherigen Lektion:
+
+72
+00:04:13,960 --> 00:04:18,459
+zwischen der Hälfte der Wurzel von N
+und dem Doppelten von N.
+
+73
+00:04:18,459 --> 00:04:25,475
+Am Ende bette ich die Daten
+in nbuckets durch vier Dimensionen ein.
+
+74
+00:04:25,475 --> 00:04:31,839
+Der Vorteil, Vorverarbeitung
+direkt in TensorFlow zu erledigen,
+
+75
+00:04:31,839 --> 00:04:35,350
+liegt darin, dass diese Vorgänge
+Teil Ihres Modellgraphen sind.
+
+76
+00:04:35,350 --> 00:04:42,185
+So werden sie identisch im Training
+und in der Bereitstellung ausgeführt.
+
+77
+00:04:43,925 --> 00:04:46,790
+Was bedeutet das in der Praxis?
+
+78
+00:04:46,790 --> 00:04:51,060
+Zuerst 
+diskretisieren wir die Breitengrade.
+
+79
+00:04:51,060 --> 00:04:54,280
+Das klassifiziert 
+die reellwertigen Zahlen,
+
+80
+00:04:54,280 --> 00:05:00,515
+alle Wohnungen im selben Breitengradbereich 
+erhalten so denselben Wert.
+
+81
+00:05:00,515 --> 00:05:03,450
+Das beugt vielleicht
+der Überanpassung ein wenig vor,
+
+82
+00:05:03,450 --> 00:05:07,895
+doch Diskretisieren
+der Breitengrade bringt nicht viel.
+
+83
+00:05:07,895 --> 00:05:11,325
+Dann diskretisieren wir die Längengrade.
+
+84
+00:05:11,325 --> 00:05:13,965
+Das klassifiziert die Längengradwerte,
+
+85
+00:05:13,965 --> 00:05:18,425
+was wie zuvor
+ein wenig gegen Überanpassung helfen kann.
+
+86
+00:05:18,425 --> 00:05:22,280
+Doch Diskretisieren
+der Längengrade bringt auch nicht viel.
+
+87
+00:05:22,280 --> 00:05:28,030
+Was passiert aber beim Kreuzen
+der zwei diskretisierten Merkmalwerte?
+
+88
+00:05:28,030 --> 00:05:34,075
+Wir haben im Grunde
+die Karte in Rasterzellen aufgeteilt,
+
+89
+00:05:34,075 --> 00:05:41,015
+sodass jede Wohnung
+zu einer dieser Rasterzellen gehört.
+
+90
+00:05:41,015 --> 00:05:44,830
+Im Training können wir dann
+
+91
+00:05:44,830 --> 00:05:50,455
+den mittleren Preis von Wohnungen
+in jeder Rasterzelle memorieren.
+
+92
+00:05:50,455 --> 00:05:57,850
+Je feiner die Rasterauflösung ist,
+desto spezifischer ist die Vorhersage.
+
+93
+00:05:57,850 --> 00:06:01,735
+Sie ist aber auch weniger generalisierbar.
+
+94
+00:06:01,735 --> 00:06:04,850
+Vielleicht wurden zu wenig Wohnungen
+einer Rasterzelle verkauft,
+
+95
+00:06:04,850 --> 00:06:07,210
+um uns eine gute Schätzung zu bieten.
+
+96
+00:06:07,210 --> 00:06:11,050
+Bei der Vorhersage wissen wir,
+
+97
+00:06:11,050 --> 00:06:13,690
+zu welcher Rasterzelle
+eine gegebene Wohnung gehört,
+
+98
+00:06:13,690 --> 00:06:17,560
+daher können wir für diese Rasterzelle
+den memorierten Wert abrufen.
+
+99
+00:06:17,560 --> 00:06:24,505
+Einbettung kann erreichen,
+dass alle Rasterzellen, die sich ähneln,
+
+100
+00:06:24,505 --> 00:06:30,640
+wie z. B.
+alle Rasterzellen entlang der Ozeanküste,
+
+101
+00:06:30,640 --> 00:06:33,850
+ähnliche Werte haben.

@@ -1,0 +1,471 @@
+1
+00:00:00,000 --> 00:00:01,945
+So, stick a quiz again.
+
+2
+00:00:01,945 --> 00:00:04,660
+Which of these features are numeric?
+
+3
+00:00:04,660 --> 00:00:07,780
+Note that non-numeric features can't be used,
+
+4
+00:00:07,780 --> 00:00:11,200
+it's just that we need to find a way to represent them in a numeric form.
+
+5
+00:00:11,200 --> 00:00:15,630
+So, here again, we're trying to predict the number of coupons that
+
+6
+00:00:15,630 --> 00:00:17,280
+are going to be used when we looking at
+
+7
+00:00:17,280 --> 00:00:20,130
+different features of that different discount coupon.
+
+8
+00:00:20,130 --> 00:00:23,360
+So, the percent value of the discount,
+
+9
+00:00:23,360 --> 00:00:25,530
+for example, say, you have 10 percent off,
+
+10
+00:00:25,530 --> 00:00:28,320
+20 percent off, is this numeric? Yeah, sure.
+
+11
+00:00:28,320 --> 00:00:30,014
+And as a meaningful magnitude,
+
+12
+00:00:30,014 --> 00:00:34,755
+a 20 percent coupon is worth twice as much as a 10 percent discount coupon.
+
+13
+00:00:34,755 --> 00:00:37,200
+So, this is not a problem at all and the percent value is
+
+14
+00:00:37,200 --> 00:00:40,110
+a meaningful numeric input as well.
+
+15
+00:00:40,110 --> 00:00:42,720
+Now, the size of the coupon, number two.
+
+16
+00:00:42,720 --> 00:00:46,305
+Suppose I defined it as four square centimeters, super small,
+
+17
+00:00:46,305 --> 00:00:48,540
+twenty 24 cents, two square centimeters,
+
+18
+00:00:48,540 --> 00:00:51,100
+and then 48 square centimeters. Is this numeric?
+
+19
+00:00:51,100 --> 00:00:54,225
+Sure and you can relate the different sizes,
+
+20
+00:00:54,225 --> 00:00:55,815
+potentially for the magnitude.
+
+21
+00:00:55,815 --> 00:00:59,820
+But it's also unclear whether or not the magnitudes are meaningful,
+
+22
+00:00:59,820 --> 00:01:02,835
+so this was an ad we were placing like a banner ad.
+
+23
+00:01:02,835 --> 00:01:04,830
+Larger ads are typically better and you could
+
+24
+00:01:04,830 --> 00:01:06,720
+argue that that would make sense for magnitude.
+
+25
+00:01:06,720 --> 00:01:10,800
+But if it's a physical coupon like something that goes out in your newspaper,
+
+26
+00:01:10,800 --> 00:01:13,830
+then you have to wonder whether or not a 48 square centimeter coupon is
+
+27
+00:01:13,830 --> 00:01:18,445
+actually twice as good as the 24 square centimeter coupon.
+
+28
+00:01:18,445 --> 00:01:20,355
+So, let's change the problem a little bit.
+
+29
+00:01:20,355 --> 00:01:23,945
+Suppose we defined the coupon as small, medium, and large.
+
+30
+00:01:23,945 --> 00:01:25,530
+At this point, are small,
+
+31
+00:01:25,530 --> 00:01:27,395
+medium, or large numeric?
+
+32
+00:01:27,395 --> 00:01:29,580
+No, not at all. So, look.
+
+33
+00:01:29,580 --> 00:01:31,965
+I'm not saying they can't have categorical variables
+
+34
+00:01:31,965 --> 00:01:34,620
+as inputs to neural networks, you can.
+
+35
+00:01:34,620 --> 00:01:36,450
+It's just that you can't use small,
+
+36
+00:01:36,450 --> 00:01:38,070
+medium, or large directly.
+
+37
+00:01:38,070 --> 00:01:41,570
+You have to do something smart to them and we'll look at this in a little bit.
+
+38
+00:01:41,570 --> 00:01:44,280
+So, you just have to find different way to represent them in
+
+39
+00:01:44,280 --> 00:01:48,180
+numeric form and we'll take a look at how to do that surely.
+
+40
+00:01:48,180 --> 00:01:50,405
+First off, let's take the third.
+
+41
+00:01:50,405 --> 00:01:52,945
+The font of an advertisement,
+
+42
+00:01:52,945 --> 00:01:58,200
+Arial 18, Times New Roman 24, is this numeric?
+
+43
+00:01:58,200 --> 00:02:02,045
+No. How do you convert Times New Roman to numeric?
+
+44
+00:02:02,045 --> 00:02:04,360
+Well, you could say that Arial is number one,
+
+45
+00:02:04,360 --> 00:02:05,585
+Times New Roman is number two,
+
+46
+00:02:05,585 --> 00:02:06,770
+Rubato is number three,
+
+47
+00:02:06,770 --> 00:02:08,810
+Comic Sans is number four, etc.,
+
+48
+00:02:08,810 --> 00:02:11,030
+etc., but that's a number code.
+
+49
+00:02:11,030 --> 00:02:12,870
+They don't have meaningful magnitudes.
+
+50
+00:02:12,870 --> 00:02:15,465
+If we said Arial is one and Times New Roman is two,
+
+51
+00:02:15,465 --> 00:02:18,360
+Times New Roman isn't twice as good as Arial.
+
+52
+00:02:18,360 --> 00:02:22,505
+So, the meaningful magnitude part is really, really important.
+
+53
+00:02:22,505 --> 00:02:24,925
+Next up, the color of the coupon,
+
+54
+00:02:24,925 --> 00:02:27,155
+red, black, blue, green, et cetera.
+
+55
+00:02:27,155 --> 00:02:28,500
+Again, those aren't numeric,
+
+56
+00:02:28,500 --> 00:02:30,720
+saying they don't have meaningful magnitudes.
+
+57
+00:02:30,720 --> 00:02:33,660
+Now, we could come up with numbers like
+
+58
+00:02:33,660 --> 00:02:37,020
+an RGB value to make some meaningful numbers or hex codes,
+
+59
+00:02:37,020 --> 00:02:39,350
+but they're not going to be meaningful numerically.
+
+60
+00:02:39,350 --> 00:02:43,319
+If I subtract two colors and the difference between them is three,
+
+61
+00:02:43,319 --> 00:02:45,510
+does that mean if I subtract two other colors,
+
+62
+00:02:45,510 --> 00:02:47,480
+the difference between them is also three,
+
+63
+00:02:47,480 --> 00:02:49,550
+that these two are equal?
+
+64
+00:02:49,550 --> 00:02:52,245
+No. And that's a problem.
+
+65
+00:02:52,245 --> 00:02:54,460
+Next up, item category,
+
+66
+00:02:54,460 --> 00:02:56,805
+one for dairy, two for deli,
+
+67
+00:02:56,805 --> 00:02:58,440
+three for canned goods.
+
+68
+00:02:58,440 --> 00:03:01,290
+No. Again, these are categorical.
+
+69
+00:03:01,290 --> 00:03:02,500
+It's not numeric.
+
+70
+00:03:02,500 --> 00:03:07,065
+So again, here, we are not saying that you can't use non-numerical values,
+
+71
+00:03:07,065 --> 00:03:08,980
+we're just saying that we need to do something to
+
+72
+00:03:08,980 --> 00:03:12,930
+them and we look at things that we'll need to do to them shortly.
+
+73
+00:03:12,930 --> 00:03:15,400
+So, as an example, suppose you have
+
+74
+00:03:15,400 --> 00:03:19,510
+words in an NLP or Natural Language Processing system,
+
+75
+00:03:19,510 --> 00:03:23,180
+and the things that you do to the words to make them numeric is that you could typically
+
+76
+00:03:23,180 --> 00:03:27,080
+run something like word2vec or word to vector.
+
+77
+00:03:27,080 --> 00:03:28,740
+It's a very standard technique,
+
+78
+00:03:28,740 --> 00:03:29,750
+and you basically take your words,
+
+79
+00:03:29,750 --> 00:03:32,430
+and apply this technique to the word vectors,
+
+80
+00:03:32,430 --> 00:03:34,630
+so that each word becomes a vector.
+
+81
+00:03:34,630 --> 00:03:36,740
+And at the end of the word2vec process,
+
+82
+00:03:36,740 --> 00:03:38,130
+when you look at these vectors,
+
+83
+00:03:38,130 --> 00:03:40,370
+these vectors are such that if you take the vector from
+
+84
+00:03:40,370 --> 00:03:42,980
+man and you take the vector from woman,
+
+85
+00:03:42,980 --> 00:03:45,890
+and you actually subtract them, subtract those words,
+
+86
+00:03:45,890 --> 00:03:49,585
+the difference that you get is going to be a very similar difference,
+
+87
+00:03:49,585 --> 00:03:51,815
+is if you took the vector for king,
+
+88
+00:03:51,815 --> 00:03:54,745
+and the vector for queen, and subtracted them.
+
+89
+00:03:54,745 --> 00:03:57,820
+Interesting, right? That's exactly the Word2vec does.
+
+90
+00:03:57,820 --> 00:04:00,800
+So, changing an input variable that that's not numeric to be numeric,
+
+91
+00:04:00,800 --> 00:04:02,010
+it's not a simple matter,
+
+92
+00:04:02,010 --> 00:04:03,610
+it's a lot of work, but it can be done.
+
+93
+00:04:03,610 --> 00:04:06,020
+Well, you could just go ahead and throw
+
+94
+00:04:06,020 --> 00:04:08,975
+some random encoding in there like one, two, three, four, five,
+
+95
+00:04:08,975 --> 00:04:11,690
+but your ML model is not to be as good as if you started with
+
+96
+00:04:11,690 --> 00:04:15,740
+a vector encoding that's nice enough to understand the context of like male,
+
+97
+00:04:15,740 --> 00:04:17,990
+female, man, woman, king, and queen.
+
+98
+00:04:17,990 --> 00:04:20,150
+So, that's what we're talking about when we say that you need to have
+
+99
+00:04:20,150 --> 00:04:24,170
+numeric features and they need to have those meaningful magnitudes.
+
+100
+00:04:24,170 --> 00:04:25,835
+They need to be useful.
+
+101
+00:04:25,835 --> 00:04:27,280
+You need to be able to do eras,
+
+102
+00:04:27,280 --> 00:04:28,870
+matic operations on them.
+
+103
+00:04:28,870 --> 00:04:30,770
+You need to find a vector representations in
+
+104
+00:04:30,770 --> 00:04:33,630
+such a way that these kinds of qualities exist for you.
+
+105
+00:04:33,630 --> 00:04:36,720
+And one of the ways you can do these things automatically
+
+106
+00:04:36,720 --> 00:04:40,095
+using processes called auto-encoding or embedding.
+
+107
+00:04:40,095 --> 00:04:42,780
+Or oftentimes, for example, if you're doing natural language processing,
+
+108
+00:04:42,780 --> 00:04:44,760
+word2vec already exists and you
+
+109
+00:04:44,760 --> 00:04:47,140
+already have dictionaries that are already available to you.
+
+110
+00:04:47,140 --> 00:04:49,410
+And more commonly, that's what you'll use.
+
+111
+00:04:49,410 --> 00:04:51,740
+And when you go ahead, and use one of these dictionaries to take your text,
+
+112
+00:04:51,740 --> 00:04:52,850
+and convert them into vectors,
+
+113
+00:04:52,850 --> 00:04:54,570
+you'll go off and use them. No problem.
+
+114
+00:04:54,570 --> 00:04:56,340
+You won't actually have to build the mapping
+
+115
+00:04:56,340 --> 00:04:59,475
+yourself for something that's non-numeric into numeric.
+
+116
+00:04:59,475 --> 00:05:01,465
+These things already exists.
+
+117
+00:05:01,465 --> 00:05:03,700
+So, if they don't exist,
+
+118
+00:05:03,700 --> 00:05:06,250
+you may have to build that yourself.

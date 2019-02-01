@@ -1,0 +1,266 @@
+1
+00:00:00,000 --> 00:00:03,120
+Usamos uma função de
+transformação para transformar
+
+2
+00:00:03,120 --> 00:00:07,770
+o conjunto de dados de avaliação
+e gravamos os dados transformados.
+
+3
+00:00:07,770 --> 00:00:13,450
+Em qual tipo de dados usamos
+o conjunto analisado e transformado?
+
+4
+00:00:13,450 --> 00:00:16,650
+Isso, nos dados de treinamento.
+
+5
+00:00:16,650 --> 00:00:20,950
+E usamos o conjunto de dados de
+transformação para os dados de avaliação.
+
+6
+00:00:20,950 --> 00:00:25,580
+Embora criamos os recursos
+pré-processados com o Beam,
+
+7
+00:00:25,580 --> 00:00:30,670
+o método não pode
+ter código Python arbitrário.
+
+8
+00:00:30,670 --> 00:00:35,080
+Ele precisa ter apenas
+funções do TensorFlow.
+
+9
+00:00:35,080 --> 00:00:37,930
+O motivo para essas
+funções precisarem ser
+
+10
+00:00:37,930 --> 00:00:42,010
+do TensorFlow é que elas
+fazem parte do gráfico de previsão.
+
+11
+00:00:42,010 --> 00:00:44,320
+Por que elas
+fazem parte do gráfico?
+
+12
+00:00:44,320 --> 00:00:47,455
+Para que o usuário
+possa fornecer ao modelo
+
+13
+00:00:47,455 --> 00:00:51,420
+dados brutos e para que o modelo
+faça o pré-processamento necessário.
+
+14
+00:00:51,420 --> 00:00:55,525
+Como o modelo sabe
+quais funções chamar?
+
+15
+00:00:55,525 --> 00:00:59,569
+Para que ele saiba
+quais funções chamar,
+
+16
+00:00:59,569 --> 00:01:02,735
+precisamos salvar a
+função de transformação.
+
+17
+00:01:02,735 --> 00:01:05,060
+É isso que estou fazendo aqui.
+
+18
+00:01:05,060 --> 00:01:09,020
+Estou salvando a
+função de transformação
+
+19
+00:01:09,020 --> 00:01:14,695
+em um diretório chamado "metadata"
+junto ao modelo de treinamento.
+
+20
+00:01:14,695 --> 00:01:19,510
+Em seguida, dizemos à função de
+entrada para acessar os metadados.
+
+21
+00:01:19,510 --> 00:01:24,755
+Qual função de entrada?
+As três.
+
+22
+00:01:24,755 --> 00:01:29,460
+Primeiro, vamos ver as funções de
+entrada de treinamento e de avaliação.
+
+23
+00:01:29,460 --> 00:01:32,405
+Elas leem os recursos
+pré-processados.
+
+24
+00:01:32,405 --> 00:01:39,745
+Eu especifico que o esquema corresponde
+aos metadados transformados.
+
+25
+00:01:39,745 --> 00:01:46,560
+Altere as funções de entrada
+para ler os recursos pré-processados.
+
+26
+00:01:46,600 --> 00:01:49,760
+O TensorFlow tem
+
+27
+00:01:49,760 --> 00:01:54,695
+a função auxiliar
+"buil_training_input_fn".
+
+28
+00:01:54,695 --> 00:01:59,710
+Eu a uso para treinamento
+e avaliação, basta alterar
+
+29
+00:01:59,710 --> 00:02:04,535
+a variável de caminho de entrada para
+o caminho dos dados de treinamento
+
+30
+00:02:04,535 --> 00:02:08,680
+ou de avaliação,
+dependendo do modelo.
+
+31
+00:02:09,320 --> 00:02:14,205
+A função de entrada de
+disponibilização aceita dados brutos.
+
+32
+00:02:14,205 --> 00:02:18,270
+Eu forneço os
+metadados brutos,
+
+33
+00:02:18,270 --> 00:02:20,640
+não os transformados.
+
+34
+00:02:20,640 --> 00:02:23,815
+Só os dados brutos
+não são o bastante,
+
+35
+00:02:23,815 --> 00:02:27,800
+podemos ter funções
+arbitrárias do TensorFlow
+
+36
+00:02:27,800 --> 00:02:29,610
+no código de
+pré-processamento.
+
+37
+00:02:29,610 --> 00:02:33,960
+Essas operações são
+salvas em "saved_model.pb".
+
+38
+00:02:33,960 --> 00:02:38,340
+Há outra função auxiliar
+de transformação do TensorFlow:
+
+39
+00:02:38,340 --> 00:02:43,140
+a função de entrada com
+disponibilização, transformação e análise.
+
+40
+00:02:43,140 --> 00:02:47,020
+Analise o JSON com base no
+esquema de dados brutos.
+
+41
+00:02:47,020 --> 00:02:49,320
+Transforme os
+dados brutos com base
+
+42
+00:02:49,320 --> 00:02:51,900
+nas operações do TensorFlow
+em "saved_model.pb"
+
+43
+00:02:51,900 --> 00:02:53,880
+e envie-os para o modelo.
+
+44
+00:02:53,880 --> 00:02:59,325
+O código do cliente só precisa
+enviar as variáveis de entrada brutas,
+
+45
+00:02:59,325 --> 00:03:00,930
+isso continua igual.
+
+46
+00:03:00,930 --> 00:03:06,530
+A função de entrada de disponibilização
+recebe as variáveis e continua como antes.
+
+47
+00:03:06,530 --> 00:03:10,010
+Ela aceita os dados brutos
+e os envia para o modelo.
+
+48
+00:03:10,850 --> 00:03:13,830
+Por que o modelo funciona?
+
+49
+00:03:13,830 --> 00:03:19,865
+O regressor DNN ou outro modelo
+não processa uma string no DHU.
+
+50
+00:03:19,865 --> 00:03:24,645
+O modelo funciona porque
+o código do pré-processamento
+
+51
+00:03:24,645 --> 00:03:27,995
+agora faz parte do gráfico.
+
+52
+00:03:27,995 --> 00:03:31,750
+Isso ocorre porque
+o modelo lê os metadados
+
+53
+00:03:31,750 --> 00:03:34,350
+e inclui um código
+de pré-processamento.
+
+54
+00:03:34,350 --> 00:03:38,090
+É assim que a transformação
+do TensorFlow funciona.
+
+55
+00:03:38,090 --> 00:03:42,050
+Agora, vamos usá-la em um problema
+de previsão de tarifas de táxi.

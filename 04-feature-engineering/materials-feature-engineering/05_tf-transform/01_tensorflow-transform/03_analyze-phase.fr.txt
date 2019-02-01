@@ -1,0 +1,37 @@
+Abordons à présent la phase d'analyse. Souvenez-vous que vous analysez
+l'ensemble de données d'entraînement. Vous devez commencer par dire à
+Beam le type de données à attendre. Pour ce faire, vous devez
+configurer un schéma. Dans la première ligne, je configure un
+dictionnaire appelé "raw_data_schema". J'ajoute des entrées
+à toutes les colonnes à chaîne. Ici, la chaîne est un type
+de données TensorFlow. Puis, je mets à jour "raw_data_schema"
+en ajoutant les colonnes "tf.float32". Après cela, j'obtiens un dictionnaire
+"raw_data_schema" contenant toutes les colonnes de l'ensemble de données qui
+seront traitées par Beam dans Dataflow. "raw_data_schema" est utilisé pour
+créer un modèle de métadonnées. La prochaine étape est l'exécution d'un
+"PTransform analyze-and-transform" dans l'ensemble de données
+pour récupérer les données d'entraînement prétraitées
+et la fonction "transform". Utilisez d'abord "beam.io.Read"
+pour lire les données d'entraînement. Cette méthode ressemble aux pipelines
+Beam vus dans le module Beam précédent. Ici, je lis les données depuis BigQuery. Filtrez ensuite les données
+que vous ne voulez pas entraîner. Pour ce faire, j'utilise une fonction
+"is_valid" qui n'apparaît pas ici. Je vous montrerai cette méthode plus tard. Prenez ensuite les données brutes
+obtenues après lecture et filtrage, ainsi que les métadonnées des données brutes
+obtenues dans la diapositive précédente, puis passez-les dans "PTransformAnalyzeandTransformDataset". Beam exécute
+cette transformation de façon distribuée et réalise toutes les analyses, demandées
+dans la méthode, grâce à "preprocess". Je vous monterai également
+cette méthode plus tard. Pour le moment, les méthodes "is_valid"
+et "preprocess" sont exécutées par Beam sur l'ensemble de données d'entraînement
+pour les filtrer et les prétraiter. Les données prétraitées
+reviennent dans une PCollection, une collection parallèle que
+j'appelle "transformed_dataset". Remarquez
+que les transformations réalisées dans "preprocess" sont enregistrées
+dans la seconde valeur de renvoi, la fonction "transform_fn".
+Cette information est importante. Prenez les données transformées
+"transformed_data" et écrivez-les, ici en tant que "TFRecords", le format
+le plus efficace pour TensorFlow. Pour ce faire,
+j'utilise le droit "PTransform" de "TFRecords" inclus
+dans TensorFlow Transform. Les fichiers seront fermés
+automatiquement. Mais remarquez quel schéma est utilisé. Non pas le schéma des données brutes,
+mais le schéma transformé. Pourquoi ? Parce que, bien sûr, nous écrivons des données transformées, les données prétraitées,
+pas les données brutes.

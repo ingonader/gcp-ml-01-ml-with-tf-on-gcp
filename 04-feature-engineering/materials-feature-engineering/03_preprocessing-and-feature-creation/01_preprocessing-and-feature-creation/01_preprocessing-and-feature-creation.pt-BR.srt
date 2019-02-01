@@ -1,0 +1,619 @@
+1
+00:00:00,000 --> 00:00:02,130
+Olá. Meu nome é Carl Osipov
+
+2
+00:00:02,130 --> 00:00:03,960
+e sou gerente de programas no Google.
+
+3
+00:00:03,960 --> 00:00:06,480
+Eu trabalho com clientes
+que usam o Google Cloud
+
+4
+00:00:06,480 --> 00:00:10,440
+e os ajudo a ter sucesso com a implantação
+de sistemas de aprendizado de máquina
+
+5
+00:00:10,440 --> 00:00:12,390
+escalonáveis ​​e prontos para produção.
+
+6
+00:00:12,390 --> 00:00:17,985
+Esta seção aborda o pré-processamento de
+dados de entrada e a criação de atributos,
+
+7
+00:00:17,985 --> 00:00:19,910
+que são duas técnicas que podem ajudá-lo
+
+8
+00:00:19,910 --> 00:00:23,640
+a preparar um conjunto de atributos para
+um sistema de aprendizado de máquina.
+
+9
+00:00:23,640 --> 00:00:27,860
+Para começar, olhe os exemplos de
+pré-processamento e criação de recursos
+
+10
+00:00:27,860 --> 00:00:29,820
+e aprenda os desafios envolvidos
+
+11
+00:00:29,820 --> 00:00:33,470
+na aplicação dessas técnicas
+como parte da engenharia de recursos.
+
+12
+00:00:33,470 --> 00:00:36,300
+Em seguida, nas duas partes
+restantes da sessão,
+
+13
+00:00:36,300 --> 00:00:39,050
+você verá como ferramentas,
+como o Google Cloud Dataflow
+
+14
+00:00:39,050 --> 00:00:42,585
+e o Cloud Dataprep, podem ajudá-lo
+com esses desafios.
+
+15
+00:00:43,375 --> 00:00:46,790
+Primeiro, aqui estão alguns
+exemplos que darão
+
+16
+00:00:46,790 --> 00:00:51,230
+uma ideia de quando usar o
+pré-processamento e a criação de recursos.
+
+17
+00:00:51,230 --> 00:00:54,560
+Alguns valores em um conjunto de atributos
+precisam ser normalizados
+
+18
+00:00:54,560 --> 00:00:56,465
+ou redimensionados antes de serem usados
+
+19
+00:00:56,465 --> 00:00:58,865
+​​pelo aprendizado de máquina
+e pelo modelo ML.
+
+20
+00:00:58,865 --> 00:01:02,600
+Aqui, um escalonamento significa alterar
+um atributo válido real,
+
+21
+00:01:02,600 --> 00:01:07,275
+como um preço, para um intervalo de zero
+a um usando a fórmula mostrada.
+
+22
+00:01:07,275 --> 00:01:10,175
+O reescalonamento pode ser feito
+por vários motivos.
+
+23
+00:01:10,175 --> 00:01:14,045
+Mas, na maioria das vezes, é feito para
+melhorar o desempenho do treino de ML.
+
+24
+00:01:14,045 --> 00:01:17,075
+Especificamente, o desempenho
+do gradiente descendente.
+
+25
+00:01:17,075 --> 00:01:20,715
+Observe que, para calcular
+a fórmula de reescalonamento,
+
+26
+00:01:20,715 --> 00:01:24,570
+você precisa conhecer os valores
+mínimo e máximo de um atributo.
+
+27
+00:01:24,570 --> 00:01:26,415
+Se você não souber esses valores,
+
+28
+00:01:26,415 --> 00:01:30,435
+talvez seja necessário pré-processar todo
+o conjunto de dados para encontrar.
+
+29
+00:01:31,305 --> 00:01:34,450
+O pré-processamento também pode
+ser útil para valores categóricos
+
+30
+00:01:34,450 --> 00:01:36,665
+nos conjuntos de dados,
+como nomes de cidades,
+
+31
+00:01:36,665 --> 00:01:39,135
+conforme mostrado
+no snippet de código no slide.
+
+32
+00:01:39,135 --> 00:01:43,555
+Por exemplo, para usar uma técnica de
+codificação one-hot no TensorFlow,
+
+33
+00:01:43,555 --> 00:01:45,925
+que ajudará a representar
+cidades diferentes
+
+34
+00:01:45,925 --> 00:01:48,915
+como atributos de valor binário
+no conjunto de atributos,
+
+35
+00:01:48,915 --> 00:01:53,320
+use o método
+categorical_column_with_vocabulary_list
+
+36
+00:01:53,320 --> 00:01:54,860
+da API Layers.
+
+37
+00:01:54,860 --> 00:01:58,255
+Para usar esse método, você precisa passar
+uma lista de valores,
+
+38
+00:01:58,255 --> 00:02:00,880
+que neste exemplo são diferentes
+nomes de cidades.
+
+39
+00:02:00,880 --> 00:02:03,985
+Se você não tiver este dicionário
+de valores para uma chave,
+
+40
+00:02:03,985 --> 00:02:05,505
+também poderá criá-lo,
+
+41
+00:02:05,505 --> 00:02:08,785
+como etapa de pré-processamento sobre
+todo o conjunto de dados.
+
+42
+00:02:08,785 --> 00:02:11,025
+Neste módulo, você aprenderá sobre
+
+43
+00:02:11,025 --> 00:02:14,375
+tecnologias gratuitas que ajudarão a
+implementar o pré-processamento.
+
+44
+00:02:14,375 --> 00:02:17,210
+O BigQuery e o Apache Beam serão usados ​
+
+45
+00:02:17,210 --> 00:02:20,750
+para processar o conjunto de dados de
+entrada completo antes do treino.
+
+46
+00:02:20,750 --> 00:02:23,730
+Isso abrange operações, como
+a exclusão de pontos de dados
+
+47
+00:02:23,730 --> 00:02:25,840
+do conjunto de dados de treinamento,
+
+48
+00:02:25,840 --> 00:02:28,045
+e também o cálculo de
+resumos de estatísticas
+
+49
+00:02:28,045 --> 00:02:30,725
+e vocabulários em todo
+o conjunto de dados de entrada.
+
+50
+00:02:30,725 --> 00:02:32,915
+Tenha em mente que, para alguns atributos,
+
+51
+00:02:32,915 --> 00:02:36,000
+você precisará de estatísticas
+em uma janela de tempo limitado.
+
+52
+00:02:36,000 --> 00:02:38,210
+Por exemplo, se precisar
+saber a média
+
+53
+00:02:38,210 --> 00:02:40,930
+de produtos vendidos por um site
+na última hora.
+
+54
+00:02:40,930 --> 00:02:44,010
+Para esses tipos de atributos
+definidos pelo intervalo de tempo
+
+55
+00:02:44,010 --> 00:02:47,075
+você usará os canais de dados
+de streaming e de lote do Beam.
+
+56
+00:02:47,075 --> 00:02:48,200
+Outros atributos,
+
+57
+00:02:48,200 --> 00:02:51,020
+que podem ser pré-processados
+um ponto de dados de cada vez,
+
+58
+00:02:51,020 --> 00:02:54,855
+podem ser implementados diretamente
+no TensorFlow ou usando o Beam.
+
+59
+00:02:54,855 --> 00:02:57,230
+Como você pode ver, o Apache Beam
+
+60
+00:02:57,230 --> 00:03:00,040
+e a tecnologia complementar
+do Google Cloud,
+
+61
+00:03:00,040 --> 00:03:03,590
+chamada Cloud Dataflow, serão importantes
+para essa parte do módulo.
+
+62
+00:03:03,590 --> 00:03:06,635
+Então, primeiro, descreverei
+algumas limitações em usar
+
+63
+00:03:06,635 --> 00:03:09,850
+apenas o BigQuery e o TensorFlow
+para engenharia de atributos.
+
+64
+00:03:09,850 --> 00:03:12,330
+Em seguida, explicarei como
+o Beam pode ajudar.
+
+65
+00:03:12,330 --> 00:03:15,605
+O BigQuery é um armazenamento de dados
+altamente escalonável, rápido
+
+66
+00:03:15,605 --> 00:03:19,950
+e totalmente gerenciado disponível
+como um serviço do Google Cloud.
+
+67
+00:03:19,950 --> 00:03:23,590
+O BigQuery pode ajudá-lo como engenharia
+de atributos, pois permite
+
+68
+00:03:23,590 --> 00:03:27,250
+usar SQL padrão para implementar
+tarefas comuns de pré-processamento.
+
+69
+00:03:27,250 --> 00:03:29,670
+Por exemplo, se você estiver
+pré-processando
+
+70
+00:03:29,670 --> 00:03:33,620
+um conjunto de dados com registros de 10
+bilhões de corridas de táxi em Nova York,
+
+71
+00:03:33,620 --> 00:03:37,750
+alguns dos registros podem ter dados
+falsos, como passeios caros,
+
+72
+00:03:37,750 --> 00:03:39,730
+mostrando uma distância de zero milhas.
+
+73
+00:03:39,730 --> 00:03:43,975
+Você pode gravar a instrução SQL
+para filtrar os dados falsos do conjunto
+
+74
+00:03:43,975 --> 00:03:48,300
+de dados de exemplo de treino e executar
+o SQL no BigQuery em segundos.
+
+75
+00:03:48,300 --> 00:03:51,000
+Você também pode gravar outras instruções,
+
+76
+00:03:51,000 --> 00:03:54,575
+usando funções matemáticas do SQL
+padrão e de processamento de dados.
+
+77
+00:03:54,575 --> 00:03:59,300
+Elas são valiosas para cálculos simples,
+como adições sobre dados de origem,
+
+78
+00:03:59,300 --> 00:04:02,210
+e também para analisar
+formatos de dados comuns,
+
+79
+00:04:02,210 --> 00:04:04,065
+como extrair
+detalhes sobre
+
+80
+00:04:04,065 --> 00:04:06,655
+a hora do dia de registros
+com carimbo de data/hora.
+
+81
+00:04:06,655 --> 00:04:10,600
+Se você decidir usar o SQL para
+pré-processar exemplos de treinamento,
+
+82
+00:04:10,600 --> 00:04:13,590
+é absolutamente importante
+que você tome o cuidado
+
+83
+00:04:13,590 --> 00:04:17,325
+de implementar exatamente a mesma lógica
+de pré-processamento no TensorFlow.
+
+84
+00:04:17,325 --> 00:04:19,635
+Em seguida, você verá duas abordagens
+
+85
+00:04:19,635 --> 00:04:23,125
+sobre como gravar esse código de
+pré-processamento no TensorFlow.
+
+86
+00:04:23,125 --> 00:04:26,430
+Na prática, você poderá
+se ver usando a primeira
+
+87
+00:04:26,430 --> 00:04:29,435
+ou a segunda abordagem.
+E, às vezes, poderá usar ambas.
+
+88
+00:04:29,435 --> 00:04:33,530
+Tenha em mente que muitas etapas comuns
+de pré-processamento podem ser
+
+89
+00:04:33,530 --> 00:04:38,350
+gravadas com um dos métodos existentes na
+API de colunas de atributos do TensorFlow.
+
+90
+00:04:38,350 --> 00:04:42,760
+Por exemplo, se precisar alterar um
+atributo válido real para um discreto,
+
+91
+00:04:42,760 --> 00:04:45,350
+use o método bucketized_column.
+
+92
+00:04:45,350 --> 00:04:50,490
+Se a etapa de pré-processamento necessária
+não está nas APIs do TensorFlow,
+
+93
+00:04:50,490 --> 00:04:52,720
+você poder modificar as funções usadas
+
+94
+00:04:52,720 --> 00:04:56,360
+nos parâmetros de entrada durante
+o treinamento, a validação e o teste.
+
+95
+00:04:56,360 --> 00:04:59,930
+Os próximos slides explicarão isso
+com mais detalhes.
+
+96
+00:05:02,500 --> 00:05:06,670
+Como primeira opção, você implementou
+seu próprio código de pré-processamento.
+
+97
+00:05:06,670 --> 00:05:09,505
+Neste exemplo, o código
+de pré-processamento
+
+98
+00:05:09,505 --> 00:05:13,360
+é empacotado no método add_engineered,
+e a implementação
+
+99
+00:05:13,360 --> 00:05:16,945
+não precisa de nenhuma estatística global
+do conjunto de dados de origem.
+
+100
+00:05:16,945 --> 00:05:19,190
+Para calcular o atributo
+de distância euclideana
+
+101
+00:05:19,190 --> 00:05:22,605
+das coordenadas de latitude e longitude
+existentes para pontos de dados,
+
+102
+00:05:22,605 --> 00:05:25,520
+o código retorna apenas o dicionário
+de atributos original
+
+103
+00:05:25,520 --> 00:05:29,380
+junto com o novo valor de atributo
+calculado usando a fórmula da distância.
+
+104
+00:05:29,380 --> 00:05:33,370
+Para garantir que o atributo de distância
+euclideana seja incluído durante as etapas
+
+105
+00:05:33,370 --> 00:05:35,675
+de treino, avaliação e suprimento,
+
+106
+00:05:35,675 --> 00:05:39,525
+todas as funções input_fn correspondentes
+envolvem a chamada
+
+107
+00:05:39,525 --> 00:05:43,780
+para o método add_engineered em torno do
+conjunto de atributos não pré-processados.
+
+108
+00:05:43,780 --> 00:05:48,990
+Se a etapa de pré-processamento que
+precisa já existe na API TensorFlow,
+
+109
+00:05:48,990 --> 00:05:51,150
+você está com sorte,
+porque pode apenas chamar
+
+110
+00:05:51,150 --> 00:05:54,970
+os métodos auxiliares apropriados, ao
+definir sua lista de colunas de atributos.
+
+111
+00:05:54,970 --> 00:05:57,880
+Neste exemplo, o método
+bucketized_column
+
+112
+00:05:57,880 --> 00:06:01,030
+é usado para ter as coordenadas
+de latitude dos dados de origem
+
+113
+00:06:01,030 --> 00:06:05,485
+e garantir que os valores estejam
+no intervalo de 38 e 42.
+
+114
+00:06:05,485 --> 00:06:09,760
+Em seguida, os valores originais
+da latitude são colocados em
+
+115
+00:06:09,760 --> 00:06:12,210
+um dos vários intervalos
+mutuamente exclusivos,
+
+116
+00:06:12,210 --> 00:06:14,615
+de modo que
+o número de intervalos no período
+
+117
+00:06:14,615 --> 00:06:16,885
+é controlado pelo parâmetro
+do intervalo final.
+
+118
+00:06:16,885 --> 00:06:20,080
+A manutenção do código de
+pré-processamento no SQL
+
+119
+00:06:20,080 --> 00:06:24,460
+para o BigQuery e no TensorFlow pode
+se tornar complexa e difícil de gerenciar.
+
+120
+00:06:24,460 --> 00:06:26,100
+Como você viu anteriormente,
+
+121
+00:06:26,100 --> 00:06:28,840
+uma das vantagens de usar o Apache Beam
+
+122
+00:06:28,840 --> 00:06:30,910
+para pré-processar atributos,
+
+123
+00:06:30,910 --> 00:06:35,460
+é que o mesmo código pode ser usado
+durante o treino e suprimento do modelo.
+
+124
+00:06:35,460 --> 00:06:38,225
+No entanto, ao usar o Apache Beam,
+
+125
+00:06:38,225 --> 00:06:42,445
+você não terá acesso aos métodos
+auxiliares convenientes do TensorFlow.
+
+126
+00:06:42,445 --> 00:06:44,910
+Isso significa, conforme
+mostrado neste exemplo,
+
+127
+00:06:44,910 --> 00:06:48,340
+que você precisará implementar seu próprio
+código de pré-processamento.
+
+128
+00:06:48,340 --> 00:06:51,420
+Nesta parte do módulo,
+você reviu exemplos específicos
+
+129
+00:06:51,420 --> 00:06:54,880
+em que o Apache Beam pode ajudá-lo
+a pré-processar.

@@ -1,0 +1,283 @@
+1
+00:00:00,000 --> 00:00:03,360
+Imagine that you are writing a machine learning model that looks at
+
+2
+00:00:03,360 --> 00:00:07,710
+a car and tells you whether or not that car is a taxi.
+
+3
+00:00:07,710 --> 00:00:13,710
+You and I know that white cars in Rome and yellow cars in New York tend to be taxis.
+
+4
+00:00:13,710 --> 00:00:17,040
+But we want our machine learning model to learn this from
+
+5
+00:00:17,040 --> 00:00:20,190
+a dataset consisting of car registrations.
+
+6
+00:00:20,190 --> 00:00:25,215
+So, assume that your input data looks like this: red,
+
+7
+00:00:25,215 --> 00:00:30,690
+Rome; white, Rome; et cetera and the labels are whether or not it's a taxi.
+
+8
+00:00:30,690 --> 00:00:35,250
+So essentially, the car color and the city are your two input features,
+
+9
+00:00:35,250 --> 00:00:37,800
+and you need to use these features in
+
+10
+00:00:37,800 --> 00:00:42,490
+your linear model to predict whether or not the car is a taxi.
+
+11
+00:00:42,490 --> 00:00:43,970
+How would you do it?
+
+12
+00:00:43,970 --> 00:00:46,820
+You take the first input,
+
+13
+00:00:46,820 --> 00:00:50,020
+the car color, and you one-hat encode it.
+
+14
+00:00:50,020 --> 00:00:52,110
+You take the second input,
+
+15
+00:00:52,110 --> 00:00:54,920
+the city name, and you one-hot encode it.
+
+16
+00:00:54,920 --> 00:01:00,150
+You take these and you send them straight to your linear model.
+
+17
+00:01:00,150 --> 00:01:04,520
+Now, let's say you give a weight of 0.8 to
+
+18
+00:01:04,520 --> 00:01:09,615
+yellow cars because 80 percent of the yellow cars in your training dataset are taxis.
+
+19
+00:01:09,615 --> 00:01:12,840
+So, W3 now, is 0.8.
+
+20
+00:01:12,840 --> 00:01:15,945
+Of course, you won't give it a weight of 0.8.
+
+21
+00:01:15,945 --> 00:01:18,910
+This weight will be learned by gradient descent,
+
+22
+00:01:18,910 --> 00:01:21,515
+but that's what gradient descent is going to do.
+
+23
+00:01:21,515 --> 00:01:27,615
+Unfortunately, this weight of 0.8 is true for yellow cars in all cities,
+
+24
+00:01:27,615 --> 00:01:28,950
+not just New York.
+
+25
+00:01:28,950 --> 00:01:31,890
+How would you fix it?
+
+26
+00:01:31,890 --> 00:01:35,145
+Would you give a high weight to New York?
+
+27
+00:01:35,145 --> 00:01:37,275
+That doesn't work.
+
+28
+00:01:37,275 --> 00:01:40,860
+Now, all cars in New York get this high weight.
+
+29
+00:01:40,860 --> 00:01:47,130
+Do you see the problem?
+
+30
+00:01:47,130 --> 00:01:50,225
+Add in a feature cross, and what happens?
+
+31
+00:01:50,225 --> 00:01:55,550
+We now have an input node corresponding to red cars in New York,
+
+32
+00:01:55,550 --> 00:01:58,119
+and other to yellow cars in New York,
+
+33
+00:01:58,119 --> 00:02:00,590
+and a third to white cars in New York,
+
+34
+00:02:00,590 --> 00:02:02,880
+and a fourth for green cars in New York,
+
+35
+00:02:02,880 --> 00:02:05,525
+and similarly for cars in Rome.
+
+36
+00:02:05,525 --> 00:02:11,170
+And now, the model can learn quite quickly that yellow cars in New York and
+
+37
+00:02:11,170 --> 00:02:17,255
+white cars in Rome tend to be taxis and give those two nodes a high weight.
+
+38
+00:02:17,255 --> 00:02:20,310
+Everything else, zero weight.
+
+39
+00:02:20,310 --> 00:02:21,975
+Problem solved.
+
+40
+00:02:21,975 --> 00:02:26,560
+So, this is why feature crosses are so powerful.
+
+41
+00:02:26,560 --> 00:02:33,440
+Feature crosses bring a lot of power to linear models.
+
+42
+00:02:33,440 --> 00:02:38,280
+Using feature crosses plus massive data is
+
+43
+00:02:38,280 --> 00:02:43,835
+a very efficient strategy for learning highly complex spaces.
+
+44
+00:02:43,835 --> 00:02:49,620
+Neural networks provide another way to learn highly complex spaces.
+
+45
+00:02:49,620 --> 00:02:54,285
+But feature crosses let linear models stay in the game.
+
+46
+00:02:54,285 --> 00:03:00,875
+Without feature crosses, the expressivity of linear models would be quite limited.
+
+47
+00:03:00,875 --> 00:03:04,879
+With feature crosses, once you have a massive dataset,
+
+48
+00:03:04,879 --> 00:03:08,910
+a linear model can learn the nooks and crannies of your input space.
+
+49
+00:03:08,910 --> 00:03:14,785
+So, feature crosses allow a linear model to memorize large datasets.
+
+50
+00:03:14,785 --> 00:03:19,269
+The idea is, you can assign a weight to each feature cross,
+
+51
+00:03:19,269 --> 00:03:23,580
+and this way the model learns about combinations of features.
+
+52
+00:03:23,580 --> 00:03:26,035
+So, even though it's a linear model,
+
+53
+00:03:26,035 --> 00:03:32,630
+the actual underlying relationship between inputs and outputs is non-linear.
+
+54
+00:03:32,630 --> 00:03:39,615
+Why are we so concerned about making linear models work well?
+
+55
+00:03:39,615 --> 00:03:42,065
+Think back to the previous course.
+
+56
+00:03:42,065 --> 00:03:47,005
+We talked about convex problems and non-convex problems.
+
+57
+00:03:47,005 --> 00:03:52,445
+Neural networks with many layers are non-convex.
+
+58
+00:03:52,445 --> 00:03:57,665
+But optimizing linear models is a convex problem,
+
+59
+00:03:57,665 --> 00:04:00,895
+and convex problems are much,
+
+60
+00:04:00,895 --> 00:04:04,645
+much, much easier than non-convex problems.
+
+61
+00:04:04,645 --> 00:04:06,905
+So, for a long time,
+
+62
+00:04:06,905 --> 00:04:11,635
+sparse linear models were the only algorithm that we or anyone
+
+63
+00:04:11,635 --> 00:04:18,010
+had that could scale to billions of training examples and billions of input features.
+
+64
+00:04:18,010 --> 00:04:23,360
+The predecessors to TensorFlow at Google, SETI, SmartAss Siebel.
+
+65
+00:04:23,360 --> 00:04:26,410
+They were all truly massive scale learners.
+
+66
+00:04:26,410 --> 00:04:29,800
+Now, this has changed in the last few years and
+
+67
+00:04:29,800 --> 00:04:34,840
+neural networks now can also handle massive scale data,
+
+68
+00:04:34,840 --> 00:04:38,580
+often with the assistance of GPUs and TPUs but
+
+69
+00:04:38,580 --> 00:04:43,775
+sparse linear models are still a fast, low cost option.
+
+70
+00:04:43,775 --> 00:04:48,460
+Using sparse linear models as a pre-processor for
+
+71
+00:04:48,460 --> 00:04:54,220
+your features will often mean that your neural network converges much faster.

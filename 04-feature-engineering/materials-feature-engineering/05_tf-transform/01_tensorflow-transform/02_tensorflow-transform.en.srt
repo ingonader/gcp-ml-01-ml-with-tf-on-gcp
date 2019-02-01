@@ -1,0 +1,487 @@
+1
+00:00:00,000 --> 00:00:05,325
+Remember that we were talking about three possible places to do feature engineering.
+
+2
+00:00:05,325 --> 00:00:09,615
+We said you could do feature engineering within TensorFlow itself,
+
+3
+00:00:09,615 --> 00:00:13,755
+using feature columns, are they wrapping the feature dictionary,
+
+4
+00:00:13,755 --> 00:00:16,570
+and adding arbitrary TensorFlow code.
+
+5
+00:00:16,570 --> 00:00:19,505
+This is great because it's efficient.
+
+6
+00:00:19,505 --> 00:00:22,250
+TensorFlow code and a GPU, RTPU.
+
+7
+00:00:22,250 --> 00:00:26,790
+But why do I say arbitrary TensorFlow code?
+
+8
+00:00:26,790 --> 00:00:32,735
+Because this needs to be code that's executed as part of your model function,
+
+9
+00:00:32,735 --> 00:00:35,265
+as part of your TensorFlow graph.
+
+10
+00:00:35,265 --> 00:00:40,365
+So, you cannot do a query on your corporate database and stick a value in there.
+
+11
+00:00:40,365 --> 00:00:44,490
+Well, you could write a custom TensorFlow up in C++ and call it.
+
+12
+00:00:44,490 --> 00:00:46,215
+But let's ignore that for now.
+
+13
+00:00:46,215 --> 00:00:53,280
+Also you can only do things that rely on this input value and this input value alone.
+
+14
+00:00:53,280 --> 00:00:56,215
+So, if you want to compute a rolling average,
+
+15
+00:00:56,215 --> 00:00:58,680
+well that's hard to do.
+
+16
+00:00:58,680 --> 00:01:04,500
+Later, we look at sequence models where it appears that we are processing a time series.
+
+17
+00:01:04,500 --> 00:01:09,545
+So, multiple input values but the input there is the entire sequence.
+
+18
+00:01:09,545 --> 00:01:13,590
+So, the limit we're doing TensorFlow processing is that we
+
+19
+00:01:13,590 --> 00:01:17,835
+can do preprocessing on a single input only.
+
+20
+00:01:17,835 --> 00:01:21,450
+TensorFlow models, sequence model is an exception,
+
+21
+00:01:21,450 --> 00:01:25,810
+but TensorFlow models tend to be stateless.
+
+22
+00:01:25,810 --> 00:01:28,510
+In the past two chapters,
+
+23
+00:01:28,510 --> 00:01:31,665
+we also look at how to do preprocessing or
+
+24
+00:01:31,665 --> 00:01:36,395
+feature creation in Apache Beam on Cloud Dataflow.
+
+25
+00:01:36,395 --> 00:01:38,730
+Dataflow lets us execute
+
+26
+00:01:38,730 --> 00:01:42,630
+arbitrary Python or Java code and allows
+
+27
+00:01:42,630 --> 00:01:47,040
+us to handle multiple input values in a stateful way.
+
+28
+00:01:47,040 --> 00:01:51,510
+For example, you can compute a time window average.
+
+29
+00:01:51,510 --> 00:01:57,085
+Like the average number of bicycles at a traffic intersection over the past hour.
+
+30
+00:01:57,085 --> 00:02:02,190
+However, you will have to run your prediction code also within
+
+31
+00:02:02,190 --> 00:02:04,950
+a pipeline so that you can get the average number of
+
+32
+00:02:04,950 --> 00:02:08,340
+bicycles at a traffic intersection over the past hour.
+
+33
+00:02:08,340 --> 00:02:10,950
+So, this is good for examples like
+
+34
+00:02:10,950 --> 00:02:14,780
+time window averages where you need a pipeline in any case.
+
+35
+00:02:14,780 --> 00:02:20,910
+But what if all that you want is a min or max
+
+36
+00:02:20,910 --> 00:02:23,580
+so that you can scale the values or get
+
+37
+00:02:23,580 --> 00:02:28,175
+the vocabulary to convert categorical values into numbers.
+
+38
+00:02:28,175 --> 00:02:32,275
+Running a Dataflow pipeline in prediction,
+
+39
+00:02:32,275 --> 00:02:34,774
+just to get mini and max,
+
+40
+00:02:34,774 --> 00:02:37,500
+seems a bit like overkill.
+
+41
+00:02:37,500 --> 00:02:40,845
+Enter tf.transform.
+
+42
+00:02:40,845 --> 00:02:44,490
+This is a hybrid of the first two approaches.
+
+43
+00:02:44,490 --> 00:02:49,405
+With TensorFlow transform, you're limited to TensorFlow methods.
+
+44
+00:02:49,405 --> 00:02:52,665
+But then you also get the efficiency of TensorFlow.
+
+45
+00:02:52,665 --> 00:02:59,390
+You can also use the aggregate of your entire training dataset because tf.transform uses
+
+46
+00:02:59,390 --> 00:03:05,915
+Dataflow during training but only TensorFlow during prediction.
+
+47
+00:03:05,915 --> 00:03:09,310
+Let's look at how TensorFlow transform works.
+
+48
+00:03:09,440 --> 00:03:15,640
+TensorFlow transform is a hybrid of Apache Beam and TensorFlow.
+
+49
+00:03:15,640 --> 00:03:17,490
+It's in between the two.
+
+50
+00:03:17,490 --> 00:03:22,420
+Dataflow preprocessing only works in the context of a pipeline.
+
+51
+00:03:22,420 --> 00:03:27,520
+Think in terms of incoming streaming data such as IoT data,
+
+52
+00:03:27,520 --> 00:03:30,415
+Internet of Things data, or flights data.
+
+53
+00:03:30,415 --> 00:03:35,380
+The Dataflow pipeline might involve the predictions,
+
+54
+00:03:35,380 --> 00:03:39,715
+and it might invoke those predictions and save those predictions to big table.
+
+55
+00:03:39,715 --> 00:03:42,940
+These predictions are then served to
+
+56
+00:03:42,940 --> 00:03:46,495
+anyone who visits the webpage in the next 60 seconds.
+
+57
+00:03:46,495 --> 00:03:50,220
+At which point a new prediction is available in big table.
+
+58
+00:03:50,220 --> 00:03:54,195
+In other words, when you hear Dataflow
+
+59
+00:03:54,195 --> 00:03:59,095
+think back and preprocessing for machine learning models.
+
+60
+00:03:59,095 --> 00:04:06,105
+You can use Dataflow for preprocessing that needs to maintain state such as time Windows.
+
+61
+00:04:06,105 --> 00:04:13,225
+For on-the-fly preprocessing for machine learning models, think TensorFlow.
+
+62
+00:04:13,225 --> 00:04:20,680
+You use TensorFlow for preprocessing that is based on the provided input only.
+
+63
+00:04:20,680 --> 00:04:26,290
+So, if you put all the stuff in the dotted box into the TensorFlow graph,
+
+64
+00:04:26,290 --> 00:04:30,070
+then it's quite easy for clients to just invoke
+
+65
+00:04:30,070 --> 00:04:35,890
+a web application and get all the processing handle for them.
+
+66
+00:04:35,950 --> 00:04:39,980
+But what about the in-between things.
+
+67
+00:04:39,980 --> 00:04:48,245
+For example, you want to scale your inputs based on the min or max value in the dataset.
+
+68
+00:04:48,245 --> 00:04:50,790
+If you want to do this,
+
+69
+00:04:50,790 --> 00:04:55,950
+you need to analyze your data in Dataflow so you can do the entire dataset,
+
+70
+00:04:55,950 --> 00:04:57,510
+find the min and max,
+
+71
+00:04:57,510 --> 00:05:00,600
+and then do the transformation and Dataflow so
+
+72
+00:05:00,600 --> 00:05:04,035
+that you can scale each individual input value.
+
+73
+00:05:04,035 --> 00:05:07,245
+So, that's what tf.transform is about.
+
+74
+00:05:07,245 --> 00:05:11,555
+It's a hybrid of Apache Beam and TensorFlow.
+
+75
+00:05:11,555 --> 00:05:14,260
+To understand how this works,
+
+76
+00:05:14,260 --> 00:05:19,815
+consider that in general preprocessing has two stages.
+
+77
+00:05:19,815 --> 00:05:22,920
+Consider for example that you want to scale your input
+
+78
+00:05:22,920 --> 00:05:26,345
+raw data so that Gradient Descent works better.
+
+79
+00:05:26,345 --> 00:05:28,245
+In order to do that,
+
+80
+00:05:28,245 --> 00:05:32,040
+you will first have to find the minimum and the maximum
+
+81
+00:05:32,040 --> 00:05:36,625
+of the numeric feature over the entire training dataset.
+
+82
+00:05:36,625 --> 00:05:41,025
+And then you will scale every input value
+
+83
+00:05:41,025 --> 00:05:46,035
+by the min and max that were computed on the training dataset.
+
+84
+00:05:46,035 --> 00:05:52,025
+Or consider that you want to find the vocabulary of keys for a categorical variable.
+
+85
+00:05:52,025 --> 00:05:57,420
+Let's say you have a categorical feature that is a manufacturer of a vehicle.
+
+86
+00:05:57,420 --> 00:06:00,920
+You will go through the entire training dataset to
+
+87
+00:06:00,920 --> 00:06:04,640
+find all the possible values of a particular feature.
+
+88
+00:06:04,640 --> 00:06:08,520
+Essentially, get the list of all the manufacturers.
+
+89
+00:06:08,520 --> 00:06:13,785
+Then, if you find 20 different manufacturers in your training dataset,
+
+90
+00:06:13,785 --> 00:06:19,530
+you will one-hot encode the manufacturer column into a vector of length 20.
+
+91
+00:06:19,530 --> 00:06:22,420
+Do you see what's going on?
+
+92
+00:06:22,420 --> 00:06:28,440
+The first step involves traversing the entire dataset once.
+
+93
+00:06:28,440 --> 00:06:31,640
+We call this the analysis phase.
+
+94
+00:06:31,640 --> 00:06:38,770
+The second step involves on-the-fly transformation of the input data.
+
+95
+00:06:38,770 --> 00:06:43,045
+We call this the transform face.
+
+96
+00:06:43,045 --> 00:06:46,800
+Which technology, Beam or
+
+97
+00:06:46,800 --> 00:06:52,570
+TensorFlow is better suited to doing analysis of the training dataset?
+
+98
+00:06:52,570 --> 00:06:57,480
+Which technology, Beam, or TensorFlow is better
+
+99
+00:06:57,480 --> 00:07:03,030
+suited to doing on-the-flight transformation of the input data?
+
+100
+00:07:03,970 --> 00:07:10,620
+Analysis and Beam transform in TensorFlow.
+
+101
+00:07:10,990 --> 00:07:15,975
+There are two PTransforms in tf.transform.
+
+102
+00:07:15,975 --> 00:07:20,760
+AnalyzeAndTransformDataset, which is executed in
+
+103
+00:07:20,760 --> 00:07:25,450
+Beam to create a preprocessed training dataset,
+
+104
+00:07:25,450 --> 00:07:33,360
+and TransformDataset which is executed in Beam to create the evaluation dataset.
+
+105
+00:07:33,480 --> 00:07:36,825
+Remember that computing the min and max,
+
+106
+00:07:36,825 --> 00:07:40,965
+et cetera the analysis is done only on the training dataset.
+
+107
+00:07:40,965 --> 00:07:43,780
+We cannot use the evaluation dataset for that.
+
+108
+00:07:43,780 --> 00:07:50,840
+So, the evaluation dataset is scaled using the min and max found in the training data.
+
+109
+00:07:50,840 --> 00:07:54,750
+But what if the max in the evaluation is bigger?
+
+110
+00:07:54,750 --> 00:07:58,780
+Well, this simulates a situation that you deploy
+
+111
+00:07:58,780 --> 00:08:03,280
+your model and then you find that a bigger value comes in a prediction time.
+
+112
+00:08:03,280 --> 00:08:04,825
+It's no different.
+
+113
+00:08:04,825 --> 00:08:10,310
+You cannot use a valuation dataset to compute min and max of vocabulary et cetera.
+
+114
+00:08:10,310 --> 00:08:12,270
+You have to deal with it.
+
+115
+00:08:12,270 --> 00:08:16,685
+However, the transformation code that's invoked
+
+116
+00:08:16,685 --> 00:08:21,720
+is executed in TensorFlow at prediction time.
+
+117
+00:08:22,610 --> 00:08:27,870
+Another way to think about it is that there are two phases.
+
+118
+00:08:27,870 --> 00:08:30,345
+The analysis phase.
+
+119
+00:08:30,345 --> 00:08:34,685
+This is executed in Beam while creating the training dataset.
+
+120
+00:08:34,685 --> 00:08:37,155
+The transform phase.
+
+121
+00:08:37,155 --> 00:08:41,820
+This is executed in TensorFlow during prediction.
+
+122
+00:08:41,820 --> 00:08:47,380
+So, executed in Beam to create your training and evaluation datasets.

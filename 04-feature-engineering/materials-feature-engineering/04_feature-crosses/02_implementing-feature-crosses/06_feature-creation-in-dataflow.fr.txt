@@ -1,0 +1,36 @@
+Pour rappel, il est possible d'extraire
+des caractéristiques à trois endroits. Nous avons vu le prétraitement
+de caractéristiques et la création de caractéristiques
+à la volée dans TensorFlow. Une autre solution est de prétraiter ou de créer les caractéristiques
+dans Cloud Dataflow. Dataflow est utilisé ici pour créer
+un ensemble de données prétraité ou augmenté servant
+à entraîner le modèle. Lors de la prédiction,
+nous devons déterminer comment effectuer les mêmes étapes de prétraitement. Cette méthode fonctionne mieux
+si Dataflow fait aussi partie d'un environnement
+d'exécution de prédiction. C'est le cas dans l'architecture
+de référence de GCP. Comme Dataflow peut gérer à la fois
+les données par flux et par lots, il fait partie du pipeline
+d'entraînement et de prédiction. Si vous procédez ainsi, Dataflow est le bon endroit
+pour effectuer le prétraitement. C'est la solution idéale
+pour les caractéristiques qui impliquent l'agrégation de périodes. Vous pouvez par exemple utiliser
+une caractéristique correspondant au nombre moyen
+de personnes qui ont consulté un produit au cours de l'heure précédente. Lors de l'entraînement, vous pouvez
+utiliser Dataflow pour calculer ceci à partir des fichiers journaux. La nature de cette caractéristique veut
+cependant que vous utilisiez Dataflow en temps réel pour la calculer
+en fonction de votre trafic en temps réel. Dans Dataflow, vous pouvez ajouter
+des champs à n'importe quelle PTransform. Dans cet exemple,
+la méthode "add_fields" est un ParDo qui prend les champs d'entrée, extrait le nombre de passagers, le cumule
+et ajoute un compteur de visiteurs en tant que compteur
+pour l'heure précédente. Dans Dataflow, le même code fonctionne
+pour les données par flux et par lots. Vous pouvez donc
+vous contenter de la méthode "add_fields" dans les pipelines
+d'entraînement et de prédiction. Une troisième solution est
+d'adopter une approche hybride. Les chercheurs de Google viennent
+de publier un article expliquant comment procéder. Nous verrons ceci plus en détail
+lors du prochain module. Le point à retenir ici est que,
+pendant l'entraînement, vous créez un ensemble de données prétraité
+avec Dataflow. Cependant, vos transformations elles-mêmes
+sont mises en œuvre dans TensorFlow. Pendant les prédictions, l'extraction de caractéristiques fait donc
+partie du graphique TensorFlow. C'est très avantageux, car Dataflow est très puissant pour calculer
+les regroupements sur toutes les données, alors que TensorFlow est intéressant pour manipuler les champs d'entrée
+à la volée.

@@ -1,0 +1,477 @@
+1
+00:00:00,000 --> 00:00:04,200
+Então, falamos sobre algumas maneiras
+de representar atributos
+
+2
+00:00:04,200 --> 00:00:05,900
+e fazer engenharia de atributos,
+
+3
+00:00:05,900 --> 00:00:08,245
+com escalonamento,
+cruzamentos de atributos,
+
+4
+00:00:08,245 --> 00:00:10,420
+criação, incorporação etc.
+
+5
+00:00:10,420 --> 00:00:13,770
+Mas onde isso entra no seu
+modelo de aprendizado de máquina?
+
+6
+00:00:13,770 --> 00:00:17,595
+Lembre-se de que seu modelo
+consiste nessas partes,
+
+7
+00:00:17,595 --> 00:00:20,805
+uma função de entrada para ler e os dados,
+
+8
+00:00:20,805 --> 00:00:23,685
+colunas de atributos
+que são como marcadores de posição
+
+9
+00:00:23,685 --> 00:00:25,195
+para o que que você lê,
+
+10
+00:00:25,200 --> 00:00:28,975
+um estimador que você cria
+passando nas colunas de atributos
+
+11
+00:00:28,975 --> 00:00:31,740
+e depois configura a
+especificação de treino, de avaliação,
+
+12
+00:00:31,740 --> 00:00:35,590
+exportador etc e, por fim,
+você chama o treino e a avaliação.
+
+13
+00:00:35,590 --> 00:00:39,480
+Onde a engenharia de atributos
+se encaixa em tudo isso?
+
+14
+00:00:39,480 --> 00:00:42,570
+Há três lugares possíveis
+para fazer engenharia de atributos.
+
+15
+00:00:42,570 --> 00:00:45,510
+Você pode fazer isso em tempo real
+enquanto lê os dados,
+
+16
+00:00:45,510 --> 00:00:47,350
+na própria função de entrada
+
+17
+00:00:47,350 --> 00:00:49,575
+ou criando colunas de atributos.
+
+18
+00:00:49,575 --> 00:00:54,600
+Você também pode fazer isso como uma etapa
+separada antes de fazer o treinamento.
+
+19
+00:00:54,600 --> 00:00:58,110
+Em seguida, sua função de entrada
+lê os atributos pré-processados.
+
+20
+00:00:58,110 --> 00:01:01,740
+E se você fizer isso como uma etapa
+de pré-processamento separada,
+
+21
+00:01:01,740 --> 00:01:04,560
+fará o pré-processamento
+no fluxo de dados,
+
+22
+00:01:04,560 --> 00:01:07,920
+de modo que você pode fazer
+a escala de maneira distribuída.
+
+23
+00:01:07,920 --> 00:01:10,725
+Você pode fazer isso em um fluxo de dados
+simples do Python,
+
+24
+00:01:10,725 --> 00:01:16,740
+mas faça isso apenas se o fluxo de dados
+também fizer parte do canal de serviço.
+
+25
+00:01:16,740 --> 00:01:20,520
+Em outras palavras, você está fazendo
+um lote de job de previsão de fluxo.
+
+26
+00:01:20,520 --> 00:01:25,185
+Você pode aplicar as mesmas etapas de
+pré-processamento nas entradas de serviço.
+
+27
+00:01:25,185 --> 00:01:29,940
+A terceira opção é fazer o
+pré-processamento no fluxo de dados
+
+28
+00:01:29,940 --> 00:01:32,775
+e criar atributos de pré-processador,
+
+29
+00:01:32,775 --> 00:01:35,670
+mas informe ao gráfico de previsão
+que você quer
+
+30
+00:01:35,670 --> 00:01:41,145
+as mesmas transformações realizadas
+no TensorFlow durante o serviço.
+
+31
+00:01:41,145 --> 00:01:44,625
+Para fazer isso, você usará
+a transformação do TensorFlow.
+
+32
+00:01:44,625 --> 00:01:47,280
+Como vimos na seção anterior,
+
+33
+00:01:47,280 --> 00:01:50,550
+um pré-processamento pode ser feito
+no TensorFlow
+
+34
+00:01:50,565 --> 00:01:52,855
+com a criação de uma
+nova coluna de atributos.
+
+35
+00:01:52,860 --> 00:01:56,410
+Então, você intervala a coluna
+para criar uma nova,
+
+36
+00:01:56,410 --> 00:01:58,200
+você está fazendo
+o pré-processamento.
+
+37
+00:01:58,200 --> 00:02:02,460
+E essa é uma coluna de atributos
+que você enviará ao estimador.
+
+38
+00:02:02,460 --> 00:02:07,050
+Aqui, eu estou pegando
+a coluna de atributos de metragem quadrada
+
+39
+00:02:07,050 --> 00:02:09,990
+e dobrando-a em quatro intervalos.
+
+40
+00:02:09,990 --> 00:02:14,760
+O primeiro intervalo é de casas
+com menos de 500 pés quadrados.
+
+41
+00:02:14,760 --> 00:02:18,555
+O segundo é de 500 a 1.000 pés quadrados.
+
+42
+00:02:18,555 --> 00:02:22,410
+O terceiro é de casas
+entre 1.000 e 2.500 pés quadrados,
+
+43
+00:02:22,410 --> 00:02:27,060
+e o último é de casas
+com mais de 2.500 pés quadrados.
+
+44
+00:02:27,060 --> 00:02:32,910
+Eu adiciono a coluna intervalada na lista
+de colunas do atributo original.
+
+45
+00:02:32,910 --> 00:02:40,555
+E agora o regressor linear
+vê a metragem quadrada de duas formas.
+
+46
+00:02:40,555 --> 00:02:43,125
+Como uma coluna numérica de valor real
+
+47
+00:02:43,125 --> 00:02:46,725
+e como uma coluna categórica intervalada.
+
+48
+00:02:46,725 --> 00:02:49,050
+É claro que, se eu quisesse,
+
+49
+00:02:49,050 --> 00:02:52,605
+poderia substituir uma coluna numérica
+pela intervalada,
+
+50
+00:02:52,605 --> 00:02:57,635
+de modo que o regressor linear visse só
+a metragem quadrada na forma categórica.
+
+51
+00:02:57,635 --> 00:02:59,450
+Então, é o que estou fazendo aqui,
+
+52
+00:02:59,450 --> 00:03:05,500
+substituindo featcols {0}
+pela versão intervalada.
+
+53
+00:03:05,520 --> 00:03:09,745
+Aqui está outro exemplo de como fazer
+cruzamentos de atributos,
+
+54
+00:03:09,745 --> 00:03:13,360
+mas desta vez
+também dentro da incorporação.
+
+55
+00:03:13,360 --> 00:03:17,560
+Poderíamos pegar
+a latitude e a longitude das casas
+
+56
+00:03:17,560 --> 00:03:21,220
+e definir os intervalos nos quais
+queremos discretizá-las.
+
+57
+00:03:21,220 --> 00:03:26,860
+Aqui, estou usando N intervalos
+igualmente espaçados.
+
+58
+00:03:26,860 --> 00:03:31,855
+Um método que usei para descobrir os
+limites é usar approx quantize,
+
+59
+00:03:31,855 --> 00:03:33,550
+uma função sequel do Big Query.
+
+60
+00:03:33,550 --> 00:03:37,960
+Isso faz com que cada uma das barras tenha
+o mesmo número de exemplos de treinamento.
+
+61
+00:03:37,960 --> 00:03:40,850
+No entanto, não importa como
+você conseguir os limites,
+
+62
+00:03:40,850 --> 00:03:42,794
+uma vez que temos os limites,
+
+63
+00:03:42,794 --> 00:03:45,665
+intervalos lat e lon, no meu caso,
+
+64
+00:03:45,665 --> 00:03:51,470
+podemos criar as latitudes e longitudes
+da casa em b_lat e b_lon.
+
+65
+00:03:51,470 --> 00:03:54,010
+E então, como discutimos,
+
+66
+00:03:54,010 --> 00:03:57,170
+podemos fazer cruzamentos
+de atributos nas duas colunas categóricas
+
+67
+00:03:57,170 --> 00:03:58,680
+b_lat e b_lon.
+
+68
+00:03:58,680 --> 00:04:04,990
+Aqui, estou escolhendo fazer cruzamentos
+de atributos em nbuckets#buckets.
+
+69
+00:04:04,990 --> 00:04:11,005
+Em média, então, cada #bucket conterá
+apenas um cruzamento de atributo.
+
+70
+00:04:11,005 --> 00:04:13,960
+Isso está entre a minha regra geral
+
+71
+00:04:13,960 --> 00:04:18,459
+de 1/2 raiz quadrada e o dobro
+sobre a qual falei na aula anterior.
+
+72
+00:04:18,459 --> 00:04:25,475
+Por fim, inseri os dados em nbuckets
+por quatro dimensões.
+
+73
+00:04:25,475 --> 00:04:28,119
+A vantagem de fazer isso,
+
+74
+00:04:28,119 --> 00:04:30,910
+de colocar o pré-processamento diretamente
+
+75
+00:04:30,910 --> 00:04:35,350
+no TensorFlow é que essas operações
+fazem parte do seu gráfico de modelo
+
+76
+00:04:35,350 --> 00:04:43,105
+e, portanto, são realizadas de modo
+idêntico no treinamento e no serviço.
+
+77
+00:04:43,105 --> 00:04:46,790
+Agora, o que isso significa na vida real?
+
+78
+00:04:46,790 --> 00:04:51,060
+Primeiro, discretizamos as latitudes.
+
+79
+00:04:51,060 --> 00:04:54,280
+Isso traz apenas os números reais,
+
+80
+00:04:54,280 --> 00:05:00,515
+de modo que todas as casas aproximadamente
+na mesma latitude tenham o mesmo valor.
+
+81
+00:05:00,515 --> 00:05:03,450
+Isso pode ajudar um pouco com sobreajuste,
+
+82
+00:05:03,450 --> 00:05:07,895
+mas somente discretizar a latitude
+não ajuda muito.
+
+83
+00:05:07,895 --> 00:05:11,325
+Então, discretizamos as longitudes.
+
+84
+00:05:11,325 --> 00:05:14,115
+Isso dobra os valores de longitude
+
+85
+00:05:14,120 --> 00:05:18,430
+o que pode nos ajudar como antes
+um pouco com sobreajuste,
+
+86
+00:05:18,430 --> 00:05:22,280
+mas a discretização das longitudes
+também não faz muita diferença.
+
+87
+00:05:22,280 --> 00:05:28,030
+Mas o que acontece quando o atributo
+cruza os dois valores discretizados?
+
+88
+00:05:28,030 --> 00:05:34,075
+Essencialmente, pegamos o mapa
+e o dividimos em células da grade,
+
+89
+00:05:34,075 --> 00:05:41,015
+de modo que qualquer casa pertença
+a apenas uma dessas células da grade.
+
+90
+00:05:41,015 --> 00:05:44,830
+Assim, durante o treinamento,
+isso nos permitirá
+
+91
+00:05:44,830 --> 00:05:50,455
+memorizar o preço médio das casas
+em cada célula da grade.
+
+92
+00:05:50,455 --> 00:05:57,850
+Obviamente, quanto mais fina a resolução
+da grade, mais específica será a previsão.
+
+93
+00:05:57,850 --> 00:06:01,735
+Mas também será menos generalizável,
+
+94
+00:06:01,735 --> 00:06:04,150
+porque pode não haver
+casas vendidas suficientes
+
+95
+00:06:04,150 --> 00:06:07,210
+em uma célula da grade para
+que formemos uma boa estimativa.
+
+96
+00:06:07,210 --> 00:06:11,050
+Durante a previsão, dada uma casa,
+
+97
+00:06:11,050 --> 00:06:13,690
+sabemos a que célula da grade
+ela pertence e, assim,
+
+98
+00:06:13,690 --> 00:06:17,560
+podemos extrair o valor memorizado
+para essa célula da grade.
+
+99
+00:06:17,560 --> 00:06:24,505
+A incorporação permite que as células
+da grade sejam semelhantes umas às outras,
+
+100
+00:06:24,505 --> 00:06:28,485
+talvez todas as células da grade
+de frente para o mar
+
+101
+00:06:28,485 --> 00:06:30,655
+peguem todas essas células da grade
+
+102
+00:06:30,655 --> 00:06:33,850
+e as façam ter valores semelhantes.

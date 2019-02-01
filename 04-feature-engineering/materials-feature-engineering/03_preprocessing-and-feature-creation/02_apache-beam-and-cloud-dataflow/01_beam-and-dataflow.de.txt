@@ -1,0 +1,141 @@
+Im nächsten Teil erfahren Sie
+noch mehr über Google Cloud Dataflow, eine Technologie,
+die Apache Beam hervorragend ergänzt. Beide erleichtern Ihnen
+die Erstellung und Ausführung von Vorverarbeitung
+und Feature Engineering. Zunächst einmal: Was ist Cloud Dataflow? Die Vorverarbeitung von Merkmalen
+oder jede Art von Datentransformation kann man sich
+als eine Pipeline vorstellen. Mit Pipeline meine ich
+in diesem Zusammenhang eine Abfolge von Schritten, die Daten
+von einem Format in ein anderes umwandelt. Angenommen, Sie haben Daten
+in einem Data Warehouse wie BigQuery. Dann können Sie BigQuery
+als Eingabe in die Pipeline nutzen. Transformieren Sie
+die Daten in einer Abfolge von Schritten und führen Sie dabei
+eventuell neue Merkmale ein. Am Ende können Sie das Ergebnis
+z. B. in Google Cloud Storage speichern. Cloud Dataflow ist eine Plattform zum Ausführen
+solcher Datenverarbeitungspipelines. Dataflow kann Pipelines ausführen, die in den Programmiersprachen
+Python und Java geschrieben wurden. Dataflow unterscheidet sich von anderen
+Datentransformationsplattformen, da es stellt ein serverloses, vollständig
+verwaltetes Angebot von Google darstellt, mit dem Datenverarbeitungspipelines
+skaliert ausgeführen werden können. Als Entwickler müssen Sie sich nicht
+um die Größe des Clusters kümmern, der die Pipeline ausführt. Dataflow
+kann die Menge der Computerressourcen, also die Anzahl der Server,
+die Ihre Pipeline ausführen, ändern, und zwar flexibel,
+je nach Menge der zu verarbeitenden Daten. Den Code für Dataflow schreiben Sie mithilfe von Apache Beam,
+einer Open-Source-Bibliothek. Zum Implementieren
+einer Datenverarbeitungspipeline schreiben Sie Code
+mithilfe der Apache Beam-APIs und stellen ihn für Cloud Dataflow bereit. Apache Beam ist unter anderem
+deshalb so einfach zu benutzen, weil der dafür nötige Code
+ähnlich geschrieben wird, wie sich Menschen
+Datenverarbeitungspipelines vorstellen. Sehen Sie sich
+die Pipeline in der Mitte an. Dieser Python-Beispielcode
+analysiert die Wortzahl in Textzeilen in Dokumenten. Als Eingabe für die Pipeline können Sie z. B. Textdateien
+aus Google Cloud Storage einlesen. Dann transformieren Sie die Daten und suchen nach
+der Anzahl der Wörter in jeder Textzeile. Ich erkläre später,
+wie Dataflow so eine Transformation automatisch skalieren kann,
+um sie parallel auszuführen. Als Nächstes können Sie in der Pipeline
+Zeilen nach Wortzahl gruppieren. Sie nutzen dazu Gruppierungs-
+und andere Aggregationsvorgänge. Sie können auch Werte herausfiltern, um z. B. Zeilen
+mit unter zehn Wörtern zu ignorieren. Wenn alle Transformations-, Gruppierungs-
+und Filtervorgänge abgeschlossen sind, schreibt die Pipeline
+das Ergebnis in Google Cloud Storage. Diese Implementierung trennt allerdings
+die Pipelinedefinition von der Ausführung. Alle Schritte, die Sie
+vor dem Aufruf der Methode "p.run" sehen, definieren nur,
+was die Pipeline tun sollte. Tatsächlich wird die Pipeline
+erst beim Aufruf dieser Methode ausgeführt. Eine der besten Eigenschaften
+von Apache Beam ist, dass es mit demselben Pipelinecode die Verarbeitung von sowohl Batch-
+als auch Streamingdaten unterstützt. Der Name der Bibliothek, Beam, ist sogar
+eine Zusammenziehung aus Batch und Stream. Warum sollte Sie das interessieren? Weil es bedeutet, dass es unerheblich ist, ob Ihre Daten aus einer Batchdatenquelle 
+wie Google Cloud Storage oder aus einer Streaming-Datenquelle
+wie Pub/Sub stammen. Ihre Pipeline funktioniert
+nach der gleichen Logik. Auch die Datenausgabe kann an Batch-
+oder auch an Streamingdatenziele erfolgen. Sie können diese Datenquellen
+zudem in der Pipeline einfach ändern, ohne die Logik Ihrer
+Pipelineimplementierung ändern zu müssen. Und zwar so: In diesem Code
+werden die Lese- und Schreibvorgänge mit den Methoden in "beam.io" ausgeführt. Diese Methoden
+nutzen verschiedene Connectors. Der Pub/Sub-Connector kann
+z. B. den Inhalt der Nachrichten lesen, die in die Pipeline gestreamt werden. Andere Connectors können Rohtext
+aus Google Cloud Storage oder einem Dateisystem lesen. Apache Beam
+hat eine Vielzahl an Connectors, damit Sie in Google Cloud
+Dienste wie BigQuery nutzen können. Da Apache Beam
+ein Open-Source-Projekt ist, können Unternehmen außerdem
+ihre eigenen Connectors implementieren. Bevor wir fortfahren,
+lassen Sie uns ein paar Begriffe klären, die ich in diesem Modul
+immer wieder verwenden werde. Sie kennen schon auf Dataflow ausgeführte
+Datenverarbeitungspipelines. Auf der rechten Seite der Folie
+sehen Sie die Grafik für die Pipeline. Setzen wir uns genauer
+mit Apache Beam-Pipelines auseinander. Die Pipeline benötigt eine Quelle,
+aus der sie ihre Eingabedaten bezieht. Dann hat die Pipeline
+eine Reihe von Schritten, die in Beam
+Transformationen genannt werden. Jede Transformation arbeitet
+mit einer Datenstruktur namens PCollection. Auf PCollections
+gehe ich gleich genauer ein. Merken Sie sich jetzt nur, dass jede Transformation
+eine PCollection als Eingabe erhält und ihr Ergebnis
+in eine andere PCollection ausgibt. Wichtig ist das Ergebnis
+der letzten Transformation einer Pipeline. Es landet in einer Senke.
+Das ist die Ausgabe der Pipeline. Zum Ausführen einer Pipeline
+brauchen Sie einen sogenannten Runner. Ein Runner führt den Pipelinecode aus. Runner sind plattformspezifisch. Es gibt also einen Runner zur Ausführung
+einer Pipeline auf Cloud Dataflow. Wenn Sie Ihre Pipeline
+mit Apache Spark ausführen möchten, gibt es dafür einen anderen Runner. Es gibt auch einen direkten Runner, der eine Pipeline
+auf einem lokalen Computer ausführt. Sie können sogar
+Ihren eigenen, benutzerdefinierten Runner für Ihre eigene Plattform
+für verteiltes Rechnen implementieren. Wie implementieren Sie nun diese Pipelines? Wenn Sie sich
+diesen Code ansehen, stellen Sie fest, dass der Pipelinevorgang
+der Hauptmethode "beam.Pipeline" ist und eine Pipelineinstanz erstellt. Danach wird jede Transformation
+als Argument für die "apply"-Methode der Pipeline implementiert. In der Python-Version
+der Apache Beam-Bibliothek wird der Pipe-Operator überladen,
+um die Methode "apply" aufzurufen. So kommt es zu der ungewöhnlichen Syntax
+mit vielen Pipe-Operatoren übereinander. Ich mag das,
+da man es so viel einfacher lesen kann. Die Strings wie "Read",
+"CountWords" und "Write" sind einfach für Menschen lesbare Namen, die Sie für jede Transformation
+in der Pipeline angeben können. Diese Pipeline liest
+aus Google Cloud Storage und schreibt dort auch wieder. Und wie ich bereits sagte, führt keiner der Pipeline-Operatoren
+tatsächlich die Pipeline aus. Wenn Ihre Pipeline Daten verarbeiten soll, müssen Sie die Pipelineinstanz ausführen,
+indem Sie darin die Methode "run" aufrufen. Immer wenn Sie den Pipe-Operator benutzen, stellen Sie
+eine PCollection als Eingabe bereit und geben
+eine PCollection als Ausgabe zurück. Sie müssen wissen, dass PCollections, 
+anders als viele Datenstrukturen nicht alle ihre Daten
+im Arbeitsspeicher hinterlegen. Wie Sie wissen, ist Dataflow elastisch und kann für eine Pipeline
+einen Cluster von Servern nutzen. PCollection ist
+wie eine Datenstruktur mit Verweisen, die angeben,
+wo der Dataflow-Cluster Daten speichert. So kann Dataflow
+Pipelines flexibel skalieren. Sagen wir,
+wir haben eine PCollection mit Zeilen. Diese Zeilen können aus einer Datei
+in Google Cloud Storage stammen. Als eine Möglichkeit,
+die Transformation zu implementieren, können wir eine PCollection von Strings –
+im Code Zeilen genannt – nehmen und eine PCollection
+von Ganzzahlen zurückgeben. Dieser Transformationsschritt im Code
+berechnet die Länge jeder Zeile. Wie Sie schon wissen, enthält
+das Apache Beam SDK viele Connectors, mit denen Dataflow
+aus zahlreichen Datenquellen lesen kann, so auch aus Textdateien
+in Google Cloud Storage oder Dateisystemen. Über verschiedene Connectors
+kann Dataflow sogar aus Echtzeit-Streamingdatenquellen
+wie Google Cloud Pub/Sub oder Kafka lesen. Es gibt auch einen Connector für BigQuery,
+das Data Warehouse auf der GCP. Wenn Sie den BigQuery-Connector benutzen,
+müssen Sie eine SQL-Anweisung angeben, die BigQuery dann auswertet
+und eine Tabelle mit Ergebnissen liefert. Die Tabellenzeilen
+werden dann in einer PCollection an die Pipeline weitergegeben,
+um deren Ergebnis zu exportieren. Connectors gibt es unter anderem
+für Cloud Storage, Pub/Sub und BigQuery. Natürlich können Sie die Ergebnisse
+auch einfach in das Dateisystem schreiben. Wenn Sie in ein Dateisystem schreiben,
+sollten Sie daran denken, dass Dataflow die Ausführung der Pipeline
+über einen Servercluster verteilen kann. Das bedeutet,
+dass eventuell mehrere Server versuchen, Ergebnisse ins Dateisystem zu schreiben. Damit nicht mehrere Server gleichzeitig
+versuchen, dieselbe Datei zu sperren, fragmentiert der Text-E/A-Connector
+standardmäßig die Ausgabe und schreibt die Ergebnisse
+in verschiedene Dateien im Dateisystem. Hier zum Beispiel
+schreibt die Pipeline das Ergebnis in eine Datei mit dem Präfix "output"
+im Daten-Connector. Nehmen wir an, es werden
+insgesamt zehn Dateien geschrieben. Dataflow schreibt also Dateien
+wie "output0of10.txt", "output1of10.txt". Bei einer Begrenzung der Fragmente kann aber das gerade beschriebene
+Dateisperrproblem auftreten. Die Fragmentierung
+der Ergebnisse zu begrenzen, ist also nur für kleine Datasets sinnvoll, die von einem einzelnen Knoten
+verarbeitet werden können. Den Code für eine Pipeline,
+die Sie in Python implementiert haben, können Sie mit dem Python-Befehl
+direkt in der Shell ausführen. Um die Pipeline als Job
+an Dataflow auf der GCP zu übergeben, müssen Sie noch
+zusätzliche Informationen bereitstellen. Dafür fügen Sie Argumente mit
+dem Namen des GCP-Projekts und dem Ort
+im Google Cloud Storage-Bucket ein, wo Dataflow Staging-
+und temporäre Daten speichern kann. Außerdem müssen Sie noch
+den Namen für den Runner angeben. In diesem Fall
+ist das "DataflowRunner".

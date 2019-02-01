@@ -1,0 +1,25 @@
+In the previous lesson, we talked about how to do feature
+pre-processing in TensorFlow. How did we do it? We used feature columns. Now let's look at how we can do
+feature creation in TensorFlow. Recall that the input function
+returns features and labels. What is the data type of features? Answer, it's a Python dictionary. Let's say distance from public transit
+is a key predictor of house prices. So we want to add a new
+feature which captures how far the house is from
+the nearest metro station. Let's say the location of the metro
+station is part of the dataset and that it'll be part of the features, too. Then in our method, we compute the
+Euclidean distance between the house and the metro station and
+add it to the dictionary. So where does this
+add_engineered method go? Call the add_engineered method
+from all input functions. How many input functions do we have? In general, we have three, training input
+function, evaluation input function, and serving input function. The add_engineered method needs to
+be called from all three of them. In the training input function,
+instead of returning (features), label, I'm wrapping the features with
+a call to add_engineered. This way, the extra features that I'm creating
+get put into the Python dictionary. The evaluation input function is
+similar to the training input function. Wrap the calls with add_engineered. In the serving_input function, you return a ServingInputReceiver
+that takes two parameters. The first parameter is the (features). The second parameter is the placeholders
+for whatever you receive in the json. The placeholders remain the same,
+you're receiving the same raw data. But just as in the training
+input function, wrap the (features) by
+a call to add_engineered. This way, the same extra features
+that were created during training will also get put into
+the Python dictionary.

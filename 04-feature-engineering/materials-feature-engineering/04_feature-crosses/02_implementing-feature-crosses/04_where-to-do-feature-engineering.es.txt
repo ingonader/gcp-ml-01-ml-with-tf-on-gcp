@@ -1,0 +1,73 @@
+Hablamos bastante sobre varias formas de representar los atributos
+y de hacer ingeniería de atributos mediante escalamiento,
+combinaciones de atributos creación, incorporación, etcétera. Pero ¿dónde se aplica esto
+en su modelo de aprendizaje automático? Recuerden que su modelo
+consiste en lo siguiente una función de entrada para leer los datos columnas de atributos
+que actúan como marcadores de posición para lo que leerán un estimador que crean
+para pasar las columnas de atributos y, luego, configuran TrainSpec,
+EvalSpec, export, etcétera. Y finalmente,
+llaman a train_and_evaluate. ¿Dónde entra la ingeniería de atributos
+en todo esto? Hay tres lugares posibles
+para realizar ingeniería de atributos. Podrían hacerlo sobre la marcha,
+mientras se leen los datos en la función de entrada misma o mediante la creación
+de columnas de atributos. Alternativamente, podrían hacerlo
+como un paso independiente antes de empezar el entrenamiento. Luego, su función de entrada leerá
+los atributos procesados previamente. Si lo hacen como un paso
+de procesamiento previo independiente lo harán en Dataflow de modo que lo puedan hacer
+a escala y de manera distribuida. Podrían hacerlo en Dataflow para Python pero solo deberían hacerlo
+si Dataflow también es parte de su canalización de predicción. En otras palabras, están procesando
+un lote de predicciones de transmisión y podrán aplicar los mismos
+pasos de procesamiento previo en las entradas de predicción. La tercera opción es hacer
+el procesamiento previo en Dataflow y crear un conjunto
+de atributos procesados previamente pero indicar al gráfico de predicción que desean las mismas transformaciones
+realizadas en TensorFlow durante la predicción. Para hacerlo,
+usarán TensorFlow Transform. Cómo vimos en la sección anterior una parte del procesamiento previo
+se pueden realizar en TensorFlow mediante la creación
+de una nueva columna de atributos. Cuando agrupan una columna
+para crear una nueva están haciendo procesamiento previo. Y esa es la columna de atributos
+que enviarán al estimador. Aquí, estoy tomando la columna
+de atributos de los pies cuadrados y discretizándola en cuatro intervalos. El primer intervalo es de casas
+con menos de 500 pies cuadrados. El segundo
+es de 500 a 1,000 pies cuadrados. El tercero es de casas de
+entre 1,000 y 2,500 pies cuadrados y el último es de casas
+de más de 2,500 pies cuadrados. Adjunto la columna agrupada
+en la lista original de columnas de atributos. Y ahora el regresor lineal
+ve los pies cuadrados dos formas. Como columna de valor numérico real y como columna categórica agrupada. Por supuesto, si quisiera podría reemplazar una columna numérica
+por la agrupada de modo que el regresor lineal
+solo vea los pies cuadrados de forma categórica. Eso es lo que estoy haciendo aquí reemplazo featcols [0]
+por la versión agrupada. Aquí tenemos otro ejemplo
+de combinaciones de atributos pero esta vez,
+dentro de una incorporación. Podríamos tomar la latitud
+y la longitud de las casas y definir los intervalos
+para discretizar los valores. Aquí, estoy usando nbuckets
+con intervalos a espacios iguales. Un método que usé para averiguar
+los límites es usar un cuantil prox una función de SQL de BigQuery. Esto permite que cada uno
+de los segmentos tengan la misma cantidad de ejemplos de entrenamiento. Sin importar cómo obtengan los límites una vez que los tengan los segmentos Iat y los segmentos Ion
+en mi caso podemos agrupar las latitudes
+y las longitudes de las casas en b_lat y b_lon. Y, luego, cómo vimos podríamos realizar la combinación
+de atributos de las dos columnas categóricas,
+b_lat y b_lon. Aquí, elijo combinarlas
+en nbuckets al cuadrado segmentos hash. En promedio, cada segmento hash
+tendrá solo una combinación de atributos. Esto está al medio de mi regla general de la mitad de la raíz cuadrada de N
+y el doble de N que les comenté en la lección anterior. Finalmente, incorporo los datos
+en nbuckets por 4 dimensiones. La ventaja de hacer esto de agregar el procesamiento previo
+directamente en TensorFlow es que estas operaciones
+son parte del gráfico del modelo y se realizan de manera idéntica,
+tanto durante el entrenamiento como durante la predicción. ¿Qué significa esto en el mundo real? Primero, discretizamos las latitudes. Esto solo agrupa los números
+de valor real de modo que todas las casas
+que están en la misma latitud aproximada tengan el mismo valor. Podría ayudar un poco con el sobreajuste pero solo discretizar la latitud
+no logra mucho. Luego, discretizamos las longitudes. Esto agrupa los valores de las longitudes
+y podría ayudar un poco con el sobreajuste pero discretizar las longitudes
+no logra mucho tampoco. Pero qué ocurre cuando se combinan
+los dos valores discretizados. Básicamente, lo que hicimos
+es desglosar el mapa en celdas de cuadrícula, de modo que cualquier casa
+pertenezca solo a una de esas celdas. Durante el entrenamiento,
+esto nos permitirá memorizar el precio promedio de las casas
+en cada celda de la cuadrícula. Obviamente, mientras más fina
+sea la resolución de la cuadrícula más específica será la predicción. Pero también será menos generalizable porque no habrá suficientes casas vendidas en una celda de cuadrícula
+como para formar una buena estimación. Durante la predicción
+de una casa específica sabemos a qué celda pertenece y podemos obtener el valor memorizado
+de esta celda de cuadrícula. Lo que hace la incorporación
+es permitir que las celdas que son similares entre sí tal vez todas las celdas de casas
+que tienen vista al mar que todas esas celdas
+tengan valores similares.

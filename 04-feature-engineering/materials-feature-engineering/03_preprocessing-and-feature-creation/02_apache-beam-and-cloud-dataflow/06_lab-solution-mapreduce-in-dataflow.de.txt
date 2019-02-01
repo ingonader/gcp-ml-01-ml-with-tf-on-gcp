@@ -1,0 +1,45 @@
+Öffnen Sie für dieses Lab
+als Erstes in Ihrem Browser das Google Cloud Platform-Dashboard. Klicken Sie dann
+auf "Google Cloud Shell aktivieren". Sie sollten in Ihrer Cloud Shell-Umgebung den Quellcode und die Pakete
+für die Ausführung bereits geladen haben. Wenn Sie das letzte Lab
+kürzlich abgeschlossen haben, sollten Sie den Code
+und die Pakete bereits installiert haben. Wenn aber
+kein Verzeichnis "training-data-analyst" in Ihrer Cloud Shell vorhanden ist, sollten Sie hier abbrechen
+und das vorherige Lab abschließen, bevor Sie fortfahren. Wenn Ihre
+Cloud Shell-Umgebung eingerichtet ist, können Sie den Quellcode
+für die Apache Beam-Pipeline die wir in diesem Lab brauchen,
+im Cloud Shell-Codeeditor öffnen. Sie finden ihn unter
+"training-data-analyst", "courses" "data_analysis", "lab2", "python" in der Datei "is_popular.py". Im Vergleich zum vorherigen Lab
+enthält die Datei jetzt mehr Code. Sehen wir uns den Code genauer an. Wenn Sie nach unten
+zum Textkörper der Hauptmethode scrollen, finden Sie
+das Eingabeargument für den Code. Als Eingabe nimmt die Pipeline die Java-Quellcodedateien
+im Verzeichnis "javahelp". Beachten Sie auch,
+dass die Ausgabe dieser Pipeline standardmäßig
+im Verzeichnis "/tmp" gespeichert wird und die Dateinamen
+das Präfix "output" erhalten. Diese Einstellung
+können Sie aber natürlich ändern. Nachdem die Daten
+von Google Cloud Storage gelesen wurden, folgt die Suche nach den Zeilen,
+die mit dem Schlüsselbegriff beginnen. Wie Sie
+aus dem vorherigen Lab noch wissen, lautet der Suchbegriff
+in dieser Pipeline "import". Als Nächstes verarbeitet die Pipeline
+die Namen der importierten Pakete. Beachten Sie, dass dies
+von der Methode "packageUse" abhängt, die die Importanweisungen
+nach Paketnamen auswertet und die eigentlichen Paketnamen ohne das Schlüsselwort "import"
+und abschließendes Semikolon extrahiert. Wenn der Paketname
+schließlich gefunden ist, gibt die Funktion "splitPackageName" die verschiedenen Präfixe
+für jeden Paketnamen zurück. Für ein Paket "com.example.appname"
+würde die Funktion die Präfixe "com", "com.example"
+und "com.example.appname" ausgeben. Für jedes der Pakete liefert die Methode ein Paar aus dem Paketpräfix
+und einer Ziffer 1 für jedes Vorkommen. Alle Vorkommen werden von "CombinePerKey" mit der Funktion SUM
+als Argument aufaddiert. Der Combiner "Top.of(5)" ermittelt
+die fünf am häufigsten importierten Pakete. Sie können nun
+die Datei "is_popular.py" ausführen. Nachdem die Pipeline fertig ist, können Sie die Inhalte der Ausgabedateien
+im Ausgabeverzeichnis auflisten. Sie sehen als Ergebnis
+die fünf häufigste Pakete: "org", "org.apache",
+"org.apache.beam", "org.apache.beam.sdk". In dieser Implementierung der Pipeline
+können Sie das Ausgabeziel ändern. Wenn Sie
+die Pipeline zum Beispiel anweisen, statt des Standardverhaltens
+die Ergebnisse in das Verzeichnis "/tmp" mit "myoutput" als Präfix zu schreiben,
+können Sie die Pipeline erneut ausführen und finden danach
+die neuen Instanzen der Ausgabe vor. Die neuen Ausgabedateien
+haben das Präfix "myoutput" im Namen. Das wars für dieses Lab.

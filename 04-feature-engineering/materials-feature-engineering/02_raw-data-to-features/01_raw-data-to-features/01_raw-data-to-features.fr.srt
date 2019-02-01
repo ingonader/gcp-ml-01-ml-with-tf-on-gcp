@@ -1,0 +1,247 @@
+1
+00:00:00,300 --> 00:00:01,300
+Comme déjà mentionné,
+
+2
+00:00:01,300 --> 00:00:04,980
+on ne peut pas faire de ML
+sans analyse de base des données.
+
+3
+00:00:04,980 --> 00:00:07,430
+Nous allons donc nous concentrer ici
+
+4
+00:00:07,430 --> 00:00:09,950
+sur la création
+et la manipulation de caractéristiques
+
+5
+00:00:09,950 --> 00:00:11,240
+à partir de données brutes.
+
+6
+00:00:11,240 --> 00:00:13,665
+Voici un cours
+sur l'extraction de caractéristiques.
+
+7
+00:00:13,665 --> 00:00:18,200
+Pour rappel, vous devez faire trois choses
+pour créer un modèle de ML efficace.
+
+8
+00:00:18,200 --> 00:00:21,060
+Vous devez d'abord l'adapter
+à de grands ensembles de données
+
+9
+00:00:21,060 --> 00:00:23,480
+comme nous l'avons fait avec Cloud ML.
+
+10
+00:00:23,480 --> 00:00:26,735
+Vous devez ensuite procéder
+à l'extraction de caractéristiques.
+
+11
+00:00:26,735 --> 00:00:30,570
+Nous allons donc voir ici
+comment créer ces bonnes caractéristiques
+
+12
+00:00:30,570 --> 00:00:34,240
+et transformer vos données d'entrée
+afin de les préparer pour un modèle de ML.
+
+13
+00:00:34,720 --> 00:00:37,630
+Nous verrons comment créer
+des caractéristiques synthétiques,
+
+14
+00:00:37,630 --> 00:00:40,520
+c'est-à-dire qui ne sont pas
+dans votre ensemble à l'origine,
+
+15
+00:00:40,520 --> 00:00:43,255
+mais qui améliorent
+les performances du modèle.
+
+16
+00:00:43,255 --> 00:00:46,865
+Nous verrons donc comment créer
+des caractéristiques, les transformer,
+
+17
+00:00:46,865 --> 00:00:48,265
+et en créer des synthétiques.
+
+18
+00:00:48,265 --> 00:00:51,355
+Ces étapes correspondent au prétraitement.
+
+19
+00:00:51,355 --> 00:00:54,805
+Nous parlerons donc du prétraitement
+dans le contexte de Cloud ML,
+
+20
+00:00:54,805 --> 00:00:56,885
+qui permet de travailler à grande échelle.
+
+21
+00:00:56,885 --> 00:00:58,590
+Une fois le modèle créé,
+
+22
+00:00:58,590 --> 00:01:00,785
+nous aborderons
+le réglage des hyperparamètres.
+
+23
+00:01:00,785 --> 00:01:04,260
+Il améliore les caractéristiques
+dans le contexte de l'ensemble de données
+
+24
+00:01:04,260 --> 00:01:05,980
+avec lequel elles seront entraînées.
+
+25
+00:01:06,620 --> 00:01:10,400
+Voyons d'abord comment transformer
+vos données brutes en vecteurs utiles
+
+26
+00:01:10,400 --> 00:01:13,255
+pouvant être utilisés
+correctement dans vos modèles de ML.
+
+27
+00:01:13,615 --> 00:01:15,125
+Prenons un problème.
+
+28
+00:01:15,125 --> 00:01:18,740
+Votre objectif est de créer un modèle
+pour prédire le prix d'une maison
+
+29
+00:01:18,740 --> 00:01:21,180
+en fonction d'un ensemble donné
+de données d'entrée.
+
+30
+00:01:21,180 --> 00:01:24,835
+Quels types de points de données
+voulez-vous connaître ?
+
+31
+00:01:25,775 --> 00:01:28,890
+Disons la superficie de la maison,
+
+32
+00:01:28,890 --> 00:01:30,555
+la taille du terrain,
+
+33
+00:01:30,555 --> 00:01:33,225
+le nombre de pièces,
+
+34
+00:01:33,225 --> 00:01:36,735
+ou encore son prix
+si elle a déjà été vendue.
+
+35
+00:01:37,450 --> 00:01:41,420
+Vous avez probablement deviné
+que l'emplacement a un très fort impact
+
+36
+00:01:41,420 --> 00:01:42,610
+sur les prix immobiliers.
+
+37
+00:01:43,080 --> 00:01:45,885
+Moi qui vis près de San Francisco,
+j'en sais quelque chose.
+
+38
+00:01:46,445 --> 00:01:50,125
+Ne serait-ce pas génial
+si vos données étaient déjà propres
+
+39
+00:01:50,125 --> 00:01:52,680
+et les champs nécessaires déjà prêts ?
+
+40
+00:01:52,680 --> 00:01:56,635
+Si elles étaient dans un format utilisable
+pour l'entraînement du modèle ?
+
+41
+00:01:56,865 --> 00:02:00,060
+Malheureusement,
+ce ne sera jamais le cas.
+
+42
+00:02:00,240 --> 00:02:03,810
+L'extraction des bonnes caractéristiques,
+le processus que nous allons voir,
+
+43
+00:02:03,810 --> 00:02:08,169
+peut prendre en moyenne 50 à 75 %
+du temps passé sur un projet de ML.
+
+44
+00:02:08,169 --> 00:02:10,785
+Nous n'avons même pas commencé le ML.
+
+45
+00:02:10,785 --> 00:02:12,880
+Il s'agit juste
+de bien préparer les données,
+
+46
+00:02:12,880 --> 00:02:14,405
+et c'est une étape primordiale.
+
+47
+00:02:14,965 --> 00:02:17,910
+Voyons un exemple rapide
+de ce que nous voulons faire ici.
+
+48
+00:02:17,910 --> 00:02:21,320
+Nous avons des données brutes
+pour les maisons à gauche dans un vecteur.
+
+49
+00:02:21,320 --> 00:02:24,860
+Vous devez les associer à un ou plusieurs
+champs à droite dans un prototype
+
+50
+00:02:24,860 --> 00:02:27,950
+pour qu'elles soient utilisables
+dans le modèle de ML à entraîner.
+
+51
+00:02:27,950 --> 00:02:30,750
+L'exercice peut
+sembler facile à première vue.
+
+52
+00:02:31,140 --> 00:02:34,180
+Mais comment savoir
+quelles caractéristiques utiliser
+
+53
+00:02:34,180 --> 00:02:37,900
+ou à quoi correspond
+une bonne caractéristique ?

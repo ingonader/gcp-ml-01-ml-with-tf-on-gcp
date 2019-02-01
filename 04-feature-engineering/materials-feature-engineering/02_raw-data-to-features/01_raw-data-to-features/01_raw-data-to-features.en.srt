@@ -1,0 +1,227 @@
+1
+00:00:00,000 --> 00:00:02,160
+As we said before, if you can't do
+
+2
+00:00:02,160 --> 00:00:05,010
+basic analysis in your data, you can't do machine learning.
+
+3
+00:00:05,010 --> 00:00:07,770
+So in this topic, we're going to focus exclusively on how to
+
+4
+00:00:07,770 --> 00:00:11,030
+create and manipulate features from your raw data.
+
+5
+00:00:11,030 --> 00:00:13,125
+Welcome to Feature Engineering,
+
+6
+00:00:13,125 --> 00:00:15,730
+recall that we said there are three things that you need to
+
+7
+00:00:15,730 --> 00:00:18,190
+do to build an effective machine learning model.
+
+8
+00:00:18,190 --> 00:00:21,060
+First, you need to scale it out to large datasets,
+
+9
+00:00:21,060 --> 00:00:23,480
+we just looked at that with Cloud ML.
+
+10
+00:00:23,480 --> 00:00:26,735
+The second thing you need to do is what's called Feature Engineering.
+
+11
+00:00:26,735 --> 00:00:29,320
+So in this module, we're going to talk about is how to create
+
+12
+00:00:29,320 --> 00:00:31,540
+those good features and how to transform
+
+13
+00:00:31,540 --> 00:00:34,175
+your inputs to get them ready for a machine learning model.
+
+14
+00:00:34,175 --> 00:00:37,630
+What we'll also look at is creating synthetic features,
+
+15
+00:00:37,630 --> 00:00:40,520
+which are features that aren't in your data set originally to begin with,
+
+16
+00:00:40,520 --> 00:00:43,255
+but are going to make your model perform a lot better.
+
+17
+00:00:43,255 --> 00:00:44,715
+We'll take a look at this,
+
+18
+00:00:44,715 --> 00:00:46,740
+creating good features, transforming them,
+
+19
+00:00:46,740 --> 00:00:51,340
+creating synthetic features, together these three things are called preprocessing.
+
+20
+00:00:51,340 --> 00:00:55,135
+So we'll take a look at how to do preprocessing within the context of Cloud ML,
+
+21
+00:00:55,135 --> 00:00:56,885
+which allow you to do it at scale.
+
+22
+00:00:56,885 --> 00:00:58,590
+After you built a model,
+
+23
+00:00:58,590 --> 00:01:00,575
+also look at hyper parameter tuning.
+
+24
+00:01:00,575 --> 00:01:03,840
+It's the way to make these features better in the context of this dataset,
+
+25
+00:01:03,840 --> 00:01:05,770
+they are ultimately going to be training against.
+
+26
+00:01:05,770 --> 00:01:10,400
+So let's first start with how you can turn your raw data into a useful feature vectors,
+
+27
+00:01:10,400 --> 00:01:13,255
+that can then be used properly inside your ML models.
+
+28
+00:01:13,255 --> 00:01:15,325
+So, let's take a problem.
+
+29
+00:01:15,325 --> 00:01:17,750
+So your end objective is to build a model to predict
+
+30
+00:01:17,750 --> 00:01:20,960
+the price of a house for a given set of inputs.
+
+31
+00:01:20,960 --> 00:01:25,315
+What types of data points would you want to know about this house to begin with?
+
+32
+00:01:25,315 --> 00:01:28,890
+Somebody said things like the square footage of the house,
+
+33
+00:01:28,890 --> 00:01:30,555
+maybe the size of the land.
+
+34
+00:01:30,555 --> 00:01:33,225
+What about the number of the rooms?
+
+35
+00:01:33,225 --> 00:01:35,265
+Or if it was sold in the past,
+
+36
+00:01:35,265 --> 00:01:36,980
+how much was it sold for?
+
+37
+00:01:36,980 --> 00:01:39,540
+You've probably already guessed that location, location,
+
+38
+00:01:39,540 --> 00:01:42,610
+location could be a prime influencer of housing prices.
+
+39
+00:01:42,610 --> 00:01:45,895
+For me, in the California Bay Area, I'm painfully aware.
+
+40
+00:01:45,895 --> 00:01:49,245
+Wouldn't it be great if your raw data for this housing data is
+
+41
+00:01:49,245 --> 00:01:52,680
+already clean and just the key fields that you need are going to be there?
+
+42
+00:01:52,680 --> 00:01:56,795
+Oh, and also, it's in a format that you can just pass in your ML model for training?
+
+43
+00:01:56,795 --> 00:01:58,410
+Well, I hate to break it to you,
+
+44
+00:01:58,410 --> 00:02:00,240
+it's just never going to be the case.
+
+45
+00:02:00,240 --> 00:02:03,600
+Good Feature Engineering, this process that we're going to go through,
+
+46
+00:02:03,600 --> 00:02:08,170
+can take an average of 50 to 75 percent of the time that you working on an ML project.
+
+47
+00:02:08,170 --> 00:02:10,785
+We haven't even started on the ML hour of them side, right?
+
+48
+00:02:10,785 --> 00:02:12,510
+This is just getting the data right,
+
+49
+00:02:12,510 --> 00:02:14,385
+and it's critical that we do so.
+
+50
+00:02:14,385 --> 00:02:16,590
+Well, we ultimately want to do here,
+
+51
+00:02:16,590 --> 00:02:17,940
+shown in a quick example,
+
+52
+00:02:17,940 --> 00:02:21,000
+got raw data for houses on the left inside of a vector,
+
+53
+00:02:21,000 --> 00:02:23,640
+you need to map it to one or more fields in the right,
+
+54
+00:02:23,640 --> 00:02:27,320
+in a parallel, this is how we can use it inside of our ML model for training.
+
+55
+00:02:27,320 --> 00:02:30,750
+So this might look like an easy mapping exercise for some of you.
+
+56
+00:02:30,750 --> 00:02:33,660
+But wait, how do you even know what features to
+
+57
+00:02:33,660 --> 00:02:37,900
+use or what makes a good feature in the first place?

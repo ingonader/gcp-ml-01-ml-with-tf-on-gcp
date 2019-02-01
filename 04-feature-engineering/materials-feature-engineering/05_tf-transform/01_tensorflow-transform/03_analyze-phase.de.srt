@@ -1,0 +1,224 @@
+1
+00:00:00,000 --> 00:00:03,060
+Wir wollen uns jetzt
+die Analyse genauer ansehen.
+
+2
+00:00:03,270 --> 00:00:06,805
+Dazu bedienen wir uns
+des Trainings-Datasets.
+
+3
+00:00:07,075 --> 00:00:11,120
+Wir teilen nun Beam mit,
+welche Art von Daten es erwarten soll.
+
+4
+00:00:11,380 --> 00:00:14,165
+Dafür richten wir ein Schema ein.
+
+5
+00:00:14,455 --> 00:00:18,075
+In der ersten Zeile
+richte ich ein Wörterbuch
+
+6
+00:00:18,075 --> 00:00:20,585
+mit dem Namen
+"raw_data_schema" ein.
+
+7
+00:00:20,765 --> 00:00:24,415
+Ich füge Einträge
+für alle Stringspalten ein.
+
+8
+00:00:25,625 --> 00:00:29,155
+Der String in diesem Fall
+ist der TensorFlow-Datatype.
+
+9
+00:00:29,825 --> 00:00:32,775
+Dann aktualisiere ich das Schema,
+
+10
+00:00:32,775 --> 00:00:38,145
+indem ich
+die tf.float 32-Spalten hinzufüge.
+
+11
+00:00:38,595 --> 00:00:41,695
+So erhalte ich ein Rohdatenschema,
+
+12
+00:00:41,695 --> 00:00:44,745
+in dessen Dataset
+alle Spalten enthalten sind.
+
+13
+00:00:44,745 --> 00:00:48,335
+Das Dataset wird dann 
+auf Dataflow von Beam verarbeitet
+
+14
+00:00:48,385 --> 00:00:52,830
+und mithilfe des Rohdatenschemas
+wird eine Metadatenvorlage erstellt.
+
+15
+00:00:53,780 --> 00:00:58,470
+Wir führen nun das PTransform
+"analyze-and-transform" durch.
+
+16
+00:00:58,830 --> 00:01:02,925
+Dadurch erhalten wir
+vorverarbeitete Trainingsdaten
+
+17
+00:01:02,925 --> 00:01:05,545
+und die Funktion für Transformation.
+
+18
+00:01:06,325 --> 00:01:11,185
+Zuerst führen wir "beam.io.read" aus,
+um die Trainingsdaten einzupflegen.
+
+19
+00:01:11,465 --> 00:01:16,725
+Dies ähnelt den Beam-Pipelines,
+die wir aus dem Modul zu "Beam" kennen.
+
+20
+00:01:17,235 --> 00:01:19,625
+Ich lese hier Daten aus BigQuery.
+
+21
+00:01:20,155 --> 00:01:24,595
+Dann filtern wir die Daten heraus,
+die wir für das Training nicht brauchen.
+
+22
+00:01:24,765 --> 00:01:27,705
+Ich nehme dafür die Funktion "is_valid",
+
+23
+00:01:27,705 --> 00:01:30,895
+auf die ich später noch näher eingehe.
+
+24
+00:01:32,035 --> 00:01:36,900
+Nun benötigen wir die Rohdaten 
+aus dem Filter- und Leseprozess
+
+25
+00:01:36,900 --> 00:01:40,555
+und die Rohdaten-Metadaten
+von der vorherigen Folie.
+
+26
+00:01:40,625 --> 00:01:45,305
+Die leiten wir jetzt weiter 
+an PTransform "analyze-and-transform".
+
+27
+00:01:45,575 --> 00:01:49,985
+Beam führt diesen Befehl
+in mehreren Teilen aus.
+
+28
+00:01:50,165 --> 00:01:55,430
+Alle Analysen werden bei 
+der Methode "pre-process" durchgeführt.
+
+29
+00:01:55,550 --> 00:01:58,565
+Auch darauf gehen wir 
+später noch genauer ein.
+
+30
+00:01:58,745 --> 00:02:02,470
+Die Methoden 
+"is_valid"- und "pre-process"
+
+31
+00:02:02,470 --> 00:02:06,485
+werden jetzt von Beam 
+auf das Trainings-Dataset angewandt,
+
+32
+00:02:06,485 --> 00:02:09,595
+um die Daten zu filtern
+und vorzuverarbeiten.
+
+33
+00:02:10,105 --> 00:02:14,525
+Die vorverarbeiteten Daten
+kommen in Form einer PCollection zurück.
+
+34
+00:02:14,595 --> 00:02:18,805
+Diese Parallelsammlung
+nenne ich "transformiertes Dataset".
+
+35
+00:02:18,945 --> 00:02:24,000
+Die Transformationen, die Sie 
+bei der Vorverarbeitung durchgeführt haben,
+
+36
+00:02:24,000 --> 00:02:27,140
+werden im zweiten
+Rückgabewert gespeichert,
+
+37
+00:02:27,140 --> 00:02:30,670
+in "transform function".
+Das ist für uns wichtig.
+
+38
+00:02:31,200 --> 00:02:34,510
+Die transformierten Daten
+lassen wir nun ausgeben.
+
+39
+00:02:34,950 --> 00:02:41,645
+In diesem Fall als "TFRecords",
+das effizienteste Format für Tensorflow.
+
+40
+00:02:41,905 --> 00:02:45,755
+Das gelingt mir durch 
+Verwenden der Rechte für TFRecord,
+
+41
+00:02:45,755 --> 00:02:49,245
+die ich mit der 
+TensorFlow-Transformation erhalte.
+
+42
+00:02:49,765 --> 00:02:53,025
+Die Dateien werden
+automatisch fragmentiert.
+
+43
+00:02:53,345 --> 00:02:56,430
+Aber welches Schema wird genutzt?
+
+44
+00:02:56,810 --> 00:03:01,260
+Nicht das für Rohdaten,
+sondern das für Transformationen.
+
+45
+00:03:01,510 --> 00:03:02,800
+Warum ist das so?
+
+46
+00:03:03,300 --> 00:03:10,035
+Weil wir natürlich Daten erhalten,
+die transformiert und vorverarbeitet sind,
+
+47
+00:03:10,035 --> 00:03:11,910
+und nicht Rohdaten.

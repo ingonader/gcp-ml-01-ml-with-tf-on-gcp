@@ -1,0 +1,134 @@
+En la siguiente parte, aprenderán
+más acerca de Google Cloud Dataflow una tecnología complementaria
+para Apache Beam. Ambas los pueden ayudar
+a construir y ejecutar preprocesamientos e ingeniería de atributos. Antes que nada, ¿qué es Cloud Dataflow? Podemos pensar
+en el preprocesamiento de atributos o cualquier transformación
+de datos, en términos de canalizaciones. Cuando hablo de canalizaciones,
+me refiero a una secuencia de pasos que cambian los datos
+de un formato a otro. Supongamos que tenemos datos
+en un almacén de datos, como BigQuery. Podemos usar BigQuery
+como entrada para la canalización. Con una serie de pasos,
+podemos transformar los datos o incluso agregar nuevos atributos
+como parte de la transformación. Por último, podemos guardar el resultado
+en un álbum, como Google Cloud Storage. Cloud Dataflow es una plataforma que permite ejecutar
+estas canalizaciones de procesamiento. Dataflow ejecuta canalizaciones
+escritas en los lenguajes Python y Java. Dataflow es tan superior como plataforma
+para la transformación de datos porque es una oferta sin servidores
+totalmente administrada de Google que permite ejecutar canalizaciones
+de procesamiento de datos a escala. Como desarrolladores,
+podemos desentendernos de la administración del tamaño
+del clúster que ejecuta la canalización. Dataflow puede cambiar
+la cantidad de recursos de procesamiento y de servidores en los que se ejecuta
+la canalización, de manera muy flexible según la cantidad de datos
+que necesiten procesarse. A fin de escribir código para Dataflow se usa una biblioteca
+de código abierto llamada Apache Beam. Para implementar
+una canalización de procesamiento se escribe código con las API de Beam
+y luego se lo implementa en Dataflow. Una de las ventajas de Apache Beam
+es que el código escrito para Beam es similar a como pensamos
+en las canalizaciones de procesamiento. Veamos la canalización
+que aparece en esta imagen. Este código de ejemplo de Python
+analiza la cantidad de palabras en líneas de texto de documentos. Como entrada para la canalización podemos leer archivos
+de texto de Google Cloud Storage. Luego, transformamos los datos
+y contamos las palabras en cada línea. Como explicaré, estas transformaciones
+pueden escalarse automáticamente con Dataflow
+para que se ejecute en paralelo. A continuación, se pueden agrupar líneas
+según la cantidad de palabras usando grouping
+y otras operaciones de agregación. También se pueden filtrar valores. Por ejemplo, podemos ignorar las líneas
+que tengan menos de diez palabras. Tras realizar todas las operaciones
+de transformación, agrupación y filtrado la canalización escribe
+el resultado en Google Cloud Storage. Observen que esta implementación
+separa la definición de la canalización de la ejecución de la canalización. Todos los pasos previos
+al llamado al método p.run simplemente definen
+lo que debe hacer la canalización. La canalización se ejecuta
+solo cuando se llama al método run. Una de las mayores ventajas de Apache Beam es que procesa datos
+por lotes o por transferencia con el mismo código para la canalización. De hecho, el nombre "Beam"
+es una contracción de "batch" y "stream". ¿Qué importancia tiene esto? Porque sin importar si los datos vienen
+de una fuente en lotes, como Cloud Storage o de una de transmisión
+de datos, como Pub/Sub podemos reutilizar
+la misma lógica en la canalización. También podemos enviar los datos
+a destinos en lotes o con transmisión. También podemos cambiar
+fácilmente entre estas fuentes de datos sin modificar la lógica
+de la implementación de la canalización. Veamos cómo hacerlo. Fíjense en el código
+que las operaciones de lectura y escritura se hacen mediante los métodos beam.io. Estos métodos usan conectores diferentes. Por ejemplo, el conector de Pub/Sub puede leer el contenido de los mensajes
+que se transmiten hacia la canalización. Otros conectores leen texto sin procesar
+de Cloud Storage o un sistema de archivos. Apache Beam tiene diversos conectores para ayudarnos a usar servicios
+de Google Cloud, como BigQuery. Además, como Apache Beam
+es un proyecto de código abierto las empresas pueden
+implementar sus propios conectores. Antes de seguir avanzando,
+revisemos la terminología que utilizaré
+constantemente en este módulo. Ya conocen las canalizaciones
+de procesamiento que ejecuta Dataflow. En el lado derecho,
+se observa el grafo de la canalización. Exploremos las canalizaciones
+de Apache Beam con más detalle. La canalización debe tener un origen,
+del que se obtienen los datos de entrada. La canalización tiene una serie de pasos que se denominan
+"transformaciones" en Beam. Cada transformación funciona
+en una estructura de datos llamada PCollection. Pronto les explicaré en detalle
+lo que son las PCollections. Por ahora, recuerden
+que cada transformación obtiene una PCollection como entrada
+y genera otra PCollection como resultado. El resultado de la última transformación
+de una canalización es importante. Se va a un receptor,
+que es la salida de la canalización. Para ejecutar una canalización,
+se necesita algo llamado "runner". Un runner toma
+la canalización y la ejecuta. Los runners son
+específicos de cada plataforma. Es decir, hay uno específico para
+ejecutar una canalización en Dataflow Hay otro runner específico si deseamos
+usar Apache Spark para la canalización. También hay un runner directo
+que la ejecutará en la computadora local. También es posible implementar
+su propio runner personalizado para una plataforma propia
+de procesamiento distribuido. ¿Cómo se implementan estas canalizaciones? Si revisamos el código de la diapositiva vemos que la operación de la canalización
+en el método main es beam.Pipeline que crea una instancia de canalización. Una vez creada,
+cada transformación se implementa como un argumento
+del método apply de la canalización. En la versión de Python
+de la biblioteca de Apache Beam el operador de barra vertical
+se sobrecarga para llamar al método apply. Por esto tenemos esta sintaxis extraña
+con varios operadores de barra vertical. Me gusta porque es más fácil de leer. Las cadenas read, countwords
+y write son los nombres legibles que se pueden especificar
+para cada transformación. Fíjense en que esta canalización
+lee y escribe en Google Cloud Storage. Como les mencioné antes ninguno de los operadores
+de la canalización la ejecuta en realidad. Cuando necesitamos
+que la canalización procese datos debemos llamar al método run
+para que ejecute esa instancia. Como dije, cada vez que usen
+el operador de barra vertical entregarán una estructura de datos
+de PCollection como entrada y recibirán otra como salida. Es importante saber que las PCollections,
+al contrario de otras estructuras de datos no almacenan todos sus datos en memoria. Recuerden que Dataflow es elástica y puede usar un clúster
+de servidores en una canalización. Una PCollection es como
+una estructura de datos con indicadores hacia donde el clúster
+de Dataflow almacena los datos. Por eso, Dataflow puede ofrecer
+escalamiento elástico de la canalización. Supongamos que tenemos
+una PCollection de líneas. Por ejemplo, las líneas pueden provenir
+de un archivo en Google Cloud Storage. Una manera de implementar
+la transformación es tomar una PCollection de cadenas,
+denominadas líneas en el código y mostrar una PCollection de enteros. Este paso específico de transformación
+calcula la longitud de cada línea. Como saben, el SDK de Apache Beam
+viene con diversos conectores que le permiten a Dataflow
+leer de muchas fuentes de datos como archivos de texto en
+Cloud Storage o sistemas de archivos. Con diferentes conectores,
+hasta se puede leer de fuentes de datos de transmisión en tiempo real,
+como Google Cloud Pub/Sub o Kafka. Uno de los conectores se usa para el
+almacén de datos de BigQuery en GCP. Si usamos el conector de BigQuery,
+hay que especificar la instrucción de SQL que BigQuery evaluará para mostrar
+una tabla con los resultados en filas. Las filas de la tabla se pasan
+a la canalización en una PCollection para exportar
+el resultado de una canalización. Existen conectores para Cloud Storage,
+Pub/Sub y BigQuery, entre otros. También podemos escribir
+los resultados en el sistema de archivos. Es importante tener presente,
+si escribimos en un sistema de archivos que Dataflow puede distribuir
+la ejecución de la canalización en un clúster de servidores. Es decir, puede haber varios servidores intentando escribir sus resultados
+en el sistema de archivos. Para evitar problemas de contención en los que varios servidores intentan
+escribir en el mismo archivo a la vez el conector de I/O de texto fragmenta
+la salida de manera predeterminada y escribe el resultado en varios archivos. Por ejemplo, esta canalización
+escribe el resultado en un archivo con el prefijo "output"
+en el conector de datos. Supongamos que se escribirá
+un total de diez archivos. Dataflow escribirá archivos llamados
+"output 0 of 10.txt", "output 1 of 10.txt" y así sucesivamente. Si hacemos esto, tendremos el problema
+de contención del que hablamos antes. No usar la fragmentación
+solo tiene sentido cuando trabajamos con conjuntos de datos pequeños,
+que puedan procesarse en un solo nodo. Con una canalización
+implementada en Python podemos ejecutar el código
+directamente en Shell con el comando Python. Para enviar
+la canalización como un trabajo y ejecutarlo en Dataflow en GCP debemos proporcionar
+información adicional. Hay que incluir argumentos
+con el nombre del proyecto de GCP su ubicación en un depósito
+de Google Cloud Storage donde Dataflow almacenará
+datos temporales y de staging. También se debe especificar
+el nombre del runner que en este caso es el runner de DataFlow.

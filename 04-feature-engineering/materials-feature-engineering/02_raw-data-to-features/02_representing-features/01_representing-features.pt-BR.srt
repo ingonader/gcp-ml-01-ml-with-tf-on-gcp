@@ -1,0 +1,858 @@
+1
+00:00:00,000 --> 00:00:03,370
+Vamos seguir e representar atributos
+com alguns exemplos reais.
+
+2
+00:00:03,370 --> 00:00:05,800
+Vejamos este exemplo aqui.
+
+3
+00:00:05,800 --> 00:00:07,365
+Estes são meus dados brutos,
+
+4
+00:00:07,365 --> 00:00:08,790
+estou em uma sorveteria,
+
+5
+00:00:08,790 --> 00:00:12,100
+estou tentando descobrir se o sorvete
+é servido por algum funcionário,
+
+6
+00:00:12,100 --> 00:00:15,520
+e se o cliente esperou 1,4 segundo
+ou 1,4 minuto
+
+7
+00:00:15,520 --> 00:00:17,385
+e qual será a classificação.
+
+8
+00:00:17,385 --> 00:00:19,425
+Quero prever essa classificação.
+
+9
+00:00:19,425 --> 00:00:22,785
+O quanto meu cliente vai estar satisfeito,
+com base em quem o serviu,
+
+10
+00:00:22,785 --> 00:00:23,970
+quanto tempo esperou,
+
+11
+00:00:23,970 --> 00:00:25,305
+o que comprou,
+
+12
+00:00:25,305 --> 00:00:28,080
+o local da loja
+e mais.
+
+13
+00:00:28,080 --> 00:00:30,585
+Certo, estes são nossos dados.
+
+14
+00:00:30,585 --> 00:00:32,244
+Estes são os dados de treinamento,
+
+15
+00:00:32,244 --> 00:00:35,715
+eu os aproveito e, por fim, tenho
+que transformar todos em números.
+
+16
+00:00:35,715 --> 00:00:37,905
+Lembre-se da regra,
+tudo precisa ser numérico,
+
+17
+00:00:37,905 --> 00:00:40,810
+porque as redes neurais
+lidam com números.
+
+18
+00:00:40,810 --> 00:00:44,400
+Então, pego meus dados, transformo-os
+em números e esses são meus atributos.
+
+19
+00:00:44,400 --> 00:00:47,790
+Então, no Tensorflow, vou pegar a
+entrada do JSON,
+
+20
+00:00:47,790 --> 00:00:51,230
+sai no meu aplicativo da Web que entra
+em um armazenamento,
+
+21
+00:00:51,230 --> 00:00:55,035
+eu pego, crio esses valores numéricos no
+TensorFlow e cada uma dessas colunas,
+
+22
+00:00:55,035 --> 00:00:56,865
+então uma coluna de atributos.
+
+23
+00:00:56,865 --> 00:01:00,570
+Como pegamos dados assim
+e os tornamos colunas de atributos?
+
+24
+00:01:00,570 --> 00:01:02,140
+Como torná-los numéricos?
+
+25
+00:01:02,750 --> 00:01:06,540
+O primeiro ponto é que alguns
+valores, como preço ou tempo de espera,
+
+26
+00:01:06,540 --> 00:01:07,780
+já são numéricos.
+
+27
+00:01:07,780 --> 00:01:10,350
+Ótimo.
+São super fáceis de codificar.
+
+28
+00:01:10,350 --> 00:01:12,410
+Vamos apenas pegá-los
+e usá-los como estão.
+
+29
+00:01:12,410 --> 00:01:15,180
+São numéricos e tem
+magnitude significativa.
+
+30
+00:01:15,180 --> 00:01:20,875
+Então, 2,5 ou 1,4 para o tempo de espera
+é fácil para o TensorFlow aprender.
+
+31
+00:01:22,135 --> 00:01:25,540
+Isso é o que chamamos
+de coluna de valor real.
+
+32
+00:01:25,540 --> 00:01:29,475
+Digamos, camadas como
+o preço da coluna de valor real,
+
+33
+00:01:29,475 --> 00:01:32,210
+camadas como o tempo
+de espera da coluna de valor real.
+
+34
+00:01:32,210 --> 00:01:37,425
+Podemos usar esses números como
+estão, e serão colunas de valor real.
+
+35
+00:01:37,425 --> 00:01:39,360
+E esta entrada?
+
+36
+00:01:39,360 --> 00:01:42,585
+O ID da transação é igual a 42.
+
+37
+00:01:42,585 --> 00:01:44,670
+Isso é muito específico.
+
+38
+00:01:44,670 --> 00:01:47,230
+Descarte, não podemos
+usar isso como um atributo.
+
+39
+00:01:47,230 --> 00:01:49,940
+E quanto ao código do funcionário?
+
+40
+00:01:49,940 --> 00:01:54,045
+O código do funcionário é igual a 72365.
+
+41
+00:01:54,045 --> 00:01:57,180
+É numérico? Sim, é um número,
+
+42
+00:01:57,180 --> 00:01:59,515
+mas tem magnitude significativa?
+
+43
+00:01:59,515 --> 00:02:03,310
+Alguém com um
+código de funcionário como 72365
+
+44
+00:02:03,310 --> 00:02:07,510
+é duas vezes melhor que um funcionário
+com um código de 36182?
+
+45
+00:02:07,510 --> 00:02:09,235
+Não, certo?
+
+46
+00:02:09,235 --> 00:02:12,129
+Portanto, não posso usar
+o código do funcionário como está.
+
+47
+00:02:12,129 --> 00:02:13,645
+Tenho que fazer algo neles.
+
+48
+00:02:13,645 --> 00:02:16,905
+Digamos que minha sorveteria
+tenha cinco funcionários.
+
+49
+00:02:16,905 --> 00:02:22,980
+Funcionário número 8345,
+funcionário número 72365 etc.
+
+50
+00:02:22,980 --> 00:02:27,075
+O que posso fazer é dizer, se esse
+número de empregado é 72365,
+
+51
+00:02:27,075 --> 00:02:31,455
+eu representarei o código dele
+por este vetor que você vê aqui.
+
+52
+00:02:31,455 --> 00:02:35,380
+O vetor é 01000 porque eu defino
+
+53
+00:02:35,380 --> 00:02:40,375
+a segunda coluna como
+correspondente àquele empregado 72365.
+
+54
+00:02:40,375 --> 00:02:43,655
+Basicamente, faço algo
+como uma máscara de bits.
+
+55
+00:02:43,655 --> 00:02:48,340
+Você deixa aquela coluna do
+funcionário 1 e todas as outras colunas 0.
+
+56
+00:02:48,340 --> 00:02:50,770
+Isso é o que chamamos
+de codificação one-hot.
+
+57
+00:02:50,770 --> 00:02:52,435
+Uma coluna que é hot
+
+58
+00:02:52,435 --> 00:02:54,010
+e todas as outras não.
+
+59
+00:02:54,010 --> 00:02:56,640
+Então, se você tem cinco funcionários
+em uma sorveteria,
+
+60
+00:02:56,640 --> 00:02:58,995
+você tem basicamente cinco colunas.
+
+61
+00:02:58,995 --> 00:03:03,875
+Na verdade, temos quatro, porque
+uma delas é linearmente independente.
+
+62
+00:03:03,875 --> 00:03:07,635
+Não vamos nos preocupar, vamos dizer
+que temos 5 funcionários para 5 colunas.
+
+63
+00:03:07,635 --> 00:03:10,510
+No TensorFlow, isso é chamado
+de coluna esparsa.
+
+64
+00:03:10,510 --> 00:03:13,740
+Basicamente queremos criar uma
+coluna esparsa com as chaves,
+
+65
+00:03:13,740 --> 00:03:16,065
+e o nome da coluna é "employeeID",
+
+66
+00:03:16,065 --> 00:03:18,480
+e as chaves são 8345,
+
+67
+00:03:18,480 --> 00:03:21,160
+72365 para o código do funcionário etc.
+
+68
+00:03:21,160 --> 00:03:23,970
+Acabamos de passar as strings
+para cada uma dessas chaves,
+
+69
+00:03:23,970 --> 00:03:28,095
+e depois o TensorFlow pegará a string e
+fornecerá um tempo de treino direto,
+
+70
+00:03:28,095 --> 00:03:31,230
+o tempo de previsão, representá-los,
+fazer codificação one-hot.
+
+71
+00:03:31,230 --> 00:03:33,390
+Isso os tornará numéricos,
+
+72
+00:03:33,390 --> 00:03:37,200
+e dizemos que employeeID
+é sua coluna esparsa.
+
+73
+00:03:37,200 --> 00:03:41,285
+Isto é, se conhecermos as chaves
+de antemão.
+
+74
+00:03:41,285 --> 00:03:43,960
+E se você não conhece as chaves
+de antemão?
+
+75
+00:03:43,960 --> 00:03:47,860
+O que você faz se tiver que
+pegar seus dados de entrada
+
+76
+00:03:47,860 --> 00:03:49,990
+e precisar pré-processá-los
+e encontrar
+
+77
+00:03:49,990 --> 00:03:52,670
+todas as chaves que estão no
+conjunto de dados de treino,
+
+78
+00:03:52,670 --> 00:03:55,315
+e criar o que é chamado
+de vocabulário de chaves?
+
+79
+00:03:55,315 --> 00:03:57,010
+Esse é o seu primeiro passo.
+
+80
+00:03:57,010 --> 00:03:58,540
+Esse é o pré-processamento.
+
+81
+00:03:58,540 --> 00:04:01,970
+Você precisa fazer tudo isso
+antes mesmo de fazer seu treino
+
+82
+00:04:01,970 --> 00:04:04,130
+e, em seguida, criar um novo
+conjunto de dados
+
+83
+00:04:04,130 --> 00:04:06,570
+em que os valores pré-processados
+possam ser usados.
+
+84
+00:04:06,570 --> 00:04:09,250
+Então, antes mesmo de começar
+a treinar seu modelo,
+
+85
+00:04:09,250 --> 00:04:11,800
+você precisa criar este
+vocabulário de chaves
+
+86
+00:04:11,800 --> 00:04:14,755
+e ele precisa estar
+disponível no momento da previsão,
+
+87
+00:04:14,755 --> 00:04:16,105
+porque na hora da previsão,
+
+88
+00:04:16,105 --> 00:04:18,024
+você vai voltar e dizer:
+
+89
+00:04:18,024 --> 00:04:20,540
+"Eu tenho o código de funcionário 72365
+
+90
+00:04:20,540 --> 00:04:22,885
+e o modelo precisa saber que,
+no tempo de treino,
+
+91
+00:04:22,885 --> 00:04:28,300
+ele sabia que 72365 era a segunda coluna
+para a codificação one-hot"
+
+92
+00:04:28,300 --> 00:04:30,490
+Assim, o vocabulário precisa ser idêntico,
+
+93
+00:04:30,490 --> 00:04:32,940
+e o mapeamento do
+vocabulário precisa ser idêntico
+
+94
+00:04:32,940 --> 00:04:35,020
+entre o tempo de treino e a previsão,
+
+95
+00:04:35,020 --> 00:04:36,690
+caso contrário, não é bom.
+
+96
+00:04:36,690 --> 00:04:38,980
+Muitos de vocês
+podem estar se perguntando,
+
+97
+00:04:38,980 --> 00:04:41,480
+o que acontece se você
+contratar outro funcionário,
+
+98
+00:04:41,480 --> 00:04:43,270
+o modelo ainda será o mesmo?
+
+99
+00:04:43,270 --> 00:04:46,230
+Neste momento, você não tem lugar
+para esse novo funcionário.
+
+100
+00:04:46,230 --> 00:04:50,030
+Isso significa que você não pode
+prever esse novo funcionário.
+
+101
+00:04:50,030 --> 00:04:53,114
+Esse tipo de coisa você
+precisa pensar de antemão,
+
+102
+00:04:53,114 --> 00:04:55,005
+você pode precisar
+adicionar algo.
+
+103
+00:04:55,005 --> 00:04:59,015
+O que faço com um funcionário que não
+conheço ou que não é encontrado,
+
+104
+00:04:59,015 --> 00:05:01,615
+e você decide que, talvez, vá dizer
+
+105
+00:05:01,615 --> 00:05:06,165
+a média de todos os funcionários e
+simplesmente usar esse número de entrada.
+
+106
+00:05:06,165 --> 00:05:09,910
+Enquanto isso, você coleta dados do
+horário em que esse funcionário trabalha
+
+107
+00:05:09,910 --> 00:05:12,050
+e a satisfação do cliente
+associada a ele,
+
+108
+00:05:12,050 --> 00:05:13,670
+além de diferentes
+tempos de espera
+
+109
+00:05:13,670 --> 00:05:15,130
+e diferentes itens servidos.
+
+110
+00:05:15,130 --> 00:05:16,540
+Depois de coletar isso,
+
+111
+00:05:16,540 --> 00:05:18,955
+você pode use isso na sua previsão.
+
+112
+00:05:18,955 --> 00:05:21,550
+Então, se você conhece a chave,
+
+113
+00:05:21,550 --> 00:05:23,210
+se você conhece
+a chave de antemão,
+
+114
+00:05:23,210 --> 00:05:25,650
+você cria aquela coluna esparsa
+com as chaves,
+
+115
+00:05:25,650 --> 00:05:28,440
+e você as passa e faz
+a codificação one-hot.
+
+116
+00:05:28,440 --> 00:05:31,470
+Essas são as diferentes maneiras
+de criar uma coluna esparsa.
+
+117
+00:05:31,470 --> 00:05:34,950
+Às vezes, seus dados
+já podem estar indexados.
+
+118
+00:05:34,950 --> 00:05:36,870
+E por que eles
+precisam ser indexados?
+
+119
+00:05:36,870 --> 00:05:39,240
+Talvez você tenha
+um código de funcionário
+
+120
+00:05:39,240 --> 00:05:41,820
+composto por números de 1 a 1000,
+
+121
+00:05:41,820 --> 00:05:44,015
+Nesse ponto, eles já estão indexados.
+
+122
+00:05:44,015 --> 00:05:47,760
+São arbitrariamente números grandes em
+todo lugar, apenas um para adicionar.
+
+123
+00:05:47,760 --> 00:05:50,290
+Se esse é o caso, eles querem
+criar uma coluna esparsa
+
+124
+00:05:50,290 --> 00:05:52,960
+com o atributo projetado,
+que é o código do funcionário,
+
+125
+00:05:52,960 --> 00:05:54,645
+e há cinco funcionários.
+
+126
+00:05:54,645 --> 00:05:58,110
+Onde isso é útil, digamos em nosso
+exemplo do táxi,
+
+127
+00:05:58,110 --> 00:06:00,570
+é que usamos isso para a hora do dia,
+
+128
+00:06:00,570 --> 00:06:04,495
+porque é projetado
+automaticamente de 0 a 23.
+
+129
+00:06:04,495 --> 00:06:06,420
+É perfeito como um atributo projetado,
+
+130
+00:06:06,420 --> 00:06:08,470
+porque a hora do dia não é numérica
+
+131
+00:06:08,470 --> 00:06:10,050
+e não é completamente
+não numérica
+
+132
+00:06:10,050 --> 00:06:13,855
+porque o número 23 é muito
+próximo do número 0 ou 1,
+
+133
+00:06:13,855 --> 00:06:15,615
+está a apenas duas
+horas de distância.
+
+134
+00:06:15,615 --> 00:06:17,835
+Vamos ver a terceira possibilidade.
+
+135
+00:06:17,835 --> 00:06:20,310
+Suponha que você não tenha um vocabulário
+
+136
+00:06:20,310 --> 00:06:22,110
+e não esteja projetado,
+
+137
+00:06:22,110 --> 00:06:24,765
+aqui está um truque
+legal que você pode fazer.
+
+138
+00:06:24,765 --> 00:06:28,710
+Se você não quer criar um vocabulário
+e não se importa,
+
+139
+00:06:28,710 --> 00:06:30,280
+o que você vai fazer é,
+
+140
+00:06:30,280 --> 00:06:33,080
+pegar meu código de funcionário,
+gerar hash,
+
+141
+00:06:33,080 --> 00:06:35,100
+calcular o hash do código de funcionário,
+
+142
+00:06:35,100 --> 00:06:39,990
+e dividir esse hash em 500 intervalos.
+Por quê?
+
+143
+00:06:39,990 --> 00:06:43,070
+Digamos que você está em
+uma empresa que tem 100 funcionários,
+
+144
+00:06:43,070 --> 00:06:45,020
+e você o divide em 500 intervalos,
+
+145
+00:06:45,020 --> 00:06:47,930
+então, em média, cada funcionário,
+cada intervalo,
+
+146
+00:06:47,930 --> 00:06:50,430
+terá zero empregado
+ou um funcionário
+
+147
+00:06:50,430 --> 00:06:52,350
+é quase como codificação one-hot
+
+148
+00:06:52,350 --> 00:06:54,180
+ou 500 codificações one-hot.
+
+149
+00:06:54,180 --> 00:06:58,755
+Isso me leva ao mesmo lugar sem ter que
+criar esse vocabulário antes.
+
+150
+00:07:00,305 --> 00:07:02,005
+Classificação do cliente.
+
+151
+00:07:02,005 --> 00:07:03,685
+O que fazemos com isso?
+
+152
+00:07:03,685 --> 00:07:05,990
+Para tentar prever
+a classificação do cliente,
+
+153
+00:07:05,990 --> 00:07:07,955
+e é um rótulo,
+não estamos preocupados.
+
+154
+00:07:07,955 --> 00:07:10,580
+Digamos que estamos
+tentando usá-la como uma entrada,
+
+155
+00:07:10,580 --> 00:07:12,640
+porque estamos tentando
+prever outra coisa.
+
+156
+00:07:12,640 --> 00:07:14,799
+Então, você tem algo como
+uma classificação,
+
+157
+00:07:14,799 --> 00:07:16,610
+e quer usá-la como
+recurso de entrada,
+
+158
+00:07:16,610 --> 00:07:18,485
+você poderia fazer uma
+de duas coisas.
+
+159
+00:07:18,485 --> 00:07:22,400
+Pode tratá-la como um número contínuo
+de um a cinco, é numérico,
+
+160
+00:07:22,400 --> 00:07:27,410
+e tem uma certa magnitude significativa,
+como 3 é mais do que 2,
+
+161
+00:07:27,410 --> 00:07:30,230
+ou você pode dizer que 4 estrelas
+é diferente de 5 estrelas,
+
+162
+00:07:30,230 --> 00:07:32,135
+muito diferente de 2 estrelas,
+
+163
+00:07:32,135 --> 00:07:34,975
+que é apenas uma codificação one-hot.
+
+164
+00:07:34,975 --> 00:07:37,075
+Portanto, em alguns casos,
+você tem escolhas,
+
+165
+00:07:37,075 --> 00:07:39,765
+na classificação do cliente,
+você faz codificação one-hot
+
+166
+00:07:39,765 --> 00:07:41,245
+ou pode tratá-lo
+como um número.
+
+167
+00:07:41,245 --> 00:07:44,430
+Cabe a você como lidar
+com essa classificação.
+
+168
+00:07:44,430 --> 00:07:48,370
+Algo que você precisa observar
+é o que você faz
+
+169
+00:07:48,370 --> 00:07:51,720
+para um cliente que
+não forneceu uma classificação?
+
+170
+00:07:51,720 --> 00:07:55,345
+Digamos que você faz uma pesquisa e o
+cliente não responde a sua pesquisa.
+
+171
+00:07:55,345 --> 00:07:57,160
+O que fazer com os dados que faltam?
+
+172
+00:07:57,160 --> 00:07:59,810
+Uma opção é usar duas colunas,
+
+173
+00:07:59,810 --> 00:08:03,545
+uma para a classificação e outra para
+saber se temos ou não uma classificação.
+
+174
+00:08:03,545 --> 00:08:07,290
+Neste caso, o número 4 é uma classificação
+que um cliente deu a você,
+
+175
+00:08:07,290 --> 00:08:10,230
+e 1 significa que ele, de fato,
+deu uma classificação,
+
+176
+00:08:10,230 --> 00:08:13,345
+já que 0 significa que ele
+não nos classificou.
+
+177
+00:08:13,345 --> 00:08:16,880
+É possível fazer o contrário, se estiver
+fazendo uma codificação one-hot.
+
+178
+00:08:16,880 --> 00:08:18,810
+Digamos que tenho
+uma classificação de 4,
+
+179
+00:08:18,810 --> 00:08:23,815
+que é 0001, ou que eu não recebi
+uma classificação, 0000.
+
+180
+00:08:23,815 --> 00:08:28,480
+Mas não cometa o erro de não ter uma
+segunda coluna, classificada ou não,
+
+181
+00:08:28,480 --> 00:08:31,845
+porque não queremos misturar
+números mágicos com os valores reais.
+
+182
+00:08:31,845 --> 00:08:36,804
+Você precisa adicionar uma coluna extra
+para indicar se observou ou não o valor.
+
+183
+00:08:36,804 --> 00:08:38,890
+Então, se você tem dados faltando,
+
+184
+00:08:38,890 --> 00:08:40,240
+a ideia principal é que
+
+185
+00:08:40,224 --> 00:08:41,884
+é necessário ter outra coluna.

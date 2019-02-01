@@ -1,0 +1,99 @@
+Anteriormente en este módulo conocieron técnicas
+para implementar el código que se encarga del preprocesamiento
+y la creación de atributos. Para usar estas técnicas debemos
+conocer bien el dominio del problema además de saber bastante
+sobre los datos sin procesar de entrada. En la práctica, no siempre
+contaremos con la información necesaria y habrá que hacer
+ingeniería de atributos con datos de dominios
+de los que sabemos poco sabiendo poco o nada
+acerca de los datos sin procesar. En el resto de este módulo veremos las herramientas
+y técnicas que nos pueden ayudar si comenzamos
+con conjuntos de datos desde cero. Anteriormente, usaron herramientas
+como Apache Beam y Cloud Dataflow. Ahora, conocerán
+una herramienta llamada Cloud Dataprep que ofrece una interfaz gráfica
+de usuario interactiva que nos ayuda a comprender,
+visualizar y preprocesar los datos. Si se hace bien, la ingeniería
+de atributos puede mejorar mucho el rendimiento de un sistema de AA. Para hacer bien
+la ingeniería de atributos es importante conocer
+el dominio del sistema que usamos. Específicamente, debemos conocer
+los datos sin procesar de entrada. ¿Qué significa esto? ¿Cómo abordamos un conjunto de datos
+con miles de millones de registros? Cuando trabajamos con un conjunto
+de datos totalmente desconocido el primer paso
+es realizar un análisis exploratorio. Tenemos que visualizar
+los valores del conjunto de datos comprender los valores
+más y menos comunes identificar valores anómalos
+y buscar valores faltantes. Es fundamental tener estadísticas
+del conjunto de datos, como promedios la desviación estándar
+de las variables de los datos sus valores mínimos y máximos y queremos explorar
+las distribuciones de esos valores. Cuando trabajemos
+con aprendizaje automático probablemente estemos en un equipo
+que incluirá científicos de datos desarrolladores de software
+y analistas de negocios. Por eso, necesitaremos
+una manera de compartir con otras personas
+lo que aprendimos del conjunto de datos. Eso también nos permitirá
+beneficiarnos del conocimiento del equipo. En el resto del módulo, veremos
+dos enfoques complementarios. Empezaremos por explorar
+un conjunto de datos y pasaremos al preprocesamiento
+y la creación de atributos. Primero, usaremos
+herramientas que ya conocen como BigQuery,
+Cloud Dataflow y TensorFlow. Para el segundo enfoque,
+presentaremos Cloud Dataprep y veremos cómo puede ayudarnos
+con el análisis exploratorio y el procesamiento de datos. Comencemos con el primer enfoque usando herramientas que
+conocemos para explorar los datos. En este curso ya vieron ejemplos
+de algunas bibliotecas de gráficos como Seaborn para visualizar
+los datos en Cloud Datalab. Este ejemplo muestra
+un gráfico de datos del conjunto de tarifas
+de taxis de Nueva York que está disponible en BigQuery. El diagrama muestra la distancia
+de los viajes en relación con la tarifa. Usar un notebook en Datalab
+para explorar y visualizar los datos podría parecer un enfoque práctico. Sin embargo, recordemos
+que el entorno predeterminado de Datalab se ejecuta en un solo servidor virtual
+con una cantidad limitada de memoria. En el conjunto de datos de tarifas
+de taxi, hay miles de millones de datos. Sería poco práctico o demasiado caro
+trazar y analizar todos esos datos con un entorno
+de Datalab de un solo nodo. En vez de cargar millones de registros
+de viajes en taxi en el entorno de Datalab podemos usar SQL y calcular
+estadísticas de resumen con BigQuery. Como se ve en este diagrama podemos usar Datalab
+para escribir el código de SQL. Cuando el código está listo,
+enviamos la instrucción de SQL a BigQuery a través de las API
+y obtenemos el resultado. Como las estadísticas de resumen
+son solo algunas filas de datos podemos trazarlas fácilmente
+en Datalab con Seaborn o alguna otra biblioteca
+de visualización de Python. Además, como aprendimos
+anteriormente en el módulo podemos usar las API de Apache Beam
+y Cloud Dataflow para implementar cálculos de estadísticas de resumen
+y otros preprocesamientos de datos. Podemos usar Python o Java
+para escribir el código de la canalización de procesamiento. Ahora, veamos el segundo enfoque en el que usaremos Cloud Dataprep
+para comprender mejor los datos de entrada y hacer ingeniería de atributos
+con una interfaz visual interactiva en vez de escribir código de bajo nivel. ¿Qué es Cloud Dataprep? Es un servicio completamente administrado
+que forma parte de GCP. Permite explorar y transformar
+los datos de manera interactiva a través de un navegador web
+y con muy poco código. Dataprep puede obtener datos
+de una variedad de fuentes como Google Cloud Storage y BigQuery. También podemos subir
+nuestros propios datos a Dataprep. Una vez que Dataprep sabe
+dónde debe obtener los datos podemos usar esta IU gráfica
+para explorarlos y crear visualizaciones. Por ejemplo, podemos ver
+histogramas de valores de datos y obtener resúmenes estadísticos,
+como promedios y valores de percentiles. Tras explorar y comprender
+el conjunto de datos podemos usar Dataprep para calcular
+flujos de las transformaciones de datos. Los flujos son similares
+a las canalizaciones de Dataflow. De hecho, los flujos
+son compatibles con Dataflow. Podemos tomar un flujo de Dataprep y ejecutarlo como canalización
+en la plataforma de Dataflow. En Dataprep, los flujos se implementan
+como una secuencia de recetas que son pasos de procesamiento de datos
+creados con una biblioteca de "wranglers". Dataprep tiene wranglers
+para muchas tareas de procesamiento como se ve a la izquierda. Pronto veremos
+ejemplos específicos de wranglers. Tengan en mente que no tendrán
+que implementar estos pasos de procesamiento de datos en el código. Si usamos los wranglers, Dataprep
+puede tomar el flujo y las recetas y convertirlos
+en una canalización de Dataflow. Luego, con la misma interfaz de Dataprep podemos tomar el flujo,
+ejecutarlo como trabajo en Dataflow y supervisar el progreso de ese trabajo. La biblioteca de Dataprep tiene una gama
+de wranglers listos para tareas comunes. Para limpiar datos, podemos deduplicarlos
+o filtrar los valores faltantes o anómalos y también podemos
+hacer agregaciones comunes como contar o sumar valores. También podemos combinar tablas
+de datos con operaciones Join o Union y transformar los datos en diversos tipos,
+como strings o números enteros. Mientras se ejecuta el flujo podemos usar la interfaz de Dataflow para
+supervisar los detalles del progreso. Cuando el trabajo termina, podemos ver
+un resumen de su estado en Dataprep. Como se puede ver en esta captura,
+una vez terminado el trabajo el resumen incluye estadísticas
+y visualizaciones que pueden obtenerse sobre cualquier conjunto
+de datos en Dataprep.

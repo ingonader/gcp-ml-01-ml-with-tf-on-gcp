@@ -1,0 +1,132 @@
+Willkommen zurück. In diesem Lab erledigen Sie die Vorverarbeitung
+für das Taxikosten-Dataset aus BigQuery mithilfe von Cloud Dataprep. In diesem Tool untersuchen Sie
+die Verteilung von Datenwerten, stellen sie als Histogramm dar und implementieren
+dann einen Dataprep-Ablauf, um ein neues Merkmal auf Basis
+der mittleren Taxifahrten pro Stunde in einem gleitenden Zeitfenster
+zu erstellen. Schließlich implementieren Sie
+den Dataprep-Ablauf auf der GCP und führen ihn aus Sie überwachen die Jobausführung
+mit Dataflow. Sehen wir uns das an. Bevor Sie mir dem Lab beginnen, müssen Sie ein paar Vorbereitungen treffen. Beginnen Sie auf dem
+Google Cloud Platform-Dashboard. Zunächst benötigen Sie
+einen Google Cloud Storage-Bucket. Klicken Sie dazu auf das Dreistrich-Menü und öffnen Sie
+das Menü für Produkte und Dienste. Scrollen Sie nach unten zu "Storage", dann "Browser"
+und klicken Sie auf "Bucket erstellen". Wie Sie den Hinweisen entnehmen können, muss der Name des
+Storage-Buckets global eindeutig sein. Hier habe ich
+einen eindeutigen Bucket-Namen im Speicherort "us-east4" erstellt. Ich klicke auf "Erstellen" und kurz darauf ist der Bucket
+mit dem eindeutigen Namen bereit. Als Nächstes müssen Sie
+das BigQuery-Dataset vorbereiten. Sie finden BigQuery im Menü für Produkte
+und Dienste im Abschnitt "Big Data". Wenn Sie auf "BigQuery" klicken,
+öffnet sich im Browser ein neuer Tab. Klicken Sie auf den Abwärtspfeil
+rechts neben dem Namen Ihres Projekts und wählen Sie
+"Neues Dataset erstellen" aus. Nennen Sie das Dataset "taxi_cab_reporting" und klicken Sie
+auf "OK", um es zu erstellen. Wenn das Dataset bereit ist, kehren Sie
+zum Google Cloud Platform-Dashboard zurück. Öffnen Sie dort den Link "Dataprep"
+im Menü für Produkte und Dienste. Da der Dienst Cloud Dataprep
+von einem Google-Partner angeboten wird, müssen Sie noch
+dessen Nutzungsbedingungen akzeptieren. Klicken Sie dafür auf "Akzeptieren". Außerdem müssen Sie
+noch auf "Zulassen" klicken, damit Trifacta,
+Google-Partner und Entwickler von Dataprep, auf Ihre Daten zugreifen kann. Danach dauert es nicht lange,
+bis Dataprep für Ihr Projekt aktiviert ist. Diese Wartezeit
+überspringen wir jetzt in unserem Video. Wählen Sie als Nächstes das Konto aus,
+das Sie für Dataprep verwenden möchten, und gewähren Sie
+Cloud Dataprep Zugriff auf Ihr Projekt. Wenn Sie Dataprep
+zum ersten Mal für ein Projekt einrichten, müssen Sie
+den Storage-Bucket für Ihre Daten angeben. Wie Sie sehen, benutzen wir
+den Bucket vom Anfang dieses Labs zur Einrichtung von Dataprep. Klicken Sie
+nach Auswahl des Buckets auf "Weiter". Sobald Dataprep eingerichtet ist,
+können Sie die Anleitung schließen, indem Sie die Hilfe,
+wie hier gezeigt, deaktivieren. Als Nächstes erstellen Sie
+mit Dataprep einen neuen Ablauf. Nennen wir diesen Ablauf
+"NYC Taxi Cab Reporting". Der Ablauf wird
+ein Verfahren für die Aufnahme, Transformation und
+Analyse der Taxidaten zeigen. Klicken Sie nun auf "Erstellen". Um einen Ablauf zu erstellen, müssen Sie zuerst ein paar Datasets
+hinzufügen, die er verarbeiten soll. In diesem Fall importieren Sie
+ein paar vordefinierte Datasets, die unser Team in einem öffentlichen
+Cloud Storage-Bucket gespeichert hat. Auf den Storage-Bucket können Sie im Verzeichnis
+"asl-ml-immersion/nyctaxicab" zugreifen. Das Verzeichnis enthält einige Dateien. Sie verwenden die Dateien
+mit den Taxigebühren von 2015 und 2016. Beachten Sie, dass dies CSV-Dateien
+mit durch Komma getrennten Werten sind. Klicken Sie auf "Importieren". Die beiden Dateien
+werden dann Ihrem Ablauf hinzugefügt. Um für diese Datasets Datenverarbeitung
+oder Wrangling zu implementieren, müssen Sie ein neues Schema hinzufügen. Als Nächstes fügen Sie
+diesem Schema Schritte hinzu. Sobald das Dataset geladen ist, sehen Sie eine Vorschau
+mit Beispieldaten aus dem Dataset. Dieses Dataset enthält
+zum Beispiel Informationen zu Taxifahrten wie Tag und Zeitpunkt von Abholung
+und Ankunft sowie die Zahl der Fahrgäste. Beachten Sie im Fahrtdistanzhistogramm, dass die meisten Fahrten über eine
+Distanz von unter acht Kilometern gingen. Als Nächstes erzeugen Sie
+eine Union der Datasets für 2015 und 2016, damit Sie mit
+mehr Datenzeilen arbeiten können. Wenn Sie das Dataset für 2016 auswählen, müssen Sie auf "Hinzufügen
+und nach Name abgleichen" klicken, wodurch die Namen mit
+den entsprechenden Spaltenüberschriften an der Union-Version
+des Datasets ausgerichtet werden. Fügen Sie dem Schema
+den Union-Schritt hinzu. Dataprep zeigt dann eine Vorschau
+mit Daten der Fahrten von 2015 und 2016. Beachten Sie, dass Tag und Tageszeit der
+Abholung in verschiedenen Spalten stehen. Da Sie in diesem Lab lernen, wie man gleitende Durchschnitte
+für Taxigebühren berechnet, müssen Sie die Eingabedaten vorher
+in das SQL-Format DATETIME konvertieren. Dazu können Sie
+ein "Merge" zum Schema hinzufügen, das die Werte
+mehrerer Spalten zusammenführt. In diesem Fall heißen die Spalten
+"pickup_day" und "pickup_time". Nennen Sie
+die neue Spalte "pickup_datetime". Nehmen Sie als Trennzeichen
+ein Leerzeichen zwischen den Werten. Beachten Sie die Vorschau
+der neuen Spalte auf der linken Seite. Erstellen Sie
+als Nächstes eine neue abgeleitete Spalte für die Abholzeit im SQL DATETIME-Format. Sobald das neue Feld mit Datums-
+und Zeitstempel zur Verfügung steht. extrahieren Sie Jahr, Monat, Tag und die Stunde
+ohne die Minuten und Sekunden. Da in der Spalte "hour_pickup_datetime"
+die Werte für Minuten und Sekunden fehlen, lässt sie sich nicht
+als SQL DATETIME parsen. Daher müssen Sie eine neue Spalte erzeugen, die in einen gültigen SQL DATETIME-Wert
+konvertierbar ist. Dafür erstellen Sie einen neuen Merge-Vorgang
+und benutzen wieder den Merge-Wrangler. Dieser Wrangler verkettet Werte
+aus der Spalte "hour_pickup_datetime" in einem String mit vier Nullen
+für die Minuten- und Sekundenwerte. Beachten Sie,
+dass jede neu hinzugefügte Spalte einen automatisch
+generierten Namen wie "column1" erhält. Sie können sie einfach umbenennen. In diesem Fall
+können Sie sie "pickup_hour" nennen. Berechnen Sie nun ein paar Statistiken
+basierend auf den "pickup_hour"-Werten. Sie können
+Standard-SQL-Aggregationsfunktionen wie Summe oder Durchschnitt benutzen. Wie Sie sehen, berechnet
+der Wrangler die Summen und Durchschnitte sowohl für die Fahrgastanzahl als auch
+für die Fahrtdistanz und die Taxigebühr. Er berechnet auch die maximalen
+Taxigebühren für jede Abholstunde. Auch hier wird eine Vorschau
+der Ergebnisse der berechneten Statistiken links in den Histogrammen angezeigt. Im Histogramm
+unter "average_fare_amount" fällt auf, dass die meisten Durchschnittsgebühren
+zwischen 18 $ und 19 $ pro Fahrt liegen. Als Nächstes berechnen Sie den
+gleitenden Durchschnitt der Taxigebühren. Dafür betrachten Sie die Daten zu
+den drei Stunden nach jeder Abholstunde. In Cloud Dataprep können Sie diese mit
+der Funktion "ROLLINGAVERAGE" berechnen. Hier sind die Werte
+für den gleitenden Durchschnitt, sortiert nach der Stunde der Abholung. Zum Abschluss nennen Sie
+diese Spalte "average_3hr_rolling_fare". Wenn das Schema fertig ist, können Sie es als
+Google Cloud Dataflow-Job implementieren. Klicken Sie dafür
+auf "Job ausführen" und geben Sie an, wo die Ergebnisse veröffentlicht
+bzw. gespeichert werden sollen. Standardmäßig werden die Ergebnisse als CSV-Datei
+in Google Cloud Storage gespeichert. Stattdessen
+können Sie auch BigQuery als Ziel angeben und bei jeder Jobausführung
+eine neue Tabelle in BigQuery erstellen. Wenn Sie rechts "Neue Tabelle
+bei jeder Ausführung erstellen" auswählen und die Tabelle umbenennen
+in "tlc_yellow_trips_reporting", erhalten Sie eine neue Tabelle
+im Dataset "taxi_cab_reporting". Dieses Dataset haben Sie
+am Anfang dieses Labs erstellt. Führen Sie den Job nun also aus. Sobald für den Job
+die Transformation angezeigt wird, stellt Dataprep
+den Job für Dataflow bereit. Das dauert in der Regel nicht lange. Sie können den Jobfortschritt
+im Dataprep-Menü unter "Jobs" überwachen, indem Sie auf der rechten Seite
+auf das Dreipunkt-Menü klicken. Das Dreipunkt-Menü
+enthält den Link zum Dataflow-Job nicht gleich nach dessen Bereitstellung. Wenn Sie aber
+kurz warten und die Seite aktualisieren, erscheint im aktualisierten Menü
+ein Link zum Dataflow-Job. Der Link öffnet automatisch
+die Benutzeroberfläche von Dataflow, wo Sie
+die detaillierten Transformationsschritte, die Sie mit Dataprep
+erstellt haben, überwachen können. Auf der rechten Seite der Dataflow-UI sehen Sie Details zu dieser Jobausführung. Hier können Sie sehen, dass
+– da der Job gerade erst begonnen hat – der Dataflow-Cluster für die Jobausführung
+erst noch skaliert werden muss. Sie können aber schon die Ergebnisse
+der Jobkonfiguration überwachen. Hier hat kein Transformationsschritt
+bisher begonnen, außer den wenigen, die die Tabelle in BigQuery
+vorbereiten und gerade damit beginnen, Daten aus den CSV-Eingabedateien
+in Google Cloud Storage abzurufen. Zusätzlich zur Jobüberwachung in Dataflow können Sie auch BigQuery öffnen und im Dataset "taxi_cab_reporting"
+die Ausgabe des Jobs überwachen. Wie Sie wissen,
+fügt der Job, sobald er ausgeführt wird, Werte in die neue Tabelle
+"tlc_yellow_trips_reporting" ein. Da es etwas dauert,
+bis die Tabelle erstellt wurde, müssen Sie eventuell warten
+und die Seite neu laden, um die Aktualisierung zu sehen. Wenn die Tabelle erstellt wurde, können Sie mit einer
+SQL-Anweisung Ergebnisse daraus abrufen. Vergewissern Sie sich aber, dass Ihr SQL-Dialekt
+korrekt konfiguriert ist, bevor Sie sie ausführen. Hier sehen Sie, dass die Jobausführung
+etwa 192 Kilobyte Daten generiert, darunter
+Informationen über die Abholstunden, durchschnittliche
+Fahrtdistanzen und Gebühren sowie die anderen Informationen,
+die Dataflow berechnet. Okay. So weit für dieses Lab.

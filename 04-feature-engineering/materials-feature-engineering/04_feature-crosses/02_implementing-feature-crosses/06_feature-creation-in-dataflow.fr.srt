@@ -1,0 +1,222 @@
+1
+00:00:00,000 --> 00:00:04,485
+Pour rappel, il est possible d'extraire
+des caractéristiques à trois endroits.
+
+2
+00:00:04,485 --> 00:00:07,710
+Nous avons vu le prétraitement
+de caractéristiques
+
+3
+00:00:07,710 --> 00:00:11,490
+et la création de caractéristiques
+à la volée dans TensorFlow.
+
+4
+00:00:11,490 --> 00:00:14,575
+Une autre solution est de prétraiter
+
+5
+00:00:14,575 --> 00:00:17,660
+ou de créer les caractéristiques
+dans Cloud Dataflow.
+
+6
+00:00:17,660 --> 00:00:22,550
+Dataflow est utilisé ici pour créer
+un ensemble de données
+
+7
+00:00:22,550 --> 00:00:28,955
+prétraité ou augmenté servant
+à entraîner le modèle.
+
+8
+00:00:28,955 --> 00:00:32,755
+Lors de la prédiction,
+nous devons déterminer comment effectuer
+
+9
+00:00:32,755 --> 00:00:34,995
+les mêmes étapes de prétraitement.
+
+10
+00:00:34,995 --> 00:00:39,515
+Cette méthode fonctionne mieux
+si Dataflow fait aussi partie
+
+11
+00:00:39,515 --> 00:00:41,655
+d'un environnement
+d'exécution de prédiction.
+
+12
+00:00:41,655 --> 00:00:46,425
+C'est le cas dans l'architecture
+de référence de GCP.
+
+13
+00:00:46,425 --> 00:00:51,950
+Comme Dataflow peut gérer à la fois
+les données par flux et par lots,
+
+14
+00:00:51,950 --> 00:00:56,550
+il fait partie du pipeline
+d'entraînement et de prédiction.
+
+15
+00:00:56,550 --> 00:00:58,210
+Si vous procédez ainsi,
+
+16
+00:00:58,210 --> 00:01:02,715
+Dataflow est le bon endroit
+pour effectuer le prétraitement.
+
+17
+00:01:02,715 --> 00:01:05,812
+C'est la solution idéale
+pour les caractéristiques
+
+18
+00:01:05,812 --> 00:01:08,910
+qui impliquent l'agrégation de périodes.
+
+19
+00:01:08,910 --> 00:01:13,725
+Vous pouvez par exemple utiliser
+une caractéristique correspondant
+
+20
+00:01:13,725 --> 00:01:16,682
+au nombre moyen
+de personnes qui ont consulté
+
+21
+00:01:16,682 --> 00:01:19,640
+un produit au cours de l'heure précédente.
+
+22
+00:01:19,640 --> 00:01:23,520
+Lors de l'entraînement, vous pouvez
+utiliser Dataflow pour calculer ceci
+
+23
+00:01:23,520 --> 00:01:25,290
+à partir des fichiers journaux.
+
+24
+00:01:25,290 --> 00:01:29,790
+La nature de cette caractéristique veut
+cependant que vous utilisiez Dataflow
+
+25
+00:01:29,790 --> 00:01:34,965
+en temps réel pour la calculer
+en fonction de votre trafic en temps réel.
+
+26
+00:01:34,965 --> 00:01:39,905
+Dans Dataflow, vous pouvez ajouter
+des champs à n'importe quelle PTransform.
+
+27
+00:01:39,905 --> 00:01:42,394
+Dans cet exemple,
+la méthode "add_fields" est
+
+28
+00:01:42,394 --> 00:01:45,780
+un ParDo qui prend les champs d'entrée,
+
+29
+00:01:45,780 --> 00:01:47,640
+extrait le nombre de passagers,
+
+30
+00:01:47,640 --> 00:01:50,677
+le cumule
+et ajoute un compteur de visiteurs
+
+31
+00:01:50,677 --> 00:01:53,715
+en tant que compteur
+pour l'heure précédente.
+
+32
+00:01:53,715 --> 00:01:59,030
+Dans Dataflow, le même code fonctionne
+pour les données par flux et par lots.
+
+33
+00:01:59,030 --> 00:02:01,875
+Vous pouvez donc
+vous contenter de la méthode "add_fields"
+
+34
+00:02:01,875 --> 00:02:04,765
+dans les pipelines
+d'entraînement et de prédiction.
+
+35
+00:02:04,765 --> 00:02:08,395
+Une troisième solution est
+d'adopter une approche hybride.
+
+36
+00:02:08,395 --> 00:02:11,147
+Les chercheurs de Google viennent
+de publier un article
+
+37
+00:02:11,147 --> 00:02:13,120
+expliquant comment procéder.
+
+38
+00:02:13,120 --> 00:02:16,255
+Nous verrons ceci plus en détail
+lors du prochain module.
+
+39
+00:02:16,255 --> 00:02:20,515
+Le point à retenir ici est que,
+pendant l'entraînement, vous créez
+
+40
+00:02:20,515 --> 00:02:23,975
+un ensemble de données prétraité
+avec Dataflow.
+
+41
+00:02:23,975 --> 00:02:29,840
+Cependant, vos transformations elles-mêmes
+sont mises en œuvre dans TensorFlow.
+
+42
+00:02:29,840 --> 00:02:32,095
+Pendant les prédictions,
+
+43
+00:02:32,095 --> 00:02:35,890
+l'extraction de caractéristiques fait donc
+partie du graphique TensorFlow.
+
+44
+00:02:35,890 --> 00:02:39,580
+C'est très avantageux, car Dataflow est
+
+45
+00:02:39,580 --> 00:02:43,285
+très puissant pour calculer
+les regroupements sur toutes les données,
+
+46
+00:02:43,285 --> 00:02:46,360
+alors que TensorFlow est intéressant
+
+47
+00:02:46,360 --> 00:02:50,510
+pour manipuler les champs d'entrée
+à la volée.

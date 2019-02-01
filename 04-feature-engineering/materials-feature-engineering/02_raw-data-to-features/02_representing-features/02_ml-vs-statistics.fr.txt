@@ -1,0 +1,39 @@
+Dans le cas des statistiques,
+s'il y a des valeurs manquantes, vous attribueriez normalement une valeur,
+comme la moyenne de la colonne. C'est là que le ML et les statistiques
+divergent d'un point de vue philosophique. Avec le ML, vous créez un modèle séparé pour quand vous avez les données
+et quand vous ne les avez pas. Nous pouvons nous le permettre avec le ML,
+que nous ayons les données ou non, car nous disposons d'assez de données pour créer quelque chose
+d'aussi précis que possible. En revanche, les statistiques consistent
+à garder les données que vous avez et à en tirer
+les meilleurs résultats possibles. Cette différence de philosophie
+affecte le traitement des anomalies. Avec le ML, vous cherchez
+à obtenir assez d'anomalies pour effectuer l'entraînement. Vous vous souvenez des cinq exemples ? Avec les statistiques, vous dites : "J'ai toutes les données
+que je peux recueillir." Vous éliminez donc les anomalies. C'est une différence philosophique
+du fait de leurs scénarios d'utilisation. Les statistiques sont souvent appliquées
+à des régimes de données limités alors que le ML utilise beaucoup de données. Avec le ML, vous ajoutez donc une colonne pour indiquer si des données sont manquantes. Si vous n'avez pas assez
+de données, vous les attribuez ou vous les remplacez par une moyenne. Dans cet exemple,
+nous prédisons la valeur de maisons. L'ensemble de données inclut la latitude.
+Les deux pics que vous voyez ici, pour SFO et LAS, correspondent à San Francisco et Los Angeles. Représenter la latitude par un nombre
+à virgule flottante n'est pas logique, car il n'y a pas de relation linéaire
+entre la latitude et la valeur des maisons. Par exemple, les maisons à la latitude 35
+ne sont pas 34 ou 35 fois plus chères que les maisons à la latitude 34. Cependant, les latitudes sont probablement
+un bon indicateur du prix des maisons. Alors que faire avec cette magnitude ? Et si nous faisions ceci ? Au lieu d'avoir
+un nombre à virgule flottante, utilisons
+11 caractéristiques booléennes distinctes. LatitudeBin1, LatitudeBin2… LatitudeBin11,
+avec des valeurs booléennes (oui/non). Nous utilisons ici
+des frontières fixes entre les bins. Une autre solution couramment
+employée par les data scientists est d'utiliser
+des frontières basées sur des quantiles pour avoir
+un nombre constant de valeurs par bin. Vous verrez ceci souvent
+dans d'autres problèmes de régression. Nombre de cycles d'entraînement serviront
+à corriger les valeurs inhabituelles. Avec le ML,
+vous fusionnez la longue traîne, tandis qu'avec les statistiques,
+vous la supprimez de votre ensemble. Si une maison compte 50 pièces, nous indiquons qu'elle en a quatre,
+la valeur la plus élevée. Le prix d'une maison est de l'ordre
+de plusieurs centaines de milliers, alors que le nombre de pièces est petit. Les optimiseurs ont généralement
+du mal à gérer ce type de problème. Le prix finit par dominer votre gradient. Les architectures de ML modernes
+prennent maintenant en compte les magnitudes variables
+grâce à la normalisation par lots. Vous pouvez rencontrer des problèmes si un lot d'exemples comporte
+des valeurs inhabituelles, mais ce n'est plus
+aussi important que dans le passé.

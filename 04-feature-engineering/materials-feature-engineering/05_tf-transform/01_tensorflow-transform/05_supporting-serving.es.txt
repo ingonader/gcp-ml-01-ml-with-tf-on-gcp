@@ -1,0 +1,38 @@
+Usamos una función de transformación para transformar
+un conjunto de datos de evaluación y escribimos
+los datos de evaluación transformados. ¿Para qué tipo de datos usamos
+AnalyzeAndTransformDataset? Correcto, los datos de entrenamiento. Usamos TransformDataset
+para los datos de evaluación. A pesar de que creamos las funciones
+de preprocesamiento con Beam el método de preprocesamiento
+no puede tener código Python arbitrario. Debe tener solo funciones de TensorFlow. La razón por la que estas funciones
+tenían que estar en TensorFlow es que son parte
+del gráfico de predicción. ¿Por qué son parte de este gráfico? Para que el usuario final
+le suministre datos sin procesar al modelo para que este haga
+el preprocesamiento necesario. Pero, ¿cómo sabrá el modelo
+a qué funciones debe llamar? Para que el modelo sepa
+a qué funciones debe llamar debemos guardar
+la función de transformación. Eso es lo que hago aquí. Guardo la función de transformación en un directorio llamado "metadata" junto con el modelo entrenado. Luego, le pedimos a la función de entrada
+que lea los metadatos. ¿Cuál función de entrada? Las tres. Primero, veamos las funciones de entrada
+de entrenamiento y evaluación. Leen las funciones preprocesadas. Note que especifiqué que el esquema corresponde
+a los metadatos transformados. Cambie las funciones de entrada
+de entrenamiento y evaluación para que lean las funciones preprocesadas. TensorFlow Transform tiene
+una función de ayuda llamada "build_training_input_fn". La uso tanto para el entrenamiento
+como para la evaluación. Para eso, cambio 
+la variable "input_paths". para que conduzca
+a train_data_path o a eval_data_path según el modo. La función entrante de entrega
+acepta los datos sin procesar. Aquí, paso los metadatos
+de los datos sin procesar no los metadatos transformados. Cuando los datos sin procesar
+por si solos no son suficiente también podemos tener
+funciones arbitrarias de TensorFlow en el código de preprocesamiento. Estas operaciones
+se almacenan en saved_model.pb. Aquí también contamos con una función
+de transformación de TensorFlow build_parsing_transforming_serving_input_fn. Analice el JSON
+según el esquema de datos sin procesar. Transforme estos datos
+según las operaciones de TensorFlow en saved_model.pb
+y envíelo junto con el modelo. El código del cliente solo debe enviar
+las variables de entrada sin procesar. Eso no cambia. La función entrante de entrega recibe variables de entrada
+y permanece sin cambios. Acepta datos sin procesar
+y luego los envía al modelo. Entonces, ¿por qué funciona el modelo? El regresor de DNN o el modelo que usemos
+no puede trabajar con una string como "thu". Funciona gracias a que el código que escribió
+para el preprocesamiento ahora es parte del gráfico del modelo mismo. Esto ocurre
+porque el modelo lee los metadatos y agrega el código de preprocesamiento. Así es como funciona TensorFlow Transform. Ahora, usémoslo para un problema
+de predicción de tarifas de taxi.

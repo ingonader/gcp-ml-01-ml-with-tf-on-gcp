@@ -1,0 +1,345 @@
+1
+00:00:00,000 --> 00:00:03,690
+Et si je discrétisais l'axe x1 en traçant
+
+2
+00:00:03,690 --> 00:00:07,845
+non pas une ligne blanche,
+mais de nombreuses lignes noires ?
+
+3
+00:00:07,845 --> 00:00:13,245
+Et si nous faisions de même pour l'axe x2
+en traçant de multiples lignes noires ?
+
+4
+00:00:13,245 --> 00:00:18,810
+Nous avons maintenant discrétisé
+l'axe x1 et l'axe x2.
+
+5
+00:00:18,810 --> 00:00:21,180
+Lorsque nous avons tracé
+deux lignes blanches,
+
+6
+00:00:21,180 --> 00:00:23,265
+nous avons obtenu quatre quadrants.
+
+7
+00:00:23,265 --> 00:00:24,885
+Et maintenant ?
+
+8
+00:00:24,885 --> 00:00:28,845
+Si j'ai m lignes verticales
+et n lignes horizontales,
+
+9
+00:00:28,845 --> 00:00:34,185
+Je vais obtenir (m+1)×(n+1) cellules,
+n'est-ce pas ?
+
+10
+00:00:34,185 --> 00:00:38,175
+Voyons ce qui se passe
+
+11
+00:00:38,175 --> 00:00:42,165
+si nous discrétisons
+x1 et x2, puis multiplions.
+
+12
+00:00:42,165 --> 00:00:48,400
+Souvenez-vous de ce schéma dans lequel
+nous avons divisé l'espace en quadrants.
+
+13
+00:00:48,400 --> 00:00:53,895
+Nous pouvons faire une prédiction
+différente pour chaque quadrant.
+
+14
+00:00:53,895 --> 00:00:56,400
+Prenons cette case verte.
+
+15
+00:00:56,400 --> 00:00:59,430
+Quelle sera la prédiction correspondante ?
+
+16
+00:00:59,430 --> 00:01:01,510
+Orange, n'est-ce pas ?
+
+17
+00:01:01,510 --> 00:01:04,280
+Et maintenant ?
+
+18
+00:01:04,280 --> 00:01:07,425
+Bleu, mais il y a un peu d'orange aussi.
+
+19
+00:01:07,425 --> 00:01:10,500
+Comptons le nombre de points bleus
+et de points orange.
+
+20
+00:01:10,500 --> 00:01:14,685
+Disons que nous avons 85 % de bleu.
+
+21
+00:01:14,685 --> 00:01:18,795
+Vous voyez maintenant comment
+les probabilités vont entrer en jeu.
+
+22
+00:01:18,795 --> 00:01:22,470
+Et maintenant ?
+
+23
+00:01:22,470 --> 00:01:26,925
+Quoi qu'il en soit… Voyons comment
+un modèle linéaire peut fonctionner.
+
+24
+00:01:26,925 --> 00:01:30,869
+Si vous encodez en mode one-hot
+le premier ensemble de valeurs,
+
+25
+00:01:30,869 --> 00:01:34,584
+puis le deuxième,
+
+26
+00:01:34,584 --> 00:01:37,200
+et que vous effectuez
+un croisement de caractéristiques,
+
+27
+00:01:37,200 --> 00:01:46,690
+vous obtenez un nœud qui s'active
+pour les points correspondant à ce bucket.
+
+28
+00:01:46,690 --> 00:01:55,335
+x3 ne sera donc un que si x1=1 et x2=1.
+
+29
+00:01:55,335 --> 00:01:58,750
+Pour chaque point de l'espace d'entrée,
+
+30
+00:01:58,750 --> 00:02:02,180
+un seul bucket est activé.
+
+31
+00:02:02,180 --> 00:02:05,800
+Si vous transmettez maintenant
+ces valeurs croisées
+
+32
+00:02:05,800 --> 00:02:08,940
+à la régression linéaire,
+
+33
+00:02:08,940 --> 00:02:12,315
+à quoi doit correspondre
+la pondération w3 ?
+
+34
+00:02:12,315 --> 00:02:16,785
+Au rapport entre les points bleus
+et les points orange
+
+35
+00:02:16,785 --> 00:02:19,805
+dans la cellule correspondant à x1 et x2.
+
+36
+00:02:19,805 --> 00:02:23,970
+C'est pourquoi le croisement
+de caractéristiques est si puissant.
+
+37
+00:02:23,970 --> 00:02:27,520
+En bref, vous discrétisez
+l'espace d'entrée
+
+38
+00:02:27,520 --> 00:02:30,830
+et mémorisez l'ensemble
+de données d'entraînement.
+
+39
+00:02:30,830 --> 00:02:33,560
+Mais voyez-vous
+ce qui pourrait poser problème ?
+
+40
+00:02:33,560 --> 00:02:37,245
+Que ce passe-t-il
+si vous n'avez pas assez de données ?
+
+41
+00:02:37,245 --> 00:02:39,300
+Que va apprendre votre modèle ?
+
+42
+00:02:39,300 --> 00:02:44,460
+Il va apprendre que la prédiction
+doit être bleue, n'est-ce pas ?
+
+43
+00:02:44,460 --> 00:02:47,655
+Il est possible de contourner ce problème.
+
+44
+00:02:47,655 --> 00:02:51,330
+Vous n'êtes pas obligé
+de discrétiser l'espace de manière égale.
+
+45
+00:02:51,330 --> 00:02:54,720
+Vous pouvez utiliser
+des cases de taille différente,
+
+46
+00:02:54,720 --> 00:02:58,800
+et choisir
+des tailles de cases liées à l'entropie
+
+47
+00:02:58,800 --> 00:03:01,110
+ou aux informations qu'elles contiennent.
+
+48
+00:03:01,110 --> 00:03:04,860
+Vous pouvez aussi regrouper des cases.
+
+49
+00:03:04,860 --> 00:03:06,770
+Il y a donc des solutions à ce problème.
+
+50
+00:03:06,770 --> 00:03:09,315
+Vous devez tout de même comprendre
+
+51
+00:03:09,315 --> 00:03:12,765
+que les croisements de caractéristiques
+reposent sur la mémorisation.
+
+52
+00:03:12,765 --> 00:03:15,660
+La mémorisation est le contraire
+
+53
+00:03:15,660 --> 00:03:19,575
+de la généralisation
+que le ML cherche à atteindre.
+
+54
+00:03:19,575 --> 00:03:22,440
+Alors, faut-il y avoir recours ?
+
+55
+00:03:22,440 --> 00:03:25,320
+Dans un système de machine learning
+en conditions réelles,
+
+56
+00:03:25,320 --> 00:03:26,985
+elles sont toutes deux utiles.
+
+57
+00:03:26,985 --> 00:03:29,550
+La mémorisation fonctionne lorsque
+
+58
+00:03:29,550 --> 00:03:35,090
+vous avez tellement de données pour
+chaque cellule de votre espace d'entrée
+
+59
+00:03:35,090 --> 00:03:38,240
+que la distribution des données est
+statistiquement significative.
+
+60
+00:03:38,240 --> 00:03:41,460
+Dans ce cas, vous pouvez mémoriser.
+
+61
+00:03:41,460 --> 00:03:47,130
+Vous apprenez la moyenne
+pour chaque cellule.
+
+62
+00:03:47,130 --> 00:03:52,090
+Le deep learning implique aussi
+beaucoup de données pour cet espace.
+
+63
+00:03:52,090 --> 00:03:54,855
+Que vous vouliez utiliser
+le croisement de caractéristiques
+
+64
+00:03:54,855 --> 00:03:56,860
+ou de nombreuses couches,
+
+65
+00:03:56,860 --> 00:03:58,755
+il vous faut beaucoup de données.
+
+66
+00:03:58,755 --> 00:04:02,180
+Si vous connaissez
+le machine learning conventionnel,
+
+67
+00:04:02,180 --> 00:04:05,745
+vous n'avez peut-être pas entendu parler
+de croisements de caractéristiques.
+
+68
+00:04:05,745 --> 00:04:09,540
+Le fait qu'ils fonctionnent uniquement
+sur de grands ensembles de données
+
+69
+00:04:09,540 --> 00:04:14,520
+et les mémorisent
+peut l'expliquer en partie.
+
+70
+00:04:14,520 --> 00:04:21,000
+Ils sont cependant extrêmement utiles
+sur des ensembles de données réels.
+
+71
+00:04:21,000 --> 00:04:22,950
+Plus vos données sont importantes,
+
+72
+00:04:22,950 --> 00:04:25,345
+plus vous pouvez
+réduire la taille des cases
+
+73
+00:04:25,345 --> 00:04:28,355
+et mémoriser précisément.
+
+74
+00:04:28,355 --> 00:04:30,470
+Les croisements
+de caractéristiques sont donc
+
+75
+00:04:30,470 --> 00:04:32,405
+une technique de prétraitement puissante
+
+76
+00:04:32,405 --> 00:04:35,160
+sur les grands ensembles de données.

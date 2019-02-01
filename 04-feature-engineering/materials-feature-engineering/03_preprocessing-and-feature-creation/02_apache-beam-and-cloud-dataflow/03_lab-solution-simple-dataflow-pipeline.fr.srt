@@ -1,0 +1,584 @@
+1
+00:00:00,000 --> 00:00:01,720
+Pour cet atelier, vous aurez besoin
+
+2
+00:00:01,720 --> 00:00:05,060
+de copier le code source de GitHub
+sur votre environnement Cloud Shell.
+
+3
+00:00:05,060 --> 00:00:07,970
+Vous devrez aussi exécuter
+un script permettant de télécharger
+
+4
+00:00:07,970 --> 00:00:11,235
+des bibliothèques qui contiendront
+les dépendances de votre pipeline.
+
+5
+00:00:11,235 --> 00:00:13,585
+Ces étapes prennent quelques minutes.
+
+6
+00:00:13,585 --> 00:00:16,900
+Vous pouvez maintenant voir la vidéo
+passer en avance rapide pendant
+
+7
+00:00:16,900 --> 00:00:22,155
+ces étapes d'installation du code source
+et de téléchargement des bibliothèques.
+
+8
+00:00:22,155 --> 00:00:26,020
+Depuis Cloud Shell, vous pouvez utiliser
+différents éditeurs permettant d'afficher
+
+9
+00:00:26,020 --> 00:00:27,560
+le code source du pipeline.
+
+10
+00:00:27,560 --> 00:00:30,695
+Vous pouvez utiliser
+un éditeur texte comme Nano.
+
+11
+00:00:30,695 --> 00:00:32,450
+Dans cette vidéo,
+
+12
+00:00:32,450 --> 00:00:36,165
+j'utiliserai l'éditeur graphique
+intégré de Cloud Shell.
+
+13
+00:00:36,165 --> 00:00:37,860
+Une fois l'éditeur chargé,
+
+14
+00:00:37,860 --> 00:00:40,060
+vous pouvez ouvrir dans le menu de gauche
+
+15
+00:00:40,060 --> 00:00:42,385
+le dossier "training-data-analyst/
+
+16
+00:00:42,385 --> 00:00:46,810
+courses/data_analysis/lab2/python"
+
+17
+00:00:46,810 --> 00:00:50,215
+et accéder au code source
+du pipeline dans le fichier "grep.py".
+
+18
+00:00:50,215 --> 00:00:53,677
+Le code source prend en entrée
+
+19
+00:00:53,677 --> 00:00:57,140
+les fichiers Java
+en surbrillance ici, ligne 26.
+
+20
+00:00:57,140 --> 00:01:02,045
+Vous utiliserez les fichiers Java indiqués
+avec l'instruction à caractère générique.
+
+21
+00:01:02,045 --> 00:01:04,170
+Pour chaque fichier,
+
+22
+00:01:04,170 --> 00:01:08,825
+la transformation recherche des lignes
+de code source Java contenant le mot clé.
+
+23
+00:01:08,825 --> 00:01:11,475
+Le terme de recherche est "import".
+
+24
+00:01:11,475 --> 00:01:17,555
+Vous pouvez voir les détails de mise
+en œuvre du pipeline aux lignes 32 à 34.
+
+25
+00:01:17,555 --> 00:01:20,630
+L'étape "grep" du pipeline utilise
+
+26
+00:01:20,630 --> 00:01:24,335
+la méthode "my_grep" définie ligne 20.
+
+27
+00:01:24,335 --> 00:01:27,980
+Cette méthode recherche "import" et,
+
+28
+00:01:27,980 --> 00:01:31,540
+pour toutes les lignes qui le contiennent,
+
+29
+00:01:31,540 --> 00:01:35,675
+le résultat est écrit
+dans le répertoire "/tmp/output".
+
+30
+00:01:35,675 --> 00:01:38,160
+Pour exécuter le pipeline sur Cloud Shell,
+
+31
+00:01:38,160 --> 00:01:41,210
+vous utilisez simplement
+la commande Python et transmettez le nom
+
+32
+00:01:41,210 --> 00:01:44,020
+du fichier de code source
+avec la mise en œuvre du pipeline.
+
+33
+00:01:44,020 --> 00:01:46,810
+Le pipeline s'est bien terminé.
+Vous pouvez le vérifier
+
+34
+00:01:46,810 --> 00:01:50,395
+en regardant les fichiers
+de sortie créés par le pipeline.
+
+35
+00:01:50,395 --> 00:01:53,660
+Le pipeline a correctement identifié
+toutes les lignes
+
+36
+00:01:53,660 --> 00:01:57,095
+de code source Java
+qui contiennent le mot clé "import".
+
+37
+00:01:57,095 --> 00:01:59,185
+Dans la suite de l'atelier,
+
+38
+00:01:59,185 --> 00:02:01,730
+vous allez préparer
+le code source du pipeline
+
+39
+00:02:01,730 --> 00:02:05,375
+pour l'exécuter
+sur la plate-forme Google Cloud Dataflow.
+
+40
+00:02:05,375 --> 00:02:07,110
+Avant cela,
+
+41
+00:02:07,110 --> 00:02:08,750
+quelques étapes sont nécessaires.
+
+42
+00:02:08,750 --> 00:02:12,210
+Vous devez d'abord
+rechercher les API Dataflow
+
+43
+00:02:12,210 --> 00:02:17,070
+dans GCP et les activer
+avec le bouton "Activer" à l'écran.
+
+44
+00:02:17,070 --> 00:02:19,115
+L'activation prend quelques instants.
+
+45
+00:02:19,115 --> 00:02:23,965
+La vidéo va donc passer en avance
+rapide le temps que les API s'activent.
+
+46
+00:02:23,965 --> 00:02:28,490
+Vous pouvez voir que les API sont activées
+
+47
+00:02:28,490 --> 00:02:32,555
+lorsque l'écran des API Dataflow
+contient le bouton "Désactiver".
+
+48
+00:02:32,555 --> 00:02:35,190
+Vous devez ensuite
+vérifier que vous disposez
+
+49
+00:02:35,190 --> 00:02:38,175
+d'un bucket Cloud Storage
+pour votre pipeline.
+
+50
+00:02:38,175 --> 00:02:39,810
+Vous pouvez créer ce bucket.
+
+51
+00:02:39,810 --> 00:02:41,940
+Il est important de lui affecter
+
+52
+00:02:41,940 --> 00:02:45,735
+un nom unique et
+de le configurer comme bucket régional.
+
+53
+00:02:45,735 --> 00:02:50,750
+J'ai affecté la région
+us-east4 (Virginie du nord).
+
+54
+00:02:50,750 --> 00:02:53,565
+Une fois que le bucket est prêt,
+
+55
+00:02:53,565 --> 00:02:55,850
+copiez les fichiers
+du code source d'entrée
+
+56
+00:02:55,850 --> 00:02:59,760
+de votre pipeline depuis Cloud Shell
+dans le bucket Google Cloud Storage.
+
+57
+00:02:59,760 --> 00:03:02,360
+Pour ce faire, utilisez
+la commande "gscopy".
+
+58
+00:03:02,360 --> 00:03:04,250
+Souvenez-vous que vous copiez
+
+59
+00:03:04,250 --> 00:03:08,120
+ces fichiers de code source Java
+pour votre pipeline,
+
+60
+00:03:08,120 --> 00:03:11,210
+car celui-ci n'a pas accès
+à votre système de fichiers Cloud Shell
+
+61
+00:03:11,210 --> 00:03:14,375
+pendant qu'il s'exécute
+sur Google Cloud Dataflow.
+
+62
+00:03:14,375 --> 00:03:18,535
+Une fois que la commande "gsutil"
+a terminé de copier les fichiers,
+
+63
+00:03:18,535 --> 00:03:22,080
+revenez dans le bucket
+Cloud Storage dans votre navigateur,
+
+64
+00:03:22,080 --> 00:03:27,425
+actualisez la page et vérifiez
+que les fichiers ont bien été copiés.
+
+65
+00:03:27,425 --> 00:03:30,440
+Voici les quatre fichiers Java
+qui seront utilisés
+
+66
+00:03:30,440 --> 00:03:33,925
+en entrée de votre pipeline
+exécuté sur Google Cloud Dataflow.
+
+67
+00:03:33,925 --> 00:03:37,845
+Regardez ensuite le code source
+de mise en œuvre du pipeline.
+
+68
+00:03:37,845 --> 00:03:42,045
+Il a été modifié pour s'exécuter
+sur la plate-forme Google Cloud Dataflow.
+
+69
+00:03:42,045 --> 00:03:45,265
+Il se trouve dans le fichier "grepc.py".
+
+70
+00:03:45,265 --> 00:03:50,195
+Le code contient des constantes
+pour les noms des projets et des buckets.
+
+71
+00:03:50,195 --> 00:03:55,430
+Dans mon cas, j'ai utilisé le même
+ID unique pour le projet et le bucket.
+
+72
+00:03:55,430 --> 00:03:57,800
+Je mets donc la même valeur pour les deux.
+
+73
+00:03:57,800 --> 00:03:59,860
+Le code contient également
+
+74
+00:03:59,860 --> 00:04:03,860
+des paramètres nécessaires pour
+exécuter le pipeline sur Cloud Dataflow.
+
+75
+00:04:03,860 --> 00:04:07,330
+Par exemple,
+vous devez spécifier le nom de la tâche
+
+76
+00:04:07,330 --> 00:04:12,520
+et de l'exécuteur qui font tourner
+votre pipeline sur Dataflow.
+
+77
+00:04:12,520 --> 00:04:15,400
+Les données d'entrée et le résultats
+
+78
+00:04:15,400 --> 00:04:20,769
+sont indiqués sous la forme de chemins
+vers votre bucket Google Cloud Storage.
+
+79
+00:04:20,769 --> 00:04:23,535
+Le reste du code
+du pipeline reste identique.
+
+80
+00:04:23,535 --> 00:04:25,780
+Pour exécuter votre pipeline sur Dataflow,
+
+81
+00:04:25,780 --> 00:04:29,160
+utilisez la commande Python
+et transmettez dans les arguments
+
+82
+00:04:29,160 --> 00:04:32,940
+le nom du fichier contenant le code source
+de mise en œuvre du pipeline.
+
+83
+00:04:32,940 --> 00:04:36,710
+Ici, comme le code source utilise
+l'exécuteur Dataflow,
+
+84
+00:04:36,710 --> 00:04:40,850
+votre code sera empaqueté
+avec les bibliothèques Dataflow
+
+85
+00:04:40,850 --> 00:04:43,630
+et envoyé sous forme de tâche
+pour exécuter le pipeline
+
+86
+00:04:43,630 --> 00:04:46,360
+sur la plate-forme Google Cloud Dataflow.
+
+87
+00:04:46,360 --> 00:04:49,380
+Une fois la commande Python exécutée,
+
+88
+00:04:49,380 --> 00:04:52,470
+revenez sur GCP et ouvrez Dataflow
+
+89
+00:04:52,470 --> 00:04:56,925
+à l'aide du menu en forme de hamburger
+sur la gauche ou de la barre de recherche.
+
+90
+00:04:56,925 --> 00:04:58,980
+Depuis le tableau de bord de Dataflow,
+
+91
+00:04:58,980 --> 00:05:03,045
+vous pouvez surveiller le pipeline
+envoyé parmi les tâches.
+
+92
+00:05:03,045 --> 00:05:06,245
+La tâche s'appelle ici "examplejob2",
+
+93
+00:05:06,245 --> 00:05:09,415
+car c'est le nom que j'ai utilisé
+dans le fichier "grepc.py".
+
+94
+00:05:09,415 --> 00:05:12,970
+Vous remarquez d'abord que
+la tâche n'est pas entièrement démarrée.
+
+95
+00:05:12,970 --> 00:05:15,910
+Elle est en cours d'autoscaling
+
+96
+00:05:15,910 --> 00:05:19,505
+et n'utilise actuellement qu'un seul
+cœur virtuel pour son exécution.
+
+97
+00:05:19,505 --> 00:05:21,800
+Sur la droite, vous pouvez voir
+
+98
+00:05:21,800 --> 00:05:25,145
+les options du pipeline
+et d'autres informations sur la tâche.
+
+99
+00:05:25,145 --> 00:05:28,312
+La section "Journaux"
+indique que le pipeline
+
+100
+00:05:28,312 --> 00:05:30,370
+n'est pas encore en cours d'exécution,
+
+101
+00:05:30,370 --> 00:05:33,085
+car il est en train de démarrer
+l'un des nœuds de calcul.
+
+102
+00:05:33,085 --> 00:05:36,395
+Vous pouvez le vérifier sur le graphique
+de la section "Autoscaling".
+
+103
+00:05:36,395 --> 00:05:41,455
+Vous pouvez voir ici que la tâche prévoit
+d'utiliser un nœud de calcul cible.
+
+104
+00:05:41,455 --> 00:05:45,160
+Actuellement, le nombre de nœuds
+de calcul est passé de zéro à un.
+
+105
+00:05:45,160 --> 00:05:48,885
+Cela signifie qu'exactement
+une instance virtuelle a été provisionnée
+
+106
+00:05:48,885 --> 00:05:50,835
+pour exécuter le pipeline.
+
+107
+00:05:50,835 --> 00:05:54,770
+L'exécution du pipeline va prendre
+quelques minutes.
+
+108
+00:05:54,770 --> 00:05:56,930
+La vidéo va donc passer en avance rapide
+
+109
+00:05:56,930 --> 00:06:00,265
+jusqu'à la fin de l'exécution.
+
+110
+00:06:00,265 --> 00:06:03,930
+Si vous regardez le pipeline de plus près,
+
+111
+00:06:03,930 --> 00:06:05,600
+les coches vertes vous indiquent
+
+112
+00:06:05,600 --> 00:06:08,705
+que chaque étape
+de transformation a bien été effectuée.
+
+113
+00:06:08,705 --> 00:06:11,430
+Sur le graphique en bas à droite,
+
+114
+00:06:11,430 --> 00:06:13,530
+vous pouvez voir
+que tous les nœuds utilisés
+
+115
+00:06:13,530 --> 00:06:15,900
+pour exécuter le pipeline ont été réduits.
+
+116
+00:06:15,900 --> 00:06:19,460
+Vous pouvez vérifier
+le résultat de ce pipeline
+
+117
+00:06:19,460 --> 00:06:24,195
+en copiant les fichiers de sortie
+de Google Cloud Storage vers Cloud Shell.
+
+118
+00:06:24,195 --> 00:06:26,540
+Une fois les fichiers copiés,
+
+119
+00:06:26,540 --> 00:06:30,105
+vous pouvez les consulter
+directement dans Cloud Shell
+
+120
+00:06:30,105 --> 00:06:33,020
+ou ouvrir Cloud Storage
+dans votre navigateur
+
+121
+00:06:33,020 --> 00:06:36,305
+et rechercher les fichiers de votre bucket
+dans le dossier "javahelp".
+
+122
+00:06:36,305 --> 00:06:39,230
+Les fichiers auront le préfixe "output".
+
+123
+00:06:39,230 --> 00:06:41,600
+Ils seront nommés "04",
+
+124
+00:06:41,600 --> 00:06:44,105
+"0104", "0204", etc.
+
+125
+00:06:44,105 --> 00:06:46,430
+Pour consulter le contenu des fichiers,
+
+126
+00:06:46,430 --> 00:06:50,530
+il est important de cocher la case
+"Lien public" sur la droite.
+
+127
+00:06:50,530 --> 00:06:53,880
+Vous pouvez voir ici
+le contenu du premier fichier.

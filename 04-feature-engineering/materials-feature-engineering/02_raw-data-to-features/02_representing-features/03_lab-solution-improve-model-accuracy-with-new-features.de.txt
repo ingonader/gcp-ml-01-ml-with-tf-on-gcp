@@ -1,0 +1,75 @@
+In diesem Lab probieren wir verschiedene Funktionen aus. Wir rufen also wieder "A_features" auf. Ich muss nur kurz alle Zellen löschen, um sicherzustellen, dass alle aktiven
+Befehle von mir ausgeführt wurden. Zuerst führen wir
+einige Importvorgänge durch. Wir importieren TensorFlow, wir importieren Pandas, wir importieren NumPy usw. Wir führen diese Importbefehle aus und laden das Dataset aus den
+Daten für kalifornische Immobilienpreise. Wir versuchen, mit diesem Dataset die
+Häuserpreise in Kalifornien vorherzusagen. Nachdem das Dataset geladen wurde, sollten wir
+einen Blick auf die Daten werfen. Mit der Anweisung "df.head"
+werden die ersten Zeilen angezeigt. Wir sehen Längen- und Breitengrade, das Durchschnittsalter der Immobilien. Es sind also keine Daten zu einzelnen
+Häusern, sondern aggregierte Daten. Die Zahl der Zimmer insgesamt: 5612. Das ist offensichtlich nicht ein Haus, sondern die Zimmer
+einer aggregierten Datenmenge. für eine Postleitzahl oder einen Landkreis. Wir sehen die Gesamtzahl der Zimmer, die Gesamtzahl der Schlafzimmer, die Bevölkerungszahl. Es sind etwa 1.000 Menschen, aufgeteilt auf 472 Haushalte. Das Durchschnittseinkommen
+ist 1,5 in einer unbekannten Einheit. Der mittlere Immobilienwert
+beträgt 66.900 in irgendeiner Einheit. Diese Art von Informationen des Datasets versuchen wir erst einmal herauszufinden. Diese ersten Zeilen geben uns
+einen Eindruck der enthaltenen Werte. Der Befehl
+"df.describe()" ist sehr nützlich. Sie können damit in Pandas Statistiken zu numerischen Spalten anzeigen lassen. Der Befehl liefert keine
+Informationen zu kategorischen Spalten, aber zu allen numerischen Spalten. Alle Spalten hier sind numerisch. Wir sehen zum Beispiel, dass das Dataset 17.000 Längengrade und 17.000 Breitengrade enthält. Das ist die Anzahl der Zeilen im Dataset. Wir können jetzt prüfen,
+ob es tatsächlich immer 17.000 sind. Wenn die Zahl nicht immer 17.000 ist, fehlt mindestens ein Wert für diese Rolle. In diesem Fall zeigt die
+Qualitätsprüfung, dass keine Werte fehlen. Wir haben 17.000 Zeilen für alle Werte. Der durchschnittliche Längengrad ist -119. Der durchschnittliche Breitengrad ist 35. Das sollte für Kalifornien stimmen. Das mittlere Immobilienalter ist 28,6. Die Angabe ist in Jahren,
+also sind es etwa 30 Jahre. Die Gesamtzahl der Zimmer ist 2643. Das kann kein einzelnes Haus sein, also ist die Zahl
+wahrscheinlich ein aggregierter Wert, den wir noch bearbeiten müssen. Die Anzahl
+der Schlafzimmer ist merkwürdig: 539. Bevölkerung: 1.429. Die Anzahl der Haushälte ist 501, das durchschnittliche Einkommen ist 3,9 und der durchschnittliche
+Immobilienwert lautet 207.000. Das ist der Durchschnitt all dieser Werte. Dann haben wir die Standardabweichung, den kleinsten vorhandenen Wert. Die geringste Anzahl von Zimmern ist 2. Die höchste Anzahl von Zimmern ist 37.937. Wir wissen jetzt
+ungefähr, wie diese Daten aussehen. Als Nächstes
+teilen wir die Daten in zwei Teile auf und lassen Sie
+zu Versuchszwecken ungespeichert. Die zufällige Aufteilung ist ausreichend. Ich erstelle eine Maske, die
+ein Array mit der Länge von df erstellt, also 17.000. Die Zufälligkeit sollte unter 0,8 liegen. Das bedeutet,
+dass etwa 80 Prozent der Werte Eins und 20 Prozent der Werte Null sind. Der Training-DF steht für
+alle Werte, für die die Maske Eins ist, und der Evaluation-DF steht
+für alle Werte, für die sie Null ist. Damit erhalten wir
+zwei Dataframes: traindf und evaldf. Ich kann etwas hinzufügen und die Länge von "traindf"
+drucken, was sich auf etwa 13.000 beläuft. Ebenso kann ich
+die Länge von "evaldf" drucken, was ungefähr
+20 Prozent sind, also 3.400. Jetzt haben wir unser Training-Dataset und unser Evaluation-Dataset. Nun können wir unser Modell erstellen. Dafür müssen wir
+zuerst unsere Daten einlesen. Ich erstelle die Funktion "make_input_fn", gebe einen Dataframe an, die Anzahl der Epochen,
+die gelesen werden sollen, und wende die Funktion "pandas_input" an, um den Dataframe zu übernehmen. Vorher werde ich den Dataframe
+noch um weitere Funktionen ergänzen. Doch zuerst gehen wir noch einmal zurück zur Gesamtzahl der Zimmer. Die Zahl ist unrealistisch, denn kein Haus hat 2.643 Zimmer. Es handelt sich also um die Anzahl
+der Zimmer in der gesamten Aggregation, für die eine Postleitzahl. Diese Zahl muss auf einen Wert für ein einziges Haus normalisiert werden. Dazu teilen wir die Gesamtzahl der Zimmer durch die Anzahl der Haushalte. Das Ergebnis ist
+die durchschnittliche Anzahl der Zimmer in einem Haus für diese Postleitzahl. Müssen wir noch andere Werte
+für diese Postleitzahl normalisieren? Die Längen- und Breitengrade sehen gut aus. Die Gesamtzahl
+der Zimmer muss normalisiert werden und die Gesamtzahl der Schlafzimmer. Neben der Anzahl der Zimmer nehmen wir uns die Anzahl der Schlafzimmer vor, genau genommen
+die Gesamtzahl der Schlafzimmer. Das sind unsere zwei Zusatzfunktionen. Wir haben unsere Eingabefunktion erstellt. Unsere Funktionsspalte "housing_median_age" ist eine numerische Spalte. So könnte sie verwendet werden. Wenn wir uns
+das Durchschnittsalter ansehen, ergeben diese Zahlen Sinn. Es scheinen Jahre zu sein, also können wir sie unverändert nutzen. Dann fassen wir die Breitengrade in
+einem Bereich zwischen 32 und 42 zusammen. Warum 32 und 42? Weil die Breitengrade
+im Bereich zwischen 32 und 42 variieren. Wir können Sie deshalb zusammenfassen. Wenn wir Breitengrade verwenden, können wir auch Längengrade nutzen. Dafür kopieren wir diese Zeile. Und wir passen sie für Längengrade an. Wir fügen die Zeile hier ein. Die Grenzwerte für die Längengrade
+liegen jedoch zwischen -124 und -114. Diese Werte müssen also angepasst werden. -124 und -114 und 1 Längengrad sollte realistisch sein. 1 Grad ist ungefähr 100 Kilometer. Das sollte ungefähr stimmen. Als Nächstes kommt die Anzahl der Zimmer. Wir haben schon
+die Anzahl der Schlafzimmer hinzugefügt, jetzt kommen noch die Zimmer hinzu. Anzahl der Zimmer, Anzahl der Schlafzimmer und das durchschnittliche Einkommen. Das sind unsere Funktionsspalten. Jetzt können wir mit "train_and_evaluate"
+trainieren und evaluieren. Dabei werden die Trainings- und
+Evaluierungsangaben usw. übergeben. Wir rufen "train_and_evaluate" auf, um ein trainiertes Modell auszugeben. Beim Ausführen sollte
+eine Evaluierungsausgabe geliefert werden. Wir starten die Ausführung und haben 5.000 Schritte angegeben. Jetzt sind wir bei Schritt 1.650. Wir müssen noch etwas warten. Ab und zu wird ein Wörterbuch mit
+dem durchschnittlichen Verlust gespeichert. Der durchschnittliche
+Verlust ist nicht besonders hilfreich, da er für einen Batch berechnet wird. Dieser Verlust im
+Evaluation-Dataset ist jedoch hilfreich. Der durchschnittliche Verlust wird im Evaluation-Dataset
+berechnet – das ergibt mehr Sinn. Der Verlust selbst
+gilt nur für einen Batch. Das ist für uns nicht wichtig. Wir warten weiter darauf,
+dass die Ausführung beendet wird. 4.000, 5.000 – und fertig. Der durchschnittliche Verlust für das
+gesamte Dataset, das RMSC, beträgt 0,59. Jetzt probieren wir etwas anderes. Wir testen, was passiert,
+wenn ich die Anzahl der Zimmer nicht habe. Wir fügen die Zusatzfunktionen hinzu und verzichten
+beim Erstellen der Eingabespalten auf die Anzahl der Zimmer, die Anzahl der Schlafzimmer, den Breiten- und Längengrad und das Durchschnittseinkommen. Nur das Alter des Hauses bleibt übrig und bildet unsere einzige Funktionsspalte. Welche Auswirkung hat das? Wir scrollen nach unten. Der vorherige Verlustwert war 0,59. Jetzt lösche ich die Zelle und führe die Operation
+nur mit einem Eingabewert aus. Was ist das Ergebnis? Unser Verlust ist 1,87. Alle unsere
+Eingaben waren offensichtlich nützlich, da der Verlust
+ohne diese Funktionen angestiegen ist. Sie haben gesehen,
+welche Funktionen nützlich sind. Sie können manuell vorgehen und die Ausführung nur mit
+dem durchschnittlichen Einkommen testen. Das durchschnittliche
+Einkommen ist ein sehr guter Indikator. Wenn wir diese Funktion
+verwenden und den Vorgang wiederholen, nimmt der Verlust erheblich ab. Die anderen
+Funktionen sind nicht sehr nützlich. Sie sind nützlich, aber nicht so sehr
+wie das durchschnittliche Einkommen, das wiedergibt,
+was sich die Menschen leisten können, was sich wiederum auf den Markt auswirkt. Der durchschnittliche
+Verlust beträgt jetzt 0,69. Wir konnten den Wert also durch eine
+einzige Funktion von 1,38 auf 0,69 senken. Das durchschnittliche
+Einkommen war extrem nützlich. Wie relevant ist es jedoch für die Praxis? In der Praxis kommt es darauf an, welche Daten Sie erfassen. Wenn Sie dieses Dataset haben, aber nicht das durchschnittliche
+Einkommen der Menschen erfassen, ist Ihr Modell relativ nutzlos. Deshalb betonen wir immer, dass es nicht so sehr
+auf das Modell selbst ankommt, sondern auf die verwendeten Daten. Bei diesem
+spezifischen Modell ist es sehr wichtig, das durchschnittliche Einkommen
+der Menschen in dem Stadtteil zu erfassen, um die Immobilienpreise
+für den Stadtteil vorhersagen zu können. Das ist eine wichtige Funktion. Damit sie genutzt werden kann, müssen die Daten über eine entsprechende
+Data Engineering-Pipeline erfasst werden.

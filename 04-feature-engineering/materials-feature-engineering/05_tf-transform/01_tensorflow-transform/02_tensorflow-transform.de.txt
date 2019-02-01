@@ -1,0 +1,92 @@
+Wir haben über drei mögliche Orte
+für Feature Engineering gesprochen. Sie können Feature Engineering
+in TensorFlow durchführen. Sie können dort Merkmalspalten verwenden
+oder ein Merkmalwörterbuch zusammenstellen und beliebigen TensorFlow-Code hinzufügen. Das ist großartig, weil TensorFlow-Code
+auf einer GPU oder TPU effizient ist. Aber warum spreche ich
+von beliebigem TensorFlow-Code? Der Code muss
+als Teil Ihrer Modellfunktion, Ihres TensorFlow-Graphen,
+ausgeführt werden. Sie können also keine Abfrage in der
+Unternehmensdatenbank durchführen und dort einen Wert eintragen. Sie könnten eigenen TensorFlow-Code
+in C++ schreiben und aufrufen. Aber das ignorieren wir erst einmal. Sie können auch nur Aufgaben ausführen, die ausschließlich
+auf diesem Eingabewert basieren. Es ist schwierig,
+einen gleitenden Durchschnitt zu berechnen. Später betrachten wir Sequenzmodelle, in denen scheinbar Zeitreihen, also
+mehrere Eingabewerte, verarbeitet werden, aber die Eingabe dort
+ist eine ganze Sequenz. Die Grenze für die
+TensorFlow-Verarbeitung besteht darin, dass wir nur eine einzige 
+Eingabe vorverarbeiten können. TensorFlow-Modelle, abgesehen
+vom Sequenzmodell, sind meist zustandslos. In den letzten beiden Kapiteln haben wir uns
+mit Vorverarbeitung und Merkmalerstellung in Apache Beam in Cloud Dataflow befasst. In Dataflow können wir beliebigen 
+Python- oder Java-Code ausführen und so mehrere Eingabewerte
+zustandsorientiert verarbeiten. Sie können z. B. den Durchschnitt
+für ein Zeitfenster berechnen, wie die mittlere Anzahl von Fahrrädern
+an einer Kreuzung in der letzten Stunde. Allerdings müssen Sie Ihren Vorhersagecode
+auch innerhalb einer Pipeline ausführen, damit Sie die durchschnittliche Anzahl
+der Fahrräder an einer Kreuzung in der letzten Stunde erhalten. Das eignet sich gut für Beispiele wie
+Durchschnittswerte in einem Zeitfenster, bei denen Sie auf jeden Fall
+eine Pipeline benötigen. Aber was ist, wenn Sie nur
+ein Minimum oder Maximum benötigen, damit Sie die Werte skalieren oder
+das Vokabular erhalten können, um kategorische Werte
+in Zahlen umzuwandeln. Das Ausführen einer
+Dataflow-Pipeline in der Vorhersage, nur um Min- und Max-Werte zu erhalten,
+scheint ein bisschen übertrieben. Hier kommt tf.transform ins Spiel. Das ist ein Hybrid
+aus den ersten beiden Ansätzen. Mit TensorFlow Transform sind Sie
+auf TensorFlow-Methoden beschränkt. Aber dadurch erhalten Sie
+auch die Effizienz von TensorFlow. Sie können Ihr vollständiges
+Trainings-Dataset aggregiert verwenden, weil tf.transform im Training Dataflow nutzt,
+aber in der Vorhersage nur TensorFlow. Sehen wir uns an, wie
+TensorFlow Transform funktioniert. TensorFlow Transform ist ein Hybrid
+aus Apache Beam und TensorFlow. Es liegt zwischen den beiden. Die Dataflow-Vorverarbeitung
+funktioniert nur im Kontext einer Pipeline. Denken Sie an eingehende Streamingdaten wie IdD-Daten – Internet der Dinge –
+oder Flugdaten. Die Dataflow-Pipeline
+kann die Vorhersagen einbeziehen und sie sogar aufrufen
+und in Bigtable speichern. Diese Vorhersagen
+werden dann jedem bereitgestellt, der die Website in den
+nächsten 60 Sekunden besucht. Danach ist eine neue Vorhersage
+in BigTable verfügbar. Mit anderen Worten,
+wenn Sie Dataflow hören, denken Sie an Sicherung und Vorverarbeitung
+für Modelle für maschinelles Lernen. Sie können Dataflow 
+zur Vorverarbeitung verwenden, wenn der Status erhalten bleiben muss,
+wie bei einem Zeitfenster. Denken Sie bei direkter Vorverarbeitung
+für ML-Modelle an TensorFlow. Nutzen Sie TensorFlow, wenn Vorverarbeitung
+nur auf der aktuellen Eingabe basiert. Wenn Sie also alle Aufgaben
+im gepunkteten Feld in den TensorFlow-Graphen einfügen,
+ist es für Clients sehr einfach, eine Webanwendung aufzurufen, die die
+gesamte Vorverarbeitung für sie übernimmt. Aber was ist mit den Aufgaben dazwischen? Sie möchten z. B. Ihre Eingaben basierend auf dem Min-
+oder Max-Wert im Dataset skalieren. Dazu müssen Sie
+Ihre Daten in Dataflow analysieren, um das ganze Dataset zu verarbeiten
+und Min- und Max-Werte zu finden. Dann müssen Sie
+die Transformation in Dataflow ausführen, damit Sie jeden einzelnen
+Eingabewert skalieren können. Darum geht es bei tf.transform. Es ist ein Hybrid
+aus Apache Beam und TensorFlow. Zum Verständnis: Im Allgemeinen
+besteht Vorverarbeitung aus zwei Phasen. Stellen Sie sich zum Beispiel vor,
+Sie möchten Ihre Eingaberohdaten skalieren, damit GradientDescent besser funktioniert. Dazu müssen Sie zuerst das Minimum
+und das Maximum des numerischen Merkmals für das gesamte Trainings-Dataset finden. Dann skalieren Sie jeden Eingabewert anhand der Min- und Max-Werte, die
+aus dem Trainings-Dataset berechnet wurden. Oder Sie möchten das Vokabular für Schlüssel
+einer kategorischen Variable ermitteln. Sie haben vielleicht den Fahrzeughersteller
+als kategorisches Merkmal. Sie analysieren
+das gesamte Trainings-Dataset, um alle möglichen Werte
+eines bestimmten Merkmals zu finden. Im Wesentlichen
+erhalten Sie eine Liste aller Hersteller. Wenn Sie dann 20 verschiedene Hersteller
+in Ihrem Trainings-Dataset gefunden haben, One-Hot-codieren Sie die Herstellerspalte
+in einen Vektor mit der Länge 20. Sehen Sie, wie das funktioniert? Im ersten Schritt wird
+das gesamte Dataset einmal durchlaufen. Das ist die Analysephase. Im zweiten Schritt werden
+die Eingabedaten direkt transformiert. Das ist die Transformationsphase. Eignet sich Beam oder TensorFlow besser
+für die Analyse des Trainings-Datasets? Eignet sich Beam oder TensorFlow besser für die direkte Transformation
+der Eingabedaten? Analysieren Sie in Beam,
+transformieren Sie in TensorFlow. Es gibt zwei PTransforms in tf.transform. "AnalyzeAndTransformDataset",
+das in Beam ausgeführt wird, um das Trainings-Dataset vorzuverarbeiten, und "TransformDataset",
+das in Beam ausgeführt wird, um das Bewertungs-Dataset zu erstellen. Denken Sie daran, dass die Berechnung
+des Minimums und Maximums usw. nur für das Trainings-Dataset
+durchgeführt wird. Wir können das Bewertungs-Dataset
+dafür nicht verwenden. Dieses wird also mit dem Min- und
+Max-Wert der Trainingsdaten skaliert. Aber was, wenn das Maximum
+in der Bewertung größer ist? Das simuliert eine Situation,
+in der Sie Ihr Modell bereitstellen und dann taucht ein größerer Wert
+für die Vorhersage auf. Das ist dasselbe. Sie können für ein Bewertungs-Dataset
+keine Min- und Max-Werte usw. berechnen. Das lässt sich nicht ändern. Der aufgerufene
+Transformationscode wird jedoch während der Vorhersage in
+TensorFlow ausgeführt. Sie können sich das auch
+als zwei Phasen vorstellen. Die Analysephase. Diese wird beim Erstellen des
+Trainings-Datasets in Beam ausgeführt. Die Transformationsphase. Diese wird während der Vorhersage
+in TensorFlow ausgeführt. Analysieren Sie also in Beam, um Trainings-
+und Bewertungs-Datasets zu erstellen.

@@ -1,0 +1,94 @@
+Recuerdan que dije
+que usar un valor grande en los segmentos hash
+conduce a una representación muy dispersa. Pero ¿y si hacemos algo más? Si en vez de realizar la codificación
+de un solo 1 de la combinación y usarla como está,
+¿la pasamos por una capa densa? Podríamos entrenar el modelo
+para predecir el tráfico como antes. Esta capa densa, representada
+por los nodos amarillos y verdes crea lo que se conoce
+como una "incorporación". Los cuadros grises y azules
+indican ceros y unos para cualquier fila
+en el conjunto de datos de entrada para cualquier ejemplo de entrenamiento solo una de las casillas está destacada y la que se muestra en azul es uno. Las casillas grises
+en ese ejemplo son ceros. Un ejemplo de entrenamiento diferente
+corresponderá a una hora diferente del día por lo que destacará una casilla diferente y esa casilla será uno
+y las otras serán ceros. Sin embargo, las casillas amarillas
+y las verdes son diferentes no tienen codificación de un solo 1 son números con valores reales,
+valores de punto flotante. ¿Por qué? Porque son una suma
+ponderada de los valores de la combinación de atributos. ¿Qué ocurre en los nodos
+amarillos y verdes? Lo que debemos entender es que los pesos que van a la capa de incorporación que van a los nodos amarillos y verdes,
+se aprenden de los datos. Imaginen que tenemos
+muchas observaciones de tráfico. Tal vez cada que un automóvil
+o una bicicleta o un camión pasan por una señal en particular,
+tenemos una observación de tráfico. Entonces, tenemos los datos 
+de todas las señales de una ciudad entera millones de ejemplos de entrenamiento. Un momento. ¿Escuché bien? ¿Que mi conjunto de datos
+consiste en observaciones de tráfico? ¿Un ejemplo de entrenamiento
+por cada vehículo que pasa por una señal? Si recién comienzan con el AA,
+les puedo asegurar que pensaron que nuestro conjunto de datos
+de entrenamiento consistía en datos agregados de tráfico tal vez la cantidad total de vehículos
+en ruta a cada hora de cada día. Pero ese es un conjunto de datos pequeño,
+es un problema para jugar. Si usan eso, solo aprenderá promedios y eso no es interesante y solo sirve para escribir artículos
+de noticias que digan "los modelos predicen que los niveles
+de tráfico aumentarán en un 10% el próximo año". Pero recuerden lo que dijimos que el aprendizaje automático
+es una forma de aprender para realizar predicciones detalladas
+y obtener estadísticas más allá de promedios únicamente. Eso es lo que significa en la práctica. En vez de usar unos cuantos cientos
+de filas de un conjunto de datos agregado tenemos observaciones muy detalladas de autos en cada señal
+y ese es el conjunto de datos de tráfico que usaremos. Nuestras predicciones serán cantidad de autos, de camiones de bicicletas, a cualquier hora en cualquier punto de la ciudad. El aprendizaje automático
+se trata de las predicciones detalladas. Regresemos a nuestra lección. Tenemos observaciones de vehículos. Es posible que el conjunto de datos
+incluya el tipo de vehículo es decir, auto,
+bicicleta, bus, camión, etcétera. La dirección del viaje,
+la ubicación, etcétera. Ese conjunto de datos
+incluye una marca de tiempo de la que extraemos el día y la hora y luego realizamos la combinación
+de atributos para obtener x3 en el diagrama. Como dijimos, x3
+está codificado como un solo 1 en una cantidad de segmentos hash. Ahora, pasamos esto por una capa densa en la que los pesos están entrenados
+para predecir ciertos datos del tráfico tal vez la hora a la que el próximo
+vehículo llegará a la intersección para controlar la duración
+de la señal de tráfico. El punto es que, cuando se entrenan
+estos pesos con este conjunto de datos algo genial ocurre. La combinación de atributos
+del día y la hora tiene 168 valores únicos pero estamos forzando su representación
+con solo dos números de valor real. Entonces, el modelo aprende
+cómo incorporar la combinación de atributos
+en un espacio dimensional inferior. Tal vez la casilla verde captura
+el tráfico de peatones y bicicletas mientras que la amarilla
+captura el de automóviles. Entonces, las 8 a.m. del martes
+y las 9 a.m. del miércoles es posible que correspondan
+a casillas totalmente diferentes en la combinación de atributos. Sin embargo, si los patrones de tráfico en la mayoría de las intersecciones
+en la ciudad son similares a esas dos horas,
+la representación de valor real de estas dos combinaciones de día y hora
+terminarán siendo bastante similares. Tal vez hay muchas personas
+que manejan bicicleta y caminan a esas horas y también muchos autos. Los pesos para las 8 a.m. y las 9 a.m.
+se ajustarán de manera que los números de valor real en verde y amarillo
+serán bastante similares a esa hora. Pero a las 11 a.m. del martes y a las 2 p.m. del miércoles no hay tantos peatones, pero aún hay
+una cantidad moderada de autos. Vemos que los números son cercanos. De la misma forma, las 2 a.m. el martes
+y las 3 a.m. el miércoles podrían terminar con números
+muy similares que reflejen la ausencia de tráfico. La clave es que las combinaciones de día y hora
+similares, en términos de tráfico tienden a ser similares y las combinaciones de día y hora
+que tienen diferentes condiciones de tráfico, tienden a alejarse bastante
+en el espacio de dos dimensiones. Esto es lo que queremos decir
+cuando señalamos que el modelo aprende a incorporar
+la combinación de atributos en un espacio dimensional inferior. ¿Cómo se implementa esto en TensorFlow? Para crear una incorporación usamos el método embedding_column
+en tf.feature_column. Pasamos la columna categórica
+que deseamos incorporar aquí estamos pasando
+la combinación de atributos y, luego, especificamos la cantidad
+de dimensiones de incorporación y eso es todo. Para ser una idea tan poderosa,
+es muy sencilla. ¿Por qué digo que es una idea poderosa? Lo genial de las incorporaciones
+es que la que se aprendió para un problema a menudo se puede aplicar
+a otros modelos de AA similares. Tal vez aprendieron cómo representar combinaciones de día y hora
+según un conjunto datos de tráfico detallado de Londres. Y ahora deben colocar señales de tráfico en Fráncfort, pero no recolectaron
+esos datos para esta ciudad. Un atajo rápido sería usar el aprendizaje
+de la incorporación de Londres en Fráncfort. Después de todo,
+solo desean presentar combinaciones de día y hora de manera adecuada y la incorporación entrenada
+con datos para Londres será mejor que discretizar los datos
+mediante heurística como temprano en la mañana o la hora pico. ¿Cómo lo hacemos? Simplemente, la cargamos
+desde el modelo guardado para Londres y le decimos al modelo
+que no entrene esta capa. También podrían cargar
+la incorporación de Londres y usarla como punto de partida
+para Fráncfort. Si quieren hacer eso deberán configurar trainable=true
+en la capa. Las incorporaciones
+son un concepto muy poderoso y transferir su aprendizaje
+las hace aún más poderosas. Son especialmente útiles
+cuando se tienen columnas muy dispersas. En las combinaciones de día y hora
+para las que teníamos 168 combinaciones únicas no es tan importante pero veremos mucho las incorporaciones
+cuando veamos modelos de lenguaje. En ellos, podrían tener
+100,000 palabras únicas y desean incorporarlas y representarlas en un espacio dimensional inferior
+de tal vez 30 o 50 dimensiones. Las combinaciones de atributos
+y las incorporaciones son muy útiles en los modelos de AA del mundo real. Entonces, si lo necesitan,
+vuelvan a revisar estas dos lecciones antes de continuar.

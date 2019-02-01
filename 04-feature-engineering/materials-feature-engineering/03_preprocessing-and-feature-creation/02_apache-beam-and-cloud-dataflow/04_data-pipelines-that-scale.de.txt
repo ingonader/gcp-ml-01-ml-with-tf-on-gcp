@@ -1,0 +1,78 @@
+In diesem Teil
+des Moduls lernen Sie, was nötig ist, um eine Pipeline zu implementieren, die mit einem wachsenden Dataset skaliert. Sehen wir uns das mal an. Manche von Ihnen sind
+vielleicht bereits mit MapReduce vertraut. Das ist ein verteiltes, fehlertolerantes
+Datenverarbeitungs-Framework, das Google in einer einflussreichen
+Forschungsarbeit von 2004 beschrieben hat. Es ist noch heute weit verbreitet und wird zum Beispiel
+vom Projekt Apache ParDo verwendet. Sie sollten
+die Grundbegriffe von MapReduce kennen, weil Dataflow und Apache Beam auf erfolgreichen Ideen
+dieses Frameworks aufbauen und auch Neuerungen enthalten, die Googles Forscher
+und Techniker nach 2004 entwickelt haben. Dieses Diagramm
+stellt Ihnen MapReduce kurz vor. Zur Verarbeitung in MapReduce
+werden Daten erst einmal fragmentiert oder anders gesagt, aufgeteilt. Die einzelnen Datenfragmente
+werden über Speichergeräte auf mehreren Knoten
+in einem Compute-Cluster verteilt. In dem Diagramm
+ist dies als Daten dargestellt, die auf die Knoten 1 bis 3
+im Compute-Cluster verteilt werden. Um einen Datenverarbeitungsjob
+in diesem Framework auszuführen, schreiben Sie Code für
+MapReduce-Funktionen. Sehen wir uns zuerst die Zuordnungen an. Ein Map-Vorgang
+sollte eine zustandslose Funktion sein, sodass er parallel
+auf den Cluster-Knoten ausführbar ist. Jeder Map-Vorgang liest die Daten
+aus dem Speicher des Knotens, auf dem er läuft, verarbeitet die Daten
+und generiert eine Ausgabe. Die Ausgaben der Map-Vorgänge
+auf den Cluster-Knoten werden gemischt, dann folgt die nächste Verarbeitungsphase,
+der Map- oder Reduzierungsvorgang. Stellen Sie sich einen Reduce-Vorgang
+als Aggregationsvorgang für die Daten vor. Diese Aggregationen können darin bestehen, die Datenelemente zu zählen
+oder Summen zu berechnen. Nach Abschluss der Reduce-Vorgänge wird deren Ergebnis zur Ausgabe
+des MapReduce-Schritts in der Pipeline. Wenn Sie erreichen möchten, dass Dataflow eine Transformation
+in der Datenverarbeitungspipeline skaliert und automatisch auf viele Knoten
+eines Clusters verteilt ausführt, sollten Sie dafür
+die Apache Beam-Klasse ParDo nutzen. ParDo ist die Abkürzung
+für "parallel do", also "parallel tun". Mit ParDo erstellte
+Transformationsschritte ähneln Map-Vorgängen in MapReduce. ParDo funktioniert nur
+mit zustandslosen Transformationen, da es sie parallel ausführt. Dies ist eine kleine Einschränkung,
+aber dennoch für viele Aufgaben nützlich. Sagen wir, Sie erstellen
+eine Datenverarbeitungspipeline, um Log-Dateien
+eines Webservers zu analysieren, und müssen Log-Einträge herausfiltern, die die IP-Adressen
+der Besucher Ihrer Website enthalten. Das ist mit einer
+zustandslosen Transformation möglich. Auch IP-Adressen lassen sich zustandslos aus den Strings
+der Log-Einträge extrahieren. Alle zustandslosen Verarbeitungsvorgänge
+wie Umwandlungen von Strings in Ganzzahlen oder Berechnungen, die nur
+mit einem Teil der Eingabe arbeiten, sind gute Kandidaten für ParDo. Wenn Sie Python zum Implementieren
+die Datenverarbeitungspipeline verwenden, erleichtern Ihnen
+Hilfsmethoden den Einstieg in ParDo. Die Methode beam.Map, die Sie hier sehen,
+ist nur für 1:1-Beziehungen ausgelegt. Wenn Sie zum Beispiel
+für jedes Wort in einem Dokument ein Paar aus dem Wort selbst
+und seiner Länge zurückgeben möchten, besteht eine 1:1-Beziehung, weil jedem Wort
+nur eine Buchstabenanzahl zugeordnet wird. Wenn Sie in Ihrer Pipeline
+"beam.Map" für die Transformation nutzen, führt Dataflow
+die Transformation automatisch aus, zum Beispiel die Berechnung von Wortlängen auf mehreren Knoten
+eines Dataflow-Clusters. Anders als Map unterstützt "beam.FlatMap"
+auch Transformationen, die jede beliebige Zahl
+von Ausgabewerten pro Eingabe generieren. Auch Null-Ausgaben sind möglich. Angenommen, Sie verarbeiten
+immer noch die Wörter in einem Dokument und möchten zu jedem Wort
+eine Liste der enthaltenen Vokale ausgeben. Jedes Wort kann natürlich null,
+einen, zwei oder mehr Vokale enthalten. Die Transformationen in "beam.FlatMap"
+kann Dataflow auch parallel ausführen. Wenn Sie
+Ihre Pipeline mit Java implementieren programmieren Sie einfach
+die statische Methode "ParDo.of" in Ihre Transformation
+und übergeben das Ergebnis an den nächsten
+"apply"-Aufruf in Ihrer Pipeline. Es ist auch einfach, einer Pipeline
+einen "GroupByKey"-Vorgang hinzuzufügen. Nehmen wir an,
+Ihre Pipeline verarbeitet Postanschriften, um alle Postleitzahlen
+für jede Stadt zu finden. Ihre Pipeline hat am Ende
+eine PCollection von Schlüssel/Wert-Paaren, also Paaren bestehend aus
+einem Schlüssel und einer Postleitzahl. Dann gibt "beam.GroupByKey"
+eine PCollection mit Paaren aus, die jeweils aus der Stadt als Schlüssel
+und deren Postleitzahlen als Wert bestehen. Während "GroupByKey" der zufälligen
+Neuverteilung bei MapReduce ähnelt, verschmelzen im "Combine.PerKey"-Vorgang
+die Schritte Neuverteilung und Reduktion, sodass Sie einfacher Aggregationen
+wie SUM oder COUNT implementieren können. Die Methode "Combine.globally" ermöglicht
+Berechnungen über das ganze Dataset hinweg. Wenn Sie zum Beispiel
+Finanztransaktionsdaten verarbeiten und jede Zeile in Ihrer PCollection
+Verkaufssummen von Transaktionen enthält, können Sie mit "Combine.globally"
+und der Summenoperation als Argument den Gesamtumsatz
+aus allen Transaktionen berechnen. "Combine" unterstützt auch
+detailliertere Aggregationen. Wenn ein Datensatz
+den Namen des Verkäufers neben der Verkaufssumme enthält, können Sie die Operation SUM
+an "Combine.PerKey" übergeben, um den Gesamtumsatz
+jedes Verkäufers zu berechnen.

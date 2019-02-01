@@ -1,0 +1,374 @@
+1
+00:00:00,000 --> 00:00:04,350
+Agora que você entende o que são
+atributos e por que os utilizamos,
+
+2
+00:00:04,350 --> 00:00:09,070
+vamos mostrar como implementar
+cruzamentos de atributos.
+
+3
+00:00:09,070 --> 00:00:12,415
+Para criar um cruzamento de atributos
+usando o TensorFlow,
+
+4
+00:00:12,415 --> 00:00:17,460
+use o método coluna cruzada
+no modelo tf.feature_column.
+
+5
+00:00:17,460 --> 00:00:19,410
+Este é o mesmo modelo que você tem
+
+6
+00:00:19,410 --> 00:00:23,580
+em coluna numérica e coluna categórica
+com lista de vocabulário.
+
+7
+00:00:23,580 --> 00:00:25,560
+Este é o mesmo modelo
+de onde elas vêm.
+
+8
+00:00:25,560 --> 00:00:31,050
+Então, o primeiro argumento no meu
+exemplo é a lista de colunas categóricas.
+
+9
+00:00:31,050 --> 00:00:34,050
+Você está passando em uma lista
+
+10
+00:00:34,050 --> 00:00:37,500
+para poder cruzar duas colunas ou
+três colunas ou qualquer número.
+
+11
+00:00:37,500 --> 00:00:42,030
+Mas lembre-se de que essas colunas
+precisam ser categóricas.
+
+12
+00:00:42,030 --> 00:00:44,105
+Se você tiver dados numéricos,
+
+13
+00:00:44,105 --> 00:00:47,950
+intervale-os primeiro e, em seguida,
+faça um cruzamento de atributos.
+
+14
+00:00:47,950 --> 00:00:50,330
+Quando você intervala
+uma coluna numérica,
+
+15
+00:00:50,330 --> 00:00:53,850
+você basicamente desenha as
+linhas pretas de que falamos.
+
+16
+00:00:53,850 --> 00:00:56,685
+Você está discretizando a coluna.
+
+17
+00:00:56,685 --> 00:00:58,910
+Então, qual é o segundo argumento?
+
+18
+00:00:58,910 --> 00:01:04,245
+24 vezes 7 é o número total de
+intervalos de hash.
+
+19
+00:01:04,245 --> 00:01:08,670
+O que o TensorFlow faz é
+um cruzamento de atributos,
+
+20
+00:01:08,670 --> 00:01:11,460
+então calcula um hash do
+cruzamento de atributos
+
+21
+00:01:11,460 --> 00:01:14,897
+e coloca o hash em um dos intervalos.
+
+22
+00:01:14,897 --> 00:01:18,566
+Mesmo que eu tenha
+especificado 24 vezes 7 aqui,
+
+23
+00:01:18,566 --> 00:01:21,870
+não há garantia de que
+não haverá colisão.
+
+24
+00:01:22,425 --> 00:01:27,440
+É bem possível que o hash das
+15h na quarta-feira,
+
+25
+00:01:27,440 --> 00:01:34,390
+o modelo 168, seja o mesmo que de
+16h de domingo, modelo 168.
+
+26
+00:01:34,390 --> 00:01:40,380
+Nesse caso, essas duas combinações
+dia-hora serão consideradas juntas.
+
+27
+00:01:40,380 --> 00:01:43,195
+Vamos nos aprofundar um pouco nisso.
+
+28
+00:01:43,195 --> 00:01:46,380
+O TensorFlow pula essas etapas
+
+29
+00:01:46,380 --> 00:01:49,680
+e vai direto para a representação
+do cruzamento de atributo do hash,
+
+30
+00:01:49,680 --> 00:01:52,900
+mas é bom pensar sobre
+o que está acontecendo.
+
+31
+00:01:52,900 --> 00:01:58,395
+Para simplificar, digamos que
+em vez de 24 vezes 7
+
+32
+00:01:58,395 --> 00:02:02,580
+eu houvesse especificado
+seis. O que acontece?
+
+33
+00:02:02,580 --> 00:02:07,610
+Fazemos o cruzamento de atributos,
+passando em duas colunas categóricas.
+
+34
+00:02:07,610 --> 00:02:10,975
+O dia da semana tem sete
+valores exclusivos.
+
+35
+00:02:10,975 --> 00:02:14,440
+Hora do dia tem 24 valores exclusivos.
+
+36
+00:02:14,440 --> 00:02:21,495
+Portanto, o cruzamento de atributo tem
+24 vezes 7, ou 168 valores exclusivos.
+
+37
+00:02:21,495 --> 00:02:24,615
+Agora considere 15h da quarta-feira.
+
+38
+00:02:24,615 --> 00:02:26,520
+15h, digamos,
+
+39
+00:02:26,520 --> 00:02:28,260
+é nosso número 15
+
+40
+00:02:28,260 --> 00:02:30,570
+e quarta-feira, digamos,
+
+41
+00:02:30,570 --> 00:02:31,995
+é o dia número três.
+
+42
+00:02:31,995 --> 00:02:35,595
+Isso faz com que um valor do
+cruzamento de atributo seja,
+
+43
+00:02:35,595 --> 00:02:40,130
+digamos, 87 de 168.
+
+44
+00:02:40,130 --> 00:02:46,185
+Mas, então, eu computo o hash de 87 e
+faço um modelo de seis.
+
+45
+00:02:46,185 --> 00:02:51,960
+Vamos supor que isso me dê a caixa número
+três para esse cruzamento com hash.
+
+46
+00:02:51,960 --> 00:02:57,855
+Isso é o que a coluna do atributo de hora
+e dia vai conter para as 15h na quarta.
+
+47
+00:02:57,855 --> 00:03:02,645
+Um valor com codificação one-hot
+correspondente ao número três.
+
+48
+00:03:02,645 --> 00:03:05,670
+Novamente, o TensorFlow
+não passa, de fato, por isso.
+
+49
+00:03:05,670 --> 00:03:09,665
+Ele não precisa de codificação one-hot
+antes de fazer o cruzamento de atributos.
+
+50
+00:03:09,665 --> 00:03:13,470
+Se fizesse isso, as coisas não seriam
+muito eficientes em termos de memória.
+
+51
+00:03:13,470 --> 00:03:16,810
+Mas isso ajuda a mostrar o que está
+acontecendo conceitualmente.
+
+52
+00:03:16,810 --> 00:03:23,305
+O número de intervalos de hash controla
+a dispersão e as colisões.
+
+53
+00:03:23,305 --> 00:03:26,440
+Se, como fizemos no slide anterior,
+
+54
+00:03:26,440 --> 00:03:29,995
+definirmos os intervalos de
+hash como muito menores que
+
+55
+00:03:29,995 --> 00:03:33,180
+o número de valores de cruzamentos
+de atributos exclusivos,
+
+56
+00:03:33,180 --> 00:03:35,330
+haverá muitas colisões.
+
+57
+00:03:35,330 --> 00:03:37,020
+Talvez 15h de quarta-feira,
+
+58
+00:03:37,020 --> 00:03:40,230
+19h de quarta-feira,
+2h de quinta-feira etc.,
+
+59
+00:03:40,230 --> 00:03:43,915
+todos caem no mesmo intervalo e
+serão tratados da mesma maneira.
+
+60
+00:03:43,915 --> 00:03:48,055
+Em média, um sexto de todos os
+
+61
+00:03:48,055 --> 00:03:51,115
+valores de cruzamento de atributo
+estará no intervalo.
+
+62
+00:03:51,115 --> 00:03:56,095
+Como temos 168 valores exclusivos,
+em média,
+
+63
+00:03:56,095 --> 00:04:01,765
+cada intervalo conterá 28 combinações
+dia-hora diferentes.
+
+64
+00:04:01,765 --> 00:04:05,510
+Por causa disso, o montante ao qual o
+
+65
+00:04:05,510 --> 00:04:09,140
+cruzamento de atributo pode memorizar
+os dados é limitado.
+
+66
+00:04:10,170 --> 00:04:13,095
+Mas a memória usada também
+será bastante baixa,
+
+67
+00:04:13,095 --> 00:04:14,865
+são apenas seis intervalos.
+
+68
+00:04:14,865 --> 00:04:20,739
+De alguma forma, estamos agregando várias
+combinações dia-hora em um intervalo.
+
+69
+00:04:22,429 --> 00:04:26,970
+Mas e se formos para o outro extremo
+e definirmos o número
+
+70
+00:04:26,970 --> 00:04:32,940
+de intervalos de hash tão alto
+que há pouca chance de colisão?
+
+71
+00:04:32,940 --> 00:04:36,915
+Digamos que definimos o número de
+intervalos de hash como 300.
+
+72
+00:04:36,915 --> 00:04:41,040
+Agora, em média, um intervalo conterá
+
+73
+00:04:41,040 --> 00:04:45,345
+uma combinação dia-hora ou
+zero combinação dia-hora.
+
+74
+00:04:45,345 --> 00:04:47,785
+Pode conter duas,
+
+75
+00:04:47,785 --> 00:04:50,110
+mas as chances são muito baixas.
+
+76
+00:04:50,110 --> 00:04:52,875
+Portanto, usar um valor alto para
+
+77
+00:04:52,875 --> 00:04:58,000
+intervalos de hash gera uma representação
+esparsa do cruzamento de atributos.
+
+78
+00:04:59,400 --> 00:05:05,045
+Na prática, tenho a tendência de escolher
+um número entre meia raiz quadrada n
+
+79
+00:05:05,045 --> 00:05:11,475
+e duas vezes n, dependendo de quanto eu
+quero trocar memorização por dispersão,
+
+80
+00:05:11,455 --> 00:05:13,830
+mas isso é simplesmente
+minha regra geral.

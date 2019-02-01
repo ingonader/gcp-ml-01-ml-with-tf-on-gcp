@@ -1,0 +1,37 @@
+Veamos la fase de análisis. Recuerde que analiza el conjunto
+de datos de entrenamiento. Primero le indica a Beam
+qué datos puede recibir. Para eso, configuramos un esquema. En la primera línea, configuro
+un diccionario llamado "raw_data_schema". Agrego entradas para
+todas las columnas de strings. La string aquí es
+el tipo de datos TensorFlow. Luego, actualizo el esquema
+de datos sin procesar con las columnas
+de tipo "tf.float32". Ahora tengo un esquema
+de datos sin procesar que tiene las columnas
+del conjunto de datos que procesará Beam
+en Dataflow. Este esquema se usa para
+crear una plantilla de metadatos. Ahora, ejecute
+"analyze-and-transform PTransform" en el conjunto de datos
+de entrenamiento para obtener datos de entrenamiento procesados
+y la función de transformación. Use "beam.io.read" para leer
+los datos de entrenamiento. Se parece a las canalizaciones de Beam
+que vio en el módulo anterior. Aquí, estoy leyendo desde BigQuery. Ahora, filtre los datos
+con los que no quiere entrenar. Lo hago con la función "is_valid"
+que explicaré más adelante en este módulo. Luego, tome los datos sin procesar
+que obtuvo con la lectura y el filtro y los metadatos de datos sin procesar
+que obtuvo en la diapositiva anterior y páselos por "analyze-and-transform
+dataset PTransform". Beam ejecutará la transformación
+de forma distribuida y hará todo el análisis que le indicó
+en el método "preprocess". Le mostraré ese método luego. Por ahora, Beam ejecuta el método
+"is_valid" y el método "preprocess" en el conjunto de datos de entrenamiento
+para filtrarlo y procesarlo. Los datos de procesamiento previo
+vuelven en una colección paralela que llamaré "transformed_dataset" pero las transformaciones que realizó en el procesamiento previo están guardadas
+en el segundo valor de retorno "transform_fn".
+Esto es importante. Tome los datos de transformación
+y escríbalos. Aquí, los escribo como "TFRecords", que es
+el formato más eficiente de TensorFlow. Puedo hacerlo con
+"WriteToTFRecord" que viene con TensorFlow Transform. Los archivos
+se fragmentarán automáticamente pero preste atención
+al esquema que se usa. No se usa el esquema de datos 
+sin procesar, sino el de transformación. ¿Por qué? Porque estamos escribiendo
+datos transformados los datos procesados,
+no los datos sin procesar.

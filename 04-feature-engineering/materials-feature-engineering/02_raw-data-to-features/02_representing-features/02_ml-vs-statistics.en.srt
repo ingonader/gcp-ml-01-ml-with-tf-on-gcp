@@ -1,0 +1,227 @@
+1
+00:00:00,000 --> 00:00:04,050
+But if you take any statistics you might see if there was missing values,
+
+2
+00:00:04,050 --> 00:00:07,440
+you would normally impute a value like the average for that column.
+
+3
+00:00:07,440 --> 00:00:12,150
+So, that's where philosophically ML and statistics start to diverge.
+
+4
+00:00:12,150 --> 00:00:15,440
+In ML the idea is that you build the separate model for
+
+5
+00:00:15,440 --> 00:00:18,860
+this situation where you have the data versus when you don't.
+
+6
+00:00:18,860 --> 00:00:21,080
+We can afford to do this and ML where
+
+7
+00:00:21,080 --> 00:00:23,300
+we actually have the data and where we don't have the data,
+
+8
+00:00:23,300 --> 00:00:25,610
+because in ML we have enough data where we want
+
+9
+00:00:25,610 --> 00:00:28,505
+to build something as fine grain as we can.
+
+10
+00:00:28,505 --> 00:00:31,220
+Statistics on the other hand is about keeping the data that you
+
+11
+00:00:31,220 --> 00:00:34,925
+have in getting the best results out of the data that you have.
+
+12
+00:00:34,925 --> 00:00:38,390
+The difference in philosophy affects how you treat outliers.
+
+13
+00:00:38,390 --> 00:00:39,800
+In ML you go out and find
+
+14
+00:00:39,800 --> 00:00:42,250
+enough outliers that becomes something that you can actually train with.
+
+15
+00:00:42,250 --> 00:00:44,450
+Remember that five sample rule that we had?
+
+16
+00:00:44,450 --> 00:00:46,010
+With statistics you say,
+
+17
+00:00:46,010 --> 00:00:48,935
+"I've got all the data I'll ever be able to collect."
+
+18
+00:00:48,935 --> 00:00:50,735
+So, you throw out outliers.
+
+19
+00:00:50,735 --> 00:00:52,455
+It's a philosophical difference because of
+
+20
+00:00:52,455 --> 00:00:55,180
+the scenarios where ML and statistics are used.
+
+21
+00:00:55,180 --> 00:01:00,635
+Statistics is often used in a limited data regime or ML operates with lots of data.
+
+22
+00:01:00,635 --> 00:01:02,870
+So having an extra column to flag whether on you're
+
+23
+00:01:02,870 --> 00:01:05,240
+missing data is what you would normally do in ML.
+
+24
+00:01:05,240 --> 00:01:09,630
+When you don't have enough data and you imputed to replace it by an average.
+
+25
+00:01:09,790 --> 00:01:13,410
+Now, this example here is of predicting a house value.
+
+26
+00:01:13,410 --> 00:01:17,860
+The data set includes latitude and two peaks that you see here,
+
+27
+00:01:17,860 --> 00:01:20,520
+one for SFO and the other for LAS,
+
+28
+00:01:20,520 --> 00:01:22,775
+that's San Francisco and Los Angeles.
+
+29
+00:01:22,775 --> 00:01:27,295
+It doesn't make sense to represent latitude as a floating point feature in our model.
+
+30
+00:01:27,295 --> 00:01:29,390
+It's because there's no linear relationship exists
+
+31
+00:01:29,390 --> 00:01:31,760
+between latitude and the housing values.
+
+32
+00:01:31,760 --> 00:01:35,690
+For example, houses in latitude 35 and not 35,
+
+33
+00:01:35,690 --> 00:01:41,585
+34 times more expensive than houses at latitude 34.
+
+34
+00:01:41,585 --> 00:01:46,615
+And yet individual latitudes are probably a pretty good indicator of housing values.
+
+35
+00:01:46,615 --> 00:01:48,680
+So, what do we do with a magnitude piece?
+
+36
+00:01:48,680 --> 00:01:51,440
+Well, what if we did this,
+
+37
+00:01:51,440 --> 00:01:54,385
+instead of having one floating point feature
+
+38
+00:01:54,385 --> 00:01:58,080
+let's take a look and have 11 distinct boolean features.
+
+39
+00:01:58,080 --> 00:02:00,215
+Yes-no latitudeBin1,
+
+40
+00:02:00,215 --> 00:02:05,435
+latitudeBin2 all the way to latitudeBin11 with yes-no boolean values.
+
+41
+00:02:05,435 --> 00:02:08,425
+And here, we've just use fixed bin boundaries.
+
+42
+00:02:08,425 --> 00:02:11,720
+And other options that you see commonly used between data scientist that have
+
+43
+00:02:11,720 --> 00:02:15,950
+quantile boundaries so that the number of values in each bin is constant.
+
+44
+00:02:15,950 --> 00:02:19,085
+You'll see this a lot in other regression problems.
+
+45
+00:02:19,085 --> 00:02:24,450
+Quite a few training cycles will be spent trying to get the unusual instances correct.
+
+46
+00:02:24,470 --> 00:02:28,110
+So, you're collapsing the long tail on
+
+47
+00:02:28,110 --> 00:02:32,195
+ML versus removing them from their set in normal statistics.
+
+48
+00:02:32,195 --> 00:02:38,735
+If the house is 50 rooms we said it to have four rooms which is the top of our range.
+
+49
+00:02:38,735 --> 00:02:40,730
+The idea is that the price of a home in
+
+50
+00:02:40,730 --> 00:02:46,055
+the hundreds of thousands while things like the number of rooms are small numbers.
+
+51
+00:02:46,055 --> 00:02:48,860
+And optimizers have traditionally a hard time dealing with this.
+
+52
+00:02:48,860 --> 00:02:51,850
+The price ends up dominating your gradient.
+
+53
+00:02:51,850 --> 00:02:55,310
+Now, modern architectures for ML end up taking
+
+54
+00:02:55,310 --> 00:02:59,285
+a variable magnitudes into account because of what's called batch normalization.
+
+55
+00:02:59,285 --> 00:03:01,700
+Although you may run into issues if a batch of
+
+56
+00:03:01,700 --> 00:03:04,790
+examples happens to have all unusual values.
+
+57
+00:03:04,790 --> 00:03:08,220
+So, this is not as important as it used to be.

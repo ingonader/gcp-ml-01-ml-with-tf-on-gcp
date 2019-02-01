@@ -1,0 +1,311 @@
+1
+00:00:00,000 --> 00:00:06,300
+A função de pré-processamento
+transforma os dados de entrada.
+
+2
+00:00:06,300 --> 00:00:11,745
+No Beam, ela é parte do conjunto de dados
+de análise e transformação.
+
+3
+00:00:11,745 --> 00:00:16,010
+No TensorFlow, as
+etapas do pré-processamento
+
+4
+00:00:16,010 --> 00:00:20,165
+são chamadas como parte da
+função de entrada de disponibilização.
+
+5
+00:00:20,165 --> 00:00:23,825
+Ou seja, elas são adicionadas
+ao gráfico do TensorFlow
+
+6
+00:00:23,825 --> 00:00:28,255
+e podem ser executadas
+durante a disponibilização.
+
+7
+00:00:28,255 --> 00:00:32,330
+Como ela será executada como
+parte do gráfico do TensorFlow,
+
+8
+00:00:32,330 --> 00:00:39,450
+a função de pré-processamento é restrita
+a funções que podem ser chamadas nele.
+
+9
+00:00:39,450 --> 00:00:42,860
+Não é possível chamar
+funções comuns do Python,
+
+10
+00:00:42,860 --> 00:00:47,160
+porque o pré-processamento faz parte do
+gráfico do TensorFlow na disponibilização.
+
+11
+00:00:47,160 --> 00:00:49,185
+Veja um exemplo.
+
+12
+00:00:49,185 --> 00:00:55,025
+Aqui, estou pré-processando
+um conjunto de entradas.
+
+13
+00:00:55,025 --> 00:00:58,965
+Qual o tipo dos dados?
+
+14
+00:00:58,965 --> 00:01:04,239
+É um dicionário cujos
+valores são tensores.
+
+15
+00:01:04,239 --> 00:01:07,750
+Lembre-se, esse é o produto
+
+16
+00:01:07,750 --> 00:01:13,780
+da função de entrada de disponibilização
+e representa os dados brutos lidos.
+
+17
+00:01:13,780 --> 00:01:17,230
+As funções de entrada
+geram marcadores
+
+18
+00:01:17,230 --> 00:01:20,620
+de recursos, ou "features".
+
+19
+00:01:20,620 --> 00:01:25,220
+E "features" é um "dict",
+um dicionário.
+
+20
+00:01:25,220 --> 00:01:29,900
+A transformação TF
+converterá os dados recebidos
+
+21
+00:01:29,900 --> 00:01:34,200
+pela transformação P
+em tensores na fase de análise.
+
+22
+00:01:34,200 --> 00:01:37,460
+Nós usamos os tensores
+
+23
+00:01:37,460 --> 00:01:42,165
+para criar novos recursos
+e colocá-los em um dicionário.
+
+24
+00:01:42,165 --> 00:01:46,485
+O primeiro resultado,
+"fare_amount" no meu exemplo,
+
+25
+00:01:46,485 --> 00:01:48,570
+é aprovado sem mudanças.
+
+26
+00:01:48,570 --> 00:01:52,995
+Nós adicionamos o tensor de entrada
+ao resultado, sem alterações.
+
+27
+00:01:52,995 --> 00:01:56,430
+O próximo resultado que
+queremos é um dia da semana.
+
+28
+00:01:56,430 --> 00:01:58,615
+Queremos que seja
+um valor inteiro.
+
+29
+00:01:58,615 --> 00:02:00,950
+No entanto, na entrada
+
+30
+00:02:00,950 --> 00:02:04,370
+a string é "Thu"
+para quinta-feira.
+
+31
+00:02:04,370 --> 00:02:07,950
+Nós precisamos
+pedir para a transformação
+
+32
+00:02:07,950 --> 00:02:11,345
+do TensorFlow converter
+a string em vermelho,
+
+33
+00:02:11,345 --> 00:02:15,600
+como "Thu", em um
+número inteiro, como "3"
+
+34
+00:02:15,600 --> 00:02:17,795
+ou "5", qualquer
+que seja o número.
+
+35
+00:02:17,795 --> 00:02:21,630
+A transformação TF calculará
+
+36
+00:02:21,630 --> 00:02:27,165
+o vocabulário de todos os dias
+possíveis no conjunto de treinamento.
+
+37
+00:02:27,165 --> 00:02:30,720
+Ela fará isso na
+fase de análise e usará
+
+38
+00:02:30,720 --> 00:02:37,020
+essa informação para fazer o
+mapeamento na fase de previsão.
+
+39
+00:02:37,020 --> 00:02:45,815
+Em seguida, queremos reduzir
+"dropflat" para um número entre 0 e 1.
+
+40
+00:02:45,815 --> 00:02:48,095
+Na fase de análise,
+
+41
+00:02:48,095 --> 00:02:52,100
+a transformação TF calculará os
+valores mínimo e máximo da coluna
+
+42
+00:02:52,100 --> 00:02:56,635
+e usará esses valores
+para criar a escala de entrada.
+
+43
+00:02:56,635 --> 00:03:00,665
+Também podemos chamar
+outras funções do TensorFlow.
+
+44
+00:03:00,665 --> 00:03:04,730
+Neste caso, estou usando
+o número de passageiros,
+
+45
+00:03:04,730 --> 00:03:11,870
+que é um inteiro no JSON, e
+calculando para um valor real.
+
+46
+00:03:11,870 --> 00:03:16,660
+Depois de criar e adicionar
+todos os recursos,
+
+47
+00:03:16,660 --> 00:03:18,935
+podemos ver o resultado.
+
+48
+00:03:18,935 --> 00:03:24,445
+A transformação P de análise e
+transformação é executada no treinamento.
+
+49
+00:03:24,445 --> 00:03:28,645
+O que acontece com o
+conjunto de dados de avaliação?
+
+50
+00:03:28,645 --> 00:03:31,749
+Nesse conjunto de dados,
+
+51
+00:03:31,749 --> 00:03:37,605
+realizamos o mesmo canal do Beam
+que usamos no de treinamento.
+
+52
+00:03:37,605 --> 00:03:40,405
+Há uma grande exceção:
+
+53
+00:03:40,405 --> 00:03:44,625
+nós não avaliamos o
+conjunto de dados de avaliação.
+
+54
+00:03:44,625 --> 00:03:46,945
+Se escalonarmos os valores,
+
+55
+00:03:46,945 --> 00:03:49,600
+os valores no conjunto
+de avaliação serão
+
+56
+00:03:49,600 --> 00:03:54,230
+escalonados com base nos valores
+encontrados no conjunto de treinamento.
+
+57
+00:03:54,230 --> 00:03:56,650
+Então, no conjunto
+de dados de avaliação,
+
+58
+00:03:56,650 --> 00:03:59,380
+não chamamos a função de
+análise e transformação,
+
+59
+00:03:59,380 --> 00:04:02,405
+só a de transformação
+do conjunto de dados.
+
+60
+00:04:02,405 --> 00:04:10,160
+Isso chamará tudo que fizemos
+no pré-processamento. Legal, não?
+
+61
+00:04:10,160 --> 00:04:14,280
+Perceba que o conjunto de
+dados de transformação precisa,
+
+62
+00:04:14,280 --> 00:04:19,959
+como entrada, da função de transformação
+computada nos dados de treinamento.
+
+63
+00:04:19,959 --> 00:04:23,090
+Isso que faz
+a mágica acontecer.
+
+64
+00:04:23,090 --> 00:04:26,075
+Quando temos o conjunto
+de dados de transformação,
+
+65
+00:04:26,075 --> 00:04:31,810
+podemos escrever da mesma
+maneira que o de treinamento.

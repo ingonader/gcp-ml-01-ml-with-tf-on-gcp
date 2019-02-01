@@ -1,0 +1,226 @@
+J'ai lancé Datalab et j'ai ouvert le bloc-notes
+Python "feateng.ipynb". Nous allons maintenant l'examiner. Dans ce bloc-notes,
+voyons comment utiliser les colonnes de caractéristiques,
+ajouter des croisements de caractéristiques dans TensorFlow, lire des données depuis BigQuery, créer des ensembles
+de données avec Dataflow et utiliser un modèle large et profond. Nous allons donc revoir
+différentes notions vues précédemment. Nous n'avons pas encore parlé du modèle
+large et profond, mais nous y reviendrons. Voilà donc notre problème. Nous avons pour l'instant créé
+un modèle pour les taxis, mais nous n'y avons pas du tout
+intégré d'insights humains. C'est ce que nous allons faire à présent. En gros, nous allons tirer partir
+de certaines de nos connaissances sur le fonctionnement des taxis et l'organisation de New York pour commencer
+à alimenter le modèle en conseils pour qu'il apprenne plus facilement. Pendant l'exercice, je vous dirai d'où provient
+un insight en particulier. Allons-y, commençons en accédant
+d'abord à la partie "import". Modifiez bien votre projet. J'ai modifié mon projet pour le faire
+correspondre à mon projet Qwiklabs, mon bucket pour le faire
+correspondre à mon bucket Qwiklabs et ma région pour la faire correspondre
+à l'endroit où mon code s'exécutera. Exécutons maintenant la requête. La requête effectue un nettoyage. Je vais juste vérifier que les données extraites sont
+bien des distances positives, que "fare_amount" est supérieur à 2,5, que "pickup_longitude", "pickup_latitude", etc., se situent dans des plages raisonnables, et que le taxi était bien occupé. Nous devons donc vérifier que
+les données collectées pour un trajet en taxi particulier sont correctes, avant
+de les utiliser pour l'entraînement. Je vais diviser mes données
+comme nous l'avons vu précédemment, lorsque nous avons parlé de créer des ensembles de données basés sur
+le hashage des date et heure de ramassage. Après vérification, j'ai créé ma requête qui va additionner
+"tolls_amount" et "fare_amount" pour obtenir "fare_amount". C'est ainsi que nous connaissons le coût total supporté
+par quelqu'un pour une course. La requête doit aussi inclure le jour 
+de la semaine dans "dayofweek". Pourquoi cette donnée ? Nous savons que
+les conditions de circulation diffèrent selon le jour de la semaine. Nous savons que, le vendredi, le trafic
+est plus dense que le dimanche. Nous savons aussi que l'heure de la
+journée est importante, même le vendredi. Le vendredi, le trafic à 2h du matin sera
+sûrement moins dense qu'à 16h. Pourquoi est-ce important ? Parce qu'à New York, et nous le savons grâce
+aux insights humains, les clients payent le temps passé dans
+un taxi en plus de la distance parcourue. Si le taxi est coincé
+dans les embouteillages, ils doivent payer le temps correspondant
+puisqu'ils occupent le taxi et que le chauffeur ne peut pas
+prendre d'autres courses. L'heure est donc importante. Le temps passé dans le taxi
+pendant la course est important. Avant que le trajet commence, nous ne connaissons pas
+la durée de la course. Nous voulons que le modèle
+de machine learning l'apprenne et nous savons qu'un
+facteur clé de la durée d'un trajet est lié au
+moment du ramassage. Pas la dépose, car nous ne savons
+pas quand le client sera déposé, mais nous savons
+quand il sera ramassé. Nous utilisons donc la date 
+et l'heure de ramassage, le jour de la semaine et l'heure du jour
+en tant qu'entrées de notre modèle. Nous savons aussi où
+le client sera ramassé et où il veut être déposé. Nous ne savons pas à
+quelle heure il sera déposé, mais nous connaissons sa destination, donc la longitude et
+la latitude du lieu de dépose. Ces données seront
+aussi nos entrées. Nous allons utiliser
+un nombre de passagers et créer une clé que nous allons utiliser. Cependant, si nous voulons réaliser
+une prédiction par lots, par exemple, nous devrons injecter
+énormément de données dans le modèle. Il est donc utile d'attribuer un ID unique
+à chaque ligne de l'ensemble de données. Nous avons donc une espèce
+d'ID unique pour chaque colonne d'entrées. J'attribue ces ID pour
+toutes les données valides. À ce stade, nous pouvons créer notre
+ensemble de données. Pour ce faire, nous allons supprimer les éventuels
+ensembles de données déjà existants. Après la suppression, nous allons créer un fichier CSV à partir
+de toutes ces colonnes. Nous devons d'abord nous assurer que
+les colonnes affichent bien "fare_amount", "dayofweek", "hourofday", etc. Ce sont les colonnes
+que nous voulons créer. Toutefois, dans l'ensemble de
+données affiché dans BigQuery, "dayofweek" sera un nombre, comme 2. Nous ne voulons pas de nombre,
+car nous ne savons pas à quel jour de la semaine il correspond. La semaine commence-t-elle le dimanche, le lundi ou le mardi ? Nous ne voulons pas que le client se soucie de ça. Nous allons donc remplacer ces nombres par le vrai nom
+des jours de la semaine. Si "dayofweek" affiche 1,
+ce sera dimanche. S'il affiche 2, ce sera lundi, etc. C'est exactement ce que je fais ici. Je prends le résultat de BigQuery, "dayofweek" qui est un nombre, et je le remplace par une chaîne. J'ajoute à présent
+une virgule entre chaque jour et j'ai ainsi le résultat
+de mon fichier CSV. Pour écrire ce résultat, je vais lire ces données depuis BigQuery à l'aide
+de la requête que nous venons de créer et les convertir en CSV à l'aide de la
+fonction que je viens de mentionner. La seule modification
+réalisée est de transformer les jours de la semaine
+de nombres en chaînes. Puis, je les écris dans un
+fichier texte, un fichier CSV. Lorsque j'exécute le code, à ce stade, le code est prétraité. Dans la prochaine cellule, je peux appeler le prétraitement dans
+l'exécuteur Dataflow si je le souhaite ou créer un ensemble de données plus
+petit pour une exécution locale en direct. Dans ce cas, je vais l'exécuter
+dans l'exécuteur Dataflow. L'exécution de cet ensemble va prendre un certain temps. Allons dans la console. Dans l'exécuteur Dataflow,
+nous voyons que la tâche a été lancée. Nous accédons à Dataflow.
+Que se passe-t-il ? Qu'est-ce que ça dit ? Dataflow... Je vois. L'API Dataflow n'a été
+ni utilisée, ni activée. Nous devons donc accéder à cette page. Si vous voyez cette erreur, vous devez accéder à "API et services", "Activer les API et les services". L'API que nous voulons
+activer s'appelle Dataflow. Avec cette recherche,
+nous accédons à l'API Dataflow. Activons maintenant cette API. Une fois l'API activée, patientons le temps de l'activation. Nous devrions pouvoir exécuter
+à nouveau cette cellule. Parfait, l'API est activée. Retournons dans le bloc-notes Datalab,
+puis exécutons à nouveau cette cellule. Cette fois,
+normalement, elle va se lancer. Parfait, la voilà lancée. Je peux à présent retourner
+sur "Dataflow" dans le menu. Vous voyez que ce code
+est en cours d'exécution. L'exécution va prendre un certain temps. Une fois l'exécution terminée, sur le cloud, dans votre bucket, vous disposerez de fichiers
+à utiliser pour l'entraînement. Descendons un peu. Voici une façon
+de faire. Voyons... Attendons la fin de l'exécution. Une fois terminée, nous pourrons revenir. Je vais arrêter un peu la vidéo, puis nous reviendrons et commencerons
+une fois la tâche Dataflow terminée. L'exécution de cette tâche a pris
+8 minutes de mon côté, la dernière étape a abouti et, à ce stade, le nombre de nœuds
+de calcul diminue à nouveau. Bien sûr, votre kilométrage dépendra du
+nombre de nœuds de calcul disponibles et du nombre de ces nœuds
+réellement utilisés pour cette tâche. Toutefois, une fois
+la tâche terminée, vous pouvez retourner dans le bloc-notes et vérifier
+l'existence des fichiers de sortie. C'est ce que je fais ici, j'exécute GS sur "gsutil ls" dans le bucket, et nous voyons
+qu'il y a un fichier "train.csv" et un fichier "valid.csv". Nous avons donc un fichier de validation
+et un fichier d'entraînement. Nous pouvons aussi
+utiliser la commande "cat", une commande Unix qui
+dresse une liste de quelques lignes. En fait, elle dresse la liste de toutes
+les lignes et les place devant. J'obtiens ainsi
+les quelques premières lignes, et nous pouvons voir que, comme prévu, le jour de la semaine apparaît
+en tant que chaîne : "Fri" (vendredi), "Wed" (mercredi), etc. Nous avons ensuite
+les latitudes, les longitudes, et les lieux
+de ramassage et de dépose. Nous avons également un dernier élément : la dernière colonne est une clé que
+nous allons ignorer dans notre modèle. Cependant, elle est là
+si nous voulons un ID unique pour chaque ligne
+de notre ensemble de données. Donc, nous avons ce fichier et nous pouvons à présent l'utiliser
+pour développer notre modèle. Pour réaliser notre développement, il est plus pratique de ne pas avoir
+à retourner chaque fois dans le cloud. Je crée donc un répertoire appelé "sample" et je ne copie
+que l'un des fichiers dedans. Comme nos fichiers sont raccourcis, j'en copie seulement la première partie
+dans mon répertoire local "sample". Ensuite, nous pouvons observer notre code. Pour ce faire, nous pouvons aller dans le bloc-notes, mais faisons-le en dehors. Nous avons notre fichier "taxifare". Dans ce fichier,
+comme précédemment, nous avons un fichier "trainer" et, comme précédemment, nous avons
+les fichiers "model.py" et "tasks.py". Toutefois, dans ce cas, "model.py" ne contient pas simplement
+des données d'entrée brutes, mais aussi des données
+d'extraction de caractéristiques. Voici donc les colonnes. Vous remarquez des colonnes supplémentaires par rapport
+à celles que nous avons déjà ajoutées. Nous avons "dayofweek", "hourofday", etc. Décidons qu'elles représentent
+les colonnes d'entrée. La colonne "dayofweek" contient
+une liste de vocabulaire, "Sun", "Mon", "Tues", etc.,
+tous les jours de la semaine. "hourofday" est également
+une colonne catégorique, mais elle dispose d'une identité. En d'autres termes, elle constitue
+déjà un nombre mis en entier, 1, 2, 3, 4, etc. Nous avons ensuite des colonnes
+numériques pour la longitude et la latitude de ramassage, la latitude et la longitude de dépose, etc. Puis, je vais aussi créer
+des colonnes extraites. Nous verrons cela plus tard dans le code. Les colonnes extraites vont
+représenter la différence de latitude. Pourquoi est-ce important ? Cette différence indique si vous devez
+aller au nord ou au sud de Manhattan. Elle donne donc une idée de l'amplitude
+du changement de latitude pour une course. La différence de longitude est très utile, car New York n'est pas étendue au sud, et tous les ponts à péage permettent
+de se déplacer sur de grandes longitudes. Il est donc aussi utile
+de connaître la différence de longitude. J'ai inclus une distance euclidienne,
+dite distance à vol d'oiseau, entre le lieu
+de ramassage et le lieu de dépose. Cette fonctionnalité est
+plutôt utile elle aussi, car, grâce à elle, le modèle
+n'a pas à apprendre les distances vu que la distance est déjà indiquée. Ainsi, nous réalisons cette
+extraction de caractéristiques et nous sommes prêts à
+construire notre Estimator. Dans notre Estimator,
+nous prenons toutes nos colonnes d'entrée. Voici les colonnes d'entrée
+dont nous disposons. Comme pour l'exercice
+d'extraction de caractéristiques sur l'ensemble
+de données sur les maisons, nous catégorisons les buckets
+de latitude et de longitude. Nous prenons donc la latitude de
+ramassage compartimentée entre 38 et 42, et la longitude compartimentée entre
+-76 et -72, car nous sommes à New York et que ce sont les limites de la ville. Nous obtenons ainsi une latitude
+de ramassage compartimentée, une latitude de dépose compartimentée et la même chose pour les longitudes. Les longitudes de ramassage et de dépose sont toutes compartimentées. Une fois ces données compartimentées, à quoi sert cette compartimentation ? Elle permet la discrétisation d'éléments.
+Elle prend une valeur numérique et la transforme en valeur catégorique, car celle-ci se trouve
+dans un de ses buckets. Nous prenons ces valeurs catégoriques et nous en croisons les caractéristiques. Que se passe-t-il pour la latitude
+et la longitude de ramassage ? Nous avons donc la
+latitude et la longitude, et nous en croisons les caractéristiques. Ce que nous faisons donc est
+de prendre le lieu de ramassage, la cellule de la grille
+qui correspond au lieu de ramassage. Cela correspond à "ploc". "ploc" est comme une cellule de la grille. "dloc" est aussi une cellule de la grille
+qui correspond au lieu de dépose. Ces deux éléments correspondent
+à des points de la grille. Je croise à présent les caractéristiques
+du lieu de ramassage et du lieu de dépose. Nous voulons en fait
+apprendre le coût du trajet de toutes les courses en taxi
+depuis ce lieu vers cet autre lieu. Le seul moyen de réaliser cela, et c'est un calcul que nous devons
+répéter encore et encore, est par le croisement
+de caractéristiques, un outil puissant, mais qui ne fonctionne que si
+vous disposez de suffisamment de données, car le croisement est de la mémorisation. La mémorisation fonctionne s'il y a
+assez de données dans chaque bucket. Dans notre cas, il y a
+des millions de courses en taxi, nous avons donc assez
+de données pour utiliser cet outil. Nous compartimentons donc
+la longitude de ramassage et la longitude de dépose, puis nous utilisons
+ces données pour créer "ploc" et "dloc",
+et croisons les caractéristiques, puis nous obtenons une paire
+ramassage/dépose, qui est aussi un croisement
+de caractéristiques. Ensuite, nous nous occupons
+du jour et de l'heure à nouveau, car le trafic dépend
+du jour et de l'heure. 15h un vendredi diffère de 15h un
+mercredi, qui diffère de 15h un dimanche. Nous réalisons ce croisement et
+décidons du nombre de buckets à utiliser. Vous pouvez choisir n'importe quel nombre
+entre deux fois le nombre total de valeurs possibles et la racine 4e
+du nombre possible de valeurs. Dans ce cas, je vais utiliser le nombre
+total de valeurs elles-mêmes, donc 24 x 7 pour le nombre de buckets. Mais c'est un calcul
+que vous devrez tester et sur lequel vous devrez
+régler les hyperparamètres. Le nombre de buckets de hachage
+à utiliser est à définir au cas par cas. Retournons observer nos données, et indiquer celles qui sont éparses et catégoriques, et celles qui
+sont denses et numériques. Les colonnes éparses et catégoriques sont
+placées dans la partie large d'un réseau, car, en général, pour ces données, les
+modèles linéaires fonctionnent bien. Les colonnes denses et numériques, les colonnes intégrées étant un exemple de colonnes denses, car nous
+avons pris les données éparses et les avons placées ensemble, sont aussi très utiles. Nous prenons toutes nos colonnes éparses
+et les plaçons dans "wide_columns". Nous prenons toutes nos données denses et les plaçons dans nos "deep_columns", et nous créons ce qu'on appelle un
+régresseur DNN linéaire combiné. C'est un moment de réflexion en plus
+que nous accordons à notre modèle. Si vous l'aviez voulu, vous auriez pu
+créer un simple régresseur DNN qui aurait analysé tous les éléments
+en tant que "deep_columns", et cela aurait suffi. Mais un régresseur DNN
+linéaire combiné nous permet de traiter les données éparses
+différemment des données denses. Il utilise un optimiseur différent pour
+les données éparses et les données denses. Il est conçu autour de l'idée que, si vous
+avez un ensemble de données réelles, certaines de vos caractéristiques seront
+denses et d'autres seront éparses. C'est donc un bon régresseur qui
+fonctionne bien avec ce type de données. Analysons les caractéristiques
+pour savoir lesquelles ont besoin d'un modèle linéaire, et lesquelles
+ont besoin d'un modèle DNN. Précisons ensuite le nombre d'unités
+souhaitées pour notre modèle DNN. Voilà notre modèle. Cependant, rappelez-vous que nous parlons
+d'extraction de caractéristiques. Nous ne voulons pas de données brutes, nous voulons y ajouter des choses. Nous avons déjà nos colonnes
+d'extraction de caractéristiques "latdiff", "longdiff". Voilà comment les calculer. "latdiff" est la différence
+entre les deux latitudes, "longdiff" est la différence
+entre les deux longitudes. Puis, nous précisons
+la fonction d'entrée de diffusion. Elle correspond aux éléments
+fournis par l'utilisateur final. L'utilisateur final n'a pas besoin de
+nous donner "longdiff" et "latdiff". Il ne sait pas les calculer. Il doit juste fournir des données brutes. Nous parcourons
+toutes les colonnes d'entrée à part les deux premières, qui correspondent au montant
+de la course et donc à un libellé, et ne sont donc pas des données d'entrée. Quelle est la deuxième colonne
+que nous devons ignorer ? Examinons nos colonnes d'entrée, la deuxième que nous ignorons, nous ignorons donc ces deux-là. Nous ignorons le jour
+de la semaine et l'heure de la journée. Nous prenons tout le reste et disons que tous sont
+des nombres à virgule flottante. Le jour de la semaine est une chaîne, l'heure de la journée est un int32, et nous utilisons ces éléments pour
+créer un récepteur d'entrée de diffusion. En plus des caractéristiques fournies
+par l'utilisateur final, assurez-vous que nos colonnes extraites ont été ajoutées
+pour que notre modèle puisse tout voir. À ce stade, la lecture des données est
+semblable à ce que nous avons déjà vu, les éléments d'entraînement et
+d'évaluation également. Exécutons maintenant ce code. Retournons ici et testons notre modèle
+sur un ensemble de données plus petit, pour pouvoir ensuite
+l'entraîner dans le cloud. Exécutons la commande
+"gcloud ml-engine". Nous obtenons ainsi une racine carrée
+de l'erreur quadratique moyenne améliorée, et aussi un modèle plus efficace. Il nous faut ensuite
+régler les hyperparamètres pour trouver
+les paramètres adaptés au modèle. Pour faire cela, nous parlerons bientôt
+du réglage des hyperparamètres, qui consistent à obtenir
+les paramètres adaptés à ces modèles. Dans ce cas-là, ces paramètres
+sont les meilleurs possible. Une fois ceux-ci réglés, nous pouvons exécuter le modèle
+sur un ensemble de données plus grand. Un élément clé du machine learning
+est que les performances sont meilleures avec de
+grands ensembles de données. Auparavant, j'ai lancé
+une tâche qui a pris environ 10 minutes pour pouvoir continuer. Nous allons à présent
+lancer une tâche Dataflow qui prend environ une heure et permet de créer
+un ensemble de données bien plus grand, avec
+des millions de lignes, pour l'entraîner ensuite. Après cela, vous devriez constater une bien meilleure racine carrée
+de l'erreur quadratique moyenne. L'idée essentielle ici est
+de réaliser, avec vos données brutes, une extraction de caractéristiques visant
+à injecter des insights humains dans les éléments importants
+comme le trafic, la distance des trajets, le passage ou non de frontières, la direction prise (est-ouest,
+nord-sud, etc.), la "longdiff", la "latdiff", la distance euclidienne, les croisements de caractéristiques, etc.,
+qui nous aident à améliorer notre modèle.

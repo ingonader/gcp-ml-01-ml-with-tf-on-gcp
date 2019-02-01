@@ -1,0 +1,223 @@
+1
+00:00:00,000 --> 00:00:01,590
+Okay.
+
+2
+00:00:01,590 --> 00:00:02,940
+To get started with this lab,
+
+3
+00:00:02,940 --> 00:00:07,375
+make sure your browser is open to the Google Cloud Platform dashboard.
+
+4
+00:00:07,375 --> 00:00:11,755
+Begin by clicking on activate Google Cloud Shell.
+
+5
+00:00:11,755 --> 00:00:15,360
+It is critical that you have your Cloud Shell environment
+
+6
+00:00:15,360 --> 00:00:19,055
+prepared with the source code and packages needed to execute it.
+
+7
+00:00:19,055 --> 00:00:21,620
+If you recently completed the previous lab,
+
+8
+00:00:21,620 --> 00:00:24,605
+you should already have the code and the packages installed.
+
+9
+00:00:24,605 --> 00:00:26,930
+However, if you find that you're missing
+
+10
+00:00:26,930 --> 00:00:30,440
+the training data analyst directory in your Cloud Shell environment,
+
+11
+00:00:30,440 --> 00:00:35,090
+you should stop here and complete the previous lab before moving forward.
+
+12
+00:00:35,090 --> 00:00:37,280
+If your Cloud Shell environment is set up,
+
+13
+00:00:37,280 --> 00:00:40,730
+you can use that Cloud Shell code editor to open
+
+14
+00:00:40,730 --> 00:00:44,650
+the source code for the apache beam pipeline used in this lab.
+
+15
+00:00:44,650 --> 00:00:49,230
+You can find it under training data analyst, courses,
+
+16
+00:00:49,230 --> 00:00:52,080
+data analysis, lab two,
+
+17
+00:00:52,080 --> 00:00:56,890
+Python directory, in the is popular.py file.
+
+18
+00:00:56,890 --> 00:01:01,045
+There's more code in this file now compared to the previous lab.
+
+19
+00:01:01,045 --> 00:01:05,140
+So, next you will see the code in more detail.
+
+20
+00:01:05,140 --> 00:01:08,430
+If you scroll down to the body of the main method,
+
+21
+00:01:08,430 --> 00:01:11,330
+notice the input argument for the code.
+
+22
+00:01:11,330 --> 00:01:17,475
+As input, the pipeline takes the Java source code files in the Java help directory.
+
+23
+00:01:17,475 --> 00:01:22,140
+Also, notice that the Alvarado's pipeline is going to be stored in
+
+24
+00:01:22,140 --> 00:01:25,080
+the /tmp directory was files having
+
+25
+00:01:25,080 --> 00:01:30,060
+output prefix by default but of course it's possible to override the setting.
+
+26
+00:01:30,060 --> 00:01:32,550
+After the data is read from Google Cloud storage,
+
+27
+00:01:32,550 --> 00:01:37,230
+then next step in this pipeline is to check for the lines that start with the key term.
+
+28
+00:01:37,230 --> 00:01:39,850
+As you remember from the previous lab,
+
+29
+00:01:39,850 --> 00:01:43,745
+the key term for this pipeline is the import keyboard.
+
+30
+00:01:43,745 --> 00:01:49,245
+Next, the pipeline is processing the names of the imported packages.
+
+31
+00:01:49,245 --> 00:01:54,480
+Notice that this depends on the package you use method that in turn,
+
+32
+00:01:54,480 --> 00:01:56,520
+looks at the names of the packages in
+
+33
+00:01:56,520 --> 00:02:00,480
+the import statement and extracts out the package name itself,
+
+34
+00:02:00,480 --> 00:02:02,280
+removing the import keyword,
+
+35
+00:02:02,280 --> 00:02:04,335
+and the closing semicolon character.
+
+36
+00:02:04,335 --> 00:02:07,500
+Finally, once the package name is found,
+
+37
+00:02:07,500 --> 00:02:13,280
+the split package name function returns the multiple prefixes for each package name.
+
+38
+00:02:13,280 --> 00:02:17,790
+For example, for a package com example appname,
+
+39
+00:02:17,790 --> 00:02:24,980
+the function will return prefixes com, com.example, com.example.appname.
+
+40
+00:02:24,980 --> 00:02:26,880
+For each one of those packages,
+
+41
+00:02:26,880 --> 00:02:32,290
+the method returns a pair was the package prefix and an in digit one for each occurrence.
+
+42
+00:02:32,290 --> 00:02:34,900
+The occurrences are added together using
+
+43
+00:02:34,900 --> 00:02:39,450
+the combine PerKey operation and the sum function as the argument.
+
+44
+00:02:39,450 --> 00:02:45,290
+The top five combiner identifies the top five most frequently imported packages.
+
+45
+00:02:45,290 --> 00:02:50,290
+Next, you can go ahead and execute the is popular.py file.
+
+46
+00:02:50,290 --> 00:02:53,100
+Once the pipeline is done executing,
+
+47
+00:02:53,100 --> 00:02:57,780
+you can take a look at the output directory and if you list out output file contents,
+
+48
+00:02:57,780 --> 00:03:02,190
+you can see the top most popular packages specifically org,
+
+49
+00:03:02,190 --> 00:03:08,565
+org.apache, org.apache.beam, and org.apache.beam.sdk.
+
+50
+00:03:08,565 --> 00:03:12,520
+Notice that in this implementation of the pipeline,
+
+51
+00:03:12,520 --> 00:03:15,775
+it is possible to modify the destination of the output.
+
+52
+00:03:15,775 --> 00:03:20,410
+So for example, if you override the defaults to ask the pipeline to write
+
+53
+00:03:20,410 --> 00:03:26,005
+the results out to /tmp directory was my output as the prefix.
+
+54
+00:03:26,005 --> 00:03:31,160
+You can run the pipeline again and you'll find the new instances of the output.
+
+55
+00:03:31,160 --> 00:03:36,070
+The new output file instances will have the my output prefix.
+
+56
+00:03:36,070 --> 00:03:38,730
+All right. That's it for this lab.

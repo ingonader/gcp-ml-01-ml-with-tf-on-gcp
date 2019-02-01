@@ -1,0 +1,167 @@
+1
+00:00:00,890 --> 00:00:02,520
+In the previous lesson,
+
+2
+00:00:02,520 --> 00:00:06,281
+we talked about how to do feature
+pre-processing in TensorFlow.
+
+3
+00:00:07,290 --> 00:00:08,070
+How did we do it?
+
+4
+00:00:09,450 --> 00:00:11,000
+We used feature columns.
+
+5
+00:00:12,060 --> 00:00:16,084
+Now let's look at how we can do
+feature creation in TensorFlow.
+
+6
+00:00:18,250 --> 00:00:22,240
+Recall that the input function
+returns features and labels.
+
+7
+00:00:23,730 --> 00:00:25,766
+What is the data type of features?
+
+8
+00:00:27,382 --> 00:00:29,844
+Answer, it's a Python dictionary.
+
+9
+00:00:31,335 --> 00:00:37,075
+Let's say distance from public transit
+is a key predictor of house prices.
+
+10
+00:00:38,155 --> 00:00:41,935
+So we want to add a new
+feature which captures
+
+11
+00:00:41,935 --> 00:00:45,685
+how far the house is from
+the nearest metro station.
+
+12
+00:00:47,065 --> 00:00:51,465
+Let's say the location of the metro
+station is part of the dataset and
+
+13
+00:00:51,465 --> 00:00:54,030
+that it'll be part of the features, too.
+
+14
+00:00:54,030 --> 00:00:58,750
+Then in our method, we compute the
+Euclidean distance between the house and
+
+15
+00:00:58,750 --> 00:01:01,820
+the metro station and
+add it to the dictionary.
+
+16
+00:01:03,820 --> 00:01:06,942
+So where does this
+add_engineered method go?
+
+17
+00:01:08,794 --> 00:01:13,250
+Call the add_engineered method
+from all input functions.
+
+18
+00:01:14,910 --> 00:01:16,430
+How many input functions do we have?
+
+19
+00:01:17,800 --> 00:01:22,620
+In general, we have three, training input
+function, evaluation input function,
+
+20
+00:01:22,620 --> 00:01:24,762
+and serving input function.
+
+21
+00:01:24,762 --> 00:01:29,080
+The add_engineered method needs to
+be called from all three of them.
+
+22
+00:01:31,050 --> 00:01:36,890
+In the training input function,
+instead of returning (features), label,
+
+23
+00:01:36,890 --> 00:01:41,960
+I'm wrapping the features with
+a call to add_engineered.
+
+24
+00:01:41,960 --> 00:01:42,530
+This way,
+
+25
+00:01:42,530 --> 00:01:47,009
+the extra features that I'm creating
+get put into the Python dictionary.
+
+26
+00:01:48,680 --> 00:01:52,750
+The evaluation input function is
+similar to the training input function.
+
+27
+00:01:52,750 --> 00:01:55,820
+Wrap the calls with add_engineered.
+
+28
+00:01:57,000 --> 00:01:59,279
+In the serving_input function,
+
+29
+00:01:59,279 --> 00:02:04,320
+you return a ServingInputReceiver
+that takes two parameters.
+
+30
+00:02:04,320 --> 00:02:07,239
+The first parameter is the (features).
+
+31
+00:02:07,239 --> 00:02:12,220
+The second parameter is the placeholders
+for whatever you receive in the json.
+
+32
+00:02:12,220 --> 00:02:15,790
+The placeholders remain the same,
+you're receiving the same raw data.
+
+33
+00:02:15,790 --> 00:02:18,470
+But just as in the training
+input function,
+
+34
+00:02:18,470 --> 00:02:22,550
+wrap the (features) by
+a call to add_engineered.
+
+35
+00:02:22,550 --> 00:02:27,870
+This way, the same extra features
+that were created during training
+
+36
+00:02:27,870 --> 00:02:30,330
+will also get put into
+the Python dictionary.

@@ -1,0 +1,145 @@
+Bem-vindo de volta.
+Neste laboratório, você pegará o conjunto de
+dados de tarifa de táxi do BigQuery e o pré-processará usando
+a ferramenta Cloud Dataprep. Na ferramenta, você explorará a
+distribuição dos valores de dados, visualizará as distribuições usando
+gráficos de histograma e, depois, implementará um fluxo do
+Dataprep para criar um novo atributo, baseado no número médio
+de viagens de táxi por hora, em uma janela de tempo contínua. Finalmente, você implantará e executará
+o fluxo do Dataprep no GCP e monitorará a execução
+da tarefa usando o Dataflow. Vamos olhar com mais detalhes. Certo, para começar com este laboratório, você precisa preparar
+alguns pré-requisitos. Você começa no painel do
+Google Cloud Platform. Primeiro, você precisará do intervalo
+do Google Cloud Storage. Você pode criar um no menu
+"Produtos e serviços", que pode ser acessado clicando
+no ícone de três traços. Role para baixo até "Armazenamento", "Navegador" e clique em "Criar intervalo". Como você pode ver na orientação na tela, o nome do intervalo de armazenamento
+precisa ser único e global. Aqui, configurei um nome de intervalo
+único na localização us-east4. Logo após clicar em "Criar", vejo que o intervalo com o
+nome único está pronto. O próximo passo é preparar
+o conjunto de dados do BigQuery. Você pode encontrar o BigQuery voltando
+no menu "Produtos e serviços", na seção "Big Data". Ao clicar em "BigQuery", você verá uma nova guia
+abrindo no navegador. À direita do nome do seu projeto, clique na seta para baixo e escolha
+"Criar novo conjunto de dados". Use o nome "taxi_cab_reporting" para o
+conjunto de dados e clique em "OK". Quando estiver pronto, você precisará voltar ao painel
+do Google Cloud Platform. Daí, navegue até o link do Dataprep
+no menu "Produtos e serviços". Como o Cloud Dataprep é um serviço
+de um parceiro do Google, você precisa aceitar um novo
+conjunto de termos e condições. Clique em "Aceitar" para fazer isso. Além disso, você precisa clicar
+em "Permitir" para que a Trifacta, parceira do Google que desenvolve
+o Dataprep, acesse seus dados. Depois de clicar, levará alguns instantes
+para ativar o Dataprep para o projeto. Então, você pode ver o vídeo avançar
+para a espera. Em seguida, você precisa escolher
+a conta a ser usada para o Cloud Dataprep e permitir que o
+Dataprep acesse o projeto. Quando você está configurando o Dataprep
+no projeto pela primeira vez, é necessário especificar o intervalo de
+armazenamento que conterá seus dados. Aqui você pode ver que o intervalo
+criado no início deste laboratório é usado para configurar o Dataprep. Depois que o intervalo for selecionado,
+clique em "Continuar". Depois que o Dataprep
+estiver configurado, você poderá dispensar o tutorial de ajuda clicando
+em "Não mostrar nenhum assistente". Em seguida, você usará o Dataprep
+para criar um novo fluxo. Vamos chamar esse fluxo
+de "NYC Taxi reporting". O fluxo mostrará
+um processo para ingestão, transformação e análise de dados de táxi. Vá em frente clique em "Criar". O primeiro passo para criar um fluxo é adicionar alguns conjuntos
+de dados para o fluxo processar. Nesse caso, você importará alguns
+conjuntos predefinidos que nossa equipe já salvou para o intervalo público do
+Cloud Storage, e poderá acessar o intervalo de armazenamento usando o nome
+asl-ml-immersion no diretório NYC taxicab. O diretório tem alguns arquivos. Você usará os arquivos com os dados
+de tarifa de táxi de 2015 e 2016. Observe que esses são valores separados
+por vírgulas, arquivos CSV. Clique em "Importar" e, logo, você verá os dois arquivos
+adicionados ao fluxo. Para implementar o processamento ou a
+conversão para esses conjuntos de dados, você precisará "Adicionar nova receita". Em seguida, você adicionará
+etapas a essa receita. Depois que o conjunto
+de dados for carregado, você verá uma visualização
+de uma amostra dos dados do conjunto. Aqui, por exemplo, você pode ver que o
+conjunto de dados inclui informações sobre as corridas de táxi,
+como data/hora do embarque, data/hora da chegada
+e o número de passageiros no táxi. Além disso, observe a partir do histograma
+de distância da viagem que a maioria das viagens estava abaixo
+de cinco milhas de distância. Em seguida, una conjuntos de dados
+de 2015 e 2016 para trabalhar com linhas
+de dados pequenas. Depois de selecionar o conjunto
+de dados de 2016, você precisa clicar em "Adicionar"
+e alinhar pelo nome, o que fará com que os nomes que tiverem
+os cabeçalhos das colunas correspondentes estejam alinhados à versão da
+união do conjunto de dados. Adicione a etapa de união à receita e,
+depois que o Dataprep visualizar a união, você verá uma amostra dos conjuntos, que
+inclui viagens de táxi para 2015 e 2016. Os dados de data e hora
+de embarque estão em colunas diferentes. Como este laboratório
+mostrará como calcular as médias contínuas
+dos valores de tarifa de táxi, primeiro, converta os dados de entrada
+para o formato de data/hora SQL. Para isso, você pode adicionar
+uma mescla à receita, que concatenará valores
+de várias colunas. Neste caso, as colunas são chamadas de
+data de embarque e horário de embarque. Use "pickup_datetime"
+como o novo nome da coluna. Além disso, use um único espaço como
+um delimitador entre os valores. Observe que, à esquerda, você agora tem uma prévia
+da nova coluna. Em seguida, crie uma nova coluna derivada que converterá o tempo de embarque
+em um formato de data/hora SQL. Quando o novo campo de carimbo 
+de data/hora estiver disponível, você extrairá apenas informações
+do ano, mês, data e hora, sem os detalhes
+dos minutos e segundos. Como a coluna de data/hora do embarque
+não tem valores para minutos e segundos, ela não pode ser usada como
+formato de data/hora SQL. Então, você precisa criar uma
+nova coluna que possa ser convertida em um valor válido
+de data/hora SQL. Para fazer isso, você criará uma nova operação de mesclagem e usará
+o wrangler de mesclagem novamente. Ele concatenará valores
+das colunas de hora e data/hora de embarque
+com uma string com quatro caracteres zero
+para os valores dos minutos e segundos. Observe que, quando você
+adiciona uma nova coluna, ela recebe um nome gerado automaticamente,
+como a coluna um. Você pode facilmente renomear isso. Nesse caso, você pode renomeá-la como
+"pickup_hour". Depois, você calculará estatísticas com
+base nos valores das horas de embarque. Você pode usar funções padrão de agregação
+estatística SQL, como soma ou média. Você pode ver que esse Wrangler calculará
+as somas e as médias das contagens de passageiros e a mesma combinação da soma e da média da distância
+da viagem e do valor da tarifa. Por fim, calculará os valores máximos
+da tarifa para cada hora de embarque. Assim como anteriormente,
+você tem uma visualização dos resultados das estatísticas calculadas nos
+histogramas no lado esquerdo da tela. Além disso, se você observar o valor médio
+da tarifa nos histogramas, a maioria das tarifas médias está na faixa
+de US$ 18 a US$ 19 por viagem. Em seguida, você calculará a média
+contínua para o valor da tarifa, observando as horas livres de dados
+acumulados para cada hora de embarque. Você pode calcular isso usando a função de
+média contínua no Cloud Dataprep. Aqui estão os valores
+para a média contínua, classificados pela hora de embarque. Por fim, nomeie essa coluna como
+"average free hour rolling fare". Tudo bem, quando a receita estiver pronta, você poderá implantá-la como um job
+do Google Cloud Dataflow. Para fazer isso, você precisa clicar em
+"Executar o job" e especificar onde os resultados dos jobs serão
+publicados ou armazenados. Por padrão, os resultados
+do job são salvos como um arquivo CSV
+no Google Cloud Storage. Em vez de fazer isso, você pode alterar
+o destino para BigQuery e criar uma nova tabela no BigQuery
+toda vez que o job for executado. Portanto, se você alterar a seleção à
+direita para criar uma nova tabela em cada execução e renomear a tabela para
+"TLC_yellow_trips_reporting", você receberá uma nova tabela no conjunto
+de dados "NYC Taxi reporting". Lembre-se, este é o conjunto de dados
+criado no início deste laboratório. Vá em frente e execute o job. Depois que o job aparecer
+como transformação, o Dataprep começará a implantar o job
+no Dataflow. Isso geralmente leva alguns meses. Você pode monitorar o progresso do job na
+seção do job no menu Dataprep. Se você clicar no símbolo
+de reticências à direita, o menu de reticências não terá o link para o job do Dataflow imediatamente após
+você implantar o job, mas se você esperar um pouco
+e atualizar a página, verá que o menu é atualizado e verá um
+link para acessar o job do Dataflow. Se você clicar nele, será levado
+para a interface do usuário do Dataflow, onde poderá monitorar as etapas
+de transformação no Dataflow, conforme criado pelo Dataprep. No lado direito da IU do Dataflow, você tem detalhes sobre
+essa execução do job. Aqui, você pode ver que, como o job
+acabou de ser iniciado, o cluster do Dataflow, para executar
+o job, ainda precisa ser escalonado. No entanto, você já pode monitorar os
+resultados da configuração do job. Aqui, nenhuma das etapas de transformação
+individuais do job foi iniciada, exceto as poucas que preparam a tabela no BigQuery, e estão
+apenas começando a buscar dados dos arquivos CSV de entrada
+do Google Cloud Storage. Além de monitorar esse job no Dataflow, você pode navegar para
+o BigQuery e monitorar a saída do job no conjunto de dados
+do relatório do táxi. Como você se lembra, assim que o job
+começar a ser executado, ele inserirá valores em uma nova tabela de
+relatório de viagem amarela do TLC. Como demora um pouco
+para a tabela ser criada, talvez seja necessário aguardar e
+atualizar a página. Depois que a tabela estiver no lugar, você poderá inserir uma instrução SQL
+para buscar os resultados da tabela. Tenha o dialeto SQL configurado
+corretamente antes de executá-lo. Aqui, você pode ver que a execução do job
+gera cerca de 192 kilobytes de dados, incluindo informações sobre
+as horas de embarque, as distâncias médias da viagem,
+a tarifa média e outras informações
+calculadas pelo Dataflow. Certo.
+Isso é tudo para este laboratório.

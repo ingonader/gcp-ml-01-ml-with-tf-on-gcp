@@ -1,0 +1,29 @@
+Dans le cours précédent, nous avons vu le prétraitement
+de caractéristiques dans TensorFlow. Comment avons-nous procédé ? Nous avons utilisé
+des colonnes de caractéristiques. Voyons maintenant comment créer
+des caractéristiques dans TensorFlow. Souvenez-vous :
+la fonction d'entrée renvoie des caractéristiques et des libellés. Quel est le type de données
+des caractéristiques ? Il s'agit d'un dictionnaire Python. Disons que la distance
+aux transports publics est un prédicteur clé des prix immobiliers. Nous voulons donc ajouter
+une caractéristique qui capture la distance de la maison
+avec la station de métro la plus proche. Disons que l'emplacement
+de la station de métro fait partie de l'ensemble de données et donc aussi des caractéristiques. Dans notre méthode, nous allons calculer
+la distance euclidienne entre la maison et la station de métro,
+puis l'ajouter au dictionnaire. Que fait cette méthode
+"add_engineered" ? Appelez la méthode "add_engineered"
+depuis toutes les fonctions d'entrée. Combien en avons-nous ? En général, trois :
+celle d'entraînement, celle d'évaluation et celle de diffusion. La méthode "add_engineered"
+doit être appelée avec les trois. Dans la fonction "train_input",
+au lieu d'afficher "(features), label", j'encapsule les caractéristiques
+avec un appel à "add_engineered". Ainsi, les caractéristiques
+supplémentaires créées sont ajoutées au dictionnaire Python. La fonction d'entrée d'évaluation
+est similaire à celle d'entraînement. Encapsulez les appels
+avec "add_engineered". Dans la fonction "serving_input", vous affichez "ServingInputReceiver",
+qui prend deux paramètres. Le premier paramètre est
+les caractéristiques. Le second correspond aux espaces réservés
+pour ce que vous recevez dans le JSON. Les espaces réservés restent identiques
+et vous recevez les mêmes données brutes. Comme pour la fonction
+d'entrée d'entraînement, encapsulez les caractéristiques
+avec un appel à "add_engineered". Ainsi, les caractéristiques
+supplémentaires créées pendant l'entraînement sont aussi ajoutées
+au dictionnaire Python.

@@ -1,0 +1,77 @@
+Nesta parte do módulo, você aprenderá o que é necessário
+para implementar um canal que será dimensionado à medida que o tamanho do
+conjunto de dados aumenta. Vamos olhar mais de perto. Alguns de vocês podem já estar
+familiarizados com o MapReduce. Trata-se de uma estrutura de processamento
+de dados distribuída tolerante a falhas descrita pelo Google em uma influente
+pesquisa acadêmica publicada em 2004. Ele ainda é muito usado, por exemplo, pelo projeto Apache Hadoop. Você precisa conhecer os conceitos básicos
+da biblioteca do MapReduce, pois o Dataflow e o Apache Beam se baseiam
+em ideias bem-sucedidas dessa biblioteca. E também incluem inovações
+que foram desenvolvidas pelos pesquisadores e engenheiros
+do Google depois de 2004. O diagrama na tela lhe dará uma rápida
+introdução ao MapReduce. Para processar dados no MapReduce, você começa com fragmentação, em outras palavras,
+divisão dos dados. Os fragmentos de dados individuais são
+distribuídos em dispositivos de armazenamento, em vários nós de computação
+em um cluster de computação distribuída. No diagrama, isso é mostrado
+quando os dados são divididos entre os nós 1 a 3
+no cluster de computação. Para executar um job de processamento
+de dados nessa biblioteca, você grava o código para as
+funções Map e Reduce. Vamos ver primeiro a Map. A Map será uma função sem estado, para que possa ser programada para ser
+executada em paralelo nos nós do cluster. Cada Map lê os dados do armazenamento
+no nó em que está sendo executado, processa os dados e gera uma saída. A saída das operações Map é embaralhada dos diferentes nós no cluster ao próximo
+estágio de processamento chamado Reduce. Você pode pensar em reduções como uma
+operação de agregação sobre dados. As agregações podem ser operações como contagem do número de elementos de dados
+ou somas computacionais. Quando as operações Reduce
+estão concluídas, o resultado se torna a saída da etapa
+MapReduce em um canal. Se você quiser fazer uma transformação no canal de processamento de dados e
+permitir que o Dataflow seja executado em escala com distribuição automática
+em muitos nós em um cluster, você precisa usar a classe ParDo
+do Apache Beam. ParDo significa função de execução
+em paralelo. As etapas de transformação criadas usando
+ParDo parecem os mapas no MapReduce. As transformações usadas com ParDo precisam ser sem estado para serem
+executadas em paralelo. Isso é um pouco restritivo,
+mas útil para muitas tarefas. Por exemplo: você está criando um canal
+de processamento de dados e analisando os arquivos de registro do servidor da Web
+e pode precisar filtrar as entradas de registro que incluem o
+endereço IP de um visitante no site. Você pode fazer isso com uma
+transformação sem estado ou, se quiser extrair o valor do endereço
+IP da string da entrada de registro, pode fazer isso sem estado. Outras operações de processamento sem
+estado, como a conversão de strings em números inteiros ou outro cálculo que
+funcione, que eram parte da entrada, como uma linha de dados, são todos bons
+candidatos para uma ParDo. Se estiver usando Python para implementar
+o canal de processamento de dados, há métodos auxiliares que permitem
+que você comece a usar a ParDo. O Beam.Map mostrado no slide é projetado
+apenas para relações de um para um. Por exemplo: se você está processando
+palavras em um documento, e para cada palavra no documento, quer retornar um par
+com a própria palavra e o comprimento, há um relacionamento
+de um para um, porque cada palavra só pode ser mapeada para um comprimento
+em termos do número de caracteres delas. Portanto, se você usar beam.Map
+para transformação em seu canal, o Dataflow manipulará automaticamente
+a execução da transformação, como cálculos de comprimentos de palavras
+em vários nós em um cluster do Dataflow. Ao contrário do Map, o beam.FlatMap
+é compatível com transformações que podem gerar qualquer número de saídas
+para uma entrada, incluindo zero saídas. Continuando com o exemplo em que você
+está processando palavras de um documento e talvez para cada palavra você queira
+gerar a lista de vogais para ela, obviamente você pode ter zero, uma, duas ou até
+mais vogais por palavra. As transformações no beam.FlatMap também
+podem executar em paralelo com o Dataflow. Se você estiver usando Java
+para implementar seu canal, basta codificar ParDo no método estático na transformação e passar o resultado ao
+próximo código de aplicação no canal. Se você quer usar
+a operação de chave GroupBy, é fácil adicioná-la ao canal. Por exemplo: se você tem
+um canal que processa endereços postais e tenta encontrar todos
+os códigos postais para cada cidade, uma vez que seu canal tenha
+uma PCollection de pares de chave-valor, como o mostrado com um
+par contendo a chave e o código postal, a saída criada por beam.GroupByKey produz
+uma PCollection de pares, em que cada um tem a cidade como chave e a lista de
+CEPs da cidade como valor. O groupByKey é semelhante à etapa
+de reprodução aleatória no MapReduce, mas a operação combinada do PerKey é mais
+geral, e inclui a reprodução aleatória e etapas Reduce para ajudar a implementar
+agregações como soma, contagem. Você pode usar o método combined.globally
+para calcular todo o conjunto de dados. Por exemplo, se você está processando
+dados de transações financeiras, de modo que cada linha da PCollection é
+uma transação de valores de vendas, para calcular o total de vendas
+em todas as transações, você pode usar o combined.global com
+a operação de soma como argumento. Combined também é compatível com
+agregações mais refinadas. Por exemplo, se os registros de transações
+financeiras incluírem o nome do vendedor,
+além do valor de vendas, você poderá passar a operação de soma para a combined.perKey e usá-la para
+combinar o total de vendas por vendedor.

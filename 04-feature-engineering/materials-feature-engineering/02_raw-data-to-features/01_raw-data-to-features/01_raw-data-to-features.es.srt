@@ -1,0 +1,271 @@
+1
+00:00:00,190 --> 00:00:01,390
+Como dije antes
+
+2
+00:00:01,390 --> 00:00:03,610
+si no pueden hacer
+análisis básico de sus datos
+
+3
+00:00:03,610 --> 00:00:05,490
+no pueden hacer
+aprendizaje automático.
+
+4
+00:00:05,490 --> 00:00:07,770
+En este tema
+nos enfocaremos exclusivamente
+
+5
+00:00:07,770 --> 00:00:11,160
+en cómo crear y manipular atributos
+a partir de sus datos sin procesar.
+
+6
+00:00:11,160 --> 00:00:13,525
+Bienvenidos a la Ingeniería de Atributos.
+
+7
+00:00:13,525 --> 00:00:15,970
+Recuerden que dijimos
+que necesitan tres elementos
+
+8
+00:00:15,970 --> 00:00:18,590
+para crear un modelo efectivo
+de aprendizaje automático.
+
+9
+00:00:18,590 --> 00:00:21,450
+Primero, deben escalarlo
+a grandes conjuntos de datos
+
+10
+00:00:21,450 --> 00:00:23,680
+acabamos de verlo en Cloud ML.
+
+11
+00:00:23,680 --> 00:00:26,735
+Segundo, necesitan
+la ingeniería de atributos.
+
+12
+00:00:26,735 --> 00:00:29,320
+En este módulo
+hablaremos de cómo crear
+
+13
+00:00:29,320 --> 00:00:31,510
+esos atributos y cómo transformar
+
+14
+00:00:31,510 --> 00:00:34,535
+sus entradas y prepararlas
+para su modelo de AA.
+
+15
+00:00:34,535 --> 00:00:37,630
+Veremos también
+cómo crear atributos sintéticos
+
+16
+00:00:37,630 --> 00:00:40,520
+que no están originalmente
+en sus conjuntos de datos
+
+17
+00:00:40,520 --> 00:00:43,255
+pero que harán que su modelo
+tenga mejor rendimiento.
+
+18
+00:00:43,255 --> 00:00:45,760
+Veremos esto:
+cómo crear buenos atributos
+
+19
+00:00:45,760 --> 00:00:48,300
+cómo transformarlos
+y crear atributos sintéticos.
+
+20
+00:00:48,300 --> 00:00:51,340
+Estos tres elementos juntos
+se llaman procesamiento previo.
+
+21
+00:00:51,340 --> 00:00:55,135
+Veremos cómo hacer procesamiento
+previo en el contexto de Cloud ML
+
+22
+00:00:55,135 --> 00:00:56,995
+lo que les permite hacerlo a escala.
+
+23
+00:00:56,995 --> 00:00:58,590
+Después de crear un modelo
+
+24
+00:00:58,590 --> 00:01:00,825
+veremos el ajuste de hiperparámetros
+
+25
+00:01:00,825 --> 00:01:03,230
+que es la forma de lograr
+que los atributos mejoren
+
+26
+00:01:03,230 --> 00:01:06,540
+en el contexto del conjunto de datos
+que usarán para entrenar.
+
+27
+00:01:06,540 --> 00:01:09,040
+Primero, veamos
+cómo convertir sus datos sin procesar
+
+28
+00:01:09,040 --> 00:01:10,690
+en vectores de atributos útiles
+
+29
+00:01:10,690 --> 00:01:13,905
+que puedan usarse correctamente 
+en sus modelos AA.
+
+30
+00:01:13,905 --> 00:01:15,505
+Veamos un problema.
+
+31
+00:01:15,505 --> 00:01:17,670
+Supongamos que su objetivo
+es crear un modelo
+
+32
+00:01:17,670 --> 00:01:21,350
+que realice la predicción del precio
+de una casa con un conjunto de entradas.
+
+33
+00:01:21,350 --> 00:01:24,905
+¿Qué tipos de puntos de datos
+quisieran conocer de la casa para empezar?
+
+34
+00:01:25,825 --> 00:01:28,890
+Podría ser la superficie de la casa
+
+35
+00:01:28,890 --> 00:01:31,005
+quizá el tamaño del terreno.
+
+36
+00:01:31,005 --> 00:01:33,695
+¿Qué tal la cantidad de habitaciones?
+
+37
+00:01:33,695 --> 00:01:35,535
+¿O si fue vendida en el pasado?
+
+38
+00:01:35,535 --> 00:01:37,410
+¿Cuál fue el precio de venta?
+
+39
+00:01:37,410 --> 00:01:40,270
+Probablemente
+ya adivinaron que la ubicación
+
+40
+00:01:40,270 --> 00:01:43,340
+puede ser un factor principal
+en los precios de las propiedades.
+
+41
+00:01:43,340 --> 00:01:46,335
+Lo sé porque vivo en el Área
+de la Bahía de California.
+
+42
+00:01:46,335 --> 00:01:49,245
+¿No sería genial si sus datos
+sin procesar de estas viviendas
+
+43
+00:01:49,245 --> 00:01:51,620
+ya estuvieran limpios
+y que solo los campos clave
+
+44
+00:01:51,620 --> 00:01:53,000
+que necesitan estuvieran ahí?
+
+45
+00:01:53,000 --> 00:01:56,965
+¿Y que estén en un formato que puedan
+usar en su modelo de AA para entrenarlo?
+
+46
+00:01:56,965 --> 00:01:59,980
+Siento decirles
+que eso nunca va a suceder.
+
+47
+00:02:00,430 --> 00:02:03,600
+Una buena ingeniería de atributos,
+el proceso que debemos realizar
+
+48
+00:02:03,600 --> 00:02:08,449
+puede tomar un promedio de 50 a 75%
+del tiempo que trabajen en proyecto de AA.
+
+49
+00:02:08,449 --> 00:02:10,785
+Ni siquiera hemos comenzado con el AA.
+
+50
+00:02:10,785 --> 00:02:14,810
+Estamos en la preparación de los datos
+y es esencial que lo hagamos.
+
+51
+00:02:14,810 --> 00:02:16,610
+Lo que queremos hacer aquí
+
+52
+00:02:16,610 --> 00:02:18,440
+se puede ver en este ejemplo rápido.
+
+53
+00:02:18,440 --> 00:02:21,480
+Tenemos datos sin procesar de casas
+a la izquierda en un vector
+
+54
+00:02:21,480 --> 00:02:24,850
+y debemos asignarlos a uno
+o más campos a la derecha en un proto.
+
+55
+00:02:24,850 --> 00:02:27,970
+Así es cómo podemos usarlos
+en nuestro modelo AA para entrenarlo.
+
+56
+00:02:27,970 --> 00:02:30,930
+Esto puede parecerles
+un ejercicio simple de asignación.
+
+57
+00:02:30,930 --> 00:02:34,330
+Pero un momento.
+¿Cómo saben qué atributos usar?
+
+58
+00:02:34,330 --> 00:02:37,620
+¿O qué constituye un buen
+atributo en primer lugar?

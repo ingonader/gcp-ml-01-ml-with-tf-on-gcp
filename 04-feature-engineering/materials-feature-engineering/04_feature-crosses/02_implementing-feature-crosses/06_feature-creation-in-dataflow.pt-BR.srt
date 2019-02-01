@@ -1,0 +1,194 @@
+1
+00:00:00,000 --> 00:00:04,485
+Lembre-se de que existem três locais
+para fazer engenharia de atributos.
+
+2
+00:00:04,485 --> 00:00:07,710
+Vimos como fazer o
+pré-processamento de atributos
+
+3
+00:00:07,710 --> 00:00:11,490
+e a criação de atributos em tempo real
+no TensorFlow.
+
+4
+00:00:11,490 --> 00:00:17,660
+Outra opção é fazer o pré-processamento da
+criação de atributos no Cloud Dataflow.
+
+5
+00:00:17,660 --> 00:00:23,130
+Aqui, o Dataflow é usado para criar um
+conjunto de dados pré-processados
+
+6
+00:00:23,130 --> 00:00:28,955
+ou aumentados, e esse novo conjunto de
+dados é usado para treinar o modelo.
+
+7
+00:00:28,955 --> 00:00:31,775
+Durante a previsão, precisamos descobrir
+
+8
+00:00:31,775 --> 00:00:34,995
+um jeito de realizar as mesmas
+etapas de pré-processamento.
+
+9
+00:00:34,995 --> 00:00:37,485
+Então, esse método funciona melhor
+
+10
+00:00:37,485 --> 00:00:41,845
+se o Dataflow também fizer parte de um
+tempo de execução de previsão.
+
+11
+00:00:41,845 --> 00:00:46,425
+Lembre-se de que a arquitetura
+de referência do GCP faz isso.
+
+12
+00:00:46,425 --> 00:00:51,950
+O Dataflow, por poder manipular dados
+de streaming e em lote,
+
+13
+00:00:51,950 --> 00:00:56,550
+faz parte do canal
+no treinamento e na previsão.
+
+14
+00:00:56,550 --> 00:00:58,210
+Se você fizer isso,
+
+15
+00:00:58,210 --> 00:01:02,715
+o Dataflow será um bom local para
+fazer o pré-processamento.
+
+16
+00:01:02,715 --> 00:01:05,350
+O Dataflow é ideal para atributos
+
+17
+00:01:05,350 --> 00:01:08,910
+que envolvem agregação
+definida pelo intervalo de tempo.
+
+18
+00:01:08,910 --> 00:01:13,725
+Por exemplo, talvez você queira
+usar como um atributo
+
+19
+00:01:13,725 --> 00:01:19,640
+a média de pessoas que
+analisaram um produto na última hora.
+
+20
+00:01:19,640 --> 00:01:25,290
+No treino, você pode usar o Dataflow para
+calcular isso dos arquivos de registros,
+
+21
+00:01:25,290 --> 00:01:29,790
+mas a natureza desse atributo implica
+que você precisa usar o Dataflow
+
+22
+00:01:29,790 --> 00:01:34,965
+em tempo real para calcular isso
+com base no tráfego em tempo real.
+
+23
+00:01:34,965 --> 00:01:39,905
+Você pode adicionar campos extras
+em qualquer PTransform no Dataflow.
+
+24
+00:01:39,905 --> 00:01:42,394
+Os campos de adição neste exemplo
+
+25
+00:01:42,394 --> 00:01:45,790
+são um pardue que pega
+os campos de entrada,
+
+26
+00:01:45,790 --> 00:01:47,850
+extrai a contagem de passageiros,
+
+27
+00:01:47,850 --> 00:01:53,135
+acumula-os e adiciona uma contagem de
+visitantes como contagem da hora passada.
+
+28
+00:01:54,475 --> 00:01:59,260
+O mesmo código e o Dataflow funcionam
+no lote e no streaming, então você tem
+
+29
+00:01:59,260 --> 00:02:04,505
+o método de adicionar campos no canal
+de treino e no canal de previsões.
+
+30
+00:02:05,385 --> 00:02:09,175
+A terceira opção é usar
+uma abordagem híbrida.
+
+31
+00:02:09,175 --> 00:02:12,770
+Os pesquisadores do Google publicaram
+como fazer isso recentemente,
+
+32
+00:02:12,770 --> 00:02:16,255
+e analisaremos isso em detalhes
+no próximo módulo.
+
+33
+00:02:16,255 --> 00:02:19,075
+Mas a essência disso é que,
+
+34
+00:02:19,075 --> 00:02:23,975
+durante o treino, você criará um conjunto
+de dados pré-processados com o Dataflow.
+
+35
+00:02:23,975 --> 00:02:29,840
+No entanto, suas transformações em si
+serão implementadas no TensorFlow.
+
+36
+00:02:29,840 --> 00:02:32,095
+Assim, durante as previsões,
+
+37
+00:02:32,095 --> 00:02:35,890
+a engenharia de atributos é parte
+do gráfico do TensorFlow.
+
+38
+00:02:35,890 --> 00:02:39,580
+Isso é muito vantajoso
+porque o Dataflow é ótimo
+
+39
+00:02:39,580 --> 00:02:43,285
+em computar agregados em todos os dados.
+
+40
+00:02:43,285 --> 00:02:46,360
+Enquanto o TensorFlow é vantajoso
+
+41
+00:02:46,360 --> 00:02:50,180
+quando se trata de manipular os campos
+de entrada em tempo real.

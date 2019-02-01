@@ -1,0 +1,761 @@
+1
+00:00:00,720 --> 00:00:04,840
+In the next part of the section, you will
+learn more about Google Cloud Dataflow,
+
+2
+00:00:04,840 --> 00:00:07,900
+which is a complimentary
+technology to Apache Beam.
+
+3
+00:00:07,900 --> 00:00:11,350
+And both of them can help you build and
+run pre-processing and
+
+4
+00:00:11,350 --> 00:00:12,010
+feature engineering.
+
+5
+00:00:13,110 --> 00:00:17,300
+So first of all, what is Cloud Dataflow?
+
+6
+00:00:17,300 --> 00:00:20,070
+One of the ways to think about
+feature pre-processing, or
+
+7
+00:00:20,070 --> 00:00:24,250
+even any data transformation,
+is to think in terms of pipelines.
+
+8
+00:00:24,250 --> 00:00:26,380
+Here, when I say pipeline,
+
+9
+00:00:26,380 --> 00:00:30,940
+I mean a sequence of steps that change
+data from one format into another.
+
+10
+00:00:30,940 --> 00:00:34,660
+So suppose you have some data in
+a data warehouse, like BigQuery.
+
+11
+00:00:34,660 --> 00:00:38,820
+Then, you can use BigQuery as
+an input to your pipeline.
+
+12
+00:00:38,820 --> 00:00:41,310
+Do a sequence of steps
+to transform the data,
+
+13
+00:00:41,310 --> 00:00:44,520
+maybe introduce some new features
+as part of the transformation.
+
+14
+00:00:44,520 --> 00:00:48,050
+Finally, you can save the result to
+an album, like Google Cloud storage.
+
+15
+00:00:49,550 --> 00:00:52,200
+Now, Cloud Dataflow is a platform
+
+16
+00:00:52,200 --> 00:00:56,350
+that allows you to run these kinds
+of data processing pipelines.
+
+17
+00:00:56,350 --> 00:01:01,610
+Dataflow can run pipelines written in
+Python and Java programming languages.
+
+18
+00:01:01,610 --> 00:01:04,860
+Dataflow sets itself
+apart as a platform for
+
+19
+00:01:04,860 --> 00:01:09,310
+data transformations because it is
+a serverless, fully managed offering from
+
+20
+00:01:09,310 --> 00:01:12,970
+Google that allows you to execute
+data processing pipelines at scale.
+
+21
+00:01:14,110 --> 00:01:18,090
+As a developer, you don't have to worry
+about managing the size of the cluster
+
+22
+00:01:18,090 --> 00:01:19,035
+that runs your pipeline.
+
+23
+00:01:19,035 --> 00:01:22,910
+Dataflow can change the amount
+of computer resources,
+
+24
+00:01:22,910 --> 00:01:26,970
+the number of servers that will run
+your pipeline, and do that elastically
+
+25
+00:01:26,970 --> 00:01:30,200
+depending on the amount of data that
+your pipeline needs to process.
+
+26
+00:01:30,200 --> 00:01:31,725
+The way that you write code for
+
+27
+00:01:31,725 --> 00:01:36,340
+Dataflow is by using an open
+source library called Apache Beam.
+
+28
+00:01:36,340 --> 00:01:40,532
+So to implement a data processing
+pipeline, you write your code using
+
+29
+00:01:40,532 --> 00:01:45,100
+the Apache Beam APIs, and
+then deploy the code to Cloud Dataflow.
+
+30
+00:01:45,100 --> 00:01:48,660
+One thing that makes Apache Beam easy
+to use is that the code written for
+
+31
+00:01:48,660 --> 00:01:52,524
+Beam is similar to how people think
+of data processing pipelines.
+
+32
+00:01:53,650 --> 00:01:55,690
+Take a look at the pipeline
+in the center of the slide.
+
+33
+00:01:56,790 --> 00:02:00,410
+This sample Python code
+analyzes the number of words
+
+34
+00:02:00,410 --> 00:02:02,840
+in lines of text in documents.
+
+35
+00:02:02,840 --> 00:02:05,460
+So as an input to the pipeline,
+
+36
+00:02:05,460 --> 00:02:08,780
+you may want to read text files
+from Google Cloud Storage.
+
+37
+00:02:08,780 --> 00:02:14,590
+Then, you transform the data, figure out
+the number of words in each line of text.
+
+38
+00:02:14,590 --> 00:02:18,700
+As I will explain shortly, this kind of a
+transformation can be automatically scaled
+
+39
+00:02:18,700 --> 00:02:20,500
+by data flow to run in parallel.
+
+40
+00:02:21,900 --> 00:02:27,180
+Next in your pipeline, you can group lines
+by the number of words using grouping and
+
+41
+00:02:27,180 --> 00:02:29,370
+other aggregation operations.
+
+42
+00:02:29,370 --> 00:02:31,050
+You can also filter out values.
+
+43
+00:02:31,050 --> 00:02:34,985
+For example,
+to ignore lines with fewer than ten words.
+
+44
+00:02:34,985 --> 00:02:39,075
+Once all the transformation, grouping,
+and filtering operations are done,
+
+45
+00:02:39,075 --> 00:02:42,045
+the pipeline writes the result
+to Google Cloud Storage.
+
+46
+00:02:43,845 --> 00:02:47,765
+Notice that this implementation
+separates the pipeline definition
+
+47
+00:02:47,765 --> 00:02:48,975
+from the pipeline execution.
+
+48
+00:02:50,165 --> 00:02:54,360
+All the steps that you see call to
+the p.run method are just defining what
+
+49
+00:02:54,360 --> 00:02:56,650
+the pipeline should do.
+
+50
+00:02:56,650 --> 00:03:00,290
+The pipeline actually gets executed
+only when you call the run method.
+
+51
+00:03:01,350 --> 00:03:05,860
+One of the coolest things about Apache
+Beam is that it supports both batch and
+
+52
+00:03:05,860 --> 00:03:09,770
+streaming data processing
+using the same pipeline code.
+
+53
+00:03:09,770 --> 00:03:15,490
+In fact, the library's name, Beam, comes
+from a contraction of batch and stream.
+
+54
+00:03:15,490 --> 00:03:17,600
+So why should you care?
+
+55
+00:03:17,600 --> 00:03:21,290
+Well, it means that regardless of whether
+your data is coming from a batch data
+
+56
+00:03:21,290 --> 00:03:25,360
+source, like Google Cloud Storage, or
+even from a streaming data source,
+
+57
+00:03:25,360 --> 00:03:29,360
+like Pub/Sub,
+you can reuse the same pipeline logic.
+
+58
+00:03:29,360 --> 00:03:33,940
+You can also output data to both batch and
+streaming data destinations.
+
+59
+00:03:33,940 --> 00:03:36,410
+You can also easily
+change these data sources
+
+60
+00:03:36,410 --> 00:03:40,100
+in the pipeline without having to change
+the logic of your pipeline implementation.
+
+61
+00:03:41,420 --> 00:03:42,030
+Here's how.
+
+62
+00:03:43,270 --> 00:03:46,140
+Notice in the code on
+the screen that the read and
+
+63
+00:03:46,140 --> 00:03:50,320
+write operations are done
+using the beam.io methods.
+
+64
+00:03:50,320 --> 00:03:52,880
+These methods use different connectors.
+
+65
+00:03:52,880 --> 00:03:55,300
+For example, the Pub/Sub connector
+
+66
+00:03:55,300 --> 00:03:59,640
+can read the content of the messages
+that are streamed into the pipeline.
+
+67
+00:03:59,640 --> 00:04:04,420
+Other connects can withdraw text from
+Google Cloud Storage or filesystem.
+
+68
+00:04:04,420 --> 00:04:07,140
+The Apache Beam has
+a variety of connectors
+
+69
+00:04:07,140 --> 00:04:10,310
+to help you use services on
+Google Cloud like BigQuery.
+
+70
+00:04:10,310 --> 00:04:13,990
+Also, since Apache Beam is
+an open source project,
+
+71
+00:04:13,990 --> 00:04:16,650
+companies can implement
+their own connectors.
+
+72
+00:04:16,650 --> 00:04:20,010
+Before going too much further,
+let's cover some terminology
+
+73
+00:04:20,010 --> 00:04:23,460
+that I will be using over and
+over again in this module.
+
+74
+00:04:23,460 --> 00:04:27,277
+You already know about the data processing
+pipelines that can run on Dataflow.
+
+75
+00:04:28,388 --> 00:04:32,860
+On the right-hand side of the slide,
+you can see the graphic for the pipeline.
+
+76
+00:04:32,860 --> 00:04:36,720
+Let's explore the Apache Beam
+pipelines in more detail.
+
+77
+00:04:36,720 --> 00:04:41,254
+The pipeline must have a source, which is
+where the pipeline gets the input data.
+
+78
+00:04:42,472 --> 00:04:44,825
+The pipeline has a series of steps,
+
+79
+00:04:44,825 --> 00:04:47,970
+each of the steps in Beam
+is called a transform.
+
+80
+00:04:49,360 --> 00:04:53,370
+Each transform works on a data
+structure called PCollection.
+
+81
+00:04:53,370 --> 00:04:57,113
+I'll return to a detailed
+explanation of PCollections shortly.
+
+82
+00:04:57,113 --> 00:05:01,533
+For now, just remember that every
+transform gets a PCollection as input and
+
+83
+00:05:01,533 --> 00:05:04,170
+outputs the result to another PCollection.
+
+84
+00:05:05,550 --> 00:05:08,560
+The result of the last transform
+in a pipeline is important.
+
+85
+00:05:09,760 --> 00:05:12,660
+It goes to a sink,
+which is the out of the pipeline.
+
+86
+00:05:14,570 --> 00:05:18,090
+To run a pipeline,
+you need something called a runner.
+
+87
+00:05:18,090 --> 00:05:20,858
+A runner takes the pipeline code and
+executes it.
+
+88
+00:05:20,858 --> 00:05:25,880
+Runners are platform-specific, meaning
+that there's a data flow runner for
+
+89
+00:05:25,880 --> 00:05:29,030
+executing a pipeline on Cloud Dataflow.
+
+90
+00:05:29,030 --> 00:05:33,580
+There's another runner if you want to
+use Apache Spark to run your pipeline.
+
+91
+00:05:33,580 --> 00:05:37,620
+There's also a direct router that will
+execute a pipeline on your local computer.
+
+92
+00:05:38,660 --> 00:05:41,782
+If you'd like, you can even
+implement your own custom router for
+
+93
+00:05:41,782 --> 00:05:43,894
+your own distributed computing platform.
+
+94
+00:05:45,930 --> 00:05:49,200
+So how do you implement these pipelines?
+
+95
+00:05:49,200 --> 00:05:50,992
+If you take a look at
+the code on the slide,
+
+96
+00:05:50,992 --> 00:05:54,505
+you will notice that the pipeline
+operation in the main method is
+
+97
+00:05:54,505 --> 00:05:58,930
+the beam.pipeline which
+creates a pipeline instance.
+
+98
+00:05:58,930 --> 00:06:01,400
+Once it is created, every transform
+
+99
+00:06:01,400 --> 00:06:04,390
+is implemented as an argument to
+the apply method of the pipeline.
+
+100
+00:06:05,800 --> 00:06:08,507
+In the Python version of
+the Apache Beam library,
+
+101
+00:06:08,507 --> 00:06:12,510
+the pipe operator is overloaded
+to call the apply method.
+
+102
+00:06:12,510 --> 00:06:16,560
+That's why you have this funky syntax
+with pipe operators on top of each other.
+
+103
+00:06:16,560 --> 00:06:18,650
+I like it,
+it's much easier to read this way.
+
+104
+00:06:19,790 --> 00:06:24,540
+The strings, like read, countwords, and
+write are just the human readable names
+
+105
+00:06:24,540 --> 00:06:27,270
+that you can specify for
+each transform in the pipeline.
+
+106
+00:06:28,670 --> 00:06:34,340
+Notice that this pipeline is reading from
+and writing to Google Cloud storage.
+
+107
+00:06:34,340 --> 00:06:36,680
+And as I pointed out earlier,
+
+108
+00:06:36,680 --> 00:06:40,330
+none of the pipeline operators
+actually run the pipeline.
+
+109
+00:06:40,330 --> 00:06:43,140
+When you need your pipeline
+to process some data,
+
+110
+00:06:43,140 --> 00:06:47,560
+you need to call the run method on
+the pipeline instance to execute it.
+
+111
+00:06:47,560 --> 00:06:51,280
+As I mentioned earlier, every time you
+use the pipe operator, you provide
+
+112
+00:06:51,280 --> 00:06:56,730
+a PCollection data structure as input and
+return a PCollection as output.
+
+113
+00:06:56,730 --> 00:07:00,630
+An important thing to know about
+PCollections is that unlike many data
+
+114
+00:07:00,630 --> 00:07:05,230
+structures, PCollection does not
+store all of its data in memory.
+
+115
+00:07:05,230 --> 00:07:07,424
+Remember, the Dataflow is elastic and
+
+116
+00:07:07,424 --> 00:07:10,902
+can use a cluster of
+servers through a pipeline.
+
+117
+00:07:10,902 --> 00:07:14,710
+So PCollection is like a data structure
+with pointers to where the data flow
+
+118
+00:07:14,710 --> 00:07:16,350
+cluster stores your data.
+
+119
+00:07:17,460 --> 00:07:20,880
+That's how Dataflow can provide
+elastic scaling of the pipeline.
+
+120
+00:07:22,300 --> 00:07:24,830
+Let's say we have a PCollection of lines.
+
+121
+00:07:24,830 --> 00:07:28,390
+For example, the lines could come
+from a file in Google Cloud storage.
+
+122
+00:07:29,470 --> 00:07:33,707
+One way to implement the transformation
+is to take a PCollection of strings,
+
+123
+00:07:33,707 --> 00:07:37,827
+which are called lines in the code,
+and return a PCollection of integers.
+
+124
+00:07:38,981 --> 00:07:43,820
+This specific transform step in the code
+computes the length of each line.
+
+125
+00:07:43,820 --> 00:07:48,050
+As you already know, Apache Beam SDK
+comes with a variety of connectors
+
+126
+00:07:48,050 --> 00:07:51,410
+that enable Dataflow to read
+from many data sources,
+
+127
+00:07:51,410 --> 00:07:55,670
+including text files in
+Goggle Cloud Storage, or file systems.
+
+128
+00:07:55,670 --> 00:07:59,470
+With different connectors, it's possible
+to read even from real time streaming
+
+129
+00:07:59,470 --> 00:08:03,686
+data sources like Google Cloud Pub/Sub,
+or Kafka.
+
+130
+00:08:03,686 --> 00:08:07,670
+One of the connectors is for
+BigQuery data warehouse on GCP.
+
+131
+00:08:09,320 --> 00:08:13,370
+When using the BigQuery connector,
+you need to specify the SQL statement
+
+132
+00:08:13,370 --> 00:08:18,750
+that BigQuery will evaluate to return
+back a table with rows of results.
+
+133
+00:08:18,750 --> 00:08:23,044
+The table rows are then passed to the
+pipeline in a PCollection to export out
+
+134
+00:08:23,044 --> 00:08:24,556
+the result of a pipeline.
+
+135
+00:08:24,556 --> 00:08:29,080
+There are connectors for Cloud storage,
+pub/sub, BigQuery, and more.
+
+136
+00:08:29,080 --> 00:08:31,630
+Of course, you can also just write
+the results to the file system.
+
+137
+00:08:32,690 --> 00:08:37,560
+An important thing to keep in mind when
+writing to a file system is that data flow
+
+138
+00:08:37,560 --> 00:08:41,730
+can distribute execution of your
+pipeline across a cluster of servers.
+
+139
+00:08:41,730 --> 00:08:44,340
+This means that there
+can be multiple servers
+
+140
+00:08:44,340 --> 00:08:47,390
+trying to write results
+to the file system.
+
+141
+00:08:47,390 --> 00:08:51,570
+In order to avoid contention issues where
+multiple servers are trying to get a file
+
+142
+00:08:51,570 --> 00:08:56,210
+lock to the same file concurrently,
+by default, the text I/O connector will
+
+143
+00:08:56,210 --> 00:09:01,550
+the output, writing the results across
+multiple files in the file system.
+
+144
+00:09:01,550 --> 00:09:06,115
+For example, here, the pipeline is writing
+the result to a file with the prefix
+
+145
+00:09:06,115 --> 00:09:07,900
+output in the data connector.
+
+146
+00:09:09,080 --> 00:09:12,270
+Let's say there's a total of
+ten files that will be written.
+
+147
+00:09:12,270 --> 00:09:18,690
+So Dataflow will write files like output 0
+of 10 txt, output 1 of 10 txt and so on.
+
+148
+00:09:18,690 --> 00:09:20,880
+Keep in mind that if you do that,
+
+149
+00:09:20,880 --> 00:09:24,090
+you will have the file lock contention
+issue that I mentioned earlier.
+
+150
+00:09:24,090 --> 00:09:27,450
+So it only makes sense to use the writes
+
+151
+00:09:27,450 --> 00:09:31,550
+when working with smaller data sets
+that can be processed in a single node.
+
+152
+00:09:31,550 --> 00:09:33,670
+With a pipeline implemented in Python,
+
+153
+00:09:33,670 --> 00:09:36,560
+you can run the code directly in
+the shell using the Python command.
+
+154
+00:09:38,000 --> 00:09:41,298
+To submit the pipeline as a job
+to execute in Dataflow on GCP,
+
+155
+00:09:41,298 --> 00:09:44,915
+you need to provide some
+additional information.
+
+156
+00:09:44,915 --> 00:09:49,455
+You need to include arguments with
+the name of the GCP project, location in
+
+157
+00:09:49,455 --> 00:09:54,465
+Google Cloud Storage Bucket where Dataflow
+will keep some staging and temporary data.
+
+158
+00:09:54,465 --> 00:09:57,145
+And you also need to specify
+the name of the runner,
+
+159
+00:09:57,145 --> 00:09:58,995
+which in this case is the DataFlowRunner.

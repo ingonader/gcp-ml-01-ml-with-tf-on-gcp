@@ -1,0 +1,132 @@
+Bienvenidos. En este lab, tomarán el conjunto de datos
+de los taxis de Nueva York de BigQuery y lo preprocesarán
+con la herramienta Cloud Dataprep. Con ella, explorarán la distribución
+de los valores de los datos visualizarán las distribuciones
+con gráficos de histogramas y luego implementarán un flujo
+en Dataprep para crear un nuevo atributo basado en el promedio de viajes
+en taxi por hora en un periodo móvil. Finalmente, implementarán
+y ejecutarán el flujo de Dataprep en GCP y supervisarán la ejecución con Dataflow. Veamos. Para comenzar con este lab
+debemos preparar algunos requisitos. Comenzamos en el panel de control
+de Google Cloud Platform. Primero, necesitamos
+un depósito de Google Cloud Storage. Para crear uno, vamos
+al menú Products & services al que pueden acceder
+mediante el menú de tres líneas. Bajen hasta Storage Browser, y hagan clic en Create Bucket. Como pueden ver en la pantalla el nombre del depósito
+debe ser único a nivel global. Tengo un nombre único
+para mi depósito en la ubicación us-east4. Después de hacer clic en Create puedo ver que el depósito
+con su nombre único ya está listo. Lo siguiente que hay que preparar
+es el conjunto de datos de BigQuery. Podemos encontrar BigQuery
+en el menú Products & services en la sección Big Data. Cuando hacemos clic en BigQuery veremos que se abre una pestaña nueva. A la derecha del nombre del proyecto hagan clic en la flecha hacia abajo
+y seleccionen Create new dataset. Usen el nombre taxi_cab_reporting
+para el conjunto de datos y hagan clic en OK. Cuando el conjunto de datos está listo regresamos al panel de control
+de Google Cloud Platform. Ahora, vamos al vínculo de Dataprep
+en el menú Products & services. Como Cloud Dataprep
+es un servicio de un socio de Google hay que aceptar
+sus términos y condiciones. Hagan clic en Accept. También hay que hacer clic
+en Allow, para que Trifacta el socio de Google que desarrolla
+Dataprep, pueda acceder a los datos. Cuando hagan clic en Allow, Dataprep demorará unos minutos
+en habilitarse para el proyecto. Por eso, el video avanza rápido
+para que no tengamos que esperar. Ahora, deben seleccionar
+la cuenta que desean usar para Cloud Dataprep y permitir
+que Dataprep acceda al proyecto. Cuando configuren Dataprep
+en el proyecto por primera vez tendrán que especificar el depósito de
+almacenamiento que contendrá los datos. Aquí pueden ver que el depósito
+que creamos al inicio del lab se usa para configurar Dataprep. Una vez seleccionado el depósito,
+hagan clic en Continue. Tras configurar Dataprep pueden descartar el instructivo de ayuda con un clic
+en "Don't show me any helpers". Ahora, usaremos Dataprep
+para crear un flujo nuevo. Llamémoslo "NYC Taxi reporting". El flujo mostrará un proceso
+para transferir, transformar y analizar los datos de los viajes en taxi. Hagan clic en Create. Lo primero que harán para crear un flujo es agregar conjuntos de datos
+para que el flujo los procese. En este caso, importaremos
+conjuntos de datos predefinidos que nuestro equipo guardó
+en un depósito público de Cloud Storage. Para acceder a él,
+usen el nombre asl-ml-immersion en el directorio /nyctaxicab. El directorio contiene varios archivos. Usarán los archivos con los datos
+de viajes en taxi de 2015 y 2016. Fíjense en que son archivos .csv,
+de valores separados por comas. Hagan clic en Import. En breve, verán
+que los dos archivos se agregan al flujo. Para implementar el procesamiento de datos
+o wrangling para estos conjuntos de datos tendremos que agregar una receta. Ahora, agregaremos pasos a la receta. Una vez se haya cargado
+el conjunto de datos tendrán una vista previa
+de una muestra de datos del conjunto. Por ejemplo, podemos ver que el
+conjunto de datos incluye información sobre los viajes en taxi,
+como la fecha y hora de inicio la fecha y hora de fin,
+y la cantidad de pasajeros del taxi. También podemos ver
+en el histograma de las distancias que la mayoría de los viajes
+fueron de menos de cinco millas. Ahora, aplicaremos la operación Union
+a los conjuntos de datos de 2015 y 2016 para trabajar con más filas de datos. Seleccionamos el conjunto de 2016
+y hacemos clic en Add and Align by Name para que los nombres
+con los encabezados de columnas adecuados se alineen con la versión
+de los datos resultante de Union. Una vez que agregamos
+el paso de unión a la receta Dataprep hace una vista previa de la unión y presenta una muestra de los conjuntos
+de datos con los viajes de 2015 y 2016. Observen que los datos
+de fecha y hora de inicio del viaje están en columnas diferentes. Ya que este lab muestra cómo calcular
+promedios móviles del costo de los viajes convertiremos los datos de entrada
+al formato de fecha y hora de SQL. Para eso, agregaremos
+una operación Merge a la receta. Eso concatenará
+los valores de varias columnas. En este caso, las columnas
+se llaman pickup_date y pickup_time. Usaremos pickup_datetime
+como nombre de la nueva columna. Además, usaremos un espacio como
+delimitador de valores. Observen que, a la izquierda, aparece
+una vista previa de la nueva columna. Ahora, crearemos
+una nueva columna derivada que convertirá pickup_time
+al formato de fecha y hora de SQL. Una vez que un nuevo campo
+de fecha y hora esté disponible extraeremos solo la información
+del año, el mes, la fecha y la hora sin los detalles de minutos y segundos. Ya que la columna hour_pickup_datetime
+no tiene valores de minutos y segundos no se puede convertir
+al formato de fecha y hora de SQL. Por ende, debemos crear una nueva
+columna que sí pueda convertirse en un valor de fecha
+y hora válido para SQL. Para hacerlo, crearemos
+una nueva operación Merge y volveremos a usar
+el wrangler de Merge. Este wrangler concatenará los valores
+de la columna hour_pickup_datetime con una string que contiene cuatro ceros,
+para el valor de los minutos y segundos. Observen que cuando agregamos una columna se le asigna automáticamente
+un nombre como column1. Podemos cambiarle el nombre. En este caso, le pondremos pickup_hour. Ahora, calcularemos algunas estadísticas
+con los valores de pickup_hour. Podemos usar las funciones estándar
+de agregación estadística de SQL como sum o average. Podemos ver que este wrangler
+calculará las sumas y los promedios de la cantidad de pasajeros y la misma combinación
+de la suma y el promedio para la distancia
+del viaje y la tarifa. Por último, calculará
+los montos máximos de cada hora de inicio. Como antes, observen que tenemos
+una vista previa de los resultados de las estadísticas calculadas
+en los histogramas de la izquierda. Además, si ven
+los montos promedio en los histogramas la mayoría de los valores
+oscilan entre USD 18 y 19 por viaje. Ahora, calcularemos
+el promedio móvil de las tarifas. Para ello, usaremos los datos
+de las 3 horas siguientes a cada hora de inicio. Para este cálculo, usaremos 
+la función ROLLINGAVERAGE de Dataprep. Estos son los valores
+del promedio móvil ordenados por hora de inicio. Por último, le ponemos
+"average_3hour_rolling_fare" a la columna. Una vez que la receta está lista podemos implementarla
+como trabajo de Google Cloud Dataflow. Para hacerlo, debemos hacer clic
+en Run job y especificar la ubicación en la que almacenaremos
+los resultados del trabajo. De manera predeterminada, se guardan
+como archivo .csv en Google Cloud Storage. Como alternativa, podemos
+cambiar el destino a BigQuery y crear una nueva tabla en BigQuery
+cada vez que se ejecuta el trabajo. Si cambiamos la selección de la derecha
+a "Create new table every run" y renombramos la tabla
+a tlc_yellow_trips_reporting obtendremos una nueva tabla
+en el conjunto de datos de los taxis. Recuerden que este es el conjunto
+de datos que crearon al comienzo del lab. Ahora, ejecuten el trabajo. Cuando el trabajo
+entre en la etapa "Transforming" Dataprep comenzará
+a implementarlo en Dataflow. Esto suele tomar un tiempo. Podemos supervisar el progreso del trabajo
+en la sesión de trabajo, en Dataprep. Para ello, hacemos clic
+en los puntos suspensivos de la derecha. Este menú no tendrá el vínculo
+al trabajo de Dataflow inmediatamente después de implementarlo pero si esperan un poco
+y actualizan la página verán que se actualiza el menú
+y aparece un vínculo al trabajo. Si hacen clic en el vínculo, irán
+automáticamente a la interfaz de Dataflow donde podrán supervisar
+los pasos de transformación detallados en Dataflow, creados por Dataprep. En el lado derecho de la IU de Dataflow pueden ver detalles
+acerca de la ejecución del trabajo. Aquí, pueden ver que,
+como el trabajo acaba de comenzar el clúster de Dataflow que ejecutará
+el trabajo aún no ajustó su escala. Sin embargo, ya pueden supervisar
+los resultados de la configuración. Aquí, no ha comenzado ninguno
+de los pasos de transformación excepto los pocos que están
+preparando la tabla en BigQuery y que recién comienzan a obtener datos
+de los archivos .csv de Cloud Storage. Además de supervisar
+este trabajo desde Dataflow pueden navegar a BigQuery
+y supervisar el resultado del trabajo en el conjunto de datos
+taxi_cab_reporting. Como recordarán,
+cuando el trabajo comienza a ejecutarse insertará valores en una nueva tabla
+llamada tlc_yellow_trips_reporting. Ya que la tabla tarda un tiempo en crearse tal vez deban esperar y actualizar
+la página para ver los avances. Una vez que aparece la tabla,
+podemos ingresar una instrucción de SQL para obtener resultados de la tabla. Asegúrense de haber configurado
+el dialecto de SQL correctamente antes. Podemos ver que la ejecución
+del trabajo generó unos 192 kb de datos lo que incluye
+información sobre horas de inicio distancias promedio, tarifas promedio
+y otra información calculada por Dataflow. Con esto, concluimos este lab.

@@ -1,0 +1,389 @@
+1
+00:00:00,280 --> 00:00:03,180
+Ahora que entienden
+lo que son los atributos
+
+2
+00:00:03,180 --> 00:00:07,510
+y por qué los usamos,
+les mostraré cómo implementar
+
+3
+00:00:07,510 --> 00:00:09,230
+las combinaciones de atributos.
+
+4
+00:00:09,230 --> 00:00:12,415
+Para crear una combinación de atributos
+con TensorFlow
+
+5
+00:00:12,415 --> 00:00:17,780
+usen el método crossed_column
+en el módulo tf.feature_column.
+
+6
+00:00:17,780 --> 00:00:20,060
+Este es el mismo módulo
+para el que obtuvieron
+
+7
+00:00:20,060 --> 00:00:23,580
+una columna numérica y una categórica
+con una lista de vocabulario.
+
+8
+00:00:23,580 --> 00:00:26,360
+Este es ese mismo módulo.
+
+9
+00:00:26,360 --> 00:00:31,050
+El primer argumento en mi ejemplo
+es la lista de columnas categóricas.
+
+10
+00:00:32,030 --> 00:00:33,860
+Estamos pasando una lista
+
+11
+00:00:33,860 --> 00:00:37,500
+para combinar dos o tres
+o cualquier cantidad de columnas.
+
+12
+00:00:37,500 --> 00:00:42,270
+Pero recuerden que estas columnas
+tienen que ser categóricas.
+
+13
+00:00:42,270 --> 00:00:44,495
+Si tienen datos numéricos
+
+14
+00:00:44,495 --> 00:00:48,070
+agrúpenlos primero
+y luego podrán hacer la combinación.
+
+15
+00:00:48,070 --> 00:00:50,330
+Cuando agrupan una columna numérica
+
+16
+00:00:50,330 --> 00:00:53,850
+están trazando esas líneas negras
+de las que hablamos
+
+17
+00:00:53,850 --> 00:00:56,685
+están discretizando la columna.
+
+18
+00:00:56,685 --> 00:00:59,220
+¿Cuál es el segundo argumento?
+
+19
+00:00:59,220 --> 00:01:04,245
+24 veces 7 es la cantidad total
+de segmentos hash.
+
+20
+00:01:04,245 --> 00:01:08,670
+Lo que TensorFlow hace
+es realizar la combinación de atributos
+
+21
+00:01:08,670 --> 00:01:11,460
+luego calcula un hash de la combinación
+
+22
+00:01:11,460 --> 00:01:15,375
+y lo coloca en uno de varios segmentos.
+
+23
+00:01:16,055 --> 00:01:19,350
+Aunque especifiqué 24 veces 7 aquí
+
+24
+00:01:19,350 --> 00:01:22,755
+no hay garantía de que no habrá colisión.
+
+25
+00:01:22,755 --> 00:01:27,440
+Es muy posible que el hash
+de las 3 p.m. del miércoles
+
+26
+00:01:27,440 --> 00:01:32,540
+módulo 168, sea el mismo
+que el de las 4 p.m. del domingo
+
+27
+00:01:32,540 --> 00:01:34,230
+módulo 168.
+
+28
+00:01:34,230 --> 00:01:40,130
+En ese caso, estas dos combinaciones
+de día y hora se considerarán juntas.
+
+29
+00:01:40,850 --> 00:01:43,195
+Profundicemos un poco en esto.
+
+30
+00:01:44,315 --> 00:01:46,380
+TensorFlow saltará estos pasos
+
+31
+00:01:46,380 --> 00:01:48,750
+y procederá directamente
+a la representación hash
+
+32
+00:01:48,750 --> 00:01:50,410
+de la combinación de atributos
+
+33
+00:01:50,410 --> 00:01:53,000
+pero es bueno analizar
+qué está ocurriendo.
+
+34
+00:01:53,540 --> 00:01:58,745
+Por simplicidad, supongamos
+que en vez de 24 veces 7
+
+35
+00:01:58,745 --> 00:02:02,570
+especifiqué 6. ¿Qué pasaría?
+
+36
+00:02:03,360 --> 00:02:08,080
+Hacemos una combinación de atributos
+y pasamos dos columnas categóricas.
+
+37
+00:02:08,080 --> 00:02:11,195
+Día de la semana tiene 7 valores únicos.
+
+38
+00:02:11,195 --> 00:02:14,440
+Hora del día tiene 24 valores únicos.
+
+39
+00:02:14,440 --> 00:02:21,495
+La combinación de atributos
+tiene 24 veces 7 o 168 valores únicos.
+
+40
+00:02:22,245 --> 00:02:24,925
+Ahora, consideremos las 3 p.m.
+del miércoles
+
+41
+00:02:24,925 --> 00:02:28,420
+3 p.m., digamos
+que es el número 15
+
+42
+00:02:28,420 --> 00:02:32,300
+y miércoles, digamos
+que es el día número 3.
+
+43
+00:02:32,300 --> 00:02:35,595
+Esto hace que el valor de la combinación
+
+44
+00:02:35,595 --> 00:02:40,130
+sea, digamos, 87 de 168.
+
+45
+00:02:40,810 --> 00:02:46,185
+Pero luego, calculo el hash de 87
+y uso un módulo 6.
+
+46
+00:02:46,785 --> 00:02:52,320
+Supongamos que esto me da la casilla 3
+para esta combinación con hash.
+
+47
+00:02:52,320 --> 00:02:56,255
+Esto es lo que la columna de atributos
+de día y hora contendrá
+
+48
+00:02:56,255 --> 00:02:58,105
+para las 3 p.m. del miércoles.
+
+49
+00:02:58,105 --> 00:03:03,235
+Un valor con codificación de un solo 1
+que corresponde al número 3.
+
+50
+00:03:03,235 --> 00:03:05,670
+De nuevo, TensorFlow no lo hace.
+
+51
+00:03:05,670 --> 00:03:09,985
+No tiene que realizar la codificación
+de un solo 1 antes de la combinación.
+
+52
+00:03:09,985 --> 00:03:13,490
+Si lo hiciera, no sería muy eficiente
+para la memoria.
+
+53
+00:03:13,490 --> 00:03:17,240
+Esto ayuda a mostrarles
+lo que ocurre conceptualmente.
+
+54
+00:03:17,240 --> 00:03:22,985
+La cantidad de segmentos hash
+controla la dispersión y las colisiones.
+
+55
+00:03:23,775 --> 00:03:26,440
+Como hicimos en la diapositiva anterior
+
+56
+00:03:26,440 --> 00:03:30,605
+si configuramos los segmentos hash
+en una cantidad mucho más pequeña
+
+57
+00:03:30,605 --> 00:03:33,470
+que la cantidad
+de valores únicos combinados
+
+58
+00:03:33,470 --> 00:03:35,590
+habrá muchas colisiones.
+
+59
+00:03:35,590 --> 00:03:37,270
+Tal vez, las 3 p.m. del miércoles
+
+60
+00:03:37,270 --> 00:03:40,160
+las 7 p.m. del miércoles,
+las 2 a.m. del jueves, etc.
+
+61
+00:03:40,160 --> 00:03:44,435
+caerán en el mismo segmento
+y se tratarán igual como iguales.
+
+62
+00:03:44,435 --> 00:03:49,575
+En promedio, un sexto de todos los valores
+de combinaciones de atributos
+
+63
+00:03:49,575 --> 00:03:51,365
+estarán en un segmento.
+
+64
+00:03:51,365 --> 00:03:56,095
+Ya que tenemos 168 valores únicos,
+en promedio
+
+65
+00:03:56,095 --> 00:04:01,205
+cada segmento contendrá 28 combinaciones
+diferentes de día y hora.
+
+66
+00:04:02,275 --> 00:04:06,470
+Debido a esto, la cantidad de datos
+que la combinación de atributos
+
+67
+00:04:06,470 --> 00:04:09,370
+puede memorizar es limitada.
+
+68
+00:04:10,340 --> 00:04:13,095
+Pero el uso de memoria también será baja
+
+69
+00:04:13,095 --> 00:04:15,545
+son solo 6 segmentos.
+
+70
+00:04:15,545 --> 00:04:20,929
+De cierta forma, estamos agregando varias
+combinaciones de día-hora en un segmento.
+
+71
+00:04:22,469 --> 00:04:26,940
+Pero ¿y si aplicamos el otro extremo
+y configuramos la cantidad
+
+72
+00:04:26,940 --> 00:04:32,920
+de segmentos hash tan alta que haya
+pocas posibilidades de colisiones?
+
+73
+00:04:33,400 --> 00:04:37,405
+Digamos que configuramos
+la cantidad de segmentos hash en 300.
+
+74
+00:04:37,405 --> 00:04:41,040
+Ahora, en promedio,
+un segmento contendrá
+
+75
+00:04:41,040 --> 00:04:45,705
+una combinación de día y hora
+o cero combinaciones.
+
+76
+00:04:45,705 --> 00:04:48,375
+Podría contener dos
+
+77
+00:04:48,375 --> 00:04:50,850
+pero las probabilidades son bajas.
+
+78
+00:04:50,850 --> 00:04:52,875
+Entonces, usar un valor alto
+
+79
+00:04:52,875 --> 00:04:56,720
+de segmentos hash
+produce una representación dispersa
+
+80
+00:04:56,720 --> 00:04:59,420
+de la combinación de atributos.
+
+81
+00:04:59,420 --> 00:05:03,335
+En la práctica, me inclino por un número
+
+82
+00:05:03,335 --> 00:05:07,065
+entre la mitad de la raíz cuadrada de N
+y el doble de N
+
+83
+00:05:07,065 --> 00:05:10,115
+según cuánto esté dispuesto
+a sacrificar la memorización
+
+84
+00:05:10,115 --> 00:05:11,765
+en favor de la dispersión
+
+85
+00:05:11,765 --> 00:05:14,030
+es simplemente
+la regla general que uso.

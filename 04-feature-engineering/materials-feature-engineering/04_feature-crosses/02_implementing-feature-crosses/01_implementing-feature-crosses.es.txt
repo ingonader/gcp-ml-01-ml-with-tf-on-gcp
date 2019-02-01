@@ -1,0 +1,51 @@
+Ahora que entienden
+lo que son los atributos y por qué los usamos,
+les mostraré cómo implementar las combinaciones de atributos. Para crear una combinación de atributos
+con TensorFlow usen el método crossed_column
+en el módulo tf.feature_column. Este es el mismo módulo
+para el que obtuvieron una columna numérica y una categórica
+con una lista de vocabulario. Este es ese mismo módulo. El primer argumento en mi ejemplo
+es la lista de columnas categóricas. Estamos pasando una lista para combinar dos o tres
+o cualquier cantidad de columnas. Pero recuerden que estas columnas
+tienen que ser categóricas. Si tienen datos numéricos agrúpenlos primero
+y luego podrán hacer la combinación. Cuando agrupan una columna numérica están trazando esas líneas negras
+de las que hablamos están discretizando la columna. ¿Cuál es el segundo argumento? 24 veces 7 es la cantidad total
+de segmentos hash. Lo que TensorFlow hace
+es realizar la combinación de atributos luego calcula un hash de la combinación y lo coloca en uno de varios segmentos. Aunque especifiqué 24 veces 7 aquí no hay garantía de que no habrá colisión. Es muy posible que el hash
+de las 3 p.m. del miércoles módulo 168, sea el mismo
+que el de las 4 p.m. del domingo módulo 168. En ese caso, estas dos combinaciones
+de día y hora se considerarán juntas. Profundicemos un poco en esto. TensorFlow saltará estos pasos y procederá directamente
+a la representación hash de la combinación de atributos pero es bueno analizar
+qué está ocurriendo. Por simplicidad, supongamos
+que en vez de 24 veces 7 especifiqué 6. ¿Qué pasaría? Hacemos una combinación de atributos
+y pasamos dos columnas categóricas. Día de la semana tiene 7 valores únicos. Hora del día tiene 24 valores únicos. La combinación de atributos
+tiene 24 veces 7 o 168 valores únicos. Ahora, consideremos las 3 p.m.
+del miércoles 3 p.m., digamos
+que es el número 15 y miércoles, digamos
+que es el día número 3. Esto hace que el valor de la combinación sea, digamos, 87 de 168. Pero luego, calculo el hash de 87
+y uso un módulo 6. Supongamos que esto me da la casilla 3
+para esta combinación con hash. Esto es lo que la columna de atributos
+de día y hora contendrá para las 3 p.m. del miércoles. Un valor con codificación de un solo 1
+que corresponde al número 3. De nuevo, TensorFlow no lo hace. No tiene que realizar la codificación
+de un solo 1 antes de la combinación. Si lo hiciera, no sería muy eficiente
+para la memoria. Esto ayuda a mostrarles
+lo que ocurre conceptualmente. La cantidad de segmentos hash
+controla la dispersión y las colisiones. Como hicimos en la diapositiva anterior si configuramos los segmentos hash
+en una cantidad mucho más pequeña que la cantidad
+de valores únicos combinados habrá muchas colisiones. Tal vez, las 3 p.m. del miércoles las 7 p.m. del miércoles,
+las 2 a.m. del jueves, etc. caerán en el mismo segmento
+y se tratarán igual como iguales. En promedio, un sexto de todos los valores
+de combinaciones de atributos estarán en un segmento. Ya que tenemos 168 valores únicos,
+en promedio cada segmento contendrá 28 combinaciones
+diferentes de día y hora. Debido a esto, la cantidad de datos
+que la combinación de atributos puede memorizar es limitada. Pero el uso de memoria también será baja son solo 6 segmentos. De cierta forma, estamos agregando varias
+combinaciones de día-hora en un segmento. Pero ¿y si aplicamos el otro extremo
+y configuramos la cantidad de segmentos hash tan alta que haya
+pocas posibilidades de colisiones? Digamos que configuramos
+la cantidad de segmentos hash en 300. Ahora, en promedio,
+un segmento contendrá una combinación de día y hora
+o cero combinaciones. Podría contener dos pero las probabilidades son bajas. Entonces, usar un valor alto de segmentos hash
+produce una representación dispersa de la combinación de atributos. En la práctica, me inclino por un número entre la mitad de la raíz cuadrada de N
+y el doble de N según cuánto esté dispuesto
+a sacrificar la memorización en favor de la dispersión es simplemente
+la regla general que uso.

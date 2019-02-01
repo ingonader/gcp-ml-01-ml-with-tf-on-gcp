@@ -1,0 +1,731 @@
+1
+00:00:00,000 --> 00:00:03,370
+So, let's move on to representing some features with some real examples.
+
+2
+00:00:03,370 --> 00:00:05,800
+Let's take this example that you see here.
+
+3
+00:00:05,800 --> 00:00:07,365
+This is my raw data,
+
+4
+00:00:07,365 --> 00:00:08,790
+I'm in an ice cream store,
+
+5
+00:00:08,790 --> 00:00:12,100
+I'm trying to figure out if my ice cream is served by some employee,
+
+6
+00:00:12,100 --> 00:00:15,520
+and if the customer waited 1.4 seconds or 1.4 minutes,
+
+7
+00:00:15,520 --> 00:00:17,385
+and what the rating is going to be.
+
+8
+00:00:17,385 --> 00:00:19,425
+So, I want to predict that rating.
+
+9
+00:00:19,425 --> 00:00:22,785
+How satisfied is my customer going to be based on who served them,
+
+10
+00:00:22,785 --> 00:00:23,970
+how long they waited,
+
+11
+00:00:23,970 --> 00:00:25,305
+what is it that they bought,
+
+12
+00:00:25,305 --> 00:00:28,080
+and what the store location was, and more and more.
+
+13
+00:00:28,080 --> 00:00:30,585
+So, fair enough, that's our data.
+
+14
+00:00:30,585 --> 00:00:32,355
+So, that's our training data,
+
+15
+00:00:32,355 --> 00:00:35,805
+I would take this training data and ultimately I have to make them all to good numbers.
+
+16
+00:00:35,805 --> 00:00:37,705
+Remember that rule, everything is going to be numeric,
+
+17
+00:00:37,705 --> 00:00:40,810
+because neural networks deal with numbers.
+
+18
+00:00:40,810 --> 00:00:44,400
+So, I'll take my data, make them all numbers and those are my features.
+
+19
+00:00:44,400 --> 00:00:47,790
+So, in Tensorflow, I'm going to take this thing which is a Json input,
+
+20
+00:00:47,790 --> 00:00:51,630
+comes out on my web application that goes into a data warehouse, I pull it out,
+
+21
+00:00:51,630 --> 00:00:55,035
+I create these numeric values and tensorflow each of these columns,
+
+22
+00:00:55,035 --> 00:00:56,865
+then a feature column.
+
+23
+00:00:56,865 --> 00:01:00,570
+So, how do we take some data like this and make them feature columns?
+
+24
+00:01:00,570 --> 00:01:01,680
+How do we make them numeric?
+
+25
+00:01:01,680 --> 00:01:06,540
+Well, the first thing is that there are some values like price or wait time.
+
+26
+00:01:06,540 --> 00:01:07,780
+These are already numeric.
+
+27
+00:01:07,780 --> 00:01:10,350
+Awesome. These are super easy to encode.
+
+28
+00:01:10,350 --> 00:01:12,410
+We'll just take them and use them as is.
+
+29
+00:01:12,410 --> 00:01:15,180
+The numeric and they have a meaningful magnitude.
+
+30
+00:01:15,180 --> 00:01:21,535
+So, 2.5 or 1.4 for the waiting time is very easy for Tensorflow to learn.
+
+31
+00:01:21,535 --> 00:01:25,540
+This is why we call it real value column.
+
+32
+00:01:25,540 --> 00:01:29,475
+So, I just say layers like real valued column price,
+
+33
+00:01:29,475 --> 00:01:32,210
+layers that real value column wait time.
+
+34
+00:01:32,210 --> 00:01:37,425
+So, these numbers we can just use as is and they'll be real valued columns.
+
+35
+00:01:37,425 --> 00:01:39,360
+What about this input?
+
+36
+00:01:39,360 --> 00:01:42,585
+Transaction ID is equal to 42.
+
+37
+00:01:42,585 --> 00:01:44,670
+Now, that's way too specific,
+
+38
+00:01:44,670 --> 00:01:47,230
+throw it out, we can't use that as a feature.
+
+39
+00:01:47,230 --> 00:01:49,940
+What about employee ID?
+
+40
+00:01:49,940 --> 00:01:54,045
+Employee ID is equal to 72365.
+
+41
+00:01:54,045 --> 00:01:57,180
+Is it numeric? Well, yeah it is a number,
+
+42
+00:01:57,180 --> 00:01:59,515
+but does it have meaningful magnitude?
+
+43
+00:01:59,515 --> 00:02:03,310
+Is somebody with an employee ID as 72365's,
+
+44
+00:02:03,310 --> 00:02:07,510
+as twice as good as an employee with an ID of 36182?
+
+45
+00:02:07,510 --> 00:02:09,235
+No, right?
+
+46
+00:02:09,235 --> 00:02:12,129
+So I can't use the employee ID as it is,
+
+47
+00:02:12,129 --> 00:02:13,645
+I have to do something with them.
+
+48
+00:02:13,645 --> 00:02:16,905
+So, let's say my ice cream shop has five employees.
+
+49
+00:02:16,905 --> 00:02:22,980
+Employee number 8345, employee number 72365, etc.
+
+50
+00:02:22,980 --> 00:02:27,075
+What I can do, I can say if this employee number is 72365,
+
+51
+00:02:27,075 --> 00:02:31,455
+I'll represent this employee's ID by this vector that you see here.
+
+52
+00:02:31,455 --> 00:02:35,380
+The vector is 01000 because I define
+
+53
+00:02:35,380 --> 00:02:40,375
+the second column as corresponding to that employee 72365.
+
+54
+00:02:40,375 --> 00:02:43,655
+So, essentially, I make it like a bit mask almost.
+
+55
+00:02:43,655 --> 00:02:48,340
+You make that employee's column one and all the other columns zero.
+
+56
+00:02:48,340 --> 00:02:50,770
+This is what's called one hot encoding,
+
+57
+00:02:50,770 --> 00:02:52,435
+there's one column that's hot,
+
+58
+00:02:52,435 --> 00:02:54,010
+and all the other columns are cold.
+
+59
+00:02:54,010 --> 00:02:56,640
+So, if you have five employees in an ice cream store,
+
+60
+00:02:56,640 --> 00:02:58,995
+you essentially have five columns.
+
+61
+00:02:58,995 --> 00:03:03,875
+Actually, usually we do four because one are linearly independent just to be detailed.
+
+62
+00:03:03,875 --> 00:03:07,635
+Let's not even worry about it. Let's say we have five employees for five columns,
+
+63
+00:03:07,635 --> 00:03:10,510
+in Tensorflow, this is called a sparse column.
+
+64
+00:03:10,510 --> 00:03:13,740
+You basically say that I want to create a sparse column with the keys,
+
+65
+00:03:13,740 --> 00:03:16,065
+and the column name this is employee ID,
+
+66
+00:03:16,065 --> 00:03:18,480
+and the keys are 8345,
+
+67
+00:03:18,480 --> 00:03:21,160
+72365 for the employee etc.
+
+68
+00:03:21,160 --> 00:03:23,970
+We just passed the strings for each of those keys,
+
+69
+00:03:23,970 --> 00:03:28,095
+and then tensorflow we'll take that string and provide a direct training time,
+
+70
+00:03:28,095 --> 00:03:31,230
+our prediction time and represent them one hand and code them,
+
+71
+00:03:31,230 --> 00:03:33,390
+it will make them all numeric for you,
+
+72
+00:03:33,390 --> 00:03:37,200
+and what we do is we say in the employee ID is your sparse column.
+
+73
+00:03:37,200 --> 00:03:41,285
+Now, this is if we know the keys before hand.
+
+74
+00:03:41,285 --> 00:03:43,960
+What if you don't know the keys before hand?
+
+75
+00:03:43,960 --> 00:03:47,860
+What do you do if you have to take your input data,
+
+76
+00:03:47,860 --> 00:03:50,080
+and you have to preprocess that data and find
+
+77
+00:03:50,080 --> 00:03:52,270
+all the key is it occurring in a trading dataset,
+
+78
+00:03:52,270 --> 00:03:55,315
+and create what's called a vocabulary of keys.
+
+79
+00:03:55,315 --> 00:03:57,010
+So, that's your first step.
+
+80
+00:03:57,010 --> 00:03:58,540
+That's the preprocessing.
+
+81
+00:03:58,540 --> 00:04:02,150
+You have to do all this before you actually even do your training,
+
+82
+00:04:02,150 --> 00:04:06,150
+and then you create a new dataset where these preprocess values can be used.
+
+83
+00:04:06,150 --> 00:04:09,250
+So, before you ever even get to training your model,
+
+84
+00:04:09,250 --> 00:04:11,800
+you need to create this vocabulary of keys,
+
+85
+00:04:11,800 --> 00:04:14,755
+and this vocabulary needs to be available at prediction time,
+
+86
+00:04:14,755 --> 00:04:16,105
+because at prediction time,
+
+87
+00:04:16,105 --> 00:04:18,025
+you just going to come back and say, "Hey,
+
+88
+00:04:18,025 --> 00:04:20,540
+I've got employee ID 72365,
+
+89
+00:04:20,540 --> 00:04:22,885
+and the model needs to know that at training time,
+
+90
+00:04:22,885 --> 00:04:28,300
+that it knew that 72365 was that second column for it to one handing code."
+
+91
+00:04:28,300 --> 00:04:30,490
+So, the vocabulary needs to be identical,
+
+92
+00:04:30,490 --> 00:04:32,140
+and the mapping of the vocabulary needs to be
+
+93
+00:04:32,140 --> 00:04:35,020
+identical between training and prediction time,
+
+94
+00:04:35,020 --> 00:04:36,690
+otherwise it's no good.
+
+95
+00:04:36,690 --> 00:04:38,980
+As a lot of you may be wondering,
+
+96
+00:04:38,980 --> 00:04:41,350
+what happens if you hire a new employee,
+
+97
+00:04:41,350 --> 00:04:43,270
+is the model still the same?
+
+98
+00:04:43,270 --> 00:04:46,230
+Well, at this point you don't have a place for this new employee.
+
+99
+00:04:46,230 --> 00:04:50,030
+So, what this means is that you're not able to predict for this new employee.
+
+100
+00:04:50,030 --> 00:04:53,114
+This kind of the thing that you need to think about beforehand,
+
+101
+00:04:53,114 --> 00:04:55,005
+you might had had something around.
+
+102
+00:04:55,005 --> 00:04:59,015
+Well, what do I do if an employee that I don't know about or employ that isn't found,
+
+103
+00:04:59,015 --> 00:05:01,615
+and you basically decide that perhaps you're going to say
+
+104
+00:05:01,615 --> 00:05:06,165
+average all of your career employees and just use that number imputed right.
+
+105
+00:05:06,165 --> 00:05:09,910
+Meanwhile, you collect data about the times that this employee is on duty,
+
+106
+00:05:09,910 --> 00:05:12,370
+and the customer satisfaction associated with that employee,
+
+107
+00:05:12,370 --> 00:05:13,540
+and for different wait times,
+
+108
+00:05:13,540 --> 00:05:14,840
+and different things that they're serving,
+
+109
+00:05:14,840 --> 00:05:16,540
+and then once you've collected that,
+
+110
+00:05:16,540 --> 00:05:18,955
+you can use that in your prediction.
+
+111
+00:05:18,955 --> 00:05:21,550
+So, if you know the key,
+
+112
+00:05:21,550 --> 00:05:23,210
+if you know the key beforehand,
+
+113
+00:05:23,210 --> 00:05:25,650
+you essentially create that sparse column with the keys,
+
+114
+00:05:25,650 --> 00:05:28,440
+and you pass in the Keys and ultimately just hack through them.
+
+115
+00:05:28,440 --> 00:05:31,470
+So, these are all the different ways of creating a sparse column.
+
+116
+00:05:31,470 --> 00:05:34,950
+Now, sometimes your data might already be indexed.
+
+117
+00:05:34,950 --> 00:05:36,870
+Why are your data had to be indexed?
+
+118
+00:05:36,870 --> 00:05:39,240
+Maybe for example you have an employee ID and they
+
+119
+00:05:39,240 --> 00:05:41,820
+just happened to be numbers one through 1000,
+
+120
+00:05:41,820 --> 00:05:44,015
+at that point they're already indexed.
+
+121
+00:05:44,015 --> 00:05:47,760
+They're arbitrarily big numbers all over the place that are just one to add.
+
+122
+00:05:47,760 --> 00:05:50,220
+If that's the case, they want to create a sparse column
+
+123
+00:05:50,220 --> 00:05:52,730
+with the Enterprise feature which is employee ID,
+
+124
+00:05:52,730 --> 00:05:54,645
+and there are five employees.
+
+125
+00:05:54,645 --> 00:05:58,110
+So, where this is useful say in our tax example,
+
+126
+00:05:58,110 --> 00:06:00,570
+is the we use that for hour of the day,
+
+127
+00:06:00,570 --> 00:06:04,495
+because it's automatically indigenized from zero to 23.
+
+128
+00:06:04,495 --> 00:06:06,420
+It's perfect as an energized feature,
+
+129
+00:06:06,420 --> 00:06:08,600
+because the hour of the day is not numeric,
+
+130
+00:06:08,600 --> 00:06:09,990
+and it's not completely numeric,
+
+131
+00:06:09,990 --> 00:06:13,875
+because the number like 23 is very close to the number zero or one,
+
+132
+00:06:13,875 --> 00:06:15,615
+it's only two hours away.
+
+133
+00:06:15,615 --> 00:06:17,835
+So, let's take the third possibility.
+
+134
+00:06:17,835 --> 00:06:20,310
+Suppose you don't have a vocabulary,
+
+135
+00:06:20,310 --> 00:06:22,110
+and it's not energerized,
+
+136
+00:06:22,110 --> 00:06:24,765
+well, here's a cool trick that you can do.
+
+137
+00:06:24,765 --> 00:06:28,710
+If you don't want to go out, build a vocabulary and you don't really care,
+
+138
+00:06:28,710 --> 00:06:30,280
+so, what are you going to do is,
+
+139
+00:06:30,280 --> 00:06:33,080
+I'm going to take my employee ID, hash it,
+
+140
+00:06:33,080 --> 00:06:35,100
+compute the hash of the employee ID,
+
+141
+00:06:35,100 --> 00:06:38,820
+and just break that hash up into say 500 buckets.
+
+142
+00:06:38,820 --> 00:06:43,070
+Why would you do this? Well let's say if you're in a company that has 100 employees,
+
+143
+00:06:43,070 --> 00:06:45,020
+and you hash it into 500 buckets,
+
+144
+00:06:45,020 --> 00:06:47,930
+so on average each employee were each buck in,
+
+145
+00:06:47,930 --> 00:06:50,430
+we'll have zero employee use or one employee in it,
+
+146
+00:06:50,430 --> 00:06:52,350
+it's almost like 100 encoding,
+
+147
+00:06:52,350 --> 00:06:54,180
+or a 500 hot encoding,
+
+148
+00:06:54,180 --> 00:06:59,355
+and that kind of gets me to the same thing without having to build that vocabulary first.
+
+149
+00:06:59,355 --> 00:07:03,675
+So, the customer rating. What do we do with that?
+
+150
+00:07:03,675 --> 00:07:05,990
+Well, for trying to predict the customer rating,
+
+151
+00:07:05,990 --> 00:07:07,955
+and it's a label, we're not even worried.
+
+152
+00:07:07,955 --> 00:07:10,580
+Let's say we're trying to use it as an input,
+
+153
+00:07:10,580 --> 00:07:12,640
+because we're trying to predict something else.
+
+154
+00:07:12,640 --> 00:07:15,139
+So, you have something like a rating,
+
+155
+00:07:15,139 --> 00:07:16,610
+and you want to use it as an input feature,
+
+156
+00:07:16,610 --> 00:07:18,485
+you could do one of two things,
+
+157
+00:07:18,485 --> 00:07:22,400
+you could treat it as a continuous number one to five, it's numeric right,
+
+158
+00:07:22,400 --> 00:07:27,410
+and it sort of has a meaningful magnitude for us like say three is more than two,
+
+159
+00:07:27,410 --> 00:07:30,230
+or you can say four stars is very different from five stars,
+
+160
+00:07:30,230 --> 00:07:32,135
+is very different to two stars,
+
+161
+00:07:32,135 --> 00:07:35,045
+which is just one hot encoded.
+
+162
+00:07:35,045 --> 00:07:37,175
+So, in some cases you have choices,
+
+163
+00:07:37,175 --> 00:07:39,425
+and the customer grading you either one encoded,
+
+164
+00:07:39,425 --> 00:07:41,075
+or you can treat it as a number.
+
+165
+00:07:41,075 --> 00:07:44,430
+It's up to you with how you want to deal with that rating.
+
+166
+00:07:44,430 --> 00:07:47,560
+One thing that you want to watch out for,
+
+167
+00:07:47,560 --> 00:07:51,720
+is what do you do for a customer that actually did not provide you a rating?
+
+168
+00:07:51,720 --> 00:07:55,345
+Say that you might be doing a survey and the customer just did not answer your survey.
+
+169
+00:07:55,345 --> 00:07:57,160
+What do you do with missing data?
+
+170
+00:07:57,160 --> 00:08:00,090
+Well, one option is to use two columns,
+
+171
+00:08:00,090 --> 00:08:03,345
+one for the rating, and one for whether or not you've got a rating.
+
+172
+00:08:03,345 --> 00:08:07,290
+So, in this case, the number four is a rating that a customer gave you,
+
+173
+00:08:07,290 --> 00:08:10,230
+and one means that they actually gave you a rating,
+
+174
+00:08:10,230 --> 00:08:13,735
+as zero means that they actually did not rate us,
+
+175
+00:08:13,735 --> 00:08:16,930
+and you could also do it the other way if you doing one hot encoding,
+
+176
+00:08:16,930 --> 00:08:18,580
+you would say I got a reading of four,
+
+177
+00:08:18,580 --> 00:08:23,815
+which is 0001, or I didn't get a rating 0000.
+
+178
+00:08:23,815 --> 00:08:28,480
+But don't make mistake of not having a second column rated or not rated,
+
+179
+00:08:28,480 --> 00:08:31,845
+because you don't want to mix magic numbers with the real values that you have.
+
+180
+00:08:31,845 --> 00:08:36,805
+You have to add an extra column to state whether or not you observed the value or not.
+
+181
+00:08:36,805 --> 00:08:38,890
+So, if you have missing data,
+
+182
+00:08:38,890 --> 00:08:40,240
+the long or short of it is,
+
+183
+00:08:40,240 --> 00:08:41,940
+you need to have another column.

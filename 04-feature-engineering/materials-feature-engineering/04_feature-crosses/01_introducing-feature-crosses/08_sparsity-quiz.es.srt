@@ -1,0 +1,448 @@
+1
+00:00:00,460 --> 00:00:05,105
+Las combinaciones de atributos
+combinan dos o más atributos categóricos.
+
+2
+00:00:05,105 --> 00:00:09,145
+Si tenemos atributos continuos,
+podemos discretizarlos
+
+3
+00:00:09,145 --> 00:00:11,475
+y, luego, realizar una combinación
+de atributos.
+
+4
+00:00:11,475 --> 00:00:15,700
+Veamos lo que esto significa
+para el tamaño del espacio de entrada
+
+5
+00:00:15,700 --> 00:00:18,090
+mediante un par de ejemplos.
+
+6
+00:00:18,880 --> 00:00:21,070
+Supongamos que queremos
+realizar la predicción
+
+7
+00:00:21,070 --> 00:00:23,000
+del nivel de tráfico en una ciudad
+
+8
+00:00:23,000 --> 00:00:24,760
+tenemos dos entradas de fila
+
+9
+00:00:24,760 --> 00:00:27,535
+la hora del día y el día de la semana.
+
+10
+00:00:28,035 --> 00:00:33,739
+¿Cuántas entradas tendríamos
+si hiciéramos la codificación
+
+11
+00:00:33,739 --> 00:00:36,540
+de un solo 1 de la hora del día
+y del día de la semana
+
+12
+00:00:36,540 --> 00:00:38,320
+y las alimentáramos al modelo?
+
+13
+00:00:38,950 --> 00:00:42,990
+¿Dijeron 24 + 7 = 31?
+
+14
+00:00:42,990 --> 00:00:46,070
+Cuando se realiza la codificación
+de un solo 1 de la hora del día
+
+15
+00:00:46,070 --> 00:00:47,750
+se obtienen 24 nodos de entrada
+
+16
+00:00:47,750 --> 00:00:51,690
+podrían tener 23 si consideraran
+a los ceros como una entrada válida.
+
+17
+00:00:51,690 --> 00:00:54,795
+pero normalmente reservamos los ceros
+para los datos faltantes
+
+18
+00:00:54,795 --> 00:00:58,305
+entonces, digamos 24 nodos de entrada.
+
+19
+00:00:58,305 --> 00:01:01,080
+De manera similar,
+si realizan la codificación de un solo 1
+
+20
+00:01:01,080 --> 00:01:03,920
+del día de la semana,
+obtienen 7 nodos de entrada.
+
+21
+00:01:03,920 --> 00:01:07,885
+Entonces, en total tenemos
+31 nodos de entrada.
+
+22
+00:01:08,395 --> 00:01:13,345
+Pero sabemos que el tráfico
+no es igual a las 5 p.m. todos los días.
+
+23
+00:01:13,345 --> 00:01:19,835
+El tráfico el miércoles es muy diferente
+que el fin de semana a esa misma hora.
+
+24
+00:01:19,835 --> 00:01:23,940
+¿Hay una forma fácil de hacer
+que el modelo lo aprenda?
+
+25
+00:01:23,940 --> 00:01:26,310
+Claro. Ya saben cómo hacerlo.
+
+26
+00:01:26,310 --> 00:01:29,590
+Realicen una combinación de atributos
+de las dos entradas de la fila.
+
+27
+00:01:29,590 --> 00:01:33,780
+Estamos concatenando la hora del día
+con el día de la semana.
+
+28
+00:01:34,220 --> 00:01:39,870
+Y esto permite que nuestro modelo aprenda
+la combinación de hora y día muy rápido.
+
+29
+00:01:40,770 --> 00:01:41,850
+Excelente.
+
+30
+00:01:42,210 --> 00:01:45,285
+Pero ¿cuántas entradas tenemos ahora?
+
+31
+00:01:45,875 --> 00:01:48,545
+No son 24 + 7.
+
+32
+00:01:49,605 --> 00:01:53,940
+Ahora tenemos 24 veces 7
+
+33
+00:01:53,940 --> 00:01:56,395
+todas las combinaciones posibles.
+
+34
+00:01:56,895 --> 00:02:06,155
+Pasamos de 24 + 7 = 31 entradas
+a 24 * 7 = 168 entradas.
+
+35
+00:02:07,635 --> 00:02:12,075
+Cuando realicen combinaciones de atributos
+obtendrán muchas más entradas.
+
+36
+00:02:12,775 --> 00:02:15,210
+Los científicos de datos
+se preocupan a menudo
+
+37
+00:02:15,210 --> 00:02:18,355
+de que la codificación
+de un solo 1 de variables categóricas
+
+38
+00:02:18,355 --> 00:02:21,165
+aumente el tamaño de sus modelos.
+
+39
+00:02:21,165 --> 00:02:23,955
+La codificación de un solo 1
+causa muchos problemas
+
+40
+00:02:23,955 --> 00:02:26,155
+a los marcos de trabajo
+de AA tradicionales.
+
+41
+00:02:26,155 --> 00:02:28,280
+¿Cómo usamos las combinaciones
+de atributos?
+
+42
+00:02:28,280 --> 00:02:30,350
+Les da una crisis nerviosa.
+
+43
+00:02:30,350 --> 00:02:34,160
+Internamente, TensorFlow usa
+una representación dispersa
+
+44
+00:02:34,160 --> 00:02:37,810
+tanto para la codificación de un solo 1
+y para las combinaciones de atributos
+
+45
+00:02:37,810 --> 00:02:39,765
+por lo que no tiene problemas con esto.
+
+46
+00:02:39,765 --> 00:02:42,795
+Para cualquier fila de datos de entrada
+de su conjunto de datos
+
+47
+00:02:42,795 --> 00:02:46,330
+¿cuántos nodos se encienden en x3?
+
+48
+00:02:47,570 --> 00:02:48,640
+Solo uno.
+
+49
+00:02:48,640 --> 00:02:50,110
+¿Ven por qué?
+
+50
+00:02:50,610 --> 00:02:53,910
+Para cada etiqueta,
+cada observación en la tabla
+
+51
+00:02:53,910 --> 00:02:56,710
+se realiza en un momento específico
+
+52
+00:02:56,715 --> 00:03:00,760
+que corresponde a una hora
+y un día de la semana específicos.
+
+53
+00:03:00,760 --> 00:03:04,600
+Entonces, podría haber una observación
+a las 3 p.m.
+
+54
+00:03:04,600 --> 00:03:06,450
+a la hora del día de la entrada
+
+55
+00:03:06,450 --> 00:03:09,285
+y el miércoles,
+el día de la semana de la entrada.
+
+56
+00:03:09,285 --> 00:03:12,395
+Entonces, si realizan la combinación
+de atributos, ¿que obtendrán?
+
+57
+00:03:12,395 --> 00:03:14,430
+Tendrán un nodo de entrada.
+
+58
+00:03:14,430 --> 00:03:17,755
+El nodo de entrada que corresponde
+a las 3 p.m. el miércoles.
+
+59
+00:03:17,755 --> 00:03:20,305
+Ese nodo de entrada será 1.
+
+60
+00:03:20,305 --> 00:03:24,965
+Todos los otros nodos de entrada
+para x3 serán 0.
+
+61
+00:03:24,965 --> 00:03:32,140
+La entrada consistirá
+en 167 ceros y un 1.
+
+62
+00:03:33,010 --> 00:03:35,165
+Y cuando realicen una combinación
+de atributos
+
+63
+00:03:35,165 --> 00:03:38,045
+la entrada será muy dispersa.
+
+64
+00:03:38,045 --> 00:03:39,490
+Tengan esto en mente.
+
+65
+00:03:39,490 --> 00:03:43,105
+TensorFlow nos proporciona herramientas
+sencillas para hacerlo.
+
+66
+00:03:43,595 --> 00:03:45,915
+Veamos las respuestas
+del cuestionario.
+
+67
+00:03:45,915 --> 00:03:48,740
+a) La respuesta es no.
+
+68
+00:03:48,740 --> 00:03:52,270
+La discretización es buena
+porque permite a un modelo
+
+69
+00:03:52,270 --> 00:03:55,885
+aprender las relaciones lineales
+que existen en un único atributo.
+
+70
+00:03:55,885 --> 00:04:00,340
+Sin embargo, una ciudad
+existe en más de una dimensión
+
+71
+00:04:00,340 --> 00:04:04,440
+por lo que aprender las relaciones
+de ciertas ciudades requiere
+
+72
+00:04:04,440 --> 00:04:08,340
+que se realice la combinación
+de latitud y longitud.
+
+73
+00:04:08,340 --> 00:04:10,865
+¿Qué opinan de b?
+
+74
+00:04:10,865 --> 00:04:13,985
+La respuesta de nuevo es no.
+
+75
+00:04:13,985 --> 00:04:15,805
+La discretización es una buena idea.
+
+76
+00:04:15,805 --> 00:04:20,465
+Sin embargo, la ciudad es una conjunción
+de latitud y longitud.
+
+77
+00:04:20,465 --> 00:04:22,900
+Por lo que combinaciones
+de atributos separadas
+
+78
+00:04:22,900 --> 00:04:27,090
+evitan que el modelo aprenda
+precios específicos de ciudades.
+
+79
+00:04:27,590 --> 00:04:29,510
+¿Y qué opinan de c?
+
+80
+00:04:30,140 --> 00:04:33,820
+La respuesta es sí. La combinación
+de una latitud discretizada
+
+81
+00:04:33,820 --> 00:04:38,070
+con una longitud discretizada
+permite que el modelo aprenda los efectos
+
+82
+00:04:38,070 --> 00:04:41,690
+de ciudades específicas
+en las habitaciones por persona.
+
+83
+00:04:41,690 --> 00:04:44,510
+La discretización evita
+que un cambio de latitud
+
+84
+00:04:44,510 --> 00:04:48,070
+produzca el mismo resultado
+que un cambio en longitud.
+
+85
+00:04:48,070 --> 00:04:51,280
+Según el nivel de detalle
+de los grupos discretizados (bins)
+
+86
+00:04:51,280 --> 00:04:53,450
+esta combinación
+de atributos podría aprender
+
+87
+00:04:53,450 --> 00:04:59,125
+efectos relacionados con ciudades
+y barrios específicos o, incluso, cuadras.
+
+88
+00:04:59,935 --> 00:05:01,995
+La cuarta es no.
+
+89
+00:05:01,995 --> 00:05:03,720
+En este ejemplo
+
+90
+00:05:03,720 --> 00:05:08,565
+la combinación de atributos
+con valores reales no es una buena idea.
+
+91
+00:05:09,105 --> 00:05:11,290
+Por ejemplo, combinar el valor real
+
+92
+00:05:11,290 --> 00:05:16,880
+de la latitud con habitaciones por persona
+permite un cambio de un 10% en un atributo
+
+93
+00:05:16,880 --> 00:05:18,320
+digamos una latitud
+
+94
+00:05:18,320 --> 00:05:22,210
+sea equivalente a un 10% 
+de cambio en el otro atributo
+
+95
+00:05:22,210 --> 00:05:24,180
+digamos las habitaciones por persona.
+
+96
+00:05:24,180 --> 00:05:28,536
+Esto es tan problemático
+que ni siquiera es posible en TensorFlow.
+
+97
+00:05:28,536 --> 00:05:33,751
+La combinación solo es posible
+con columnas categóricas o discretizadas.

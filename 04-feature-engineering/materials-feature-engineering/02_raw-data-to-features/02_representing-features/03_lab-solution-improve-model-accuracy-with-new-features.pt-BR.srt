@@ -1,0 +1,1029 @@
+1
+00:00:00,000 --> 00:00:02,070
+Neste laboratório,
+
+2
+00:00:02,070 --> 00:00:04,755
+vamos experimentar atributos diferentes.
+
+3
+00:00:04,755 --> 00:00:08,100
+Então, o que fizemos foi ir
+ao a_features,
+
+4
+00:00:08,100 --> 00:00:10,930
+deixe-me limpar todas as células.
+
+5
+00:00:10,930 --> 00:00:14,855
+Para ter certeza de que tudo o que estou
+executando está sendo, de fato, executado.
+
+6
+00:00:14,855 --> 00:00:18,450
+E a primeira coisa é fazer
+um monte de importações.
+
+7
+00:00:18,450 --> 00:00:19,970
+Estamos importando TensorFlow,
+
+8
+00:00:19,970 --> 00:00:21,260
+importando Pandas,
+
+9
+00:00:21,260 --> 00:00:23,125
+NumPy etc.
+
+10
+00:00:23,125 --> 00:00:27,810
+Vamos em frente e importá-los
+e, em seguida, carregar
+
+11
+00:00:27,810 --> 00:00:31,920
+o conjunto de dados, que é o conjunto
+de dados de imóveis da Califórnia.
+
+12
+00:00:31,920 --> 00:00:33,430
+É isso que vamos fazer.
+
+13
+00:00:33,430 --> 00:00:37,985
+Vamos tentar prever o preço das casas na
+Califórnia deste conjunto de dados.
+
+14
+00:00:37,985 --> 00:00:40,050
+Acabamos de carregar o conjunto de dados,
+
+15
+00:00:40,050 --> 00:00:42,680
+então é bom saber o que há nele.
+
+16
+00:00:42,680 --> 00:00:44,825
+Então vamos em frente e fazer df.head.
+
+17
+00:00:44,825 --> 00:00:47,050
+Isso nos mostra as primeiras linhas,
+
+18
+00:00:47,050 --> 00:00:50,730
+e vemos que há
+longitude e latitude,
+
+19
+00:00:50,730 --> 00:00:52,590
+a idade média do imóvel.
+
+20
+00:00:52,590 --> 00:00:57,155
+Esse conjunto de dados não são casas
+individuais, mas sim um agregado.
+
+21
+00:00:57,155 --> 00:01:01,410
+Então você tem o número total
+de cômodos, é 5.612.
+
+22
+00:01:01,410 --> 00:01:03,120
+Obviamente, esta não é uma casa,
+
+23
+00:01:03,120 --> 00:01:08,510
+são todos os cômodos dessa agregação,
+que são um código postal
+
+24
+00:01:08,510 --> 00:01:10,980
+ou um município, ou o
+que for essa agregação.
+
+25
+00:01:10,980 --> 00:01:13,440
+Portanto, temos o número total de cômodos,
+
+26
+00:01:13,440 --> 00:01:14,985
+o número total de quartos,
+
+27
+00:01:14,985 --> 00:01:17,020
+a população, o número de pessoas.
+
+28
+00:01:17,020 --> 00:01:19,140
+São cerca de mil pessoas, parece.
+
+29
+00:01:19,140 --> 00:01:23,150
+E isso é em 472 domicílios.
+
+30
+00:01:23,150 --> 00:01:27,190
+A renda média é de 1,5
+em algumas unidades.
+
+31
+00:01:27,190 --> 00:01:34,005
+E o valor médio do imóvel é de 66.900
+novamente e algumas unidades.
+
+32
+00:01:34,005 --> 00:01:37,610
+Isso é basicamente o que estamos
+tentando aprender
+
+33
+00:01:37,610 --> 00:01:39,700
+com o conjunto de dados.
+
+34
+00:01:39,700 --> 00:01:43,335
+Estas são as primeiras linhas
+deste conjunto de dados.
+
+35
+00:01:43,335 --> 00:01:47,030
+É bom para basicamente ter uma ideia
+de como esses números se parecem.
+
+36
+00:01:47,030 --> 00:01:49,605
+Mas o df.describe() é extremamente útil.
+
+37
+00:01:49,605 --> 00:01:51,840
+O que df.describe() faz no Pandas
+
+38
+00:01:51,840 --> 00:01:55,740
+é mostrar estatísticas
+das colunas numéricas.
+
+39
+00:01:55,740 --> 00:01:57,600
+Portanto, se houver
+colunas categóricas,
+
+40
+00:01:57,600 --> 00:01:59,390
+ele não nos mostrará nada sobre isso,
+
+41
+00:01:59,390 --> 00:02:01,830
+mas todas as colunas numéricas,
+
+42
+00:02:01,830 --> 00:02:03,345
+e aqui todas são numéricas,
+
+43
+00:02:03,345 --> 00:02:05,700
+ele nos mostrará, por exemplo,
+
+44
+00:02:05,700 --> 00:02:09,630
+que há 17 mil longitudes
+no conjunto de dados,
+
+45
+00:02:09,630 --> 00:02:11,940
+17 mil latitudes no conjunto de dados.
+
+46
+00:02:11,940 --> 00:02:14,550
+Este é o número de linhas
+no conjunto de dados
+
+47
+00:02:14,550 --> 00:02:17,490
+e isso é uma boa ideia para
+basicamente verificar
+
+48
+00:02:17,490 --> 00:02:20,130
+que todos eles são, de fato, 17 mil.
+
+49
+00:02:20,130 --> 00:02:22,740
+Se algum deles não for,
+
+50
+00:02:22,740 --> 00:02:27,750
+isso indica que um ou mais valores
+dessa linha estão faltando.
+
+51
+00:02:27,750 --> 00:02:29,340
+Portanto, neste caso,
+
+52
+00:02:29,340 --> 00:02:31,589
+número um: verificação de integridade,
+
+53
+00:02:31,589 --> 00:02:32,905
+nenhum valor está faltando.
+
+54
+00:02:32,905 --> 00:02:36,120
+Temos 17 mil linhas para todos os valores.
+
+55
+00:02:36,120 --> 00:02:39,475
+A longitude média é de -119.
+
+56
+00:02:39,475 --> 00:02:41,640
+A latitude média é 35.
+
+57
+00:02:41,640 --> 00:02:44,000
+Isso faz sentido porque é Califórnia.
+
+58
+00:02:44,000 --> 00:02:47,820
+A idade média do imóvel é de 28,6.
+
+59
+00:02:47,820 --> 00:02:50,340
+Isso são anos.
+Então, cerca de 30 anos de idade.
+
+60
+00:02:50,340 --> 00:02:53,685
+O número total de cômodos é de 2.643.
+
+61
+00:02:53,685 --> 00:02:56,355
+Isso não é uma casa individual, verdade?
+
+62
+00:02:56,355 --> 00:03:00,440
+Esse provavelmente é o número total
+de cômodos nessa unidade de agregação.
+
+63
+00:03:00,440 --> 00:03:03,090
+Temos que fazer algo com isso.
+
+64
+00:03:03,090 --> 00:03:09,900
+O número total de quartos parece
+estranho, 539, a população é 1.429,
+
+65
+00:03:09,900 --> 00:03:13,245
+o número de domicílios é de 501,
+
+66
+00:03:13,245 --> 00:03:17,925
+e a renda média é de 3,9
+
+67
+00:03:17,925 --> 00:03:23,055
+e, digamos que o valor mediano de
+habitação seja de 27 mil neste caso.
+
+68
+00:03:23,055 --> 00:03:26,015
+Certo?
+Então essa é a média de todos eles.
+
+69
+00:03:26,015 --> 00:03:27,600
+E então você tem o desvio padrão,
+
+70
+00:03:27,600 --> 00:03:29,610
+o valor mínimo que existe,
+
+71
+00:03:29,610 --> 00:03:31,770
+o número mínimo de cômodos é dois.
+
+72
+00:03:31,770 --> 00:03:36,025
+O número máximo de cômodos é de 37.937.
+
+73
+00:03:36,025 --> 00:03:39,225
+Isso nos dá uma ideia
+de como são esses dados.
+
+74
+00:03:39,225 --> 00:03:43,340
+E o que vamos fazer é basicamente
+dividir esses dados em duas partes
+
+75
+00:03:43,340 --> 00:03:45,390
+e aqui, para experimentação,
+
+76
+00:03:45,390 --> 00:03:47,295
+não vamos salvá-los em lugar algum,
+
+77
+00:03:47,295 --> 00:03:49,485
+a divisão aleatória é boa o suficiente.
+
+78
+00:03:49,485 --> 00:03:53,510
+Então, basicamente, estou criando uma
+máscara, e a máscara
+
+79
+00:03:53,510 --> 00:03:59,760
+está criando uma matriz do comprimento
+do dfs, então são 17 mil.
+
+80
+00:03:59,760 --> 00:04:03,135
+E verificando se o aleatório
+é menor que 0,8.
+
+81
+00:04:03,135 --> 00:04:06,410
+Então, isso significa que
+80% dos valores serão 1
+
+82
+00:04:06,410 --> 00:04:10,920
+e 20% dos valores serão 0,
+aproximadamente.
+
+83
+00:04:10,920 --> 00:04:13,970
+Portanto, traindf
+é todos aqueles valores
+
+84
+00:04:13,970 --> 00:04:19,070
+para os quais é 1 e evaldf é todos
+os valores para os quais a máscara é 0.
+
+85
+00:04:19,110 --> 00:04:20,608
+Então, neste ponto,
+
+86
+00:04:20,608 --> 00:04:25,740
+teremos dois frames de dados,
+traindf e evaldf.
+
+87
+00:04:25,740 --> 00:04:27,850
+E posso adicionar algo novo.
+
+88
+00:04:27,850 --> 00:04:33,390
+Posso imprimir o comprimento
+de traindf, que é cerca de 13 mil.
+
+89
+00:04:33,390 --> 00:04:37,035
+E também posso imprimir
+um comprimento de evaldf,
+
+90
+00:04:37,035 --> 00:04:41,235
+que é cerca de 20%, cerca de 3.400.
+
+91
+00:04:41,235 --> 00:04:44,265
+Neste ponto, temos nosso conjunto
+de dados de treinamento,
+
+92
+00:04:44,265 --> 00:04:46,065
+nosso conjunto de dados de avaliação.
+
+93
+00:04:46,065 --> 00:04:48,855
+Vamos em frente e criar nosso modelo.
+
+94
+00:04:48,855 --> 00:04:50,100
+E para isso,
+
+95
+00:04:50,100 --> 00:04:53,025
+a primeira coisa é ler nossos dados.
+
+96
+00:04:53,025 --> 00:04:55,720
+Então eu vou fazer a função
+make_input_fn,
+
+97
+00:04:55,720 --> 00:04:57,515
+dar um frame de dados,
+
+98
+00:04:57,515 --> 00:05:00,370
+o número de períodos que queremos ler,
+
+99
+00:05:00,370 --> 00:05:03,140
+e vou usar a função pandas_input_fn
+
+100
+00:05:03,140 --> 00:05:07,025
+para pegar o frame de dados,
+mas não apenas ele,
+
+101
+00:05:07,025 --> 00:05:09,515
+pois adicionarei atributos extras a ele.
+
+102
+00:05:09,515 --> 00:05:11,535
+E para você começar,
+
+103
+00:05:11,535 --> 00:05:13,770
+olhe o número de cômodos,
+
+104
+00:05:13,770 --> 00:05:15,585
+o número total de cômodos aqui.
+
+105
+00:05:15,585 --> 00:05:17,540
+Isso é meio ridículo, certo?
+
+106
+00:05:17,540 --> 00:05:22,335
+Não temos uma casa com 2.643 cômodos.
+Isso não está certo.
+
+107
+00:05:22,335 --> 00:05:23,910
+O que isso realmente é
+
+108
+00:05:23,910 --> 00:05:27,120
+é o número total de cômodos
+nessa agregação,
+
+109
+00:05:27,120 --> 00:05:28,425
+nesse código postal.
+
+110
+00:05:28,425 --> 00:05:30,990
+Então, o que nós temos
+que normalizar?
+
+111
+00:05:30,990 --> 00:05:33,675
+Temos que reduzi-lo
+ao valor de uma casa única.
+
+112
+00:05:33,675 --> 00:05:37,050
+O que estamos fazendo é pegar
+o número total de cômodos
+
+113
+00:05:37,050 --> 00:05:39,285
+e dividindo-o pelo número de residências.
+
+114
+00:05:39,285 --> 00:05:42,480
+E isso nos diz o número
+de cômodos naquela casa,
+
+115
+00:05:42,480 --> 00:05:45,750
+em uma casa típica, nesse código postal.
+
+116
+00:05:45,750 --> 00:05:49,755
+O que mais nós temos que normalizar
+para o número de CEP?
+
+117
+00:05:49,755 --> 00:05:51,120
+Vamos ver isso.
+
+118
+00:05:51,120 --> 00:05:54,090
+As latitudes e longitudes parecem
+estar bem, como estão.
+
+119
+00:05:54,090 --> 00:05:57,375
+O número total de cômodos
+temos que normalizar.
+
+120
+00:05:57,375 --> 00:06:00,015
+E também temos que normalizar
+o número total de quartos.
+
+121
+00:06:00,015 --> 00:06:01,365
+Vamos fazer isso.
+
+122
+00:06:01,365 --> 00:06:05,685
+Em vez de fazer um número
+de cômodos, além disso,
+
+123
+00:06:05,685 --> 00:06:10,590
+vamos fazer o número de quartos,
+como é chamado.
+
+124
+00:06:10,590 --> 00:06:13,360
+Não, é chamado de total_bedrooms.
+
+125
+00:06:15,140 --> 00:06:17,880
+total_bedrooms.
+
+126
+00:06:17,880 --> 00:06:24,075
+E isso pode ser o num_bedrooms.
+
+127
+00:06:24,075 --> 00:06:28,170
+Esses são nossos dois atributos extras.
+
+128
+00:06:28,170 --> 00:06:32,670
+Criamos nossa função de entrada,
+e agora nossas colunas de atributos,
+
+129
+00:06:32,670 --> 00:06:36,225
+a housing_median_age é uma
+coluna numérica.
+
+130
+00:06:36,225 --> 00:06:38,430
+Poderia ser usada assim, certo?
+
+131
+00:06:38,430 --> 00:06:41,025
+A idade média, quando olhamos para ela,
+
+132
+00:06:41,025 --> 00:06:42,375
+esses números fazem sentido.
+
+133
+00:06:42,375 --> 00:06:43,980
+Estes parecem ser anos.
+
+134
+00:06:43,980 --> 00:06:46,650
+Então podemos usá-los como eles são.
+
+135
+00:06:46,650 --> 00:06:48,750
+Então, vamos usar a idade média.
+
+136
+00:06:48,750 --> 00:06:55,275
+Vamos em frente e tomar a latitude
+e intervalar entre 32 e 42.
+
+137
+00:06:55,275 --> 00:06:57,045
+Por que 32 e 42?
+
+138
+00:06:57,045 --> 00:07:04,645
+Porque voltamos para cá e vemos
+que a latitude varia entre 32 e 42.
+
+139
+00:07:04,645 --> 00:07:11,790
+Assim, podemos intervalar a latitude
+entre 32 e 42. O que mais devemos usar?
+
+140
+00:07:11,790 --> 00:07:13,184
+Se estiver usando a latitude,
+
+141
+00:07:13,184 --> 00:07:15,570
+pode também usar a longitude.
+
+142
+00:07:15,570 --> 00:07:18,520
+Vamos em frente e pegar isso.
+
+143
+00:07:22,240 --> 00:07:25,240
+E também fazer a longitude.
+
+144
+00:07:25,240 --> 00:07:28,755
+Faremos a longitude aqui.
+
+145
+00:07:28,755 --> 00:07:38,270
+Mas os limites da longitude precisam
+estar entre -124 e -114.
+
+146
+00:07:38,270 --> 00:07:43,785
+Então vamos descer aqui
+e mudar isso para -124
+
+147
+00:07:43,785 --> 00:07:49,970
+e -114 e um grau de longitude
+é provavelmente razoável.
+
+148
+00:07:49,970 --> 00:07:53,660
+Um grau é basicamente cerca de 100 km.
+
+149
+00:07:53,660 --> 00:07:54,935
+Então isso está certo.
+
+150
+00:07:54,935 --> 00:07:56,360
+Então podemos fazer isso.
+
+151
+00:07:56,360 --> 00:07:58,355
+O número de cômodos.
+
+152
+00:07:58,355 --> 00:08:00,745
+Lembre-se que nós adicionamos
+o número de quartos,
+
+153
+00:08:00,745 --> 00:08:03,410
+então vamos em frente e fazer isso também.
+
+154
+00:08:03,410 --> 00:08:06,560
+Número de cômodos, número de quartos.
+
+155
+00:08:06,560 --> 00:08:08,795
+E então temos a renda média.
+
+156
+00:08:08,795 --> 00:08:12,595
+Esse é o nosso conjunto
+de colunas de atributos.
+
+157
+00:08:12,595 --> 00:08:17,294
+Vamos em frente para treinar e avaliar,
+
+158
+00:08:17,294 --> 00:08:20,410
+usando train_and_evaluate
+passando na train_spec,
+
+159
+00:08:20,410 --> 00:08:22,195
+a eval_spec etc.
+
+160
+00:08:22,195 --> 00:08:24,160
+E neste ponto,
+
+161
+00:08:24,160 --> 00:08:26,215
+podemos chamar train_and_evaluate
+
+162
+00:08:26,215 --> 00:08:28,315
+e gravar um modelo treinado.
+
+163
+00:08:28,315 --> 00:08:30,340
+E quando executamos isso,
+
+164
+00:08:30,340 --> 00:08:33,669
+devemos ter uma saída de avaliação.
+
+165
+00:08:33,669 --> 00:08:35,065
+Então estamos executando.
+
+166
+00:08:35,065 --> 00:08:39,605
+Pedimos para executar
+por cinco mil etapas.
+
+167
+00:08:39,605 --> 00:08:40,875
+Neste ponto,
+
+168
+00:08:40,875 --> 00:08:42,659
+estou na etapa 1.650.
+
+169
+00:08:42,659 --> 00:08:44,455
+Então vamos apenas esperar um pouco.
+
+170
+00:08:44,455 --> 00:08:46,180
+E quando terminar,
+
+171
+00:08:46,180 --> 00:08:47,950
+observe que, de vez em quando,
+
+172
+00:08:47,950 --> 00:08:49,555
+salva um dicionário,
+
+173
+00:08:49,555 --> 00:08:52,270
+especificando qual é a perda média.
+
+174
+00:08:52,270 --> 00:08:56,790
+A perda média não é tão útil porque
+a perda é computada em um lote.
+
+175
+00:08:56,790 --> 00:08:58,215
+Então não é tão boa assim.
+
+176
+00:08:58,215 --> 00:08:59,565
+Mas esta perda,
+
+177
+00:08:59,565 --> 00:09:02,875
+esta é a perda no conjunto de dados
+de avaliação e faz mais sentido.
+
+178
+00:09:02,875 --> 00:09:05,465
+Vamos em frente e,
+na verdade, a perda,
+
+179
+00:09:05,465 --> 00:09:10,570
+a perda média é computada no conjunto
+de avaliação que faz mais sentido.
+
+180
+00:09:10,570 --> 00:09:12,640
+A perda em si é apenas em lote.
+
+181
+00:09:12,640 --> 00:09:14,110
+Então não precisamos disso.
+
+182
+00:09:14,110 --> 00:09:15,585
+Vamos descer.
+
+183
+00:09:15,585 --> 00:09:17,350
+Vamos esperar que isso seja feito,
+
+184
+00:09:17,350 --> 00:09:21,205
+Quatro mil, cinco mil.
+E aí está.
+
+185
+00:09:21,205 --> 00:09:27,130
+Nossa perda média em todo o conjunto
+de dados, o RMSC, é de 0,59.
+
+186
+00:09:27,130 --> 00:09:29,200
+Agora vamos tentar outra coisa.
+
+187
+00:09:29,200 --> 00:09:38,480
+Vamos em frente e ver o que acontece
+se eu não tenho o número de cômodos.
+
+188
+00:09:38,480 --> 00:09:42,685
+Então não vamos adicionar esses
+extras, e o que poderíamos fazer é,
+
+189
+00:09:42,685 --> 00:09:47,305
+ao criar nossas colunas de entrada,
+
+190
+00:09:47,305 --> 00:09:50,410
+decidiremos não usar o número de cômodos,
+
+191
+00:09:50,410 --> 00:09:52,225
+o número de quartos,
+
+192
+00:09:52,225 --> 00:09:55,450
+toda latitude, toda longitude
+
+193
+00:09:55,450 --> 00:09:56,965
+ou a renda média.
+
+194
+00:09:56,965 --> 00:09:59,080
+Tudo o que temos é a idade da casa.
+
+195
+00:09:59,080 --> 00:10:02,345
+Então, se fizermos isso, e essa é
+a nossa única coluna de atributos.
+
+196
+00:10:02,345 --> 00:10:04,145
+O que acontece?
+
+197
+00:10:04,145 --> 00:10:06,570
+Vamos descer aqui.
+
+198
+00:10:08,320 --> 00:10:11,525
+Lembre-se que tínhamos 0,59 antes.
+
+199
+00:10:11,525 --> 00:10:13,205
+Eu vou limpar a célula,
+
+200
+00:10:13,205 --> 00:10:16,425
+e executar novamente, desta vez
+apenas com uma entrada.
+
+201
+00:10:16,425 --> 00:10:19,810
+E neste momento, o que conseguimos?
+
+202
+00:10:21,120 --> 00:10:23,310
+Neste ponto, nossa perda é de 1,87.
+
+203
+00:10:23,310 --> 00:10:26,930
+Então, obviamente, todos esses atributos
+de entrada foram úteis. Certo?
+
+204
+00:10:26,930 --> 00:10:30,870
+Porque, mais uma vez, a perda aumentou,
+quando não os tínhamos.
+
+205
+00:10:30,870 --> 00:10:33,180
+Então, isso dá uma ideia de que tipos
+
+206
+00:10:33,180 --> 00:10:36,180
+de atributos são úteis e você pode
+fazer isso manualmente,
+
+207
+00:10:36,180 --> 00:10:38,070
+pode simplesmente
+ir em frente e dizer
+
+208
+00:10:38,070 --> 00:10:40,710
+"o que acontece se eu usar
+apenas a renda média?"
+
+209
+00:10:40,710 --> 00:10:43,590
+E a renda média
+é um ótimo indicador.
+
+210
+00:10:43,590 --> 00:10:47,720
+Portanto, se o usarmos
+e tentarmos isso novamente,
+
+211
+00:10:47,720 --> 00:10:50,495
+descobriremos que a perda
+diminui drasticamente.
+
+212
+00:10:50,495 --> 00:10:53,025
+E os outros atributos não são tão úteis.
+
+213
+00:10:53,025 --> 00:10:54,450
+São, mas não tanto.
+
+214
+00:10:54,450 --> 00:10:59,250
+A renda média é particularmente útil
+porque é o que as pessoas podem pagar
+
+215
+00:10:59,250 --> 00:11:05,445
+e o mercado tende a corresponder
+ao que as pessoas podem pagar.
+
+216
+00:11:05,445 --> 00:11:09,810
+Então observe que agora temos
+uma perda média de 0,69.
+
+217
+00:11:09,810 --> 00:11:16,410
+Passamos de 1,38 para 0,69 simplesmente
+adicionando um atributo, a renda média.
+
+218
+00:11:16,410 --> 00:11:19,230
+Ela foi um atributo extremamente útil.
+
+219
+00:11:19,230 --> 00:11:21,345
+Agora, como isso importa no mundo real?
+
+220
+00:11:21,345 --> 00:11:24,150
+A maneira como isso importa
+no mundo real é,
+
+221
+00:11:24,150 --> 00:11:26,625
+realmente importa
+que dados você coleta.
+
+222
+00:11:26,625 --> 00:11:28,820
+Imagine que você tenha
+esse conjunto de dados
+
+223
+00:11:28,820 --> 00:11:33,240
+e que não tenha coletado a renda média
+das pessoas daquele bairro.
+
+224
+00:11:33,240 --> 00:11:36,180
+Seu modelo seria muito ruim.
+
+225
+00:11:36,180 --> 00:11:40,840
+Isso é o que queremos dizer
+quando falamos que o que importa
+
+226
+00:11:40,840 --> 00:11:44,220
+para um modelo de aprendizado
+de máquina não é o modelo em si,
+
+227
+00:11:44,220 --> 00:11:47,325
+mas os dados que são colocados no modelo.
+
+228
+00:11:47,325 --> 00:11:51,045
+E realmente importa
+para esse modelo específico
+
+229
+00:11:51,045 --> 00:11:55,200
+que você tenha a renda média das
+pessoas que moram no bairro,
+
+230
+00:11:55,200 --> 00:11:58,350
+para poder prever os preços
+das casas naquele bairro.
+
+231
+00:11:58,350 --> 00:12:00,240
+Esse é um atributo muito importante.
+
+232
+00:12:00,240 --> 00:12:02,640
+E para ter esse atributo,
+
+233
+00:12:02,640 --> 00:12:06,880
+você precisa ter o canal de engenharia
+de dados para trazer esses dados a ele

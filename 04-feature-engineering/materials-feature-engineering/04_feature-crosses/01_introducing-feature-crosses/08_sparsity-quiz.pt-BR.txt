@@ -1,0 +1,57 @@
+Cruzamentos de atributos combinam dois ou 
+mais atributos categóricos. Se temos atributos contínuos, podemos
+discretizá-los e fazer um cruzamento. Vamos ver o que isso significa
+para o tamanho do espaço de entrada, observando
+alguns exemplos. Suponhamos que queremos prever o
+nível de tráfego em uma cidade, temos duas entradas brutas, a hora do dia e o dia da semana. Quantas entradas teríamos se aplicássemos codificação one-hot na hora do dia e no
+dia da semana e a fornecêssemos ao modelo? Você disse 24 mais 7, então 31? Quando é feita uma codificação one-hot na
+hora do dia, você tem 24 nodes de entrada, você pode eliminar 23 tratando
+todos os zeros como uma entrada válida, mas normalmente reservamos todos os
+zeros para dados perdidos. Então, digamos, 24 nodes de entrada. Igualmente, com a codificação one-hot no
+dia da semana, temos 7 nodes de entrada. No total, temos 31 nodes de entrada. Mas sabemos que o tráfego não é o
+mesmo às 17h todos os dias. 17h na quarta-feira é muito
+diferente de 17h no fim de semana. Há uma maneira fácil
+de fazer o modelo aprender isso? Claro. Você sabe fazer isso agora. Faça o cruzamento de atributo
+com as duas entradas brutas. Estamos agora concatenando a hora
+do dia com o dia da semana. E isso permite que o modelo aprenda
+rapidamente a combinação de hora e dia. Ótimo. Mas quantas entradas temos agora? Não 24 mais 7. Agora temos 24 vezes 7, todas as combinações possíveis. Passamos de 24 + 7, igual a 31 entradas,
+para 24 x 7, igual a 168 entradas. Quando você faz o cruzamento de atributos,
+consegue muito mais entradas. O cientista de dados geralmente se
+preocupa com o fato de que uma variável categórica de codificação
+one-hot aumenta o tamanho do modelo. Mesmo a codificação one-hot traz problemas
+às estruturas de aprendizado de máquina. Como vão lidar com
+cruzamentos de atributos? Terão um ataque cardíaco. Internamente, o TensorFlow usa
+uma representação esparsa para uma codificação one-hot e para
+cruzamentos de atributos, então não tem
+problema com isso. Para qualquer bruto específico do
+conjunto de dados de entrada, quantos nodes no x3 são liberados? Apenas um. Você vê por quê?
+Para cada rótulo, todas as observações na tabela são
+tomadas em um horário específico. Isso corresponde a uma hora específica
+de um dia específico da semana. Assim, você poderia ter
+uma observação às 15h, na hora do dia na entrada, e na quarta-feira no dia
+da entrada da semana. Então, faça o cruzamento de
+atributos e o que você tem? Você tem um node de entrada. O node de entrada que corresponde às 15h
+de quarta-feira e esse node será um. Todos os outros nodes de entrada
+para o x3 serão zero. A entrada, portanto, consistirá de
+167 zeros e um 1. E quando você faz um cruzamento de
+atributos, a entrada é muito escassa. Então, tenha isso em mente. O TensorFlow nos dará ferramentas
+fáceis para lidar com isso. Vamos ver as respostas da análise. a) A resposta é não. O agrupamento é bom
+porque permite que um modelo aprenda relacionamentos
+lineares em um único atributo. No entanto, uma cidade existe
+em mais de uma dimensão, portanto aprender relações específicas requer
+cruzamento de latitude e longitude. E quanto ao segundo, b. A resposta novamente é não. O agrupamento é uma boa ideia, no entanto, a cidade é uma conjunção de
+latitude e longitude. Separar cruzamentos impede o aprendizado
+de preços específicos da cidade. E a letra c? Ali é sim. Cruzar uma latitude agrupada com uma
+longitude agrupada faz o modelo aprender os efeitos específicos
+da cidade dos quartos por pessoa. O agrupamento evita
+uma mudança na latitude, produzindo o mesmo resultado
+que uma mudança na longitude. E, dependendo da granularidade
+dos agrupamentos, esse cruzamento de atributo
+poderia aprender os efeitos específicos da cidade, da
+vizinhança ou até mesmo do bloco. Letra d: não. Neste exemplo, cruzar atributos com valor real
+não é uma boa ideia. Cruzar o valor real de,
+por exemplo, latitude com quartos por pessoa, permite
+uma alteração de 10% em um atributo, digamos uma latitude, para ser equivalente a uma alteração de
+10% no outro atributo, quartos por pessoa. Isso é tão problemático que
+nem é possível no TensorFlow. O cruzamento só é possível com
+colunas categóricas ou discretizadas.

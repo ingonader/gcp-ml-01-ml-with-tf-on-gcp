@@ -1,0 +1,28 @@
+En la lección anterior hablamos sobre
+cómo realizar el procesamiento previo de atributos en TensorFlow. ¿Cómo lo hicimos? Usamos columnas de atributos. Ahora, veamos
+cómo crear atributos en TensorFlow. Recuerden que la función de entrada
+muestra atributos y etiquetas. ¿Cuál es el tipo de datos
+de los atributos? Respuesta: es un diccionario de Python. Digamos que la distancia
+al transporte público es un predictor clave
+de los precios de las casas. Deseamos agregar un nuevo atributo
+que capture la distancia de una casa de la estación de metro más cercana. Supongamos que la ubicación
+de la estación del metro es parte de nuestro conjunto de datos
+y también de nuestros atributos. En nuestro método,
+calculamos la distancia euclidiana entre la casa y la estación de metro
+y la agregamos al diccionario. ¿Dónde entra este método add_engineered? Llamen al método add_engineered
+desde todas las funciones de entrada. ¿Cuántas funciones de entrada tenemos? En general, tenemos tres,
+función de entrada de entrenamiento función de entrada de evaluación
+y función de entrada de predicciones. El método add_engineered
+se debe llamar desde las tres. En la función de entrada de entrenamiento,
+en vez de mostrar (features), label envuelvo los atributos
+con una llamada a add_engineered. De esta forma, los atributos adicionales que estoy creando
+se agregan al diccionario de Python. La función de entrada de evaluación
+es similar a la de entrenamiento. Envolvemos las llamadas
+con add_engineered. En la función de entrada de predicción muestran un ServingInputReceiver
+que toma dos parámetros. El primer parámetro son los atributos. El segundo son los marcadores de posición
+para lo que reciban en el JSON Los marcadores de posición no cambian pues reciben los mismos datos
+sin procesar. Pero igual que con la función
+de entrada de entrenamiento envolvemos los atributos
+en una llamada a add_engineered. De esta forma, los mismos atributos
+adicionales que se crearon durante el entrenamiento también se agregarán
+al diccionario de Python.

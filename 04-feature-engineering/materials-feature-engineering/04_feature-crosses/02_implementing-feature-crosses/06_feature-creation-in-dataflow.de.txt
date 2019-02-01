@@ -1,0 +1,35 @@
+Feature Engineering
+kann an drei Orten eingesetzt werden. Wir haben uns angesehen,
+wie wir Merkmalvorverarbeitung und Merkmalerstellung
+spontan in TensorFlow umsetzen. Die andere Option ist, Vorverarbeitung oder Merkmalerstellung
+in Cloud Dataflow zu erledigen. Hier wird Dataflow verwendet, um ein vorverarbeitetes
+oder verbessertes Dataset zu erstellen. Dieses neue Dataset wird dann
+zum Training des Modells verwendet. Bei der Vorhersage
+müssen wir einen Weg finden, die gleichen 
+Vorverarbeitungsschritte auszuführen. Diese Methode 
+funktioniert daher am besten, wenn auch Dataflow
+zur Vorhersagelaufzeit gehört. Dies ist
+bei der GCP-Referenzarchitektur der Fall. Da Dataflow sowohl Streamingdaten
+als auch Batchdaten verarbeiten kann, gehört es im Training
+und auch in der Vorhersage zur Pipeline. Wenn Sie dem folgen, ist Dataflow
+ein guter Ort für die Vorverarbeitung. Dataflow eignet sich ideal für Merkmale, bei denen zeitlich
+eine Aggregation erforderlich ist. Sie möchten
+vielleicht ein Merkmal verwenden, das die mittlere Anzahl
+von Personen darstellt, die sich in der letzten Stunde
+ein Produkt angesehen haben. Im Training können Sie Dataflow verwenden,
+um dies aus Log-Dateien zu berechnen, doch die Natur
+eines solchen Merkmals setzt voraus, dass Sie Dataflow in Echtzeit verwenden, um dies
+aus dem aktuellen Traffic zu berechnen. Sie können in jedem PTransform
+in Dataflow zusätzliche Felder hinzufügen. Die beiden "add_fields" in diesem Beispiel ziehen die Fahrgastzahlen
+aus den Eingabefeldern, akkumulieren sie und addieren die Besucherzahl,
+um "pastHrCount" zu erhalten. Der gleiche Code funktioniert
+in Dataflow als Batch und als Stream. Sie verwenden daher
+einfach die Methode "add_fields" in der Trainingspipeline
+und der Vorhersagepipeline. Die dritte Option ist ein hybrider Ansatz. Google-Forscher haben kürzlich
+die Vorgehensweise veröffentlicht. Wir sehen uns das
+im nächsten Modul detailliert an. Im Wesentlichen erstellen Sie im Training
+über Dataflow ein vorverarbeitetes Dataset, Allerdings werden die Transformationen
+in TensorFlow implementiert. Während der Vorhersage gehört Feature Engineering
+daher zum TensorFlow-Graphen. Das ist ein großer Vorteil, da Dataflow die Aggregationen
+all dieser Daten gut bewältigen kann. Die Vorteile von TensorFlow liegen darin, die Eingabefelder
+im Verlauf manipulieren zu können.

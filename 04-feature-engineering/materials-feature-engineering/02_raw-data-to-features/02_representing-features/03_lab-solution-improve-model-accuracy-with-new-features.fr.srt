@@ -1,0 +1,994 @@
+1
+00:00:00,000 --> 00:00:02,070
+Dans cet atelier,
+
+2
+00:00:02,070 --> 00:00:04,755
+nous allons essayer
+différentes caractéristiques.
+
+3
+00:00:04,755 --> 00:00:08,100
+Nous avons accédé à a_features.
+
+4
+00:00:08,100 --> 00:00:11,240
+Je supprime toutes les cellules
+
+5
+00:00:11,240 --> 00:00:14,725
+pour m'assurer
+que j'exécute bien tout ce que je lance.
+
+6
+00:00:14,725 --> 00:00:18,450
+Nous devons commencer
+par une série d'importations.
+
+7
+00:00:18,450 --> 00:00:19,970
+Nous importons TensorFlow,
+
+8
+00:00:19,970 --> 00:00:21,260
+Pandas,
+
+9
+00:00:21,260 --> 00:00:23,245
+NumPy, etc.
+
+10
+00:00:23,245 --> 00:00:27,630
+Importons-les et chargeons
+
+11
+00:00:27,630 --> 00:00:31,920
+l'ensemble de données
+sur l'immobilier en Californie.
+
+12
+00:00:31,930 --> 00:00:37,985
+Nous allons prédire le prix de maisons
+en Californie avec cet ensemble de données.
+
+13
+00:00:37,985 --> 00:00:40,090
+Nous chargeons
+ensuite l'ensemble de données.
+
+14
+00:00:40,090 --> 00:00:42,680
+Il est bon de savoir ce qu'il contient.
+
+15
+00:00:42,680 --> 00:00:44,825
+Exécutons donc df.head
+
+16
+00:00:44,825 --> 00:00:47,050
+pour afficher les premières lignes.
+
+17
+00:00:47,050 --> 00:00:50,730
+Nous apprenons
+qu'il y a une longitude, une latitude
+
+18
+00:00:50,730 --> 00:00:52,590
+et l'âge médian des maisons.
+
+19
+00:00:52,590 --> 00:00:56,075
+Cet ensemble de données ne fait pas
+référence à des maisons individuelles.
+
+20
+00:00:56,075 --> 00:00:57,155
+Il est en fait agrégé.
+
+21
+00:00:57,155 --> 00:01:00,970
+Vous avez le nombre total de pièces : 5 612.
+
+22
+00:01:00,970 --> 00:01:03,120
+Il ne s'agit bien sûr pas d'une seule maison.
+
+23
+00:01:03,120 --> 00:01:06,770
+Ce sont toutes les pièces d'une agrégation
+
+24
+00:01:06,770 --> 00:01:10,770
+qui correspond à un code postal,
+une commune, ou autre.
+
+25
+00:01:10,770 --> 00:01:13,530
+Nous avons le nombre total
+de pièces dans cette agrégation,
+
+26
+00:01:13,530 --> 00:01:14,985
+le nombre total de chambres,
+
+27
+00:01:14,985 --> 00:01:17,020
+la population, le nombre d'individus.
+
+28
+00:01:17,020 --> 00:01:19,140
+Il y a apparemment
+un millier de personnes
+
+29
+00:01:19,140 --> 00:01:23,150
+dans 472 foyers.
+
+30
+00:01:23,150 --> 00:01:27,190
+Le revenu médian
+est de 1,5 d'une certaine unité.
+
+31
+00:01:27,190 --> 00:01:34,005
+La valeur immobilière médiane
+est de 66 900 d'une certaine unité aussi.
+
+32
+00:01:34,005 --> 00:01:39,740
+C'est donc ce que nous essayons d'apprendre
+à partir de cet ensemble de données.
+
+33
+00:01:39,740 --> 00:01:43,335
+Nous avons donc vu les premières lignes
+de l'ensemble de données.
+
+34
+00:01:43,335 --> 00:01:47,030
+Nous avons ainsi une bonne idée
+des nombres qu'il contient.
+
+35
+00:01:47,030 --> 00:01:49,605
+df.describe() est extrêmement utile.
+
+36
+00:01:49,605 --> 00:01:51,840
+Dans Pandas,
+
+37
+00:01:51,840 --> 00:01:55,740
+il affiche des statistiques
+sur les colonnes numériques.
+
+38
+00:01:55,740 --> 00:01:57,600
+S'il y a des colonnes catégoriques,
+
+39
+00:01:57,600 --> 00:01:59,390
+il n'affiche rien à leur sujet,
+
+40
+00:01:59,390 --> 00:02:01,830
+mais pour chaque colonne numérique
+
+41
+00:02:01,830 --> 00:02:03,345
+(et elles le sont toutes ici),
+
+42
+00:02:03,345 --> 00:02:05,700
+il affiche, par exemple,
+
+43
+00:02:05,700 --> 00:02:09,630
+qu'il y a 17 000 longitudes
+
+44
+00:02:09,630 --> 00:02:11,940
+et 17 000 latitudes
+dans l'ensemble de données.
+
+45
+00:02:11,940 --> 00:02:14,620
+Il s'agit du nombre de lignes
+dans l'ensemble de données.
+
+46
+00:02:14,620 --> 00:02:17,490
+Il est utile de vérifier
+
+47
+00:02:17,490 --> 00:02:20,130
+que toutes les colonnes ont bien 17 000.
+
+48
+00:02:20,130 --> 00:02:22,740
+Sinon,
+
+49
+00:02:22,740 --> 00:02:27,750
+cela signifie qu'il manque
+une ou plusieurs valeurs pour cette ligne.
+
+50
+00:02:27,750 --> 00:02:29,340
+Dans ce cas,
+
+51
+00:02:29,340 --> 00:02:31,589
+premier contrôle de l'intégrité :
+
+52
+00:02:31,589 --> 00:02:32,755
+aucune valeur manquante.
+
+53
+00:02:32,755 --> 00:02:36,120
+Nous avons 17 000 lignes
+pour toutes les valeurs.
+
+54
+00:02:36,120 --> 00:02:39,475
+La longitude moyenne est -119.
+
+55
+00:02:39,475 --> 00:02:41,640
+La latitude moyenne est 35.
+
+56
+00:02:41,640 --> 00:02:44,000
+C'est logique,
+puisqu'il s'agit de la Californie.
+
+57
+00:02:44,000 --> 00:02:47,820
+L'âge moyen des maisons est 28,6.
+
+58
+00:02:47,820 --> 00:02:50,340
+Il s'agit d'années. Donc, environ 30 ans.
+
+59
+00:02:50,340 --> 00:02:53,685
+Le nombre total de pièces est 2 643.
+
+60
+00:02:53,685 --> 00:02:56,355
+Il ne s'agit pas d'une maison individuelle,
+
+61
+00:02:56,355 --> 00:03:00,240
+mais probablement du nombre total
+de pièces dans cette agrégation.
+
+62
+00:03:00,240 --> 00:03:03,090
+Nous devons en faire quelque chose.
+
+63
+00:03:03,090 --> 00:03:09,900
+Le nombre total de chambres, 539, est
+étrange aussi. La population est de 1 429.
+
+64
+00:03:09,900 --> 00:03:13,245
+Le nombre de foyers est 501.
+
+65
+00:03:13,245 --> 00:03:17,925
+Le revenu médian est 3,9,
+
+66
+00:03:17,925 --> 00:03:23,055
+et la valeur médiane
+des maisons est d'environ 207 000.
+
+67
+00:03:23,055 --> 00:03:26,015
+Nous avons donc toutes ces moyennes,
+
+68
+00:03:26,015 --> 00:03:27,600
+ainsi que l'écart type
+
+69
+00:03:27,600 --> 00:03:29,610
+et la valeur minimale.
+
+70
+00:03:29,610 --> 00:03:31,770
+Le nombre minimal de pièces est 2.
+
+71
+00:03:31,770 --> 00:03:36,025
+Le nombre maximal de pièces est 37 937.
+
+72
+00:03:36,025 --> 00:03:39,225
+Cela nous donne un aperçu des données.
+
+73
+00:03:39,225 --> 00:03:43,160
+Nous allons diviser
+ces données en deux parties.
+
+74
+00:03:43,160 --> 00:03:45,390
+Pour cet exercice,
+
+75
+00:03:45,390 --> 00:03:47,295
+nous n'allons pas les enregistrer.
+
+76
+00:03:47,295 --> 00:03:49,485
+La division aléatoire est suffisante.
+
+77
+00:03:49,485 --> 00:03:53,880
+Je crée donc un masque,
+
+78
+00:03:53,880 --> 00:03:59,760
+qui crée à son tour un tableau
+de la longueur du df, soit 17 000,
+
+79
+00:03:59,760 --> 00:04:03,135
+et vérifie si le nombre aléatoire
+est inférieur à 0.8,
+
+80
+00:04:03,135 --> 00:04:06,860
+ce qui signifie qu'environ 80 %
+des valeurs seront égales à 1
+
+81
+00:04:06,860 --> 00:04:10,920
+et 20 % seront égales à zéro.
+
+82
+00:04:10,920 --> 00:04:14,900
+Le df d'entraînement correspond
+donc à toutes ces valeurs égales à 1,
+
+83
+00:04:14,900 --> 00:04:19,110
+et le df d'évaluation à toutes celles
+dont le masque est de zéro.
+
+84
+00:04:19,110 --> 00:04:20,608
+À ce point,
+
+85
+00:04:20,608 --> 00:04:25,740
+nous obtenons deux structures
+de données, traindf et evaldf.
+
+86
+00:04:25,740 --> 00:04:27,850
+Et je peux ajouter un élément.
+
+87
+00:04:27,850 --> 00:04:33,390
+Je peux imprimer la longueur
+de traindf, qui est d'environ 13 000,
+
+88
+00:04:33,390 --> 00:04:37,035
+et la longueur d'evaldf,
+
+89
+00:04:37,035 --> 00:04:41,235
+qui correspond à environ 20 %, environ 3 400.
+
+90
+00:04:41,235 --> 00:04:44,135
+Nous avons maintenant
+notre ensemble de données d'entraînement
+
+91
+00:04:44,135 --> 00:04:46,155
+et notre ensemble de données d'évaluation.
+
+92
+00:04:46,155 --> 00:04:48,855
+Créons maintenant notre modèle.
+
+93
+00:04:48,855 --> 00:04:50,100
+Pour cela,
+
+94
+00:04:50,100 --> 00:04:53,025
+nous devons d'abord lire nos données.
+
+95
+00:04:53,025 --> 00:04:55,720
+Je vais donc utiliser la fonction make_input,
+
+96
+00:04:55,720 --> 00:04:57,535
+et lui donner une structure de données
+
+97
+00:04:57,535 --> 00:05:00,370
+et le nombre d'itérations de lecture.
+
+98
+00:05:00,370 --> 00:05:03,140
+Je vais utiliser la fonction pandas_input
+
+99
+00:05:03,140 --> 00:05:07,025
+pour récupérer la structure de données
+
+100
+00:05:07,025 --> 00:05:09,515
+et lui ajouter des caractéristiques.
+
+101
+00:05:09,515 --> 00:05:11,535
+Pour démarrer,
+
+102
+00:05:11,535 --> 00:05:15,580
+nous avons regardé le nombre total de pièces.
+
+103
+00:05:15,585 --> 00:05:17,540
+Il est absurde, n'est-ce pas ?
+
+104
+00:05:17,540 --> 00:05:22,335
+Nous n'avons pas
+une maison avec 2 643 pièces.
+
+105
+00:05:22,335 --> 00:05:27,130
+Il s'agit en réalité du nombre total
+de pièces dans cette agrégation,
+
+106
+00:05:27,130 --> 00:05:28,425
+dans ce code postal.
+
+107
+00:05:28,425 --> 00:05:30,990
+Comment normaliser ceci ?
+
+108
+00:05:30,990 --> 00:05:33,675
+Nous devons revenir
+à une valeur pour une seule maison.
+
+109
+00:05:33,675 --> 00:05:37,050
+Nous prenons donc le nombre total de pièces
+
+110
+00:05:37,050 --> 00:05:39,285
+et nous le divisons par le nombre de foyers.
+
+111
+00:05:39,285 --> 00:05:42,480
+Nous obtenons ainsi le nombre de pièces
+
+112
+00:05:42,480 --> 00:05:45,750
+d'une maison classique dans ce code postal.
+
+113
+00:05:45,750 --> 00:05:49,755
+Que reste-t-il
+à normaliser pour ce code postal ?
+
+114
+00:05:49,755 --> 00:05:51,120
+Voyons cela.
+
+115
+00:05:51,120 --> 00:05:54,090
+Les latitudes et les longitudes
+ne posent pas de problème.
+
+116
+00:05:54,090 --> 00:05:57,375
+Nous devons normaliser
+le nombre total de pièces
+
+117
+00:05:57,375 --> 00:05:59,895
+et le nombre total de chambres.
+
+118
+00:05:59,895 --> 00:06:01,365
+Allons-y.
+
+119
+00:06:01,365 --> 00:06:05,685
+Au lieu d'utiliser
+seulement le nombre de pièces,
+
+120
+00:06:05,685 --> 00:06:10,590
+ajoutons le nombre de chambres.
+Est-ce qu'il s'appelle ainsi ?
+
+121
+00:06:10,590 --> 00:06:13,360
+Non, il s'appelle total_bedrooms.
+
+122
+00:06:15,140 --> 00:06:17,880
+total_bedrooms.
+
+123
+00:06:17,880 --> 00:06:24,075
+Et ceci peut s'appeler num_bedrooms.
+
+124
+00:06:24,075 --> 00:06:28,170
+Nous avons donc nos deux caractéristiques.
+
+125
+00:06:28,170 --> 00:06:30,530
+Nous avons créé notre fonction d'entrée.
+
+126
+00:06:30,530 --> 00:06:32,920
+Voyons maintenant
+nos colonnes de caractéristiques.
+
+127
+00:06:32,920 --> 00:06:36,225
+housing_median_age est une colonne numérique.
+
+128
+00:06:36,225 --> 00:06:38,430
+Elle peut être utilisée telle quelle.
+
+129
+00:06:38,430 --> 00:06:40,665
+Si on regarde l'âge médian,
+
+130
+00:06:40,665 --> 00:06:42,485
+on voit que les nombres sont logiques.
+
+131
+00:06:42,485 --> 00:06:43,980
+Ce sont apparemment des années.
+
+132
+00:06:43,980 --> 00:06:46,650
+Nous pouvons les utiliser tels quels.
+
+133
+00:06:46,650 --> 00:06:48,750
+Utilisons donc l'âge médian.
+
+134
+00:06:48,750 --> 00:06:55,275
+Répartissons ensuite
+la latitude dans des bins entre 32 et 42.
+
+135
+00:06:55,275 --> 00:06:57,045
+Pourquoi 32 et 42 ?
+
+136
+00:06:57,045 --> 00:07:04,645
+Si on revient ici, on peut voir
+que la latitude va de 32 à 42.
+
+137
+00:07:04,645 --> 00:07:10,120
+Nous pouvons donc
+la diviser en bins allant de 32 à 42.
+
+138
+00:07:10,120 --> 00:07:11,790
+Que pouvons-nous utiliser d'autre ?
+
+139
+00:07:11,790 --> 00:07:13,234
+Si nous utilisons la latitude,
+
+140
+00:07:13,234 --> 00:07:15,570
+nous pouvons aussi utiliser la longitude.
+
+141
+00:07:15,570 --> 00:07:18,520
+Copions donc ceci,
+
+142
+00:07:22,190 --> 00:07:25,240
+et utilisons également la longitude.
+
+143
+00:07:25,247 --> 00:07:28,767
+Nous allons ajouter la longitude ici.
+
+144
+00:07:28,767 --> 00:07:38,270
+La longitude doit
+être comprise entre -124 et -114.
+
+145
+00:07:38,270 --> 00:07:46,615
+Descendons ici
+et remplaçons ceci par -124 et -114.
+
+146
+00:07:46,615 --> 00:07:49,970
+Un degré de longitude
+est probablement raisonnable.
+
+147
+00:07:49,970 --> 00:07:53,660
+Un degré correspond à environ 100 km.
+
+148
+00:07:53,660 --> 00:07:54,935
+Voilà.
+
+149
+00:07:54,935 --> 00:07:56,360
+Nous pouvons faire ceci.
+
+150
+00:07:56,360 --> 00:07:58,355
+Le nombre de pièces.
+
+151
+00:07:58,355 --> 00:08:00,625
+Nous avons ajouté le nombre de chambres.
+
+152
+00:08:00,625 --> 00:08:03,410
+Faisons également cela.
+
+153
+00:08:03,410 --> 00:08:06,560
+Nombre de pièces, nombre de chambres.
+
+154
+00:08:06,560 --> 00:08:08,795
+Nous avons ensuite le revenu médian.
+
+155
+00:08:08,795 --> 00:08:12,595
+Voilà donc notre ensemble
+de colonnes de caractéristiques.
+
+156
+00:08:12,595 --> 00:08:17,294
+Vous pouvez maintenant procéder
+à l'entraînement et à l'évaluation
+
+157
+00:08:17,294 --> 00:08:19,670
+avec train_and_evaluate,
+
+158
+00:08:19,670 --> 00:08:22,195
+en transmettant train_spec, eval_spec, etc.
+
+159
+00:08:22,195 --> 00:08:24,160
+À ce stade,
+
+160
+00:08:24,160 --> 00:08:26,215
+nous pouvons appeler train_and_evaluate
+
+161
+00:08:26,215 --> 00:08:28,315
+et écrire un modèle entraîné.
+
+162
+00:08:28,315 --> 00:08:30,340
+En exécutant ceci,
+
+163
+00:08:30,340 --> 00:08:33,669
+nous devrions
+obtenir un résultat d'évaluation.
+
+164
+00:08:33,669 --> 00:08:35,095
+L'exécution est en cours.
+
+165
+00:08:35,095 --> 00:08:39,605
+J'ai demandé une exécution sur 5 000 étapes.
+
+166
+00:08:39,605 --> 00:08:40,875
+À ce stade,
+
+167
+00:08:40,875 --> 00:08:42,659
+je suis à l'étape 1 650.
+
+168
+00:08:42,659 --> 00:08:44,455
+Patientons un peu.
+
+169
+00:08:44,455 --> 00:08:46,180
+Une fois l'exécution terminée,
+
+170
+00:08:46,180 --> 00:08:49,550
+le programme enregistre
+régulièrement un dictionnaire
+
+171
+00:08:49,555 --> 00:08:52,270
+qui indique la perte moyenne.
+
+172
+00:08:52,270 --> 00:08:58,220
+Cette dernière n'est pas très utile,
+car elle est calculée sur un lot.
+
+173
+00:08:58,220 --> 00:08:59,565
+Mais cette perte-ci,
+
+174
+00:08:59,565 --> 00:09:02,875
+calculée sur l'ensemble
+de données d'évaluation, est plus logique.
+
+175
+00:09:05,605 --> 00:09:08,895
+La perte moyenne est calculée
+sur l'ensemble de données d'évaluation,
+
+176
+00:09:08,895 --> 00:09:10,570
+ce qui est plus logique.
+
+177
+00:09:10,570 --> 00:09:12,640
+La perte elle-même ne concerne qu'un lot.
+
+178
+00:09:12,640 --> 00:09:14,110
+Nous n'en avons pas besoin.
+
+179
+00:09:14,110 --> 00:09:15,585
+Descendons.
+
+180
+00:09:15,585 --> 00:09:17,350
+Attendons la fin de l'exécution.
+
+181
+00:09:17,350 --> 00:09:21,205
+4 000… 5 000… Et voilà.
+
+182
+00:09:21,205 --> 00:09:27,130
+Notre perte moyenne pour tout l'ensemble
+de données, la RMSE, est de 0,59.
+
+183
+00:09:27,130 --> 00:09:29,200
+Essayons autre chose.
+
+184
+00:09:29,200 --> 00:09:38,480
+Voici ce qui se passe
+si je n'ai pas le nombre de pièces.
+
+185
+00:09:38,480 --> 00:09:42,685
+N'ajoutons pas ces éléments.
+
+186
+00:09:42,685 --> 00:09:47,305
+Lors de la création de nos colonnes d'entrée,
+
+187
+00:09:47,305 --> 00:09:50,410
+nous déciderons simplement
+de ne pas utiliser le nombre de pièces,
+
+188
+00:09:50,410 --> 00:09:52,225
+le nombre de chambres,
+
+189
+00:09:52,225 --> 00:09:55,450
+la latitude, la longitude
+
+190
+00:09:55,450 --> 00:09:56,965
+ou le revenu médian.
+
+191
+00:09:56,965 --> 00:09:59,080
+Nous avons uniquement l'âge de la maison.
+
+192
+00:09:59,080 --> 00:10:02,275
+Nous procédons ainsi,
+c'est la seule colonne de caractéristiques.
+
+193
+00:10:02,275 --> 00:10:04,145
+Que va-t-il se passer ?
+
+194
+00:10:04,145 --> 00:10:06,570
+Descendons ici.
+
+195
+00:10:08,320 --> 00:10:11,525
+Souvenez-vous
+que nous avons obtenu 0,59 auparavant.
+
+196
+00:10:11,525 --> 00:10:13,205
+Je supprime la cellule,
+
+197
+00:10:13,205 --> 00:10:16,425
+et je relance l'exécution
+avec une seule donnée d'entrée.
+
+198
+00:10:16,425 --> 00:10:19,100
+Qu'obtenons-nous ?
+
+199
+00:10:21,070 --> 00:10:23,310
+Notre perte est de 1,87.
+
+200
+00:10:23,310 --> 00:10:27,620
+Toutes ces caractéristiques
+d'entrée étaient donc utiles,
+
+201
+00:10:27,620 --> 00:10:30,870
+puisque la perte a augmenté
+lorsque nous les avons supprimées.
+
+202
+00:10:30,870 --> 00:10:34,500
+Ceci vous donne donc une idée
+des caractéristiques qui sont utiles.
+
+203
+00:10:34,500 --> 00:10:36,670
+Vous pouvez faire ceci manuellement.
+
+204
+00:10:36,670 --> 00:10:40,710
+Vous pouvez tester ce qui se passe
+si vous n'utilisez que le revenu médian.
+
+205
+00:10:40,710 --> 00:10:43,590
+Le revenu médian est un bon indicateur.
+
+206
+00:10:43,590 --> 00:10:47,720
+Si vous réessayez avec le revenu médian,
+
+207
+00:10:47,720 --> 00:10:50,495
+vous verrez que la perte diminue fortement.
+
+208
+00:10:50,495 --> 00:10:53,025
+Les autres caractéristiques
+ne sont pas aussi utiles.
+
+209
+00:10:53,025 --> 00:10:54,710
+Elles sont utiles, mais pas autant.
+
+210
+00:10:54,710 --> 00:10:56,820
+Le revenu médian est particulièrement utile,
+
+211
+00:10:56,820 --> 00:11:00,965
+car il indique
+ce que les gens peuvent se permettre
+
+212
+00:11:00,965 --> 00:11:05,445
+et que le marché tend à s'aligner là-dessus.
+
+213
+00:11:05,445 --> 00:11:09,810
+Nous avons maintenant
+une perte moyenne de 0,69.
+
+214
+00:11:09,810 --> 00:11:16,410
+Nous sommes passés de 1,38 à 0,69
+simplement en ajoutant le revenu médian.
+
+215
+00:11:16,410 --> 00:11:19,230
+C'est une caractéristique extrêmement utile.
+
+216
+00:11:19,230 --> 00:11:21,345
+En quoi est-ce important dans la pratique ?
+
+217
+00:11:21,345 --> 00:11:24,150
+Ce qui est important,
+
+218
+00:11:24,150 --> 00:11:26,625
+ce sont les données que vous recueillez.
+
+219
+00:11:26,625 --> 00:11:28,820
+Imaginez
+que vous ayez cet ensemble de données,
+
+220
+00:11:28,820 --> 00:11:33,240
+mais que vous n'ayez pas recueilli
+le revenu médian des habitants.
+
+221
+00:11:33,240 --> 00:11:36,180
+Votre modèle ne serait pas bon.
+
+222
+00:11:36,180 --> 00:11:39,630
+C'est pour cette raison que nous disons
+
+223
+00:11:39,630 --> 00:11:44,220
+que l'important dans le machine learning
+n'est pas le modèle lui-même,
+
+224
+00:11:44,220 --> 00:11:47,325
+mais les données que vous lui fournissez.
+
+225
+00:11:47,325 --> 00:11:51,045
+Pour ce modèle,
+il est particulièrement important
+
+226
+00:11:51,045 --> 00:11:55,200
+de connaître le revenu médian des habitants
+
+227
+00:11:55,200 --> 00:11:58,350
+afin de prédire le prix des maisons.
+
+228
+00:11:58,350 --> 00:12:00,350
+C'est une caractéristique très importante.
+
+229
+00:12:00,350 --> 00:12:02,640
+Pour obtenir cette caractéristique,
+
+230
+00:12:02,640 --> 00:12:06,880
+vous devez avoir un pipeline d'extraction
+des données qui apporte les données.

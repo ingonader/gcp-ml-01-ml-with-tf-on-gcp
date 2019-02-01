@@ -1,0 +1,611 @@
+1
+00:00:00,000 --> 00:00:02,030
+Hi. Mein Name ist Carl Osipov
+
+2
+00:00:02,030 --> 00:00:03,960
+und ich bin Program Manager bei Google.
+
+3
+00:00:03,960 --> 00:00:06,530
+Ich helfe unseren Kunden,
+die Google Cloud nutzen,
+
+4
+00:00:06,530 --> 00:00:09,710
+erfolgreich Systeme
+für maschinelles Lernen zu implementieren,
+
+5
+00:00:09,710 --> 00:00:12,390
+die skalierbar und produktionsreif sind.
+
+6
+00:00:12,390 --> 00:00:16,564
+Dieser Abschnitt des Moduls beschreibt
+die Vorverarbeitung von Eingabedaten
+
+7
+00:00:16,565 --> 00:00:18,135
+und die Erstellung von Merkmalen.
+
+8
+00:00:18,135 --> 00:00:19,471
+Das sind zwei Techniken,
+
+9
+00:00:19,471 --> 00:00:22,901
+mit denen Sie Merkmale
+für ein ML-System vorbereiten können.
+
+10
+00:00:22,901 --> 00:00:24,704
+Für den Anfang sehen wir uns
+
+11
+00:00:24,704 --> 00:00:27,490
+Beispiele für Vorverarbeitung
+und Merkmalerstellung an
+
+12
+00:00:27,490 --> 00:00:29,660
+und Sie lernen
+die Herausforderungen kennen,
+
+13
+00:00:29,660 --> 00:00:32,810
+die diese Techniken
+beim Feature Engineering mit sich bringen.
+
+14
+00:00:32,810 --> 00:00:36,300
+In den zwei übrigen Teilen des Abschnitts
+
+15
+00:00:36,300 --> 00:00:39,050
+sehen Sie dann,
+wie Sie diese Herausforderungen
+
+16
+00:00:39,050 --> 00:00:42,585
+mit Tools wie Google Cloud Dataflow
+und Cloud Dataprep meistern können.
+
+17
+00:00:42,585 --> 00:00:46,420
+Okay.
+Hier sind zunächst ein paar Beispiele,
+
+18
+00:00:46,420 --> 00:00:48,090
+die Ihnen ein Gefühl dafür geben,
+
+19
+00:00:48,090 --> 00:00:51,230
+wann Sie Vorverarbeitung
+und Merkmalerstellung nutzen sollten.
+
+20
+00:00:51,230 --> 00:00:54,560
+Manche Werte
+in einem Merkmalsatz müssen normalisiert
+
+21
+00:00:54,560 --> 00:00:58,865
+oder neu skaliert werden,
+bevor sie vom ML-Modell genutzt werden.
+
+22
+00:00:58,865 --> 00:01:03,230
+Skalieren bedeutet hier,
+ein reellwertiges Merkmal wie einen Preis
+
+23
+00:01:03,230 --> 00:01:07,275
+mit der gezeigten Formel in einen Wert
+zwischen null und eins umzuwandeln.
+
+24
+00:01:07,275 --> 00:01:10,175
+Es gibt viele Gründe,
+Werte neu zu skalieren.
+
+25
+00:01:10,175 --> 00:01:14,045
+Meistens soll Skalierung
+die Leistung des ML-Trainings erhöhen,
+
+26
+00:01:14,045 --> 00:01:17,075
+insbesondere
+die Leistung des Gradientenverfahrens.
+
+27
+00:01:17,075 --> 00:01:20,715
+Sie benötigen
+für die Formel zur Neuskalierung
+
+28
+00:01:20,715 --> 00:01:24,570
+sowohl den Mindest-
+als auch den Höchstwert des Merkmals.
+
+29
+00:01:24,570 --> 00:01:26,365
+Wenn Sie diese Werte nicht kennen,
+
+30
+00:01:26,365 --> 00:01:30,441
+müssen Sie zum Auffinden wahrscheinlich
+Ihr gesamtes Dataset vorverarbeiten.
+
+31
+00:01:30,441 --> 00:01:35,300
+Vorverarbeitung kann auch nützlich sein
+für kategorische Werte im Dataset
+
+32
+00:01:35,300 --> 00:01:39,135
+wie die Städtenamen hier im Code-Snippet.
+
+33
+00:01:39,135 --> 00:01:43,555
+Um zum Beispiel in TensorFlow
+eine One-Hot-Codierung anzuwenden,
+
+34
+00:01:43,555 --> 00:01:48,925
+mit der Sie verschiedene Städte
+als Binärwertmerkmale darstellen können,
+
+35
+00:01:48,925 --> 00:01:54,840
+nutzen Sie die TensorFlow API-Methode
+"categorical_column_with_vocabulary_list"
+
+36
+00:01:54,840 --> 00:01:58,255
+Dafür übergeben Sie
+der Methode eine Liste von Werten,
+
+37
+00:01:58,255 --> 00:02:00,880
+in diesem Fall verschiedene Städtenamen.
+
+38
+00:02:00,880 --> 00:02:04,165
+Wenn Ihnen so ein Wörterbuch
+mit Schlüsselwerten fehlt,
+
+39
+00:02:04,165 --> 00:02:06,245
+können Sie
+mit einem Vorverarbeitungsschritt
+
+40
+00:02:06,245 --> 00:02:08,785
+über das gesamte Dataset eines erstellen.
+
+41
+00:02:08,785 --> 00:02:11,265
+In diesem Modul
+behandeln wir drei Technologien,
+
+42
+00:02:11,265 --> 00:02:14,375
+die Ihnen das Implementieren
+der Vorverarbeitung erleichtern.
+
+43
+00:02:14,375 --> 00:02:17,210
+Mit BigQuery und Apache Beam
+
+44
+00:02:17,210 --> 00:02:20,750
+wird das vollständige Eingabe-Dataset
+vor dem Training verarbeitet.
+
+45
+00:02:20,750 --> 00:02:24,070
+Dazu gehören Vorgänge wie
+das Ausschließen von Datenpunkten
+
+46
+00:02:24,070 --> 00:02:25,270
+aus dem Trainings-Dataset
+
+47
+00:02:25,270 --> 00:02:28,795
+und auch die Berechnung
+von Statistiken und Vokabularen
+
+48
+00:02:28,795 --> 00:02:30,785
+aus dem gesamten Eingabe-Dataset.
+
+49
+00:02:30,785 --> 00:02:32,940
+Zur Erinnerung:
+Für manche Merkmale
+
+50
+00:02:32,940 --> 00:02:35,660
+benötigen Sie Statistiken
+über ein begrenztes Zeitfenster.
+
+51
+00:02:35,660 --> 00:02:38,660
+Vielleicht möchten Sie
+die mittlere Anzahl der Produkte wissen,
+
+52
+00:02:38,660 --> 00:02:41,490
+die in der letzten Stunde
+auf einer Website verkauft wurden.
+
+53
+00:02:41,490 --> 00:02:44,000
+Für solche Zeitfenstermerkmale
+
+54
+00:02:44,000 --> 00:02:47,075
+nutzen Sie Batch-
+und Streamingdaten-Pipelines von Beam.
+
+55
+00:02:47,075 --> 00:02:50,735
+Andere Merkmale, die Datenpunkt
+für Datenpunkt vorverarbeitet werden,
+
+56
+00:02:50,735 --> 00:02:54,835
+können entweder direkt in TensorFlow
+oder mit Beam implementiert werden.
+
+57
+00:02:54,855 --> 00:02:56,050
+Sie sehen also,
+
+58
+00:02:56,050 --> 00:03:01,030
+dass Apache Beam und die ergänzende
+Google Cloud-Technologie Cloud Dataflow
+
+59
+00:03:01,030 --> 00:03:03,590
+für diesen Modulteil wichtig sein werden.
+
+60
+00:03:03,590 --> 00:03:06,185
+Zunächst beschreibe ich
+ein paar Einschränkungen,
+
+61
+00:03:06,185 --> 00:03:09,850
+die das Feature Engineering mit BigQuery
+und TensorFlow allein mit sich bringt,
+
+62
+00:03:09,850 --> 00:03:12,330
+und dann erkläre ich,
+wie Beam dem abhilft.
+
+63
+00:03:12,330 --> 00:03:15,535
+BigQuery ist
+ein extrem skalierbares, sehr schnelles,
+
+64
+00:03:15,535 --> 00:03:19,950
+vollständig verwaltetes Data Warehouse,
+erhältlich als Dienst von Google Cloud.
+
+65
+00:03:19,950 --> 00:03:23,000
+BigQuery kann Ihnen
+das Feature Engineering erleichtern,
+
+66
+00:03:23,000 --> 00:03:24,580
+da Sie darin mit Standard-SQL
+
+67
+00:03:24,580 --> 00:03:27,160
+häufige Vorverarbeitungsaufgaben
+implementieren können.
+
+68
+00:03:27,160 --> 00:03:29,670
+Wenn Sie beispielsweise ein Dataset
+
+69
+00:03:29,670 --> 00:03:33,620
+mit 10 Milliarden Einträgen zu Taxifahrten
+in New York City vorverarbeiten,
+
+70
+00:03:33,620 --> 00:03:36,390
+können manche Einträge
+falsche Daten enthalten
+
+71
+00:03:36,390 --> 00:03:39,730
+wie teure Fahrten
+über Distanzen von null Kilometern.
+
+72
+00:03:39,730 --> 00:03:42,575
+Sie können diese falschen Daten
+mit einer SQL-Anweisung
+
+73
+00:03:42,575 --> 00:03:44,970
+aus Ihrem Dataset herausfiltern.
+
+74
+00:03:44,970 --> 00:03:48,300
+Diese Anweisung wird
+in BigQuery in Sekunden ausgeführt.
+
+75
+00:03:48,300 --> 00:03:50,950
+Sie können
+auch andere Anweisungen schreiben
+
+76
+00:03:50,950 --> 00:03:54,575
+und Standard SQL mit mathematischen
+und Datenverarbeitungsfunktionen nutzen.
+
+77
+00:03:54,575 --> 00:03:57,000
+Diese können nützlich sein,
+um einfache Berechnungen
+
+78
+00:03:57,000 --> 00:04:01,550
+wie Additionen von Quelldaten auszuführen
+oder auch gängige Datenformate zu parsen,
+
+79
+00:04:01,550 --> 00:04:06,655
+um z. B. die Tageszeit aus Einträgen
+mit Zeitstempeln zu extrahieren.
+
+80
+00:04:06,655 --> 00:04:10,630
+Wenn Trainingsbeispiele
+mit SQL vorverarbeiten möchten,
+
+81
+00:04:10,630 --> 00:04:12,630
+müssen Sie unbedingt darauf achten,
+
+82
+00:04:12,630 --> 00:04:17,325
+in TensorFlow genau die gleiche
+Vorverarbeitungslogik zu implementieren.
+
+83
+00:04:17,325 --> 00:04:19,645
+Als Nächstes sehen Sie zwei Ansätze
+
+84
+00:04:19,645 --> 00:04:23,125
+zum Schreiben
+von Vorverarbeitungscode in TensorFlow.
+
+85
+00:04:23,125 --> 00:04:27,550
+In der Praxis werden Sie vielleicht
+dem ersten oder dem zweiten Ansatz folgen,
+
+86
+00:04:27,550 --> 00:04:29,435
+manchmal aber auch beiden.
+
+87
+00:04:29,435 --> 00:04:32,690
+Viele häufige Vorverarbeitungsschritte
+
+88
+00:04:32,690 --> 00:04:34,900
+können mit einer der vorhandenen Methoden
+
+89
+00:04:34,900 --> 00:04:38,350
+der Feature Columns API
+von TensorFlow geschrieben werden.
+
+90
+00:04:38,350 --> 00:04:42,760
+Wenn Sie z. B. ein reellwertiges Merkmal
+diskretisieren möchten,
+
+91
+00:04:42,760 --> 00:04:45,350
+können Sie
+die Methode "bucketized_column" anwenden.
+
+92
+00:04:45,350 --> 00:04:48,210
+Sollte der Vorverarbeitungsschritt,
+den Sie brauchen,
+
+93
+00:04:48,210 --> 00:04:50,510
+in der TensorFlow API nicht verfügbar sein,
+
+94
+00:04:50,510 --> 00:04:53,170
+können Sie die Funktionen
+aus den Eingabeparametern
+
+95
+00:04:53,170 --> 00:04:56,360
+für Training, Bewertung und Test
+übernehmen und anpassen.
+
+96
+00:04:56,360 --> 00:05:00,600
+Die folgenden Folien
+veranschaulichen dies weiter.
+
+97
+00:05:01,620 --> 00:05:06,670
+Als erste Option implementieren Sie
+Ihren eigenen Vorverarbeitungscode.
+
+98
+00:05:06,670 --> 00:05:07,975
+In diesem Beispiel
+
+99
+00:05:07,975 --> 00:05:12,390
+ist der Vorverarbeitungscode
+in der Methode "add_engineered" enthalten
+
+100
+00:05:12,390 --> 00:05:16,945
+und es werden keine globalen Statistiken
+aus dem Quell-Dataset benötigt.
+
+101
+00:05:16,945 --> 00:05:22,140
+Um aus den Längen- und Breitengraden
+die euklidische Distanz zu berechnen,
+
+102
+00:05:22,140 --> 00:05:25,450
+gibt der Code
+neben dem Wörterbuch des Ausgangsmerkmals
+
+103
+00:05:25,450 --> 00:05:29,380
+den neuen Merkmalwert zurück,
+der mit der Distanzformel berechnet wurde.
+
+104
+00:05:29,380 --> 00:05:32,420
+Damit das Merkmal der euklidischen Distanz
+
+105
+00:05:32,420 --> 00:05:35,675
+bei Training, Bewertung
+und Bereitstellung berücksichtigt wird,
+
+106
+00:05:35,675 --> 00:05:38,975
+fassen
+alle entsprechenden "input_fn"-Funktionen
+
+107
+00:05:38,975 --> 00:05:43,780
+die noch nicht vorverarbeiteten Merkmale
+im Aufruf von "add_engineered" zusammen.
+
+108
+00:05:43,780 --> 00:05:46,560
+Wenn der benötigte Vorverarbeitungsschritt
+
+109
+00:05:46,560 --> 00:05:49,790
+in der TensorFlow API
+enthalten ist, haben Sie Glück.
+
+110
+00:05:49,790 --> 00:05:52,460
+Sie können dann
+die Hilfsmethoden einfach aufrufen,
+
+111
+00:05:52,460 --> 00:05:54,710
+wenn Sie die Merkmalspalten definieren.
+
+112
+00:05:54,710 --> 00:05:57,880
+In diesem Beispiel
+wird mit der Methode "bucketized_column"
+
+113
+00:05:57,880 --> 00:06:01,030
+der Breitengrad
+aus den Quelldaten entnommen.
+
+114
+00:06:01,030 --> 00:06:05,485
+Dabei wird darauf geachtet,
+dass die Werte zwischen 38 und 42 liegen.
+
+115
+00:06:05,485 --> 00:06:08,600
+Als Nächstes
+werden die ursprünglichen Breitenwerte
+
+116
+00:06:08,600 --> 00:06:12,000
+in einen der sich gegenseitig
+ausschließenden Buckets ausgegeben,
+
+117
+00:06:12,000 --> 00:06:16,885
+wobei die Zahl der Buckets vom Parameter
+"nbuckets" bestimmt wird.
+
+118
+00:06:16,885 --> 00:06:20,600
+Die Pflege von Vorverarbeitungscode
+in SQL für BigQuery
+
+119
+00:06:20,600 --> 00:06:24,460
+und in TensorFlow
+kann sehr komplex und schwierig werden.
+
+120
+00:06:24,460 --> 00:06:26,080
+Wie Sie gesehen haben,
+
+121
+00:06:26,080 --> 00:06:30,240
+ist einer der Vorteile von Apache Beam
+bei der Vorverarbeitung von Merkmalen,
+
+122
+00:06:30,240 --> 00:06:31,860
+dass derselbe Code
+
+123
+00:06:31,860 --> 00:06:35,460
+für Training und Bereitstellung
+eines Modells verwendbar ist.
+
+124
+00:06:35,460 --> 00:06:38,225
+Allerdings haben Sie
+bei der Verwendung von Apache Beam
+
+125
+00:06:38,225 --> 00:06:42,435
+keinen Zugriff
+auf praktische TensorFlow-Hilfsmethoden.
+
+126
+00:06:42,445 --> 00:06:45,370
+Das bedeutet,
+dass Sie wie in unserem Beispiel
+
+127
+00:06:45,370 --> 00:06:48,140
+Ihren eigenen Vorverarbeitungscode
+implementieren müssen.
+
+128
+00:06:48,140 --> 00:06:51,290
+In diesem Modulteil
+haben Sie konkrete Beispiele gesehen,
+
+129
+00:06:51,290 --> 00:06:55,520
+wo Apache Beam Ihnen
+die Vorverarbeitung erleichtern kann.

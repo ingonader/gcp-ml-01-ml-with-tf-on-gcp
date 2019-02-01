@@ -1,0 +1,275 @@
+1
+00:00:01,439 --> 00:00:04,660
+Öffnen Sie für dieses Lab
+als Erstes in Ihrem Browser
+
+2
+00:00:04,660 --> 00:00:07,375
+das Google Cloud Platform-Dashboard.
+
+3
+00:00:07,375 --> 00:00:11,755
+Klicken Sie dann
+auf "Google Cloud Shell aktivieren".
+
+4
+00:00:11,755 --> 00:00:15,130
+Sie sollten in Ihrer Cloud Shell-Umgebung
+
+5
+00:00:15,130 --> 00:00:19,055
+den Quellcode und die Pakete
+für die Ausführung bereits geladen haben.
+
+6
+00:00:19,055 --> 00:00:21,620
+Wenn Sie das letzte Lab
+kürzlich abgeschlossen haben,
+
+7
+00:00:21,620 --> 00:00:24,605
+sollten Sie den Code
+und die Pakete bereits installiert haben.
+
+8
+00:00:24,605 --> 00:00:28,670
+Wenn aber
+kein Verzeichnis "training-data-analyst"
+
+9
+00:00:28,670 --> 00:00:30,590
+in Ihrer Cloud Shell vorhanden ist,
+
+10
+00:00:30,590 --> 00:00:33,535
+sollten Sie hier abbrechen
+und das vorherige Lab abschließen,
+
+11
+00:00:33,535 --> 00:00:35,090
+bevor Sie fortfahren.
+
+12
+00:00:35,090 --> 00:00:37,430
+Wenn Ihre
+Cloud Shell-Umgebung eingerichtet ist,
+
+13
+00:00:37,430 --> 00:00:40,700
+können Sie den Quellcode
+für die Apache Beam-Pipeline
+
+14
+00:00:40,700 --> 00:00:44,650
+die wir in diesem Lab brauchen,
+im Cloud Shell-Codeeditor öffnen.
+
+15
+00:00:44,650 --> 00:00:49,240
+Sie finden ihn unter
+"training-data-analyst", "courses"
+
+16
+00:00:49,240 --> 00:00:54,250
+"data_analysis", "lab2", "python"
+
+17
+00:00:54,250 --> 00:00:56,890
+in der Datei "is_popular.py".
+
+18
+00:00:56,890 --> 00:01:01,045
+Im Vergleich zum vorherigen Lab
+enthält die Datei jetzt mehr Code.
+
+19
+00:01:01,045 --> 00:01:05,140
+Sehen wir uns den Code genauer an.
+
+20
+00:01:05,140 --> 00:01:08,320
+Wenn Sie nach unten
+zum Textkörper der Hauptmethode scrollen,
+
+21
+00:01:08,320 --> 00:01:11,330
+finden Sie
+das Eingabeargument für den Code.
+
+22
+00:01:11,330 --> 00:01:13,635
+Als Eingabe nimmt die Pipeline
+
+23
+00:01:13,635 --> 00:01:17,475
+die Java-Quellcodedateien
+im Verzeichnis "javahelp".
+
+24
+00:01:17,475 --> 00:01:20,810
+Beachten Sie auch,
+dass die Ausgabe dieser Pipeline
+
+25
+00:01:20,810 --> 00:01:24,010
+standardmäßig
+im Verzeichnis "/tmp" gespeichert wird
+
+26
+00:01:24,010 --> 00:01:27,160
+und die Dateinamen
+das Präfix "output" erhalten.
+
+27
+00:01:27,160 --> 00:01:30,060
+Diese Einstellung
+können Sie aber natürlich ändern.
+
+28
+00:01:30,060 --> 00:01:32,880
+Nachdem die Daten
+von Google Cloud Storage gelesen wurden,
+
+29
+00:01:32,880 --> 00:01:37,710
+folgt die Suche nach den Zeilen,
+die mit dem Schlüsselbegriff beginnen.
+
+30
+00:01:37,710 --> 00:01:40,150
+Wie Sie
+aus dem vorherigen Lab noch wissen,
+
+31
+00:01:40,150 --> 00:01:43,745
+lautet der Suchbegriff
+in dieser Pipeline "import".
+
+32
+00:01:43,745 --> 00:01:49,245
+Als Nächstes verarbeitet die Pipeline
+die Namen der importierten Pakete.
+
+33
+00:01:49,245 --> 00:01:53,480
+Beachten Sie, dass dies
+von der Methode "packageUse" abhängt,
+
+34
+00:01:53,480 --> 00:01:57,750
+die die Importanweisungen
+nach Paketnamen auswertet
+
+35
+00:01:57,750 --> 00:02:00,580
+und die eigentlichen Paketnamen
+
+36
+00:02:00,580 --> 00:02:04,310
+ohne das Schlüsselwort "import"
+und abschließendes Semikolon extrahiert.
+
+37
+00:02:04,335 --> 00:02:07,230
+Wenn der Paketname
+schließlich gefunden ist,
+
+38
+00:02:07,230 --> 00:02:09,640
+gibt die Funktion "splitPackageName"
+
+39
+00:02:09,640 --> 00:02:13,280
+die verschiedenen Präfixe
+für jeden Paketnamen zurück.
+
+40
+00:02:13,280 --> 00:02:19,500
+Für ein Paket "com.example.appname"
+würde die Funktion
+
+41
+00:02:19,500 --> 00:02:24,980
+die Präfixe "com", "com.example"
+und "com.example.appname" ausgeben.
+
+42
+00:02:24,980 --> 00:02:27,710
+Für jedes der Pakete liefert die Methode
+
+43
+00:02:27,710 --> 00:02:32,290
+ein Paar aus dem Paketpräfix
+und einer Ziffer 1 für jedes Vorkommen.
+
+44
+00:02:32,290 --> 00:02:35,730
+Alle Vorkommen werden von "CombinePerKey"
+
+45
+00:02:35,730 --> 00:02:39,450
+mit der Funktion SUM
+als Argument aufaddiert.
+
+46
+00:02:39,450 --> 00:02:45,290
+Der Combiner "Top.of(5)" ermittelt
+die fünf am häufigsten importierten Pakete.
+
+47
+00:02:45,290 --> 00:02:50,290
+Sie können nun
+die Datei "is_popular.py" ausführen.
+
+48
+00:02:50,290 --> 00:02:52,930
+Nachdem die Pipeline fertig ist,
+
+49
+00:02:52,930 --> 00:02:57,450
+können Sie die Inhalte der Ausgabedateien
+im Ausgabeverzeichnis auflisten.
+
+50
+00:02:57,450 --> 00:03:00,370
+Sie sehen als Ergebnis
+die fünf häufigste Pakete:
+
+51
+00:03:00,370 --> 00:03:08,195
+"org", "org.apache",
+"org.apache.beam", "org.apache.beam.sdk".
+
+52
+00:03:09,375 --> 00:03:15,755
+In dieser Implementierung der Pipeline
+können Sie das Ausgabeziel ändern.
+
+53
+00:03:15,755 --> 00:03:18,580
+Wenn Sie
+die Pipeline zum Beispiel anweisen,
+
+54
+00:03:18,580 --> 00:03:23,680
+statt des Standardverhaltens
+die Ergebnisse in das Verzeichnis "/tmp"
+
+55
+00:03:23,680 --> 00:03:27,915
+mit "myoutput" als Präfix zu schreiben,
+können Sie die Pipeline erneut ausführen
+
+56
+00:03:27,915 --> 00:03:31,160
+und finden danach
+die neuen Instanzen der Ausgabe vor.
+
+57
+00:03:31,160 --> 00:03:36,070
+Die neuen Ausgabedateien
+haben das Präfix "myoutput" im Namen.
+
+58
+00:03:36,070 --> 00:03:38,700
+Das wars für dieses Lab.

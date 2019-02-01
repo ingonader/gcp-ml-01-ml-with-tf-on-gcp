@@ -1,0 +1,23 @@
+前のレッスンでは TensorFlowで特徴の事前処理を
+行う方法を説明しました どんな方法で？ 特徴カラムを使いました 今回はTensorFlowで
+特徴を作成する方法を見ていきます すでに見たとおりinput関数は
+featuresとlabelsを返します featuresのデータ型は何ですか？ Pythonディクショナリです たとえば公共交通機関からの距離は
+家の価格の重要な予測因子だとすると 新しい特徴を追加して 住宅と最寄りの地下鉄の駅との距離を
+表します 地下鉄の駅の場所が
+データセットに含まれるなら 特徴にも含まれるでしょう そしてメソッドで住宅と駅との
+ユークリッド距離を計算して それをディクショナリに追加します ではadd_engineeredメソッドの
+場所はどこですか？ すべてのinput関数から add_engineeredメソッドを
+呼び出します input関数はいくつありますか？ 一般的には3つ
+つまりtraining_input evaluation_input
+serving_input関数です add_engineeredメソッドを
+この3つから呼び出す必要があります training_input関数では (features), labelを
+返す代わりに add_engineered呼び出しで
+特徴をラップします この方法により 追加的に作成した特徴が
+Pythonディクショナリに入ります evaluation_input関数は
+training_input関数と似ていて 呼び出しをadd_engineeredで
+ラップします serving_input関数では 2つのパラメータを受け入れる
+ServingInputReceiverを返します 最初のパラメータは(features) 2番目のパラメータは
+JSONで受け取るデータのプレースホルダです プレースホルダは変化せず
+同じ生データを受け取ります ただしtraining_input関数と同じように add_engineered呼び出しで
+(features)をラップします この方法でトレーニング中に
+作成したのと同じ追加の特徴が Pythonディクショナリにも入ります

@@ -1,0 +1,311 @@
+1
+00:00:00,000 --> 00:00:04,350
+Now that you understand what features are and why we use them,
+
+2
+00:00:04,350 --> 00:00:09,070
+let's move on to showing you how to implement feature crosses.
+
+3
+00:00:09,070 --> 00:00:12,415
+To create a feature cross using TensorFlow,
+
+4
+00:00:12,415 --> 00:00:17,460
+use the method crossed column in the model tf.feature_column.
+
+5
+00:00:17,460 --> 00:00:19,410
+This is the same model that you've got
+
+6
+00:00:19,410 --> 00:00:23,580
+numeric column and categorical column with vocabulary list.
+
+7
+00:00:23,580 --> 00:00:25,560
+This is the same model those come from.
+
+8
+00:00:25,560 --> 00:00:31,050
+So, the first argument in my example is the list of categorical columns.
+
+9
+00:00:31,050 --> 00:00:34,050
+You're passing in a list so you can
+
+10
+00:00:34,050 --> 00:00:37,500
+cross two columns or three columns or any number of columns.
+
+11
+00:00:37,500 --> 00:00:42,020
+But remember that these columns have to be categorical columns.
+
+12
+00:00:42,020 --> 00:00:44,105
+If you have numeric data,
+
+13
+00:00:44,105 --> 00:00:47,950
+bucketize them first and then you can do a feature cross.
+
+14
+00:00:47,950 --> 00:00:50,330
+When your bucketize a numeric column,
+
+15
+00:00:50,330 --> 00:00:53,850
+you're essentially drawing those black lines we talked about.
+
+16
+00:00:53,850 --> 00:00:56,685
+You're discretizing the column.
+
+17
+00:00:56,685 --> 00:00:58,910
+So, what is the second argument?
+
+18
+00:00:58,910 --> 00:01:04,245
+24 times 7 is the total number of hash buckets.
+
+19
+00:01:04,245 --> 00:01:08,670
+What TensorFlow does is that it does a feature cross,
+
+20
+00:01:08,670 --> 00:01:11,460
+then computes a hash of the feature cross,
+
+21
+00:01:11,460 --> 00:01:15,375
+and puts the hash into one of several buckets.
+
+22
+00:01:15,375 --> 00:01:19,350
+Even though I specified 24 times 7 here,
+
+23
+00:01:19,350 --> 00:01:22,335
+there is no guarantee that there will be no collision.
+
+24
+00:01:22,335 --> 00:01:27,440
+It is quite possible that the hash of 3:00 PM on Wednesday,
+
+25
+00:01:27,440 --> 00:01:34,230
+model 168 happens to be the same as 4:00 PM on Sunday, model 168.
+
+26
+00:01:34,230 --> 00:01:40,380
+In which case, these two day-hour combinations will be considered together.
+
+27
+00:01:40,380 --> 00:01:43,195
+Let's delve into this a little bit.
+
+28
+00:01:43,195 --> 00:01:46,380
+Now, TensorFlow will skip these steps and go
+
+29
+00:01:46,380 --> 00:01:49,680
+straight to the hash feature cross representation,
+
+30
+00:01:49,680 --> 00:01:52,900
+but it's good to think about what's happening.
+
+31
+00:01:52,900 --> 00:01:58,395
+For simplicity, let's say that instead of 24 times 7,
+
+32
+00:01:58,395 --> 00:02:02,580
+I had specified six here. What happens?
+
+33
+00:02:02,580 --> 00:02:07,610
+We do the feature cross passing in two categorical columns.
+
+34
+00:02:07,610 --> 00:02:10,975
+Day of week has seven unique values.
+
+35
+00:02:10,975 --> 00:02:14,440
+Hour of day has 24 unique values.
+
+36
+00:02:14,440 --> 00:02:21,495
+So the feature cross has 24 times 7 or 168 unique values.
+
+37
+00:02:21,495 --> 00:02:24,615
+Now consider 3:00 PM on Wednesday.
+
+38
+00:02:24,615 --> 00:02:26,520
+3:00 PM, let's say,
+
+39
+00:02:26,520 --> 00:02:28,260
+is our number 15,
+
+40
+00:02:28,260 --> 00:02:30,570
+and Wednesday, let's say,
+
+41
+00:02:30,570 --> 00:02:31,995
+is day number three.
+
+42
+00:02:31,995 --> 00:02:35,595
+This makes a feature crossed value be,
+
+43
+00:02:35,595 --> 00:02:40,130
+let's say, 87 out of 168.
+
+44
+00:02:40,130 --> 00:02:46,185
+But then, I compute the hash of 87 and do a model of six.
+
+45
+00:02:46,185 --> 00:02:51,960
+Let's assume that this gives me box number three for this hashed feature cross.
+
+46
+00:02:51,960 --> 00:02:57,855
+This is what the day-hour feature column is going to contain for 3:00 PM on Wednesday.
+
+47
+00:02:57,855 --> 00:03:02,645
+A one hot encoded value corresponding to the number three.
+
+48
+00:03:02,645 --> 00:03:05,670
+Again, TensorFlow doesn't actually go through this.
+
+49
+00:03:05,670 --> 00:03:09,665
+It doesn't have to one hot encode before doing the feature cross.
+
+50
+00:03:09,665 --> 00:03:13,220
+If it did that, things would not be very efficient memory wise.
+
+51
+00:03:13,220 --> 00:03:16,810
+But this helps to show you what's happening conceptually.
+
+52
+00:03:16,810 --> 00:03:23,305
+The number of hash buckets controls sparsity and collisions.
+
+53
+00:03:23,305 --> 00:03:26,440
+If, as we did on the previous slide,
+
+54
+00:03:26,440 --> 00:03:29,185
+we set the hash buckets to be much
+
+55
+00:03:29,185 --> 00:03:33,180
+smaller than the number of unique feature crossed values,
+
+56
+00:03:33,180 --> 00:03:35,330
+there will be lots of collisions.
+
+57
+00:03:35,330 --> 00:03:37,020
+Maybe 3:00 PM Wednesday,
+
+58
+00:03:37,020 --> 00:03:39,280
+7:00 PM Wednesday, 2:00 AM Thursday,
+
+59
+00:03:39,280 --> 00:03:43,915
+et cetera, all fall into the same bucket and will be treated the same.
+
+60
+00:03:43,915 --> 00:03:50,995
+On average, one-sixth of all the feature cross values will be in a bucket.
+
+61
+00:03:50,995 --> 00:03:56,095
+Since we have 168 unique values, on average,
+
+62
+00:03:56,095 --> 00:04:01,765
+each bucket will contain 28 different day-hour combinations.
+
+63
+00:04:01,765 --> 00:04:08,710
+Because of this, the amount to which the feature cross can memorize the data is limited.
+
+64
+00:04:08,710 --> 00:04:13,095
+But the memory used will also be quite low,
+
+65
+00:04:13,095 --> 00:04:14,865
+it's just six buckets.
+
+66
+00:04:14,865 --> 00:04:21,780
+In some way, we are aggregating several day-hour combinations into a bucket.
+
+67
+00:04:21,780 --> 00:04:26,970
+But what if we go to the other extreme and set the number of
+
+68
+00:04:26,970 --> 00:04:32,940
+hash buckets to be so high that there is very little chance of collision?
+
+69
+00:04:32,940 --> 00:04:36,915
+Let's say we set the number of hash buckets to be 300.
+
+70
+00:04:36,915 --> 00:04:41,040
+Now, on average, a bucket will contain
+
+71
+00:04:41,040 --> 00:04:45,345
+one day-hour combination or zero day-hour combinations.
+
+72
+00:04:45,345 --> 00:04:47,785
+It might contain two,
+
+73
+00:04:47,785 --> 00:04:50,110
+but the odds of that are very low.
+
+74
+00:04:50,110 --> 00:04:52,875
+So, using a high value for
+
+75
+00:04:52,875 --> 00:04:58,650
+hash buckets yields a sparse representation of the feature cross.
+
+76
+00:04:58,650 --> 00:05:05,045
+In practice, I tend to choose a number between half square root n
+
+77
+00:05:05,045 --> 00:05:11,475
+and twice n depending on how much I want to trade-off memorization versus sparsity,
+
+78
+00:05:11,475 --> 00:05:14,030
+but this is simply my rule of thumb.

@@ -1,0 +1,209 @@
+1
+00:00:00,000 --> 00:00:04,485
+Feature Engineering
+kann an drei Orten eingesetzt werden.
+
+2
+00:00:04,485 --> 00:00:07,710
+Wir haben uns angesehen,
+wie wir Merkmalvorverarbeitung
+
+3
+00:00:07,710 --> 00:00:11,490
+und Merkmalerstellung
+spontan in TensorFlow umsetzen.
+
+4
+00:00:11,490 --> 00:00:13,335
+Die andere Option ist,
+
+5
+00:00:13,335 --> 00:00:17,660
+Vorverarbeitung oder Merkmalerstellung
+in Cloud Dataflow zu erledigen.
+
+6
+00:00:17,660 --> 00:00:20,395
+Hier wird Dataflow verwendet,
+
+7
+00:00:20,395 --> 00:00:24,210
+um ein vorverarbeitetes
+oder verbessertes Dataset zu erstellen.
+
+8
+00:00:24,210 --> 00:00:28,955
+Dieses neue Dataset wird dann
+zum Training des Modells verwendet.
+
+9
+00:00:28,955 --> 00:00:32,135
+Bei der Vorhersage
+müssen wir einen Weg finden,
+
+10
+00:00:32,135 --> 00:00:34,995
+die gleichen 
+Vorverarbeitungsschritte auszuführen.
+
+11
+00:00:34,995 --> 00:00:37,670
+Diese Methode 
+funktioniert daher am besten,
+
+12
+00:00:37,670 --> 00:00:41,545
+wenn auch Dataflow
+zur Vorhersagelaufzeit gehört.
+
+13
+00:00:41,545 --> 00:00:46,425
+Dies ist
+bei der GCP-Referenzarchitektur der Fall.
+
+14
+00:00:46,425 --> 00:00:51,950
+Da Dataflow sowohl Streamingdaten
+als auch Batchdaten verarbeiten kann,
+
+15
+00:00:51,950 --> 00:00:56,550
+gehört es im Training
+und auch in der Vorhersage zur Pipeline.
+
+16
+00:00:56,550 --> 00:00:58,210
+Wenn Sie dem folgen,
+
+17
+00:00:58,210 --> 00:01:02,715
+ist Dataflow
+ein guter Ort für die Vorverarbeitung.
+
+18
+00:01:02,715 --> 00:01:05,582
+Dataflow eignet sich ideal für Merkmale,
+
+19
+00:01:05,582 --> 00:01:08,910
+bei denen zeitlich
+eine Aggregation erforderlich ist.
+
+20
+00:01:08,910 --> 00:01:13,725
+Sie möchten
+vielleicht ein Merkmal verwenden,
+
+21
+00:01:13,725 --> 00:01:16,082
+das die mittlere Anzahl
+von Personen darstellt,
+
+22
+00:01:16,082 --> 00:01:19,640
+die sich in der letzten Stunde
+ein Produkt angesehen haben.
+
+23
+00:01:19,640 --> 00:01:25,290
+Im Training können Sie Dataflow verwenden,
+um dies aus Log-Dateien zu berechnen,
+
+24
+00:01:25,290 --> 00:01:28,370
+doch die Natur
+eines solchen Merkmals setzt voraus,
+
+25
+00:01:28,370 --> 00:01:30,877
+dass Sie Dataflow in Echtzeit verwenden,
+
+26
+00:01:30,877 --> 00:01:34,275
+um dies
+aus dem aktuellen Traffic zu berechnen.
+
+27
+00:01:34,275 --> 00:01:39,905
+Sie können in jedem PTransform
+in Dataflow zusätzliche Felder hinzufügen.
+
+28
+00:01:39,905 --> 00:01:42,394
+Die beiden "add_fields" in diesem Beispiel
+
+29
+00:01:42,394 --> 00:01:48,680
+ziehen die Fahrgastzahlen
+aus den Eingabefeldern, akkumulieren sie
+
+30
+00:01:48,680 --> 00:01:53,715
+und addieren die Besucherzahl,
+um "pastHrCount" zu erhalten.
+
+31
+00:01:53,715 --> 00:01:58,100
+Der gleiche Code funktioniert
+in Dataflow als Batch und als Stream.
+
+32
+00:01:58,100 --> 00:02:00,742
+Sie verwenden daher
+einfach die Methode "add_fields"
+
+33
+00:02:00,742 --> 00:02:04,765
+in der Trainingspipeline
+und der Vorhersagepipeline.
+
+34
+00:02:04,765 --> 00:02:09,175
+Die dritte Option ist ein hybrider Ansatz.
+
+35
+00:02:09,175 --> 00:02:12,770
+Google-Forscher haben kürzlich
+die Vorgehensweise veröffentlicht.
+
+36
+00:02:12,770 --> 00:02:15,975
+Wir sehen uns das
+im nächsten Modul detailliert an.
+
+37
+00:02:15,975 --> 00:02:23,965
+Im Wesentlichen erstellen Sie im Training
+über Dataflow ein vorverarbeitetes Dataset,
+
+38
+00:02:23,975 --> 00:02:29,840
+Allerdings werden die Transformationen
+in TensorFlow implementiert.
+
+39
+00:02:29,840 --> 00:02:32,095
+Während der Vorhersage
+
+40
+00:02:32,095 --> 00:02:35,890
+gehört Feature Engineering
+daher zum TensorFlow-Graphen.
+
+41
+00:02:35,890 --> 00:02:38,350
+Das ist ein großer Vorteil,
+
+42
+00:02:38,350 --> 00:02:43,285
+da Dataflow die Aggregationen
+all dieser Daten gut bewältigen kann.
+
+43
+00:02:43,285 --> 00:02:46,020
+Die Vorteile von TensorFlow liegen darin,
+
+44
+00:02:46,020 --> 00:02:50,450
+die Eingabefelder
+im Verlauf manipulieren zu können.

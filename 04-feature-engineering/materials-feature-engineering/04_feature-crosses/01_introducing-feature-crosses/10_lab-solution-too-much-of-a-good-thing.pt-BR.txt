@@ -1,0 +1,79 @@
+Então, aqui estamos no
+TensorFlow Playground. Temos conjuntos de dados
+que se parecem com isso. Temos os pontos azuis
+no canto superior direito, os pontos laranja no canto inferior
+esquerdo e estamos tentando desenhar uma linha de separação
+entre essas duas coisas. E para fazer isso, como entradas, temos x1, x2, x1 ao quadrado,
+x2 ao quadrado e x1 vezes x2. Em primeiro lugar, quais são
+entradas brutas e quais desses são atributos criados? x1 e x2 são as entradas brutas. X1 ao quadrado, x2 ao quadrado e x1x2 são atributos que criamos
+das entradas brutas x1 e x2. Quais destes são cruzamentos de atributos? x1x2 é obviamente um
+cruzamento de atributo, mas se você olhar atentamente perceberá que x1 ao quadrado também é
+um cruzamento de atributo. É um autocruzamento. É uma autojunção, se preferir. Você está tomando x1 e x1 e os cruzando
+juntos para ter x1 ao quadrado. Então, uma maneira de pensar sobre isso
+é que temos duas entradas brutas, x1 e x2, e temos três cruzamentos de
+atributos, x1 ao quadrado, x2 ao quadrado e x1x2. Mas agora, é apenas terminologia. Você pode chamar x1 ao quadrado
+e x2 ao quadrado, de uma transformação da entrada em vez de
+um cruzamento de atributos, sem problemas. Então, temos cinco entradas
+para o nosso modelo e queremos treiná-lo. Vamos em frente e fazer isso. Vou em frente, escolho o
+botão de reprodução e começamos a treiná-lo, e note algo estranho
+que está acontecendo. Bem aqui embaixo,
+no canto inferior esquerdo, você vê aquele azul que apareceu? Ele desapareceu depois de um tempo,
+mas imagine que não tínhamos essa opção. Então, vamos tentar isso de novo. Não sabemos quanto tempo
+vamos treinar. Vamos dizer que
+treinamos até este ponto. Treinamos por 230 períodos.
+Isso é muito tempo. Treinamos por 230 períodos e 
+chegamos a algo estranho. O quê? Isto aqui. Esse triângulo é um
+indicador de sobreajuste. Realmente não há dados ali. Portanto, é uma explicação plausível,
+e o modelo, não estamos tentando torná-lo
+mais simples do que precisa ser. Então, isso segue
+e coloca itens ali. Uma das razões disso é porque estamos permitindo
+o sobreajuste ao modelo. E uma forma de permitir isso é dar a ele os mesmos dados
+de várias maneiras O que acontece se eu desligar o x1x2. Então, neste ponto, você só tem x1, x2, x1 ao quadrado e x2 ao quadrado. Vou reiniciar isso e, neste ponto, notarei novamente que há esse limite estranho que aparece
+no estágio inicial do treinamento. Vamos fazer isso de novo.
+Vamos interromper isso e interrompemos por volta de 200 períodos.
+Então, lá vamos nós. Em 200 períodos, e novamente você
+vê que o limite não é grande, há algo branco e estranho aqui. Novamente, porque temos esses
+atributos extras, x1 e x2. O que acontece se tirarmos x1 e x2? Agora só temos os dados brutos,
+x1 e x2 sozinhos. Vou fazer isso, começar e parar,
+novamente, por volta de 200 períodos. E você percebe que agora é perfeito. Eu só tenho essa linha. E isto é
+algo para você estar ciente: você pode ter muito de algo bom, que cruzamentos de atributos são
+uma tentação para o modelo sobreajustar. Mas nós também notamos que se você treinar por
+um tempo muito longo, só vamos tirar isso,
+isso é com o que ele começou, se treinarmos por muito tempo, isso tende a melhorar. Mas, ainda assim, por ser um sobreajuste, é o motivo
+de haver esse limite curvo. Este é outro sintoma de que as
+coisas estão sobreajustadas. Então, se treinarmos por muito tempo, isso vai embora, esse artefato no canto inferior
+esquerdo desaparece, mas ainda temos esse limite curvo e a
+razão pela qual você tem um limite curvo em vez de uma linha reta, que sabemos que é o
+modelo efetivo mais simples, é porque demos ao modelo muitos
+graus de liberdade. Para ser franco, se você olhar para isso, os pesos de x1 e x2 são mais altos do que
+os de qualquer um dos outros três. Mas, x1x2, o
+cruzamento de atributo, recebe um peso e,
+por receber um peso, ele pode atrapalhar as coisas. Surpreendentemente, o limite de decisão
+do modelo parece meio doido. Em particular, há essa região no canto
+inferior esquerdo que está apontando para o azul, mesmo que não haja suporte
+visível para isso nos dados. O TensorFlow Playground usa
+um ponto de partida aleatório, então o resultado pode ser diferente. É por isso que eu coloquei o que
+eu tenho como um cenário. Você pode ter conseguido
+algo ligeiramente diferente. Observe uma espessura relativa das
+cinco linhas que vão da entrada à saída. Essas linhas mostram os
+pesos relativos dos cinco atributos. As linhas que emanam de x1 e x2 são muito mais grossas do que as que
+vêm dos cruzamentos de atributos. Portanto, os cruzamentos de
+atributos estão contribuindo menos para o modelo do que os
+atributos normais não cruzados. Mas contribuem o suficiente para
+bagunçar uma generalização E se removermos completamente
+o cruzamento de atributos? Em outras palavras,
+usar apenas os dados brutos. Remover todos os cruzamentos de atributos oferece a você um modelo mais sensato. Não há mais um limite curvo
+sugerindo um sobreajuste. Após mil iterações, a perda
+de teste será um valor ligeiramente menor do que quando
+os cruzamentos de atributos foram usados. Mesmo que os resultados possam variar
+um pouco, dependendo do conjunto de dados. Os dados neste exercício são
+basicamente dados lineares mais ruído. Se usarmos um modelo muito
+complicado para dados tão simples, um modelo com muitos
+cruzamentos de atributos, daremos a oportunidade de ajustar o
+ruído nos dados de treinamento. Você pode diagnosticar
+isso observando como o modelo se comporta em dados
+de testes independentes. Aliás, e vamos falar sobre regularização mais adiante no curso
+em arte e ciência do ML, alías, isso explica por que a
+regularização de L1 pode ser algo tão bom. O que a regularização L1 faz é zerar o peso de um atributo,
+se necessário. Em outras palavras, o impacto da
+regularização L1 é remover atributos.

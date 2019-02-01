@@ -1,0 +1,101 @@
+Nous avons vu trois endroits possibles où
+réaliser l'extraction de caractéristiques. Le premier est TensorFlow lui-même à l'aide de colonnes de caractéristiques, qui permettent d'habiller
+le dictionnaire des caractéristiques et d'ajouter
+du code TensorFlow arbitraire. L'avantage
+de cette solution est son efficacité. Du code TensorFlow, et un GPU ou un TPU. Pourquoi est-ce que je parle
+de code TensorFlow arbitraire ? Parce que le code doit être exécuté dans
+le cadre de la fonction de votre modèle et de votre graphique TensorFlow. Donc, vous ne pouvez pas interroger
+une base de données d'entreprise et y insérer une valeur. Vous pourriez écrire du code TensorFlow
+personnalisé en C++ et l'appeler, mais ignorons
+cette méthode pour le moment. En outre, vous ne pouvez
+effectuer que des actions basées sur cette valeur d'entrée,
+et uniquement sur celle-ci Il sera donc difficile
+de calculer une moyenne glissante. Nous verrons ensuite
+des modèles de séquence qui semblent permettre
+de traiter une série temporelle. Il y a donc plusieurs valeurs d'entrée,
+mais l'entrée est ici la séquence entière. La limite du traitement
+avec TensorFlow est donc que le prétraitement peut
+s'effectuer sur une seule valeur d'entrée. Les modèles TensorFlow,
+hormis les modèles de séquence, sont généralement sans état. Dans les deux derniers chapitres, nous avons également
+abordé le prétraitement et la création de caractéristiques
+dans Apache Beam sur Cloud Dataflow. Dataflow permet d'exécuter du code Python ou Java arbitraire et de manipuler
+plusieurs valeurs d'entrée avec état. Vous pouvez par exemple
+calculer une moyenne sur une période, comme le nombre moyen de vélos
+à un carrefour sur l'heure précédente. Cependant, vous devrez aussi
+exécuter le code de votre prédiction dans un pipeline
+pour obtenir le nombre moyen de vélos à un carrefour
+sur l'heure précédente. Cette méthode est donc adaptée
+à des cas comme des moyennes sur des périodes de temps,
+qui impliquent toujours un pipeline. Qu'en est-il si vous ne voulez
+qu'un minimum ou un maximum pour mettre
+des valeurs à l'échelle ou obtenir le vocabulaire permettant de convertir
+des valeurs catégoriques en nombres ? Exécuter un pipeline Dataflow
+dans une prédiction rien que pour obtenir
+un minimum ou un maximum semble un peu excessif. C'est là que tf.Transform entre en jeu. Il s'agit d'une solution à mi-chemin
+entre les deux premières approches. Avec TensorFlow Transform, vous ne pouvez
+utiliser que les méthodes TensorFlow. Cependant, vous bénéficiez
+de l'efficacité de TensorFlow. Vous pouvez utilisez tout
+votre ensemble de données d'entraînement, car tf.Transform utilise Dataflow
+pour l'entraînement, mais seulement TensorFlow
+pour la prédiction. Voyons comment tf.Transform fonctionne. TensorFlow Transform est
+une solution à mi-chemin entre Apache Beam et TensorFlow. Le prétraitement Dataflow ne fonctionne
+que dans le contexte d'un pipeline. Pensez en termes de données
+par flux entrantes, comme des données IdO, Internet des Objets, ou des données sur des vols. Le pipeline Dataflow
+peut impliquer les prédictions, et il peut les invoquer
+et les enregistrer dans Bigtable. Ces prédictions sont ensuite transmises à toute personne
+qui se rend sur la page Web dans les 60 secondes suivantes. À ce point, une nouvelle prédiction est
+disponible dans Bigtable. En d'autres termes,
+Dataflow doit évoquer pour vous le prétraitement backend
+de modèles de machine learning. Vous pouvez utiliser Dataflow
+pour effectuer des prétraitements qui impliquent un état,
+par exemple sur des périodes de temps. Pour un prétraitement instantané
+des modèles de ML, privilégiez TensorFlow. TensorFlow permet le prétraitement basé sur les valeurs d'entrée
+fournies uniquement. Si vous placez tout le contenu du cadre en
+pointillés dans le graphique TensorFlow, il est très facile pour les clients
+d'invoquer simplement une application Web
+sans avoir à gérer le traitement. Il y a cependant des cas intermédiaires, comme mettre des données à l'échelle d'après le minimum
+ou le maximum d'un ensemble de données. Dans ce cas, vous devez analyser
+vos données dans Dataflow, soit la totalité
+de votre ensemble de données, rechercher le minimum et le maximum, puis effectuer
+la transformation dans Dataflow pour mettre à l'échelle
+chaque valeur d'entrée individuelle. C'est ainsi que fonctionne tf.Transform, une solution à mi-chemin
+entre Apache Beam et TensorFlow. Pour comprendre son fonctionnement, vous devez savoir que le prétraitement
+s'effectue généralement en deux étapes. Imaginons que vous voulez mettre
+à l'échelle vos données d'entrée brutes pour améliorer l'efficacité
+de la descente de gradient. Pour ce faire, vous devez d'abord
+rechercher le minimum et le maximum de la caractéristique numérique sur la totalité de l'ensemble
+de données d'entraînement. Vous devez ensuite
+mettre à l'échelle chaque valeur d'entrée en fonction du minimum et du maximum
+calculés sur cet ensemble de données. Supposons que vous recherchez
+le vocabulaire des clés d'une variable catégorique, et que vous disposez
+d'une caractéristique catégorique qui correspond
+à un constructeur automobile. Vous devez passer en revue la totalité
+de l'ensemble de données d'entraînement pour rechercher toutes les valeurs
+possibles d'une caractéristique donnée. En bref, vous dressez
+la liste des constructeurs. Si, ensuite, vous trouvez 20 constructeurs dans votre ensemble
+de données d'entraînement, vous devez encoder en mode one-hot la colonne des constructeurs
+pour en faire un vecteur de longueur 20. Vous comprenez où je veux en venir ? La première étape implique de balayer
+tout l'ensemble de données une fois. Nous l'appelons la phase d'analyse. La deuxième étape est de transformer
+instantanément les données d'entrée. C'est la phase de transformation. Quelle technologie,
+entre Beam et TensorFlow, est la plus adaptée pour l'analyse
+d'un ensemble de données d'entraînement ? Quelle technologie,
+entre Beam et TensorFlow, est la plus adaptée pour la transformation
+instantanée de données d'entrée ? Beam pour l'analyse,
+TensorFlow pour la transformation. Il y a deux PTransforms dans tf.Transform. AnalyzeAndTransformDataset, qui s'exécute dans Beam pour créer un ensemble
+de données d'entraînement prétraité, et TransformDataset,
+qui s'exécute dans Beam pour créer
+l'ensemble de données d'évaluation. Souvenez-vous que le calcul
+du minimum et du maximum, etc., c'est-à-dire l'analyse, ne s'effectue que
+sur l'ensemble de données d'entraînement, pas sur l'ensemble
+de données d'évaluation. Ce dernier est mis à l'échelle
+avec le minimum et le maximum trouvés dans les données d'entraînement. Que se passe-t-il si le maximum
+de l'ensemble d'évaluation est supérieur ? C'est comme si vous déployiez votre modèle et que vous trouviez une valeur supérieure
+lors de la prédiction. C'est la même chose. Vous ne pouvez pas utiliser
+un ensemble de données d'évaluation pour calculer le minimum et
+le maximum, le vocabulaire, etc. Vous devez faire avec. Cependant,
+le code de transformation invoqué est exécuté dans TensorFlow
+au moment de la prédiction. Une autre manière d'envisager le problème
+est de penser qu'il y a deux phases. Une phase d'analyse, exécutée dans Beam lors de
+la création de l'ensemble d'entraînement. Une phase de transformation, exécutée dans TensorFlow
+lors de la prédiction, et dans Beam pour créer les ensembles
+de données d'entraînement et d'évaluation.

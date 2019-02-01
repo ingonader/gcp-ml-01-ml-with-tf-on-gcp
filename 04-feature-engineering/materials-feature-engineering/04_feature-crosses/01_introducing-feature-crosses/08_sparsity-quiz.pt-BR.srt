@@ -1,0 +1,391 @@
+1
+00:00:00,000 --> 00:00:04,785
+Cruzamentos de atributos combinam dois ou 
+mais atributos categóricos.
+
+2
+00:00:04,785 --> 00:00:10,915
+Se temos atributos contínuos, podemos
+discretizá-los e fazer um cruzamento.
+
+3
+00:00:10,915 --> 00:00:13,860
+Vamos ver o que isso significa
+para o tamanho do
+
+4
+00:00:13,860 --> 00:00:17,600
+espaço de entrada, observando
+alguns exemplos.
+
+5
+00:00:19,090 --> 00:00:22,300
+Suponhamos que queremos prever o
+nível de tráfego em uma cidade,
+
+6
+00:00:22,300 --> 00:00:24,460
+temos duas entradas brutas,
+
+7
+00:00:24,460 --> 00:00:27,195
+a hora do dia e o dia da semana.
+
+8
+00:00:28,255 --> 00:00:32,659
+Quantas entradas teríamos se aplicássemos
+
+9
+00:00:32,659 --> 00:00:38,320
+codificação one-hot na hora do dia e no
+dia da semana e a fornecêssemos ao modelo?
+
+10
+00:00:38,320 --> 00:00:42,990
+Você disse 24 mais 7, então 31?
+
+11
+00:00:42,990 --> 00:00:47,520
+Quando é feita uma codificação one-hot na
+hora do dia, você tem 24 nodes de entrada,
+
+12
+00:00:47,520 --> 00:00:51,650
+você pode eliminar 23 tratando
+todos os zeros como uma entrada válida,
+
+13
+00:00:51,650 --> 00:00:54,795
+mas normalmente reservamos todos os
+zeros para dados perdidos.
+
+14
+00:00:54,795 --> 00:00:57,965
+Então, digamos, 24 nodes de entrada.
+
+15
+00:00:57,965 --> 00:01:03,590
+Igualmente, com a codificação one-hot no
+dia da semana, temos 7 nodes de entrada.
+
+16
+00:01:03,590 --> 00:01:07,885
+No total, temos 31 nodes de entrada.
+
+17
+00:01:07,885 --> 00:01:13,345
+Mas sabemos que o tráfego não é o
+mesmo às 17h todos os dias.
+
+18
+00:01:13,345 --> 00:01:19,285
+17h na quarta-feira é muito
+diferente de 17h no fim de semana.
+
+19
+00:01:19,285 --> 00:01:23,450
+Há uma maneira fácil
+de fazer o modelo aprender isso?
+
+20
+00:01:23,450 --> 00:01:25,590
+Claro. Você sabe fazer isso agora.
+
+21
+00:01:25,590 --> 00:01:28,970
+Faça o cruzamento de atributo
+com as duas entradas brutas.
+
+22
+00:01:28,970 --> 00:01:33,780
+Estamos agora concatenando a hora
+do dia com o dia da semana.
+
+23
+00:01:33,780 --> 00:01:39,590
+E isso permite que o modelo aprenda
+rapidamente a combinação de hora e dia.
+
+24
+00:01:40,120 --> 00:01:41,430
+Ótimo.
+
+25
+00:01:42,160 --> 00:01:45,285
+Mas quantas entradas temos agora?
+
+26
+00:01:45,285 --> 00:01:49,605
+Não 24 mais 7.
+
+27
+00:01:49,605 --> 00:01:53,640
+Agora temos 24 vezes 7,
+
+28
+00:01:53,640 --> 00:01:56,395
+todas as combinações possíveis.
+
+29
+00:01:56,395 --> 00:02:06,925
+Passamos de 24 + 7, igual a 31 entradas,
+para 24 x 7, igual a 168 entradas.
+
+30
+00:02:06,925 --> 00:02:12,075
+Quando você faz o cruzamento de atributos,
+consegue muito mais entradas.
+
+31
+00:02:12,075 --> 00:02:15,210
+O cientista de dados geralmente se
+preocupa com o fato de que
+
+32
+00:02:15,210 --> 00:02:20,425
+uma variável categórica de codificação
+one-hot aumenta o tamanho do modelo.
+
+33
+00:02:20,425 --> 00:02:25,955
+Mesmo a codificação one-hot traz problemas
+às estruturas de aprendizado de máquina.
+
+34
+00:02:25,955 --> 00:02:28,280
+Como vão lidar com
+cruzamentos de atributos?
+
+35
+00:02:28,280 --> 00:02:29,970
+Terão um ataque cardíaco.
+
+36
+00:02:29,970 --> 00:02:34,160
+Internamente, o TensorFlow usa
+uma representação esparsa
+
+37
+00:02:34,160 --> 00:02:37,460
+para uma codificação one-hot e para
+cruzamentos de atributos,
+
+38
+00:02:37,460 --> 00:02:39,365
+então não tem
+problema com isso.
+
+39
+00:02:39,365 --> 00:02:42,605
+Para qualquer bruto específico do
+conjunto de dados de entrada,
+
+40
+00:02:42,605 --> 00:02:46,140
+quantos nodes no x3 são liberados?
+
+41
+00:02:47,580 --> 00:02:48,630
+Apenas um.
+
+42
+00:02:48,630 --> 00:02:51,980
+Você vê por quê?
+Para cada rótulo,
+
+43
+00:02:51,980 --> 00:02:56,595
+todas as observações na tabela são
+tomadas em um horário específico.
+
+44
+00:02:56,595 --> 00:03:00,490
+Isso corresponde a uma hora específica
+de um dia específico da semana.
+
+45
+00:03:00,490 --> 00:03:04,210
+Assim, você poderia ter
+uma observação às 15h,
+
+46
+00:03:04,210 --> 00:03:06,190
+na hora do dia na entrada,
+
+47
+00:03:06,190 --> 00:03:09,105
+e na quarta-feira no dia
+da entrada da semana.
+
+48
+00:03:09,105 --> 00:03:11,925
+Então, faça o cruzamento de
+atributos e o que você tem?
+
+49
+00:03:11,925 --> 00:03:13,670
+Você tem um node de entrada.
+
+50
+00:03:13,670 --> 00:03:19,990
+O node de entrada que corresponde às 15h
+de quarta-feira e esse node será um.
+
+51
+00:03:19,990 --> 00:03:24,475
+Todos os outros nodes de entrada
+para o x3 serão zero.
+
+52
+00:03:24,475 --> 00:03:32,470
+A entrada, portanto, consistirá de
+167 zeros e um 1.
+
+53
+00:03:32,470 --> 00:03:38,045
+E quando você faz um cruzamento de
+atributos, a entrada é muito escassa.
+
+54
+00:03:38,045 --> 00:03:39,490
+Então, tenha isso em mente.
+
+55
+00:03:39,490 --> 00:03:43,105
+O TensorFlow nos dará ferramentas
+fáceis para lidar com isso.
+
+56
+00:03:43,105 --> 00:03:45,705
+Vamos ver as respostas da análise.
+
+57
+00:03:45,705 --> 00:03:48,500
+a) A resposta é não.
+
+58
+00:03:48,500 --> 00:03:51,510
+O agrupamento é bom
+porque permite que
+
+59
+00:03:51,510 --> 00:03:55,395
+um modelo aprenda relacionamentos
+lineares em um único atributo.
+
+60
+00:03:55,395 --> 00:04:00,220
+No entanto, uma cidade existe
+em mais de uma dimensão, portanto
+
+61
+00:04:00,220 --> 00:04:07,590
+aprender relações específicas requer
+cruzamento de latitude e longitude.
+
+62
+00:04:07,590 --> 00:04:10,315
+E quanto ao segundo, b.
+
+63
+00:04:10,315 --> 00:04:13,425
+A resposta novamente é não.
+
+64
+00:04:13,425 --> 00:04:16,665
+O agrupamento é uma boa ideia, no entanto,
+
+65
+00:04:16,665 --> 00:04:20,175
+a cidade é uma conjunção de
+latitude e longitude.
+
+66
+00:04:20,175 --> 00:04:26,320
+Separar cruzamentos impede o aprendizado
+de preços específicos da cidade.
+
+67
+00:04:27,520 --> 00:04:29,160
+E a letra c?
+
+68
+00:04:30,140 --> 00:04:31,190
+Ali é sim.
+
+69
+00:04:31,880 --> 00:04:36,680
+Cruzar uma latitude agrupada com uma
+longitude agrupada faz o modelo
+
+70
+00:04:36,680 --> 00:04:40,690
+aprender os efeitos específicos
+da cidade dos quartos por pessoa.
+
+71
+00:04:40,690 --> 00:04:44,510
+O agrupamento evita
+uma mudança na latitude,
+
+72
+00:04:44,510 --> 00:04:47,780
+produzindo o mesmo resultado
+que uma mudança na longitude.
+
+73
+00:04:47,780 --> 00:04:50,890
+E, dependendo da granularidade
+dos agrupamentos,
+
+74
+00:04:50,890 --> 00:04:53,240
+esse cruzamento de atributo
+poderia aprender
+
+75
+00:04:53,240 --> 00:04:59,125
+os efeitos específicos da cidade, da
+vizinhança ou até mesmo do bloco.
+
+76
+00:04:59,125 --> 00:05:01,825
+Letra d: não.
+
+77
+00:05:01,825 --> 00:05:03,520
+Neste exemplo,
+
+78
+00:05:03,520 --> 00:05:08,755
+cruzar atributos com valor real
+não é uma boa ideia.
+
+79
+00:05:08,755 --> 00:05:11,290
+Cruzar o valor real de,
+por exemplo,
+
+80
+00:05:11,290 --> 00:05:16,880
+latitude com quartos por pessoa, permite
+uma alteração de 10% em um atributo,
+
+81
+00:05:16,880 --> 00:05:18,320
+digamos uma latitude,
+
+82
+00:05:18,320 --> 00:05:23,890
+para ser equivalente a uma alteração de
+10% no outro atributo, quartos por pessoa.
+
+83
+00:05:23,890 --> 00:05:28,325
+Isso é tão problemático que
+nem é possível no TensorFlow.
+
+84
+00:05:28,306 --> 00:05:34,261
+O cruzamento só é possível com
+colunas categóricas ou discretizadas.

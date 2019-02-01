@@ -1,0 +1,167 @@
+1
+00:00:00,000 --> 00:00:02,920
+Let's look at the analyze phase.
+
+2
+00:00:02,920 --> 00:00:07,075
+Remember that you analyze the training dataset.
+
+3
+00:00:07,075 --> 00:00:11,260
+You first have to tell beam what data to expect.
+
+4
+00:00:11,260 --> 00:00:14,275
+You do that by setting up a schema.
+
+5
+00:00:14,275 --> 00:00:20,365
+So, in the first line I set up a dictionary called raw data schema.
+
+6
+00:00:20,365 --> 00:00:25,005
+I add entries for all the string columns.
+
+7
+00:00:25,005 --> 00:00:29,315
+The string here is that TensorFlow datatype.
+
+8
+00:00:29,315 --> 00:00:38,135
+I then update the raw data schema by adding all the tf.float 32 typed columns.
+
+9
+00:00:38,135 --> 00:00:42,605
+After this I have a raw data schema that has
+
+10
+00:00:42,605 --> 00:00:48,115
+all the columns in the dataset that will be processed by beam on dataflow.
+
+11
+00:00:48,115 --> 00:00:53,130
+The raw data schema is used to create a metadata template.
+
+12
+00:00:53,130 --> 00:00:58,760
+Next, run the analyze-and-transform Ptransform on
+
+13
+00:00:58,760 --> 00:01:05,765
+the training dataset to get back pre-process training data and the transform function.
+
+14
+00:01:05,765 --> 00:01:11,185
+First, do beam.io.read to read in the training data.
+
+15
+00:01:11,185 --> 00:01:17,035
+This is similar to all the beam pipelines that you saw in the previous module on beam.
+
+16
+00:01:17,035 --> 00:01:19,765
+Here I'm reading from BigQuery.
+
+17
+00:01:19,765 --> 00:01:24,375
+Next, filter out the data that you don't want to train with.
+
+18
+00:01:24,375 --> 00:01:29,215
+I'm doing that with a function is valid that I'm not showing you on this slide.
+
+19
+00:01:29,215 --> 00:01:31,395
+I will show you this method later.
+
+20
+00:01:31,395 --> 00:01:37,250
+Third, take the raw data that you get from reading and filtering and
+
+21
+00:01:37,250 --> 00:01:40,805
+the raw data metadata that you got from the previous slide and
+
+22
+00:01:40,805 --> 00:01:45,245
+pass it to the analyze and transform data set Ptransform.
+
+23
+00:01:45,245 --> 00:01:49,985
+Beam will execute this transform in a distributed way
+
+24
+00:01:49,985 --> 00:01:55,550
+and do all the analysis that you told it to do in the method preprocess.
+
+25
+00:01:55,550 --> 00:01:58,455
+I'll show you this method also later.
+
+26
+00:01:58,455 --> 00:02:03,260
+For now, the is valid method and the pre-process method are
+
+27
+00:02:03,260 --> 00:02:09,775
+executed by beam on the training dataset to filter it and to preprocess it.
+
+28
+00:02:09,775 --> 00:02:14,335
+The pre-process data comes back in a P collection.
+
+29
+00:02:14,335 --> 00:02:18,805
+In a parallel collection that I'm calling transformed dataset.
+
+30
+00:02:18,805 --> 00:02:22,550
+But notice that the transformations that you carried out,
+
+31
+00:02:22,550 --> 00:02:27,170
+in pre-process are saved in the second return value.
+
+32
+00:02:27,170 --> 00:02:30,770
+Transform function, this is important.
+
+33
+00:02:30,770 --> 00:02:34,510
+Take the transform data and write it out.
+
+34
+00:02:34,510 --> 00:02:41,645
+Here I'm writing it out as TFRecords which is the most efficient format for TensorFlow.
+
+35
+00:02:41,645 --> 00:02:45,685
+I can do that by using the right to TFRecord,
+
+36
+00:02:45,685 --> 00:02:49,545
+P transform that comes with TensorFlow transform.
+
+37
+00:02:49,545 --> 00:02:53,105
+The files will be shutted automatically.
+
+38
+00:02:53,105 --> 00:02:56,640
+But notice what schema is being used.
+
+39
+00:02:56,640 --> 00:03:01,390
+Not the raw data schema, the transformed schema.
+
+40
+00:03:01,390 --> 00:03:05,030
+Why? Because of course,
+
+41
+00:03:05,030 --> 00:03:08,165
+what we are writing out is a transformed data,
+
+42
+00:03:08,165 --> 00:03:12,680
+the preprocess data, not the raw data.

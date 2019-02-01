@@ -1,0 +1,819 @@
+1
+00:00:00,210 --> 00:00:03,760
+Pasemos a representar algunos
+atributos con ejemplos reales.
+
+2
+00:00:03,770 --> 00:00:05,910
+Tomemos este ejemplo que ven aquí.
+
+3
+00:00:05,910 --> 00:00:07,575
+Estos son mis datos sin procesar.
+
+4
+00:00:07,575 --> 00:00:09,020
+Estoy en una heladería.
+
+5
+00:00:09,020 --> 00:00:12,100
+Trato de averiguar si mi helado
+lo sirvió cierto empleado
+
+6
+00:00:12,100 --> 00:00:15,520
+si el cliente esperó
+1.4 segundos o 1.4 minutos
+
+7
+00:00:15,520 --> 00:00:17,975
+y cuál será la calificación.
+
+8
+00:00:17,975 --> 00:00:19,805
+Quiero predecir esa calificación.
+
+9
+00:00:19,805 --> 00:00:22,785
+Cuán satisfecho estará mi cliente
+según quién lo atendió
+
+10
+00:00:22,785 --> 00:00:25,370
+cuánto tiempo esperó, qué compró
+
+11
+00:00:25,370 --> 00:00:28,520
+cuál es la ubicación
+de la tienda y mucho más.
+
+12
+00:00:28,520 --> 00:00:30,785
+Muy bien, estos son nuestros datos.
+
+13
+00:00:30,785 --> 00:00:32,824
+Estos son nuestros datos de entrenamiento.
+
+14
+00:00:32,824 --> 00:00:36,125
+Tomaré estos datos
+y los convertiré en números.
+
+15
+00:00:36,125 --> 00:00:38,225
+¿Recuerdan la regla?
+Todo debe ser numérico
+
+16
+00:00:38,225 --> 00:00:41,110
+porque las redes neuronales
+usan números.
+
+17
+00:00:41,110 --> 00:00:44,600
+Tomaré mis datos, los convertiré
+en números y esos serán mis atributos.
+
+18
+00:00:44,600 --> 00:00:47,790
+En TensorFlow, tomaré
+esto que es una entrada JSON
+
+19
+00:00:47,790 --> 00:00:51,090
+proviene de mi aplicación web
+que va a un almacén de datos
+
+20
+00:00:51,090 --> 00:00:53,345
+la obtengo y creo estos valores numéricos.
+
+21
+00:00:53,345 --> 00:00:57,355
+En TensorFlow, cada una de estas columnas
+se convierte en una columna de atributo.
+
+22
+00:00:57,355 --> 00:00:59,035
+¿Cómo tomamos datos como estos
+
+23
+00:00:59,035 --> 00:01:01,075
+y los convertimos
+en columnas de atributos?
+
+24
+00:01:01,075 --> 00:01:03,170
+¿Cómo los hacemos numéricos?
+
+25
+00:01:03,170 --> 00:01:06,540
+Primero, hay algunos valores,
+como el precio y el tiempo de espera
+
+26
+00:01:06,540 --> 00:01:08,720
+que ya son numéricos.
+
+27
+00:01:08,720 --> 00:01:10,810
+Es muy simple codificarlos
+
+28
+00:01:10,810 --> 00:01:12,760
+los usamos tal cual están.
+
+29
+00:01:12,760 --> 00:01:15,490
+Son numéricos
+y tienen una magnitud significativa.
+
+30
+00:01:15,490 --> 00:01:18,040
+Es muy fácil
+que TensorFlow aprenda valores
+
+31
+00:01:18,040 --> 00:01:21,185
+como 2.5 y 1.4
+para el tiempo de espera.
+
+32
+00:01:22,345 --> 00:01:26,020
+Esto es lo que llamamos
+una columna de valores reales.
+
+33
+00:01:26,020 --> 00:01:29,475
+Capas como la columna
+del valor real de precio
+
+34
+00:01:29,475 --> 00:01:33,070
+capas como la columna
+del valor real del tiempo de espera.
+
+35
+00:01:33,070 --> 00:01:37,425
+Estos números que podemos usar como están,
+serán columnas de valores reales.
+
+36
+00:01:37,425 --> 00:01:39,680
+¿Qué opinan de esta entrada?
+
+37
+00:01:39,680 --> 00:01:42,995
+El ID de la transacción es igual a 42.
+
+38
+00:01:42,995 --> 00:01:44,670
+Es demasiado específica.
+
+39
+00:01:44,670 --> 00:01:47,110
+Elimínenla. No podemos
+usarla como atributo.
+
+40
+00:01:47,670 --> 00:01:50,270
+¿Qué tal el ID del empleado?
+
+41
+00:01:50,270 --> 00:01:54,045
+El ID del empleado es igual a 72365.
+
+42
+00:01:54,475 --> 00:01:57,290
+¿Es numérico? Bueno, es un número.
+
+43
+00:01:57,290 --> 00:01:59,855
+Pero ¿tiene una magnitud significativa?
+
+44
+00:01:59,855 --> 00:02:03,310
+Alguien con el ID de empleado 723665
+
+45
+00:02:03,310 --> 00:02:07,510
+¿es dos veces mejor
+que un empleado con el ID 36182?
+
+46
+00:02:07,850 --> 00:02:08,715
+No.
+
+47
+00:02:09,565 --> 00:02:12,129
+No puedo usar
+el ID del empleado como está.
+
+48
+00:02:12,129 --> 00:02:14,265
+Tengo que hacer algo con él.
+
+49
+00:02:14,265 --> 00:02:17,115
+Supongamos que mi heladería
+tiene cinco empleados.
+
+50
+00:02:17,115 --> 00:02:22,700
+El empleado número 8345,
+el número 72365, etcétera.
+
+51
+00:02:23,240 --> 00:02:26,655
+Lo que puedo hacer
+es representar el ID
+
+52
+00:02:26,655 --> 00:02:31,225
+del empleado número 72365
+con este vector que ven aquí.
+
+53
+00:02:31,685 --> 00:02:36,760
+El vector es 01000
+porque defino que la segunda columna
+
+54
+00:02:36,760 --> 00:02:40,375
+corresponde al empleado 72365.
+
+55
+00:02:40,375 --> 00:02:44,095
+Básicamente, hago una máscara de bits.
+
+56
+00:02:44,095 --> 00:02:48,640
+Codifican la columna de ese empleado
+como 1 y las demás como 0.
+
+57
+00:02:48,640 --> 00:02:50,770
+Esto se llama codificación de un solo 1
+
+58
+00:02:50,770 --> 00:02:52,665
+hay una columna que es 1
+
+59
+00:02:52,665 --> 00:02:54,640
+y las otras que son 0.
+
+60
+00:02:54,640 --> 00:02:57,230
+Si tienen cinco
+empleados en una heladería
+
+61
+00:02:57,230 --> 00:02:59,305
+tendrán cinco columnas.
+
+62
+00:02:59,305 --> 00:03:00,865
+En realidad, usamos cuatro
+
+63
+00:03:00,865 --> 00:03:04,735
+porque una es linealmente
+independiente para ser precisos.
+
+64
+00:03:04,735 --> 00:03:08,115
+No importa. Supongamos que tenemos
+cinco empleados y cinco columnas.
+
+65
+00:03:08,115 --> 00:03:10,830
+En TensorFlow,
+se llama columna dispersa.
+
+66
+00:03:10,830 --> 00:03:13,740
+Indican que quieren crear
+una columna dispersa con las claves
+
+67
+00:03:13,740 --> 00:03:16,065
+y el nombre de la columna
+es employeeId
+
+68
+00:03:16,065 --> 00:03:18,480
+y las claves son 8345
+
+69
+00:03:18,480 --> 00:03:21,780
+72365 para employeeId, etc.
+
+70
+00:03:21,780 --> 00:03:24,460
+Pasamos los strings
+para cada una de las claves.
+
+71
+00:03:24,460 --> 00:03:28,095
+En TensorFlow tomamos el string
+y configuramos un tiempo de entrenamiento
+
+72
+00:03:28,095 --> 00:03:30,260
+el tiempo de predicción
+para representarlos
+
+73
+00:03:30,260 --> 00:03:33,810
+y codificarlos como un solo 1.
+Esto los convertirá en numéricos.
+
+74
+00:03:33,810 --> 00:03:37,830
+Lo que hacemos es indicar
+que employeeId es la columna dispersa.
+
+75
+00:03:37,830 --> 00:03:41,775
+Esto funciona si conocemos
+las claves de antemano.
+
+76
+00:03:41,775 --> 00:03:44,630
+¿Qué hacemos
+si no las conocemos de antemano?
+
+77
+00:03:45,300 --> 00:03:48,110
+¿Qué hacen si tienen
+que tomar sus datos de entrada
+
+78
+00:03:48,110 --> 00:03:50,910
+procesarlos previamente
+para encontrar todas las claves
+
+79
+00:03:50,910 --> 00:03:52,800
+del conjunto de datos de entrenamiento
+
+80
+00:03:52,800 --> 00:03:55,625
+y crear lo que se llama
+un vocabulario de claves.
+
+81
+00:03:55,625 --> 00:03:58,620
+Este es el primer paso:
+el procesamiento previo.
+
+82
+00:03:58,620 --> 00:04:02,160
+Tienen que hacer todo esto
+incluso antes del entrenamiento.
+
+83
+00:04:02,160 --> 00:04:04,220
+Luego, crearán un nuevo conjunto de datos
+
+84
+00:04:04,220 --> 00:04:07,140
+en el que se puedan usar
+estos valores procesados previamente.
+
+85
+00:04:07,140 --> 00:04:09,250
+Así que antes de entrenar su modelo
+
+86
+00:04:09,250 --> 00:04:11,850
+necesitan crear este vocabulario de claves
+
+87
+00:04:11,850 --> 00:04:14,945
+que debe estar disponible
+en el momento de la predicción
+
+88
+00:04:14,945 --> 00:04:16,445
+porque en ese momento
+
+89
+00:04:16,445 --> 00:04:18,024
+regresarán y dirán
+
+90
+00:04:18,024 --> 00:04:20,540
+"tengo el ID de empleado 72365"
+
+91
+00:04:20,540 --> 00:04:23,245
+el modelo necesita
+saber en el momento de la predicción
+
+92
+00:04:23,245 --> 00:04:27,940
+que 72365 era la segunda columna
+para la codificación de un solo 1.
+
+93
+00:04:28,810 --> 00:04:30,490
+El vocabulario debe ser idéntico
+
+94
+00:04:30,490 --> 00:04:32,910
+y la asignación del vocabulario
+debe ser idéntica
+
+95
+00:04:32,910 --> 00:04:35,340
+entre los períodos
+de entrenamiento y de predicción
+
+96
+00:04:35,340 --> 00:04:37,380
+de otro modo, no sirve.
+
+97
+00:04:37,380 --> 00:04:38,980
+Muchos deben preguntarse
+
+98
+00:04:38,980 --> 00:04:41,970
+¿qué ocurre si se contrata
+a un nuevo empleado?
+
+99
+00:04:41,970 --> 00:04:44,140
+¿el modelo será el mismo?
+
+100
+00:04:44,140 --> 00:04:46,830
+En este momento, no tienen
+lugar para el nuevo empleado.
+
+101
+00:04:46,830 --> 00:04:50,680
+Lo que significa que no podrán
+realizar predicciones para él.
+
+102
+00:04:50,680 --> 00:04:53,114
+Deben pensar en esto de antemano
+
+103
+00:04:53,114 --> 00:04:55,625
+puede que tengan agregar algo.
+
+104
+00:04:55,625 --> 00:04:59,015
+¿Qué hago si tengo un empleado
+que no conozco o no se lo encuentra?
+
+105
+00:04:59,015 --> 00:05:01,615
+Decidirán que quizás
+
+106
+00:05:01,615 --> 00:05:06,045
+usarán el promedio
+de los empleados actuales, lo deducirán.
+
+107
+00:05:06,515 --> 00:05:08,950
+Mientras tanto, recolectarán
+los datos de las horas
+
+108
+00:05:08,950 --> 00:05:10,610
+que el empleado estuvo en servicio
+
+109
+00:05:10,610 --> 00:05:13,040
+y la satisfacción
+del cliente asociada al empleado
+
+110
+00:05:13,040 --> 00:05:15,640
+para diferentes tiempos de espera
+y productos servidos
+
+111
+00:05:15,640 --> 00:05:19,460
+y una vez que hayan recolectado eso,
+podrán usarlo en su predicción.
+
+112
+00:05:19,890 --> 00:05:23,250
+Si conocen la clave de antemano
+
+113
+00:05:23,250 --> 00:05:25,650
+crearán la columna dispersa con las claves
+
+114
+00:05:25,650 --> 00:05:28,840
+transferirán las claves
+y finalmente las incrustarán.
+
+115
+00:05:28,840 --> 00:05:32,220
+Estas son las diferentes
+formas de crear una columna dispersa.
+
+116
+00:05:32,220 --> 00:05:35,280
+A veces sus datos
+podrían ya estar indexados.
+
+117
+00:05:35,280 --> 00:05:37,320
+¿Por qué ocurriría esto?
+
+118
+00:05:37,320 --> 00:05:39,360
+Por ejemplo, tal vez tienen
+ID de empleados
+
+119
+00:05:39,360 --> 00:05:42,120
+que son números del 1 al 1,000.
+
+120
+00:05:42,120 --> 00:05:44,435
+En ese punto, ya están indexados.
+
+121
+00:05:44,435 --> 00:05:48,350
+Hay números grandes arbitrarios
+en todas partes, de 1 a N.
+
+122
+00:05:48,350 --> 00:05:51,140
+Si es así, supongamos
+que deseo crear una columna dispersa
+
+123
+00:05:51,140 --> 00:05:53,580
+con el atributo entero,
+que es el ID del empleado
+
+124
+00:05:53,580 --> 00:05:55,475
+y hay cinco empleados.
+
+125
+00:05:55,475 --> 00:05:58,480
+¿Cuándo es útil?
+En el ejemplo de los impuestos
+
+126
+00:05:58,480 --> 00:06:00,570
+lo usaremos para la hora del día
+
+127
+00:06:00,570 --> 00:06:04,745
+porque está automáticamente
+en enteros del 0 al 23.
+
+128
+00:06:04,745 --> 00:06:06,460
+Es perfecto para un atributo entero
+
+129
+00:06:06,460 --> 00:06:08,600
+porque la hora del día no es numérica
+
+130
+00:06:08,600 --> 00:06:10,460
+no es completamente numérica
+
+131
+00:06:10,460 --> 00:06:13,875
+porque el número 23
+está muy cerca del cero o el uno
+
+132
+00:06:13,875 --> 00:06:16,085
+está a solo dos horas.
+
+133
+00:06:16,085 --> 00:06:18,405
+Veamos una tercera posibilidad.
+
+134
+00:06:18,405 --> 00:06:20,650
+Supongamos que no tienen un vocabulario
+
+135
+00:06:20,650 --> 00:06:22,650
+y no está en enteros
+
+136
+00:06:22,650 --> 00:06:25,295
+aquí tienen un truco que pueden usar.
+
+137
+00:06:25,295 --> 00:06:28,890
+Si no quieren crear
+un vocabulario y no les interesa
+
+138
+00:06:28,890 --> 00:06:33,080
+pueden tomar el ID
+del empleado, generar un hash
+
+139
+00:06:33,080 --> 00:06:35,750
+procesar el hash del ID del empleado
+
+140
+00:06:35,750 --> 00:06:39,140
+y dividirlo en 500 segmentos, por ejemplo.
+
+141
+00:06:39,140 --> 00:06:40,860
+¿Por qué harían esto?
+
+142
+00:06:40,860 --> 00:06:43,170
+Supongamos que su empresa
+tiene 100 empleados
+
+143
+00:06:43,170 --> 00:06:45,410
+y generan un hash de 500 segmentos
+
+144
+00:06:45,410 --> 00:06:47,930
+en promedio cada empleado
+o cada segmento
+
+145
+00:06:47,930 --> 00:06:50,430
+tendrá cero empleados o uno
+
+146
+00:06:50,430 --> 00:06:52,570
+es casi como una codificación de un solo 1
+
+147
+00:06:52,570 --> 00:06:54,540
+o una de 500.
+
+148
+00:06:54,540 --> 00:06:58,705
+Logro lo mismo sin tener
+que crear un vocabulario primero.
+
+149
+00:07:00,125 --> 00:07:03,785
+La calificación del cliente,
+¿qué hacemos con eso?
+
+150
+00:07:03,785 --> 00:07:06,240
+Si tratamos de predecir
+la calificación del cliente
+
+151
+00:07:06,240 --> 00:07:08,315
+es una etiqueta,
+no debemos preocuparnos.
+
+152
+00:07:08,315 --> 00:07:10,860
+Supongamos que intentamos
+utilizarla como entrada
+
+153
+00:07:10,860 --> 00:07:13,320
+porque queremos predecir algo más.
+
+154
+00:07:13,320 --> 00:07:16,779
+Si tienen una calificación
+y quieren usarla como atributo de entrada
+
+155
+00:07:16,779 --> 00:07:19,145
+pueden usar uno de estos dos enfoques
+
+156
+00:07:19,145 --> 00:07:22,400
+pueden tratarla como un número
+continuo, como del 1 al 5
+
+157
+00:07:22,400 --> 00:07:24,960
+y de alguna manera,
+tiene una magnitud significativa
+
+158
+00:07:24,960 --> 00:07:27,680
+por ejemplo, 3 es más que 2
+
+159
+00:07:27,680 --> 00:07:30,230
+o 4 estrellas es muy diferente de 5
+
+160
+00:07:30,230 --> 00:07:32,135
+y muy diferente de 2 estrellas
+
+161
+00:07:32,135 --> 00:07:35,405
+que es una codificación de un solo 1.
+
+162
+00:07:35,405 --> 00:07:37,335
+En algunos casos tienen opciones.
+
+163
+00:07:37,335 --> 00:07:40,235
+Con la calificación,
+pueden usar la codificación de un solo 1
+
+164
+00:07:40,235 --> 00:07:43,935
+o tratarla como número.
+Depende de ustedes.
+
+165
+00:07:45,110 --> 00:07:47,560
+Pero deben tener cuidado con lo siguiente
+
+166
+00:07:47,560 --> 00:07:52,040
+¿qué hacen con un cliente
+que no proporcionó una calificación?
+
+167
+00:07:52,040 --> 00:07:55,525
+Supongamos que hicieron una encuesta
+y el cliente no respondió.
+
+168
+00:07:55,525 --> 00:07:57,740
+¿Qué hacen con los datos faltantes?
+
+169
+00:07:58,230 --> 00:08:00,090
+Una opción es usar dos columnas
+
+170
+00:08:00,090 --> 00:08:03,655
+una para la calificación
+y otra para indicar si obtuvieron una.
+
+171
+00:08:03,655 --> 00:08:07,520
+En este caso, el 4
+es la calificación de un cliente
+
+172
+00:08:07,520 --> 00:08:10,230
+1 significa
+que proporcionó una calificación
+
+173
+00:08:10,230 --> 00:08:14,215
+y 0 significa
+que no proporcionó una calificación.
+
+174
+00:08:14,215 --> 00:08:16,160
+Y también pueden hacerlo
+de la otra forma
+
+175
+00:08:16,160 --> 00:08:19,800
+si usan codificación de un solo 1,
+dirán que tienen una calificación de 4
+
+176
+00:08:19,800 --> 00:08:23,815
+que es 0001, o que no obtuvieron
+una calificación, que es 0000.
+
+177
+00:08:24,325 --> 00:08:28,480
+Pero no cometan el error de no tener
+una segunda columna, con calificación o no
+
+178
+00:08:28,480 --> 00:08:32,035
+porque no deben mezclar
+números mágicos con valores reales.
+
+179
+00:08:32,035 --> 00:08:36,245
+Deben agregar una columna extra
+para declarar sí vieron el valor o no.
+
+180
+00:08:37,214 --> 00:08:41,400
+Entonces, si tienen datos faltantes,
+necesitan otra columna.

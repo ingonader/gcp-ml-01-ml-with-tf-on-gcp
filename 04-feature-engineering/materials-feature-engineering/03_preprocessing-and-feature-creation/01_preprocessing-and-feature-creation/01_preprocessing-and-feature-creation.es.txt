@@ -1,0 +1,103 @@
+Hola, soy Carl Osipov gerente de programas en Google. Trabajo con los clientes
+que usan Google Cloud y los ayudo a implementar
+sistemas de aprendizaje automático escalables y listos
+para entrar en producción. En esta sección del módulo hablaremos
+del preprocesamiento de datos de entrada y la creación de atributos,
+dos técnicas para preparar un conjunto de atributos
+para un sistema de AA. Para comenzar, veremos ejemplos de preprocesamiento
+y creación de atributos. Veremos los desafíos
+de aplicar estas técnicas como parte de la ingeniería de atributos. Luego, en las dos partes restantes verán cómo herramientas
+como Google Cloud Dataflow y Cloud Dataprep
+ayudan a enfrentar esos desafíos. Estos son algunos ejemplos
+que los ayudarán a entender cuándo usar el preprocesamiento
+y la creación de atributos. Algunos valores de un conjunto
+de atributos se deben normalizar o reescalar antes de que los utilice
+el modelo de aprendizaje automático. En este caso, "escalar" significa
+cambiar un atributo con un valor real como un precio, a un valor entre 1 y 0,
+usando la fórmula que aparece aquí. Uno puede reescalar por varias razones. Generalmente, se hace para mejorar
+el rendimiento del entrenamiento del AA específicamente el rendimiento
+del descenso de gradientes. Fíjense en que para calcular
+la fórmula de reescalamiento necesitamos saber
+los valores mínimo y máximo del atributo. Si no conocemos estos valores tal vez debamos preprocesar todo
+el conjunto de datos para encontrarlos. El preprocesamiento también puede
+servir para los valores categóricos en conjuntos de datos, como nombres de
+ciudades, como aparece en este fragmento. Por ejemplo, para usar una técnica
+de codificación one-hot en TensorFlow que nos ayudará
+a representar distintas ciudades como atributos binarios
+en el conjunto de atributos se puede usar el método
+categorical_column_with_vocabulary_list de la API de Layers. Para usar este método,
+se debe pasar una lista de valores en este ejemplo,
+diferentes nombres de ciudades. Si no tenemos un diccionario de valores
+para una clave, es conveniente crearlo. Es un paso de preprocesamiento
+que afecta a todo el conjunto de datos. En este módulo, conocerán tres tecnologías que los ayudarán
+a implementar el preprocesamiento. Con BigQuery y Apache Beam, procesaremos
+todo el conjunto de datos de entrada antes del entrenamiento. Esto incluye operaciones como excluir
+datos del conjunto de entrenamiento y calcular estadísticas de resumen
+y vocabularios del conjunto de datos. Debemos tener presente
+que para algunas características necesitaremos estadísticas
+de un periodo limitado. Por ejemplo, si necesitamos
+conocer la cantidad promedio de productos que vendió
+un sitio web durante la hora anterior. Para atributos limitados
+por el tiempo, como estos usará canalizaciones de datos
+de lotes y de transmisión de Beam. Otros atributos que pueden
+preprocesarse un dato a la vez se pueden implementar
+directamente en TensorFlow o con Beam. Como pueden ver, Apache Beam y la tecnología complementaria
+de Google Cloud llamada Cloud Dataflow serán importantes
+en esta parte del módulo. Primero, describiré
+algunas de las limitaciones de utilizar solo BigQuery y TensorFlow
+para la ingeniería de atributos. Luego, explicaré
+cómo Beam nos puede ayudar. BigQuery es un almacén de datos veloz,
+muy escalable y completamente administrado que está disponible
+como servicio en Google Cloud. BigQuery nos puede ayudar
+con la ingeniería de atributos ya que permite usar SQL estándar para implementar tareas
+de preprocesamiento comunes Por ejemplo, si deseamos
+preprocesar un conjunto de datos con 10,000 millones
+de viajes en taxi de Nueva York algunos de los registros
+tendrán datos erróneos como viajes muy caros
+con distancias de cero millas. Podemos escribir una instrucción de SQL que filtre los datos erróneos
+del conjunto de datos de entrenamiento y ejecutar SQL en BigQuery
+en unos pocos segundos. Por supuesto, también podemos
+escribir otras instrucciones con funciones estándar de SQL
+para matemática y procesamiento de datos. Esto es útil para cálculos simples,
+como sumas con los datos de origen y para analizar formatos de datos comunes. Por ejemplo, para extraer la hora
+de los registros con marca de tiempo. Si deciden usar SQL para preprocesar
+los ejemplos de entrenamientos es absolutamente esencial que implementen exactamente la misma lógica
+de preprocesamiento en TensorFlow. Ahora, veremos dos enfoques sobre cómo escribir este código
+de preprocesamiento en TensorFlow. En la práctica, puede que usemos
+el primer enfoque o el segundo y, en ocasiones, tal vez usemos ambos. Muchos pasos comunes
+del preprocesamiento se pueden escribir con uno de los métodos incluidos en la API
+de Feature columns de TensorFlow. Por ejemplo, para cambiar un
+atributo con valor real a uno discreto podemos usar el método bucketized_column. Si el paso de preprocesamiento
+no está en las API de TensorFlow podemos modificar las funciones
+usadas en los parámetros de input_fn durante el entrenamiento,
+la validación y las pruebas. Las siguientes diapositivas
+lo explican con más detalle. Con la primera opción, implementamos
+nuestro propio código de preprocesamiento. En este ejemplo, el código
+de preprocesamiento está empaquetado en el método add_engineered
+y la implementación no necesita ninguna estadística global
+del conjunto de datos de origen. Para calcular el atributo
+de distancia euclidiana a partir de las coordenadas
+de latitud y longitud de cada dato el código solo muestra
+el diccionario de atributos original junto con el nuevo valor del atributo,
+calculado con la fórmula de distancia. Para que el atributo
+de la distancia euclidiana se incluya durante los pasos del entrenamiento,
+la evaluación y la entrega todas las funciones input_fn pertinentes
+envuelven la llamada a add_engineered en torno al conjunto
+de atributos no preprocesado. Si el paso de preprocesamiento necesario
+ya existe en la API de TensorFlow tenemos suerte,
+ya que simplemente podemos llamar a los métodos de ayuda relevantes cuando
+definamos las columnas de atributos. En este ejemplo,
+el método bucketized_column se usa para tomar las coordenadas
+de latitud de los datos de origen y asegurarse de que los valores
+estén en un rango entre 38 y 42. Luego, los valores originales de latitud
+se asignan a uno de varios depósitos mutuamente excluyentes,
+de modo que la cantidad de depósitos del rango sea controlada
+por el parámetro nbuckets. Mantener el código de preprocesamiento
+en SQL para BigQuery y en TensorFlow puede ser complejo y difícil de manejar. Como vimos antes,
+una de las ventajas de usar Apache Beam para preprocesar atributos
+es que podemos usar el mismo código durante el entrenamiento
+y la entrega de un modelo. Sin embargo, cuando usamos Apache Beam no tenemos acceso a los métodos de ayuda
+tan convenientes que ofrece TensorFlow. Es decir, como aparece en este ejemplo tendremos que implementar
+nuestro propio código de preprocesamiento. En esta parte del módulo,
+revisamos algunos ejemplos específicos en los que Apache Beam
+puede ayudar con el preprocesamiento.

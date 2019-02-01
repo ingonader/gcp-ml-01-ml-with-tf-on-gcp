@@ -1,0 +1,1415 @@
+1
+00:00:00,000 --> 00:00:02,065
+Ich habe Datalab gestartet
+
+2
+00:00:02,065 --> 00:00:06,685
+und das Notebook
+"feateng.ipython" geöffnet.
+
+3
+00:00:06,685 --> 00:00:08,945
+Werfen wir nun einen Blick darauf.
+
+4
+00:00:08,945 --> 00:00:12,345
+In diesem Notebook
+arbeiten wir mit Merkmalspalten und
+
+5
+00:00:12,355 --> 00:00:14,575
+ergänzen Merkmalverknüpfungen in TensorFlow.
+
+6
+00:00:14,615 --> 00:00:18,645
+Wir lesen Daten aus BigQuery,
+erstellen Datasets mit Dataflow
+
+7
+00:00:18,645 --> 00:00:20,485
+und nutzen 
+ein breites und tiefes Modell.
+
+8
+00:00:20,485 --> 00:00:23,055
+Wir verbinden jetzt also
+viele der besprochenen Aspekte.
+
+9
+00:00:23,055 --> 00:00:27,020
+Das weite und tiefe Modell
+erläutere ich jetzt auch.
+
+10
+00:00:27,020 --> 00:00:29,600
+Worum geht es nun?
+
+11
+00:00:29,600 --> 00:00:32,505
+Wir haben bereits ein Taximodell erstellt.
+
+12
+00:00:32,505 --> 00:00:35,545
+Es fehlen aber noch die menschlichen Einblicke.
+
+13
+00:00:35,545 --> 00:00:37,230
+Das machen wir jetzt.
+
+14
+00:00:37,230 --> 00:00:41,450
+Dabei nutzen wir unser Wissen darüber,
+
+15
+00:00:41,450 --> 00:00:43,310
+wie Taxis funktionieren
+
+16
+00:00:43,310 --> 00:00:45,295
+und wie New York angelegt ist.
+
+17
+00:00:45,295 --> 00:00:50,070
+So erhält das Modell Tipps,
+um diese Dinge leichter zu lernen.
+
+18
+00:00:50,070 --> 00:00:54,710
+Ich erläutere während des Kurses,
+wo die einzelnen Einblicke herkommen.
+
+19
+00:00:54,710 --> 00:01:04,700
+Zuerst werden die Daten importiert.
+
+20
+00:01:04,700 --> 00:01:06,790
+Achten Sie darauf,
+das Projekt zu ändern,
+
+21
+00:01:06,790 --> 00:01:10,630
+um es dem Qwiklabs-Projekt zuzuordnen.
+
+22
+00:01:10,630 --> 00:01:14,485
+Ändern Sie auch den Bucket,
+um ihn dem Qwiklabs-Projekt zuzuordnen.
+
+23
+00:01:14,485 --> 00:01:19,430
+Legen Sie auch die Region fest,
+in der der Code ausgeführt werden soll.
+
+24
+00:01:19,430 --> 00:01:22,410
+Jetzt kann die Abfrage ausgeführt werden.
+
+25
+00:01:22,410 --> 00:01:25,730
+Damit werden auch die Daten bereinigt.
+
+26
+00:01:25,730 --> 00:01:28,985
+So wird Folgendes gewährleistet:
+
+27
+00:01:28,985 --> 00:01:32,720
+Es werden nur
+positive Streckenwerte abgerufen,
+
+28
+00:01:32,720 --> 00:01:35,330
+der Fahrpeis beträgt mehr als 2,50,
+
+29
+00:01:35,330 --> 00:01:40,100
+Längen- und Breitengrad
+des Startorts haben sinnvolle Werte
+
+30
+00:01:40,100 --> 00:01:42,270
+und es waren Fahrgäste im Taxi.
+
+31
+00:01:42,270 --> 00:01:46,750
+So stehen für eine Taxifahrt
+die korrekten Daten zur Verfügung,
+
+32
+00:01:46,750 --> 00:01:49,605
+bevor sie für das Training genutzt werden.
+
+33
+00:01:49,605 --> 00:01:54,370
+Ich teile die Daten zudem auf Basis
+des Hashs von "pickup_datetime" auf.
+
+34
+00:01:54,370 --> 00:01:57,760
+Das habe ich bereits
+beim Erstellen von Datasets erklärt.
+
+35
+00:01:57,760 --> 00:02:00,810
+Danach erstelle ich die Abfrage.
+
+36
+00:02:00,810 --> 00:02:04,670
+Darin sind "tolls_amount" und
+"fare_amount" zusammengefügt
+
+37
+00:02:04,670 --> 00:02:06,080
+zu "fare_amount".
+
+38
+00:02:06,080 --> 00:02:09,750
+So können wir die
+Gesamtkosten einer Taxifahrt ermitteln.
+
+39
+00:02:09,750 --> 00:02:13,825
+Dann wird "DAYOFWEEK" als
+"dayofweek" verwendet.
+
+40
+00:02:13,825 --> 00:02:16,655
+Das hat folgenden Grund:
+
+41
+00:02:16,655 --> 00:02:20,190
+Die Verkehrsbedingungen sind
+je nach Wochentag verschieden.
+
+42
+00:02:20,190 --> 00:02:25,100
+Wir wissen, freitags
+gibt es mehr Verkehr als sonntags.
+
+43
+00:02:25,100 --> 00:02:30,215
+Wir wissen auch,
+der Verkehr variiert je nach Tageszeit.
+
+44
+00:02:30,215 --> 00:02:36,890
+Freitag morgens um 2 Uhr ist
+weniger Verkehr als nachmittags um 16 Uhr.
+
+45
+00:02:36,890 --> 00:02:38,355
+Warum ist das relevant?
+
+46
+00:02:38,355 --> 00:02:43,615
+In New York wird neben der Fahrstrecke
+die im Taxi verbrachte Zeit bezahlt.
+
+47
+00:02:43,615 --> 00:02:48,325
+Hier kommen also
+menschliche Einblicke ins Spiel.
+
+48
+00:02:48,325 --> 00:02:52,300
+Steht das Taxi im Stau,
+muss dafür gezahlt werden,
+
+49
+00:02:52,300 --> 00:02:54,135
+weil man das Taxi besetzt.
+
+50
+00:02:54,135 --> 00:02:56,850
+Der Fahrer kann
+keinen anderen Gast aufnehmen.
+
+51
+00:02:56,850 --> 00:02:58,689
+Die Zeit ist also relevant.
+
+52
+00:02:58,689 --> 00:03:01,570
+Die Dauer der Fahrt ist relevant.
+
+53
+00:03:01,570 --> 00:03:05,700
+Vor der Fahrt ist nicht bekannt,
+wie lange sie dauern wird.
+
+54
+00:03:05,700 --> 00:03:09,560
+Das soll das Modell
+für maschinelles Lernen lernen.
+
+55
+00:03:09,560 --> 00:03:16,380
+Zum Bestimmen der Fahrtdauer
+ist die Startzeit ein wichtiger Faktor.
+
+56
+00:03:16,380 --> 00:03:20,180
+Die Ankunftszeit ist egal,
+die ist nicht bekannt.
+
+57
+00:03:20,180 --> 00:03:22,630
+Wir wissen aber,
+wann die Fahrt beginnt.
+
+58
+00:03:22,630 --> 00:03:25,190
+Eingaben für das Modell sind daher:
+
+59
+00:03:25,190 --> 00:03:29,320
+Startzeit, Tag der Woche und Tageszeit.
+
+60
+00:03:29,320 --> 00:03:31,730
+Außerdem ist der Startort bekannt.
+
+61
+00:03:31,730 --> 00:03:35,000
+Und wir wissen, wo der Fahrgast aussteigt.
+
+62
+00:03:35,000 --> 00:03:37,430
+Wann die Fahrt endet, wissen wir nicht,
+
+63
+00:03:37,430 --> 00:03:39,125
+aber der Zielort ist bekannt.
+
+64
+00:03:39,125 --> 00:03:42,130
+Längen- und Breitengrad
+des Zielortes sind bekannt.
+
+65
+00:03:42,130 --> 00:03:46,115
+Das und die Anzahl der Fahrgäste
+müssen also eingegeben werden.
+
+66
+00:03:46,115 --> 00:03:49,020
+Dann erstellen wir einen Schlüssel.
+
+67
+00:03:49,020 --> 00:03:50,730
+Den brauchen wir hier nicht.
+
+68
+00:03:50,730 --> 00:03:56,505
+Bei Batchvorhersagen werden
+aber große Datenmengen gesendet.
+
+69
+00:03:56,505 --> 00:04:01,205
+Da ist eine eindeutige ID
+für jede Zeile im Dataset nützlich.
+
+70
+00:04:01,205 --> 00:04:05,110
+Der Schlüssel ist also eine Art
+eindeutige ID aller Eingabespalten.
+
+71
+00:04:05,110 --> 00:04:10,110
+Das führe ich für 
+alle gültigen Daten durch.
+
+72
+00:04:10,110 --> 00:04:14,120
+Jetzt können wir das Dataset erstellen.
+
+73
+00:04:14,120 --> 00:04:20,280
+Dafür entfernen wir zuerst
+alle eventuell vorhandenen Datasets.
+
+74
+00:04:20,280 --> 00:04:31,175
+Dann erstellen wir
+aus allen Spalten eine CSV-Datei.
+
+75
+00:04:31,175 --> 00:04:34,535
+Zuerst müssen wir prüfen,
+ob die Spalten richtig sind:
+
+76
+00:04:34,535 --> 00:04:37,690
+"fare_amount", 
+"dayofweek", "hourofday" usw.
+
+77
+00:04:37,690 --> 00:04:40,010
+Diese sollen einbezogen werden.
+
+78
+00:04:40,010 --> 00:04:44,420
+In BigQuery ist der Tag der Woche
+im Dataset aber eine Zahl.
+
+79
+00:04:44,420 --> 00:04:46,760
+Die Ausgabe ist z. B. die Nummer 2.
+
+80
+00:04:46,760 --> 00:04:50,890
+Das ist nicht gewollt,
+da wir nicht wissen, welcher Tag für "2" steht.
+
+81
+00:04:50,890 --> 00:04:53,550
+Wann ist Tag 1?
+Sonntag, Montag, Dienstag?
+
+82
+00:04:53,550 --> 00:04:57,370
+Wir machen es dem Clientcode einfach.
+
+83
+00:04:57,370 --> 00:05:04,475
+Wir ersetzen die Zahlen
+durch die Namen der Wochentage.
+
+84
+00:05:04,475 --> 00:05:07,950
+Bei "dayofweek" = 1 ist Sonntag gemeint.
+
+85
+00:05:07,950 --> 00:05:10,590
+"dayofweek" = 2 ist Montag usw.
+
+86
+00:05:10,590 --> 00:05:12,320
+Das ist der Code hier:
+
+87
+00:05:12,320 --> 00:05:15,005
+Das Ergebnis in BigQuery ist eine Zahl.
+
+88
+00:05:15,005 --> 00:05:18,720
+Diese wird durch einen String ersetzt.
+
+89
+00:05:18,720 --> 00:05:23,565
+Dann wird jeweils ein Komma angefügt.
+
+90
+00:05:23,565 --> 00:05:27,985
+Und das ist die Ausgabe der CSV-Datei.
+
+91
+00:05:27,985 --> 00:05:32,530
+Zum Erstellen der Datei werden
+die Daten aus BigQuery ausgelesen.
+
+92
+00:05:32,540 --> 00:05:36,180
+Das erfolgt mit der Abfrage,
+die wir gerade erstellt haben.
+
+93
+00:05:36,180 --> 00:05:39,920
+Dann konvertiere ich die Daten
+mit der erwähnten Funktion ins CSV-Format.
+
+94
+00:05:39,920 --> 00:05:42,500
+Die Wochentage werden nicht als Zahlen,
+
+95
+00:05:42,500 --> 00:05:45,525
+sondern als Strings ausgegeben.
+
+96
+00:05:45,525 --> 00:05:49,010
+Dann wird eine CSV-Datei erstellt.
+
+97
+00:05:49,010 --> 00:05:51,540
+Wenn ich den Code nun ausführe,
+
+98
+00:05:51,540 --> 00:05:56,110
+haben wir hier "preprocess".
+
+99
+00:05:56,110 --> 00:06:04,020
+In der nächsten Zelle rufe ich
+"preprocess" im Dataflow-Runner auf.
+
+100
+00:06:04,020 --> 00:06:08,620
+Oder man erstellt hier im direkten Runner
+ein kleineres Dataset, um lokal auszuführen.
+
+101
+00:06:08,620 --> 00:06:12,225
+Hier verwende ich den Dataflow-Runner.
+
+102
+00:06:12,225 --> 00:06:16,575
+Die Ausführung dauert nun eine Weile.
+
+103
+00:06:16,575 --> 00:06:20,240
+Ich rufe nun die Konsole auf.
+
+104
+00:06:20,240 --> 00:06:26,015
+Im Dataflow-Runner können wir sehen,
+dass der Job gestartet wurde.
+
+105
+00:06:26,015 --> 00:06:29,170
+Ich öffne also Dataflow...
+
+106
+00:06:33,585 --> 00:06:35,285
+Was haben wir hier?
+
+107
+00:06:37,790 --> 00:06:41,095
+Dataflow...
+
+108
+00:06:44,515 --> 00:06:48,420
+Eine Dataflow API wurde
+noch nicht verwendet oder aktiviert.
+
+109
+00:06:48,420 --> 00:06:53,730
+Wenn Sie diesen Fehler sehen,
+
+110
+00:06:53,730 --> 00:06:57,410
+gehen Sie zu "APIs & Dienste".
+
+111
+00:07:00,470 --> 00:07:04,895
+Suchen Sie 
+nach dem zu aktivierenden Dienst.
+
+112
+00:07:04,895 --> 00:07:09,685
+In unserem Fall gebe ich Dataflow ein.
+
+113
+00:07:09,685 --> 00:07:12,935
+Nun wird die Dataflow API angezeigt.
+
+114
+00:07:12,935 --> 00:07:16,445
+Diese aktiviere ich jetzt.
+
+115
+00:07:16,445 --> 00:07:20,810
+Sobald die API aktiviert wurde...
+
+116
+00:07:21,940 --> 00:07:24,655
+...es dauert etwas...
+
+117
+00:07:24,655 --> 00:07:27,100
+...sollten wir die Zelle
+erneut ausführen können.
+
+118
+00:07:27,100 --> 00:07:29,560
+Ok, die API wurde aktiviert.
+
+119
+00:07:29,560 --> 00:07:37,260
+Ich rufe das Datalab-Notebook auf,
+um die Zelle erneut auszuführen.
+
+120
+00:07:38,640 --> 00:07:44,240
+Nun sollte es funktionieren.
+
+121
+00:07:44,240 --> 00:07:46,865
+Ok, das hat geklappt.
+
+122
+00:07:46,865 --> 00:07:56,260
+Ich rufe Dataflow 
+erneut über das Menü auf.
+
+123
+00:07:56,260 --> 00:07:59,155
+Hier sieht man, der Code wird ausgeführt.
+
+124
+00:07:59,155 --> 00:08:01,235
+Das dauert eine Weile.
+
+125
+00:08:01,235 --> 00:08:02,955
+Wenn es fertig ist,
+
+126
+00:08:02,955 --> 00:08:08,425
+finden Sie in Ihrem Bucket in der Cloud
+
+127
+00:08:08,425 --> 00:08:11,220
+Training-Dateien.
+
+128
+00:08:17,560 --> 00:08:20,465
+Wir könnten nun hier unten fortfahren,
+
+129
+00:08:20,465 --> 00:08:24,820
+ich möchte aber warten,
+bis der Vorgang abgeschlossen ist.
+
+130
+00:08:24,820 --> 00:08:28,115
+Dann können wir hier weitermachen.
+
+131
+00:08:28,115 --> 00:08:29,695
+Ich halte das Video jetzt an.
+
+132
+00:08:29,695 --> 00:08:34,919
+Wir kommen zurück,
+sobald der Dataflow-Job abgeschlossen ist.
+
+133
+00:08:35,289 --> 00:08:39,565
+Hier ist zu sehen,
+dass es ca. 8 Minuten gedauert hat.
+
+134
+00:08:39,565 --> 00:08:41,520
+Der letzte Schritt war erfolgreich
+
+135
+00:08:41,520 --> 00:08:45,395
+und die Anzahl der Workers sinkt wieder.
+
+136
+00:08:45,395 --> 00:08:48,860
+Je nach verfügbaren
+und verwendeten Workern
+
+137
+00:08:48,860 --> 00:08:52,625
+sehen Ihre Werte anders aus.
+
+138
+00:08:52,625 --> 00:08:55,200
+Wenn der Job fertig ist,
+
+139
+00:08:55,200 --> 00:09:01,110
+rufen Sie das Notebook auf, um zu prüfen,
+ob die Ausgabedateien vorhanden sind.
+
+140
+00:09:01,110 --> 00:09:06,670
+Das tue ich hier
+mit "gs" in "gsutil ls" im Bucket.
+
+141
+00:09:06,680 --> 00:09:11,405
+Wir haben hier die Dateien
+"train.csv" und "valid.csv",
+
+142
+00:09:11,405 --> 00:09:15,620
+also eine Trainings- und
+eine Validierungsdatei.
+
+143
+00:09:15,620 --> 00:09:23,410
+Mit dem Unix-Befehl "cat" rufen wir nun
+die ersten paar Einträge auf.
+
+144
+00:09:23,410 --> 00:09:27,720
+Damit werden alle Zeilen
+durch einen Head geleitet,
+
+145
+00:09:27,720 --> 00:09:29,830
+und die ersten werden angezeigt.
+
+146
+00:09:29,830 --> 00:09:35,055
+Wie erwartet ist der Tag der Woche ein String.
+
+147
+00:09:35,065 --> 00:09:37,035
+Freitag, Mittwoch usw.
+
+148
+00:09:37,035 --> 00:09:39,290
+Dann sieht man die Breitengrade,
+
+149
+00:09:39,290 --> 00:09:42,040
+Längengrade, Starts
+und Ziele der Fahrten.
+
+150
+00:09:42,040 --> 00:09:47,000
+In der letzten Spalte steht ein Schlüssel.
+
+151
+00:09:47,000 --> 00:09:48,890
+Der wird im Modell ignoriert,
+
+152
+00:09:48,890 --> 00:09:53,820
+aber wenn wir im Datasaet für jede Zeile
+eine eindeutige ID benötigen, ist er da.
+
+153
+00:09:53,820 --> 00:09:58,955
+Mit dieser Datei kann nun
+ein Modell entwickelt werden.
+
+154
+00:09:58,955 --> 00:10:02,590
+Dabei ist es praktisch,
+
+155
+00:10:02,590 --> 00:10:05,455
+nicht ständig wieder
+in die Cloud wechseln zu müssen.
+
+156
+00:10:05,455 --> 00:10:09,290
+Dafür erstelle ich 
+das Verzeichnis "Sample"
+
+157
+00:10:09,290 --> 00:10:12,360
+und kopiere nur eine der Dateien hinein.
+
+158
+00:10:12,360 --> 00:10:14,005
+Die Dateien sind fragmentiert.
+
+159
+00:10:14,005 --> 00:10:21,280
+Daher kopiere ich nur den ersten Teil
+in das lokale Verzeichnis "Sample".
+
+160
+00:10:21,280 --> 00:10:29,215
+Jetzt können wir uns den Code ansehen.
+
+161
+00:10:29,220 --> 00:10:32,210
+Das kann man im Notebook machen.
+
+162
+00:10:32,210 --> 00:10:34,245
+Ich mache es aber außerhalb.
+
+163
+00:10:34,245 --> 00:10:36,700
+Hier ist unser Projekt "taxifare".
+
+164
+00:10:36,700 --> 00:10:44,545
+Wie zuvor finden wir darin einen Trainer
+sowie "model.py" und "task.py".
+
+165
+00:10:44,545 --> 00:10:49,590
+"model.py" enthält
+aber nicht nur Rohdaten,
+
+166
+00:10:49,590 --> 00:10:52,210
+sondern auch
+im Feature Engineering bearbeitete Daten.
+
+167
+00:10:52,210 --> 00:10:55,910
+Hier sieht man die vorhandenen Spalten.
+
+168
+00:10:55,910 --> 00:10:59,460
+Dabei gibt es jetzt
+noch einige zusätzliche Spalten.
+
+169
+00:10:59,460 --> 00:11:02,710
+Es gibt den Tag der Woche, Tageszeit usw.
+
+170
+00:11:02,710 --> 00:11:07,725
+Das sind die Eingabespalten.
+
+171
+00:11:07,725 --> 00:11:11,150
+"dayofweek" hat
+eine "vocabulary_list" für die Wochentage:
+
+172
+00:11:11,150 --> 00:11:14,070
+Sonntag, Montag, Dienstag usw.
+
+173
+00:11:14,070 --> 00:11:17,805
+"hourofday" ist auch
+eine kategorische Spalte,
+
+174
+00:11:17,805 --> 00:11:22,570
+hat aber eine "identity".
+Es ist schon eine Ganzzahl,
+
+175
+00:11:22,570 --> 00:11:24,640
+also eins, zwei, drei, vier usw.
+
+176
+00:11:24,640 --> 00:11:29,010
+Dann gibt es numerische Spalten
+für Längen- und Breitengrade der Starts
+
+177
+00:11:29,010 --> 00:11:31,240
+und der Ziele usw.
+
+178
+00:11:31,250 --> 00:11:35,855
+Außerdem erstelle ich
+einige Spalten für Feature Engineering.
+
+179
+00:11:35,855 --> 00:11:39,110
+Den Code dafür sehen wir uns später an,
+
+180
+00:11:39,110 --> 00:11:42,529
+aber diese Spalten enthalten
+die Breitengrad-Differenz.
+
+181
+00:11:42,529 --> 00:11:44,260
+Dieser Wert ist nützlich,
+
+182
+00:11:44,260 --> 00:11:49,145
+weil er eine zurückgelegte Strecke
+von Norden nach Süden oder umgekehrt angibt.
+
+183
+00:11:49,145 --> 00:11:54,470
+Damit sieht man also
+Breitengrad-Veränderungen recht gut.
+
+184
+00:11:54,470 --> 00:11:56,890
+Die Längengrad-Differenz ist nützlich
+
+185
+00:11:56,890 --> 00:11:59,320
+aufgrund der Ausbreitung von New York City.
+
+186
+00:11:59,320 --> 00:12:06,165
+Alle Fahren über die mautpflichtigen Brücken
+sorgen für starke Längengrad-Änderungen.
+
+187
+00:12:06,165 --> 00:12:08,880
+Diese Differenz ist also auch hilfreich.
+
+188
+00:12:08,880 --> 00:12:12,005
+Und es gibt einen euklidischen Abstand.
+
+189
+00:12:12,005 --> 00:12:16,510
+Das ist die gerade Linie
+zwischen Start und Ziel.
+
+190
+00:12:16,510 --> 00:12:18,695
+Diese Funktion ist auch praktisch,
+
+191
+00:12:18,695 --> 00:12:21,680
+weil das Modell
+Distanzen so nicht lernen muss,
+
+192
+00:12:21,680 --> 00:12:24,100
+sondern diese direkt verfügbar sind.
+
+193
+00:12:24,100 --> 00:12:26,900
+Das ist das Feature Engineering.
+
+194
+00:12:26,900 --> 00:12:29,615
+Jetzt kann man einen Estimator erstellen.
+
+195
+00:12:29,615 --> 00:12:35,625
+Dieser enthält 
+alle vorhandenen Eingabespalten.
+
+196
+00:12:35,625 --> 00:12:40,845
+Es ist wie mit dem Haus-Dataset
+in der Feature-Engineering-Übung.
+
+197
+00:12:40,845 --> 00:12:44,270
+Die Breiten- und Längengrad-Buckets
+werden in Buckets kategorisiert.
+
+198
+00:12:44,270 --> 00:12:50,265
+Der Start-Breitengrad wird
+zwischen 38 und 42 kategorisiert
+
+199
+00:12:50,265 --> 00:12:57,130
+und der Längengrad von -76 bis -72.
+Das sind die Grenzen von New York City.
+
+200
+00:12:57,130 --> 00:13:02,925
+Damit haben wir kategorisierte
+Breitengrade für Start und Ziel.
+
+201
+00:13:02,935 --> 00:13:05,040
+Dasselbe gilt für die Längengrade:
+
+202
+00:13:05,040 --> 00:13:09,705
+Es gibt Start- und Ziel-Längengrade
+und alle sind in Buckets kategorisiert.
+
+203
+00:13:09,705 --> 00:13:13,610
+Was bedeutet es,
+etwas in Buckets zu kategorisieren?
+
+204
+00:13:13,610 --> 00:13:15,475
+Es erfolgt eine Diskretisierung.
+
+205
+00:13:15,475 --> 00:13:21,360
+Ein numerischer Wert wird kategorisch,
+weil er in einem dieser Buckets ist.
+
+206
+00:13:21,360 --> 00:13:26,170
+Die kategorischen Werte werden
+im Feature Crossing verknüpft.
+
+207
+00:13:26,170 --> 00:13:32,810
+Was passiert z. B. wenn wir
+Start-Breitengrad und -Längengrad verknüpfen?
+
+208
+00:13:32,810 --> 00:13:36,530
+Breiten- und Längengrad sind da,
+und wir verknüpfen die Merkmale.
+
+209
+00:13:36,530 --> 00:13:40,470
+Damit wird der Startort
+in eine Rasterzelle gesetzt,
+
+210
+00:13:40,470 --> 00:13:43,579
+die dem Startort enspricht.
+
+211
+00:13:43,579 --> 00:13:47,865
+Das ist das Merkmal "ploc".
+Es ist jetzt wie eine Rasterzelle.
+
+212
+00:13:47,865 --> 00:13:52,280
+Das Merkmal "dloc" ist analog dazu
+eine Rasterzelle, die dem Ziel entspricht.
+
+213
+00:13:52,280 --> 00:13:55,105
+Beides sind nur Rasterzellenpunkte.
+
+214
+00:13:55,105 --> 00:14:01,470
+Jetzt werden die Merkmale
+Startort und Zielort verknüpft.
+
+215
+00:14:01,470 --> 00:14:11,335
+Damit lernt das Modell aus allen Fahrten
+von einem Ort zum anderen, was sie kosten.
+
+216
+00:14:11,335 --> 00:14:13,510
+Es braucht aber genug Daten.
+
+217
+00:14:13,510 --> 00:14:16,310
+Man kann das nicht oft genug sagen:
+
+218
+00:14:16,310 --> 00:14:19,345
+Feature Crossing ist
+eine sehr leistungsstarke Funktion,
+
+219
+00:14:19,345 --> 00:14:22,010
+es funktioniert aber nur mit genug Daten,
+
+220
+00:14:22,010 --> 00:14:25,170
+denn Feature Crossing ist Auswendiglernen.
+
+221
+00:14:25,170 --> 00:14:30,285
+Es funktioniert, wenn in jedem Bucket
+ausreichend Daten vorhanden sind.
+
+222
+00:14:30,285 --> 00:14:34,105
+Hier gibt es Millionen von Taxifahrten.
+
+223
+00:14:34,105 --> 00:14:37,050
+Wir haben also genug Daten.
+
+224
+00:14:37,050 --> 00:14:40,120
+Zur Wiederholung:
+Wir kategorisieren Start-Längengrad,
+
+225
+00:14:40,120 --> 00:14:41,915
+Ziel-Längengrad,
+
+226
+00:14:41,915 --> 00:14:46,795
+erstellen eine Funktion für "ploc" und
+"dloc" und verknüpfen diese Merkmale.
+
+227
+00:14:46,795 --> 00:14:51,550
+Nun gibt es ein Start/Ziel-Paar,
+das auch ein verknüpftes Merkmal ist.
+
+228
+00:14:51,550 --> 00:14:54,260
+Jetzt kommen Tag und Stunde.
+
+229
+00:14:54,260 --> 00:14:57,865
+Wir wissen, der Verkehr ist
+tages- und uhrzeitabhängig.
+
+230
+00:14:57,865 --> 00:15:02,865
+Freitag 15 Uhr ist anders
+als Mittwoch oder Sonntag 15 Uhr.
+
+231
+00:15:02,865 --> 00:15:09,810
+Beim Verknüpfen muss man festlegen,
+wie viele Buckets verwendet werden sollen.
+
+232
+00:15:09,810 --> 00:15:16,880
+Das ist sehr flexibel,
+von doppelt so vielen möglichen Werten
+
+233
+00:15:16,880 --> 00:15:19,850
+bis zur vierten Wurzel 
+der möglichen Werte.
+
+234
+00:15:19,850 --> 00:15:23,760
+Hier verwende ich einfach alle Werte.
+
+235
+00:15:23,760 --> 00:15:26,070
+Die Bucket-Anzahl ist also 24 x 7.
+
+236
+00:15:26,070 --> 00:15:31,450
+Das muss man ausprobieren
+und per Hyperparameter abstimmen.
+
+237
+00:15:31,450 --> 00:15:38,990
+Es gibt keine korrekte Anzahl
+der zu verwendenden Hash-Buckets.
+
+238
+00:15:38,990 --> 00:15:41,985
+Nun sehen wir uns nochmal alle Daten an:
+
+239
+00:15:41,985 --> 00:15:46,710
+Welche sind spärlich und kategorisch,
+
+240
+00:15:46,710 --> 00:15:49,500
+welche Daten sind dicht und numerisch?
+
+241
+00:15:49,500 --> 00:15:54,230
+Die spärlichen, kategorischen Spalten
+sortieren wir in den weiten Netzwerkteil,
+
+242
+00:15:54,230 --> 00:15:57,545
+da sie sich gut 
+für lineare Modelle eignen.
+
+243
+00:15:57,545 --> 00:16:05,105
+Eingebettete Spalten sind
+ein Beispiel für dichte Spalten.
+
+244
+00:16:05,105 --> 00:16:10,500
+Hier sind spärliche Daten enthalten.
+
+245
+00:16:10,500 --> 00:16:14,675
+Das ist auch nützliche dichte Information.
+
+246
+00:16:14,675 --> 00:16:18,955
+Alle spärlichen Spalten werden also
+in die weiten Spalten sortiert.
+
+247
+00:16:18,955 --> 00:16:23,520
+Alle dichten Daten,
+werden in die tiefen Spalten sortiert.
+
+248
+00:16:23,520 --> 00:16:27,625
+Dann erstellen wir
+einen kombinierten DNN-Linear-Regressor.
+
+249
+00:16:27,625 --> 00:16:32,350
+Damit erhält das Modell extra Leistung.
+
+250
+00:16:32,350 --> 00:16:34,550
+Auch ein DNN-Regressor funktioniert,
+
+251
+00:16:34,550 --> 00:16:37,710
+dabei wird alles 
+als tiefe Spalten geparst.
+
+252
+00:16:37,710 --> 00:16:40,810
+Die Kombination aus DNN
+und linear ermöglicht aber,
+
+253
+00:16:40,810 --> 00:16:44,360
+spärliche und dichte Daten
+unterschiedlich zu behandeln.
+
+254
+00:16:44,360 --> 00:16:48,255
+Es werden verschiedene Optimierer genutzt.
+
+255
+00:16:48,255 --> 00:16:50,565
+Der Regressor ist darauf abgestimmt,
+
+256
+00:16:50,565 --> 00:16:56,562
+dass ein Dataset mit realen Daten
+dichte und spärliche Merkmale enthält.
+
+257
+00:16:56,562 --> 00:17:00,900
+Dieser Regressor ist daher
+sehr gut für diese Art von Daten geeignet.
+
+258
+00:17:00,900 --> 00:17:05,685
+Hier parsen wir also,
+welche Merkmale linear sind
+
+259
+00:17:05,685 --> 00:17:08,795
+und welche Merkmale
+ein DNN-Modell benötigen.
+
+260
+00:17:08,795 --> 00:17:13,165
+Wir geben die Anzahl der Einheiten an,
+die das DNN-Modell verwenden soll.
+
+261
+00:17:13,165 --> 00:17:14,405
+Das ist das Modell.
+
+262
+00:17:14,405 --> 00:17:17,400
+Es gibt aber auch noch
+das Feature Engineering.
+
+263
+00:17:17,400 --> 00:17:20,800
+Den verwendeten Rohdaten
+soll noch etwas hinzugefügt werden.
+
+264
+00:17:20,800 --> 00:17:23,190
+Das tun wir
+mit den Feature-Engineering-Spalten.
+
+265
+00:17:23,190 --> 00:17:26,590
+Das sind "latdiff" und "londiff"
+und wir verarbeiten sie wie folgt:
+
+266
+00:17:26,590 --> 00:17:29,695
+"latdiff" ist die Differenz
+zwischen zwei Breitengraden.
+
+267
+00:17:29,695 --> 00:17:32,745
+"londiff" ist die Differenz
+zwischen zwei Längengraden.
+
+268
+00:17:32,745 --> 00:17:38,150
+Dann geben wir die Funktion
+zur Bereitstellungseingabe an.
+
+269
+00:17:38,150 --> 00:17:41,930
+Diese Information liefert der Endnutzer.
+
+270
+00:17:41,930 --> 00:17:46,860
+"londiff" bzw. "latdiff" liefert er nicht.
+Das kann der Endnutzer nicht berechnen.
+
+271
+00:17:46,860 --> 00:17:49,140
+Er gibt uns nur die Rohdaten.
+
+272
+00:17:49,140 --> 00:17:52,120
+Wir prüfen nun alle Eingabespalten.
+
+273
+00:17:52,120 --> 00:17:54,990
+Die ersten beiden können wir ignorieren.
+
+274
+00:17:54,990 --> 00:18:00,205
+Die erste enthält die Tarife.
+Das ist ein Label und keine Eingabe.
+
+275
+00:18:00,205 --> 00:18:05,155
+Gehen wir zur zweiten Spalte,
+die ignoriert werden kann.
+
+276
+00:18:05,155 --> 00:18:10,570
+Hier sind die zwei Spalten,
+die ignoriert werden können.
+
+277
+00:18:10,570 --> 00:18:14,280
+Der Tag der Woche
+und die Tageszeit werden ignoriert.
+
+278
+00:18:14,280 --> 00:18:17,980
+Alle anderen Daten werden einbezogen.
+
+279
+00:18:17,980 --> 00:18:22,000
+Das sind alles Gleitkommazahlen.
+
+280
+00:18:22,000 --> 00:18:23,995
+Der Tag der Woche ist ein String.
+
+281
+00:18:23,995 --> 00:18:26,640
+Die Tageszeit hat das int32-Format.
+
+282
+00:18:26,640 --> 00:18:30,925
+Damit erstellen wir einen Empfänger
+für die Bereitstellungseingabe.
+
+283
+00:18:30,925 --> 00:18:36,160
+Wichtig ist, dass wir nicht nur
+die Merkmale von den Endnutzern nutzen,
+
+284
+00:18:36,160 --> 00:18:40,860
+sondern auch alle im Feature Engineering
+erstellten Merkmale ins Modell einbeziehen.
+
+285
+00:18:40,860 --> 00:18:46,010
+Das Lesen der Daten erfolgt jetzt
+ähnliche wie in vorigen Szenarien.
+
+286
+00:18:46,010 --> 00:18:49,200
+Auch das Trainieren und Bewerten ist ähnlich.
+
+287
+00:18:49,200 --> 00:18:52,405
+Wir können den Code nun ausführen.
+
+288
+00:18:52,405 --> 00:18:54,010
+Ich gehe hierher zurück.
+
+289
+00:18:54,010 --> 00:18:57,995
+Wir können das Modell
+an einem kleineren Dataset testen.
+
+290
+00:18:57,995 --> 00:19:00,490
+Dann können wir es 
+in der Cloud trainieren.
+
+291
+00:19:00,490 --> 00:19:04,250
+Wir können "gcloud ml-engine" verwenden.
+
+292
+00:19:04,250 --> 00:19:10,450
+Beim Ausführen des Modells
+sollte der RMSE leicht besser sein.
+
+293
+00:19:10,450 --> 00:19:13,460
+Das Modell hat sich somit verbessert.
+
+294
+00:19:13,460 --> 00:19:16,130
+Der nächste Schritt ist
+die Hyperparameter-Abstimmung,
+
+295
+00:19:16,130 --> 00:19:18,630
+um gute Parameter des Modells zu ermitteln.
+
+296
+00:19:18,630 --> 00:19:24,570
+Dafür beschäftigen wir uns
+mit Hyperparameter-Abstimmung.
+
+297
+00:19:24,570 --> 00:19:27,840
+Damit erhält man
+die Parameter für diese Modelle.
+
+298
+00:19:27,840 --> 00:19:30,780
+In diesem Projekt
+sind das hier die besten Parameter.
+
+299
+00:19:30,780 --> 00:19:35,845
+Jetzt können wir das Modell
+in einem viel größeren Dataset ausführen.
+
+300
+00:19:35,845 --> 00:19:37,960
+Das ist ein zentraler Punkt
+beim maschinellen Lernen:
+
+301
+00:19:37,960 --> 00:19:41,060
+Die beste Leistung erreicht man,
+wenn mit großen Datasets trainiert wird.
+
+302
+00:19:41,060 --> 00:19:47,990
+Der Dataflow-Job vorhin dauerte
+nur ca. 10 Minuten. Dann ging es weiter.
+
+303
+00:19:47,990 --> 00:19:51,690
+Der Dataflow-Job jetzt
+läuft ungefähr eine Stunde
+
+304
+00:19:51,690 --> 00:19:54,790
+und erstellt ein Dataset
+mit Millionen von Zeilen.
+
+305
+00:19:54,790 --> 00:19:57,020
+Damit können wir trainieren
+
+306
+00:19:57,020 --> 00:20:00,930
+und der RMSE sollte dann viel besser sein.
+
+307
+00:20:00,930 --> 00:20:06,460
+Hier war wesentlich, Rohdaten
+mit Feature Engineering zu bearbeiten,
+
+308
+00:20:06,460 --> 00:20:10,494
+um bei wichtigen Merkmalen,
+menschliche Einblicke einzubeziehen.
+
+309
+00:20:10,494 --> 00:20:13,505
+Zum Beispiel Verkehr und Entfernung,
+
+310
+00:20:13,505 --> 00:20:18,430
+das Überfahren von Grenzen und
+
+311
+00:20:18,430 --> 00:20:21,600
+Fahrten von Ost nach West
+oder Nord nach Süd usw.
+
+312
+00:20:21,600 --> 00:20:26,855
+Die Differenz der Längen- und Breitengrade,
+der euklidische Abstand und Merkmalsverknüpfungen.
+
+313
+00:20:26,855 --> 00:20:29,610
+Mit all diesen Daten verbessern wir das Modell.

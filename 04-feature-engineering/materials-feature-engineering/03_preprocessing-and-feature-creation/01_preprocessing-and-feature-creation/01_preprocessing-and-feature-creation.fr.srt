@@ -1,0 +1,622 @@
+1
+00:00:00,000 --> 00:00:02,130
+Bonjour, je m'appelle Carl Osipov
+
+2
+00:00:02,130 --> 00:00:03,960
+et je suis chef de projet chez Google.
+
+3
+00:00:03,960 --> 00:00:06,480
+Je travaille avec nos clients Google Cloud
+
+4
+00:00:06,480 --> 00:00:09,200
+pour les aider à déployer
+des systèmes de machine learning
+
+5
+00:00:09,200 --> 00:00:12,390
+évolutifs et prêts à passer en production.
+
+6
+00:00:12,390 --> 00:00:16,165
+Cette section du module traite
+du prétraitement des données d'entrée
+
+7
+00:00:16,165 --> 00:00:17,985
+et de la création de caractéristiques,
+
+8
+00:00:17,985 --> 00:00:19,810
+deux techniques qui peuvent vous aider
+
+9
+00:00:19,810 --> 00:00:23,520
+à préparer un ensemble de caractéristiques
+pour un système de machine learning.
+
+10
+00:00:23,520 --> 00:00:25,430
+Pour commencer, vous verrez des exemples
+
+11
+00:00:25,430 --> 00:00:27,860
+de prétraitement
+et de création de caractéristiques,
+
+12
+00:00:27,860 --> 00:00:29,660
+puis vous découvrirez les défis
+
+13
+00:00:29,660 --> 00:00:32,800
+qu'impliquent ces techniques
+pour l'extraction de caractéristiques.
+
+14
+00:00:32,800 --> 00:00:36,300
+Dans les deux parties
+restantes de cette section,
+
+15
+00:00:36,300 --> 00:00:39,050
+vous verrez comment
+des outils comme Cloud Dataflow
+
+16
+00:00:39,050 --> 00:00:42,585
+et Cloud Dataprep peuvent
+vous aider à relever ces défis.
+
+17
+00:00:42,585 --> 00:00:46,790
+Voyons d'abord quelques exemples
+qui vous permettront de comprendre
+
+18
+00:00:46,790 --> 00:00:51,230
+quand procéder au prétraitement
+et à la création de caractéristiques.
+
+19
+00:00:51,230 --> 00:00:54,810
+Certaines valeurs d'un ensemble de
+caractéristiques doivent être normalisées
+
+20
+00:00:54,810 --> 00:00:58,865
+ou mises à l'échelle avant
+d'être utilisées par le modèle de ML.
+
+21
+00:00:58,865 --> 00:01:02,600
+Le scaling revient ici à remplacer
+une caractéristique à valeurs réelles,
+
+22
+00:01:02,600 --> 00:01:07,275
+comme un prix, par une plage comprise
+entre 0 et 1 via la formule présentée ici.
+
+23
+00:01:07,275 --> 00:01:10,175
+Le scaling peut être nécessaire
+pour de nombreuses raisons,
+
+24
+00:01:10,175 --> 00:01:13,425
+mais, la plupart du temps,
+il sert à améliorer les performances
+
+25
+00:01:13,425 --> 00:01:17,075
+de l'entraînement ML, en particulier
+celles de la descente de gradient.
+
+26
+00:01:17,075 --> 00:01:20,715
+Pour calculer la formule de scaling,
+
+27
+00:01:20,715 --> 00:01:24,570
+vous devez connaître les valeurs minimale
+et maximale d'une caractéristique.
+
+28
+00:01:24,570 --> 00:01:26,406
+Si vous ne connaissez pas ces valeurs,
+
+29
+00:01:26,406 --> 00:01:28,457
+vous devrez peut-être
+prétraiter la totalité
+
+30
+00:01:28,457 --> 00:01:30,605
+de l'ensemble de données pour les obtenir.
+
+31
+00:01:30,605 --> 00:01:34,450
+Le prétraitement peut aussi être
+utile pour les valeurs catégoriques
+
+32
+00:01:34,450 --> 00:01:37,245
+de vos ensembles de données,
+telles que les noms de villes,
+
+33
+00:01:37,245 --> 00:01:39,135
+comme le montre cet extrait de code.
+
+34
+00:01:39,135 --> 00:01:43,555
+Par exemple, pour utiliser dans
+TensorFlow l'encodage en mode one-hot,
+
+35
+00:01:43,555 --> 00:01:45,735
+qui permet de représenter des villes
+
+36
+00:01:45,735 --> 00:01:48,035
+sous forme
+de caractéristiques à valeurs binaires
+
+37
+00:01:48,035 --> 00:01:49,965
+dans votre ensemble de caractéristiques,
+
+38
+00:01:49,965 --> 00:01:53,490
+vous pouvez utiliser la méthode
+"categorical_column_with_vocabulary_list"
+
+39
+00:01:53,490 --> 00:01:54,830
+de l'API Layers.
+
+40
+00:01:54,830 --> 00:01:58,455
+Pour utiliser cette méthode, vous devez
+lui transmettre une liste de valeurs.
+
+41
+00:01:58,455 --> 00:02:00,880
+Dans cet exemple, des noms de villes.
+
+42
+00:02:00,880 --> 00:02:03,985
+Si vous n'avez pas ce dictionnaire
+de valeurs pour une clé,
+
+43
+00:02:03,985 --> 00:02:05,505
+vous pouvez le créer.
+
+44
+00:02:05,505 --> 00:02:08,785
+C'est une étape de prétraitement
+sur l'ensemble de données complet.
+
+45
+00:02:08,785 --> 00:02:11,025
+Dans ce module, vous allez découvrir
+
+46
+00:02:11,025 --> 00:02:14,545
+les technologies libres qui permettent
+de mettre en œuvre le prétraitement.
+
+47
+00:02:14,545 --> 00:02:17,210
+BigQuery et Apache Beam servent
+
+48
+00:02:17,210 --> 00:02:20,750
+à traiter l'ensemble
+de données complet avant l'entraînement,
+
+49
+00:02:20,750 --> 00:02:22,900
+ce qui inclut des opérations telles que
+
+50
+00:02:22,900 --> 00:02:26,210
+l'exclusion de certains points
+de données de l'ensemble d'entraînement
+
+51
+00:02:26,210 --> 00:02:28,587
+ainsi que le calcul
+de statistiques récapitulatives
+
+52
+00:02:28,587 --> 00:02:30,705
+et de vocabulaires sur l'ensemble complet.
+
+53
+00:02:30,705 --> 00:02:33,215
+N'oubliez pas :
+pour certaines caractéristiques,
+
+54
+00:02:33,215 --> 00:02:35,990
+vous aurez besoin
+de statistiques sur une période limitée.
+
+55
+00:02:35,990 --> 00:02:38,320
+Vous voudrez par exemple
+connaître le nombre moyen
+
+56
+00:02:38,320 --> 00:02:41,430
+de produits vendus par un site Web
+au cours de l'heure précédente.
+
+57
+00:02:41,430 --> 00:02:43,780
+Pour ces caractéristiques
+portant sur une période,
+
+58
+00:02:43,780 --> 00:02:47,075
+vous utiliserez les pipelines de données
+par lots et par flux de Beam.
+
+59
+00:02:47,075 --> 00:02:50,595
+D'autres caractéristiques permettant
+le prétraitement d'un point de données
+
+60
+00:02:50,595 --> 00:02:54,855
+à la fois peuvent être mises en œuvre
+directement dans TensorFlow ou avec Beam.
+
+61
+00:02:54,855 --> 00:02:57,230
+Comme vous pouvez le voir, Apache Beam
+
+62
+00:02:57,230 --> 00:03:00,040
+et la technologie complémentaire
+de Google Cloud, appelée
+
+63
+00:03:00,040 --> 00:03:03,590
+Cloud Dataflow, sont importants
+pour cette partie du module.
+
+64
+00:03:03,590 --> 00:03:06,635
+Je décrirai d'abord
+les limitations de l'utilisation exclusive
+
+65
+00:03:06,635 --> 00:03:09,850
+de BigQuery et de TensorFlow
+pour extraire des caractéristiques.
+
+66
+00:03:09,850 --> 00:03:12,330
+J'expliquerai ensuite l'intérêt de Beam.
+
+67
+00:03:12,330 --> 00:03:15,605
+BigQuery est un entrepôt
+de données ultra-évolutif,
+
+68
+00:03:15,605 --> 00:03:19,950
+très rapide et entièrement géré disponible
+sous forme de service Google Cloud.
+
+69
+00:03:19,950 --> 00:03:23,400
+Il facilite l'extraction
+de caractéristiques, car il permet
+
+70
+00:03:23,400 --> 00:03:27,360
+d'utiliser le SQL standard pour
+des tâches de prétraitement courantes.
+
+71
+00:03:27,360 --> 00:03:29,660
+Par exemple, si vous prétraitez
+
+72
+00:03:29,660 --> 00:03:32,670
+un ensemble de données contenant
+10 milliards d'enregistrements
+
+73
+00:03:32,670 --> 00:03:34,440
+sur des courses en taxi à New York,
+
+74
+00:03:34,440 --> 00:03:37,750
+vous pouvez obtenir des données
+fausses, comme des courses chères
+
+75
+00:03:37,750 --> 00:03:39,730
+sur une distance nulle.
+
+76
+00:03:39,730 --> 00:03:43,975
+Vous pouvez écrire une instruction SQL
+pour exclure ces données de votre ensemble
+
+77
+00:03:43,975 --> 00:03:48,300
+d'entraînement et l'exécuter
+dans BigQuery en quelques secondes.
+
+78
+00:03:48,300 --> 00:03:51,230
+Vous pouvez écrire d'autres instructions
+
+79
+00:03:51,230 --> 00:03:54,755
+avec des fonctions mathématiques
+et de traitement de données SQL standards.
+
+80
+00:03:54,755 --> 00:03:58,600
+Elles peuvent être utiles pour effectuer
+des calculs simples, comme des additions
+
+81
+00:03:58,600 --> 00:04:02,320
+sur des données sources, et la conversion
+dans des formats de données courants,
+
+82
+00:04:02,320 --> 00:04:06,655
+par exemple pour extraire l'heure
+d'enregistrements avec horodatage.
+
+83
+00:04:06,655 --> 00:04:10,600
+Si vous utilisez SQL pour prétraiter
+des exemples d'entraînement,
+
+84
+00:04:10,600 --> 00:04:13,590
+il est primordial de mettre en œuvre
+
+85
+00:04:13,590 --> 00:04:17,325
+exactement la même logique
+de prétraitement dans TensorFlow.
+
+86
+00:04:17,325 --> 00:04:20,035
+Vous verrez ensuite deux approches
+
+87
+00:04:20,035 --> 00:04:23,125
+d'écriture de ce code
+de prétraitement dans TensorFlow.
+
+88
+00:04:23,125 --> 00:04:26,430
+Dans la pratique, vous utiliserez l'une
+
+89
+00:04:26,430 --> 00:04:29,435
+ou l'autre, et parfois les deux.
+
+90
+00:04:29,435 --> 00:04:33,530
+N'oubliez pas que de nombreuses étapes
+de prétraitement courantes peuvent être
+
+91
+00:04:33,530 --> 00:04:38,350
+écrites avec les méthodes existantes
+de l'API Feature Columns de TensorFlow.
+
+92
+00:04:38,350 --> 00:04:42,760
+Par exemple, si vous devez discrétiser
+une caractéristique à valeur réelle,
+
+93
+00:04:42,760 --> 00:04:45,350
+vous pouvez utiliser
+la méthode "bucketized_column".
+
+94
+00:04:45,350 --> 00:04:50,360
+Si l'étape de prétraitement nécessaire est
+indisponible dans les API TensorFlow,
+
+95
+00:04:50,360 --> 00:04:52,460
+vous pouvez modifier
+les fonctions utilisées
+
+96
+00:04:52,460 --> 00:04:54,600
+dans les paramètres
+de la fonction "input_fn"
+
+97
+00:04:54,600 --> 00:04:56,930
+pendant l'entraînement,
+la validation et le test.
+
+98
+00:04:56,930 --> 00:05:01,660
+Nous verrons ceci plus en détail
+dans les prochaines diapositives.
+
+99
+00:05:01,660 --> 00:05:06,670
+Avec la première option, vous mettez en
+œuvre votre propre code de prétraitement.
+
+100
+00:05:06,670 --> 00:05:09,845
+Dans cet exemple, il est empaqueté
+
+101
+00:05:09,845 --> 00:05:12,600
+dans la méthode "add_engineered"
+
+102
+00:05:12,600 --> 00:05:14,225
+et la mise en œuvre n'implique pas
+
+103
+00:05:14,225 --> 00:05:16,945
+de statistiques globales
+de l'ensemble de données source.
+
+104
+00:05:16,945 --> 00:05:19,370
+Pour calculer la distance euclidienne
+
+105
+00:05:19,370 --> 00:05:22,135
+depuis les coordonnées existantes
+pour le point de données,
+
+106
+00:05:22,135 --> 00:05:25,520
+le code renvoie uniquement le dictionnaire
+de caractéristiques d'origine
+
+107
+00:05:25,520 --> 00:05:29,380
+et la nouvelle valeur calculée
+avec la formule de distance.
+
+108
+00:05:29,380 --> 00:05:32,440
+Pour que la distance euclidienne
+soit incluse dans les étapes
+
+109
+00:05:32,440 --> 00:05:35,675
+d'entraînement,
+d'évaluation et de diffusion,
+
+110
+00:05:35,675 --> 00:05:39,525
+toutes les fonctions "input_fn"
+correspondantes encapsulent l'appel
+
+111
+00:05:39,525 --> 00:05:41,652
+à la méthode "add_engineered" autour de
+
+112
+00:05:41,652 --> 00:05:43,780
+l'ensemble
+de caractéristiques non prétraité.
+
+113
+00:05:43,780 --> 00:05:48,990
+Si l'étape de prétraitement nécessaire
+existe déjà dans l'API TensorFlow,
+
+114
+00:05:48,990 --> 00:05:51,990
+il vous suffit d'appeler
+la méthode d'aide appropriée
+
+115
+00:05:51,990 --> 00:05:55,130
+lors de la définition de la liste
+des colonnes de caractéristiques.
+
+116
+00:05:55,130 --> 00:05:57,880
+Dans cet exemple,
+la méthode "bucketized_column"
+
+117
+00:05:57,880 --> 00:06:01,030
+permet de récupérer la latitude
+à partir des données sources
+
+118
+00:06:01,030 --> 00:06:05,485
+et de vérifier
+que les valeurs se situent entre 38 et 42.
+
+119
+00:06:05,485 --> 00:06:09,760
+Les valeurs d'origine
+de la latitude sont ensuite placées
+
+120
+00:06:09,760 --> 00:06:13,230
+dans l'un des buckets mutuellement
+exclusifs. Ainsi, le nombre de buckets
+
+121
+00:06:13,230 --> 00:06:16,885
+de la plage est contrôlé
+par le paramètre du bucket de fin.
+
+122
+00:06:16,885 --> 00:06:20,080
+Continuer d'utiliser du SQL
+pour le code de prétraitement
+
+123
+00:06:20,080 --> 00:06:24,460
+dans BigQuery et TensorFlow peut
+devenir complexe et difficile à gérer.
+
+124
+00:06:24,460 --> 00:06:26,100
+Comme vous l'avez vu,
+
+125
+00:06:26,100 --> 00:06:28,840
+utiliser Apache Beam
+
+126
+00:06:28,840 --> 00:06:30,910
+pour prétraiter les caractéristiques
+
+127
+00:06:30,910 --> 00:06:35,460
+permet de conserver le même code pendant
+l'entraînement et la diffusion du modèle.
+
+128
+00:06:35,460 --> 00:06:38,225
+Cependant, Apache Beam
+
+129
+00:06:38,225 --> 00:06:42,445
+ne permet pas d'accéder aux méthodes
+d'aide pratiques de TensorFlow.
+
+130
+00:06:42,445 --> 00:06:45,370
+Comme dans cet exemple,
+
+131
+00:06:45,370 --> 00:06:48,600
+vous devrez donc mettre en œuvre
+votre propre code de prétraitement.
+
+132
+00:06:48,600 --> 00:06:50,670
+Dans cette partie du module, vous avez vu
+
+133
+00:06:50,670 --> 00:06:55,520
+des exemples spécifiques dans lesquels
+Apache Beam facilite le prétraitement.

@@ -1,0 +1,44 @@
+Pour démarrer cet atelier, vérifiez que Google Cloud Platform
+est ouvert dans votre navigateur. Cliquez d'abord
+sur "Activer Google Cloud Shell". Il est essentiel de préparer
+l'environnement Cloud Shell avec le code source et les packages
+nécessaires pour l'exécuter. Si vous venez
+de terminer l'atelier précédent, le code et les packages
+devraient déjà être installés. Cependant,
+si votre environnement Cloud Shell ne contient pas
+le répertoire "training-data-analyst", arrêtez cet atelier et effectuez
+le précédent avant d'aller plus loin. Si votre environnement
+Cloud Shell est configuré, vous pouvez utiliser l'éditeur
+de code Cloud Shell pour ouvrir le code source du pipeline
+Apache Beam utilisé dans cet atelier. Vous le trouverez dans le répertoire
+"training-data-analyst/courses/ data_analysis/lab2/ python", fichier "is_popular.py". Il y a plus de code dans ce fichier
+que dans celui de l'atelier précédent. Vous verrez ensuite
+le code plus en détail. Si vous faites défiler jusqu'au corps
+de la méthode principale, vous pouvez voir
+l'argument d'entrée du code. En entrée, le pipeline prend les fichiers de code source Java
+du répertoire "javahelp". Notez que le résultat du pipeline
+sera stocké dans le répertoire "/tmp", dans des fichiers
+ayant par défaut le préfixe "output". Ce paramètre est bien sûr modifiable. Une fois les données lues
+depuis Google Cloud Storage, l'étape suivante
+du pipeline consiste à vérifier les lignes qui commencent par le terme clé. Comme vous l'avez vu
+dans l'atelier précédent, le terme clé de ce pipeline est "import". Le pipeline traite ensuite
+les noms des packages importés. Notez que ceci dépend
+de la méthode "PackageUse", qui vérifie à son tour
+les noms des packages dans l'instruction d'importation,
+extrait le nom du package, et supprime le mot clé "import" ainsi que le point-virgule de fermeture. Enfin, une fois le nom du package obtenu, la fonction "splitPackageName" renvoie
+les préfixes de chaque nom de package. Par exemple, pour un package
+nommé "com.example.appname", la fonction renvoie les préfixes "com",
+"com.example" et "com.example.appname". Pour chacun de ces packages, la méthode renvoie une paire : le préfixe
+et le chiffre 1 pour chaque occurrence. Les occurrences sont ajoutées ensemble à l'aide de l'opération "CombinePerKey"
+et la fonction "sum" en argument. Le combinateur du top cinq identifie
+les cinq packages les plus importés. Vous pouvez ensuite exécuter
+le fichier "is_popular.py". Une fois le pipeline exécuté, vous pouvez vérifier
+le répertoire de sortie. Si vous répertoriez
+les fichiers qu'il contient, vous pouvez voir
+les packages les plus populaires : "org", "org.apache", "org.apache.beam"
+et "org.apache.beam.sdk". Lors de la mise en œuvre de ce pipeline, il est possible de modifier
+la destination du résultat. Par exemple,
+si vous modifiez les paramètres par défaut pour demander au pipeline d'écrire les résultats dans le répertoire
+"/tmp" avec le préfixe "myoutput", vous pouvez exécuter le pipeline à nouveau
+et rechercher le nouveau résultat. Les nouvelles instances des fichiers
+de sortie auront le préfixe "myoutput". Voilà. Cet atelier est terminé.

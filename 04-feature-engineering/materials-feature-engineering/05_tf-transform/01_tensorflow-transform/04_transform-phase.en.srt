@@ -1,0 +1,259 @@
+1
+00:00:00,000 --> 00:00:06,300
+The preprocessing function is a function where we transform the input data.
+
+2
+00:00:06,300 --> 00:00:11,745
+In beam, it's called as part of the analyze and transform dataset.
+
+3
+00:00:11,745 --> 00:00:16,010
+In TensorFlow, the things you do in preprocess will
+
+4
+00:00:16,010 --> 00:00:20,165
+get called essentially as part of the serving input function in TensorFlow.
+
+5
+00:00:20,165 --> 00:00:23,825
+In other words, it will get added to the TensorFlow graph,
+
+6
+00:00:23,825 --> 00:00:28,255
+and it could be executed in TensorFlow during serving.
+
+7
+00:00:28,255 --> 00:00:32,330
+Because it'll be executed as part of the TensorFlow graph,
+
+8
+00:00:32,330 --> 00:00:39,450
+the preprocessing function is restricted to functions that you can call from TensorFlow.
+
+9
+00:00:39,450 --> 00:00:42,860
+You cannot call regular Python functions
+
+10
+00:00:42,860 --> 00:00:47,160
+since the preprocess is part of the TensorFlow graph during serving.
+
+11
+00:00:47,160 --> 00:00:49,185
+Let's look at an example.
+
+12
+00:00:49,185 --> 00:00:55,025
+In this example, I'm taking a set of inputs and preprocessing them.
+
+13
+00:00:55,025 --> 00:00:58,965
+What is the data type of inputs?
+
+14
+00:00:58,965 --> 00:01:04,240
+It's a dictionary whose values are tensors.
+
+15
+00:01:04,240 --> 00:01:07,750
+Remember, this is what is returned from
+
+16
+00:01:07,750 --> 00:01:13,780
+the serving input function and represents the raw data as it's read.
+
+17
+00:01:13,780 --> 00:01:17,230
+Input functions return features,
+
+18
+00:01:17,230 --> 00:01:20,620
+labels and thus, is a features.
+
+19
+00:01:20,620 --> 00:01:25,220
+And features is a dict, a dictionary.
+
+20
+00:01:25,220 --> 00:01:29,900
+TF transform will take care of converting the data that comes
+
+21
+00:01:29,900 --> 00:01:34,200
+in via P transform into tensors during the analysis phase.
+
+22
+00:01:34,200 --> 00:01:37,460
+We take the tensors and we use them to
+
+23
+00:01:37,460 --> 00:01:42,165
+create new features and we put these features into the dictionary.
+
+24
+00:01:42,165 --> 00:01:46,485
+The first result, fare amount in my example,
+
+25
+00:01:46,485 --> 00:01:48,570
+is passed through unchanged.
+
+26
+00:01:48,570 --> 00:01:52,995
+We take the input tensor and add it to the result, no changes.
+
+27
+00:01:52,995 --> 00:01:56,430
+The next result we want is a day of the week.
+
+28
+00:01:56,430 --> 00:01:58,615
+We want this to be an integer.
+
+29
+00:01:58,615 --> 00:02:00,950
+However, in the input,
+
+30
+00:02:00,950 --> 00:02:04,370
+it is the string like Thu for Thursday.
+
+31
+00:02:04,370 --> 00:02:07,950
+So what we are doing is that we're asking TensorFlow
+
+32
+00:02:07,950 --> 00:02:11,345
+transform to convert a string that is red,
+
+33
+00:02:11,345 --> 00:02:15,600
+such as Thu into an integer such as three,
+
+34
+00:02:15,600 --> 00:02:17,795
+or five, or whatever that number is.
+
+35
+00:02:17,795 --> 00:02:21,630
+What TF transform will do is to compute
+
+36
+00:02:21,630 --> 00:02:27,165
+the vocabulary of all the possible days of the week in the training data set.
+
+37
+00:02:27,165 --> 00:02:30,720
+It will do this during the analyze phase and use
+
+38
+00:02:30,720 --> 00:02:37,020
+that information to do the string to int mapping in the prediction phase.
+
+39
+00:02:37,020 --> 00:02:45,815
+Next, we want to scale off the drop flat into a number that lies between zero and one.
+
+40
+00:02:45,815 --> 00:02:48,095
+In the analysis phase,
+
+41
+00:02:48,095 --> 00:02:52,100
+TF transform will compute the Min and the Max of the column,
+
+42
+00:02:52,100 --> 00:02:56,635
+and use those values to scale the inputs.
+
+43
+00:02:56,635 --> 00:03:00,665
+We can also invoke other TensorFlow functions.
+
+44
+00:03:00,665 --> 00:03:04,730
+In this case, I'm taking the input number of passengers,
+
+45
+00:03:04,730 --> 00:03:11,870
+which happens to be an integer in JSON and casting it to be a real value number.
+
+46
+00:03:11,870 --> 00:03:16,660
+Once all the features have been created and added,
+
+47
+00:03:16,660 --> 00:03:18,935
+we can return the result.
+
+48
+00:03:18,935 --> 00:03:24,445
+The analyze and transform P transform happens on the training dataset.
+
+49
+00:03:24,445 --> 00:03:28,645
+What should happen on the evaluation dataset?
+
+50
+00:03:28,645 --> 00:03:31,749
+For the evaluation dataset,
+
+51
+00:03:31,749 --> 00:03:37,605
+we carry a pretty much the same beam pipeline that we did on the training dataset.
+
+52
+00:03:37,605 --> 00:03:40,405
+There's one big exception though,
+
+53
+00:03:40,405 --> 00:03:44,625
+we don't analyze the evaluation dataset.
+
+54
+00:03:44,625 --> 00:03:46,945
+If we are scaling the values,
+
+55
+00:03:46,945 --> 00:03:49,600
+the values in the evaluation dataset will be
+
+56
+00:03:49,600 --> 00:03:54,230
+scaled based on the Min and Max found in the training dataset.
+
+57
+00:03:54,230 --> 00:03:56,650
+So on the evaluation dataset,
+
+58
+00:03:56,650 --> 00:03:59,380
+we don't call analyze and transform,
+
+59
+00:03:59,380 --> 00:04:02,405
+we just call transform data set.
+
+60
+00:04:02,405 --> 00:04:10,160
+This will take care of calling all the things that we did in preprocess, pretty cool?
+
+61
+00:04:10,160 --> 00:04:14,280
+Notice however, that the transform dataset needs as
+
+62
+00:04:14,280 --> 00:04:19,960
+input that transform function that was computed on the training data.
+
+63
+00:04:19,960 --> 00:04:23,090
+That's what makes the magic possible.
+
+64
+00:04:23,090 --> 00:04:26,075
+Once we have the transform dataset,
+
+65
+00:04:26,075 --> 00:04:31,810
+we can write it out just like we wrote out the training dataset.

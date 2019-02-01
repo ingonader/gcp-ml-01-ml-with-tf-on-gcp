@@ -1,0 +1,135 @@
+Bienvenue. Dans cet atelier, vous allez
+récupérer l'ensemble de données sur les tarifs des courses en taxi
+créé dans BigQuery et le prétraiter à l'aide de Cloud Dataprep. Dans cet outil, vous allez explorer
+la distribution des valeurs des données, visualiser les distributions
+avec des nuages d'histogramme et mettre en œuvre un flux Dataprep pour créer
+une caractéristique correspondant au nombre moyen
+de courses en taxi par heure dans une période mobile. Enfin, vous allez déployer
+et exécuter le flux Dataprep sur GCP, puis surveiller l'exécution
+de la tâche avec Dataflow. Voyons cela de plus près. Pour commencer, vous devez réaliser
+quelques configurations préalables. Démarrez sur le tableau
+de bord Google Cloud Platform. Il vous faut d'abord
+un bucket Google Cloud Storage. Pour en créer un, accédez
+au menu "Produits et services", disponible depuis l'icône
+en forme de hamburger. Faites défiler jusqu'à "Stockage", "Navigateur", puis cliquez
+sur "Créer un bucket". Comme le précisent
+les indications à l'écran, le nom du bucket
+de stockage doit être unique. J'ai configuré ici un nom
+de bucket unique dans la zone "us-east4". Après avoir cliqué sur "Créer", je peux voir que le bucket
+avec le nom unique est prêt. Vous devez ensuite préparer
+l'ensemble de données BigQuery. Vous trouverez BigQuery
+dans le menu "Produits et services", section "Big Data". Lorsque vous cliquez sur BigQuery, un nouvel onglet s'ouvre
+dans le navigateur. À droite du nom de votre projet, cliquez sur la flèche vers le bas et sélectionnez
+"Créer un ensemble de données". Saisissez le nom
+"taxi_cab_reporting" et cliquez sur "OK". Une fois que
+l'ensemble de données est prêt, revenez au tableau
+de bord Google Cloud Platform. Accédez au lien "Dataprep"
+du menu "Produits et services". Cloud Dataprep étant
+un service d'un partenaire Google, vous devez accepter
+de nouvelles conditions d'utilisation. Cliquez sur "Accepter". Vous devez également autoriser Trifacta, le partenaire Google qui développe
+Dataprep, à accéder à vos données. Cliquez sur "Autoriser". L'activation
+du projet prend quelques minutes. La vidéo passe en avance rapide. Vous devez ensuite choisir le compte
+à utiliser pour Cloud Dataprep et autoriser Dataprep
+à accéder à votre projet. Lorsque vous configurez Dataprep
+sur votre projet pour la première fois, vous devez indiquer le bucket
+de stockage qui contiendra vos données. Vous pouvez voir ici
+que le bucket créé au début de l'atelier est utilisé pour configurer Dataprep. Une fois le bucket sélectionné,
+cliquez sur "Continuer". Une fois Dataprep configuré, cliquez sur "Ne pas afficher les assistants"
+pour désactiver le tutoriel. Vous allez maintenant utiliser
+Dataprep pour créer un flux. Appelons-le "NYC Taxi Cab Reporting". Le flux correspondra
+à un processus d'ingestion, de transformation et d'analyse
+des données sur les taxis. Cliquez sur "Créer". Pour créer un flux, vous devez d'abord ajouter des ensembles
+de données à traiter. Dans ce cas, vous importerez des ensembles
+de données prédéfinis que notre équipe a déjà enregistrés
+dans le bucket de stockage public. Pour accéder à ce bucket, saisissez le nom "asl-ml-immersion"
+dans le répertoire "nyctaxicab". Le répertoire contient plusieurs fichiers, que vous utiliserez avec les données
+des courses en taxi de 2015 et 2016. Ce sont des fichiers CSV
+(valeurs séparées par une virgule). Cliquez sur "Importer". Les deux fichiers sont
+rapidement ajoutés à votre flux. Pour mettre en œuvre
+le traitement ou la préparation des données
+de ces ensembles de données, vous devez ajouter une combinaison, puis lui ajouter des étapes. Une fois l'ensemble de données chargé, vous obtenez un aperçu
+des données qu'il contient. Ici, vous pouvez par exemple voir
+que l'ensemble de données contient des informations sur les courses en taxi, comme le jour et l'heure de prise
+en charge, le jour et l'heure de dépôt, et le nombre de passagers. Aussi, dans l'histogramme
+"trip_distance", vous pouvez voir que la plupart des courses
+sont inférieures à cinq miles. Réunissez les ensembles de données
+de 2015 et 2016 pour avoir plus de lignes. Sélectionnez l'ensemble de 2016, puis cliquez sur
+"Ajouter et trier par nom" pour que les noms
+correspondant aux en-têtes de colonne soient alignés
+avec l'ensemble de données d'union. Ajoutez l'étape
+d'unification à la combinaison. Lorsque Dataprep affiche un aperçu, vous voyez un échantillon qui comprend
+les courses en taxi de 2015 et 2016. Notez que la date et l'heure de prise
+en charge sont des données séparées. Cet atelier va vous montrer
+comment calculer des moyennes mobiles du prix des courses. Vous devez d'abord convertir les données
+d'entrée au format SQL datetime. Pour ce faire, vous pouvez ajouter
+à la combinaison une étape de fusion qui concatène les valeurs
+de plusieurs colonnes, dans ce cas, "pickup_day"
+et "pickup_time". Nommez la nouvelle colonne
+"pickup_datetime". Utilisez une espace unique
+comme délimiteur entre les valeurs. Sur la gauche, un aperçu
+de la nouvelle colonne s'affiche. Créez ensuite une colonne dérivée qui convertira "pickup_time"
+au format SQL datetime. Dès qu'un nouveau champ
+"datetime" est disponible, extrayez l'année, le mois, la date et l'heure avec
+les minutes et les secondes. Comme la colonne
+"hour_pickup_datetime" ne contient pas les minutes et les secondes, elle ne peut pas être convertie
+au format SQL datetime. Vous devez donc créer une colonne qui peut être convertie
+en valeur SQL datetime valide. Pour ce faire, créez une opération de fusion et utilisez
+à nouveau l'outil de fusion. Celui-ci concatène
+les valeurs de la colonne "hour_pickup_datetime" avec une chaîne contenant quatre zéros pour
+les valeurs des minutes et des secondes. Lorsque vous ajoutez une colonne, elle obtient un nom
+généré automatiquement comme "column1". Vous pouvez la renommer facilement. Dans ce cas, vous pouvez
+la renommer "pickup_hour". Calculez ensuite des statistiques
+basées sur les valeurs de "pickup_hour". Vous pouvez utiliser des fonctions
+d'agrégation statistique SQL standards comme "sum" ou "average". Vous pouvez voir que cet outil
+calcule les sommes et les moyennes pour le nombre de passagers,
+et la même combinaison de la somme et de la moyenne pour la distance
+et le montant équitable des courses. Enfin, il calcule les montants maximaux
+pour chaque heure de prise en charge. Comme précédemment,
+vous obtenez un aperçu des résultats pour les statistiques calculées
+dans les histogrammes sur la gauche. Si vous observez les montants
+équitables moyens dans les histogrammes, vous voyez que
+la plupart se situent entre 18 $ et 19 $. Calculez ensuite
+la moyenne mobile du montant équitable d'après les heures de données disponibles
+pour chaque heure de prise en charge. Vous pouvez la calculer avec la fonction
+ROLLINGAVERAGE de Cloud Dataprep. Voici les valeurs de la moyenne mobile triées par heure de prise en charge. Enfin, nommez cette colonne
+"average_3h_rolling_fare". Une fois la combinaison prête, vous pouvez la déployer
+en tant que tâche Google Cloud Dataflow. Pour ce faire, cliquez
+sur "Exécuter la tâche" et indiquez où les résultats de la tâche
+seront publiés, c'est-à-dire stockés. Par défaut, ils sont enregistrés dans
+un fichier CSV sur Google Cloud Storage. Mais, vous pouvez
+indiquer BigQuery comme destination et y créer une table à chaque fois
+que la tâche et exécutée. Si vous modifiez votre sélection
+à droite pour créer une table à chaque exécution et renommez la table
+"tlc_yellow_trips_reporting", vous obtenez une nouvelle table dans l'ensemble de données
+"NYC Taxi Cab Reporting". C'est celui que vous avez créé
+au début de cet atelier. Exécutez la tâche. Une fois la tâche en cours
+de transformation, Dataprep commence
+à la déployer sur Dataflow. Cette opération prend
+généralement quelques instants. Vous pouvez suivre
+la progression de la tâche dans la section "Tâches" du menu Dataprep. Si vous cliquez sur l'icône représentant
+des points de suspension sur la droite, le menu ne contiendra pas le lien vers la tâche Dataflow
+tout de suite après son déploiement. Attendez quelques instants
+et actualisez la page pour que le menu soit mis à jour
+et que le lien apparaisse. Si vous cliquez sur le lien, vous serez
+redirigé vers l'interface de Dataflow, où vous pouvez surveiller dans Dataflow
+les étapes de transformation détaillées créées dans Dataprep. À droite de l'interface de Dataflow, des informations sur l'exécution
+de la tâche s'affichent. Vous pouvez voir ici
+que la tâche vient de démarrer. Le cluster Dataflow qui va exécuter
+la tâche doit encore être mis à l'échelle. Cependant, vous pouvez
+déjà surveiller les résultats de la configuration de la tâche. Aucune des étapes de transformation
+individuelles de la tâche n'a démarré, sauf celles qui préparent
+la table dans BigQuery et qui commencent
+à peine à récupérer les données depuis les fichiers CSV d'entrée
+dans Google Cloud Storage. En plus de surveiller
+cette tâche dans Dataflow, vous pouvez accéder à BigQuery et surveiller le résultat de la tâche
+dans votre ensemble de données. Pour rappel, une fois que la tâche
+commence à s'exécuter, elle insère des valeurs dans une table
+nommée "tlc_yellow_trip_reporting". Comme la création de la table
+peut prendre un moment, patientez et actualisez si besoin
+la page pour voir la mise à jour. Une fois la table en place, vous pouvez saisir une instruction SQL
+pour récupérer les résultats de la table. Cependant, vérifiez que votre dialecte SQL est configuré correctement
+avant de l'exécuter. Vous pouvez voir ici que l'exécution de
+la tâche génère environ 192 Ko de données, dont les informations
+sur l'heure de prise en charge, la distance moyenne
+des courses, le montant moyen, et d'autres informations
+calculées par Dataflow. Voilà, cet atelier est terminé.

@@ -1,0 +1,375 @@
+1
+00:00:00,000 --> 00:00:01,530
+In this part of the module,
+
+2
+00:00:01,530 --> 00:00:05,280
+you will learn about what it takes to implement a pipeline that will
+
+3
+00:00:05,280 --> 00:00:10,075
+scale as your dataset size grows. Let's take a closer look.
+
+4
+00:00:10,075 --> 00:00:13,960
+Some of you may already be familiar with MapReduce.
+
+5
+00:00:13,960 --> 00:00:17,950
+It is a distributed fault tolerant data processing framework that
+
+6
+00:00:17,950 --> 00:00:22,435
+was described by Google in an influential research paper published in 2004.
+
+7
+00:00:22,435 --> 00:00:24,190
+It is still widely used today,
+
+8
+00:00:24,190 --> 00:00:26,735
+for example by the Apache ParDo project.
+
+9
+00:00:26,735 --> 00:00:30,960
+You need to know the basic concepts from the MapReduce framework because
+
+10
+00:00:30,960 --> 00:00:35,160
+data flow and Apache beam build on successful ideas from that framework.
+
+11
+00:00:35,160 --> 00:00:37,980
+And also include innovations that have been developed by
+
+12
+00:00:37,980 --> 00:00:42,075
+Google's researchers and engineers after 2004.
+
+13
+00:00:42,075 --> 00:00:44,025
+The diagram on the screen,
+
+14
+00:00:44,025 --> 00:00:46,950
+will give you a quick introduction to MapReduce.
+
+15
+00:00:46,950 --> 00:00:49,379
+To process data in MapReduce,
+
+16
+00:00:49,379 --> 00:00:51,060
+you start by shutting,
+
+17
+00:00:51,060 --> 00:00:52,905
+in other words, splitting up data.
+
+18
+00:00:52,905 --> 00:00:56,120
+The individual shards of data are distributed on
+
+19
+00:00:56,120 --> 00:01:00,900
+storage devices across multiple compute nodes in a distributed computing cluster.
+
+20
+00:01:00,900 --> 00:01:04,090
+On the diagram, this is shown as data getting
+
+21
+00:01:04,090 --> 00:01:08,090
+split up across nodes one for free in the compute cluster.
+
+22
+00:01:09,100 --> 00:01:12,850
+To run a data processing job in this framework,
+
+23
+00:01:12,850 --> 00:01:15,830
+you write code for Map and Reduce functions.
+
+24
+00:01:15,830 --> 00:01:17,340
+Let's look at Map's first.
+
+25
+00:01:17,340 --> 00:01:20,540
+A map should be a stateless function,
+
+26
+00:01:20,540 --> 00:01:25,040
+so that it can be scheduled to run in parallel across the nodes in the cluster.
+
+27
+00:01:25,040 --> 00:01:30,560
+Each Map reads the data from the storage on the node where this running,
+
+28
+00:01:30,560 --> 00:01:33,980
+processes the data and generates an output.
+
+29
+00:01:33,980 --> 00:01:38,390
+The output of the map operations are shuffled from
+
+30
+00:01:38,390 --> 00:01:42,515
+the different nodes in the cluster to the next stage of processing called Reduce.
+
+31
+00:01:42,515 --> 00:01:46,920
+You can think of reductions as an aggregation operation over data.
+
+32
+00:01:46,920 --> 00:01:49,490
+The aggregation can be operations like
+
+33
+00:01:49,490 --> 00:01:52,805
+counting the number of data elements or computing sums.
+
+34
+00:01:52,805 --> 00:01:56,040
+Once the reduced operations are finished the result
+
+35
+00:01:56,040 --> 00:01:59,130
+becomes the output of the MapReduce step in a pipeline.
+
+36
+00:01:59,130 --> 00:02:03,830
+If you want to take a transformation in
+
+37
+00:02:03,830 --> 00:02:07,280
+your data processing pipeline and let data flow run it at
+
+38
+00:02:07,280 --> 00:02:11,615
+scale with automatic distribution across many nodes in a cluster.
+
+39
+00:02:11,615 --> 00:02:15,380
+Then you should use the Apache beams ParDo class.
+
+40
+00:02:15,380 --> 00:02:17,695
+ParDo is short for parallel do.
+
+41
+00:02:17,695 --> 00:02:22,750
+The transformation steps created using ParDo or similar to the maps in MapReduce.
+
+42
+00:02:22,750 --> 00:02:26,060
+The transformations used with ParDo,
+
+43
+00:02:26,060 --> 00:02:29,105
+have to be stateless so they can be run in parallel.
+
+44
+00:02:29,105 --> 00:02:32,600
+This is somewhat restrictive but useful for many tasks.
+
+45
+00:02:32,600 --> 00:02:37,340
+For example; You're building a data processing pipeline and analyzing
+
+46
+00:02:37,340 --> 00:02:40,010
+web server files and you may need to filter out
+
+47
+00:02:40,010 --> 00:02:43,635
+the log entries that include IP address of a visitor to your website.
+
+48
+00:02:43,635 --> 00:02:47,420
+You can do that with a stateless transformation or if you want to
+
+49
+00:02:47,420 --> 00:02:51,155
+extract the value of the IP address from the string of the log entry,
+
+50
+00:02:51,155 --> 00:02:53,195
+you can do that statelessly.
+
+51
+00:02:53,195 --> 00:02:56,610
+Other stateless processing operations like converting strings through
+
+52
+00:02:56,610 --> 00:03:00,715
+integers or any calculations that work was just a part of the input,
+
+53
+00:03:00,715 --> 00:03:04,990
+like a raw of data are all good candidates for a ParDo.
+
+54
+00:03:05,470 --> 00:03:09,800
+If you're using python to implement your data processing pipeline,
+
+55
+00:03:09,800 --> 00:03:13,190
+the're helper methods to let you start using ParDo.
+
+56
+00:03:13,190 --> 00:03:19,020
+Beam.Map shown on the slide is designed only for one to one relationships.
+
+57
+00:03:19,020 --> 00:03:22,920
+For example; if you're processing words in a document and for
+
+58
+00:03:22,920 --> 00:03:28,305
+each word in the document you want to return a pair with the word itself and its length,
+
+59
+00:03:28,305 --> 00:03:31,530
+then there is a one to one relationship because every word can
+
+60
+00:03:31,530 --> 00:03:35,310
+only be mapped to one length in terms of the number of the words characters.
+
+61
+00:03:35,310 --> 00:03:39,870
+So if you use beam.Map for transformation in your pipeline,
+
+62
+00:03:39,870 --> 00:03:43,335
+data flow will automatically handle running the transformation.
+
+63
+00:03:43,335 --> 00:03:48,750
+Such as word lengths calculations over multiple nodes in a dataflow cluster.
+
+64
+00:03:48,750 --> 00:03:53,389
+Unlike Map, beam.FlatMap supports transformations
+
+65
+00:03:53,389 --> 00:03:58,090
+that can generate any number of outputs for an input including zero outputs.
+
+66
+00:03:58,090 --> 00:04:02,130
+Continuing with the example where you're processing words from a document
+
+67
+00:04:02,130 --> 00:04:06,140
+and maybe for every word you would like to output the list of vowels for that word,
+
+68
+00:04:06,140 --> 00:04:07,640
+obviously you can have zero,
+
+69
+00:04:07,640 --> 00:04:10,505
+one or a two or even more vowels per word.
+
+70
+00:04:10,505 --> 00:04:15,890
+The transformations in beam.FlatMap can also be run in parallel by dataflow.
+
+71
+00:04:15,890 --> 00:04:20,055
+If you're using Java to implement your pipeline,
+
+72
+00:04:20,055 --> 00:04:23,080
+you simply code ParDo off static method on
+
+73
+00:04:23,080 --> 00:04:27,645
+your transformation and pass the result to the next apply code on your pipeline.
+
+74
+00:04:27,645 --> 00:04:30,360
+If you like to use the GroupBy key operation,
+
+75
+00:04:30,360 --> 00:04:33,055
+it's straightforward to add it to your pipeline.
+
+76
+00:04:33,055 --> 00:04:36,310
+For example; If you have a pipeline that processes
+
+77
+00:04:36,310 --> 00:04:40,660
+postal addresses and tries to find all the zip codes for every city,
+
+78
+00:04:40,660 --> 00:04:43,570
+once your pipeline has a P collection of
+
+79
+00:04:43,570 --> 00:04:48,850
+key value pairs like what's shown with a pair containing the key and the zip code.
+
+80
+00:04:48,850 --> 00:04:54,280
+The output created by beam.GroupByKey will produce a P collection of pairs,
+
+81
+00:04:54,280 --> 00:05:00,940
+where every pair has the city as a key and the list of the city's zip codes as the value.
+
+82
+00:05:00,940 --> 00:05:06,485
+While groupByKey is similar to the shuffle step in MapReduce,
+
+83
+00:05:06,485 --> 00:05:10,820
+the combined PerKey operation is more general and includes both shuffle
+
+84
+00:05:10,820 --> 00:05:15,525
+and reduce steps to help you implement aggregations like sum, count.
+
+85
+00:05:15,525 --> 00:05:20,125
+You can use combined.globally method to compute over your entire dataset.
+
+86
+00:05:20,125 --> 00:05:23,735
+For example; If you're processing financial transaction data,
+
+87
+00:05:23,735 --> 00:05:28,505
+so that every row in your collection is a transactions of sales amounts,
+
+88
+00:05:28,505 --> 00:05:32,195
+then to compute the total sales over all transactions,
+
+89
+00:05:32,195 --> 00:05:36,450
+you can use the combined.global with the sum operation as the argument.
+
+90
+00:05:36,450 --> 00:05:40,755
+Combine, also supports more fine grained aggregations.
+
+91
+00:05:40,755 --> 00:05:44,130
+For example; If your financial transaction records include
+
+92
+00:05:44,130 --> 00:05:47,265
+the name of the salesperson in addition to the sales amount,
+
+93
+00:05:47,265 --> 00:05:49,320
+you can pass the same operation to
+
+94
+00:05:49,320 --> 00:05:55,100
+the combined PerKey and use it to combine the total sales per salesperson.

@@ -1,0 +1,57 @@
+Imaginez que vous écriviez
+un modèle de machine learning qui peut vous dire
+si une voiture est un taxi ou non. Nous savons que les voitures blanches
+à Rome et les voitures jaunes à New York sont généralement des taxis. Mais nous voulons
+que notre modèle l'apprenne à partir d'un ensemble de données
+constitué d'immatriculations de voitures. Supposons que nos données
+d'entrée ressemblent à ceci : rouge, Rome ; blanc, Rome, etc., et que les libellés indiquent
+si la voiture est un taxi. La couleur de la voiture et la ville sont
+les caractéristiques d'entrée. Vous devez les utiliser dans votre modèle linéaire pour prédire
+si la voiture est un taxi. Comment procéderiez-vous ? Vous prenez la première donnée d'entrée, la couleur de la voiture,
+et vous l'encodez en mode one-hot. Vous prenez la seconde donnée d'entrée, le nom de la ville,
+et vous l'encodez en mode one-hot. Vous envoyez ensuite le tout
+directement à votre modèle linéaire. Donnons par exemple une pondération
+de 0,8 aux voitures jaunes, car 80 % d'entre elles
+sont des taxis dans l'ensemble de données. Nous avons donc w3=0,8. Bien sûr, vous ne donnez pas
+une pondération de 0,8. Celle-ci sera apprise
+par la descente de gradient. C'est ce qui va se produire. Malheureusement, cette pondération
+de 0,8 est vraie pour les voitures jaunes
+de toutes les villes, pas seulement New York. Comment résoudre ce problème ? En donnant une pondération élevée
+à New York ? Ce n'est pas bon. Toutes les voitures à New York ont
+maintenant cette pondération élevée. Vous voyez le problème ? En ajoutant un croisement
+de caractéristiques ? Nous avons maintenant un nœud d'entrée
+pour les voitures rouges à New York, un deuxième pour les voitures jaunes
+à New York, un troisième pour les voitures blanches
+à New York, un quatrième pour les voitures vertes
+à New York, et la même chose pour les voitures à Rome. Maintenant, le modèle peut
+rapidement apprendre que les voitures jaunes à New York
+et les voitures blanches à Rome sont généralement des taxis, et donner
+une pondération élevée à ces deux nœuds. Pour le reste, la pondération sera nulle. Problème résolu. C'est pour cela que les croisements
+de caractéristiques sont si puissants. Ils donnent beaucoup de puissance
+aux modèles linéaires. Combinés à d'immenses
+volumes de données, ils constituent une stratégie très efficace pour entraîner
+des espaces ultra-complexes. Les réseaux de neurones sont
+une autre façon d'entraîner des espaces ultra-complexes. Cependant, les croisements
+de caractéristiques permettent de conserver les modèles linéaires. Sans eux, l'expressivité
+des modèles linéaires serait très limitée. Avec les croisements de caractéristiques
+et un ensemble de données volumineux, un modèle linéaire peut apprendre d'un
+espace d'entrée dans ses moindres recoins. Les croisements de caractéristiques
+permettent donc à un modèle linéaire de mémoriser
+de grands ensembles de données. Vous pouvez affecter une pondération
+à chaque croisement de caractéristiques. Ainsi, le modèle apprend ces combinaisons
+de caractéristiques. Même s'il s'agit d'un modèle linéaire, la relation sous-jacente entre
+les données d'entrée et les résultats n'est pas linéaire. Pourquoi voulons-nous tellement faire
+fonctionner les modèles linéaires ? Remémorez-vous le cours précédent. Nous avons parlé de problèmes
+convexes et non convexes. Les réseaux de neurones avec
+de nombreuses couches sont non convexes. En revanche, optimiser des modèles
+linéaires est un problème convexe. Or, les problèmes convexes sont bien plus faciles à résoudre
+que les problèmes non convexes. Pendant longtemps, les modèles linéaires clairsemés étaient
+le seul algorithme dont nous disposions pour gérer des milliards
+d'exemples d'entraînement et de caractéristiques d'entrée. Les prédécesseurs de TensorFlow
+chez Google (SETI, SmartASS, Siebel) étaient tous capables d'apprendre
+à très grande échelle. Ceci a changé ces dernières années. Aujourd'hui, les réseaux de neurones
+peuvent aussi gérer des données à très grande échelle,
+souvent avec l'aide de GPU et de TPU. Cependant,
+les modèles linéaires clairsemés restent une solution rapide et économique. Les utiliser pour prétraiter
+des caractéristiques permet souvent à votre réseau de neurones
+de converger plus rapidement.

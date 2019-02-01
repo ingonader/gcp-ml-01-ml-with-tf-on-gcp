@@ -1,0 +1,101 @@
+Je vous ai expliqué
+qu'utiliser une valeur longue pour les buckets de hachage entraînait
+une représentation très clairsemée. Et si nous faisions
+quelque chose de plus ? Si, au lieu d'encoder en mode one-hot
+le croisement de caractéristiques, puis de l'utiliser tel quel, nous le faisions passer
+à travers une couche dense ? Nous pourrions alors entraîner le modèle
+pour prédire le trafic comme avant. La couche dense représentée
+par les nœuds jaunes et verts crée une représentation
+vectorielle continue (RVC). Les cases grises et bleues représentent
+des zéros et des uns. Pour toute ligne de l'ensemble de données, pour tout exemple d'entraînement, une seule case est allumée. La case en bleu symbolise "un". Dans cet exemple,
+les cases grises sont des zéros. Un autre exemple d'entraînement correspond
+à une autre heure de la journée. Il allumera donc une case différente. Cette case sera "un"
+et les autres seront "zéro". Cependant, les cases jaunes
+et vertes sont différentes. Elles ne sont pas encodées
+en mode one-hot. Ce sont des valeurs réelles
+à virgule flottante. Pourquoi ? Parce qu'elles sont
+la somme pondérée des valeurs d'un croisement
+de caractéristiques. Que se passe-t-il au niveau
+des nœuds jaunes et verts ? Les pondérations de la couche
+de représentation vectorielle continue, les pondérations
+des nœuds jaunes et verts, sont apprises à partir des données. Imaginez que nous ayons des observations
+de trafic en énorme quantité. À chaque fois qu'une voiture, un vélo
+ou un camion franchit un feu donné, nous avons une observation de trafic. Nous avons donc les données correspondant
+à tous les feux d'une ville entière, soit des millions
+d'exemples d'entraînement. Mais attendez,
+qu'est-ce que je viens de dire ? Que mon ensemble de données consistait
+en observations de trafic, avec un exemple d'entraînement
+pour chaque véhicule à un feu ? Si vous découvrez le machine learning,
+je suis à peu près sûr que vous vous êtes dit que l'ensemble
+de données était constitué de décomptes de trafic agrégés, peut-être du nombre total de véhicules
+sur la route à chaque heure, chaque jour. Ce serait alors un petit ensemble
+de données sans intérêt. Vous n'apprendriez que des moyennes, ce qui n'est pas intéressant du tout et servirait uniquement à écrire
+des articles de journaux du type "Des modèles prédisent que le trafic
+va augmenter de 10 % l'an prochain". Souvenez-vous. Le machine learning permet
+d'apprendre la longue traîne pour faire des prédictions précises et obtenir des statistiques
+allant plus loin que de simples moyennes. Voici ce que cela signifie en pratique. Au lieu de traiter un ensemble de données
+agrégé de quelques centaines de lignes, nous disposons des observations précises des voitures à chaque feu. Voilà l'ensemble de données
+que nous allons utiliser. Nos prédictions seront le nombre de voitures, de camions, de vélos, à n'importe quel moment et à n'importe quel endroit de la ville. Les prédictions précises sont l'essence
+du machine learning. Revenons à notre cours. Nous avons des observations
+sur les véhicules. L'ensemble de données peut
+inclure le type de véhicule (voiture, vélo, bus, camion), le sens de circulation,
+l'emplacement, etc. L'ensemble de données inclut un horodatage
+dont nous extrayons l'heure et le jour. Nous les croisons ensuite
+pour obtenir x3 dans le schéma. Pour rappel, x3 est encodé
+en mode one-hot, c'est-à-dire divisé en buckets de hachage. Nous le passons maintenant
+à travers une couche dense dont les pondérations sont entraînées pour
+prédire différents éléments du trafic. Nous pouvons par exemple
+prédire l'heure d'arrivée du prochain véhicule à l'intersection pour contrôler la durée du feu. En entraînant ces pondérations
+sur cet ensemble de données, quelque chose de génial se produit. Le croisement de caractéristiques du jour
+et de l'heure inclut 168 valeurs uniques, mais nous le forçons à être représenté
+par deux nombres à valeur réelle. Le modèle apprend à intégrer
+le croisement de caractéristiques dans un espace de plus petite dimension. La case verte va peut-être capturer
+le trafic des piétons et des vélos, et la case jaune celui des automobiles. 8h le mardi et 9h le mercredi peuvent donc correspondre
+à des cases différentes du croisement de caractéristiques. Cependant, si les tendances
+du trafic de la plupart des intersections de la ville
+sont similaires à ces deux moments, les représentations à valeur réelle de ces deux combinaisons heure/jour
+seront très similaires. Il peut y avoir
+de nombreuses personnes à vélo et à pied à ces heures,
+et aussi de nombreuses voitures. Les pondérations pour 8h et 9h
+sont ajustées de façon que les nombres à valeur réelle
+des cases vertes et jaunes soient similaires à cette heure. Cependant, à 11h le mardi et à 14h le mercredi, il y a peu de piétons,
+mais un nombre modéré de voitures. Les nombres sont donc proches. De même, à 2h du matin le mardi
+et 3h du matin le mercredi, les nombres très similaires
+indiquent un trafic quasi inexistant. Le point essentiel est que les combinaisons heure/jour semblables en
+termes de trafic sont souvent similaires, et que les combinaisons heure/jour présentant des conditions de trafic
+très différentes sont souvent éloignées dans l'espace à deux dimensions. C'est ce que nous voulons dire
+quand nous affirmons que le modèle apprend à intégrer le croisement
+de caractéristiques dans un espace de plus petite dimension. Comment mettre ceci en œuvre
+dans TensorFlow ? Pour créer une représentation vectorielle
+continue, utilisez la méthode "embedding_column"
+dans "tf.feature_column". Passez la colonne catégorique
+que vous voulez intégrer. Ici, il s'agit du croisement
+de caractéristiques. Indiquez ensuite le nombre de dimensions. Et voilà. Pour une idée aussi puissante,
+c'est particulièrement facile. Pourquoi est-ce que je dis
+que l'idée est puissante ? Un atout des représentations vectorielles
+continues est que celles que vous apprenez sur un problème peuvent souvent
+convenir à des modèles de ML similaires. Vous avez peut-être appris
+à représenter des combinaisons jour/heure sur un ensemble
+de données précis sur le trafic à Londres. Vous ajoutez maintenant
+des feux à Francfort, mais vous n'avez pas encore recueilli
+les données correspondantes. Pour gagner du temps, vous pouvez appliquer
+une RVC entraînée pour Londres. à Francfort. Après tout, vous voulez juste présenter
+les combinaisons jour/heure correctement, et utiliser la RVC entraînée sur
+les données de Londres sera un moyen plus efficace que de créer
+les données avec la méthode heuristique, comme tôt le matin
+ou aux heures de pointe. Alors, comment procéder ? Il suffit de charger la RVC à partir
+du modèle enregistré pour Londres et d'indiquer au modèle
+de ne pas entraîner cette couche. Vous pouvez aussi charger
+la RVC de Londres et l'utiliser comme point de départ
+pour Francfort. Si vous voulez procéder ainsi, vous devez définir
+"trainable=true" dans la couche. Les représentations vectorielles continues
+sont un concept extrêmement puissant, d'autant plus que
+leur apprentissage peut être transféré. Elles sont particulièrement utiles
+pour les colonnes très clairsemées. Pour le jour et l'heure,
+nous avons 168 combinaisons uniques. Ce n'est pas énorme, mais vous verrez beaucoup de RVC quand nous parlerons
+des modèles linguistiques. Vous aurez alors peut-être
+100 000 mots uniques à intégrer et à représenter dans un espace
+à 30 ou 50 dimensions. Les croisements de caractéristiques
+et les RVC sont très utiles dans les modèles de ML
+en conditions réelles. Si nécessaire, révisez ces deux leçons
+avant de poursuivre.

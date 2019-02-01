@@ -1,0 +1,92 @@
+Sie erinnern sich, dass ein großer Wert für Hash-Buckets
+zu einer sehr dünnen Präsentation führt. Was ist aber,
+wenn wir etwas zusätzlich machen? Verwenden wir nach der One-Hot-Codierung
+die Merkmalkreuzung nicht unverändert, sondern senden sie durch eine Dichteebene. Wir können das Modell trainieren,
+den Verkehr vorherzusagen, wie zuvor. Diese Dichteebene wird durch den grünen
+und den gelben Knoten dargestellt. Die Dichteebene erstellt hier
+eine sogenannte Einbettung. Die grauen
+und blauen Felder sind Nullen und Einsen. In jeder Zeile des Eingabe-Datasets, in jedem Trainingsbeispiel, ist nur eines der Felder hervorgehoben. Dieses blaue Feld ist eins, die grauen Felder
+in diesem Beispiel sind null. Ein anderes Trainingsbeispiel
+entspricht einer anderen Tageszeit, daher wird
+ein anderes Feld hervorgehoben. Dieses Feld ist dann eins,
+die anderen Felder sind null. Jedoch ist das beim gelben
+und beim grünen Feld anders. Diese sind nicht One-Hot-codiert. Es sind reellwertige Zahlen,
+also Gleitkommawerte. Sie stellen nämlich eine gewichtete Summe
+der Werte der Merkmalkreuzung dar. Was also passiert
+in dem gelben und dem grünen Knoten? Die Gewichtungen,
+die in die Einbettungsebene eingehen, die Gewichtungen, die in den gelben
+und den grünen Knoten eingehen, werden aus den Daten gelernt. Stellen Sie sich vor,
+wir haben eine Menge Verkehr beobachtet. Jedes Fahrzeug – Auto, Fahrrad, LKW –,
+das eine bestimmte Ampel passiert, ist eine Verkehrsbeobachtung. Wir haben also die Daten
+für eine ganze Stadt, für alle Ampeln, und damit
+Millionen von Trainingsbeispielen. Moment, habe ich das gerade so gesagt? Dass mein Dataset
+aus Verkehrsbeobachtungen besteht? Ein Trainingsbeispiel
+für jedes Fahrzeug an einer Ampel? Wenn maschinelles Lernen
+neu für Sie ist, wette ich, Sie dachten, unser Trainings-Dataset würde
+aus aggregierten Verkehrszahlen bestehen, vielleicht aus der Gesamtzahl
+an Fahrzeugen zu jeder Stunde an jedem Tag. Das ist jedoch nur ein kleines Dataset,
+nur ein einfaches Problem. Damit lernen Sie nur Mittelwerte. Das ist im Prinzip uninteressant und eignet sich
+nur für Nachrichtenartikel wie "Modellen zufolge steigt im nächsten Jahr
+das Verkehrsaufkommen um 10 %." Aber was haben wir gesagt? Bei maschinellem Lernen
+geht es darum, viele Daten zu lernen, um detailliertere Vorhersagen
+als nur Mittelwerte treffen zu können. Nun, so sieht das dann in der Praxis aus. Anstatt mit wenigen hundert Zeilen
+eines aggregierten Datasets zu arbeiten, haben wir minütliche Beobachtungen
+von Fahrzeugen an jeder Ampel. Das sind die Verkehrsdaten,
+die wir verwenden werden. Unsere Vorhersagen werden
+Anzahlen von Autos, LKWs und Fahrrädern zu jedem Zeitpunkt
+an jedem Ort in der Stadt sein. Beim maschinellen Lernen
+geht es um detaillierte Vorhersagen. Nun zurück zu unserer Lektion. Wir haben also Fahrzeugbeobachtungen. Das Dataset 
+kann den Fahrzeugtyp enthalten, Auto, Fahrrad, Bus, LKW, die Fahrtrichtung, Position usw. Das Dataset enthält einen Zeitstempel,
+aus dem wir Tag und Stunde extrahieren. Dann kreuzen wir die Merkmale,
+um im Diagramm x3 zu erhalten. Wie besprochen, ist x3
+in mehrere Hash-Buckets One-Hot-codiert. Das nehmen wir
+und senden es durch eine Dichteebene, deren Gewichtungen trainiert sind,
+einige Dinge zum Verkehr vorherzusagen. Vielleicht sagen wir die Zeit vorher, bis
+das nächste Fahrzeug die Kreuzung erreicht, damit wir
+die Dauer des Ampelsignals steuern können. Diese Gewichtungen für dieses Dataset
+zu trainieren, erweist sich als nützlich. Die Merkmalkreuzung
+von Tag/Stunde hat 168 eindeutige Werte, doch erzwingen wir eine Darstellung
+durch nur zwei reellwertige Zahlen. So lernt das Modell, wie es die Merkmalkreuzung in einen Raum
+mit weniger Dimensionen einbettet. Vielleicht werden im grünen Feld
+eher Fußgänger und Radfahrer erfasst, während im gelben
+eher Kraftfahrzeuge erfasst werden. Dienstag 8:00 Uhr und Mittwoch 9:00 Uhr
+können in der Merkmalkreuzung unterschiedlichen Feldern entsprechen. Wenn aber die Verkehrsmuster
+an den meisten Kreuzungen in der Stadt sich zu diesen beiden Zeiten ähneln, sind auch die reellwertigen Darstellungen
+dieser beiden Tag/Stunde-Kombinationen am Ende ziemlich ähnlich. Vielleicht sind
+viele Fahrradfahrer und Fußgänger und auch viele Autos
+zu diesen Zeiten unterwegs. Die Gewichtungen für 8:00 Uhr
+und 9:00 Uhr werden so angepasst, dass sich die reellwertigen Zahlen
+für Gelb und Grün zu diesen Zeiten ähneln. Dienstag 11:00 Uhr und Mittwoch 14:00 Uhr sind aber nicht viele Fußgänger unterwegs, jedoch eine mittlere Anzahl an Autos. Die Zahlen liegen dicht beieinander. Ähnlich gleichen sich die Zahlen für
+Dienstag 2:00 Uhr und Mittwoch 3:00 Uhr, wo kaum Verkehr angezeigt wird. Wichtig ist, dass bezüglich Verkehr
+ähnliche Tag/Stunde-Kombinationen eher ähnliche Werte haben, und Werte für Tag/Stunde-Kombinationen
+mit unterschiedlichem Verkehrsaufkommen im zweidimensionalen Raum
+eher weiter auseinander liegen. Genau das meinen wir,
+wenn wir sagen, das Modell lernt, die Modellkreuzung in einem
+niedrigerdimensionalen Raum einzubetten. Wie implementieren Sie
+dies nun in TensorFlow? Nutzen Sie für eine Einbettung die Methode "embedding_column"
+in "tf.feature_column". Übergeben Sie
+die einzubettende kategorische Spalte, hier übergeben wir die Merkmalkreuzung, und geben Sie dann
+die Anzahl der Einbettungsdimensionen an. Das war es dann schon. Für so eine wirkungsvolle Idee
+ist das sehr einfach. Warum nenne ich die Idee wirkungsvoll? Eine tolle Sache bei der Einbettung ist, dass die Einbettung,
+die Sie für ein Problem angelernt haben, oft auch auf andere ähnliche Probleme
+für maschinelles Lernen anwendbar ist. Vielleicht haben Sie gelernt, auf Basis von Verkehrsdaten aus London
+Tag/Stunde-Kombinationen darzustellen. Nun möchten Sie
+neue Ampeln in Frankfurt aufstellen, Ihnen liegen aber
+keine Daten für Frankfurt vor. Sie könnten eine Abkürzung nehmen. Sie könnten eine aus London
+erlernte Einbettung in Frankfurt verwenden. Sie suchen ja nur eine Darstellungsweise
+für Tag/Stunde-Kombinationen. Die über Daten aus London
+trainierte Einbettung ist besser als über Heuristik erstellte Daten, wie für Morgenstunden oder für Stoßzeiten. Wie machen Sie das also? Sie laden sie einfach
+aus dem für London gespeicherten Modell und weisen das Modell an,
+diese Ebene nicht zu trainieren. Sie könnten
+die Einbettung von London auch laden und sie einfach
+als Startpunkt für Frankfurt verwenden. Für diese Option
+setzen Sie in der Ebene "trainable=True". Einbettungen sind
+ein äußerst leistungsstarkes Konzept. Das Übertragen von aus Einbettungen
+Erlerntem macht sie noch leistungsstärker. Sie sind insbesondere nützlich
+bei Spalten mit sehr geringer Dichte. Bei Tag/Stunde
+mit nur 168 eindeutigen Kombinationen ist das weniger spürbar. Einbettungen werden uns aber oft begegnen,
+wenn wir zu Sprachmodellen kommen. Dort haben Sie
+vielleicht 100.000 eindeutige Wörter, die Sie einbetten und in 30
+oder 50 Dimensionen darstellen möchten. Merkmalkreuzungen und Einbettungen sind bei realen Modellen
+für maschinelles Lernen sehr nützlich. Wiederholen Sie daher bei Bedarf
+diese zwei Lektionen, bevor Sie fortfahren.

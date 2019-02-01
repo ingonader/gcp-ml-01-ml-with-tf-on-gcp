@@ -1,0 +1,72 @@
+Wir haben uns
+einige Möglichkeiten angesehen, Merkmale darzustellen
+und Feature Engineering anzuwenden: Skalierung, Merkmalkreuzungen, Erstellen von Einbettungen usw. Wohin gehören diese Sachen nun
+in ein Modell für maschinelles Lernen? Unser Modell besteht aus folgenden Teilen: eine Eingabefunktion
+zum Einlesen der Daten, Merkmalspalten, die Platzhalter
+für die einzulesenden Daten sind, ein Estimator, von Ihnen erstellt
+durch Übergabe der Merkmalspalten, Einrichtung von Trainings- und
+Bewertungsspezifikationen, Exporter usw. und am Ende rufen Sie
+Training und Bewertung auf. Wo passt hier das Feature Engineering? Es gibt drei mögliche Orte
+für das Feature Engineering. Sie können es
+beim Einlesen der Daten anwenden, in der Eingabefunktion selbst oder durch Erstellen von Merkmalspalten. Alternativ können Sie vor dem Training
+einen separaten Schritt dafür einfügen. Dann liest Ihre Eingabefunktion
+die vorverarbeiteten Merkmale. Wenn Sie dafür einen separaten
+Vorverarbeitungsschritt verwenden, erledigen Sie
+die Vorverarbeitung in Dataflow, sodass Sie große Datenmengen
+verteilt verarbeiten können. Sie können dies
+in normalem Python programmieren, tun Sie dies aber nur, wenn Dataflow
+Teil Ihrer Bereitstellungspipeline ist. Anders gesagt,
+führen Sie den Vorhersagejob als Batch oder Stream aus. Sie können
+die gleichen Vorverarbeitungsschritte auf die Eingaben
+für die Bereitstellung anwenden. Die dritte Option ist,
+die Vorverarbeitung in Dataflow zu machen und vorverarbeitete Merkmale zu erstellen. Teilen Sie dem Vorhersagegraphen aber mit, dass die gleichen Transformationen während der Bereitstellung
+in TensorFlow ausgeführt werden sollen. Dies tun Sie mit TesorFlow Transform. Wie wir 
+im vorigen Abschnitt gesehen haben, können Sie in TensorFlow
+einen Teil der Vorverarbeitung erledigen, indem Sie
+eine neue Merkmalspalte erstellen. Wenn Sie eine Spalte
+in Bucket-Form neu erstellen, ist dies bereits Vorverarbeitung. Das ist dann eine Merkmalspalte,
+die Sie an den Estimator senden. Ich teile die Merkmalspalte "sq_Footage" hier in vier Bereiche auf. Der erste Bereich ist Wohnungen
+mit unter 500 Quadratfuß (ca. 46 qm). Der zweite ist 500
+bis 1.000 Quadratfuß (ca. 46–93 qm). Der dritte ist Wohnungen zwischen
+1.000 und 2.500 Quadratfuß (ca. 92–232 qm) und der letzte ist Wohnungen
+mit mehr als 2.500 Quadratfuß (ca. 232 qm). Ich hänge die Spalte in Bucket-Form
+an die ursprünglichen Merkmalspalten an. Der lineare Regressor
+sieht dann "sq_footage" in zwei Formaten: als reellwertige numerische Spalte und als
+kategorische Spalte in Bucket-Form. Ich könnte natürlich nach Belieben die numerische Spalte durch eine
+in Buckets aufgeteilte Spalte ersetzen. Der lineare Regressor sieht dann
+"sq_footage" nur in kategorischer Form. Das mache ich hier. Ich ersetze "featcols [0]"
+durch die in Buckets aufgeteilte Version. Hier folgt
+noch ein Beispiel für Merkmalkreuzungen, aber dieses Mal in einer Einbettung. Wir können für Breitengrade
+und Längengrade der Wohnungen Bereiche definieren,
+in die sie diskretisiert werden sollen. Ich verwende hier
+nbuckets gleich große Bereiche. Eine Methode, die ich
+zum Auffinden der Grenzen verwendet habe, ist APPROX_QUANTILES,
+eine BigQuery SQL-Funktion. So kann jede Sammlung
+gleich viele Trainingsbeispiele enthalten. Es ist egal, wie wir die Grenzen erhalten. Sobald wir die Grenzen haben, bei mir "latbuckets" und "lonbuckets", teilen wir die Längen- bzw. Breitengrade
+der Wohnung in "b_lat" und "b_lon" auf. Dann können wir wie besprochen die kategorischen Merkmalspalten
+"b_lat" und "b_lon" kreuzen. Für die Anzahl der Hash-Buckets
+wähle ich das Quadrat von nbuckets aus. Im Mittel enthält dann jeder Hash-Bucket
+nur einen Wert der Merkmalkreuzung. Das liegt innerhalb
+der Faustregel aus der vorherigen Lektion: zwischen der Hälfte der Wurzel von N
+und dem Doppelten von N. Am Ende bette ich die Daten
+in nbuckets durch vier Dimensionen ein. Der Vorteil, Vorverarbeitung
+direkt in TensorFlow zu erledigen, liegt darin, dass diese Vorgänge
+Teil Ihres Modellgraphen sind. So werden sie identisch im Training
+und in der Bereitstellung ausgeführt. Was bedeutet das in der Praxis? Zuerst 
+diskretisieren wir die Breitengrade. Das klassifiziert 
+die reellwertigen Zahlen, alle Wohnungen im selben Breitengradbereich 
+erhalten so denselben Wert. Das beugt vielleicht
+der Überanpassung ein wenig vor, doch Diskretisieren
+der Breitengrade bringt nicht viel. Dann diskretisieren wir die Längengrade. Das klassifiziert die Längengradwerte, was wie zuvor
+ein wenig gegen Überanpassung helfen kann. Doch Diskretisieren
+der Längengrade bringt auch nicht viel. Was passiert aber beim Kreuzen
+der zwei diskretisierten Merkmalwerte? Wir haben im Grunde
+die Karte in Rasterzellen aufgeteilt, sodass jede Wohnung
+zu einer dieser Rasterzellen gehört. Im Training können wir dann den mittleren Preis von Wohnungen
+in jeder Rasterzelle memorieren. Je feiner die Rasterauflösung ist,
+desto spezifischer ist die Vorhersage. Sie ist aber auch weniger generalisierbar. Vielleicht wurden zu wenig Wohnungen
+einer Rasterzelle verkauft, um uns eine gute Schätzung zu bieten. Bei der Vorhersage wissen wir, zu welcher Rasterzelle
+eine gegebene Wohnung gehört, daher können wir für diese Rasterzelle
+den memorierten Wert abrufen. Einbettung kann erreichen,
+dass alle Rasterzellen, die sich ähneln, wie z. B.
+alle Rasterzellen entlang der Ozeanküste, ähnliche Werte haben.

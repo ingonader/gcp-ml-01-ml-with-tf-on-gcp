@@ -1,0 +1,362 @@
+1
+00:00:00,000 --> 00:00:04,350
+Sie wissen nun, was Merkmale sind
+und warum wir sie verwenden.
+
+2
+00:00:04,350 --> 00:00:09,070
+Fahren wir damit fort,
+wie Sie Merkmalkreuzungen implementieren.
+
+3
+00:00:09,070 --> 00:00:12,415
+Sie können in TensorFlow
+eine Merkmalkreuzung erstellen,
+
+4
+00:00:12,415 --> 00:00:17,460
+indem Sie im Modul "tf.feature_column"
+die Methode "crossed_column" verwenden.
+
+5
+00:00:17,460 --> 00:00:19,410
+Dasselbe Modul enthält auch die Methoden
+
+6
+00:00:19,410 --> 00:00:23,580
+"numeric_column" und
+"categorical_column_with_vocabulary_list"
+
+7
+00:00:23,580 --> 00:00:25,560
+Es ist exakt dasselbe Module.
+
+8
+00:00:25,560 --> 00:00:31,050
+Das erste Argument in diesem Beispiel
+ist die Liste der kategorischen Spalten.
+
+9
+00:00:31,050 --> 00:00:33,500
+Sie übergeben eine Liste,
+
+10
+00:00:33,500 --> 00:00:37,500
+damit Sie zwei oder drei Spalten
+oder eine beliebige Anzahl kreuzen können.
+
+11
+00:00:37,500 --> 00:00:42,020
+Denken Sie daran, dass diese Spalten 
+kategorische Spalten sein müssen.
+
+12
+00:00:42,020 --> 00:00:44,105
+Wenn Sie numerische Daten haben,
+
+13
+00:00:44,105 --> 00:00:47,950
+erstellen Sie daraus Buckets.
+Dann können Sie diese kreuzen.
+
+14
+00:00:47,950 --> 00:00:50,330
+Wenn Sie einen Bucket erstellen,
+
+15
+00:00:50,330 --> 00:00:53,850
+zeichnen Sie quasi die schwarzen Linien,
+die wir behandelt haben.
+
+16
+00:00:53,850 --> 00:00:56,685
+Sie diskretisieren die Spalte.
+
+17
+00:00:56,685 --> 00:00:58,910
+Was stellt das zweite Argument dar?
+
+18
+00:00:58,910 --> 00:01:04,245
+24 mal 7 ist
+die Gesamtzahl der Hash-Buckets.
+
+19
+00:01:04,245 --> 00:01:08,670
+TensorFlow kreuzt die Merkmale,
+
+20
+00:01:08,670 --> 00:01:11,460
+berechnet einen Hash der Merkmalkreuzung
+
+21
+00:01:11,460 --> 00:01:14,985
+und legt den Hash
+in einem von mehreren Buckets ab.
+
+22
+00:01:14,985 --> 00:01:19,350
+Auch wenn ich hier 24 mal 7 angegeben habe,
+
+23
+00:01:19,350 --> 00:01:22,335
+gibt es keine Garantie,
+dass keine Kollision auftritt.
+
+24
+00:01:22,335 --> 00:01:24,247
+Es ist durchaus möglich,
+
+25
+00:01:24,247 --> 00:01:30,920
+dass der Hash von Mittwoch 15:00 Uhr
+modulo 168 zufällig denselben Wert ergibt
+
+26
+00:01:30,920 --> 00:01:34,220
+wie Hash von Sonntag 16.00 Uhr modulo 168.
+
+27
+00:01:34,220 --> 00:01:40,380
+In dem Fall betrachten wir diese beiden
+Tag/Stunde-Kombinationen gemeinsam.
+
+28
+00:01:40,380 --> 00:01:43,195
+Dringen wir etwas tiefer vor.
+
+29
+00:01:43,195 --> 00:01:46,380
+TensorFlow überspringt diese Schritte
+
+30
+00:01:46,380 --> 00:01:49,680
+und geht direkt zur Darstellung
+des Hash der Merkmalkreuzung.
+
+31
+00:01:49,680 --> 00:01:52,900
+Wir sollten uns aber ansehen,
+was dort passiert.
+
+32
+00:01:52,900 --> 00:02:01,615
+Zur Vereinfachung nehmen wir an,
+wir verwenden 6 anstelle von 24 mal 7.
+
+33
+00:02:01,615 --> 00:02:02,940
+Was passiert?
+
+34
+00:02:02,940 --> 00:02:07,610
+Wir übergeben für die Merkmalkreuzung
+zwei kategorische Spalten.
+
+35
+00:02:07,610 --> 00:02:10,975
+"dayofweek" hat 7 eindeutige Werte.
+
+36
+00:02:10,975 --> 00:02:14,440
+"hourofday" hat 24 eindeutige Werte.
+
+37
+00:02:14,440 --> 00:02:21,495
+Demnach hat die Merkmalkreuzung
+24 mal 7 oder 168 eindeutige Werte.
+
+38
+00:02:21,495 --> 00:02:24,615
+Betrachten wir Mittwoch 15:00 Uhr.
+
+39
+00:02:24,615 --> 00:02:28,250
+Sagen wir, 15:00 Uhr ist Stunde 15
+
+40
+00:02:28,260 --> 00:02:32,000
+und Mittwoch ist Tag 3.
+
+41
+00:02:32,000 --> 00:02:35,595
+Dieser Wert der Merkmalkreuzung wäre dann
+
+42
+00:02:35,595 --> 00:02:40,045
+Nummer 87 von 168.
+
+43
+00:02:40,045 --> 00:02:46,185
+Ich berechne den Hash von 87
+und wende dann aber modulo 6 an.
+
+44
+00:02:46,185 --> 00:02:51,960
+Nehmen wir an, ich erhalte Feld Nummer 3
+für diesen Merkmalkreuzungs-Hash.
+
+45
+00:02:51,960 --> 00:02:57,855
+Dieser Wert ist dann für Mittwoch 15:00 Uhr
+in der Tag/Stunde-Merkmalspalte enthalten.
+
+46
+00:02:57,855 --> 00:03:02,645
+Ein One-Hot-codierter Wert,
+der der Nummer 3 entspricht.
+
+47
+00:03:02,645 --> 00:03:05,670
+TensorFlow führt diese Schritte nicht aus.
+
+48
+00:03:05,670 --> 00:03:09,665
+Es muss keine One-Hot-Codierung
+vor dem Kreuzen der Merkmale anwenden.
+
+49
+00:03:09,665 --> 00:03:13,220
+Es wäre hinsichtlich
+des Arbeitsspeichers nicht sehr effizient.
+
+50
+00:03:13,220 --> 00:03:16,720
+Es hilft uns aber,
+das Konzept zu verstehen.
+
+51
+00:03:16,720 --> 00:03:23,305
+Die Anzahl der Hash-Buckets
+steuert die Dichte und Kollisionen.
+
+52
+00:03:23,305 --> 00:03:26,440
+Wie auf der vorherigen Folie
+
+53
+00:03:26,440 --> 00:03:30,255
+legen wir die Anzahl
+der Hash-Buckets deutlich kleiner aus
+
+54
+00:03:30,255 --> 00:03:33,180
+als die Anzahl
+der eindeutigen Werte der Merkmalkreuzung.
+
+55
+00:03:33,180 --> 00:03:35,330
+Wir werden eine Menge Kollisionen erhalten:
+
+56
+00:03:35,330 --> 00:03:37,020
+vielleicht Mittwoch 15:00 Uhr,
+
+57
+00:03:37,020 --> 00:03:38,150
+Mittwoch 19:00 Uhr,
+
+58
+00:03:38,150 --> 00:03:39,990
+Donnerstag 2:00 Uhr usw.
+
+59
+00:03:39,990 --> 00:03:43,915
+Alle fallen in denselben Bucket
+und werden gleich behandelt.
+
+60
+00:03:43,915 --> 00:03:50,995
+Im Durchschnitt sind in einem Bucket
+ein Sechstel der Werte der Merkmalkreuzung.
+
+61
+00:03:50,995 --> 00:03:54,335
+Da wir 168 eindeutige Werte haben,
+
+62
+00:03:54,335 --> 00:04:01,765
+enthält jeder Bucket durchschnittlich
+28 verschiedene Tag/Stunde-Kombinationen.
+
+63
+00:04:01,765 --> 00:04:08,710
+Daher ist Menge der Daten begrenzt,
+die die Merkmalkreuzung memorieren kann.
+
+64
+00:04:08,710 --> 00:04:13,095
+Es wird aber auch
+nur wenig Arbeitsspeicher verwendet,
+
+65
+00:04:13,095 --> 00:04:14,865
+da wir nur 6 Buckets haben.
+
+66
+00:04:14,865 --> 00:04:21,779
+Wir aggregieren sozusagen in einem Bucket
+mehrere Tag/Stunde-Kombinationen.
+
+67
+00:04:21,779 --> 00:04:25,260
+Was wäre aber,
+wenn wir als das andere Extrem
+
+68
+00:04:25,260 --> 00:04:29,955
+die Anzahl der Hash-Buckets derart erhöhen,
+
+69
+00:04:29,955 --> 00:04:32,940
+dass kaum Chancen
+für eine Kollision bestehen?
+
+70
+00:04:32,940 --> 00:04:36,915
+Legen wir dazu
+die Anzahl der Hash-Buckets auf 300 fest.
+
+71
+00:04:36,915 --> 00:04:41,040
+Jetzt enthält jeder Bucket statistisch
+
+72
+00:04:41,040 --> 00:04:45,345
+eine oder keine Tag/Stunde-Kombination.
+
+73
+00:04:45,345 --> 00:04:47,785
+Er kann zwei enthalten,
+
+74
+00:04:47,785 --> 00:04:50,110
+doch sind die Chancen dafür sehr gering.
+
+75
+00:04:50,110 --> 00:04:55,255
+Eine hohe Anzahl
+von Hash-Buckets führt also
+
+76
+00:04:55,255 --> 00:04:58,650
+zu einer
+dünnen Darstellung der Merkmalkreuzung.
+
+77
+00:04:58,650 --> 00:05:05,045
+In der Praxis wähle ich eine Anzahl
+zwischen der Hälfte der Wurzel aus N
+
+78
+00:05:05,045 --> 00:05:06,860
+und dem Doppelten von N,
+
+79
+00:05:06,860 --> 00:05:11,455
+abhängig davon, ob ich mehr Wert
+auf Memorieren oder auf Dichte lege.
+
+80
+00:05:11,455 --> 00:05:14,000
+Das ist aber nur meine eigene Faustregel.

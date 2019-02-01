@@ -1,0 +1,32 @@
+Recuerden que hay tres lugares posibles
+para hacer ingeniería de atributos. Vimos cómo hacer
+procesamiento previo de atributos y creación de atributos
+sobre la marcha en TensorFlow. La otra opción
+es realizar el procesamiento previo o creación de atributos en Cloud Dataflow. Aquí, Dataflow se usa para crear
+un conjunto de datos procesado previamente o aumentado, y este nuevo conjunto
+se usa para entrenar el modelo. Durante la predicción, debemos encontrar
+una forma de realizar los mismos pasos de procesamiento previo. Este método funciona mejor
+si Dataflow también es parte del entorno de ejecución de predicción. Recuerden que la arquitectura
+de referencia de GCP hace esto. Gracias a que Dataflow puede manejar
+datos de transmisión y por lotes es parte de la canalización
+del entrenamiento y de la predicción. Si hacen esto entonces Dataflow es un buen lugar
+para realizar el procesamiento previo. Dataflow es ideal para atributos
+que involucran agregaciones con ventanas de tiempo. Por ejemplo, podrían usar como atributo la cantidad de personas
+que miraron un producto en la hora pasada. En el entrenamiento, pueden usar Dataflow
+para calcularlo a partir de los registros pero la naturaleza de este atributo
+implica que deben usar Dataflow en tiempo real para calcularlo
+según el tráfico en tiempo real. Podrían agregar campos adicionales
+en cualquier "PTransform" en Dataflow. add_fields en este ejemplo toma los campos de entrada obtiene el conteo de los pasajeros los acumula y agrega un conteo
+de visitantes como conteo de la hora pasada. El mismo código en Dataflow funciona
+en lotes y en datos de transmisión por lo que simplemente
+tienen el método add_fields en las canalizaciones
+del entrenamiento y de las predicciones. La tercera opción
+es usar un enfoque híbrido. Los investigadores de Google
+publicaron cómo hacerlo recientemente y lo veremos en detalle
+en el próximo módulo. Pero la idea es esta. Durante el entrenamiento,
+crearán un conjunto de datos procesados previamente con Dataflow. Sin embargo, las transformaciones
+se implementarán en TensorFlow de modo que durante las predicciones la ingeniería de atributos
+sea parte del gráfico de TensorFlow. Esto es muy ventajoso
+porque Dataflow es muy eficiente en el cálculo de agregados
+en todos los datos. Mientras que TensorFlow es ventajoso para la manipulación
+de campos de entrada sobre la marcha.

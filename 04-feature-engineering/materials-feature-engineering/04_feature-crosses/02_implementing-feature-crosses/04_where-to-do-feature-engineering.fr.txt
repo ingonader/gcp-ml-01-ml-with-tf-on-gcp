@@ -1,0 +1,73 @@
+Nous avons vu différentes manières
+de représenter et d'extraire des caractéristiques : le scaling, les croisements
+de caractéristiques, les représentations vectorielles
+continues, etc. Où ces éléments entrent-ils en jeu
+dans votre modèle de machine learning ? Souvenez-vous que votre modèle comprend une fonction d'entrée qui lit les données, des colonnes
+de caractéristiques qui servent d'espaces réservés pour les données lues et un estimateur que vous créez
+lors de la transmission des colonnes. Vous configurez ensuite "train_spec",
+"eval_spec", "exporter", etc., puis vous appelez "train_and_evaluate". Où se positionne l'extraction
+de caractéristiques dans tout ceci ? Elle peut se faire à trois endroits : à la volée lors de la lecture des données, dans la fonction d'entrée elle-même ou en créant des colonnes
+de caractéristiques. Vous pouvez également l'effectuer lors
+d'une étape séparée avant l'entraînement. Votre fonction d'entrée lit ensuite
+les caractéristiques prétraitées. Si vous effectuez l'extraction
+lors d'une étape de prétraitement séparée, le prétraitement s'effectue dans Dataflow, ce qui vous permet de travailler
+à grande échelle de manière distribuée. Dataflow permet l'utilisation
+de code Python simple mais uniquement si Dataflow fait partie
+de votre pipeline de diffusion. En d'autres termes, vous effectuez un lot
+de tâches de prédiction par flux. Vous appliquez ainsi le même prétraitement
+aux données d'entrée de diffusion. Une troisième solution est d'effectuer
+le prétraitement dans Dataflow et de créer un ensemble
+de caractéristiques prétraitées, en indiquant au graphique de prédiction
+que vous voulez que la même transformation soit effectuée
+dans TensorFlow pendant la diffusion. Pour ce faire, vous devez utiliser
+TensorFlow Transform. Comme nous l'avons vu
+dans la section précédente, une partie du prétraitement peut
+être effectuée dans TensorFlow en créant une colonne de caractéristiques. Lorsque vous divisez ensuite une colonne
+en buckets pour créer une colonne. il s'agit de prétraitement. C'est la colonne de caractéristiques
+que vous enverrez à l'estimateur. Je prends ici la colonne
+de caractéristiques de la superficie et je la discrétise en quatre intervalles. Le premier correspond aux maisons
+de moins de 500 pieds carrés, le second à celles
+entre 500 et 1 000 pieds carrés, le troisième aux maisons
+entre 1 000 et 2 500 pieds carrés et le dernier à celles
+de plus de 2 500 pieds carrés. J'ajoute la colonne en buckets
+à la liste d'origine des colonnes. Maintenant, les deux régresseurs linéaires
+voient la superficie sous deux formes, une colonne numérique à valeur réelle et une colonne catégorique en buckets. Bien sûr, si je le voulais, je pourrais remplacer une colonne
+numérique par la colonne en buckets pour que le régresseur linéaire ne voie
+la superficie que sous forme catégorique. C'est ce que je fais ici. Je remplace "featcols[0]"
+par la version en buckets. Voici un autre exemple
+de croisements de caractéristiques, avec cette fois
+une représentation vectorielle continue. Nous pouvons prendre la latitude
+et la longitude des maisons, et définir les intervalles
+permettant de les discrétiser. J'utilise ici "nbuckets" avec
+des intervalles espacés de manière égale. Pour déterminer les limites,
+j'ai utilisé "APPROX_QUANTILES", une fonction SQL de BigQuery qui permet d'obtenir le même nombre
+d'exemples d'entraînement dans chaque bin. Peu importe la méthode
+d'obtention des limites, une fois que nous les avons, "latbuckets" et "lonbuckets"
+dans mon exemple, nous pouvons discrétiser les latitudes
+et les longitudes des maisons dans "b_lat" et "b_lon". Puis, comme nous l'avons vu, nous pouvons croiser
+les deux colonnes "b_lat" et "b_lon". Je choisis ici de les croiser
+dans les buckets de hachage "nbuckets²". Chaque bucket de hachage
+contiendra en moyenne un seul croisement de caractéristiques. La bonne pratique expliquée précédemment
+selon laquelle la valeur doit se situer entre la moitié de la racine carrée
+et le double est donc respectée. Enfin, j'ai intégré les données dans
+nbuckets divisés par quatre dimensions. L'avantage d'effectuer le prétraitement
+directement dans TensorFlow est que ces opérations font partie
+de votre graphique de modèle. Elles sont donc effectuées de la même
+façon pour l'entraînement et la diffusion. Qu'est-ce que cela signifie en pratique ? Nous discrétisons d'abord les latitudes, ce qui divise les nombres
+à valeur réelle en bins et fait en sorte que les maisons
+à la même latitude ont la même valeur. Cela limite un peu le surapprentissage, mais se contenter de discrétiser
+les latitudes n'est pas très utile. Nous discrétisons ensuite les longitudes. Elles sont divisées en bins, ce qui limite
+aussi un peu le surapprentissage, mais n'est pas très utile non plus. Mais que se passe-t-il si on croise
+les deux valeurs discrétisées ? En bref, nous avons
+divisé la carte en cellules, de sorte que chaque maison
+appartienne à une seule cellule. Pendant l'entraînement,
+nous pourrons ainsi mémoriser le prix moyen
+des maisons dans chaque cellule. Bien sûr, plus la résolution de la grille
+est fine, plus la prédiction est précise. Elle sera aussi
+moins facile à généraliser, car il risque de ne pas y avoir
+assez de maisons vendues dans une cellule
+pour permettre une estimation correcte. Lors de la prédiction d'une maison donnée, nous savons
+à quelle cellule elle appartient. Nous extrayons ainsi
+la valeur mémorisée correspondante. Avec la représentation vectorielle
+continue, les cellules similaires, par exemple
+toutes les maisons en bord de mer, ont des valeurs similaires.

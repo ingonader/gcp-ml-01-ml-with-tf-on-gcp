@@ -1,0 +1,1507 @@
+1
+00:00:00,000 --> 00:00:02,065
+So I've started Datalab,
+
+2
+00:00:02,065 --> 00:00:06,685
+and I've opened up the featureengineering.ipythonnotebook,
+
+3
+00:00:06,685 --> 00:00:08,945
+and so let's now walk through this.
+
+4
+00:00:08,945 --> 00:00:10,395
+So, in this notebook,
+
+5
+00:00:10,395 --> 00:00:12,350
+we're going to learn how to work with feature columns,
+
+6
+00:00:12,350 --> 00:00:14,585
+we'll add feature crosses in TensorFlow.
+
+7
+00:00:14,585 --> 00:00:16,555
+We're going to be reading our data from BigQuery,
+
+8
+00:00:16,555 --> 00:00:18,630
+creating data sets using Dataflow,
+
+9
+00:00:18,630 --> 00:00:20,490
+and we'll be using a wide and deep model.
+
+10
+00:00:20,490 --> 00:00:23,055
+So, we're going to put together a lot of these things that we talked about,
+
+11
+00:00:23,055 --> 00:00:27,020
+the wide and deep we haven't quite talked about but we will talk about it now.
+
+12
+00:00:27,020 --> 00:00:29,600
+So, here's the issue here.
+
+13
+00:00:29,600 --> 00:00:32,505
+So far, we've built a taxi cab model,
+
+14
+00:00:32,505 --> 00:00:35,545
+but we have not brought in human insight into it at all.
+
+15
+00:00:35,545 --> 00:00:37,230
+So, that's what we're going to do now,
+
+16
+00:00:37,230 --> 00:00:40,130
+we're going to basically take some advantage of some
+
+17
+00:00:40,130 --> 00:00:43,310
+of the things that we know about how taxis work,
+
+18
+00:00:43,310 --> 00:00:45,295
+about how New York is laid out,
+
+19
+00:00:45,295 --> 00:00:48,050
+and start giving the model hints,
+
+20
+00:00:48,050 --> 00:00:50,135
+so that it can learn those things better.
+
+21
+00:00:50,135 --> 00:00:51,600
+So, as we walk through,
+
+22
+00:00:51,600 --> 00:00:54,700
+I'll talk about where a particular insight comes from.
+
+23
+00:00:54,700 --> 00:01:04,700
+So, first thing is let's go ahead and get the import.
+
+24
+00:01:04,700 --> 00:01:06,790
+Make sure to change your project.
+
+25
+00:01:06,790 --> 00:01:10,630
+So, I've changed my project to map to my Qwiklabs project,
+
+26
+00:01:10,630 --> 00:01:14,485
+I've changed my bucket to map to my Qwiklabs bucket
+
+27
+00:01:14,485 --> 00:01:19,430
+and I've set my region to map to where I want the code to run.
+
+28
+00:01:19,430 --> 00:01:22,410
+So, then, let's go ahead and run the query.
+
+29
+00:01:22,410 --> 00:01:25,730
+So, the query now actually does some cleanup.
+
+30
+00:01:25,730 --> 00:01:28,985
+So, here, I'm basically making sure
+
+31
+00:01:28,985 --> 00:01:32,720
+that we're pulling in only data that has positive distances,
+
+32
+00:01:32,720 --> 00:01:35,330
+that the fare amount is greater than 2.5,
+
+33
+00:01:35,330 --> 00:01:36,830
+that the pickup longitude,
+
+34
+00:01:36,830 --> 00:01:38,210
+pickup latitude, et cetera,
+
+35
+00:01:38,210 --> 00:01:40,430
+are within reasonable counts,
+
+36
+00:01:40,430 --> 00:01:41,985
+and there were people in the taxi.
+
+37
+00:01:41,985 --> 00:01:44,690
+So, we want to make sure that the data that was collected for
+
+38
+00:01:44,690 --> 00:01:49,605
+a particular taxi cab trip was correct before we actually use it for training.
+
+39
+00:01:49,605 --> 00:01:53,040
+I'm going to divide up my data as we talked about earlier,
+
+40
+00:01:53,040 --> 00:01:57,760
+when we talked about creating data sets based on the hash of the pickup date time.
+
+41
+00:01:57,760 --> 00:02:00,810
+Having done that, I've created my query,
+
+42
+00:02:00,810 --> 00:02:04,670
+and my query is basically going to take the toll amount, and the fare amount,
+
+43
+00:02:04,670 --> 00:02:06,080
+and calling that the fare amount,
+
+44
+00:02:06,080 --> 00:02:09,750
+so that we're learning the total costs that will cost somebody,
+
+45
+00:02:09,750 --> 00:02:13,825
+and taking the day of the week as a day of the week.
+
+46
+00:02:13,825 --> 00:02:16,655
+Why do we take that? Well, we know that
+
+47
+00:02:16,655 --> 00:02:20,190
+traffic conditions are going to be different depending on the day of the week.
+
+48
+00:02:20,190 --> 00:02:25,100
+We know that Fridays are going to have more traffic than Sundays.
+
+49
+00:02:25,100 --> 00:02:30,215
+We also know that the hour of the day matters, even on Friday,
+
+50
+00:02:30,215 --> 00:02:36,890
+2:00 AM on a Friday is probably not going to have as much traffic as 4:00 PM on a Friday,
+
+51
+00:02:36,890 --> 00:02:38,355
+and why does this matter?
+
+52
+00:02:38,355 --> 00:02:40,545
+It matters because in New York,
+
+53
+00:02:40,545 --> 00:02:43,355
+and this is something that human insight brings in,
+
+54
+00:02:43,355 --> 00:02:48,310
+people pay for the amount of time they spent in a taxi in addition to the distance.
+
+55
+00:02:48,310 --> 00:02:50,630
+So, if the tax is stuck in traffic,
+
+56
+00:02:50,630 --> 00:02:54,135
+you're going to have to pay for it because you're occupying the taxi,
+
+57
+00:02:54,135 --> 00:02:56,850
+and the taxi driver is not able to pick up other fares.
+
+58
+00:02:56,850 --> 00:02:58,689
+So, the time matters,
+
+59
+00:02:58,689 --> 00:03:01,570
+your time that's spent in the trip matters.
+
+60
+00:03:01,570 --> 00:03:03,850
+Before the trip starts,
+
+61
+00:03:03,850 --> 00:03:05,650
+we don't know how long it's going to take.
+
+62
+00:03:05,650 --> 00:03:09,560
+We want the machine learning model to have to learn this,
+
+63
+00:03:09,560 --> 00:03:12,620
+and we know that a key determinant of how long
+
+64
+00:03:12,620 --> 00:03:16,370
+the trip takes is when the pickup happened.
+
+65
+00:03:16,370 --> 00:03:20,180
+Not the drop-off, because we don't know where they're going to get dropped off,
+
+66
+00:03:20,180 --> 00:03:22,630
+but we do know when they're going to get picked up.
+
+67
+00:03:22,630 --> 00:03:25,190
+So, we're basically using the pickup date time,
+
+68
+00:03:25,190 --> 00:03:29,320
+the day of the week, and the hour of the day as inputs to our model.
+
+69
+00:03:29,320 --> 00:03:31,730
+We also know where they're going to be picked up.
+
+70
+00:03:31,730 --> 00:03:35,000
+We also know where the customer wants to get dropped off.
+
+71
+00:03:35,000 --> 00:03:37,430
+We don't know the time they're going to get dropped off,
+
+72
+00:03:37,430 --> 00:03:39,125
+but we do know where they're going to go.
+
+73
+00:03:39,125 --> 00:03:42,130
+So, we know that drop-off longitude and the drop of latitude.
+
+74
+00:03:42,130 --> 00:03:44,145
+So those are going to be our inputs as well.
+
+75
+00:03:44,145 --> 00:03:46,100
+We're going to take a passenger count,
+
+76
+00:03:46,100 --> 00:03:49,040
+and we're going to basically create a key.
+
+77
+00:03:49,040 --> 00:03:50,320
+I'm going to use this key,
+
+78
+00:03:50,320 --> 00:03:53,300
+but if we wanted to do some kind of thing like batch prediction,
+
+79
+00:03:53,300 --> 00:03:56,505
+for example, we're going to be sending a lot of data in,
+
+80
+00:03:56,505 --> 00:04:01,205
+it's helpful if each of the rows in your data set has a unique ID,
+
+81
+00:04:01,205 --> 00:04:05,110
+and so this is a unique ID form from all of the input columns.
+
+82
+00:04:05,110 --> 00:04:10,110
+I'm basically doing this where all of the data are valid.
+
+83
+00:04:10,110 --> 00:04:11,730
+So, at this point,
+
+84
+00:04:11,730 --> 00:04:14,115
+we're now ready to create our data set.
+
+85
+00:04:14,115 --> 00:04:15,890
+To create a data set,
+
+86
+00:04:15,890 --> 00:04:20,280
+we'll basically go ahead and remove any data set that may exist.
+
+87
+00:04:20,280 --> 00:04:23,715
+Having done that, we will go ahead
+
+88
+00:04:23,715 --> 00:04:31,190
+and create a CSV file from all of these columns.
+
+89
+00:04:31,190 --> 00:04:35,395
+First thing is that we want to make sure that the columns are fare amount,
+
+90
+00:04:35,395 --> 00:04:37,690
+day of the week, hour of the day, et cetera.
+
+91
+00:04:37,690 --> 00:04:40,010
+So, those are the columns that we want to do,
+
+92
+00:04:40,010 --> 00:04:44,420
+but the day of the week in the data set when we do BigQuery,
+
+93
+00:04:44,420 --> 00:04:46,760
+the day of the week is going to be a number like 2.
+
+94
+00:04:46,760 --> 00:04:49,700
+We don't want a number like 2 because we don't know if 2,
+
+95
+00:04:49,700 --> 00:04:50,890
+what day of the week is it?
+
+96
+00:04:50,890 --> 00:04:52,350
+Does a week start with Sunday,
+
+97
+00:04:52,350 --> 00:04:53,535
+or Monday, or Tuesday?
+
+98
+00:04:53,535 --> 00:04:55,190
+We don't want to have our client code,
+
+99
+00:04:55,190 --> 00:04:57,365
+et cetera, have to worry about that.
+
+100
+00:04:57,365 --> 00:04:59,495
+So, what we will do, is that we'll replace
+
+101
+00:04:59,495 --> 00:05:04,450
+those magic numbers by the actual names of the days of the week.
+
+102
+00:05:04,450 --> 00:05:07,950
+So, if the day of the week is one, it is Sunday.
+
+103
+00:05:07,950 --> 00:05:09,120
+If the day of the week is two,
+
+104
+00:05:09,120 --> 00:05:10,570
+it's Monday, et cetera.
+
+105
+00:05:10,570 --> 00:05:12,320
+So, that's exactly what I'm doing here.
+
+106
+00:05:12,320 --> 00:05:14,335
+I'm taking the BigQuery result,
+
+107
+00:05:14,335 --> 00:05:16,150
+day of the week which is a number,
+
+108
+00:05:16,150 --> 00:05:18,679
+and replacing it with a string,
+
+109
+00:05:18,679 --> 00:05:23,565
+and now I'm basically appending them all with a comma in between,
+
+110
+00:05:23,565 --> 00:05:27,985
+and that is now my CSV file output.
+
+111
+00:05:27,985 --> 00:05:29,790
+Now, to write this out,
+
+112
+00:05:29,790 --> 00:05:32,540
+what I'm going to do is I'm going to read the data
+
+113
+00:05:32,540 --> 00:05:36,180
+from BigQuery using this query that we just created,
+
+114
+00:05:36,180 --> 00:05:39,920
+converting it to CSV using that function that I just talked about.
+
+115
+00:05:39,920 --> 00:05:42,500
+The only change that we are doing is that we are changing
+
+116
+00:05:42,500 --> 00:05:45,525
+the days of the week from magic numbers to strings.
+
+117
+00:05:45,525 --> 00:05:49,010
+Then writing it out to a text file, a CSV file.
+
+118
+00:05:49,010 --> 00:05:51,540
+Now, when I run this,
+
+119
+00:05:51,540 --> 00:05:56,110
+at this point, we basically have the code pre-process.
+
+120
+00:05:56,110 --> 00:05:59,140
+Right. In the next cell,
+
+121
+00:05:59,140 --> 00:06:04,010
+I am calling the pre-process on the dataflow runner if I wanted,
+
+122
+00:06:04,010 --> 00:06:08,620
+or I could create a smaller dataset on the direct runner to run it locally.
+
+123
+00:06:08,620 --> 00:06:12,225
+So, in this case, I will run it on the dataflow runner,
+
+124
+00:06:12,225 --> 00:06:14,295
+and this is going to run,
+
+125
+00:06:14,295 --> 00:06:16,585
+and it's going to take a while.
+
+126
+00:06:16,585 --> 00:06:20,240
+So, we'll go to the console,
+
+127
+00:06:20,240 --> 00:06:26,015
+and we will see in dataflow runner that the job has started.
+
+128
+00:06:26,015 --> 00:06:36,280
+So, we'll go into dataflow and what does it happen? What is it saying?
+
+129
+00:06:37,790 --> 00:06:44,515
+Dataflow. I see.
+
+130
+00:06:44,515 --> 00:06:48,420
+It's a dataflow API has not been used or enabled,
+
+131
+00:06:48,420 --> 00:06:52,250
+so what we will have to do is that we will have to go in here.
+
+132
+00:06:52,250 --> 00:06:53,730
+If you see that error,
+
+133
+00:06:53,730 --> 00:06:57,410
+you will have to go into the APIs and
+
+134
+00:06:57,410 --> 00:07:04,895
+services and search for the date of enabled services.
+
+135
+00:07:04,895 --> 00:07:09,685
+So, the one that we want to enable is called data flow.
+
+136
+00:07:09,685 --> 00:07:12,935
+So, when we do that, we get the dataflow API,
+
+137
+00:07:12,935 --> 00:07:16,445
+and let's go ahead and enable the API.
+
+138
+00:07:16,445 --> 00:07:20,810
+Once the API has been enabled,
+
+139
+00:07:21,940 --> 00:07:24,655
+let's wait for it to get enabled.
+
+140
+00:07:24,655 --> 00:07:27,100
+We should be able to rerun this cell.
+
+141
+00:07:27,100 --> 00:07:29,560
+Okay. It has been enabled.
+
+142
+00:07:29,560 --> 00:07:37,260
+So, now we go back to our Datalab Notebook and rerun this cell,
+
+143
+00:07:37,750 --> 00:07:44,240
+and this time, hopefully, it launches.
+
+144
+00:07:44,240 --> 00:07:46,865
+Okay. There it is. It has launched,
+
+145
+00:07:46,865 --> 00:07:56,260
+and so I can now go back to the dataflow part of the menu,
+
+146
+00:07:56,260 --> 00:07:59,155
+and you will see that this code is running.
+
+147
+00:07:59,155 --> 00:08:01,235
+This will take a while to run,
+
+148
+00:08:01,235 --> 00:08:02,955
+and when it's finished running,
+
+149
+00:08:02,955 --> 00:08:05,355
+on the cloud in your bucket,
+
+150
+00:08:05,355 --> 00:08:11,220
+you will have training files that you can use for training.
+
+151
+00:08:12,250 --> 00:08:15,450
+So, let's go down here.
+
+152
+00:08:17,560 --> 00:08:22,525
+So, we could do that, but let's see.
+
+153
+00:08:22,525 --> 00:08:24,820
+So, let's go ahead and wait for it to be done,
+
+154
+00:08:24,820 --> 00:08:26,665
+and then once it's done,
+
+155
+00:08:26,665 --> 00:08:28,105
+we would be able to come back.
+
+156
+00:08:28,105 --> 00:08:29,695
+So, I'll pause the video here.
+
+157
+00:08:29,695 --> 00:08:35,290
+We'll come back and we'll start once the dataflow job is complete.
+
+158
+00:08:35,290 --> 00:08:39,565
+We can see that this job took about eight minutes for me,
+
+159
+00:08:39,565 --> 00:08:41,520
+the last step succeeded,
+
+160
+00:08:41,520 --> 00:08:42,735
+and at this point,
+
+161
+00:08:42,735 --> 00:08:45,380
+the number of workers is coming back down.
+
+162
+00:08:45,380 --> 00:08:48,860
+Of course, your mileage will vary depending on how many workers you have
+
+163
+00:08:48,860 --> 00:08:52,625
+available and how many workers you actually have running in your job.
+
+164
+00:08:52,625 --> 00:08:55,200
+But once it's done,
+
+165
+00:08:55,200 --> 00:09:01,110
+you can go back to the notebook and make sure that the output files exist,
+
+166
+00:09:01,110 --> 00:09:02,640
+and that's what I'm doing here,
+
+167
+00:09:02,640 --> 00:09:05,490
+I'm doing GS, on gsutil ls,
+
+168
+00:09:05,490 --> 00:09:09,375
+on the bucket, and we see that there is a train.csv,
+
+169
+00:09:09,375 --> 00:09:11,395
+and there is a valid.csv.
+
+170
+00:09:11,395 --> 00:09:15,620
+So, it basically have a training file under validation file,
+
+171
+00:09:15,620 --> 00:09:19,050
+and we can also just go ahead and cut.
+
+172
+00:09:19,050 --> 00:09:23,380
+Cut is a Unix command that basically lists the first few.
+
+173
+00:09:23,430 --> 00:09:27,720
+Actually, it lists all of the lines and basically piping it through ahead,
+
+174
+00:09:27,720 --> 00:09:29,830
+so that I get the first few lines,
+
+175
+00:09:29,830 --> 00:09:32,905
+and we see that as we expect,
+
+176
+00:09:32,905 --> 00:09:37,035
+the day of the week is a string: Friday, Wednesday, et cetera.
+
+177
+00:09:37,035 --> 00:09:39,290
+Then we basically have latitudes,
+
+178
+00:09:39,290 --> 00:09:41,610
+longitudes, pickup, and dropoff points.
+
+179
+00:09:41,610 --> 00:09:45,070
+We also have the last thing.
+
+180
+00:09:45,070 --> 00:09:48,890
+The last column is a key that we will just ignore in our model,
+
+181
+00:09:48,890 --> 00:09:53,820
+but it's there if we want a unique ID for every row in our data set.
+
+182
+00:09:53,820 --> 00:09:55,575
+So, we have this file,
+
+183
+00:09:55,575 --> 00:09:58,930
+and now we can basically use it to develop our model.
+
+184
+00:09:58,930 --> 00:10:02,590
+So, in order to do our development,
+
+185
+00:10:02,590 --> 00:10:05,455
+it's good not to have to go back to the Cloud each time.
+
+186
+00:10:05,455 --> 00:10:08,120
+So, what I am doing is that I'm making a directory called
+
+187
+00:10:08,120 --> 00:10:12,360
+sample and copying just one of those files in it.
+
+188
+00:10:12,360 --> 00:10:14,005
+Because we have shorted files,
+
+189
+00:10:14,005 --> 00:10:21,280
+I'm just copying the first part of the shorted file into my local directory sample.
+
+190
+00:10:21,280 --> 00:10:29,215
+Having done this, we can now basically go ahead and look at our code itself.
+
+191
+00:10:29,215 --> 00:10:30,930
+So, let's go ahead and look at our code.
+
+192
+00:10:30,930 --> 00:10:32,210
+We could do this in the notebook,
+
+193
+00:10:32,210 --> 00:10:34,245
+but let's go and look at it outside.
+
+194
+00:10:34,245 --> 00:10:36,700
+So, we have our taxi fare.
+
+195
+00:10:36,700 --> 00:10:39,735
+So, in our taxi fare as before,
+
+196
+00:10:39,735 --> 00:10:41,205
+we will have a trainer,
+
+197
+00:10:41,205 --> 00:10:44,830
+and as before, we will have a model.pi and tasks.pi.
+
+198
+00:10:44,830 --> 00:10:47,200
+But model.pi, in this case,
+
+199
+00:10:47,200 --> 00:10:49,570
+is not going to be just a raw input.
+
+200
+00:10:49,570 --> 00:10:52,210
+It's going to have some feature engineering in it.
+
+201
+00:10:52,210 --> 00:10:55,910
+So, these are the columns that for present and notice
+
+202
+00:10:55,910 --> 00:10:59,460
+that we now have some extra columns from the ones that we had before.
+
+203
+00:10:59,460 --> 00:11:00,820
+We have the day of the week,
+
+204
+00:11:00,820 --> 00:11:02,645
+we have the hour of the day, et cetera.
+
+205
+00:11:02,645 --> 00:11:07,725
+So, what we're doing is that we're basically saying that these are my input columns,
+
+206
+00:11:07,725 --> 00:11:09,420
+I have the day of the week,
+
+207
+00:11:09,420 --> 00:11:11,490
+it has a vocabulary which is a Sunday,
+
+208
+00:11:11,490 --> 00:11:14,030
+Monday, Tuesday, et cetera, the days of the week.
+
+209
+00:11:14,030 --> 00:11:17,805
+The hour of the day is also a categorical column,
+
+210
+00:11:17,805 --> 00:11:20,260
+but it has an identity.
+
+211
+00:11:20,260 --> 00:11:22,610
+In other words, it already is an integerized number.
+
+212
+00:11:22,610 --> 00:11:24,640
+So, one, two, three, four, et cetera.
+
+213
+00:11:24,640 --> 00:11:27,370
+Then, we have numeric columns for pickup longitude,
+
+214
+00:11:27,370 --> 00:11:29,330
+pickup latitude, drop-off latitude,
+
+215
+00:11:29,330 --> 00:11:31,250
+drop-off longitude, et cetera,
+
+216
+00:11:31,250 --> 00:11:33,845
+and then I'm also going to create
+
+217
+00:11:33,845 --> 00:11:39,110
+some engineered columns and we look at that later in the code,
+
+218
+00:11:39,110 --> 00:11:42,529
+but the engineer columns are going to be the difference in latitude.
+
+219
+00:11:42,529 --> 00:11:44,260
+Now, why does that matter?
+
+220
+00:11:44,260 --> 00:11:48,835
+The difference in latitude basically tells you if you're going North-South in Manhattan.
+
+221
+00:11:48,835 --> 00:11:54,470
+So, that's a pretty good idea of to how much change in latitude that's happened.
+
+222
+00:11:54,470 --> 00:11:56,890
+The longitude difference is actually very useful
+
+223
+00:11:56,890 --> 00:11:59,320
+because New York City is not south in extent,
+
+224
+00:11:59,320 --> 00:12:06,165
+and all of the bridges on which you pay tolls tend to be dramatic changes in longitude.
+
+225
+00:12:06,165 --> 00:12:08,880
+So, knowing the longitude difference is also useful,
+
+226
+00:12:08,880 --> 00:12:13,485
+and I add in a Euclidean distance which is known as the bird flies,
+
+227
+00:12:13,485 --> 00:12:16,510
+between the pickup point and the dropoff point.
+
+228
+00:12:16,510 --> 00:12:18,695
+That's a pretty good feature to use as well
+
+229
+00:12:18,695 --> 00:12:21,680
+because that way the model doesn't have to learn distances,
+
+230
+00:12:21,680 --> 00:12:24,100
+the distance is already given to it on a platter.
+
+231
+00:12:24,100 --> 00:12:26,900
+So, we basically do these feature engineering,
+
+232
+00:12:26,900 --> 00:12:29,615
+and now we're ready to build our estimator.
+
+233
+00:12:29,615 --> 00:12:33,315
+In our estimator, we basically take all of our input columns.
+
+234
+00:12:33,315 --> 00:12:35,660
+So, those are the input columns that we have,
+
+235
+00:12:35,660 --> 00:12:40,845
+and then just as we did in our feature engineering exercise on the housing dataset,
+
+236
+00:12:40,845 --> 00:12:44,270
+we bucketize the latitude buckets and the longitude buckets.
+
+237
+00:12:44,270 --> 00:12:50,265
+So, we take the pick up latitude and we bucketize them to between 38 and 42,
+
+238
+00:12:50,265 --> 00:12:55,150
+and the longitude from -76- -72 because this is New York,
+
+239
+00:12:55,150 --> 00:12:57,130
+and those are the bounds of New York City.
+
+240
+00:12:57,130 --> 00:13:00,655
+So, we go ahead and we get a bucketized pickup latitude,
+
+241
+00:13:00,655 --> 00:13:02,935
+a bucketized dropoff latitude,
+
+242
+00:13:02,935 --> 00:13:05,040
+and the same thing for the longitudes.
+
+243
+00:13:05,040 --> 00:13:07,815
+Pickup longitude and dropoff longitudes,
+
+244
+00:13:07,815 --> 00:13:09,690
+all of them are bucketized.
+
+245
+00:13:09,690 --> 00:13:12,050
+Once you have them bucketized,
+
+246
+00:13:12,050 --> 00:13:13,475
+what does bucketization do?
+
+247
+00:13:13,475 --> 00:13:17,595
+It discretizes things, it basically takes a numeric value,
+
+248
+00:13:17,595 --> 00:13:21,360
+and makes it categorical because it's in one of those buckets.
+
+249
+00:13:21,360 --> 00:13:23,950
+We take those categorical values,
+
+250
+00:13:23,950 --> 00:13:26,160
+and we feature cross them.
+
+251
+00:13:26,160 --> 00:13:32,810
+So, what happens when we feature cross the pickup latitude and the pickup longitude?
+
+252
+00:13:32,810 --> 00:13:35,110
+So, we have the latitude and we have the longitude,
+
+253
+00:13:35,110 --> 00:13:36,515
+and we feature cross it,
+
+254
+00:13:36,515 --> 00:13:40,470
+we essentially put the pickup location,
+
+255
+00:13:40,470 --> 00:13:43,579
+the grid cell that corresponds the pickup location,
+
+256
+00:13:43,579 --> 00:13:45,585
+that's what ploc is.
+
+257
+00:13:45,585 --> 00:13:47,875
+Ploc is now like a grid cell.
+
+258
+00:13:47,875 --> 00:13:52,280
+Similarly, dloc is a grid cell that corresponds to the dropoff,
+
+259
+00:13:52,280 --> 00:13:55,105
+these are both just grid-cells points.
+
+260
+00:13:55,105 --> 00:14:01,470
+Now, I basically feature cross the pickup location and the dropoff location.
+
+261
+00:14:01,470 --> 00:14:06,105
+So, now we're basically saying that let's learn from
+
+262
+00:14:06,105 --> 00:14:11,305
+all the taxi trips from this location to this location, what do they cost?
+
+263
+00:14:11,305 --> 00:14:13,510
+The only way that we can do this,
+
+264
+00:14:13,510 --> 00:14:15,790
+and this is something that we have to repeat over and over
+
+265
+00:14:15,790 --> 00:14:19,345
+again is that feature crossing is extremely powerful,
+
+266
+00:14:19,345 --> 00:14:25,170
+but this only works if you have enough data because feature crossing is memorization.
+
+267
+00:14:25,170 --> 00:14:30,285
+It's memorization, and it works if you have enough data in each of those buckets.
+
+268
+00:14:30,285 --> 00:14:34,105
+In this case, we have millions of taxicab rides,
+
+269
+00:14:34,105 --> 00:14:37,050
+so we have enough data and we can afford to do this.
+
+270
+00:14:37,050 --> 00:14:40,120
+So, we basically bucketize the pickup longitude,
+
+271
+00:14:40,120 --> 00:14:41,915
+bucketize the dropoff longitude,
+
+272
+00:14:41,915 --> 00:14:43,815
+use it to create the pickup loc,
+
+273
+00:14:43,815 --> 00:14:46,680
+dropoff loc, do the feature cross of those,
+
+274
+00:14:46,680 --> 00:14:49,820
+and now we have the a pick-up dropoff pair,
+
+275
+00:14:49,820 --> 00:14:51,530
+that's a feature cross as well,
+
+276
+00:14:51,530 --> 00:14:54,260
+and then we do the day and hour, again,
+
+277
+00:14:54,260 --> 00:14:57,865
+because traffic depends on the day and the hour,
+
+278
+00:14:57,865 --> 00:15:02,865
+Friday 03:00 PM is different from Wednesday 03:00 PM is different from Sunday 3:00 pm.
+
+279
+00:15:02,865 --> 00:15:09,820
+So, we do that cross and we have to decide on the number of buckets that we want to use.
+
+280
+00:15:10,260 --> 00:15:15,400
+You can choose a number anywhere from twice total number
+
+281
+00:15:15,400 --> 00:15:19,850
+of possible values to the fourth root of the possible number of values.
+
+282
+00:15:19,850 --> 00:15:23,760
+In this case, I'm basically using the total number of values themselves.
+
+283
+00:15:23,760 --> 00:15:26,070
+24 by 7 for the number of buckets,
+
+284
+00:15:26,070 --> 00:15:28,790
+but that is something that you will have to try
+
+285
+00:15:28,790 --> 00:15:31,465
+out and you will have to do hyper-parameter tuning on.
+
+286
+00:15:31,465 --> 00:15:38,990
+There is no right answer here for how many hash buckets you should be using.
+
+287
+00:15:38,990 --> 00:15:41,985
+Then we'll go back and look at all of our data,
+
+288
+00:15:41,985 --> 00:15:45,260
+and say which of these are sparse
+
+289
+00:15:45,260 --> 00:15:49,500
+and categorical and which of these are dense and numeric?
+
+290
+00:15:49,500 --> 00:15:52,310
+The sparse and categorical columns go into
+
+291
+00:15:52,310 --> 00:15:57,545
+the wide part of a network because linear models tend to work well for those,
+
+292
+00:15:57,545 --> 00:16:02,505
+and the dense and numeric columns
+
+293
+00:16:02,505 --> 00:16:04,330
+and embedding columns are an example of
+
+294
+00:16:04,330 --> 00:16:07,020
+dense columns because we've taken the sparse data,
+
+295
+00:16:07,020 --> 00:16:10,460
+and put them into the shoe handed in,
+
+296
+00:16:10,460 --> 00:16:14,675
+those are also useful things that are dense.
+
+297
+00:16:14,675 --> 00:16:18,955
+So, we take all of our sparse columns and we throw them into the white columns,
+
+298
+00:16:18,955 --> 00:16:21,360
+we take all of our dense data,
+
+299
+00:16:21,360 --> 00:16:23,485
+and we throw them into our deep columns,
+
+300
+00:16:23,485 --> 00:16:27,625
+and we create what is called a DNN linear combined regressor.
+
+301
+00:16:27,625 --> 00:16:32,350
+So, this is an extra umph that we're giving to the model, if you wanted,
+
+302
+00:16:32,350 --> 00:16:34,550
+you could have just done a DNN regressor,
+
+303
+00:16:34,550 --> 00:16:37,710
+parsing in all of these things as deep columns,
+
+304
+00:16:37,710 --> 00:16:40,810
+and that would have been fine, but DNN linear combined lets us
+
+305
+00:16:40,810 --> 00:16:44,360
+treat the sparse data differently from the dense data,
+
+306
+00:16:44,360 --> 00:16:48,255
+uses a different optimizer for the sparse versus the dense,
+
+307
+00:16:48,255 --> 00:16:52,755
+it is tuned to this idea that if you have a real-world dataset,
+
+308
+00:16:52,755 --> 00:16:56,550
+some of your features will be dense and some of your features will be sparse,
+
+309
+00:16:56,550 --> 00:17:00,900
+so this is a kind regressor that works very well for that kind of data.
+
+310
+00:17:00,900 --> 00:17:05,685
+So we're doing this, we're parsing in which of our features need a linear model,
+
+311
+00:17:05,685 --> 00:17:08,795
+and which of our features need a deep neural net model,
+
+312
+00:17:08,795 --> 00:17:13,165
+and we specify the number of units that we want for our DNN model.
+
+313
+00:17:13,165 --> 00:17:14,405
+So that's our model,
+
+314
+00:17:14,405 --> 00:17:17,400
+but remember that we talked about feature engineering.
+
+315
+00:17:17,400 --> 00:17:19,200
+We don't want to just take our raw data,
+
+316
+00:17:19,200 --> 00:17:20,750
+we want to add things to it,
+
+317
+00:17:20,750 --> 00:17:23,190
+and we had our feature engineering columns already,
+
+318
+00:17:23,190 --> 00:17:25,160
+the latdiff, londiff, well,
+
+319
+00:17:25,160 --> 00:17:26,570
+this is how you compute them.
+
+320
+00:17:26,570 --> 00:17:29,695
+The latdiff is essentially the difference of the two latitudes,
+
+321
+00:17:29,695 --> 00:17:32,745
+the londiff is the difference of the two longitudes,
+
+322
+00:17:32,745 --> 00:17:38,150
+and then we specify the serving input function,
+
+323
+00:17:38,150 --> 00:17:41,930
+this is what things does the end user have to give us.
+
+324
+00:17:41,930 --> 00:17:45,740
+The end-user does not have to give us a londiff and a latdiff,
+
+325
+00:17:45,740 --> 00:17:47,100
+they don't know how to compute it,
+
+326
+00:17:47,100 --> 00:17:49,125
+they only have to give us a raw data.
+
+327
+00:17:49,125 --> 00:17:52,120
+So, we basically go through all of the input columns,
+
+328
+00:17:52,120 --> 00:17:54,990
+except for the first two
+
+329
+00:17:54,990 --> 00:17:58,085
+which happened to be I think the free and fair amount which is a label,
+
+330
+00:17:58,085 --> 00:18:00,190
+which is obviously not an input,
+
+331
+00:18:00,190 --> 00:18:02,815
+and what is the second one that we are ignoring.
+
+332
+00:18:02,815 --> 00:18:05,105
+We go into our input columns,
+
+333
+00:18:05,105 --> 00:18:08,380
+the second one that we are ignoring,
+
+334
+00:18:08,380 --> 00:18:10,595
+so we are ignoring these two.
+
+335
+00:18:10,595 --> 00:18:14,280
+We're ignoring the day of the week and we're ignoring the hour of the day.
+
+336
+00:18:14,280 --> 00:18:17,980
+Everything else, we're basically taking it,
+
+337
+00:18:17,980 --> 00:18:22,000
+and basically saying that there's all floating point numbers,
+
+338
+00:18:22,000 --> 00:18:23,995
+the day of the week is a string,
+
+339
+00:18:23,995 --> 00:18:26,640
+the hour of the day is an int 32,
+
+340
+00:18:26,640 --> 00:18:30,925
+and we basically use it to create a serving input receiver,
+
+341
+00:18:30,925 --> 00:18:36,160
+but make sure that in addition to the features that the end users give us,
+
+342
+00:18:36,160 --> 00:18:40,860
+we add all of our engineered feature so that our model sees everything.
+
+343
+00:18:40,860 --> 00:18:46,010
+So, at this point then no reading the data is very similar to what we have seen before,
+
+344
+00:18:46,010 --> 00:18:49,200
+the train and evaluate is very similar to what we have seen before,
+
+345
+00:18:49,200 --> 00:18:52,405
+and we can basically go ahead and run this.
+
+346
+00:18:52,405 --> 00:18:54,010
+So let's go back here,
+
+347
+00:18:54,010 --> 00:18:57,995
+and we can try out our model on a smaller dataset,
+
+348
+00:18:57,995 --> 00:19:00,490
+and then we can train it on the cloud.
+
+349
+00:19:00,490 --> 00:19:05,510
+So, we can basically go ahead and do GCloud ML Engine and when you run it,
+
+350
+00:19:05,510 --> 00:19:10,450
+you should get a slightly better RMSE,
+
+351
+00:19:10,450 --> 00:19:13,460
+but this by itself we've gotten a better model.
+
+352
+00:19:13,460 --> 00:19:15,160
+The next thing to do is basically do
+
+353
+00:19:15,160 --> 00:19:18,645
+hyper-parameter tuning to find good parameters of the model.
+
+354
+00:19:18,645 --> 00:19:20,040
+In order to do that,
+
+355
+00:19:20,040 --> 00:19:24,570
+you would basically go ahead and we'll talk about hyper-parameter tuning,
+
+356
+00:19:24,570 --> 00:19:27,840
+where you basically getting the parameters for those models,
+
+357
+00:19:27,840 --> 00:19:30,780
+in this case these turned out to be the best parameters.
+
+358
+00:19:30,780 --> 00:19:32,405
+So, having done that,
+
+359
+00:19:32,405 --> 00:19:35,820
+we can now run this on a much larger dataset.
+
+360
+00:19:35,820 --> 00:19:38,390
+One of the key things about machine learning is that you get
+
+361
+00:19:38,390 --> 00:19:41,060
+the best performance by training on large datasets.
+
+362
+00:19:41,060 --> 00:19:46,320
+So, where earlier I did a dataflow job that would finish in about 10 minutes or so,
+
+363
+00:19:46,320 --> 00:19:47,965
+so that we could get going.
+
+364
+00:19:47,965 --> 00:19:50,390
+We're now going to do a dataflow job that
+
+365
+00:19:50,390 --> 00:19:53,150
+runs for about an hour that creates a much larger,
+
+366
+00:19:53,150 --> 00:19:54,750
+a million row dataset,
+
+367
+00:19:54,750 --> 00:19:57,020
+and then we can train on it,
+
+368
+00:19:57,020 --> 00:19:58,410
+and having done that,
+
+369
+00:19:58,410 --> 00:20:00,910
+you will basically see a much better RMSE.
+
+370
+00:20:00,910 --> 00:20:05,700
+But the key idea here is to basically take your raw data and do
+
+371
+00:20:05,700 --> 00:20:08,294
+feature engineering to bring a human insight
+
+372
+00:20:08,294 --> 00:20:11,635
+into the kinds of things that matter, traffic,
+
+373
+00:20:11,635 --> 00:20:13,490
+the distance of the trips,
+
+374
+00:20:13,490 --> 00:20:17,510
+whether they cross the boundaries,
+
+375
+00:20:17,830 --> 00:20:23,000
+whether they go East-West or North-South etc, the londiff,
+
+376
+00:20:23,000 --> 00:20:25,415
+the latdiff, the Euclidean distance,
+
+377
+00:20:25,415 --> 00:20:29,610
+the feature crosses, all of these are going to help improve our model.

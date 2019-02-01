@@ -1,0 +1,56 @@
+Agora que você entende o que são
+atributos e por que os utilizamos, vamos mostrar como implementar
+cruzamentos de atributos. Para criar um cruzamento de atributos
+usando o TensorFlow, use o método coluna cruzada
+no modelo tf.feature_column. Este é o mesmo modelo que você tem em coluna numérica e coluna categórica
+com lista de vocabulário. Este é o mesmo modelo
+de onde elas vêm. Então, o primeiro argumento no meu
+exemplo é a lista de colunas categóricas. Você está passando em uma lista para poder cruzar duas colunas ou
+três colunas ou qualquer número. Mas lembre-se de que essas colunas
+precisam ser categóricas. Se você tiver dados numéricos, intervale-os primeiro e, em seguida,
+faça um cruzamento de atributos. Quando você intervala
+uma coluna numérica, você basicamente desenha as
+linhas pretas de que falamos. Você está discretizando a coluna. Então, qual é o segundo argumento? 24 vezes 7 é o número total de
+intervalos de hash. O que o TensorFlow faz é
+um cruzamento de atributos, então calcula um hash do
+cruzamento de atributos e coloca o hash em um dos intervalos. Mesmo que eu tenha
+especificado 24 vezes 7 aqui, não há garantia de que
+não haverá colisão. É bem possível que o hash das
+15h na quarta-feira, o modelo 168, seja o mesmo que de
+16h de domingo, modelo 168. Nesse caso, essas duas combinações
+dia-hora serão consideradas juntas. Vamos nos aprofundar um pouco nisso. O TensorFlow pula essas etapas e vai direto para a representação
+do cruzamento de atributo do hash, mas é bom pensar sobre
+o que está acontecendo. Para simplificar, digamos que
+em vez de 24 vezes 7 eu houvesse especificado
+seis. O que acontece? Fazemos o cruzamento de atributos,
+passando em duas colunas categóricas. O dia da semana tem sete
+valores exclusivos. Hora do dia tem 24 valores exclusivos. Portanto, o cruzamento de atributo tem
+24 vezes 7, ou 168 valores exclusivos. Agora considere 15h da quarta-feira. 15h, digamos, é nosso número 15 e quarta-feira, digamos, é o dia número três. Isso faz com que um valor do
+cruzamento de atributo seja, digamos, 87 de 168. Mas, então, eu computo o hash de 87 e
+faço um modelo de seis. Vamos supor que isso me dê a caixa número
+três para esse cruzamento com hash. Isso é o que a coluna do atributo de hora
+e dia vai conter para as 15h na quarta. Um valor com codificação one-hot
+correspondente ao número três. Novamente, o TensorFlow
+não passa, de fato, por isso. Ele não precisa de codificação one-hot
+antes de fazer o cruzamento de atributos. Se fizesse isso, as coisas não seriam
+muito eficientes em termos de memória. Mas isso ajuda a mostrar o que está
+acontecendo conceitualmente. O número de intervalos de hash controla
+a dispersão e as colisões. Se, como fizemos no slide anterior, definirmos os intervalos de
+hash como muito menores que o número de valores de cruzamentos
+de atributos exclusivos, haverá muitas colisões. Talvez 15h de quarta-feira, 19h de quarta-feira,
+2h de quinta-feira etc., todos caem no mesmo intervalo e
+serão tratados da mesma maneira. Em média, um sexto de todos os valores de cruzamento de atributo
+estará no intervalo. Como temos 168 valores exclusivos,
+em média, cada intervalo conterá 28 combinações
+dia-hora diferentes. Por causa disso, o montante ao qual o cruzamento de atributo pode memorizar
+os dados é limitado. Mas a memória usada também
+será bastante baixa, são apenas seis intervalos. De alguma forma, estamos agregando várias
+combinações dia-hora em um intervalo. Mas e se formos para o outro extremo
+e definirmos o número de intervalos de hash tão alto
+que há pouca chance de colisão? Digamos que definimos o número de
+intervalos de hash como 300. Agora, em média, um intervalo conterá uma combinação dia-hora ou
+zero combinação dia-hora. Pode conter duas, mas as chances são muito baixas. Portanto, usar um valor alto para intervalos de hash gera uma representação
+esparsa do cruzamento de atributos. Na prática, tenho a tendência de escolher
+um número entre meia raiz quadrada n e duas vezes n, dependendo de quanto eu
+quero trocar memorização por dispersão, mas isso é simplesmente
+minha regra geral.

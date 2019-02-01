@@ -1,0 +1,1768 @@
+1
+00:00:00,000 --> 00:00:02,062
+J'ai lancé Datalab
+
+2
+00:00:02,062 --> 00:00:06,742
+et j'ai ouvert le bloc-notes
+Python "feateng.ipynb".
+
+3
+00:00:06,742 --> 00:00:08,945
+Nous allons maintenant l'examiner.
+
+4
+00:00:08,945 --> 00:00:11,045
+Dans ce bloc-notes,
+voyons comment utiliser
+
+5
+00:00:11,045 --> 00:00:13,730
+les colonnes de caractéristiques,
+ajouter des croisements
+
+6
+00:00:13,730 --> 00:00:15,495
+de caractéristiques dans TensorFlow,
+
+7
+00:00:15,495 --> 00:00:17,195
+lire des données depuis BigQuery,
+
+8
+00:00:17,195 --> 00:00:19,270
+créer des ensembles
+de données avec Dataflow
+
+9
+00:00:19,270 --> 00:00:21,140
+et utiliser un modèle large et profond.
+
+10
+00:00:21,140 --> 00:00:24,095
+Nous allons donc revoir
+différentes notions vues précédemment.
+
+11
+00:00:24,095 --> 00:00:28,020
+Nous n'avons pas encore parlé du modèle
+large et profond, mais nous y reviendrons.
+
+12
+00:00:28,020 --> 00:00:29,600
+Voilà donc notre problème.
+
+13
+00:00:29,600 --> 00:00:32,505
+Nous avons pour l'instant créé
+un modèle pour les taxis,
+
+14
+00:00:32,505 --> 00:00:35,545
+mais nous n'y avons pas du tout
+intégré d'insights humains.
+
+15
+00:00:35,545 --> 00:00:37,500
+C'est ce que nous allons faire à présent.
+
+16
+00:00:37,500 --> 00:00:41,420
+En gros, nous allons tirer partir
+de certaines de nos connaissances
+
+17
+00:00:41,420 --> 00:00:43,310
+sur le fonctionnement des taxis
+
+18
+00:00:43,310 --> 00:00:45,295
+et l'organisation de New York
+
+19
+00:00:45,295 --> 00:00:48,070
+pour commencer
+à alimenter le modèle en conseils
+
+20
+00:00:48,070 --> 00:00:50,135
+pour qu'il apprenne plus facilement.
+
+21
+00:00:50,135 --> 00:00:51,600
+Pendant l'exercice,
+
+22
+00:00:51,600 --> 00:00:54,700
+je vous dirai d'où provient
+un insight en particulier.
+
+23
+00:00:54,700 --> 00:01:04,700
+Allons-y, commençons en accédant
+d'abord à la partie "import".
+
+24
+00:01:04,700 --> 00:01:06,790
+Modifiez bien votre projet.
+
+25
+00:01:06,790 --> 00:01:10,630
+J'ai modifié mon projet pour le faire
+correspondre à mon projet Qwiklabs,
+
+26
+00:01:10,630 --> 00:01:14,485
+mon bucket pour le faire
+correspondre à mon bucket Qwiklabs
+
+27
+00:01:14,485 --> 00:01:19,430
+et ma région pour la faire correspondre
+à l'endroit où mon code s'exécutera.
+
+28
+00:01:19,430 --> 00:01:22,410
+Exécutons maintenant la requête.
+
+29
+00:01:22,410 --> 00:01:25,730
+La requête effectue un nettoyage.
+
+30
+00:01:25,730 --> 00:01:28,985
+Je vais juste vérifier
+
+31
+00:01:28,985 --> 00:01:32,720
+que les données extraites sont
+bien des distances positives,
+
+32
+00:01:32,720 --> 00:01:35,330
+que "fare_amount" est supérieur à 2,5,
+
+33
+00:01:35,330 --> 00:01:37,140
+que "pickup_longitude",
+
+34
+00:01:37,140 --> 00:01:38,610
+"pickup_latitude", etc.,
+
+35
+00:01:38,610 --> 00:01:40,720
+se situent dans des plages raisonnables,
+
+36
+00:01:40,720 --> 00:01:42,325
+et que le taxi était bien occupé.
+
+37
+00:01:42,325 --> 00:01:45,700
+Nous devons donc vérifier que
+les données collectées pour un trajet
+
+38
+00:01:45,700 --> 00:01:49,885
+en taxi particulier sont correctes, avant
+de les utiliser pour l'entraînement.
+
+39
+00:01:49,885 --> 00:01:52,887
+Je vais diviser mes données
+comme nous l'avons vu précédemment,
+
+40
+00:01:52,887 --> 00:01:54,510
+lorsque nous avons parlé de créer
+
+41
+00:01:54,510 --> 00:01:58,530
+des ensembles de données basés sur
+le hashage des date et heure de ramassage.
+
+42
+00:01:58,530 --> 00:02:00,810
+Après vérification, j'ai créé ma requête
+
+43
+00:02:00,810 --> 00:02:04,940
+qui va additionner
+"tolls_amount" et "fare_amount"
+
+44
+00:02:04,940 --> 00:02:06,270
+pour obtenir "fare_amount".
+
+45
+00:02:06,270 --> 00:02:07,925
+C'est ainsi que nous connaissons
+
+46
+00:02:07,925 --> 00:02:10,510
+le coût total supporté
+par quelqu'un pour une course.
+
+47
+00:02:10,510 --> 00:02:13,825
+La requête doit aussi inclure le jour 
+de la semaine dans "dayofweek".
+
+48
+00:02:13,825 --> 00:02:18,335
+Pourquoi cette donnée ? Nous savons que
+les conditions de circulation diffèrent
+
+49
+00:02:18,335 --> 00:02:20,190
+selon le jour de la semaine.
+
+50
+00:02:20,190 --> 00:02:25,100
+Nous savons que, le vendredi, le trafic
+est plus dense que le dimanche.
+
+51
+00:02:25,100 --> 00:02:30,215
+Nous savons aussi que l'heure de la
+journée est importante, même le vendredi.
+
+52
+00:02:30,215 --> 00:02:36,890
+Le vendredi, le trafic à 2h du matin sera
+sûrement moins dense qu'à 16h.
+
+53
+00:02:36,890 --> 00:02:38,355
+Pourquoi est-ce important ?
+
+54
+00:02:38,355 --> 00:02:40,545
+Parce qu'à New York,
+
+55
+00:02:40,545 --> 00:02:43,355
+et nous le savons grâce
+aux insights humains,
+
+56
+00:02:43,355 --> 00:02:48,310
+les clients payent le temps passé dans
+un taxi en plus de la distance parcourue.
+
+57
+00:02:48,310 --> 00:02:50,630
+Si le taxi est coincé
+dans les embouteillages,
+
+58
+00:02:50,630 --> 00:02:54,135
+ils doivent payer le temps correspondant
+puisqu'ils occupent le taxi
+
+59
+00:02:54,135 --> 00:02:56,850
+et que le chauffeur ne peut pas
+prendre d'autres courses.
+
+60
+00:02:56,850 --> 00:02:58,689
+L'heure est donc importante.
+
+61
+00:02:58,689 --> 00:03:01,570
+Le temps passé dans le taxi
+pendant la course est important.
+
+62
+00:03:01,570 --> 00:03:03,650
+Avant que le trajet commence,
+
+63
+00:03:03,650 --> 00:03:05,790
+nous ne connaissons pas
+la durée de la course.
+
+64
+00:03:05,790 --> 00:03:09,560
+Nous voulons que le modèle
+de machine learning l'apprenne
+
+65
+00:03:09,560 --> 00:03:12,620
+et nous savons qu'un
+facteur clé de la durée
+
+66
+00:03:12,620 --> 00:03:16,370
+d'un trajet est lié au
+moment du ramassage.
+
+67
+00:03:16,370 --> 00:03:20,180
+Pas la dépose, car nous ne savons
+pas quand le client sera déposé,
+
+68
+00:03:20,180 --> 00:03:22,630
+mais nous savons
+quand il sera ramassé.
+
+69
+00:03:22,630 --> 00:03:25,190
+Nous utilisons donc la date 
+et l'heure de ramassage,
+
+70
+00:03:25,190 --> 00:03:29,320
+le jour de la semaine et l'heure du jour
+en tant qu'entrées de notre modèle.
+
+71
+00:03:29,320 --> 00:03:31,730
+Nous savons aussi où
+le client sera ramassé
+
+72
+00:03:31,730 --> 00:03:35,000
+et où il veut être déposé.
+
+73
+00:03:35,000 --> 00:03:37,430
+Nous ne savons pas à
+quelle heure il sera déposé,
+
+74
+00:03:37,430 --> 00:03:39,195
+mais nous connaissons sa destination,
+
+75
+00:03:39,195 --> 00:03:42,290
+donc la longitude et
+la latitude du lieu de dépose.
+
+76
+00:03:42,290 --> 00:03:44,145
+Ces données seront
+aussi nos entrées.
+
+77
+00:03:44,145 --> 00:03:46,520
+Nous allons utiliser
+un nombre de passagers
+
+78
+00:03:46,520 --> 00:03:48,780
+et créer une clé
+
+79
+00:03:48,780 --> 00:03:50,170
+que nous allons utiliser.
+
+80
+00:03:50,180 --> 00:03:53,680
+Cependant, si nous voulons réaliser
+une prédiction par lots, par exemple,
+
+81
+00:03:53,680 --> 00:03:56,505
+nous devrons injecter
+énormément de données dans le modèle.
+
+82
+00:03:56,505 --> 00:04:01,205
+Il est donc utile d'attribuer un ID unique
+à chaque ligne de l'ensemble de données.
+
+83
+00:04:01,205 --> 00:04:05,110
+Nous avons donc une espèce
+d'ID unique pour chaque colonne d'entrées.
+
+84
+00:04:05,110 --> 00:04:10,110
+J'attribue ces ID pour
+toutes les données valides.
+
+85
+00:04:10,110 --> 00:04:11,730
+À ce stade,
+
+86
+00:04:11,730 --> 00:04:14,115
+nous pouvons créer notre
+ensemble de données.
+
+87
+00:04:14,115 --> 00:04:15,890
+Pour ce faire,
+
+88
+00:04:15,890 --> 00:04:20,279
+nous allons supprimer les éventuels
+ensembles de données déjà existants.
+
+89
+00:04:20,279 --> 00:04:26,085
+Après la suppression, nous allons créer
+
+90
+00:04:26,085 --> 00:04:31,190
+un fichier CSV à partir
+de toutes ces colonnes.
+
+91
+00:04:31,190 --> 00:04:35,395
+Nous devons d'abord nous assurer que
+les colonnes affichent bien "fare_amount",
+
+92
+00:04:35,395 --> 00:04:37,690
+"dayofweek", "hourofday", etc.
+
+93
+00:04:37,690 --> 00:04:40,010
+Ce sont les colonnes
+que nous voulons créer.
+
+94
+00:04:40,010 --> 00:04:44,140
+Toutefois, dans l'ensemble de
+données affiché dans BigQuery,
+
+95
+00:04:44,140 --> 00:04:46,650
+"dayofweek" sera un nombre, comme 2.
+
+96
+00:04:46,650 --> 00:04:49,700
+Nous ne voulons pas de nombre,
+car nous ne savons pas à quel jour
+
+97
+00:04:49,700 --> 00:04:51,040
+de la semaine il correspond.
+
+98
+00:04:51,040 --> 00:04:52,280
+La semaine commence-t-elle
+
+99
+00:04:52,280 --> 00:04:53,945
+le dimanche, le lundi ou le mardi ?
+
+100
+00:04:53,945 --> 00:04:55,190
+Nous ne voulons pas
+
+101
+00:04:55,190 --> 00:04:57,365
+que le client se soucie de ça.
+
+102
+00:04:57,365 --> 00:04:59,495
+Nous allons donc remplacer
+
+103
+00:04:59,495 --> 00:05:04,450
+ces nombres par le vrai nom
+des jours de la semaine.
+
+104
+00:05:04,450 --> 00:05:07,950
+Si "dayofweek" affiche 1,
+ce sera dimanche.
+
+105
+00:05:07,950 --> 00:05:09,120
+S'il affiche 2,
+
+106
+00:05:09,120 --> 00:05:10,570
+ce sera lundi, etc.
+
+107
+00:05:10,570 --> 00:05:12,320
+C'est exactement ce que je fais ici.
+
+108
+00:05:12,320 --> 00:05:14,335
+Je prends le résultat de BigQuery,
+
+109
+00:05:14,335 --> 00:05:16,150
+"dayofweek" qui est un nombre,
+
+110
+00:05:16,150 --> 00:05:18,679
+et je le remplace par une chaîne.
+
+111
+00:05:18,679 --> 00:05:23,565
+J'ajoute à présent
+une virgule entre chaque jour
+
+112
+00:05:23,565 --> 00:05:27,985
+et j'ai ainsi le résultat
+de mon fichier CSV.
+
+113
+00:05:27,985 --> 00:05:29,790
+Pour écrire ce résultat,
+
+114
+00:05:29,790 --> 00:05:32,540
+je vais lire ces données
+
+115
+00:05:32,540 --> 00:05:36,180
+depuis BigQuery à l'aide
+de la requête que nous venons de créer
+
+116
+00:05:36,180 --> 00:05:39,920
+et les convertir en CSV à l'aide de la
+fonction que je viens de mentionner.
+
+117
+00:05:39,920 --> 00:05:42,500
+La seule modification
+réalisée est de transformer
+
+118
+00:05:42,500 --> 00:05:45,645
+les jours de la semaine
+de nombres en chaînes.
+
+119
+00:05:45,645 --> 00:05:49,010
+Puis, je les écris dans un
+fichier texte, un fichier CSV.
+
+120
+00:05:49,010 --> 00:05:51,540
+Lorsque j'exécute le code,
+
+121
+00:05:51,540 --> 00:05:56,110
+à ce stade, le code est prétraité.
+
+122
+00:05:56,110 --> 00:05:59,140
+Dans la prochaine cellule,
+
+123
+00:05:59,140 --> 00:06:04,010
+je peux appeler le prétraitement dans
+l'exécuteur Dataflow si je le souhaite
+
+124
+00:06:04,010 --> 00:06:08,620
+ou créer un ensemble de données plus
+petit pour une exécution locale en direct.
+
+125
+00:06:08,620 --> 00:06:12,225
+Dans ce cas, je vais l'exécuter
+dans l'exécuteur Dataflow.
+
+126
+00:06:12,225 --> 00:06:14,295
+L'exécution de cet ensemble
+
+127
+00:06:14,295 --> 00:06:16,585
+va prendre un certain temps.
+
+128
+00:06:16,585 --> 00:06:20,240
+Allons dans la console.
+
+129
+00:06:20,240 --> 00:06:26,015
+Dans l'exécuteur Dataflow,
+nous voyons que la tâche a été lancée.
+
+130
+00:06:26,015 --> 00:06:36,280
+Nous accédons à Dataflow.
+Que se passe-t-il ? Qu'est-ce que ça dit ?
+
+131
+00:06:37,790 --> 00:06:41,152
+Dataflow...
+
+132
+00:06:43,592 --> 00:06:44,515
+Je vois.
+
+133
+00:06:44,515 --> 00:06:48,420
+L'API Dataflow n'a été
+ni utilisée, ni activée.
+
+134
+00:06:48,420 --> 00:06:52,250
+Nous devons donc accéder à cette page.
+
+135
+00:06:52,250 --> 00:06:53,730
+Si vous voyez cette erreur,
+
+136
+00:06:53,730 --> 00:06:58,400
+vous devez accéder à "API et services",
+
+137
+00:06:58,400 --> 00:07:04,895
+"Activer les API et les services".
+
+138
+00:07:04,895 --> 00:07:09,685
+L'API que nous voulons
+activer s'appelle Dataflow.
+
+139
+00:07:09,685 --> 00:07:12,935
+Avec cette recherche,
+nous accédons à l'API Dataflow.
+
+140
+00:07:12,935 --> 00:07:16,445
+Activons maintenant cette API.
+
+141
+00:07:16,445 --> 00:07:20,810
+Une fois l'API activée,
+
+142
+00:07:21,940 --> 00:07:24,415
+patientons le temps de l'activation.
+
+143
+00:07:24,415 --> 00:07:27,230
+Nous devrions pouvoir exécuter
+à nouveau cette cellule.
+
+144
+00:07:27,230 --> 00:07:29,560
+Parfait, l'API est activée.
+
+145
+00:07:29,560 --> 00:07:37,260
+Retournons dans le bloc-notes Datalab,
+puis exécutons à nouveau cette cellule.
+
+146
+00:07:37,750 --> 00:07:44,240
+Cette fois,
+normalement, elle va se lancer.
+
+147
+00:07:44,240 --> 00:07:46,865
+Parfait, la voilà lancée.
+
+148
+00:07:46,865 --> 00:07:56,260
+Je peux à présent retourner
+sur "Dataflow" dans le menu.
+
+149
+00:07:56,260 --> 00:07:59,155
+Vous voyez que ce code
+est en cours d'exécution.
+
+150
+00:07:59,155 --> 00:08:01,235
+L'exécution va prendre un certain temps.
+
+151
+00:08:01,235 --> 00:08:02,955
+Une fois l'exécution terminée,
+
+152
+00:08:02,955 --> 00:08:05,355
+sur le cloud, dans votre bucket,
+
+153
+00:08:05,355 --> 00:08:11,220
+vous disposerez de fichiers
+à utiliser pour l'entraînement.
+
+154
+00:08:13,630 --> 00:08:16,830
+Descendons un peu.
+
+155
+00:08:17,560 --> 00:08:22,525
+Voici une façon
+de faire. Voyons...
+
+156
+00:08:22,525 --> 00:08:24,820
+Attendons la fin de l'exécution.
+
+157
+00:08:24,820 --> 00:08:26,665
+Une fois terminée,
+
+158
+00:08:26,665 --> 00:08:28,105
+nous pourrons revenir.
+
+159
+00:08:28,105 --> 00:08:29,695
+Je vais arrêter un peu la vidéo,
+
+160
+00:08:29,695 --> 00:08:35,289
+puis nous reviendrons et commencerons
+une fois la tâche Dataflow terminée.
+
+161
+00:08:35,289 --> 00:08:39,565
+L'exécution de cette tâche a pris
+8 minutes de mon côté,
+
+162
+00:08:39,565 --> 00:08:41,520
+la dernière étape a abouti
+
+163
+00:08:41,520 --> 00:08:42,735
+et, à ce stade,
+
+164
+00:08:42,735 --> 00:08:45,380
+le nombre de nœuds
+de calcul diminue à nouveau.
+
+165
+00:08:45,380 --> 00:08:49,480
+Bien sûr, votre kilométrage dépendra du
+nombre de nœuds de calcul disponibles
+
+166
+00:08:49,480 --> 00:08:52,625
+et du nombre de ces nœuds
+réellement utilisés pour cette tâche.
+
+167
+00:08:52,625 --> 00:08:56,260
+Toutefois, une fois
+la tâche terminée, vous pouvez retourner
+
+168
+00:08:56,260 --> 00:09:01,110
+dans le bloc-notes et vérifier
+l'existence des fichiers de sortie.
+
+169
+00:09:01,110 --> 00:09:02,640
+C'est ce que je fais ici,
+
+170
+00:09:02,640 --> 00:09:05,490
+j'exécute GS sur "gsutil ls"
+
+171
+00:09:05,490 --> 00:09:09,375
+dans le bucket, et nous voyons
+qu'il y a un fichier "train.csv"
+
+172
+00:09:09,375 --> 00:09:11,395
+et un fichier "valid.csv".
+
+173
+00:09:11,395 --> 00:09:15,620
+Nous avons donc un fichier de validation
+et un fichier d'entraînement.
+
+174
+00:09:15,620 --> 00:09:19,050
+Nous pouvons aussi
+utiliser la commande "cat",
+
+175
+00:09:19,050 --> 00:09:23,380
+une commande Unix qui
+dresse une liste de quelques lignes.
+
+176
+00:09:23,430 --> 00:09:27,690
+En fait, elle dresse la liste de toutes
+les lignes et les place devant.
+
+177
+00:09:27,690 --> 00:09:29,830
+J'obtiens ainsi
+les quelques premières lignes,
+
+178
+00:09:29,830 --> 00:09:32,585
+et nous pouvons voir que, comme prévu,
+
+179
+00:09:32,585 --> 00:09:34,970
+le jour de la semaine apparaît
+en tant que chaîne :
+
+180
+00:09:34,970 --> 00:09:37,035
+"Fri" (vendredi), "Wed" (mercredi), etc.
+
+181
+00:09:37,035 --> 00:09:39,640
+Nous avons ensuite
+les latitudes, les longitudes,
+
+182
+00:09:39,640 --> 00:09:41,610
+et les lieux
+de ramassage et de dépose.
+
+183
+00:09:41,610 --> 00:09:45,070
+Nous avons également un dernier élément :
+
+184
+00:09:45,070 --> 00:09:48,890
+la dernière colonne est une clé que
+nous allons ignorer dans notre modèle.
+
+185
+00:09:48,890 --> 00:09:51,355
+Cependant, elle est là
+si nous voulons un ID unique
+
+186
+00:09:51,355 --> 00:09:53,820
+pour chaque ligne
+de notre ensemble de données.
+
+187
+00:09:53,820 --> 00:09:55,575
+Donc, nous avons ce fichier
+
+188
+00:09:55,575 --> 00:09:58,930
+et nous pouvons à présent l'utiliser
+pour développer notre modèle.
+
+189
+00:09:58,930 --> 00:10:02,370
+Pour réaliser notre développement,
+
+190
+00:10:02,370 --> 00:10:05,945
+il est plus pratique de ne pas avoir
+à retourner chaque fois dans le cloud.
+
+191
+00:10:05,945 --> 00:10:08,120
+Je crée donc un répertoire appelé
+
+192
+00:10:08,120 --> 00:10:12,360
+"sample" et je ne copie
+que l'un des fichiers dedans.
+
+193
+00:10:12,360 --> 00:10:14,025
+Comme nos fichiers sont raccourcis,
+
+194
+00:10:14,025 --> 00:10:21,280
+j'en copie seulement la première partie
+dans mon répertoire local "sample".
+
+195
+00:10:21,280 --> 00:10:29,215
+Ensuite, nous pouvons observer notre code.
+
+196
+00:10:29,215 --> 00:10:30,870
+Pour ce faire,
+
+197
+00:10:30,870 --> 00:10:32,710
+nous pouvons aller dans le bloc-notes,
+
+198
+00:10:32,710 --> 00:10:34,245
+mais faisons-le en dehors.
+
+199
+00:10:34,245 --> 00:10:36,700
+Nous avons notre fichier "taxifare".
+
+200
+00:10:36,700 --> 00:10:39,525
+Dans ce fichier,
+comme précédemment,
+
+201
+00:10:39,525 --> 00:10:41,335
+nous avons un fichier "trainer"
+
+202
+00:10:41,335 --> 00:10:44,830
+et, comme précédemment, nous avons
+les fichiers "model.py" et "tasks.py".
+
+203
+00:10:44,830 --> 00:10:47,070
+Toutefois, dans ce cas, "model.py"
+
+204
+00:10:47,070 --> 00:10:49,700
+ne contient pas simplement
+des données d'entrée brutes,
+
+205
+00:10:49,700 --> 00:10:52,460
+mais aussi des données
+d'extraction de caractéristiques.
+
+206
+00:10:52,460 --> 00:10:55,910
+Voici donc les colonnes. Vous remarquez
+
+207
+00:10:55,910 --> 00:10:59,680
+des colonnes supplémentaires par rapport
+à celles que nous avons déjà ajoutées.
+
+208
+00:10:59,680 --> 00:11:00,820
+Nous avons "dayofweek",
+
+209
+00:11:00,820 --> 00:11:02,645
+"hourofday", etc.
+
+210
+00:11:02,645 --> 00:11:07,725
+Décidons qu'elles représentent
+les colonnes d'entrée.
+
+211
+00:11:07,725 --> 00:11:11,320
+La colonne "dayofweek" contient
+une liste de vocabulaire,
+
+212
+00:11:11,320 --> 00:11:14,030
+"Sun", "Mon", "Tues", etc.,
+tous les jours de la semaine.
+
+213
+00:11:14,030 --> 00:11:17,805
+"hourofday" est également
+une colonne catégorique,
+
+214
+00:11:17,805 --> 00:11:20,260
+mais elle dispose d'une identité.
+
+215
+00:11:20,260 --> 00:11:23,320
+En d'autres termes, elle constitue
+déjà un nombre mis en entier,
+
+216
+00:11:23,320 --> 00:11:24,640
+1, 2, 3, 4, etc.
+
+217
+00:11:24,640 --> 00:11:27,450
+Nous avons ensuite des colonnes
+numériques pour la longitude
+
+218
+00:11:27,450 --> 00:11:29,370
+et la latitude de ramassage, la latitude
+
+219
+00:11:29,370 --> 00:11:31,250
+et la longitude de dépose, etc.
+
+220
+00:11:31,250 --> 00:11:35,805
+Puis, je vais aussi créer
+des colonnes extraites.
+
+221
+00:11:35,805 --> 00:11:39,110
+Nous verrons cela plus tard dans le code.
+
+222
+00:11:39,110 --> 00:11:42,529
+Les colonnes extraites vont
+représenter la différence de latitude.
+
+223
+00:11:42,529 --> 00:11:44,260
+Pourquoi est-ce important ?
+
+224
+00:11:44,260 --> 00:11:48,835
+Cette différence indique si vous devez
+aller au nord ou au sud de Manhattan.
+
+225
+00:11:48,835 --> 00:11:54,470
+Elle donne donc une idée de l'amplitude
+du changement de latitude pour une course.
+
+226
+00:11:54,470 --> 00:11:56,890
+La différence de longitude est très utile,
+
+227
+00:11:56,890 --> 00:11:59,320
+car New York n'est pas étendue au sud,
+
+228
+00:11:59,320 --> 00:12:06,165
+et tous les ponts à péage permettent
+de se déplacer sur de grandes longitudes.
+
+229
+00:12:06,165 --> 00:12:09,270
+Il est donc aussi utile
+de connaître la différence de longitude.
+
+230
+00:12:09,270 --> 00:12:13,485
+J'ai inclus une distance euclidienne,
+dite distance à vol d'oiseau,
+
+231
+00:12:13,485 --> 00:12:16,510
+entre le lieu
+de ramassage et le lieu de dépose.
+
+232
+00:12:16,510 --> 00:12:18,935
+Cette fonctionnalité est
+plutôt utile elle aussi,
+
+233
+00:12:18,935 --> 00:12:21,840
+car, grâce à elle, le modèle
+n'a pas à apprendre les distances
+
+234
+00:12:21,840 --> 00:12:24,100
+vu que la distance est déjà indiquée.
+
+235
+00:12:24,100 --> 00:12:26,900
+Ainsi, nous réalisons cette
+extraction de caractéristiques
+
+236
+00:12:26,900 --> 00:12:29,615
+et nous sommes prêts à
+construire notre Estimator.
+
+237
+00:12:29,615 --> 00:12:33,315
+Dans notre Estimator,
+nous prenons toutes nos colonnes d'entrée.
+
+238
+00:12:33,315 --> 00:12:35,660
+Voici les colonnes d'entrée
+dont nous disposons.
+
+239
+00:12:35,660 --> 00:12:38,252
+Comme pour l'exercice
+d'extraction de caractéristiques
+
+240
+00:12:38,252 --> 00:12:40,845
+sur l'ensemble
+de données sur les maisons,
+
+241
+00:12:40,845 --> 00:12:44,270
+nous catégorisons les buckets
+de latitude et de longitude.
+
+242
+00:12:44,270 --> 00:12:50,265
+Nous prenons donc la latitude de
+ramassage compartimentée entre 38 et 42,
+
+243
+00:12:50,265 --> 00:12:55,150
+et la longitude compartimentée entre
+-76 et -72, car nous sommes à New York
+
+244
+00:12:55,150 --> 00:12:57,130
+et que ce sont les limites de la ville.
+
+245
+00:12:57,130 --> 00:13:00,655
+Nous obtenons ainsi une latitude
+de ramassage compartimentée,
+
+246
+00:13:00,655 --> 00:13:02,935
+une latitude de dépose compartimentée
+
+247
+00:13:02,935 --> 00:13:05,040
+et la même chose pour les longitudes.
+
+248
+00:13:05,040 --> 00:13:07,815
+Les longitudes de ramassage et de dépose
+
+249
+00:13:07,815 --> 00:13:09,690
+sont toutes compartimentées.
+
+250
+00:13:09,690 --> 00:13:12,050
+Une fois ces données compartimentées,
+
+251
+00:13:12,050 --> 00:13:13,875
+à quoi sert cette compartimentation ?
+
+252
+00:13:13,875 --> 00:13:17,595
+Elle permet la discrétisation d'éléments.
+Elle prend une valeur numérique
+
+253
+00:13:17,595 --> 00:13:19,477
+et la transforme en valeur catégorique,
+
+254
+00:13:19,477 --> 00:13:21,730
+car celle-ci se trouve
+dans un de ses buckets.
+
+255
+00:13:21,730 --> 00:13:23,950
+Nous prenons ces valeurs catégoriques
+
+256
+00:13:23,950 --> 00:13:26,160
+et nous en croisons les caractéristiques.
+
+257
+00:13:26,160 --> 00:13:32,810
+Que se passe-t-il pour la latitude
+et la longitude de ramassage ?
+
+258
+00:13:32,810 --> 00:13:34,870
+Nous avons donc la
+latitude et la longitude,
+
+259
+00:13:34,870 --> 00:13:36,825
+et nous en croisons les caractéristiques.
+
+260
+00:13:36,825 --> 00:13:40,470
+Ce que nous faisons donc est
+de prendre le lieu de ramassage,
+
+261
+00:13:40,470 --> 00:13:43,579
+la cellule de la grille
+qui correspond au lieu de ramassage.
+
+262
+00:13:43,579 --> 00:13:45,585
+Cela correspond à "ploc".
+
+263
+00:13:45,585 --> 00:13:47,875
+"ploc" est comme une cellule de la grille.
+
+264
+00:13:47,875 --> 00:13:52,280
+"dloc" est aussi une cellule de la grille
+qui correspond au lieu de dépose.
+
+265
+00:13:52,280 --> 00:13:55,105
+Ces deux éléments correspondent
+à des points de la grille.
+
+266
+00:13:55,105 --> 00:14:01,470
+Je croise à présent les caractéristiques
+du lieu de ramassage et du lieu de dépose.
+
+267
+00:14:01,470 --> 00:14:06,105
+Nous voulons en fait
+apprendre le coût du trajet
+
+268
+00:14:06,105 --> 00:14:11,305
+de toutes les courses en taxi
+depuis ce lieu vers cet autre lieu.
+
+269
+00:14:11,305 --> 00:14:13,510
+Le seul moyen de réaliser cela,
+
+270
+00:14:13,510 --> 00:14:16,320
+et c'est un calcul que nous devons
+répéter encore et encore,
+
+271
+00:14:16,320 --> 00:14:19,515
+est par le croisement
+de caractéristiques, un outil puissant,
+
+272
+00:14:19,515 --> 00:14:22,882
+mais qui ne fonctionne que si
+vous disposez de suffisamment de données,
+
+273
+00:14:22,882 --> 00:14:25,170
+car le croisement est de la mémorisation.
+
+274
+00:14:25,170 --> 00:14:30,285
+La mémorisation fonctionne s'il y a
+assez de données dans chaque bucket.
+
+275
+00:14:30,285 --> 00:14:34,105
+Dans notre cas, il y a
+des millions de courses en taxi,
+
+276
+00:14:34,105 --> 00:14:37,050
+nous avons donc assez
+de données pour utiliser cet outil.
+
+277
+00:14:37,050 --> 00:14:40,120
+Nous compartimentons donc
+la longitude de ramassage
+
+278
+00:14:40,120 --> 00:14:41,915
+et la longitude de dépose,
+
+279
+00:14:41,915 --> 00:14:44,225
+puis nous utilisons
+ces données pour créer "ploc"
+
+280
+00:14:44,225 --> 00:14:46,680
+et "dloc",
+et croisons les caractéristiques,
+
+281
+00:14:46,680 --> 00:14:49,820
+puis nous obtenons une paire
+ramassage/dépose,
+
+282
+00:14:49,820 --> 00:14:52,130
+qui est aussi un croisement
+de caractéristiques.
+
+283
+00:14:52,130 --> 00:14:54,990
+Ensuite, nous nous occupons
+du jour et de l'heure à nouveau,
+
+284
+00:14:54,990 --> 00:14:57,865
+car le trafic dépend
+du jour et de l'heure.
+
+285
+00:14:57,865 --> 00:15:02,865
+15h un vendredi diffère de 15h un
+mercredi, qui diffère de 15h un dimanche.
+
+286
+00:15:02,865 --> 00:15:10,230
+Nous réalisons ce croisement et
+décidons du nombre de buckets à utiliser.
+
+287
+00:15:10,260 --> 00:15:15,400
+Vous pouvez choisir n'importe quel nombre
+entre deux fois le nombre total
+
+288
+00:15:15,400 --> 00:15:19,850
+de valeurs possibles et la racine 4e
+du nombre possible de valeurs.
+
+289
+00:15:19,850 --> 00:15:23,760
+Dans ce cas, je vais utiliser le nombre
+total de valeurs elles-mêmes,
+
+290
+00:15:23,760 --> 00:15:26,070
+donc 24 x 7 pour le nombre de buckets.
+
+291
+00:15:26,070 --> 00:15:28,790
+Mais c'est un calcul
+que vous devrez tester
+
+292
+00:15:28,790 --> 00:15:31,465
+et sur lequel vous devrez
+régler les hyperparamètres.
+
+293
+00:15:31,465 --> 00:15:38,990
+Le nombre de buckets de hachage
+à utiliser est à définir au cas par cas.
+
+294
+00:15:38,990 --> 00:15:41,985
+Retournons observer nos données,
+
+295
+00:15:41,985 --> 00:15:45,260
+et indiquer celles qui sont éparses
+
+296
+00:15:45,260 --> 00:15:49,500
+et catégoriques, et celles qui
+sont denses et numériques.
+
+297
+00:15:49,500 --> 00:15:53,950
+Les colonnes éparses et catégoriques sont
+placées dans la partie large d'un réseau,
+
+298
+00:15:53,950 --> 00:15:57,545
+car, en général, pour ces données, les
+modèles linéaires fonctionnent bien.
+
+299
+00:15:57,545 --> 00:16:02,505
+Les colonnes denses et numériques,
+
+300
+00:16:02,505 --> 00:16:04,360
+les colonnes intégrées étant un exemple
+
+301
+00:16:04,360 --> 00:16:07,160
+de colonnes denses, car nous
+avons pris les données éparses
+
+302
+00:16:07,160 --> 00:16:10,460
+et les avons placées ensemble,
+
+303
+00:16:10,460 --> 00:16:14,675
+sont aussi très utiles.
+
+304
+00:16:14,675 --> 00:16:18,955
+Nous prenons toutes nos colonnes éparses
+et les plaçons dans "wide_columns".
+
+305
+00:16:18,955 --> 00:16:21,360
+Nous prenons toutes nos données denses
+
+306
+00:16:21,360 --> 00:16:23,485
+et les plaçons dans nos "deep_columns",
+
+307
+00:16:23,485 --> 00:16:27,625
+et nous créons ce qu'on appelle un
+régresseur DNN linéaire combiné.
+
+308
+00:16:27,625 --> 00:16:31,330
+C'est un moment de réflexion en plus
+que nous accordons à notre modèle.
+
+309
+00:16:31,330 --> 00:16:34,550
+Si vous l'aviez voulu, vous auriez pu
+créer un simple régresseur DNN
+
+310
+00:16:34,550 --> 00:16:37,710
+qui aurait analysé tous les éléments
+en tant que "deep_columns",
+
+311
+00:16:37,710 --> 00:16:38,825
+et cela aurait suffi.
+
+312
+00:16:38,825 --> 00:16:41,240
+Mais un régresseur DNN
+linéaire combiné nous permet
+
+313
+00:16:41,240 --> 00:16:44,360
+de traiter les données éparses
+différemment des données denses.
+
+314
+00:16:44,360 --> 00:16:48,255
+Il utilise un optimiseur différent pour
+les données éparses et les données denses.
+
+315
+00:16:48,255 --> 00:16:52,755
+Il est conçu autour de l'idée que, si vous
+avez un ensemble de données réelles,
+
+316
+00:16:52,755 --> 00:16:56,550
+certaines de vos caractéristiques seront
+denses et d'autres seront éparses.
+
+317
+00:16:56,550 --> 00:17:00,900
+C'est donc un bon régresseur qui
+fonctionne bien avec ce type de données.
+
+318
+00:17:00,900 --> 00:17:04,625
+Analysons les caractéristiques
+pour savoir lesquelles ont besoin
+
+319
+00:17:04,625 --> 00:17:08,795
+d'un modèle linéaire, et lesquelles
+ont besoin d'un modèle DNN.
+
+320
+00:17:08,795 --> 00:17:13,165
+Précisons ensuite le nombre d'unités
+souhaitées pour notre modèle DNN.
+
+321
+00:17:13,165 --> 00:17:14,205
+Voilà notre modèle.
+
+322
+00:17:14,205 --> 00:17:17,730
+Cependant, rappelez-vous que nous parlons
+d'extraction de caractéristiques.
+
+323
+00:17:17,730 --> 00:17:19,570
+Nous ne voulons pas de données brutes,
+
+324
+00:17:19,570 --> 00:17:21,190
+nous voulons y ajouter des choses.
+
+325
+00:17:21,190 --> 00:17:24,070
+Nous avons déjà nos colonnes
+d'extraction de caractéristiques
+
+326
+00:17:24,070 --> 00:17:25,160
+"latdiff", "longdiff".
+
+327
+00:17:25,160 --> 00:17:26,569
+Voilà comment les calculer.
+
+328
+00:17:26,569 --> 00:17:29,695
+"latdiff" est la différence
+entre les deux latitudes,
+
+329
+00:17:29,695 --> 00:17:32,745
+"longdiff" est la différence
+entre les deux longitudes.
+
+330
+00:17:32,745 --> 00:17:38,150
+Puis, nous précisons
+la fonction d'entrée de diffusion.
+
+331
+00:17:38,150 --> 00:17:41,930
+Elle correspond aux éléments
+fournis par l'utilisateur final.
+
+332
+00:17:41,930 --> 00:17:45,740
+L'utilisateur final n'a pas besoin de
+nous donner "longdiff" et "latdiff".
+
+333
+00:17:45,740 --> 00:17:47,100
+Il ne sait pas les calculer.
+
+334
+00:17:47,100 --> 00:17:49,245
+Il doit juste fournir des données brutes.
+
+335
+00:17:49,245 --> 00:17:52,120
+Nous parcourons
+toutes les colonnes d'entrée
+
+336
+00:17:52,120 --> 00:17:54,990
+à part les deux premières,
+
+337
+00:17:54,990 --> 00:17:58,085
+qui correspondent au montant
+de la course et donc à un libellé,
+
+338
+00:17:58,085 --> 00:18:00,320
+et ne sont donc pas des données d'entrée.
+
+339
+00:18:00,320 --> 00:18:02,985
+Quelle est la deuxième colonne
+que nous devons ignorer ?
+
+340
+00:18:02,985 --> 00:18:05,105
+Examinons nos colonnes d'entrée,
+
+341
+00:18:05,105 --> 00:18:08,380
+la deuxième que nous ignorons,
+
+342
+00:18:08,380 --> 00:18:10,595
+nous ignorons donc ces deux-là.
+
+343
+00:18:10,595 --> 00:18:14,280
+Nous ignorons le jour
+de la semaine et l'heure de la journée.
+
+344
+00:18:14,280 --> 00:18:17,980
+Nous prenons tout le reste
+
+345
+00:18:17,980 --> 00:18:22,000
+et disons que tous sont
+des nombres à virgule flottante.
+
+346
+00:18:22,000 --> 00:18:23,995
+Le jour de la semaine est une chaîne,
+
+347
+00:18:23,995 --> 00:18:26,640
+l'heure de la journée est un int32,
+
+348
+00:18:26,640 --> 00:18:30,925
+et nous utilisons ces éléments pour
+créer un récepteur d'entrée de diffusion.
+
+349
+00:18:30,925 --> 00:18:36,160
+En plus des caractéristiques fournies
+par l'utilisateur final, assurez-vous que
+
+350
+00:18:36,160 --> 00:18:40,860
+nos colonnes extraites ont été ajoutées
+pour que notre modèle puisse tout voir.
+
+351
+00:18:40,860 --> 00:18:46,010
+À ce stade, la lecture des données est
+semblable à ce que nous avons déjà vu,
+
+352
+00:18:46,010 --> 00:18:49,200
+les éléments d'entraînement et
+d'évaluation également.
+
+353
+00:18:49,200 --> 00:18:52,405
+Exécutons maintenant ce code.
+
+354
+00:18:52,405 --> 00:18:54,010
+Retournons ici
+
+355
+00:18:54,010 --> 00:18:57,995
+et testons notre modèle
+sur un ensemble de données plus petit,
+
+356
+00:18:57,995 --> 00:19:00,490
+pour pouvoir ensuite
+l'entraîner dans le cloud.
+
+357
+00:19:00,490 --> 00:19:05,510
+Exécutons la commande
+"gcloud ml-engine". Nous obtenons ainsi
+
+358
+00:19:05,510 --> 00:19:10,450
+une racine carrée
+de l'erreur quadratique moyenne améliorée,
+
+359
+00:19:10,450 --> 00:19:13,460
+et aussi un modèle plus efficace.
+
+360
+00:19:13,460 --> 00:19:16,480
+Il nous faut ensuite
+régler les hyperparamètres
+
+361
+00:19:16,480 --> 00:19:18,645
+pour trouver
+les paramètres adaptés au modèle.
+
+362
+00:19:18,645 --> 00:19:20,040
+Pour faire cela,
+
+363
+00:19:20,040 --> 00:19:24,570
+nous parlerons bientôt
+du réglage des hyperparamètres,
+
+364
+00:19:24,570 --> 00:19:27,840
+qui consistent à obtenir
+les paramètres adaptés à ces modèles.
+
+365
+00:19:27,840 --> 00:19:30,780
+Dans ce cas-là, ces paramètres
+sont les meilleurs possible.
+
+366
+00:19:30,780 --> 00:19:32,405
+Une fois ceux-ci réglés,
+
+367
+00:19:32,405 --> 00:19:35,980
+nous pouvons exécuter le modèle
+sur un ensemble de données plus grand.
+
+368
+00:19:35,980 --> 00:19:38,780
+Un élément clé du machine learning
+est que les performances
+
+369
+00:19:38,780 --> 00:19:41,210
+sont meilleures avec de
+grands ensembles de données.
+
+370
+00:19:41,210 --> 00:19:46,320
+Auparavant, j'ai lancé
+une tâche qui a pris environ 10 minutes
+
+371
+00:19:46,320 --> 00:19:47,965
+pour pouvoir continuer.
+
+372
+00:19:47,965 --> 00:19:50,390
+Nous allons à présent
+lancer une tâche Dataflow
+
+373
+00:19:50,390 --> 00:19:52,010
+qui prend environ une heure
+
+374
+00:19:52,010 --> 00:19:53,920
+et permet de créer
+un ensemble de données
+
+375
+00:19:53,920 --> 00:19:56,060
+bien plus grand, avec
+des millions de lignes,
+
+376
+00:19:56,060 --> 00:19:57,300
+pour l'entraîner ensuite.
+
+377
+00:19:57,300 --> 00:19:58,980
+Après cela, vous devriez constater
+
+378
+00:19:58,980 --> 00:20:02,090
+une bien meilleure racine carrée
+de l'erreur quadratique moyenne.
+
+379
+00:20:02,090 --> 00:20:05,120
+L'idée essentielle ici est
+de réaliser, avec vos données brutes,
+
+380
+00:20:05,120 --> 00:20:08,594
+une extraction de caractéristiques visant
+à injecter des insights humains
+
+381
+00:20:08,594 --> 00:20:11,635
+dans les éléments importants
+comme le trafic,
+
+382
+00:20:11,635 --> 00:20:13,490
+la distance des trajets,
+
+383
+00:20:13,490 --> 00:20:17,830
+le passage ou non de frontières,
+
+384
+00:20:17,830 --> 00:20:23,000
+la direction prise (est-ouest,
+nord-sud, etc.), la "longdiff",
+
+385
+00:20:23,000 --> 00:20:25,415
+la "latdiff", la distance euclidienne,
+
+386
+00:20:25,415 --> 00:20:29,610
+les croisements de caractéristiques, etc.,
+qui nous aident à améliorer notre modèle.

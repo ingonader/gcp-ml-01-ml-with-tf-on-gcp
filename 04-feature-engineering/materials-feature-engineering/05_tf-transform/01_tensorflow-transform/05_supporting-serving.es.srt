@@ -1,0 +1,284 @@
+1
+00:00:00,300 --> 00:00:02,320
+Usamos una función de transformación
+
+2
+00:00:02,380 --> 00:00:04,720
+para transformar
+un conjunto de datos de evaluación
+
+3
+00:00:04,820 --> 00:00:07,750
+y escribimos
+los datos de evaluación transformados.
+
+4
+00:00:08,830 --> 00:00:12,890
+¿Para qué tipo de datos usamos
+AnalyzeAndTransformDataset?
+
+5
+00:00:14,670 --> 00:00:16,530
+Correcto, los datos de entrenamiento.
+
+6
+00:00:16,940 --> 00:00:20,700
+Usamos TransformDataset
+para los datos de evaluación.
+
+7
+00:00:21,450 --> 00:00:25,300
+A pesar de que creamos las funciones
+de preprocesamiento con Beam
+
+8
+00:00:26,060 --> 00:00:30,460
+el método de preprocesamiento
+no puede tener código Python arbitrario.
+
+9
+00:00:30,790 --> 00:00:34,820
+Debe tener solo funciones de TensorFlow.
+
+10
+00:00:35,520 --> 00:00:38,785
+La razón por la que estas funciones
+tenían que estar en TensorFlow
+
+11
+00:00:39,165 --> 00:00:41,710
+es que son parte
+del gráfico de predicción.
+
+12
+00:00:42,440 --> 00:00:44,475
+¿Por qué son parte de este gráfico?
+
+13
+00:00:45,085 --> 00:00:48,569
+Para que el usuario final
+le suministre datos sin procesar al modelo
+
+14
+00:00:48,939 --> 00:00:51,725
+para que este haga
+el preprocesamiento necesario.
+
+15
+00:00:52,765 --> 00:00:55,400
+Pero, ¿cómo sabrá el modelo
+a qué funciones debe llamar?
+
+16
+00:00:56,270 --> 00:00:59,600
+Para que el modelo sepa
+a qué funciones debe llamar
+
+17
+00:01:00,150 --> 00:01:02,560
+debemos guardar
+la función de transformación.
+
+18
+00:01:03,020 --> 00:01:04,915
+Eso es lo que hago aquí.
+
+19
+00:01:05,405 --> 00:01:08,150
+Guardo la función de transformación
+
+20
+00:01:08,640 --> 00:01:11,667
+en un directorio llamado "metadata"
+
+21
+00:01:11,997 --> 00:01:14,185
+junto con el modelo entrenado.
+
+22
+00:01:15,475 --> 00:01:19,615
+Luego, le pedimos a la función de entrada
+que lea los metadatos.
+
+23
+00:01:20,845 --> 00:01:22,217
+¿Cuál función de entrada?
+
+24
+00:01:23,407 --> 00:01:24,520
+Las tres.
+
+25
+00:01:25,300 --> 00:01:29,085
+Primero, veamos las funciones de entrada
+de entrenamiento y evaluación.
+
+26
+00:01:30,075 --> 00:01:32,075
+Leen las funciones preprocesadas.
+
+27
+00:01:32,835 --> 00:01:34,620
+Note que especifiqué
+
+28
+00:01:34,620 --> 00:01:39,040
+que el esquema corresponde
+a los metadatos transformados.
+
+29
+00:01:40,430 --> 00:01:43,405
+Cambie las funciones de entrada
+de entrenamiento y evaluación
+
+30
+00:01:43,655 --> 00:01:45,730
+para que lean las funciones preprocesadas.
+
+31
+00:01:47,515 --> 00:01:51,475
+TensorFlow Transform tiene
+una función de ayuda
+
+32
+00:01:51,805 --> 00:01:54,240
+llamada "build_training_input_fn".
+
+33
+00:01:55,200 --> 00:01:58,425
+La uso tanto para el entrenamiento
+como para la evaluación.
+
+34
+00:01:59,015 --> 00:02:01,490
+Para eso, cambio 
+la variable "input_paths".
+
+35
+00:02:01,750 --> 00:02:04,475
+para que conduzca
+a train_data_path
+
+36
+00:02:04,715 --> 00:02:06,340
+o a eval_data_path
+
+37
+00:02:06,650 --> 00:02:07,860
+según el modo.
+
+38
+00:02:10,370 --> 00:02:13,715
+La función entrante de entrega
+acepta los datos sin procesar.
+
+39
+00:02:14,705 --> 00:02:18,160
+Aquí, paso los metadatos
+de los datos sin procesar
+
+40
+00:02:18,460 --> 00:02:20,780
+no los metadatos transformados.
+
+41
+00:02:21,200 --> 00:02:23,840
+Cuando los datos sin procesar
+por si solos no son suficiente
+
+42
+00:02:24,330 --> 00:02:27,750
+también podemos tener
+funciones arbitrarias de TensorFlow
+
+43
+00:02:27,750 --> 00:02:29,500
+en el código de preprocesamiento.
+
+44
+00:02:29,850 --> 00:02:33,910
+Estas operaciones
+se almacenan en saved_model.pb.
+
+45
+00:02:34,640 --> 00:02:38,920
+Aquí también contamos con una función
+de transformación de TensorFlow
+
+46
+00:02:39,420 --> 00:02:43,115
+build_parsing_transforming_serving_input_fn.
+
+47
+00:02:44,145 --> 00:02:46,990
+Analice el JSON
+según el esquema de datos sin procesar.
+
+48
+00:02:47,170 --> 00:02:50,560
+Transforme estos datos
+según las operaciones de TensorFlow
+
+49
+00:02:50,560 --> 00:02:54,120
+en saved_model.pb
+y envíelo junto con el modelo.
+
+50
+00:02:54,720 --> 00:02:59,330
+El código del cliente solo debe enviar
+las variables de entrada sin procesar.
+
+51
+00:02:59,470 --> 00:03:00,815
+Eso no cambia.
+
+52
+00:03:01,625 --> 00:03:03,355
+La función entrante de entrega
+
+53
+00:03:03,485 --> 00:03:06,485
+recibe variables de entrada
+y permanece sin cambios.
+
+54
+00:03:06,645 --> 00:03:09,160
+Acepta datos sin procesar
+y luego los envía al modelo.
+
+55
+00:03:11,810 --> 00:03:13,590
+Entonces, ¿por qué funciona el modelo?
+
+56
+00:03:14,290 --> 00:03:19,470
+El regresor de DNN o el modelo que usemos
+no puede trabajar con una string como "thu".
+
+57
+00:03:20,100 --> 00:03:24,340
+Funciona gracias a que el código que escribió
+para el preprocesamiento
+
+58
+00:03:25,070 --> 00:03:27,860
+ahora es parte del gráfico del modelo mismo.
+
+59
+00:03:28,268 --> 00:03:31,918
+Esto ocurre
+porque el modelo lee los metadatos
+
+60
+00:03:31,918 --> 00:03:34,258
+y agrega el código de preprocesamiento.
+
+61
+00:03:34,774 --> 00:03:37,844
+Así es como funciona TensorFlow Transform.
+
+62
+00:03:38,502 --> 00:03:41,662
+Ahora, usémoslo para un problema
+de predicción de tarifas de taxi.

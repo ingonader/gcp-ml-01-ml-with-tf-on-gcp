@@ -1,0 +1,659 @@
+1
+00:00:00,000 --> 00:00:05,362
+Nous avons vu trois endroits possibles où
+réaliser l'extraction de caractéristiques.
+
+2
+00:00:05,362 --> 00:00:09,505
+Le premier est TensorFlow lui-même
+
+3
+00:00:09,505 --> 00:00:11,455
+à l'aide de colonnes de caractéristiques,
+
+4
+00:00:11,455 --> 00:00:14,365
+qui permettent d'habiller
+le dictionnaire des caractéristiques
+
+5
+00:00:14,365 --> 00:00:16,570
+et d'ajouter
+du code TensorFlow arbitraire.
+
+6
+00:00:16,570 --> 00:00:19,505
+L'avantage
+de cette solution est son efficacité.
+
+7
+00:00:19,505 --> 00:00:22,250
+Du code TensorFlow, et un GPU ou un TPU.
+
+8
+00:00:22,250 --> 00:00:26,790
+Pourquoi est-ce que je parle
+de code TensorFlow arbitraire ?
+
+9
+00:00:26,790 --> 00:00:32,735
+Parce que le code doit être exécuté dans
+le cadre de la fonction de votre modèle
+
+10
+00:00:32,735 --> 00:00:35,265
+et de votre graphique TensorFlow.
+
+11
+00:00:35,265 --> 00:00:38,465
+Donc, vous ne pouvez pas interroger
+une base de données d'entreprise
+
+12
+00:00:38,465 --> 00:00:40,365
+et y insérer une valeur.
+
+13
+00:00:40,365 --> 00:00:44,150
+Vous pourriez écrire du code TensorFlow
+personnalisé en C++ et l'appeler,
+
+14
+00:00:44,150 --> 00:00:46,215
+mais ignorons
+cette méthode pour le moment.
+
+15
+00:00:46,215 --> 00:00:48,937
+En outre, vous ne pouvez
+effectuer que des actions basées
+
+16
+00:00:48,937 --> 00:00:53,280
+sur cette valeur d'entrée,
+et uniquement sur celle-ci
+
+17
+00:00:53,280 --> 00:00:58,715
+Il sera donc difficile
+de calculer une moyenne glissante.
+
+18
+00:00:58,715 --> 00:01:01,780
+Nous verrons ensuite
+des modèles de séquence
+
+19
+00:01:01,780 --> 00:01:04,500
+qui semblent permettre
+de traiter une série temporelle.
+
+20
+00:01:04,500 --> 00:01:09,545
+Il y a donc plusieurs valeurs d'entrée,
+mais l'entrée est ici la séquence entière.
+
+21
+00:01:09,545 --> 00:01:13,590
+La limite du traitement
+avec TensorFlow est
+
+22
+00:01:13,590 --> 00:01:17,835
+donc que le prétraitement peut
+s'effectuer sur une seule valeur d'entrée.
+
+23
+00:01:17,835 --> 00:01:21,450
+Les modèles TensorFlow,
+hormis les modèles de séquence,
+
+24
+00:01:21,450 --> 00:01:25,810
+sont généralement sans état.
+
+25
+00:01:25,810 --> 00:01:28,510
+Dans les deux derniers chapitres,
+
+26
+00:01:28,510 --> 00:01:31,665
+nous avons également
+abordé le prétraitement
+
+27
+00:01:31,665 --> 00:01:36,395
+et la création de caractéristiques
+dans Apache Beam sur Cloud Dataflow.
+
+28
+00:01:36,395 --> 00:01:38,730
+Dataflow permet d'exécuter
+
+29
+00:01:38,730 --> 00:01:42,350
+du code Python ou Java arbitraire
+
+30
+00:01:42,350 --> 00:01:47,040
+et de manipuler
+plusieurs valeurs d'entrée avec état.
+
+31
+00:01:47,040 --> 00:01:51,510
+Vous pouvez par exemple
+calculer une moyenne sur une période,
+
+32
+00:01:51,510 --> 00:01:57,085
+comme le nombre moyen de vélos
+à un carrefour sur l'heure précédente.
+
+33
+00:01:57,085 --> 00:02:01,800
+Cependant, vous devrez aussi
+exécuter le code de votre prédiction
+
+34
+00:02:01,800 --> 00:02:04,800
+dans un pipeline
+pour obtenir le nombre moyen
+
+35
+00:02:04,800 --> 00:02:08,340
+de vélos à un carrefour
+sur l'heure précédente.
+
+36
+00:02:08,340 --> 00:02:10,949
+Cette méthode est donc adaptée
+à des cas comme
+
+37
+00:02:10,949 --> 00:02:14,780
+des moyennes sur des périodes de temps,
+qui impliquent toujours un pipeline.
+
+38
+00:02:14,780 --> 00:02:20,910
+Qu'en est-il si vous ne voulez
+qu'un minimum ou un maximum
+
+39
+00:02:20,910 --> 00:02:23,580
+pour mettre
+des valeurs à l'échelle ou obtenir
+
+40
+00:02:23,580 --> 00:02:28,175
+le vocabulaire permettant de convertir
+des valeurs catégoriques en nombres ?
+
+41
+00:02:28,175 --> 00:02:32,275
+Exécuter un pipeline Dataflow
+dans une prédiction
+
+42
+00:02:32,275 --> 00:02:34,774
+rien que pour obtenir
+un minimum ou un maximum
+
+43
+00:02:34,774 --> 00:02:37,500
+semble un peu excessif.
+
+44
+00:02:37,500 --> 00:02:40,845
+C'est là que tf.Transform entre en jeu.
+
+45
+00:02:40,845 --> 00:02:44,490
+Il s'agit d'une solution à mi-chemin
+entre les deux premières approches.
+
+46
+00:02:44,490 --> 00:02:49,405
+Avec TensorFlow Transform, vous ne pouvez
+utiliser que les méthodes TensorFlow.
+
+47
+00:02:49,405 --> 00:02:52,665
+Cependant, vous bénéficiez
+de l'efficacité de TensorFlow.
+
+48
+00:02:52,665 --> 00:02:57,510
+Vous pouvez utilisez tout
+votre ensemble de données d'entraînement,
+
+49
+00:02:57,510 --> 00:03:01,470
+car tf.Transform utilise Dataflow
+pour l'entraînement,
+
+50
+00:03:01,470 --> 00:03:05,915
+mais seulement TensorFlow
+pour la prédiction.
+
+51
+00:03:05,915 --> 00:03:09,370
+Voyons comment tf.Transform fonctionne.
+
+52
+00:03:09,370 --> 00:03:13,400
+TensorFlow Transform est
+une solution à mi-chemin
+
+53
+00:03:13,400 --> 00:03:17,490
+entre Apache Beam et TensorFlow.
+
+54
+00:03:17,490 --> 00:03:22,420
+Le prétraitement Dataflow ne fonctionne
+que dans le contexte d'un pipeline.
+
+55
+00:03:22,420 --> 00:03:25,285
+Pensez en termes de données
+par flux entrantes, comme
+
+56
+00:03:25,285 --> 00:03:28,150
+des données IdO, Internet des Objets,
+
+57
+00:03:28,150 --> 00:03:30,415
+ou des données sur des vols.
+
+58
+00:03:30,415 --> 00:03:35,380
+Le pipeline Dataflow
+peut impliquer les prédictions,
+
+59
+00:03:35,380 --> 00:03:39,715
+et il peut les invoquer
+et les enregistrer dans Bigtable.
+
+60
+00:03:39,715 --> 00:03:42,650
+Ces prédictions sont ensuite transmises
+
+61
+00:03:42,650 --> 00:03:44,712
+à toute personne
+qui se rend sur la page Web
+
+62
+00:03:44,712 --> 00:03:46,495
+dans les 60 secondes suivantes.
+
+63
+00:03:46,495 --> 00:03:50,220
+À ce point, une nouvelle prédiction est
+disponible dans Bigtable.
+
+64
+00:03:50,220 --> 00:03:54,745
+En d'autres termes,
+Dataflow doit évoquer pour vous
+
+65
+00:03:54,745 --> 00:03:59,095
+le prétraitement backend
+de modèles de machine learning.
+
+66
+00:03:59,095 --> 00:04:02,295
+Vous pouvez utiliser Dataflow
+pour effectuer des prétraitements
+
+67
+00:04:02,295 --> 00:04:06,105
+qui impliquent un état,
+par exemple sur des périodes de temps.
+
+68
+00:04:06,105 --> 00:04:13,225
+Pour un prétraitement instantané
+des modèles de ML, privilégiez TensorFlow.
+
+69
+00:04:13,225 --> 00:04:16,952
+TensorFlow permet le prétraitement basé
+
+70
+00:04:16,952 --> 00:04:20,680
+sur les valeurs d'entrée
+fournies uniquement.
+
+71
+00:04:20,680 --> 00:04:26,290
+Si vous placez tout le contenu du cadre en
+pointillés dans le graphique TensorFlow,
+
+72
+00:04:26,290 --> 00:04:30,070
+il est très facile pour les clients
+d'invoquer simplement
+
+73
+00:04:30,070 --> 00:04:36,010
+une application Web
+sans avoir à gérer le traitement.
+
+74
+00:04:36,010 --> 00:04:39,980
+Il y a cependant des cas intermédiaires,
+
+75
+00:04:39,980 --> 00:04:44,455
+comme mettre des données à l'échelle
+
+76
+00:04:44,455 --> 00:04:48,635
+d'après le minimum
+ou le maximum d'un ensemble de données.
+
+77
+00:04:48,635 --> 00:04:50,240
+Dans ce cas,
+
+78
+00:04:50,240 --> 00:04:53,150
+vous devez analyser
+vos données dans Dataflow,
+
+79
+00:04:53,150 --> 00:04:55,780
+soit la totalité
+de votre ensemble de données,
+
+80
+00:04:55,780 --> 00:04:57,510
+rechercher le minimum et le maximum,
+
+81
+00:04:57,510 --> 00:05:00,600
+puis effectuer
+la transformation dans Dataflow
+
+82
+00:05:00,600 --> 00:05:04,035
+pour mettre à l'échelle
+chaque valeur d'entrée individuelle.
+
+83
+00:05:04,035 --> 00:05:07,245
+C'est ainsi que fonctionne tf.Transform,
+
+84
+00:05:07,245 --> 00:05:11,555
+une solution à mi-chemin
+entre Apache Beam et TensorFlow.
+
+85
+00:05:11,555 --> 00:05:14,260
+Pour comprendre son fonctionnement,
+
+86
+00:05:14,260 --> 00:05:19,925
+vous devez savoir que le prétraitement
+s'effectue généralement en deux étapes.
+
+87
+00:05:19,925 --> 00:05:23,590
+Imaginons que vous voulez mettre
+à l'échelle vos données d'entrée brutes
+
+88
+00:05:23,590 --> 00:05:26,345
+pour améliorer l'efficacité
+de la descente de gradient.
+
+89
+00:05:26,345 --> 00:05:28,245
+Pour ce faire,
+
+90
+00:05:28,245 --> 00:05:32,040
+vous devez d'abord
+rechercher le minimum et le maximum
+
+91
+00:05:32,040 --> 00:05:34,005
+de la caractéristique numérique
+
+92
+00:05:34,005 --> 00:05:36,625
+sur la totalité de l'ensemble
+de données d'entraînement.
+
+93
+00:05:36,625 --> 00:05:41,025
+Vous devez ensuite
+mettre à l'échelle chaque valeur d'entrée
+
+94
+00:05:41,025 --> 00:05:46,035
+en fonction du minimum et du maximum
+calculés sur cet ensemble de données.
+
+95
+00:05:46,035 --> 00:05:49,410
+Supposons que vous recherchez
+le vocabulaire des clés
+
+96
+00:05:49,410 --> 00:05:52,025
+d'une variable catégorique,
+
+97
+00:05:52,025 --> 00:05:54,722
+et que vous disposez
+d'une caractéristique catégorique
+
+98
+00:05:54,722 --> 00:05:57,420
+qui correspond
+à un constructeur automobile.
+
+99
+00:05:57,420 --> 00:06:01,090
+Vous devez passer en revue la totalité
+de l'ensemble de données d'entraînement
+
+100
+00:06:01,090 --> 00:06:05,180
+pour rechercher toutes les valeurs
+possibles d'une caractéristique donnée.
+
+101
+00:06:05,180 --> 00:06:08,520
+En bref, vous dressez
+la liste des constructeurs.
+
+102
+00:06:08,520 --> 00:06:11,152
+Si, ensuite, vous trouvez 20 constructeurs
+
+103
+00:06:11,152 --> 00:06:13,785
+dans votre ensemble
+de données d'entraînement,
+
+104
+00:06:13,785 --> 00:06:16,657
+vous devez encoder en mode one-hot
+
+105
+00:06:16,657 --> 00:06:19,960
+la colonne des constructeurs
+pour en faire un vecteur de longueur 20.
+
+106
+00:06:19,960 --> 00:06:22,420
+Vous comprenez où je veux en venir ?
+
+107
+00:06:22,420 --> 00:06:28,440
+La première étape implique de balayer
+tout l'ensemble de données une fois.
+
+108
+00:06:28,440 --> 00:06:31,640
+Nous l'appelons la phase d'analyse.
+
+109
+00:06:31,640 --> 00:06:38,770
+La deuxième étape est de transformer
+instantanément les données d'entrée.
+
+110
+00:06:38,770 --> 00:06:43,045
+C'est la phase de transformation.
+
+111
+00:06:43,045 --> 00:06:47,850
+Quelle technologie,
+entre Beam et TensorFlow,
+
+112
+00:06:47,850 --> 00:06:52,570
+est la plus adaptée pour l'analyse
+d'un ensemble de données d'entraînement ?
+
+113
+00:06:52,570 --> 00:06:56,880
+Quelle technologie,
+entre Beam et TensorFlow,
+
+114
+00:06:56,880 --> 00:07:03,020
+est la plus adaptée pour la transformation
+instantanée de données d'entrée ?
+
+115
+00:07:03,020 --> 00:07:10,980
+Beam pour l'analyse,
+TensorFlow pour la transformation.
+
+116
+00:07:10,990 --> 00:07:15,975
+Il y a deux PTransforms dans tf.Transform.
+
+117
+00:07:15,975 --> 00:07:20,070
+AnalyzeAndTransformDataset, qui s'exécute
+
+118
+00:07:20,070 --> 00:07:25,450
+dans Beam pour créer un ensemble
+de données d'entraînement prétraité,
+
+119
+00:07:25,450 --> 00:07:30,585
+et TransformDataset,
+qui s'exécute dans Beam
+
+120
+00:07:30,585 --> 00:07:33,510
+pour créer
+l'ensemble de données d'évaluation.
+
+121
+00:07:33,510 --> 00:07:37,015
+Souvenez-vous que le calcul
+du minimum et du maximum, etc.,
+
+122
+00:07:37,015 --> 00:07:40,965
+c'est-à-dire l'analyse, ne s'effectue que
+sur l'ensemble de données d'entraînement,
+
+123
+00:07:40,965 --> 00:07:43,780
+pas sur l'ensemble
+de données d'évaluation.
+
+124
+00:07:43,780 --> 00:07:48,480
+Ce dernier est mis à l'échelle
+avec le minimum et le maximum
+
+125
+00:07:48,480 --> 00:07:50,840
+trouvés dans les données d'entraînement.
+
+126
+00:07:50,840 --> 00:07:54,750
+Que se passe-t-il si le maximum
+de l'ensemble d'évaluation est supérieur ?
+
+127
+00:07:54,750 --> 00:07:58,780
+C'est comme si vous déployiez votre modèle
+
+128
+00:07:58,780 --> 00:08:03,170
+et que vous trouviez une valeur supérieure
+lors de la prédiction.
+
+129
+00:08:03,170 --> 00:08:04,425
+C'est la même chose.
+
+130
+00:08:04,425 --> 00:08:07,375
+Vous ne pouvez pas utiliser
+un ensemble de données d'évaluation
+
+131
+00:08:07,375 --> 00:08:10,310
+pour calculer le minimum et
+le maximum, le vocabulaire, etc.
+
+132
+00:08:10,310 --> 00:08:12,270
+Vous devez faire avec.
+
+133
+00:08:12,270 --> 00:08:16,685
+Cependant,
+le code de transformation invoqué
+
+134
+00:08:16,685 --> 00:08:23,430
+est exécuté dans TensorFlow
+au moment de la prédiction.
+
+135
+00:08:23,430 --> 00:08:27,870
+Une autre manière d'envisager le problème
+est de penser qu'il y a deux phases.
+
+136
+00:08:27,870 --> 00:08:30,345
+Une phase d'analyse,
+
+137
+00:08:30,345 --> 00:08:34,684
+exécutée dans Beam lors de
+la création de l'ensemble d'entraînement.
+
+138
+00:08:34,684 --> 00:08:37,155
+Une phase de transformation,
+
+139
+00:08:37,155 --> 00:08:41,820
+exécutée dans TensorFlow
+lors de la prédiction,
+
+140
+00:08:41,820 --> 00:08:47,380
+et dans Beam pour créer les ensembles
+de données d'entraînement et d'évaluation.

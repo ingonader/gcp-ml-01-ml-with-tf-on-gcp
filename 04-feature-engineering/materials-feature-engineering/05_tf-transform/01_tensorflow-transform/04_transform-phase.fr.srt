@@ -1,0 +1,317 @@
+1
+00:00:00,000 --> 00:00:06,300
+La fonction de prétraitement permet
+de transformer les données d'entrée.
+
+2
+00:00:06,300 --> 00:00:11,745
+Dans Beam, elle est appelée dans le cadre
+de la méthode AnalyzeAndTransformDataset.
+
+3
+00:00:11,745 --> 00:00:16,010
+Dans TensorFlow, les éléments à prétraiter
+
+4
+00:00:16,010 --> 00:00:20,165
+sont généralement appelés dans le cadre
+de la fonction d'entrée de diffusion.
+
+5
+00:00:20,165 --> 00:00:23,825
+En d'autres termes, cette fonction
+est ajoutée au graphique TensorFlow
+
+6
+00:00:23,825 --> 00:00:28,255
+et peut être exécutée
+dans TensorFlow lors de la diffusion.
+
+7
+00:00:28,255 --> 00:00:32,330
+Comme elle est exécutée
+dans le cadre du graphique TensorFlow,
+
+8
+00:00:32,330 --> 00:00:39,450
+la fonction de prétraitement est limitée
+aux fonctions appelées depuis TensorFlow.
+
+9
+00:00:39,450 --> 00:00:42,860
+Vous ne pouvez pas
+appeler des fonctions Python standards,
+
+10
+00:00:42,860 --> 00:00:47,160
+car le prétraitement fait partie du
+graphique TensorFlow lors de la diffusion.
+
+11
+00:00:47,160 --> 00:00:49,185
+Voyons un exemple.
+
+12
+00:00:49,185 --> 00:00:55,025
+Je prends un ensemble
+de données d'entrée et je les prétraite.
+
+13
+00:00:55,025 --> 00:00:58,965
+De quel type sont les données d'entrée ?
+
+14
+00:00:58,965 --> 00:01:04,239
+Il s'agit d'un dictionnaire
+dont les valeurs sont des Tensors.
+
+15
+00:01:04,239 --> 00:01:09,490
+Souvenez-vous. C'est le résultat renvoyé
+par la fonction d'entrée de diffusion,
+
+16
+00:01:09,490 --> 00:01:13,780
+soit les données brutes lues.
+
+17
+00:01:13,780 --> 00:01:17,230
+Les fonctions d'entrée
+renvoient "features, labels"
+
+18
+00:01:17,230 --> 00:01:20,620
+et sont donc des caractéristiques.
+
+19
+00:01:20,620 --> 00:01:25,220
+"features" est "dict", un dictionnaire.
+
+20
+00:01:25,220 --> 00:01:28,900
+tf.Transform convertit
+en Tensors les données
+
+21
+00:01:28,900 --> 00:01:32,910
+qui arrivent par le biais de PTransform
+
+22
+00:01:32,910 --> 00:01:34,200
+lors de la phase d'analyse.
+
+23
+00:01:34,200 --> 00:01:36,850
+Nous utilisons les Tensors
+
+24
+00:01:36,850 --> 00:01:42,165
+pour créer des caractéristiques,
+que nous ajoutons au dictionnaire.
+
+25
+00:01:42,165 --> 00:01:46,485
+Le premier résultat, le montant
+de la course dans mon exemple,
+
+26
+00:01:46,485 --> 00:01:48,570
+est transmis tel quel.
+
+27
+00:01:48,570 --> 00:01:52,995
+Nous ajoutons le Tensor d'entrée
+au résultat, sans modification.
+
+28
+00:01:52,995 --> 00:01:56,430
+Le résultat suivant que nous voulons
+obtenir est le jour de la semaine.
+
+29
+00:01:56,430 --> 00:01:58,615
+Nous voulons que ce soit un nombre entier.
+
+30
+00:01:58,615 --> 00:02:00,950
+Cependant, dans les données d'entrée,
+
+31
+00:02:00,950 --> 00:02:04,370
+il s'agit d'une chaîne comme "Thu"
+pour "Thursday" (ou jeudi).
+
+32
+00:02:04,370 --> 00:02:07,950
+Nous demandons donc à TensorFlow Transform
+
+33
+00:02:07,950 --> 00:02:11,345
+de convertir une chaîne qui est lue,
+
+34
+00:02:11,345 --> 00:02:15,600
+telle que "Thu", en nombre entier
+
+35
+00:02:15,600 --> 00:02:17,795
+comme "3" ou "5".
+
+36
+00:02:17,795 --> 00:02:22,710
+tf.Transform calcule le vocabulaire
+
+37
+00:02:22,710 --> 00:02:27,165
+de tous les jours de la semaine possibles
+dans l'ensemble de données d'entraînement
+
+38
+00:02:27,165 --> 00:02:30,410
+pendant la phase d'analyse
+
+39
+00:02:30,410 --> 00:02:32,440
+et utilise ces informations
+
+40
+00:02:32,440 --> 00:02:37,020
+pour effectuer le mappage "string_to_int"
+lors de la phase de prédiction.
+
+41
+00:02:37,020 --> 00:02:45,815
+Nous allons ensuite convertir "dropofflat"
+en un nombre entre zéro et un.
+
+42
+00:02:45,815 --> 00:02:48,095
+Lors de la phase d'analyse,
+
+43
+00:02:48,095 --> 00:02:52,100
+tf.Transform calcule le minimum
+et le maximum de la colonne,
+
+44
+00:02:52,100 --> 00:02:56,635
+et les utilise pour mettre
+les données d'entrée à l'échelle.
+
+45
+00:02:56,635 --> 00:03:00,665
+Nous pouvons aussi invoquer
+d'autres fonctions TensorFlow.
+
+46
+00:03:00,665 --> 00:03:04,730
+Dans ce cas, je prends
+le nombre d'entrée de passagers,
+
+47
+00:03:04,730 --> 00:03:08,300
+qui est un nombre entier dans JSON,
+
+48
+00:03:08,300 --> 00:03:11,870
+et je le convertis
+en nombre avec une valeur réelle.
+
+49
+00:03:11,870 --> 00:03:16,660
+Une fois toutes
+les caractéristiques créées et ajoutées,
+
+50
+00:03:16,660 --> 00:03:18,935
+nous pouvons afficher le résultat.
+
+51
+00:03:18,935 --> 00:03:21,690
+La fonction
+PTransform AnalyzeAndTransform s'effectue
+
+52
+00:03:21,690 --> 00:03:24,445
+sur l'ensemble de données d'entraînement.
+
+53
+00:03:24,445 --> 00:03:28,645
+Que doit-il se passer sur
+l'ensemble de données d'évaluation ?
+
+54
+00:03:28,645 --> 00:03:31,749
+Pour l'ensemble de données d'évaluation,
+
+55
+00:03:31,749 --> 00:03:37,605
+nous utilisons à peu près le même pipeline
+Beam que pour celui d'entraînement,
+
+56
+00:03:37,605 --> 00:03:40,405
+à une exception près.
+
+57
+00:03:40,405 --> 00:03:44,625
+Nous n'analysons pas
+l'ensemble de données d'évaluation.
+
+58
+00:03:44,625 --> 00:03:47,645
+Les valeurs
+de l'ensemble de données d'évaluation
+
+59
+00:03:47,645 --> 00:03:51,410
+seront mises à l'échelle
+d'après le minimum et le maximum trouvés
+
+60
+00:03:51,410 --> 00:03:54,230
+dans l'ensemble de données d'entraînement.
+
+61
+00:03:54,230 --> 00:03:56,650
+Nous n'appelons donc pas
+AnalyzeAndTransform
+
+62
+00:03:56,650 --> 00:03:59,380
+sur l'ensemble de données d'entraînement.
+
+63
+00:03:59,380 --> 00:04:02,405
+Nous appelons uniquement TransformDataset,
+
+64
+00:04:02,405 --> 00:04:08,390
+qui se charge d'appeler
+toutes nos actions de prétraitement.
+
+65
+00:04:08,390 --> 00:04:10,160
+Pratique, non ?
+
+66
+00:04:10,160 --> 00:04:14,280
+Cependant, TransformDataset a besoin
+
+67
+00:04:14,280 --> 00:04:19,959
+en entrée de la fonction de transformation
+calculée sur les données d'entraînement.
+
+68
+00:04:19,959 --> 00:04:23,090
+C'est ce qui permet à la magie d'opérer.
+
+69
+00:04:23,090 --> 00:04:26,075
+Une fois l'ensemble de données transformé,
+
+70
+00:04:26,075 --> 00:04:31,810
+nous pouvons l'écrire de la même façon
+que l'ensemble de données d'entraînement.

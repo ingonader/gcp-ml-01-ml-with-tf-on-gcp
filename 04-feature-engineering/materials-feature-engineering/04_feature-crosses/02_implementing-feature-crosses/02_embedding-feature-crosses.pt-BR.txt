@@ -1,0 +1,97 @@
+Você se lembra que eu disse que
+usar um valor grande para intervalos de hash leva a uma
+representação muito esparsa? Mas e se fizermos mais uma coisa? E se, em vez de aplicar
+a codificação one-hot no cruzamento de atributo e usá-lo assim, o passamos por uma camada densa? Podemos então treinar o modelo
+para prever o tráfego como antes. Essa camada densa, mostrada
+pelos nodes amarelos e verdes, essa camada densa aqui cria o que é
+chamado de incorporação. Incorporação. As caixas cinzas e azuis
+denotam zeros e uns, para qualquer linha no conjunto
+de dados de entrada, para qualquer exemplo de treinamento, apenas uma das caixas é acesa, e a caixa mostrada em azul é uma, as caixas cinzas para
+esse exemplo são zero. Um exemplo de treinamento diferente
+corresponderá a uma hora diferente do dia, e assim ele acenderá
+uma caixa diferente, e essa caixa será uma e as
+outras caixas serão zero. No entanto, as caixas amarelas e
+verdes são diferentes, elas não têm codificação one-hot, elas serão valores reais,
+valores de ponto flutuante. Por quê? Porque eles são pesados, alguns
+dos valores do cruzamento de atributo. Então, o que está acontecendo
+nos nodes amarelos e verdes? Perceba que as ponderações que entram
+na camada de incorporação, as ponderações que entram nos nodes amarelos e verdes são
+aprendidos dos dados. Imagine que temos muitas
+observações de tráfego. Talvez toda vez que um carro, bicicleta ou
+caminhão passa por um sinal, temos uma observação de tráfego. Então temos os dados para toda
+uma cidade, todos os sinais. Milhões de exemplos de treinamento. Espere um segundo,
+acabei de dizer o que eu disse? Que meu conjunto de dados
+consiste em observações de tráfego, um exemplo de treino
+para cada veículo em um sinal? Se você é novo no aprendizado de máquina,
+posso apostar que você pensou que o conjunto de dados de treino consistia
+em contagens de tráfego agregadas. Talvez o número total de veículos na
+estrada, a cada hora de cada dia. Mas isso é um pequeno conjunto de dados
+e é apenas uma amostra. Se você fizer isso,
+você só aprenderá as médias, e isso é completamente desinteressante, e serve apenas para escrever
+artigos de jornal, como "modelos preveem que os níveis de tráfego
+no próximo ano serão 10% maiores". Mas lembre-se do que dissemos, que o aprendizado de máquina é uma
+maneira de aprender a extensão, para fazer previsões refinadas e derivar
+insights, além de apenas uma média bruta. Isso é o que isso significa na prática. Em vez de lidar com centenas de linhas
+de um conjunto de dados agregado, temos minuciosas observações
+específicas de carros em cada sinal, e esse é um conjunto
+de dados de tráfego que vamos usar. Nossas previsões serão: número de carros, número de caminhões, número de bicicletas, a qualquer momento, em qualquer ponto da cidade. Previsões refinadas. É disso que se trata
+o aprendizado de máquina. Enfim, vamos voltar para a nossa aula. Então, temos observações de veículos. O conjunto de dados
+pode incluir o tipo de veículo, carro, bicicleta, ônibus, caminhão etc. A direção da viagem, localização etc. Esse conjunto inclui um carimbo de
+data/hora do qual extraímos o dia e a hora e, em seguida, aplicamos o cruzamento de
+atributos para ter x3 no diagrama. E como discutimos, x3 é uma codificação
+one-hot em vários intervalos de hash. Agora pegamos isso e passamos
+por uma camada densa com as ponderações treinadas para prever
+uma série de aspectos sobre o tráfego. Talvez vamos prever o tempo para o
+próximo veículo chegar ao cruzamento, para que possamos controlar o tempo
+do sinal de trânsito. O ponto é que, treinando as ponderações no
+conjunto de dados, algo de bom acontece. O cruzamento de atributos do dia-hora
+tem 168 valores exclusivos, mas estamos forçando para que seja
+representado com dois números reais. Assim, o modelo aprende como incorporar o
+cruzamento no espaço de menor dimensão. Talvez a caixa verde tenda a capturar o
+tráfego de pedestres e bicicletas, enquanto a amarela tende
+a capturar automóveis. Assim, 8:00 de terça-feira
+e 9:00 de quarta-feira podem corresponder a caixas diferentes
+no cruzamento de atributos. No entanto, se os padrões de tráfego na maioria das interseções da cidade forem
+semelhantes nesses dois momentos, a representação de valor real dessas duas combinações dia-hora acabará
+sendo bastante semelhante. Talvez haja muitas pessoas andando de
+bicicleta e caminhando nesses horários e também muitos carros. As ponderações para 8h e 9h são
+ajustadas de tal forma que os números reais verde e amarelo sejam
+bastante semelhantes naquele momento. Mas às 11h da terça-feira e às 14h da quarta-feira não há muitos pedestres, mas você ainda
+tem um número moderado de carros. Você vê que os
+números estão próximos. Igualmente, 2h da terça-feira
+e 3h da quarta-feira podem acabar com números muito
+parecidos, sem refletir nenhum tráfego. O principal é que
+combinações dia-hora semelhantes em termos de tráfego
+tendem a ser semelhantes, e as combinações que têm condições de tráfego muito diferentes tendem a estar
+muito distantes no espaço bidimensional. É isso que queremos dizer quando
+falamos que o modelo aprende a incorporar o cruzamento de atributos
+em um espaço de dimensões inferiores. Então, como você implementa
+isso no TensorFlow? Para criar uma incorporação, use o método de incorporação de coluna
+na coluna do atributo TFF. Passe na coluna categórica
+que você quer incorporar, aqui estamos passando no
+cruzamento de atributos e, em seguida, especifique o número
+de dimensões de incorporação. E é isso. Para uma ideia tão poderosa, isso é muito fácil. Por que eu digo que
+é uma ideia poderosa? Um dos pontos legais sobre isso
+é que a incorporação que você aprendeu em um problema se aplica a outros modelos
+similares de aprendizado de máquina. Talvez você tenha aprendido a representar combinações dia-hora com base em conjuntos
+de dados de tráfego refinados em Londres, e agora você está colocando
+novos sinais de trânsito em Frankfurt, mas não coletou esses
+dados para Frankfurt. Como um atalho, você poderia usar uma incorporação
+aprendida de Londres em Frankfurt. Afinal de contas, você só quer apresentar
+as combinações dia-hora adequadamente e a integração treinada
+nos dados de Londres será melhor do que criar os
+dados usando heurística, como o início da manhã ou a hora do rush. Como você faz isso? Você simplesmente a carrega
+do modelo salvo em Londres e diz ao modelo para não
+treinar essa camada. Você também pode optar por
+carregar a incorporação de Londres e usá-la como ponto
+de partida para Frankfurt. E se você quiser fazer isso, você definiria trainable=true na camada. Incorporações são um conceito
+extremamente poderoso, e transferir o aprendizado das
+incorporações torna-as ainda mais. Elas são úteis ao lidar
+com colunas muito esparsas. Para o dia-hora em que tivemos
+168 combinações exclusivas, não é grande coisa, mas veremos muito sobre incorporações
+nos modelos de linguagens. Lá você pode ter 100 mil palavras únicas
+e quer incorporá-las, representá-las no espaço de dimensões
+inferior de talvez 30 ou 50 dimensões Cruzamentos de atributos
+e incorporações são úteis nos modelos de aprendizado
+de máquina reais. Então, se necessário, volte e revise estas
+duas lições antes de prosseguir.

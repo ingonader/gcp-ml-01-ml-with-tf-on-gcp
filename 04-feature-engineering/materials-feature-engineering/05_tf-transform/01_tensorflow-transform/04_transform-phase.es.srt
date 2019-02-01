@@ -1,0 +1,320 @@
+1
+00:00:00,590 --> 00:00:02,290
+La función de preprocesamiento
+
+2
+00:00:02,310 --> 00:00:06,115
+es una fase de transformación
+de los datos de entrada.
+
+3
+00:00:06,435 --> 00:00:11,130
+En Beam, se llama como parte
+de AnalyzeAndTransformDataset.
+
+4
+00:00:12,235 --> 00:00:15,625
+En TensorFlow, las tareas
+que realiza en el preprocesamiento
+
+5
+00:00:15,805 --> 00:00:20,105
+se llamarán como parte
+de la función entrante de entrega.
+
+6
+00:00:20,415 --> 00:00:27,730
+Se agregará al gráfico de TensorFlow
+y se puede ejecutar durante la entrega.
+
+7
+00:00:29,020 --> 00:00:32,400
+Ya que se ejecuta
+como parte del gráfico de TensorFlow
+
+8
+00:00:32,670 --> 00:00:35,660
+la función
+de preprocesamiento está restringida
+
+9
+00:00:35,660 --> 00:00:39,490
+a funciones que puede
+llamar desde TensorFlow.
+
+10
+00:00:40,240 --> 00:00:42,655
+No puede llamar
+a funciones regulares de Python
+
+11
+00:00:43,025 --> 00:00:45,965
+ya que el preprocesamiento
+es parte del gráfico de TensorFlow
+
+12
+00:00:45,965 --> 00:00:47,175
+durante la entrega.
+
+13
+00:00:47,555 --> 00:00:48,889
+Veamos un ejemplo.
+
+14
+00:00:49,829 --> 00:00:54,560
+Tengo un conjunto de entradas
+y las preprocesaré.
+
+15
+00:00:55,570 --> 00:00:58,180
+¿Cuál es el tipo de datos de las entradas?
+
+16
+00:00:59,830 --> 00:01:03,870
+Es un diccionario
+cuyos valores son tensores.
+
+17
+00:01:04,660 --> 00:01:09,520
+Recuerde que esto es el resultado
+de la función entrante de entrega
+
+18
+00:01:09,610 --> 00:01:13,310
+y representa los datos sin procesar
+tal como se leen.
+
+19
+00:01:14,290 --> 00:01:17,980
+Las funciones de entrada
+muestran funciones con etiquetas.
+
+20
+00:01:18,400 --> 00:01:20,590
+Eso son las funciones.
+
+21
+00:01:20,980 --> 00:01:24,735
+Las funciones son un dict, un diccionario.
+
+22
+00:01:25,865 --> 00:01:32,515
+tf.transform convierte los datos
+que vienen de Ptransform en tensores
+
+23
+00:01:32,755 --> 00:01:34,470
+durante la fase de análisis.
+
+24
+00:01:34,690 --> 00:01:38,817
+Usamos los tensores para crear
+funciones nuevas
+
+25
+00:01:39,167 --> 00:01:41,745
+que después vaciamos en el diccionario.
+
+26
+00:01:42,705 --> 00:01:46,490
+El primer resultado,
+fare_amount en este ejemplo
+
+27
+00:01:46,600 --> 00:01:48,315
+se pasa sin cambios.
+
+28
+00:01:48,855 --> 00:01:52,850
+Tomamos el tensor de entrada
+y lo agregamos al resultado sin cambios.
+
+29
+00:01:53,390 --> 00:01:56,340
+El siguiente resultado
+debe ser un día de la semana.
+
+30
+00:01:56,690 --> 00:01:58,570
+Tiene que ser un número entero.
+
+31
+00:01:58,980 --> 00:02:04,205
+Sin embargo, en la entrada,
+se usan strings, como "thu" para Thursday.
+
+32
+00:02:04,735 --> 00:02:08,820
+Lo que haremos
+es pedirle a Tensorflow Transform
+
+33
+00:02:08,990 --> 00:02:12,755
+que convierta una string
+que se lee, como "thu"
+
+34
+00:02:13,055 --> 00:02:17,570
+en un número entero,
+como tres, cinco o cualquier otro.
+
+35
+00:02:18,115 --> 00:02:22,780
+Lo que hará tf.transform
+es procesar el vocabulario
+
+36
+00:02:23,010 --> 00:02:27,215
+de todos los días de la semana
+en el conjunto de datos de entrenamiento.
+
+37
+00:02:27,215 --> 00:02:29,460
+Lo hará durante la fase de análisis
+
+38
+00:02:30,190 --> 00:02:36,340
+y usará esa información para la asignación
+string_to_int en la fase de predicción.
+
+39
+00:02:37,715 --> 00:02:45,315
+Luego, escalaremos dropofflat
+a un número entre cero y uno.
+
+40
+00:02:46,370 --> 00:02:47,985
+En la fase de análisis
+
+41
+00:02:48,205 --> 00:02:52,085
+tf.transform procesará los valores
+mínimo y máximo de la columna
+
+42
+00:02:52,245 --> 00:02:55,920
+y los usará para escalar las entradas.
+
+43
+00:02:57,330 --> 00:03:00,410
+También podemos invocar
+otras funciones de TensorFlow.
+
+44
+00:03:00,890 --> 00:03:04,750
+Aquí, usaré la entrada
+de cantidad de pasajeros
+
+45
+00:03:05,030 --> 00:03:07,502
+que es un número entero en JSON
+
+46
+00:03:07,972 --> 00:03:11,215
+y haré que sea un número con valor real.
+
+47
+00:03:12,885 --> 00:03:16,455
+Cuando se creen y agreguen las funciones
+
+48
+00:03:16,915 --> 00:03:18,475
+podremos mostrar el resultado.
+
+49
+00:03:19,585 --> 00:03:22,109
+El PTransform AnalyzeAndTransform
+
+50
+00:03:22,109 --> 00:03:24,315
+se aplica al conjunto
+de datos de entrenamiento.
+
+51
+00:03:25,125 --> 00:03:27,855
+¿Qué debe ocurrir
+en el conjunto de datos de evaluación?
+
+52
+00:03:29,685 --> 00:03:31,945
+Para el conjunto de datos de evaluación
+
+53
+00:03:32,055 --> 00:03:35,105
+realizaremos
+casi la misma canalización en Beam
+
+54
+00:03:35,335 --> 00:03:37,445
+que con el conjunto de datos
+de entrenamiento.
+
+55
+00:03:38,035 --> 00:03:40,330
+Pero hay una diferencia importante.
+
+56
+00:03:40,700 --> 00:03:44,400
+No analizamos
+el conjunto de datos de evaluación.
+
+57
+00:03:44,880 --> 00:03:49,390
+Si escalamos los valores,
+los del conjunto de datos de evaluación
+
+58
+00:03:49,390 --> 00:03:52,100
+se escalarán
+según los valores mínimo y máximo
+
+59
+00:03:52,350 --> 00:03:54,215
+del conjunto de datos de entrenamiento.
+
+60
+00:03:54,555 --> 00:03:59,360
+Para los datos de entrenamiento,
+no llamamos a AnalyzeAndTransform
+
+61
+00:03:59,590 --> 00:04:02,260
+sino solo llamamos a TransformDataset.
+
+62
+00:04:02,820 --> 00:04:06,929
+Esto llama a todos los elementos
+involucrados en el preprocesamiento.
+
+63
+00:04:08,019 --> 00:04:09,170
+Genial, ¿cierto?
+
+64
+00:04:10,130 --> 00:04:13,705
+Sin embargo,
+el conjunto de datos de transformación
+
+65
+00:04:13,705 --> 00:04:17,160
+necesita como entrada
+la función transform_fn
+
+66
+00:04:17,400 --> 00:04:19,920
+que se calculó
+con los datos de entrenamiento.
+
+67
+00:04:20,310 --> 00:04:22,650
+Esto hace que suceda la magia.
+
+68
+00:04:23,854 --> 00:04:26,054
+Cuando tenemos
+el conjunto de datos transformado
+
+69
+00:04:26,221 --> 00:04:30,961
+podemos escribirlo tal como hicimos
+con los datos de entrenamiento.

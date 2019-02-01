@@ -1,0 +1,46 @@
+La función de preprocesamiento es una fase de transformación
+de los datos de entrada. En Beam, se llama como parte
+de AnalyzeAndTransformDataset. En TensorFlow, las tareas
+que realiza en el preprocesamiento se llamarán como parte
+de la función entrante de entrega. Se agregará al gráfico de TensorFlow
+y se puede ejecutar durante la entrega. Ya que se ejecuta
+como parte del gráfico de TensorFlow la función
+de preprocesamiento está restringida a funciones que puede
+llamar desde TensorFlow. No puede llamar
+a funciones regulares de Python ya que el preprocesamiento
+es parte del gráfico de TensorFlow durante la entrega. Veamos un ejemplo. Tengo un conjunto de entradas
+y las preprocesaré. ¿Cuál es el tipo de datos de las entradas? Es un diccionario
+cuyos valores son tensores. Recuerde que esto es el resultado
+de la función entrante de entrega y representa los datos sin procesar
+tal como se leen. Las funciones de entrada
+muestran funciones con etiquetas. Eso son las funciones. Las funciones son un dict, un diccionario. tf.transform convierte los datos
+que vienen de Ptransform en tensores durante la fase de análisis. Usamos los tensores para crear
+funciones nuevas que después vaciamos en el diccionario. El primer resultado,
+fare_amount en este ejemplo se pasa sin cambios. Tomamos el tensor de entrada
+y lo agregamos al resultado sin cambios. El siguiente resultado
+debe ser un día de la semana. Tiene que ser un número entero. Sin embargo, en la entrada,
+se usan strings, como "thu" para Thursday. Lo que haremos
+es pedirle a Tensorflow Transform que convierta una string
+que se lee, como "thu" en un número entero,
+como tres, cinco o cualquier otro. Lo que hará tf.transform
+es procesar el vocabulario de todos los días de la semana
+en el conjunto de datos de entrenamiento. Lo hará durante la fase de análisis y usará esa información para la asignación
+string_to_int en la fase de predicción. Luego, escalaremos dropofflat
+a un número entre cero y uno. En la fase de análisis tf.transform procesará los valores
+mínimo y máximo de la columna y los usará para escalar las entradas. También podemos invocar
+otras funciones de TensorFlow. Aquí, usaré la entrada
+de cantidad de pasajeros que es un número entero en JSON y haré que sea un número con valor real. Cuando se creen y agreguen las funciones podremos mostrar el resultado. El PTransform AnalyzeAndTransform se aplica al conjunto
+de datos de entrenamiento. ¿Qué debe ocurrir
+en el conjunto de datos de evaluación? Para el conjunto de datos de evaluación realizaremos
+casi la misma canalización en Beam que con el conjunto de datos
+de entrenamiento. Pero hay una diferencia importante. No analizamos
+el conjunto de datos de evaluación. Si escalamos los valores,
+los del conjunto de datos de evaluación se escalarán
+según los valores mínimo y máximo del conjunto de datos de entrenamiento. Para los datos de entrenamiento,
+no llamamos a AnalyzeAndTransform sino solo llamamos a TransformDataset. Esto llama a todos los elementos
+involucrados en el preprocesamiento. Genial, ¿cierto? Sin embargo,
+el conjunto de datos de transformación necesita como entrada
+la función transform_fn que se calculó
+con los datos de entrenamiento. Esto hace que suceda la magia. Cuando tenemos
+el conjunto de datos transformado podemos escribirlo tal como hicimos
+con los datos de entrenamiento.

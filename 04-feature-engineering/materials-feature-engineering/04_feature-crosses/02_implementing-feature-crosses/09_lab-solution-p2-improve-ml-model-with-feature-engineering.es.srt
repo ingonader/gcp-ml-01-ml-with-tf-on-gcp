@@ -1,0 +1,1745 @@
+1
+00:00:00,320 --> 00:00:02,065
+Inicié Datalab
+
+2
+00:00:02,065 --> 00:00:06,685
+abrí featureengineering.ipythonnotebook
+
+3
+00:00:06,685 --> 00:00:08,945
+y ahora lo usaremos juntos.
+
+4
+00:00:08,945 --> 00:00:10,255
+Este es el notebook
+
+5
+00:00:10,255 --> 00:00:12,850
+aprenderemos a trabajar
+con las columnas de funciones
+
+6
+00:00:12,850 --> 00:00:15,335
+agregaremos combinaciones
+de funciones en TensorFlow.
+
+7
+00:00:15,335 --> 00:00:17,165
+Vamos a leer
+nuestros datos en BigQuery
+
+8
+00:00:17,165 --> 00:00:18,940
+crear conjuntos de datos en Dataflow
+
+9
+00:00:18,940 --> 00:00:20,750
+y usaremos un modelo
+amplio y profundo.
+
+10
+00:00:20,760 --> 00:00:23,425
+Vamos a combinar todas
+estas actividades que mencionamos
+
+11
+00:00:23,425 --> 00:00:27,020
+del modelo amplio y profundo
+no hablamos pero lo haremos ahora.
+
+12
+00:00:27,020 --> 00:00:29,600
+Aquí está el problema.
+
+13
+00:00:29,600 --> 00:00:32,505
+Hasta ahora creamos
+un modelo de un taxi
+
+14
+00:00:32,505 --> 00:00:35,545
+pero no incluimos
+información valiosa humana en él.
+
+15
+00:00:35,545 --> 00:00:37,230
+Eso es lo que haremos ahora.
+
+16
+00:00:37,230 --> 00:00:40,130
+Básicamente, vamos a aprovechar
+
+17
+00:00:40,130 --> 00:00:43,310
+nuestro conocimiento
+sobre cómo funcionan los taxis
+
+18
+00:00:43,310 --> 00:00:45,295
+sobre el diseño de Nueva York
+
+19
+00:00:45,295 --> 00:00:48,050
+y le daremos sugerencias al modelo
+
+20
+00:00:48,050 --> 00:00:50,135
+para que pueda
+aprender más de esas cosas.
+
+21
+00:00:50,135 --> 00:00:51,600
+A medida que avanzamos
+
+22
+00:00:51,600 --> 00:00:54,700
+hablaré sobre el origen
+de la información valiosa.
+
+23
+00:00:54,700 --> 00:00:58,578
+Lo primero que haré es…
+
+24
+00:01:02,799 --> 00:01:04,700
+obtener la importación.
+
+25
+00:01:04,700 --> 00:01:06,790
+Asegúrese de cambiar su proyecto.
+
+26
+00:01:06,790 --> 00:01:10,630
+Cambié mi proyecto para que
+se asigne a mi proyecto de Qwiklabs
+
+27
+00:01:10,630 --> 00:01:14,485
+cambié mi depósito para que
+se asigne a mi depósito de Qwiklabs
+
+28
+00:01:14,485 --> 00:01:19,430
+y configuré la región para que se asigne
+donde quiero que se ejecute el código
+
+29
+00:01:19,430 --> 00:01:22,410
+Ahora, ejecutemos la consulta.
+
+30
+00:01:22,410 --> 00:01:25,730
+La consulta realiza una limpieza
+
+31
+00:01:25,730 --> 00:01:28,985
+Aquí, me aseguro
+
+32
+00:01:28,985 --> 00:01:32,720
+de que estemos obteniendo solo
+los datos con distancias positivas
+
+33
+00:01:32,720 --> 00:01:35,330
+el importe de la tarifa sea mayor que 2.5
+
+34
+00:01:35,330 --> 00:01:36,830
+que la longitud de recogida
+
+35
+00:01:36,830 --> 00:01:38,210
+la latitud de recogida, etc.
+
+36
+00:01:38,210 --> 00:01:40,430
+tengan recuentos razonables
+
+37
+00:01:40,430 --> 00:01:41,985
+y que haya pasajeros en el taxi.
+
+38
+00:01:41,985 --> 00:01:44,690
+Queremos asegurarnos de que
+los datos que se recopilaron
+
+39
+00:01:44,690 --> 00:01:48,335
+de un viaje en taxi en particular
+sean correctos antes de usarlos
+
+40
+00:01:48,335 --> 00:01:49,845
+para el entrenamiento.
+
+41
+00:01:49,845 --> 00:01:53,040
+Voy a dividir los datos,
+como lo comentamos antes
+
+42
+00:01:53,040 --> 00:01:55,621
+cuando analizamos
+cómo crear conjuntos de datos
+
+43
+00:01:55,621 --> 00:01:57,970
+según el hash de la hora
+y fecha de la recogida.
+
+44
+00:01:57,970 --> 00:02:00,810
+Una vez que lo hice,
+creo la consulta.
+
+45
+00:02:00,810 --> 00:02:04,670
+Mi consulta tomará el importe
+del peaje y de la tarifa
+
+46
+00:02:04,670 --> 00:02:06,540
+y lo llamará el importe de la tarifa.
+
+47
+00:02:06,540 --> 00:02:10,090
+Así que estamos averiguando
+los costos totales del viaje.
+
+48
+00:02:10,590 --> 00:02:13,450
+Y tomamos el día de la semana.
+
+49
+00:02:13,841 --> 00:02:15,511
+¿Por qué lo hacemos?
+
+50
+00:02:15,669 --> 00:02:20,190
+Porque sabemos que las condiciones
+del tránsito varían según el día.
+
+51
+00:02:20,190 --> 00:02:25,100
+Sabemos que los viernes
+hay más tránsito que los domingos.
+
+52
+00:02:25,100 --> 00:02:29,514
+Sabemos que la hora del día
+es importante.
+
+53
+00:02:29,743 --> 00:02:36,890
+A las 2 a.m. de un viernes probablemente
+no haya tanto tránsito como a las 4 p.m.
+
+54
+00:02:36,890 --> 00:02:38,355
+¿Por qué es importante?
+
+55
+00:02:38,355 --> 00:02:40,545
+Porque en Nueva York
+
+56
+00:02:40,545 --> 00:02:43,065
+y esto es algo que aporta
+el conocimiento humano
+
+57
+00:02:43,065 --> 00:02:48,310
+las personas pagan por la cantidad de tiempo
+que pasan en el taxi además de la distancia.
+
+58
+00:02:48,310 --> 00:02:50,630
+Entonces, si el taxi está
+atascado en el tránsito
+
+59
+00:02:50,630 --> 00:02:54,135
+tendrá que pagar por ese tiempo
+porque está ocupando el taxi
+
+60
+00:02:54,135 --> 00:02:56,850
+y el taxista no puede
+recoger a otros pasajeros.
+
+61
+00:02:56,850 --> 00:02:58,689
+Por eso la hora es importante
+
+62
+00:02:58,689 --> 00:03:01,570
+el tiempo que
+demora el viaje importa.
+
+63
+00:03:01,570 --> 00:03:03,850
+Antes de que comience el viaje
+
+64
+00:03:03,850 --> 00:03:05,650
+no sabemos cuánto tiempo tardará.
+
+65
+00:03:05,650 --> 00:03:09,560
+Queremos que el modelo de aprendizaje
+automático averigüe este dato
+
+66
+00:03:09,560 --> 00:03:13,750
+y sabemos que un determinante clave
+para la duración del viaje
+
+67
+00:03:13,750 --> 00:03:16,370
+es el momento en que
+se recoge al pasajero.
+
+68
+00:03:16,370 --> 00:03:20,180
+No cuándo se baja,
+porque no sabemos dónde se bajará
+
+69
+00:03:20,180 --> 00:03:22,630
+pero sabemos cuándo se sube al taxi.
+
+70
+00:03:22,630 --> 00:03:25,190
+Usaremos la fecha y hora de la recogida
+
+71
+00:03:25,190 --> 00:03:29,320
+el día de la semana y la hora del día
+como entradas para nuestro modelo.
+
+72
+00:03:29,320 --> 00:03:32,110
+También sabemos en qué lugar
+se recogerán los pasajeros.
+
+73
+00:03:32,110 --> 00:03:35,000
+Y sabemos dónde quieren bajarse.
+
+74
+00:03:35,000 --> 00:03:37,430
+No sabemos la hora en que se bajará
+
+75
+00:03:37,430 --> 00:03:39,125
+pero sabemos el lugar al que irá.
+
+76
+00:03:39,125 --> 00:03:42,130
+Así que, sabemos la longitud
+y la latitud del destino.
+
+77
+00:03:42,130 --> 00:03:44,145
+Esas serán nuestras entradas.
+
+78
+00:03:44,145 --> 00:03:46,100
+Tomaremos un recuento de pasajeros
+
+79
+00:03:46,100 --> 00:03:49,040
+y crearemos una clave.
+
+80
+00:03:49,040 --> 00:03:50,320
+No usaremos esta clave
+
+81
+00:03:50,320 --> 00:03:54,570
+pero si quisiéramos hacer algo
+como una predicción por lotes
+
+82
+00:03:54,570 --> 00:03:56,505
+enviaríamos muchos datos
+
+83
+00:03:56,505 --> 00:04:01,205
+y es útil si cada una de las filas en
+el conjunto de datos tiene un ID único.
+
+84
+00:04:01,205 --> 00:04:05,110
+Esta es una especie de ID único
+de todas las columnas de entradas.
+
+85
+00:04:05,670 --> 00:04:10,110
+Estoy haciendo esto
+donde todos los datos son válidos.
+
+86
+00:04:10,110 --> 00:04:11,730
+En este momento
+
+87
+00:04:11,730 --> 00:04:14,115
+estoy listo para crear
+nuestro conjunto de datos.
+
+88
+00:04:14,115 --> 00:04:15,890
+Para crearlo
+
+89
+00:04:15,890 --> 00:04:20,279
+eliminaremos cualquier conjunto
+de datos que pueda haber.
+
+90
+00:04:20,279 --> 00:04:23,715
+Una vez hecho, seguiré
+
+91
+00:04:23,715 --> 00:04:31,190
+y crearé un archivo CSV
+de todas estas columnas.
+
+92
+00:04:31,190 --> 00:04:35,395
+Lo primero es asegurarse de que
+las columnas sean el importe de la tarifa
+
+93
+00:04:35,395 --> 00:04:37,690
+el día de la semana, la hora, etc.
+
+94
+00:04:37,690 --> 00:04:40,010
+Esas son las columnas que usaremos
+
+95
+00:04:40,010 --> 00:04:44,420
+pero, si usamos BigQuery, el día
+de la semana en el conjunto de datos
+
+96
+00:04:44,420 --> 00:04:46,760
+será un número, como el dos.
+
+97
+00:04:46,760 --> 00:04:49,700
+No queremos usar un número
+porque no sabemos
+
+98
+00:04:49,700 --> 00:04:51,240
+qué día de la semana es el dos.
+
+99
+00:04:51,240 --> 00:04:52,730
+¿La semana comienza el domingo?
+
+100
+00:04:52,730 --> 00:04:53,845
+¿el lunes o el martes?
+
+101
+00:04:53,845 --> 00:04:55,470
+No queremos que nuestro cliente
+
+102
+00:04:55,470 --> 00:04:57,365
+se tenga que preocupar por eso.
+
+103
+00:04:57,365 --> 00:04:59,495
+Entonces, lo que haremos es reemplazar
+
+104
+00:04:59,495 --> 00:05:04,450
+esos números con los nombres
+de los días de la semana.
+
+105
+00:05:04,450 --> 00:05:07,950
+Entonces, el día uno es el domingo.
+
+106
+00:05:07,950 --> 00:05:09,120
+Si es el día dos
+
+107
+00:05:09,120 --> 00:05:10,570
+entonces es lunes, etc.
+
+108
+00:05:10,570 --> 00:05:12,320
+Eso es lo que estoy haciendo aquí.
+
+109
+00:05:12,320 --> 00:05:14,335
+Tomo el resultado de BigQuery
+
+110
+00:05:14,335 --> 00:05:16,150
+el día de la semana que es un número
+
+111
+00:05:16,150 --> 00:05:18,679
+y lo reemplazo con una string
+
+112
+00:05:18,679 --> 00:05:23,565
+y, ahora, los adjunto
+con una coma como separador
+
+113
+00:05:23,565 --> 00:05:27,985
+y ese es el resultado del archivo CSV.
+
+114
+00:05:27,985 --> 00:05:29,790
+Para escribirlo
+
+115
+00:05:29,790 --> 00:05:32,540
+voy a leer los datos
+
+116
+00:05:32,540 --> 00:05:36,180
+desde BigQuery con la consulta
+que creamos recién
+
+117
+00:05:36,180 --> 00:05:39,920
+los convertiré a un CSV
+con esa función que mencioné.
+
+118
+00:05:39,920 --> 00:05:42,500
+El único cambio que implementamos
+
+119
+00:05:42,500 --> 00:05:45,525
+es en los días de la semana,
+de números a strings.
+
+120
+00:05:45,525 --> 00:05:49,010
+Luego los escribimos en un archivo
+de texto, un archivo CSV.
+
+121
+00:05:49,010 --> 00:05:51,540
+Cuando lo ejecuto
+
+122
+00:05:51,540 --> 00:05:56,110
+el código hace el procesamiento previo
+
+123
+00:05:56,110 --> 00:05:59,140
+y, en la próxima celda
+
+124
+00:05:59,140 --> 00:06:04,010
+llamo el procesamiento previo
+en el "DataflowRunner", si lo deseo
+
+125
+00:06:04,010 --> 00:06:07,620
+o puedo crear un conjunto de datos
+más pequeño en el "DirectRunner"
+
+126
+00:06:07,620 --> 00:06:09,220
+para ejecutarlo de forma local.
+
+127
+00:06:09,220 --> 00:06:12,225
+En este caso, uso el ejecutor de Dataflow
+
+128
+00:06:12,225 --> 00:06:14,295
+se ejecutará
+
+129
+00:06:14,295 --> 00:06:16,585
+y tomará unos minutos.
+
+130
+00:06:16,585 --> 00:06:20,240
+Vamos a Console
+
+131
+00:06:20,240 --> 00:06:26,015
+y veremos en el ejecutor de Dataflow
+que se inició el trabajo.
+
+132
+00:06:26,015 --> 00:06:28,743
+Vamos a Dataflow…
+
+133
+00:06:33,728 --> 00:06:36,358
+veamos qué dice…
+
+134
+00:06:44,265 --> 00:06:45,215
+Aquí está.
+
+135
+00:06:45,215 --> 00:06:48,420
+La API de Dataflow no se usó
+ni se habilitó.
+
+136
+00:06:48,420 --> 00:06:52,250
+Lo que tendremos que hacer
+es dirigirnos aquí.
+
+137
+00:06:52,250 --> 00:06:53,730
+Si ven ese error
+
+138
+00:06:53,730 --> 00:06:58,430
+deberán ir a APIs & Services
+
+139
+00:07:01,170 --> 00:07:05,392
+y seleccionar "Enable APIs and Services".
+
+140
+00:07:05,405 --> 00:07:09,685
+La que queremos habilitar
+se llama Dataflow.
+
+141
+00:07:09,685 --> 00:07:12,935
+Así obtenemos la API de Dataflow
+
+142
+00:07:12,935 --> 00:07:16,445
+y la habilitaremos.
+
+143
+00:07:16,445 --> 00:07:20,420
+Una vez que se habilita la API
+
+144
+00:07:23,207 --> 00:07:24,655
+esperamos a que se habilite…
+
+145
+00:07:24,655 --> 00:07:27,100
+deberíamos poder volver
+a ejecutar esta celda.
+
+146
+00:07:27,765 --> 00:07:29,560
+Listo, se habilitó.
+
+147
+00:07:29,560 --> 00:07:37,260
+Ahora volvemos al Datalab Notebook
+y ejecutamos esta celda.
+
+148
+00:07:41,996 --> 00:07:44,240
+Esperemos que esta vez funcione.
+
+149
+00:07:44,240 --> 00:07:46,865
+Correcto, se inició.
+
+150
+00:07:46,865 --> 00:07:56,260
+Ahora puedo volver a la sección
+de Dataflow del menú
+
+151
+00:07:56,260 --> 00:07:59,155
+y verá que el código se está ejecutando.
+
+152
+00:07:59,155 --> 00:08:01,235
+Esta ejecución tardará unos minutos
+
+153
+00:08:01,235 --> 00:08:02,955
+y cuando finalice
+
+154
+00:08:02,955 --> 00:08:05,355
+en Cloud, en su depósito
+
+155
+00:08:05,355 --> 00:08:11,220
+tendrá los archivos de entrenamiento
+que podrá usar para entrenar.
+
+156
+00:08:13,728 --> 00:08:16,166
+Desplacémonos hacia abajo…
+
+157
+00:08:17,560 --> 00:08:22,525
+Podríamos hacer esto, pero en su lugar
+
+158
+00:08:22,525 --> 00:08:24,820
+esperemos que finalice
+
+159
+00:08:24,820 --> 00:08:26,665
+y cuando esté listo
+
+160
+00:08:26,665 --> 00:08:28,105
+podremos volver.
+
+161
+00:08:28,105 --> 00:08:29,695
+Pausaré el video ahora.
+
+162
+00:08:29,695 --> 00:08:35,289
+Volveremos y comenzaremos
+cuando el trabajo de Dataflow esté listo.
+
+163
+00:08:35,289 --> 00:08:39,565
+Este trabajo demoró unos ocho minutos
+
+164
+00:08:39,565 --> 00:08:41,520
+el último paso finalizó correctamente
+
+165
+00:08:41,520 --> 00:08:42,735
+y, en este momento
+
+166
+00:08:42,735 --> 00:08:45,380
+la cantidad de trabajadores
+está disminuyendo.
+
+167
+00:08:45,380 --> 00:08:49,650
+Su rendimiento variará según la cantidad
+de trabajadores que tenga disponible
+
+168
+00:08:49,650 --> 00:08:52,625
+y cuántos trabajadores se estén
+ejecutando en su trabajo.
+
+169
+00:08:52,625 --> 00:08:55,200
+Pero una vez que está listo
+
+170
+00:08:55,200 --> 00:09:01,110
+puede volver al notebook para ver
+que estén los archivos de salida.
+
+171
+00:09:01,110 --> 00:09:03,080
+Eso es lo que estoy haciendo ahora.
+
+172
+00:09:03,080 --> 00:09:05,930
+Uso "gs" en "gsutil" en el depósito
+
+173
+00:09:05,930 --> 00:09:09,375
+y vemos que hay un archivo "train.csv"
+
+174
+00:09:09,375 --> 00:09:11,395
+y uno llamado "valid.csv".
+
+175
+00:09:11,395 --> 00:09:15,620
+Es decir que tenemos un archivo
+de entrenamiento y uno de validación
+
+176
+00:09:15,620 --> 00:09:19,050
+y, directamente, podemos usar "cat"
+
+177
+00:09:19,050 --> 00:09:23,380
+"cat" es un comando de Unix
+que enumera todas las líneas
+
+178
+00:09:23,430 --> 00:09:27,720
+y hace una canalización
+
+179
+00:09:27,720 --> 00:09:30,450
+para obtener las primeras líneas.
+
+180
+00:09:30,450 --> 00:09:32,905
+Como esperábamos
+
+181
+00:09:32,905 --> 00:09:37,035
+el día de la semana es una string:
+viernes, miércoles, etc.
+
+182
+00:09:37,035 --> 00:09:39,290
+Después, tenemos las latitudes
+
+183
+00:09:39,290 --> 00:09:41,610
+longitudes, puntos
+de recogida y de descenso.
+
+184
+00:09:44,400 --> 00:09:47,010
+La última columna es una clave
+
+185
+00:09:47,010 --> 00:09:48,890
+que ignoraremos en este modelo
+
+186
+00:09:48,890 --> 00:09:53,820
+pero está allí por si queremos un ID único
+para cada fila del conjunto de datos.
+
+187
+00:09:53,820 --> 00:09:55,575
+Entonces, tenemos este archivo
+
+188
+00:09:55,575 --> 00:09:58,930
+y, ahora, podemos usarlo
+para desarrollar nuestro modelo.
+
+189
+00:09:58,930 --> 00:10:02,590
+Para poder desarrollarlo
+
+190
+00:10:02,590 --> 00:10:05,455
+es ideal no tener
+que volver a Cloud todo el tiempo.
+
+191
+00:10:05,455 --> 00:10:08,780
+Entonces, crearé un directorio
+llamado "sample"
+
+192
+00:10:08,780 --> 00:10:12,270
+y copiaré solo uno de los archivos allí.
+
+193
+00:10:12,270 --> 00:10:14,005
+Dado que tenemos archivos acortados
+
+194
+00:10:14,005 --> 00:10:21,290
+copiaré solo la primera parte del archivo
+acortado en el directorio local.
+
+195
+00:10:24,125 --> 00:10:29,215
+Ahora, podemos avanzar
+y ver el código en sí.
+
+196
+00:10:29,215 --> 00:10:30,930
+Así que examinemos el código.
+
+197
+00:10:30,930 --> 00:10:32,360
+Podemos hacerlo en el notebook
+
+198
+00:10:32,360 --> 00:10:34,245
+pero veámoslo desde afuera.
+
+199
+00:10:34,245 --> 00:10:36,700
+Tenemos la tarifa de taxi.
+
+200
+00:10:36,700 --> 00:10:39,735
+Igual que antes, para la tarifa
+
+201
+00:10:39,735 --> 00:10:41,205
+tendremos un entrenador
+
+202
+00:10:41,205 --> 00:10:44,830
+y, como antes, tendremos
+"model.pi" y "tasks.pi".
+
+203
+00:10:44,830 --> 00:10:47,200
+Pero, en este caso, "model.pi"
+
+204
+00:10:47,200 --> 00:10:49,570
+no será solo una entrada sin procesar
+
+205
+00:10:49,570 --> 00:10:52,750
+sino que tendrá
+ingeniería de funciones en él.
+
+206
+00:10:52,750 --> 00:10:55,049
+Estas son las columnas
+
+207
+00:10:55,136 --> 00:10:59,460
+note que tenemos columnas adicionales
+que no teníamos antes
+
+208
+00:10:59,460 --> 00:11:00,820
+tenemos el día de la semana
+
+209
+00:11:00,820 --> 00:11:02,645
+la hora del día, etc.
+
+210
+00:11:02,645 --> 00:11:07,725
+Entonces, estas son
+mis columnas de entrada
+
+211
+00:11:07,725 --> 00:11:09,420
+tengo el día de la semana
+
+212
+00:11:09,420 --> 00:11:11,490
+tiene un vocabulario que es:
+
+213
+00:11:11,490 --> 00:11:14,030
+domingo, lunes, martes, etc.
+
+214
+00:11:14,030 --> 00:11:17,805
+La hora del día también es
+una columna categórica
+
+215
+00:11:17,805 --> 00:11:20,260
+pero tiene una identidad.
+
+216
+00:11:20,260 --> 00:11:22,610
+En otras palabras, ya es un número entero.
+
+217
+00:11:22,610 --> 00:11:24,640
+Es decir, uno, dos, tres, cuatro, etc.
+
+218
+00:11:24,640 --> 00:11:27,730
+Luego, tenemos columnas numéricas
+para la longitud de la recogida
+
+219
+00:11:27,730 --> 00:11:29,640
+la latitud de la recogida y del destino
+
+220
+00:11:29,640 --> 00:11:31,250
+la longitud de destino, etc.
+
+221
+00:11:31,250 --> 00:11:33,845
+También voy a crear
+
+222
+00:11:33,845 --> 00:11:39,110
+unas columnas de ingeniería
+y lo veremos luego en el código
+
+223
+00:11:39,110 --> 00:11:42,529
+pero las columnas de ingeniería
+marcarán la diferencia en la latitud.
+
+224
+00:11:42,529 --> 00:11:44,260
+¿Por qué es importante?
+
+225
+00:11:44,260 --> 00:11:48,835
+La diferencia en latitud nos dice
+si vamos al norte o al sur de Manhattan.
+
+226
+00:11:48,835 --> 00:11:54,470
+Nos da una idea
+de cuánto cambió la latitud.
+
+227
+00:11:54,470 --> 00:11:56,890
+La diferencia es longitud es muy útil
+
+228
+00:11:56,890 --> 00:11:59,320
+porque la Ciudad de Nueva York
+no es extensa al sur
+
+229
+00:11:59,320 --> 00:12:06,165
+y todos los puentes en los que se paga
+peaje cambian drásticamente la longitud.
+
+230
+00:12:06,165 --> 00:12:08,880
+Entonces, saber la diferencia
+en longitud es muy útil
+
+231
+00:12:08,880 --> 00:12:13,485
+y agrego una distancia euclidiana
+que se conoce como "a vuelo de pájaro"
+
+232
+00:12:13,485 --> 00:12:16,510
+entre el punto de recogida
+y el punto de destino.
+
+233
+00:12:16,510 --> 00:12:18,695
+Es una buena función para usar
+
+234
+00:12:18,695 --> 00:12:21,830
+porque de esa forma el modelo
+no tiene que aprender las distancias
+
+235
+00:12:21,830 --> 00:12:24,100
+ya se le proporciona
+la distancia directamente.
+
+236
+00:12:24,100 --> 00:12:26,900
+Así que aplicamos
+esta ingeniería de funciones
+
+237
+00:12:26,900 --> 00:12:29,615
+y estamos listos
+para crear el estimador.
+
+238
+00:12:29,615 --> 00:12:33,315
+En el estimador, tomamos
+todas nuestras columnas de entrada.
+
+239
+00:12:33,315 --> 00:12:35,660
+Esas son las columnas
+de entrada que tenemos
+
+240
+00:12:35,660 --> 00:12:40,845
+como hicimos en el ejercicio de ingeniería
+de funciones con los datos de las casas
+
+241
+00:12:40,845 --> 00:12:44,270
+agrupamos los depósitos
+de latitud y los de longitud.
+
+242
+00:12:44,270 --> 00:12:50,265
+Tomamos la latitud de recogida y la
+agrupamos en un depósito entre 38 y 42.
+
+243
+00:12:50,265 --> 00:12:54,270
+Y la longitud desde -76 a -72
+
+244
+00:12:54,270 --> 00:12:57,130
+ya que esos son los límites
+de la Ciudad de Nueva York.
+
+245
+00:12:57,130 --> 00:13:00,655
+Obtenemos un depósito
+de la latitud de recogida
+
+246
+00:13:00,655 --> 00:13:02,935
+y uno de la latitud de destino
+
+247
+00:13:02,935 --> 00:13:05,040
+y hacemos lo mismo
+con las longitudes.
+
+248
+00:13:05,040 --> 00:13:07,815
+La longitud de recogida y la de destino
+
+249
+00:13:07,815 --> 00:13:09,690
+agrupadas en depósitos.
+
+250
+00:13:09,690 --> 00:13:12,050
+Una vez que tenemos los depósitos
+
+251
+00:13:12,050 --> 00:13:14,175
+¿Para qué sirve
+el agrupamiento en depósitos?
+
+252
+00:13:14,175 --> 00:13:17,595
+Discretiza los elementos, es decir,
+toma un valor numérico
+
+253
+00:13:17,595 --> 00:13:21,360
+y lo convierte en categórico,
+ya que está en uno de esos depósitos.
+
+254
+00:13:21,360 --> 00:13:23,950
+Tomamos esos valores categóricos
+
+255
+00:13:23,950 --> 00:13:26,520
+y hacemos una combinación
+de funciones en ellos.
+
+256
+00:13:26,520 --> 00:13:32,810
+¿Qué pasa cuando combinamos las funciones
+de la latitud y la longitud de recogida?
+
+257
+00:13:32,810 --> 00:13:35,020
+Tenemos la latitud y la longitud
+
+258
+00:13:35,020 --> 00:13:36,905
+realizamos una combinación
+de funciones
+
+259
+00:13:36,905 --> 00:13:40,470
+colocamos la ubicación de recogida
+
+260
+00:13:40,470 --> 00:13:43,709
+la celda de la cuadrícula
+que corresponde a la ubicación de recogida
+
+261
+00:13:43,709 --> 00:13:45,585
+eso es Ploc.
+
+262
+00:13:45,585 --> 00:13:47,875
+Ploc es como una celda de cuadrícula.
+
+263
+00:13:47,875 --> 00:13:52,280
+De forma similar, Dloc es una celda
+de cuadrícula que corresponde al destino
+
+264
+00:13:52,280 --> 00:13:55,105
+ambas son puntos
+de celdas de una cuadrícula.
+
+265
+00:13:55,105 --> 00:14:01,470
+Ahora, hago una combinación de funciones
+de la ubicación de recogida y del destino.
+
+266
+00:14:01,470 --> 00:14:05,282
+Lo que buscamos es aprender
+
+267
+00:14:05,434 --> 00:14:10,305
+de todos los viajes en taxi
+desde esta ubicación a esta otra
+
+268
+00:14:10,305 --> 00:14:11,305
+¿Cuánto cuestan?
+
+269
+00:14:11,305 --> 00:14:13,510
+La única forma de hacerlo
+
+270
+00:14:13,510 --> 00:14:15,790
+y es algo que repetimos continuamente
+
+271
+00:14:15,790 --> 00:14:19,345
+es con la combinación de funciones,
+que es muy potente
+
+272
+00:14:19,345 --> 00:14:22,231
+pero solo funciona
+si tiene suficientes datos
+
+273
+00:14:22,356 --> 00:14:25,170
+porque la combinación
+de funciones es memorización
+
+274
+00:14:25,170 --> 00:14:30,285
+y funciona si tiene suficientes datos
+en cada uno de los depósitos.
+
+275
+00:14:30,285 --> 00:14:34,105
+En este caso, tenemos millones
+de viajes en taxi
+
+276
+00:14:34,105 --> 00:14:37,050
+así que tenemos datos suficientes
+para poder hacerlo.
+
+277
+00:14:37,640 --> 00:14:40,120
+Agrupamos la longitud de recogida
+
+278
+00:14:40,120 --> 00:14:42,105
+y la longitud del destino en depósitos
+
+279
+00:14:42,105 --> 00:14:44,385
+y los usamos para crear
+la ubicación de recogida
+
+280
+00:14:44,385 --> 00:14:47,200
+y la ubicación de destino.
+Combinamos esas funciones
+
+281
+00:14:47,200 --> 00:14:49,820
+y obtenemos un par de recogida y destino.
+
+282
+00:14:49,820 --> 00:14:51,880
+que también es
+una combinación de funciones
+
+283
+00:14:51,880 --> 00:14:54,260
+y luego lo hacemos con el día y la hora
+
+284
+00:14:54,260 --> 00:14:56,865
+porque el tránsito
+depende del día y la hora.
+
+285
+00:14:56,865 --> 00:15:00,855
+Un viernes a las 3 p.m. es distinto
+a un miércoles a las 3 p.m.
+
+286
+00:15:00,855 --> 00:15:03,115
+o a un domingo a las 3 p.m.
+
+287
+00:15:03,135 --> 00:15:09,820
+Hacemos la combinación y debemos decidir
+la cantidad de depósitos que usaremos.
+
+288
+00:15:09,925 --> 00:15:15,400
+Puede elegir cualquier cantidad,
+hasta el doble de la cantidad total
+
+289
+00:15:15,400 --> 00:15:19,850
+de valores posibles hasta
+la raíz cuadrada de los valores posibles.
+
+290
+00:15:19,850 --> 00:15:23,760
+En este caso, usaré la cantidad total
+de valores.
+
+291
+00:15:23,760 --> 00:15:26,070
+24 por 7 para la cantidad de depósitos
+
+292
+00:15:26,070 --> 00:15:28,790
+pero esto es algo que debe probar
+
+293
+00:15:28,790 --> 00:15:31,465
+y deberá ajustar los hiperparámetros.
+
+294
+00:15:31,465 --> 00:15:38,990
+No hay una sola respuesta correcta
+para cuántos depósitos de hash debe usar.
+
+295
+00:15:38,990 --> 00:15:41,985
+Volveremos y observaremos
+todos nuestros datos
+
+296
+00:15:41,985 --> 00:15:46,130
+y veremos cuáles son
+dispersos y categóricos
+
+297
+00:15:46,130 --> 00:15:49,500
+y cuáles son densos y numéricos.
+
+298
+00:15:49,500 --> 00:15:53,990
+Las columnas dispersas y categóricas
+van en la parte amplia de la red
+
+299
+00:15:53,990 --> 00:15:57,545
+porque los modelos lineales
+funcionan mejor con ellas.
+
+300
+00:15:57,545 --> 00:16:02,505
+Las columnas densas y numéricas
+
+301
+00:16:02,505 --> 00:16:04,590
+y las columnas incorporadas son un ejemplo
+
+302
+00:16:04,590 --> 00:16:07,020
+de columnas densas
+porque toman los datos dispersos
+
+303
+00:16:07,020 --> 00:16:10,460
+y los condensan
+
+304
+00:16:10,460 --> 00:16:14,675
+esos son ejemplos útiles
+de columnas densas.
+
+305
+00:16:14,675 --> 00:16:18,955
+Tomamos todas las columnas dispersas
+y las colocamos en columnas anchas
+
+306
+00:16:18,955 --> 00:16:21,360
+y tomamos todos los datos densos
+
+307
+00:16:21,360 --> 00:16:23,485
+y los colocamos en las columnas profundas
+
+308
+00:16:23,485 --> 00:16:27,625
+y creamos lo que se llama
+un "DNN linear combined regressor".
+
+309
+00:16:27,625 --> 00:16:32,350
+Este es una potencia adicional que
+podemos darle al modelo, si lo deseamos.
+
+310
+00:16:32,350 --> 00:16:34,550
+puede solo usar solo un regresor DNN
+
+311
+00:16:34,550 --> 00:16:38,850
+y analizar todo como columnas profundas
+y está bien.
+
+312
+00:16:38,850 --> 00:16:40,810
+Pero el "DNN linear combined regressor"
+
+313
+00:16:40,810 --> 00:16:44,360
+nos permite tratar los datos dispersos
+diferente a los datos densos
+
+314
+00:16:44,360 --> 00:16:48,255
+usa un optimizador distinto
+para los dispersos que para los densos.
+
+315
+00:16:48,255 --> 00:16:52,755
+Se ajusta a la idea de que si tengo
+un conjunto de datos del mundo real
+
+316
+00:16:52,755 --> 00:16:56,550
+algunas funciones serán densas
+y otras serán dispersas
+
+317
+00:16:56,550 --> 00:17:00,900
+así que, este tipo de regresor
+funciona muy bien con esos datos.
+
+318
+00:17:00,900 --> 00:17:05,685
+Ahora estamos analizando cuáles
+funciones necesitan un modelo lineal
+
+319
+00:17:05,685 --> 00:17:08,795
+y cuáles necesitan un modelo
+de red neuronal profunda.
+
+320
+00:17:08,795 --> 00:17:13,165
+Especificamos la cantidad de unidades
+que queremos para nuestro modelo de DNN.
+
+321
+00:17:13,165 --> 00:17:14,405
+Aquí está nuestro modelo
+
+322
+00:17:14,405 --> 00:17:17,360
+pero recuerde que mencionamos
+la ingeniería de funciones.
+
+323
+00:17:17,360 --> 00:17:19,200
+No queremos usar
+los datos sin procesar
+
+324
+00:17:19,200 --> 00:17:20,750
+queremos agregarles cosas
+
+325
+00:17:20,750 --> 00:17:23,190
+y ya tenemos las columnas
+de ingeniería de funciones
+
+326
+00:17:23,190 --> 00:17:25,160
+" latdiff", "londiff", etc.
+
+327
+00:17:25,160 --> 00:17:26,569
+Así las procesamos.
+
+328
+00:17:26,569 --> 00:17:29,695
+"latdiff" es la diferencia
+entre dos latitudes
+
+329
+00:17:29,695 --> 00:17:32,745
+"londiff" es la diferencia
+entre dos longitudes.
+
+330
+00:17:33,585 --> 00:17:38,150
+Luego, especificamos la función
+de entrada de entrega
+
+331
+00:17:38,150 --> 00:17:41,930
+que son los datos que nos debe
+proporcionar el usuario final.
+
+332
+00:17:41,930 --> 00:17:45,740
+El usuario final no debe brindarnos
+la diferencia de latitud o longitud
+
+333
+00:17:45,740 --> 00:17:47,400
+no saben cómo procesar
+esos datos
+
+334
+00:17:47,400 --> 00:17:49,125
+solo deben darnos
+datos sin procesar.
+
+335
+00:17:49,125 --> 00:17:52,120
+Vamos a tomar
+todas las columnas de entrada
+
+336
+00:17:52,120 --> 00:17:54,990
+excepto las primeras dos
+
+337
+00:17:54,990 --> 00:17:58,085
+que son el importe de la tarifa
+que es una etiqueta
+
+338
+00:17:58,085 --> 00:18:00,190
+y no una entrada
+
+339
+00:18:00,190 --> 00:18:02,815
+y la segunda columna
+que vamos a ignorar
+
+340
+00:18:02,815 --> 00:18:05,105
+Veamos las columnas de entrada
+
+341
+00:18:05,105 --> 00:18:08,380
+que vamos a ignorar
+
+342
+00:18:08,380 --> 00:18:10,595
+son estas dos.
+
+343
+00:18:10,595 --> 00:18:14,280
+Ignoramos el día de la semana
+y la hora del día.
+
+344
+00:18:14,280 --> 00:18:17,980
+Tomaremos todo lo demás
+
+345
+00:18:17,980 --> 00:18:22,000
+que son todos
+números de punto flotante
+
+346
+00:18:22,000 --> 00:18:23,995
+el día de la semana es una string
+
+347
+00:18:23,995 --> 00:18:26,640
+la hora del día es "int32"
+
+348
+00:18:26,640 --> 00:18:30,925
+y los usaremos para crear
+un receptor de entrada de entrega.
+
+349
+00:18:30,925 --> 00:18:36,160
+Además de agregar las funciones
+que nos brinda el usuario final
+
+350
+00:18:36,160 --> 00:18:40,860
+asegúrese de agregar la ingeniería
+de funciones para que el modelo vea todo.
+
+351
+00:18:40,860 --> 00:18:46,010
+Leer los datos es similar
+a lo que ya hicimos
+
+352
+00:18:46,010 --> 00:18:49,200
+el entrenamiento y la evaluación
+son similares también
+
+353
+00:18:49,200 --> 00:18:52,405
+así que lo podemos ejecutarlo.
+
+354
+00:18:52,405 --> 00:18:54,010
+Volvamos aquí
+
+355
+00:18:54,010 --> 00:18:57,995
+y probemos nuestro modelo
+con un conjunto de datos pequeño
+
+356
+00:18:57,995 --> 00:19:00,490
+y luego lo podemos entrenar
+en Cloud.
+
+357
+00:19:00,490 --> 00:19:05,510
+Así que podemos usar
+"gcloud ml-engine" y ejecutarlo.
+
+358
+00:19:05,510 --> 00:19:10,450
+debería obtener un RMSE
+un poco mejor
+
+359
+00:19:10,450 --> 00:19:13,460
+pero en sí, ya tenemos
+un modelo mejor.
+
+360
+00:19:13,460 --> 00:19:15,120
+Lo próximo que haremos
+
+361
+00:19:15,120 --> 00:19:18,285
+es ajustar los hiperparámetros
+para encontrar los parámetros útiles
+
+362
+00:19:18,285 --> 00:19:19,275
+del modelo.
+
+363
+00:19:19,275 --> 00:19:20,790
+Para ello
+
+364
+00:19:20,790 --> 00:19:24,570
+realizaremos
+un ajuste de hiperparámetros
+
+365
+00:19:24,570 --> 00:19:27,840
+con lo que se obtienen
+los parámetros para esos modelos.
+
+366
+00:19:27,840 --> 00:19:30,780
+En este caso,
+estos son los mejores parámetros.
+
+367
+00:19:30,780 --> 00:19:32,405
+Una vez que hicimos esto
+
+368
+00:19:32,405 --> 00:19:35,820
+podemos ejecutarlo en un conjunto
+de datos mucho más grande.
+
+369
+00:19:35,820 --> 00:19:38,390
+Uno de los aspectos clave
+del aprendizaje automático
+
+370
+00:19:38,390 --> 00:19:41,030
+es que obtiene el mejor rendimiento
+en el entrenamiento
+
+371
+00:19:41,030 --> 00:19:42,660
+de conjuntos de datos grandes.
+
+372
+00:19:42,660 --> 00:19:46,320
+Antes ejecuté un trabajo de Dataflow
+que demoró unos 10 minutos
+
+373
+00:19:46,320 --> 00:19:47,965
+para poder continuar.
+
+374
+00:19:47,965 --> 00:19:50,390
+Ahora ejecutaremos
+un trabajo de Dataflow
+
+375
+00:19:50,390 --> 00:19:53,020
+que demorará una hora
+y que creará
+
+376
+00:19:53,020 --> 00:19:54,750
+un conjunto de datos
+mucho más grande
+
+377
+00:19:54,750 --> 00:19:57,020
+con millones de filas.
+
+378
+00:19:57,020 --> 00:19:58,410
+Cuando esté listo
+
+379
+00:19:58,410 --> 00:20:00,910
+obtendrá un RMSE mucho mejor.
+
+380
+00:20:00,910 --> 00:20:05,410
+La idea central es tomar
+los datos sin procesar
+
+381
+00:20:05,410 --> 00:20:08,424
+usar la ingeniería de atributos
+para agregar conocimiento humano
+
+382
+00:20:08,424 --> 00:20:11,075
+en los aspectos importantes
+
+383
+00:20:11,075 --> 00:20:13,490
+como el tránsito, la distancia del viaje
+
+384
+00:20:13,490 --> 00:20:17,510
+si se cruzan los límites
+
+385
+00:20:17,830 --> 00:20:22,205
+si van de este a oeste
+o de norte a sur
+
+386
+00:20:22,205 --> 00:20:25,415
+la diferencia de longitud, latitud,
+la distancia euclidiana
+
+387
+00:20:25,415 --> 00:20:27,437
+y la combinación de funciones.
+
+388
+00:20:27,558 --> 00:20:29,594
+Todo esto ayudará
+a mejorar nuestro modelo.

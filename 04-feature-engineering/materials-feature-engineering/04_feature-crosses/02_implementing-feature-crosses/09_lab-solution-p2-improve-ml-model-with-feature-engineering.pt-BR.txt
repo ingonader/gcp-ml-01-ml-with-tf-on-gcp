@@ -1,0 +1,142 @@
+Eu iniciei o Datalab, abri o
+featureengineering.ipythonnotebook e vou mostrar como funciona. Neste bloco de notas, veremos como trabalhar
+com colunas de atributos e adicionar cruzamentos
+de atributos no TensorFlow. Vamos ler nossos dados no BigQuery, criar conjuntos de dados com o Dataflow e usar um modelo amplo e profundo. Vamos usar muito do que falamos até aqui. Só não falamos ainda sobre
+o modelo amplo e profundo. Este é o problema. Até agora, criamos um modelo de táxi, mas não incluímos insights humanos. É isso que faremos agora. Aproveitaremos algumas das coisas que sabemos sobre o
+funcionamento de um táxi, sobre o mapa de Nova York, e começaremos a dar dicas para o modelo para que ele possa aprender isso melhor. Conforme trabalhamos, falarei de onde vem um insight específico. Primeiro, vamos… começar a importação. Altere seu projeto. Eu mudei meu projeto para
+mapear o projeto do Qwiklabs, mudei meu intervalo para
+mapear o intervalo do Qwiklabs e mudei minha região para mapear
+onde o código será executado. Vamos executar a consulta. A consulta faz uma limpeza. Basicamente, preciso garantir que só dados com distâncias
+positivas sejam extraídos, para que "fare_amount" seja maior que 2,5, para que "pickup_longitude", "pickup_latitude" etc., fiquem dentro de um limite razoável e que haja alguém no táxi. Precisamos garantir que os dados coletados em uma corrida específica estejam
+corretos antes de usá-los no treinamento. Dividirei os dados, conforme mencionamos quando falamos sobre como criar conjuntos
+de dados com base no hash do horário. Depois, criei minha consulta, que vai coletar o valor e a tarifa, e chamarei de "fare_amount", para sabermos o custo
+total para uma pessoa, e usando o dia da semana
+como "dayoftheweek". Por que precisamos disso?
+Sabemos que as condições de trânsito são
+diferentes dependendo do dia. Sabemos que a sexta tem
+mais trânsito que o domingo. Também sabemos que a hora
+é importante, mesmo na sexta. 2h de sexta provavelmente
+não terá tanto trânsito quanto às 16h. Por que isso é importante? Porque, em Nova York, e isso é algo que o
+insight humano oferece, as pessoas pagam pelo
+tempo gasto, além da distância. Se o táxi ficar preso no trânsito, você paga por isso,
+porque está ocupando o táxi e o taxista não consegue
+pegar outras corridas. O tempo é importante, o tempo gasto na corrida é importante. Antes da corrida começar, não sabemos quanto tempo ela levará. Queremos que o modelo de
+aprendizado de máquina aprenda isso, e sabemos que um fator
+determinante da duração da corrida é quando ela começou. Não o fim da corrida, porque não
+sabemos quando a pessoa sairá do táxi, mas sabemos quando ela começará a corrida. Basicamente, usamos o horário de início, o dia da semana e a hora do dia
+como entradas para o modelo. Também sabemos onde a corrida começará. E onde o cliente quer ser deixado. Não sabemos o horário
+de término da corrida, mas sabemos
+para onde o cliente vai. Conhecemos a longitude
+e a latitude do local. Elas também farão parte da entrada. Criaremos uma contagem de passageiros e criaremos uma chave. Eu usarei essa chave, mas, se você quiser fazer
+um tipo de previsão em lote, com a inserção de muitos dados, é útil se cada linha do conjunto
+de dados tiver um código exclusivo. Esse é um tipo de formulário de
+código das colunas de entrada. Estou fazendo isso,
+onde todos os dados são válidos. Neste momento, estamos prontos para
+criar o conjunto de dados. Para criar o conjunto de dados, vamos excluir qualquer
+conjunto de dados existente. Depois disso, podemos avançar e criar um arquivo CSV com essas colunas. Primeiro, precisamos garantir que
+as colunas sejam "fare_amount", "dayoftheweek", "houroftheday" etc. Essas são as colunas que queremos criar, mas o dia da semana,
+no conjunto de dados do BigQuery, será um número como 2. Não queremos
+um número 2 porque não sabemos qual dia da semana ele é. A semana começa no domingo, na segunda ou na terça? Não queremos que o código do cliente precise lidar com isso. O que fazemos é substituir esses números pelo
+nome dos dias da semana. Se o primeiro dia é o domingo, e o número mostrado é 2, significa segunda-feira. É isso que estou fazendo. Estou usando o resultado do BigQuery, um dia da semana expresso como número, e substituindo por uma string. Agora, eu reúno todos
+separados por vírgulas, gerando um arquivo CSV. Agora, para gravar isso, eu preciso ler os dados no BigQuery usando a consulta criada e convertê-la em CSV
+com a função que comentamos. A única alteração é que estamos mudando os dias da semana de números para strings e criando um arquivo de texto CSV. Agora, quando executo o código, temos o pré-processamento do texto. Na próxima célula, posso chamar o pré-processamento
+no executor do Dataflow, se quiser, ou posso criar um conjunto de dados
+menor para executá-lo localmente. Nesse caso, eu executo no Dataflow, ele será executado e levará um tempo. Vamos para o console, e podemos ver que o job
+foi iniciado no executor. Quando vamos para o Dataflow… O que ele diz? Dataflow… Achei. Uma mensagem de que
+a API Dataflow não foi usada ou ativada. Temos que vir aqui. Se você vir esse erro, precisará acessar "APIs and Services" e procurar os dados de serviços ativos. Queremos ativar o Dataflow. Quando procuramos,
+acessamos a API Dataflow. Vamos ativar a API. Quando ela for ativada… Vamos esperar a ativação. Poderemos executar a célula novamente. Certo, ela foi ativada. Agora, voltamos ao bloco de notas
+do Datalab e executamos a célula. Dessa vez, ela será executada. Pronto, deu certo. Agora, posso voltar
+para o Dataflow no menu e você verá o código em execução. Isso demorará um pouco. Quando terminar, na nuvem, no seu intervalo, você terá os arquivos que
+pode usar para o treinamento. Vamos ver aqui. Podemos fazer isso, mas vamos ver. Vamos esperar ele terminar. Quando terminar, poderemos voltar. Vou pausar o vídeo aqui, voltamos depois e continuamos
+quando o job for concluído. O job levou cerca de oito minutos, a última etapa foi bem-sucedida. Nesse momento, o número de workers
+está diminuindo novamente. A milhagem varia dependendo
+de quantos workers você tem e quantos estão em execução no job. Quando terminar, você pode voltar ao bloco de notas e
+ver se os arquivos de saída estão lá. É isso que estou fazendo. Estou usando GS no gsutil ls no intervalo, e consigo ver
+um arquivo train.csv e um arquivo valid.csv. Temos um arquivo de treinamento
+no arquivo de validação, e também podemos usar "cut". "Cut" é um comando do Unix
+que lista as primeiras linhas. Na verdade, ele lista
+todas e gera um canal para mostrar as primeiras linhas. Assim, podemos ver o que esperamos, o dia da semana é uma string:
+sexta, quarta etc. Nós temos latitudes, longitudes, pontos de
+início e término da corrida. Também temos uma última coisa. A última coluna é uma chave
+que vamos ignorar no modelo, mas que existe se precisarmos de
+um código exclusivo para cada linha. Este arquivo está pronto, e podemos usá-lo para
+desenvolver nosso modelo. Para esse desenvolvimento, é melhor não precisar
+voltar sempre para o Cloud. Por isso, farei
+um diretório chamado "sample" e copiarei um dos arquivos para ele. Como temos arquivos fragmentados, estou copiando apenas a primeira parte
+para a amostra do meu diretório local. Depois, podemos ver o código. Vamos ver nosso código. Podemos fazer isso no bloco de notas, mas vamos ver fora dele. Temos nossa tarifa de táxi. Nessa tarifa, assim como antes, temos um trainer e, como antes, temos model.pi e tasks.pi. Mas model.pi, nesse caso, não será apenas uma entrada bruta. Ele terá alguma engenharia de atributos. Estas são as colunas presentes, e observe que agora há algumas colunas a mais. Temos o dia da semana, o horário do dia etc. Estas são as colunas de entrada, eu tenho o dia da semana, um vocabulário, constituído de domingo, segunda, terça etc., os dias da semana. O horário também é uma coluna categórica, mas tem uma identidade. Ou seja, já é um número inteiro. 1, 2, 3, 4 etc. Depois, temos as colunas
+numéricas de longitude e latitude de início, latitude e longitude de término etc. Eu também criarei algumas colunas com engenharia
+para usar posteriormente no código, mas as colunas serão
+a diferença de latitude. Por que isso é importante? A diferença de latitude diz se você
+vai do norte para o sul de Manhattan. Isso dá uma ideia de
+quanto a latitude mudou. A diferença de longitude é útil, porque Nova York
+não tem tanta extensão ao sul, e todas as pontes com pedágio
+geram mudanças drásticas na longitude. Por isso, é útil saber
+a diferença na longitude. Também adicionei uma distância euclidiana entre os pontos de início e de término. Esse também é um bom recurso, porque o modelo não
+precisa aprender distâncias, ela já é dada de início. Nós fazemos essa engenharia de atributos e estamos prontos para criar um Estimator. No Estimator, nós usamos
+todas as colunas de entrada. Essas são as colunas que nós temos. Assim como no exercício de engenharia
+no conjunto de dados de armazenamento, nós intervalamos a latitude e a longitude. Nós intervalamos
+a latitude de início entre 38 e 42, e a longitude de -76 a -72,
+porque é Nova York e esses são os limites da cidade. Vamos intervalar a latitude de início, a latitude de término e as longitudes, tanto de início quanto de término. Todas são intervaladas. Depois de intervalar, o que isso faz? Isso distingue as coisas,
+pega um valor numérico e o torna categórico,
+porque faz parte de um intervalo. Nós usamos esses valores categóricos e fazemos o cruzamento de atributos. O que acontece quando cruzamos
+a latitude e a longitude de início? Nós temos a latitude e a longitude e fazemos o cruzamento de atributos. Nós essencialmente colocamos o local de início,
+a célula de grade correspondente. Isso é o ploc. Ploc agora é como uma grade. Do mesmo modo, dloc é uma
+grade que corresponde ao término. Ambos são pontos em uma grade. Eu faço o cruzamento de atributos
+dos locais de início e término. Estamos falando para o modelo aprender com todas as corridas de táxi
+daqui até aqui. Quanto elas custam? A única maneira de fazer isso, e isso é algo que
+precisamos repetir sempre, é que o cruzamento de
+atributos é muito poderoso, mas só funciona se você tiver dados
+o bastante, porque ele usa memorização. Ele funciona com memorização se você
+tiver dados suficientes nos intervalos. Neste caso, temos
+milhões de corridas de táxi, então temos
+dados suficientes para fazer isso. Nós intervalamos a longitude de início, a longitude de término, usamos para criar o ploc, o dloc, fazemos o cruzamento de atributos, e agora temos um par de início e término que também é um cruzamento. Depois, usamos o dia e a hora, porque o tráfego
+depende dessas informações. Sexta às 15h é diferente
+de quarta às 15h e de domingo às 15h. Fazemos o cruzamento e decidimos
+o número de intervalos a ser usado. Você pode escolher um valor
+qualquer, do dobro do total de valores possíveis até a
+quarta raiz do número possível. Neste caso, estou usando
+o número total de valores. 24/7 para o número de intervalos. Mas isso é algo que você precisa testar, além de ajustar os hiperparâmetros. Não há uma resposta certa para
+quantos intervalos de hash usar. Voltamos a analisar nossos dados para dizer quais são esparsos e categóricos e quais
+são densos e numéricos. As colunas esparsas e categóricas ficam na parte maior de uma rede, porque
+modelos lineares são melhores para elas. E as colunas densas e numéricas - colunas de incorporação
+são um exemplo de colunas densas
+porque colocamos os dados esparsos em um espaço pequeno - são úteis também. Precisamos colocas nossas
+colunas esparsas nas colunas brancas. Nossos dados densos vão para as colunas profundas, e criamos um
+DNNLinearCombinedRegressor. Isso é um recurso extra
+para o modelo. Se você quiser, pode fazer apenas um regressor DNN, analisando tudo isso
+como colunas profundas. Isso seria ótimo, mas o
+DNNLinearCombined permite tratar os dados esparsos e os
+densos de maneiras diferentes. Ele usa um otimizador diferente
+para os dados esparsos, é ajustado para a ideia de que,
+em um conjunto de dados real, alguns dos atributos serão
+densos e outros serão esparsos. Então, esse tipo de regressor
+funciona bem com esse tipo de dados. Com isso, estamos analisando quais
+atributos precisam de um modelo linear e quais precisam
+de um modelo de rede neural profundo. Além disso, especificamos o número
+de unidades que queremos no modelo. Este é o modelo. Lembra que falamos
+sobre a engenharia de atributos? Não queremos apenas os dados brutos, queremos adicionar itens a eles, e já temos colunas
+de engenharia de atributos: latdiff, londiff… é assim que você as processa. A latdiff é a diferença
+entre as duas latitudes, a londiff é a diferença
+entre as duas longitudes, e depois especificamos a função
+de entrada de disponibilização, ela diz o que o usuário
+final precisa fornecer. O usuário não precisa
+fornecer latdiff e londiff, ele não sabe como computar, só precisa fornecer os dados brutos. Nós passamos por todas
+as colunas de entrada, exceto as duas primeiras, que são o valor da tarifa,
+que é um marcador, obviamente não é uma entrada, e a segunda estamos ignorando. Vamos ver as colunas de entrada. A segunda que estamos ignorando… Estamos ignorando estas duas. Dia da semana e horário. Usamos basicamente todo o resto para dizer que são números pontuais. O dia da semana é uma string, e o horário é um int32. Ele basicamente é usado para
+criar um receptor de entrada, mas, além dos atributos
+fornecidos pelos usuários, adicionamos os atributos com engenharia
+para que o modelo veja tudo. Agora, a leitura dos dados
+é semelhante ao que já vimos, o treinamento e a avaliação também, então, podemos executar. Vamos voltar aqui e testar nosso modelo em
+um conjunto de dados menor. Podemos treiná-lo na nuvem também. Vamos para o GCloud
+ML Engine e, ao executar, você gera um RMSE um pouco melhor, mas aqui temos um modelo melhor. O próximo passo é ajustar os hiperparâmetros
+para encontrar parâmetros bons do modelo. Para isso, falaremos sobre o
+ajuste de hiperparâmetros, em que você recebe os
+parâmetros para esses modelos. Neste caso, estes foram os melhores. Depois de fazer isso, podemos executar em um
+conjunto de dados muito maior. Um aspecto importante
+do aprendizado de máquina é que você consegue o melhor
+desempenho com conjuntos grandes. Antes, eu executei um job do
+Dataflow que levaria 10 minutos para continuarmos. Agora, vamos executar um job do Dataflow que dura cerca de uma hora
+para criar um conjunto muito maior, com milhões de linhas. Podemos treinar nele. Depois disso, você verá um RMSE muito melhor. Mas a ideia principal
+é usar seus dados brutos para fazer a engenharia de atributos
+e incluir insight humano nos elementos importantes, como tráfego, distância das corridas, se elas cruzam limites, o sentido delas nas distâncias londiff, latdiff e distância euclidiana, o cruzamento de atributos,
+tudo isso melhora seu modelo.

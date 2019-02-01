@@ -1,0 +1,253 @@
+1
+00:00:00,000 --> 00:00:04,670
+Wir haben auf das Bewertungs-Dataset
+eine Transformationsfunktion angewendet
+
+2
+00:00:04,670 --> 00:00:07,770
+und dann die transformierten
+Bewertungsdaten geschrieben.
+
+3
+00:00:07,770 --> 00:00:13,450
+Für welche Art von Daten haben wir
+"AnalyzeAndTransformDataset" verwendet?
+
+4
+00:00:13,450 --> 00:00:16,650
+Richtig, für die Trainingsdaten.
+
+5
+00:00:16,650 --> 00:00:20,950
+Und wir haben "TransformDataset"
+für die Bewertungsdaten verwendet.
+
+6
+00:00:20,950 --> 00:00:25,580
+Obwohl wir die vorverarbeiteten Merkmale
+mit Beam erstellt haben,
+
+7
+00:00:25,580 --> 00:00:30,670
+konnte die Methode "preprocessed"
+keinen beliebigen Python-Code enthalten.
+
+8
+00:00:30,670 --> 00:00:34,760
+Sie durfte ausschließlich
+aus TensorFlow-Funktionen bestehen.
+
+9
+00:00:34,760 --> 00:00:38,830
+Die Funktionen müssen
+aus TensorFlow stammen,
+
+10
+00:00:38,830 --> 00:00:42,010
+da sie Teil des Vorhersagegraphen sind.
+
+11
+00:00:42,010 --> 00:00:44,320
+Und warum sind sie
+Teil des Vorhersagegraphen?
+
+12
+00:00:44,320 --> 00:00:48,335
+Damit der Endbenutzer
+Rohdaten in das Modell eingeben kann
+
+13
+00:00:48,335 --> 00:00:52,150
+und das Modell die notwendige
+Vorverarbeitung durchführen kann.
+
+14
+00:00:52,150 --> 00:00:55,525
+Aber wie weiß das Modell, welche
+Funktionen aufgerufen werden sollen?
+
+15
+00:00:55,525 --> 00:00:59,569
+Damit das Modell weiß, welche
+Funktionen aufgerufen werden sollen,
+
+16
+00:00:59,569 --> 00:01:02,735
+müssen wir die
+Transformationsfunktion speichern.
+
+17
+00:01:02,735 --> 00:01:05,060
+Genau das mache ich hier.
+
+18
+00:01:05,060 --> 00:01:08,570
+Ich speichere die Transformationsfunktion
+
+19
+00:01:08,570 --> 00:01:14,695
+in das Verzeichnis "metadata",
+zusammen mit einem trainierten Modell.
+
+20
+00:01:14,695 --> 00:01:19,510
+Dann weisen wir die Eingabefunktion an,
+die Metadaten abzurufen.
+
+21
+00:01:19,510 --> 00:01:24,755
+Welche Eingabefunktion? Alle drei.
+
+22
+00:01:24,755 --> 00:01:29,460
+Sehen wir uns zuerst die Eingabefunktionen
+für Training und Bewertung an.
+
+23
+00:01:29,460 --> 00:01:32,405
+Sie lesen die vorverarbeiteten Merkmale.
+
+24
+00:01:32,405 --> 00:01:39,745
+Beachten Sie, dass das Schema
+den transformierten Metadaten entspricht.
+
+25
+00:01:39,745 --> 00:01:43,652
+Ändern Sie Eingabefunktionen
+für Training und Bewertung,
+
+26
+00:01:43,652 --> 00:01:46,600
+sodass sie
+die vorverarbeiteten Merkmale lesen.
+
+27
+00:01:46,600 --> 00:01:51,260
+In TensorFlow Transform gibt es
+eine praktische Hilfsfunktion
+
+28
+00:01:51,260 --> 00:01:54,695
+namens "build_training_input_fn".
+
+29
+00:01:54,695 --> 00:01:59,220
+Ich benutze sie sowohl für
+Training als auch für Bewertung,
+
+30
+00:01:59,220 --> 00:02:04,535
+indem ich die Variablen der Eingabepfade
+so ändere, dass sie abhängig vom Modus
+
+31
+00:02:04,535 --> 00:02:08,660
+entweder auf den Trainingsdatenpfad oder
+auf den Bewertungsdatenpfad verweist.
+
+32
+00:02:10,040 --> 00:02:14,205
+Die Funktion "serving_input"
+akzeptiert die Rohdaten.
+
+33
+00:02:14,205 --> 00:02:18,270
+Hier übergebe ich "rawdata_metadata",
+
+34
+00:02:18,270 --> 00:02:21,070
+nicht die transformierten Metadaten.
+
+35
+00:02:21,070 --> 00:02:23,815
+Wenn die Rohdaten allein nicht ausreichen,
+
+36
+00:02:23,815 --> 00:02:29,410
+können wir beliebige TensorFlow-Funktionen
+im Vorverarbeitungscode verwenden.
+
+37
+00:02:29,410 --> 00:02:34,600
+Diese Operationen werden
+in "saved_model.pb" gespeichert.
+
+38
+00:02:34,600 --> 00:02:38,960
+Aber auch hier gibt es eine
+gute TensorFlow Transform-Hilfsfunktion:
+
+39
+00:02:38,960 --> 00:02:43,890
+"build_parsing_transforming_serving_input".
+
+40
+00:02:43,890 --> 00:02:47,020
+Parsen Sie die JSON-Datei
+nach dem Rohdatenschema.
+
+41
+00:02:47,020 --> 00:02:50,520
+Transformieren Sie die Rohdaten
+auf Basis der TensorFlow-Operationen
+
+42
+00:02:50,520 --> 00:02:54,390
+in "saved_model.pb" und
+senden Sie sie dann an das Modell.
+
+43
+00:02:54,390 --> 00:02:59,325
+Der Clientcode darf nur die
+unverarbeiteten Eingabevariablen senden.
+
+44
+00:02:59,325 --> 00:03:01,590
+Das hat sich nicht geändert.
+
+45
+00:03:01,590 --> 00:03:06,530
+Die Funktion "serving_input" empfängt die
+Eingabevariablen und bleibt unverändert.
+
+46
+00:03:06,530 --> 00:03:09,790
+Sie akzeptiert Rohdaten
+und sendet sie an das Modell.
+
+47
+00:03:11,410 --> 00:03:13,830
+Warum funktioniert ein Modell also?
+
+48
+00:03:13,830 --> 00:03:19,865
+Der DNN-Regressor oder ein anderes Modell
+kann den String "Thu" nicht verarbeiten.
+
+49
+00:03:19,865 --> 00:03:24,645
+Der Grund, das es funktioniert, ist,
+dass der gesamte Code in "preprocessed"
+
+50
+00:03:24,645 --> 00:03:27,995
+jetzt Teil des Modellgraphen selbst ist.
+
+51
+00:03:27,995 --> 00:03:31,782
+Das geschieht, 
+weil das Modell die Metadaten liest
+
+52
+00:03:31,782 --> 00:03:34,350
+und den Vorbereitungscode einschließt.
+
+53
+00:03:34,350 --> 00:03:38,090
+So funktioniert TensorFlow Transform.
+
+54
+00:03:38,090 --> 00:03:42,050
+Verwenden wir es jetzt,
+um Taxikosten vorherzusagen.

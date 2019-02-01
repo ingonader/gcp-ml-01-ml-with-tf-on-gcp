@@ -1,0 +1,103 @@
+En este lab probaremos diferentes atributos. Vamos a a_features… primero, borraré todas las celdas para estar seguro de ejecutar lo correcto. Lo primero es realizar
+varias importaciones. Importamos TensorFlow,
+Pandas, NumPy, etcétera. Importemos esos y, luego, carguemos el conjunto de datos
+de las viviendas de California. Lo que haremos es intentar predecir el precio de las casas en California
+a partir de este conjunto de datos. En cuanto lo hacemos es bueno averiguar
+que hay en este conjunto de datos. Ejecutemos df.head() que muestra las primeras líneas. Descubrimos que está la longitud
+y la latitud la mediana de la edad de las viviendas… Este conjunto de datos no es de casas individuales
+sino una agregación. Entonces, tenemos la cantidad total
+de habitaciones, que son 5,162. Obviamente, esto no es una sola casa son todas las habitaciones
+en esa agregación por código postal o condado
+o cualquier otro tipo de agregación. Tenemos la cantidad total de habitaciones la cantidad total de dormitorios la población,
+la cantidad de personas. Son como 1,000 personas y 472 familias. La mediana del ingreso
+es 1.5 en algunas unidades. Y la mediana del valor de la vivienda
+es 66,900, en algunas unidades. Eso es lo que tratamos de descubrir del conjunto de datos
+que usaremos para el aprendizaje. Estas son las primeras filas
+del conjunto de datos. Nos sirven para tener una idea
+del tipo de datos que hay. Pero df.describe() es muy útil. Lo que hace en Pandas es mostrar estadísticas
+de las columnas numéricas. Si hay alguna columna categórica,
+no nos mostrará nada de ella pero para cada columna numérica… y aquí todas son columnas numéricas nos mostrará, por ejemplo que hay 17,000 longitudes y 17,000 latitudes
+en el conjunto de datos. Esta es la cantidad de filas
+en el conjunto de datos. Es una buena idea revisar que todas sean 17,000 si alguna no lo es eso señala que faltan uno
+o más valores en esa fila. En este caso primero, prueba de cordura no faltan valores. Tenemos 17,000 filas
+para todos los valores. La media de la longitud es -119. La media de la latitud es 35. Esto tiene sentido porque es California. La media de la antigüedad
+de las viviendas es 28.6 que está en años,
+entonces unos 30 años. La cantidad total
+de habitaciones es 2,643. No puede ser una sola casa. Es probablemente el total de habitaciones en esa unidad de agregación. Debemos hacer algo con eso. Y la cantidad total
+de dormitorios es extraña, 539. La población es 1,429. La cantidad de familias es 501 la mediana del ingreso es 3.9 y la mediana del valor
+de las viviendas es 207,000, en este caso. Es la media para todos esos. Y tenemos la desviación estándar el valor mínimo existente la cantidad mínima de habitaciones es 2. La cantidad máxima
+de habitaciones es 37,937. Eso nos da una idea
+de cómo son estos datos. Y lo que haremos
+es dividir estos datos en dos partes. En este ejercicio,
+no los guardaremos en ninguna parte. La división aleatoria está bien. Lo que hago es crear una máscara que crea una matriz
+de la longitud del df, que es 17,000. Y verifico que el número
+aleatorio sea menor que 0.8. Lo que significa que el 80% de los valores serán 1 y el 20% serán 0, aproximadamente. El df de entrenamiento
+son todos los valores que son 1 y el df de evaluación todos los valores
+para los que la máscara es 0. En este punto obtendremos dos DataFrame
+traindf y evaldf. Y puedo agregar algo. Puedo mostrar la longitud de traindf,
+que es alrededor de 13,000. Y también puedo
+mostrar la longitud de evaldf que es alrededor del 20%,
+como 3,400. Ahora, tenemos nuestro
+conjunto de datos de entrenamiento y de datos de evaluación. Comencemos a compilar nuestro modelo. Y para hacerlo primero, necesitamos leer los datos. Incluiré la función make_input_fn incluyo un DataFrame la cantidad de repeticiones de lectura y utilizaré la función pandas_input_fn para tomar el DataFrame, pero no solo este le agregaré atributos adicionales. Y para comenzar decimos que la cantidad total
+de habitaciones aquí es algo ridícula. No hay una casa
+con 2,643 habitaciones. No es correcto. En realidad, es la cantidad total
+de habitaciones en esa agregación. En ese código postal. ¿Cómo debemos normalizar esto? Tenemos que reducirlo
+al valor de una sola casa. Lo que haremos
+es tomar la cantidad total de habitaciones y dividirla por la cantidad de familias. Y eso nos da la cantidad
+de habitaciones en esa casa. En una casa típica
+en ese código postal. Qué otros datos debemos
+normalizar para el código postal. Veamos esto. Las latitudes y longitudes
+parecen estar bien como están. Debemos normalizar la cantidad total
+de habitaciones. También debemos normalizar
+la cantidad total de dormitorios. Hagámoslo. En vez de usar num_rooms
+en la agregación de atributos usemos bed_rooms,
+¿así se llama? No, se llama total_bedrooms. Y esto puede ser num_bedrooms. Esos son los dos atributos adicionales. Creamos nuestra función de entrada. Y ahora, las columnas de atributos housing_median_age
+es una columna numérica puede utilizarse como está. Veamos la mediana de la edad. Estos números tienen sentido,
+parecen ser años. Podemos usarlos como están. Usemos la mediana de la edad. Luego, tomaremos la latitud
+y crearemos un segmento entre 32 y 42. ¿Por qué 32 y 42? Porque cuando regresamos aquí,
+vemos que la latitud está entre 32 y 42. Podemos crear un segmento
+de la latitud entre 32 y 42 ¿Qué más podemos usar? Si usamos la latitud,
+también podríamos usar la longitud. Así que tomemos esto y también usemos la longitud. Lo haremos aquí. Los límites de la longitud
+deben estar entre -124 y -114. Vayamos aquí abajo
+y cambiemos esto a -124 y -114, y un grado de longitud
+es probablemente razonable. Un grado
+es aproximadamente 100 kilómetros. Podemos hacer esto la cantidad de habitaciones… Recuerden que agregamos
+la cantidad de dormitorios. Hagamos lo mismo. Cantidad de habitaciones y de dormitorios. Y luego, tenemos la mediana
+de los ingresos. Ese es el conjunto
+de columnas de atributos. Luego, comenzamos el entrenamiento
+y la evaluación. con train_and_evaluate pasamos TrainSpec, EvalSpec, etcétera. En este punto,
+podemos llamar a train_and_evaluate y mostrar el modelo entrenado. Y cuando ejecutamos esto deberíamos ver
+la salida de la evaluación. Así que lo ejecutamos. Pedimos que se ejecute por 5,000 pasos. En ese punto,
+se encuentra en el paso 1,650. Esperemos un poco más. Una vez que termina… observen que de vez en cuando guarda un diccionario especificando cuál es la pérdida promedio. La pérdida promedio no es tan útil
+porque se calcula en un lote. No es tan bueno. Pero esta pérdida es la del conjunto de datos
+de evaluación y tiene más sentido. La pérdida promedio se calcula
+en el conjunto de datos de evaluación lo que tiene más sentido. La pérdida en sí es solo de un lote,
+así que no la necesitamos. Vayamos más abajo.
+Esperemos a que termine. 4,000, 5,000. Ahí está. Nuestra pérdida promedio en todo
+el conjunto de datos, el RMSE, es 0.59. Probemos algo más. Veamos qué ocurre
+si no tenemos la cantidad de habitaciones. No agreguemos estos atributos.
+Lo que haremos es que cuando creemos
+nuestras columnas de entrada no usaremos la cantidad de habitaciones la cantidad de dormitorios o la latitud o la longitud o la mediana del ingreso. Todo lo que tenemos
+es la antigüedad de la casa. Si lo hacemos y esta es nuestra
+única columna de atributos ¿qué ocurre? Vayamos aquí abajo. Recuerden que antes obtuvimos 0.59. Borraré la celda y ejecutaré de nuevo,
+esta vez solo con una entrada. ¿Qué obtenemos ahora? Ahora, nuestra pérdida es 1.87. Así que obviamente todos
+esos atributos de entrada eran útiles porque la pérdida aumentó sin ellos. Esto les da una idea
+de qué tipo de atributos son útiles. Pueden hacerlo manualmente,
+podrían decir ¿qué pasaría si solo uso
+la mediana del ingreso? Y la mediana del ingreso
+es un muy buen indicador. Si lo usan y lo intentan de nuevo verán que la pérdida
+disminuye dramáticamente. Los otros atributos no son tan útiles. Son útiles, pero no tanto. La mediana del ingreso
+es particularmente útil porque muestra
+lo que las personas pueden pagar y el mercado toma en cuenta
+lo que las personas pueden pagar. Observen que ahora tenemos
+una pérdida promedio de 0.69. Es decir, pasamos de 1.38 a 0.69 solo porque agregamos un atributo,
+la mediana del ingreso. Este atributo fue extremadamente útil. ¿Qué importancia tiene esto
+en el mundo real? Lo que importa en el mundo real son los datos que se recolectan. Imaginen que tienen este conjunto de datos pero no recolectaron la mediana
+del ingreso de los habitantes de ese barrio.
+Su modelo será bastante malo. Esto es lo que queremos
+decir cuando decimos que lo que importa para un modelo de AA
+no es el modelo en sí sino los datos que le damos. Y para este modelo específico
+es realmente importante tener la mediana del ingreso
+de las personas que viven en un barrio para poder predecir
+los precios de las casas en ese barrio. Es un atributo muy importante. Y para obtenerlo necesitan la canalización
+de la ingeniería de datos.

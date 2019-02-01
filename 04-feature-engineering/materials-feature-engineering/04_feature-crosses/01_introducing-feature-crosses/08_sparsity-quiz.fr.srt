@@ -1,0 +1,442 @@
+1
+00:00:00,000 --> 00:00:02,170
+Les croisements
+de caractéristiques associent
+
+2
+00:00:02,186 --> 00:00:04,705
+plusieurs caractéristiques catégoriques.
+
+3
+00:00:04,705 --> 00:00:08,625
+Si nous disposons de caractéristiques
+continues, nous pouvons les discrétiser,
+
+4
+00:00:08,625 --> 00:00:10,915
+puis utiliser un croisement
+de caractéristiques.
+
+5
+00:00:10,915 --> 00:00:13,860
+Voyons ce que cela signifie
+par rapport à la taille
+
+6
+00:00:13,860 --> 00:00:18,330
+de l'espace d'entrée
+en examinant deux exemples.
+
+7
+00:00:18,330 --> 00:00:22,300
+Supposons que nous voulions prédire
+le niveau de trafic d'une ville.
+
+8
+00:00:22,300 --> 00:00:24,460
+Nous avons deux valeurs d'entrée brutes,
+
+9
+00:00:24,460 --> 00:00:27,535
+l'heure de la journée
+et le jour de la semaine.
+
+10
+00:00:27,535 --> 00:00:33,549
+Combien d'entrées aurons-nous
+si nous encodons en mode one-hot
+
+11
+00:00:33,549 --> 00:00:36,240
+l'heure de la journée
+et le jour de la semaine,
+
+12
+00:00:36,240 --> 00:00:38,320
+et que nous les fournissons au modèle ?
+
+13
+00:00:38,320 --> 00:00:42,370
+Avez-vous dit "24+7=31" ?
+
+14
+00:00:42,370 --> 00:00:45,215
+Lorsque vous encodez en mode
+one-hot l'heure de la journée,
+
+15
+00:00:45,215 --> 00:00:47,440
+vous obtenez 24 nœuds d'entrée.
+
+16
+00:00:47,440 --> 00:00:49,060
+Vous pouvez vous en sortir avec 23
+
+17
+00:00:49,060 --> 00:00:51,880
+en traitant tous les zéros
+comme une valeur d'entrée valide,
+
+18
+00:00:51,880 --> 00:00:54,875
+mais normalement vous réservez
+les zéros aux données manquantes.
+
+19
+00:00:54,875 --> 00:00:57,965
+Disons donc 24 nœuds d'entrée.
+
+20
+00:00:57,965 --> 00:01:03,590
+De même, vous obtenez sept nœuds
+d'entrée pour les jours de la semaine.
+
+21
+00:01:03,590 --> 00:01:07,885
+Nous avons donc 31 nœuds au total.
+
+22
+00:01:07,885 --> 00:01:13,345
+Mais nous savons que le trafic n'est pas
+le même à 17h tous les jours.
+
+23
+00:01:13,345 --> 00:01:19,285
+17h le mercredi et 17h le week-end
+donneront des résultats très différents.
+
+24
+00:01:19,285 --> 00:01:23,450
+Existe-t-il une manière facile
+de faire apprendre ceci au modèle ?
+
+25
+00:01:23,450 --> 00:01:25,590
+Oui, vous savez faire maintenant.
+
+26
+00:01:25,590 --> 00:01:28,970
+Un croisement de caractéristiques
+des deux données d'entrée brutes.
+
+27
+00:01:28,970 --> 00:01:33,780
+Nous concaténons l'heure de la journée
+et le jour de la semaine.
+
+28
+00:01:33,780 --> 00:01:40,740
+Notre modèle apprend ainsi rapidement
+la combinaison de l'heure et du jour.
+
+29
+00:01:40,740 --> 00:01:41,770
+Parfait.
+
+30
+00:01:41,770 --> 00:01:45,285
+Combien d'entrées avons-nous maintenant ?
+
+31
+00:01:45,285 --> 00:01:49,605
+Nous n'en avons plus 24+7,
+
+32
+00:01:49,605 --> 00:01:53,640
+mais 24×7,
+
+33
+00:01:53,640 --> 00:01:56,395
+soit toutes les combinaisons possibles.
+
+34
+00:01:56,395 --> 00:02:06,925
+Nous sommes donc passés de 24+7=31 entrées
+à 24×7=168 entrées.
+
+35
+00:02:06,925 --> 00:02:12,075
+Avec un croisement de caractéristiques,
+vous obtenez bien plus d'entrées.
+
+36
+00:02:12,075 --> 00:02:15,210
+Les data scientists ont souvent peur
+
+37
+00:02:15,210 --> 00:02:18,295
+que l'encodage one-hot
+de variables catégoriques
+
+38
+00:02:18,295 --> 00:02:20,425
+augmente la taille de leur modèle.
+
+39
+00:02:20,425 --> 00:02:23,335
+Si l'encodage one-hot donne
+du fil à retordre
+
+40
+00:02:23,335 --> 00:02:25,575
+au machine learning conventionnel,
+
+41
+00:02:25,575 --> 00:02:28,580
+comment espèrent-ils gérer
+des croisements de caractéristiques ?
+
+42
+00:02:28,580 --> 00:02:29,970
+Ils ne s'en remettraient pas.
+
+43
+00:02:29,970 --> 00:02:34,160
+En interne, TensorFlow utilise
+une représentation clairsemée
+
+44
+00:02:34,160 --> 00:02:37,460
+pour l'encodage one-hot
+et les croisements de fonctionnalités.
+
+45
+00:02:37,460 --> 00:02:39,365
+Il peut donc les gérer sans problème.
+
+46
+00:02:39,365 --> 00:02:42,605
+Pour n'importe quelle ligne
+de votre ensemble de données d'entrée,
+
+47
+00:02:42,605 --> 00:02:47,640
+combien de nœuds "s'allument" dans x3 ?
+
+48
+00:02:47,640 --> 00:02:48,640
+Un seul.
+
+49
+00:02:48,640 --> 00:02:51,980
+Voyez-vous pourquoi ? Pour chaque libellé,
+
+50
+00:02:51,980 --> 00:02:56,595
+chaque observation de la table est prise
+à un moment spécifique,
+
+51
+00:02:56,595 --> 00:03:00,490
+qui correspond à une heure spécifique
+d'un jour de la semaine spécifique.
+
+52
+00:03:00,490 --> 00:03:04,090
+Vous pouvez donc avoir
+une observation à 15h
+
+53
+00:03:04,090 --> 00:03:06,190
+(valeur d'entrée
+pour l'heure de la journée)
+
+54
+00:03:06,190 --> 00:03:09,105
+et le mercredi (valeur d'entrée
+du jour de la semaine).
+
+55
+00:03:09,105 --> 00:03:12,345
+Si vous les croisez, qu'obtenez-vous ?
+
+56
+00:03:12,345 --> 00:03:13,670
+Un nœud d'entrée
+
+57
+00:03:13,670 --> 00:03:19,990
+qui correspond à 15h le mercredi
+et qui aura la valeur "un".
+
+58
+00:03:19,990 --> 00:03:24,475
+Tous les autres nœuds d'entrée pour x3
+auront la valeur "zéro".
+
+59
+00:03:24,475 --> 00:03:32,470
+La valeur d'entrée consistera donc
+en 167 zéros et 1 un.
+
+60
+00:03:32,470 --> 00:03:35,815
+Lorsque vous effectuez un croisement
+de caractéristiques,
+
+61
+00:03:35,815 --> 00:03:38,045
+la valeur d'entrée est très clairsemée.
+
+62
+00:03:38,045 --> 00:03:39,490
+Gardez ceci à l'esprit.
+
+63
+00:03:39,490 --> 00:03:43,105
+TensorFlow offre des outils pratiques
+pour gérer ce problème.
+
+64
+00:03:43,105 --> 00:03:45,705
+Voyons les réponses au questionnaire.
+
+65
+00:03:45,705 --> 00:03:48,500
+La réponse a) est fausse.
+
+66
+00:03:48,500 --> 00:03:50,800
+Le binning est une bonne chose,
+
+67
+00:03:50,800 --> 00:03:53,815
+car il permet au modèle d'apprendre
+des relations linéaires
+
+68
+00:03:53,815 --> 00:03:55,395
+dans une seule caractéristique.
+
+69
+00:03:55,395 --> 00:04:00,220
+Cependant, une ville existe
+dans plusieurs dimensions.
+
+70
+00:04:00,220 --> 00:04:04,850
+Apprendre des relations propres
+à une ville implique
+
+71
+00:04:04,850 --> 00:04:07,590
+de croiser la latitude et la longitude.
+
+72
+00:04:07,590 --> 00:04:10,315
+Qu'en est-il de la réponse b) ?
+
+73
+00:04:10,315 --> 00:04:13,425
+La réponse est de nouveau fausse.
+
+74
+00:04:13,425 --> 00:04:16,665
+Le binning est une bonne idée,
+
+75
+00:04:16,665 --> 00:04:20,175
+mais la ville est un ensemble
+latitude-longitude.
+
+76
+00:04:20,175 --> 00:04:23,830
+Des croisements de caractéristiques
+distincts empêchent donc
+
+77
+00:04:23,830 --> 00:04:26,320
+le modèle d'apprendre
+des tarifs propres à une ville.
+
+78
+00:04:26,320 --> 00:04:30,140
+Et la réponse c) ?
+
+79
+00:04:30,140 --> 00:04:33,820
+Elle est juste. Croiser
+une latitude discrétisée
+
+80
+00:04:33,820 --> 00:04:37,280
+avec une longitude discrétisée
+permet au modèle d'apprendre
+
+81
+00:04:37,280 --> 00:04:41,030
+les effets propres à une ville
+du nombre de pièces par personne.
+
+82
+00:04:41,030 --> 00:04:46,060
+Le binning empêche qu'une modification
+de la latitude ait le même effet
+
+83
+00:04:46,060 --> 00:04:47,780
+qu'une modification de la longitude.
+
+84
+00:04:47,780 --> 00:04:50,890
+En fonction de la précision des bins,
+
+85
+00:04:50,890 --> 00:04:53,130
+ce croisement
+de caractéristiques peut apprendre
+
+86
+00:04:53,130 --> 00:04:59,125
+les effets propres à une ville,
+à un quartier ou à un pâté de maisons.
+
+87
+00:04:59,125 --> 00:05:01,825
+La quatrième réponse est fausse.
+
+88
+00:05:01,825 --> 00:05:03,520
+Dans cet exemple,
+
+89
+00:05:03,520 --> 00:05:08,755
+croiser des caractéristiques à valeurs
+réelles n'est pas une bonne idée.
+
+90
+00:05:08,755 --> 00:05:12,140
+Croiser la valeur réelle de la latitude
+
+91
+00:05:12,140 --> 00:05:14,110
+avec le nombre de pièces par personne
+
+92
+00:05:14,110 --> 00:05:16,880
+permet qu'une modification
+de 10 % d'une caractéristique,
+
+93
+00:05:16,880 --> 00:05:18,320
+par exemple la latitude,
+
+94
+00:05:18,320 --> 00:05:21,750
+soit équivalente à une modification
+de 10 % de l'autre caractéristique,
+
+95
+00:05:21,750 --> 00:05:23,890
+par exemple le nombre
+de pièces par personne.
+
+96
+00:05:23,890 --> 00:05:28,325
+C'est tellement problématique que ce n'est
+même pas possible dans TensorFlow.
+
+97
+00:05:28,325 --> 00:05:34,530
+Le croisement n'est possible que pour
+les colonnes catégoriques ou discrétisées.

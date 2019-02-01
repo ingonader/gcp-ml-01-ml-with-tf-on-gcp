@@ -1,0 +1,56 @@
+Les croisements
+de caractéristiques associent plusieurs caractéristiques catégoriques. Si nous disposons de caractéristiques
+continues, nous pouvons les discrétiser, puis utiliser un croisement
+de caractéristiques. Voyons ce que cela signifie
+par rapport à la taille de l'espace d'entrée
+en examinant deux exemples. Supposons que nous voulions prédire
+le niveau de trafic d'une ville. Nous avons deux valeurs d'entrée brutes, l'heure de la journée
+et le jour de la semaine. Combien d'entrées aurons-nous
+si nous encodons en mode one-hot l'heure de la journée
+et le jour de la semaine, et que nous les fournissons au modèle ? Avez-vous dit "24+7=31" ? Lorsque vous encodez en mode
+one-hot l'heure de la journée, vous obtenez 24 nœuds d'entrée. Vous pouvez vous en sortir avec 23 en traitant tous les zéros
+comme une valeur d'entrée valide, mais normalement vous réservez
+les zéros aux données manquantes. Disons donc 24 nœuds d'entrée. De même, vous obtenez sept nœuds
+d'entrée pour les jours de la semaine. Nous avons donc 31 nœuds au total. Mais nous savons que le trafic n'est pas
+le même à 17h tous les jours. 17h le mercredi et 17h le week-end
+donneront des résultats très différents. Existe-t-il une manière facile
+de faire apprendre ceci au modèle ? Oui, vous savez faire maintenant. Un croisement de caractéristiques
+des deux données d'entrée brutes. Nous concaténons l'heure de la journée
+et le jour de la semaine. Notre modèle apprend ainsi rapidement
+la combinaison de l'heure et du jour. Parfait. Combien d'entrées avons-nous maintenant ? Nous n'en avons plus 24+7, mais 24×7, soit toutes les combinaisons possibles. Nous sommes donc passés de 24+7=31 entrées
+à 24×7=168 entrées. Avec un croisement de caractéristiques,
+vous obtenez bien plus d'entrées. Les data scientists ont souvent peur que l'encodage one-hot
+de variables catégoriques augmente la taille de leur modèle. Si l'encodage one-hot donne
+du fil à retordre au machine learning conventionnel, comment espèrent-ils gérer
+des croisements de caractéristiques ? Ils ne s'en remettraient pas. En interne, TensorFlow utilise
+une représentation clairsemée pour l'encodage one-hot
+et les croisements de fonctionnalités. Il peut donc les gérer sans problème. Pour n'importe quelle ligne
+de votre ensemble de données d'entrée, combien de nœuds "s'allument" dans x3 ? Un seul. Voyez-vous pourquoi ? Pour chaque libellé, chaque observation de la table est prise
+à un moment spécifique, qui correspond à une heure spécifique
+d'un jour de la semaine spécifique. Vous pouvez donc avoir
+une observation à 15h (valeur d'entrée
+pour l'heure de la journée) et le mercredi (valeur d'entrée
+du jour de la semaine). Si vous les croisez, qu'obtenez-vous ? Un nœud d'entrée qui correspond à 15h le mercredi
+et qui aura la valeur "un". Tous les autres nœuds d'entrée pour x3
+auront la valeur "zéro". La valeur d'entrée consistera donc
+en 167 zéros et 1 un. Lorsque vous effectuez un croisement
+de caractéristiques, la valeur d'entrée est très clairsemée. Gardez ceci à l'esprit. TensorFlow offre des outils pratiques
+pour gérer ce problème. Voyons les réponses au questionnaire. La réponse a) est fausse. Le binning est une bonne chose, car il permet au modèle d'apprendre
+des relations linéaires dans une seule caractéristique. Cependant, une ville existe
+dans plusieurs dimensions. Apprendre des relations propres
+à une ville implique de croiser la latitude et la longitude. Qu'en est-il de la réponse b) ? La réponse est de nouveau fausse. Le binning est une bonne idée, mais la ville est un ensemble
+latitude-longitude. Des croisements de caractéristiques
+distincts empêchent donc le modèle d'apprendre
+des tarifs propres à une ville. Et la réponse c) ? Elle est juste. Croiser
+une latitude discrétisée avec une longitude discrétisée
+permet au modèle d'apprendre les effets propres à une ville
+du nombre de pièces par personne. Le binning empêche qu'une modification
+de la latitude ait le même effet qu'une modification de la longitude. En fonction de la précision des bins, ce croisement
+de caractéristiques peut apprendre les effets propres à une ville,
+à un quartier ou à un pâté de maisons. La quatrième réponse est fausse. Dans cet exemple, croiser des caractéristiques à valeurs
+réelles n'est pas une bonne idée. Croiser la valeur réelle de la latitude avec le nombre de pièces par personne permet qu'une modification
+de 10 % d'une caractéristique, par exemple la latitude, soit équivalente à une modification
+de 10 % de l'autre caractéristique, par exemple le nombre
+de pièces par personne. C'est tellement problématique que ce n'est
+même pas possible dans TensorFlow. Le croisement n'est possible que pour
+les colonnes catégoriques ou discrétisées.

@@ -1,0 +1,48 @@
+Stellen wir uns vor, wir schreiben
+ein Modell für maschinelles Lernen, das ein Auto untersucht
+und zurückgibt, ob es ein Taxi ist. Wir wissen, dass Taxis
+in Rom weiß und in New York gelb sind. Wir möchten
+unser Modell für maschinelles Lernen dies aber aus einem Dataset
+mit Fahrzeugregistrierungen lernen lassen. Nehmen wir an,
+unsere Eingabedaten sehen so aus: Rot, Rom; Weiß, Rom usw.
+und Labels geben an, ob es ein Taxi ist. Die Autofarbe und die Stadt
+sind also unsere beiden Eingabemerkmale. Wir müssen diese Merkmale in unserem linearen Modell verwenden,
+um vorherzusagen, ob ein Auto ein Taxi ist. Wie würden Sie dies lösen? Wir nehmen die erste Eingabe,
+die Autofarbe, und One-Hot-codieren sie. Wir nehmen die zweite Eingabe,
+den Städtenamen, und One-Hot-codieren sie. Diese Eingaben senden wir
+direkt in unser lineares Modell. Geben wir
+gelben Autos eine Gewichtung von 0,8, da 80 % der gelben Autos
+im Trainings-Dataset Taxis sind. w3 ist daher nun 0,8. Natürlich legen wir
+die Gewichtung von 0,8 nicht selbst fest. Dies erfolgt über GradientDescent, aber genau das
+wird über GradientDescent gelernt. Leider gilt diese Gewichtung von 0,8
+für alle gelben Autos in allen Städten, nicht nur für New York. Wie beheben wir das Problem? Würden sie New York
+eine hohe Gewichtung geben? Das funktioniert nicht. Dann erhalten alle Autos
+in New York diese hohe Gewichtung. Sehen Sie das Problem? Fügen Sie eine Merkmalkreuzung hinzu. Was passiert nun? Wir haben nun einen Eingabeknoten,
+der roten Autos in New York entspricht, noch einen für gelbe Autos in New York, einen dritten für weiße Autos in New York, einen vierten für grüne Autos in New York und Entsprechendes für Autos in Rom. Jetzt kann das Modell sehr schnell lernen, dass gelbe Autos in New York
+und weiße Autos in Rom meist Taxis sind, und diesen beiden Knoten
+eine hohe Gewichtung geben. Alles andere
+erhält eine Gewichtung von null. Das Problem ist gelöst. Darum sind Merkmalkreuzungen so mächtig. Merkmalkreuzungen erhöhen
+die Leistung von linearen Modellen. Merkmalkreuzungen und riesige Datasets
+sind eine sehr effiziente Strategie, um äußerst komplexe Räume zu erlernen. Neurale Netzwerke sind ein weiterer Weg,
+um äußerst komplexe Räume zu erlernen. Bei Merkmalkreuzungen werden
+aber weiterhin lineare Modelle verwendet. Die Ausdrucksstärke linearer Modelle
+bleibt ohne Merkmalkreuzungen begrenzt. Mit Merkmalkreuzungen
+und einem riesigen Dataset kann ein lineares Modell alle Ecken
+und Winkel Ihres Eingaberaums lernen. Ein lineares Modell mit Merkmalkreuzungen
+kann große Datasets memorisieren. Die Idee dahinter: Sie können
+Merkmalkreuzungen Gewichtungen zuordnen. So lernt das Modell Merkmalkombinationen. Auch wenn wir ein lineares Modell haben, ist die zugrunde liegende Beziehung
+zwischen Eingabe und Ausgabe nicht linear. Warum ist uns ein gut funktionierendes
+lineares Modell so wichtig? Denken Sie an den vorherigen Kurs zurück. Wir haben konvexe
+und nicht konvexe Probleme behandelt. Neurale Netzwerke
+mit vielen Ebenen sind nicht konvex. Das Optimieren linearer Modelle
+ist aber ein konvexes Problem und konvexe Probleme
+sind wesentlich einfacher lösbar als nicht konvexe Probleme. Lange waren dünn besetzte lineare Modelle
+die einzigen verfügbaren Algorithmen, die auf Milliarden Trainingsbeispiele
+und Eingabemerkmale skalierbar waren. Die Vorgänger von TensorFlow
+bei Google – SETI, Smart Ass, Siebel – waren Lerner
+für wirklich große Datenmengen. Dies hat sich
+in den letzten Jahren verändert. Jetzt können auch neurale Netzwerke
+riesige Datenmengen verarbeiten, oft mithilfe von GPUs und TPUs, doch dünne lineare Modelle
+bleiben eine schnelle, günstige Option. Wenn Sie ein dünnes lineares Modell zur Vorverarbeitung
+Ihrer Merkmale verwenden, konvergiert Ihr neurales Netzwerk
+oft deutlich schneller.

@@ -1,0 +1,330 @@
+1
+00:00:00,000 --> 00:00:03,360
+Stellen wir uns vor, wir schreiben
+ein Modell für maschinelles Lernen,
+
+2
+00:00:03,360 --> 00:00:07,710
+das ein Auto untersucht
+und zurückgibt, ob es ein Taxi ist.
+
+3
+00:00:07,710 --> 00:00:13,710
+Wir wissen, dass Taxis
+in Rom weiß und in New York gelb sind.
+
+4
+00:00:13,710 --> 00:00:16,570
+Wir möchten
+unser Modell für maschinelles Lernen
+
+5
+00:00:16,570 --> 00:00:20,190
+dies aber aus einem Dataset
+mit Fahrzeugregistrierungen lernen lassen.
+
+6
+00:00:20,190 --> 00:00:24,145
+Nehmen wir an,
+unsere Eingabedaten sehen so aus:
+
+7
+00:00:24,145 --> 00:00:30,690
+Rot, Rom; Weiß, Rom usw.
+und Labels geben an, ob es ein Taxi ist.
+
+8
+00:00:30,690 --> 00:00:35,250
+Die Autofarbe und die Stadt
+sind also unsere beiden Eingabemerkmale.
+
+9
+00:00:35,250 --> 00:00:37,550
+Wir müssen diese Merkmale
+
+10
+00:00:37,550 --> 00:00:42,490
+in unserem linearen Modell verwenden,
+um vorherzusagen, ob ein Auto ein Taxi ist.
+
+11
+00:00:42,490 --> 00:00:44,400
+Wie würden Sie dies lösen?
+
+12
+00:00:45,240 --> 00:00:50,030
+Wir nehmen die erste Eingabe,
+die Autofarbe, und One-Hot-codieren sie.
+
+13
+00:00:50,030 --> 00:00:54,910
+Wir nehmen die zweite Eingabe,
+den Städtenamen, und One-Hot-codieren sie.
+
+14
+00:00:54,910 --> 00:01:00,150
+Diese Eingaben senden wir
+direkt in unser lineares Modell.
+
+15
+00:01:00,150 --> 00:01:05,379
+Geben wir
+gelben Autos eine Gewichtung von 0,8,
+
+16
+00:01:05,379 --> 00:01:09,615
+da 80 % der gelben Autos
+im Trainings-Dataset Taxis sind.
+
+17
+00:01:09,615 --> 00:01:12,840
+w3 ist daher nun 0,8.
+
+18
+00:01:12,840 --> 00:01:15,945
+Natürlich legen wir
+die Gewichtung von 0,8 nicht selbst fest.
+
+19
+00:01:15,945 --> 00:01:18,910
+Dies erfolgt über GradientDescent,
+
+20
+00:01:18,910 --> 00:01:21,515
+aber genau das
+wird über GradientDescent gelernt.
+
+21
+00:01:21,515 --> 00:01:27,615
+Leider gilt diese Gewichtung von 0,8
+für alle gelben Autos in allen Städten,
+
+22
+00:01:27,615 --> 00:01:28,950
+nicht nur für New York.
+
+23
+00:01:28,950 --> 00:01:31,890
+Wie beheben wir das Problem?
+
+24
+00:01:31,890 --> 00:01:35,145
+Würden sie New York
+eine hohe Gewichtung geben?
+
+25
+00:01:35,145 --> 00:01:37,275
+Das funktioniert nicht.
+
+26
+00:01:37,275 --> 00:01:41,090
+Dann erhalten alle Autos
+in New York diese hohe Gewichtung.
+
+27
+00:01:41,090 --> 00:01:43,360
+Sehen Sie das Problem?
+
+28
+00:01:47,130 --> 00:01:48,967
+Fügen Sie eine Merkmalkreuzung hinzu.
+
+29
+00:01:48,967 --> 00:01:50,225
+Was passiert nun?
+
+30
+00:01:50,225 --> 00:01:55,550
+Wir haben nun einen Eingabeknoten,
+der roten Autos in New York entspricht,
+
+31
+00:01:55,550 --> 00:01:58,119
+noch einen für gelbe Autos in New York,
+
+32
+00:01:58,119 --> 00:02:00,590
+einen dritten für weiße Autos in New York,
+
+33
+00:02:00,590 --> 00:02:02,880
+einen vierten für grüne Autos in New York
+
+34
+00:02:02,880 --> 00:02:05,525
+und Entsprechendes für Autos in Rom.
+
+35
+00:02:05,525 --> 00:02:08,900
+Jetzt kann das Modell sehr schnell lernen,
+
+36
+00:02:08,900 --> 00:02:13,722
+dass gelbe Autos in New York
+und weiße Autos in Rom meist Taxis sind,
+
+37
+00:02:13,722 --> 00:02:17,255
+und diesen beiden Knoten
+eine hohe Gewichtung geben.
+
+38
+00:02:17,255 --> 00:02:20,310
+Alles andere
+erhält eine Gewichtung von null.
+
+39
+00:02:20,310 --> 00:02:21,975
+Das Problem ist gelöst.
+
+40
+00:02:21,975 --> 00:02:26,660
+Darum sind Merkmalkreuzungen so mächtig.
+
+41
+00:02:29,250 --> 00:02:33,440
+Merkmalkreuzungen erhöhen
+die Leistung von linearen Modellen.
+
+42
+00:02:33,440 --> 00:02:40,430
+Merkmalkreuzungen und riesige Datasets
+sind eine sehr effiziente Strategie,
+
+43
+00:02:40,430 --> 00:02:43,835
+um äußerst komplexe Räume zu erlernen.
+
+44
+00:02:43,835 --> 00:02:49,620
+Neurale Netzwerke sind ein weiterer Weg,
+um äußerst komplexe Räume zu erlernen.
+
+45
+00:02:49,620 --> 00:02:54,285
+Bei Merkmalkreuzungen werden
+aber weiterhin lineare Modelle verwendet.
+
+46
+00:02:54,285 --> 00:03:00,875
+Die Ausdrucksstärke linearer Modelle
+bleibt ohne Merkmalkreuzungen begrenzt.
+
+47
+00:03:00,875 --> 00:03:04,879
+Mit Merkmalkreuzungen
+und einem riesigen Dataset
+
+48
+00:03:04,879 --> 00:03:08,910
+kann ein lineares Modell alle Ecken
+und Winkel Ihres Eingaberaums lernen.
+
+49
+00:03:08,910 --> 00:03:14,785
+Ein lineares Modell mit Merkmalkreuzungen
+kann große Datasets memorisieren.
+
+50
+00:03:14,785 --> 00:03:19,269
+Die Idee dahinter: Sie können
+Merkmalkreuzungen Gewichtungen zuordnen.
+
+51
+00:03:19,269 --> 00:03:23,580
+So lernt das Modell Merkmalkombinationen.
+
+52
+00:03:23,580 --> 00:03:26,035
+Auch wenn wir ein lineares Modell haben,
+
+53
+00:03:26,035 --> 00:03:33,070
+ist die zugrunde liegende Beziehung
+zwischen Eingabe und Ausgabe nicht linear.
+
+54
+00:03:34,380 --> 00:03:39,615
+Warum ist uns ein gut funktionierendes
+lineares Modell so wichtig?
+
+55
+00:03:39,615 --> 00:03:42,065
+Denken Sie an den vorherigen Kurs zurück.
+
+56
+00:03:42,065 --> 00:03:47,005
+Wir haben konvexe
+und nicht konvexe Probleme behandelt.
+
+57
+00:03:47,005 --> 00:03:52,445
+Neurale Netzwerke
+mit vielen Ebenen sind nicht konvex.
+
+58
+00:03:52,445 --> 00:03:57,665
+Das Optimieren linearer Modelle
+ist aber ein konvexes Problem
+
+59
+00:03:57,665 --> 00:04:02,375
+und konvexe Probleme
+sind wesentlich einfacher lösbar
+
+60
+00:04:02,375 --> 00:04:04,645
+als nicht konvexe Probleme.
+
+61
+00:04:04,645 --> 00:04:12,185
+Lange waren dünn besetzte lineare Modelle
+die einzigen verfügbaren Algorithmen,
+
+62
+00:04:12,185 --> 00:04:18,010
+die auf Milliarden Trainingsbeispiele
+und Eingabemerkmale skalierbar waren.
+
+63
+00:04:18,010 --> 00:04:23,360
+Die Vorgänger von TensorFlow
+bei Google – SETI, Smart Ass, Siebel –
+
+64
+00:04:23,360 --> 00:04:26,410
+waren Lerner
+für wirklich große Datenmengen.
+
+65
+00:04:26,410 --> 00:04:29,800
+Dies hat sich
+in den letzten Jahren verändert.
+
+66
+00:04:29,800 --> 00:04:34,840
+Jetzt können auch neurale Netzwerke
+riesige Datenmengen verarbeiten,
+
+67
+00:04:34,840 --> 00:04:38,580
+oft mithilfe von GPUs und TPUs,
+
+68
+00:04:38,580 --> 00:04:43,775
+doch dünne lineare Modelle
+bleiben eine schnelle, günstige Option.
+
+69
+00:04:43,775 --> 00:04:46,847
+Wenn Sie ein dünnes lineares Modell
+
+70
+00:04:46,847 --> 00:04:49,520
+zur Vorverarbeitung
+Ihrer Merkmale verwenden,
+
+71
+00:04:49,520 --> 00:04:54,170
+konvergiert Ihr neurales Netzwerk
+oft deutlich schneller.

@@ -1,0 +1,210 @@
+1
+00:00:00,690 --> 00:00:04,885
+Recuerden que hay tres lugares posibles
+para hacer ingeniería de atributos.
+
+2
+00:00:04,885 --> 00:00:07,710
+Vimos cómo hacer
+procesamiento previo de atributos
+
+3
+00:00:07,710 --> 00:00:11,890
+y creación de atributos
+sobre la marcha en TensorFlow.
+
+4
+00:00:11,890 --> 00:00:14,890
+La otra opción
+es realizar el procesamiento previo
+
+5
+00:00:14,890 --> 00:00:18,220
+o creación de atributos en Cloud Dataflow.
+
+6
+00:00:18,220 --> 00:00:22,660
+Aquí, Dataflow se usa para crear
+un conjunto de datos procesado previamente
+
+7
+00:00:22,660 --> 00:00:28,585
+o aumentado, y este nuevo conjunto
+se usa para entrenar el modelo.
+
+8
+00:00:29,095 --> 00:00:33,475
+Durante la predicción, debemos encontrar
+una forma de realizar los mismos pasos
+
+9
+00:00:33,475 --> 00:00:35,205
+de procesamiento previo.
+
+10
+00:00:35,205 --> 00:00:39,480
+Este método funciona mejor
+si Dataflow también es parte
+
+11
+00:00:39,480 --> 00:00:41,580
+del entorno de ejecución de predicción.
+
+12
+00:00:42,000 --> 00:00:46,245
+Recuerden que la arquitectura
+de referencia de GCP hace esto.
+
+13
+00:00:46,905 --> 00:00:51,950
+Gracias a que Dataflow puede manejar
+datos de transmisión y por lotes
+
+14
+00:00:51,950 --> 00:00:56,390
+es parte de la canalización
+del entrenamiento y de la predicción.
+
+15
+00:00:57,020 --> 00:00:58,210
+Si hacen esto
+
+16
+00:00:58,210 --> 00:01:02,545
+entonces Dataflow es un buen lugar
+para realizar el procesamiento previo.
+
+17
+00:01:03,185 --> 00:01:07,160
+Dataflow es ideal para atributos
+que involucran agregaciones
+
+18
+00:01:07,160 --> 00:01:09,370
+con ventanas de tiempo.
+
+19
+00:01:09,370 --> 00:01:13,725
+Por ejemplo, podrían usar como atributo
+
+20
+00:01:13,725 --> 00:01:19,370
+la cantidad de personas
+que miraron un producto en la hora pasada.
+
+21
+00:01:20,370 --> 00:01:25,630
+En el entrenamiento, pueden usar Dataflow
+para calcularlo a partir de los registros
+
+22
+00:01:25,630 --> 00:01:29,790
+pero la naturaleza de este atributo
+implica que deben usar Dataflow
+
+23
+00:01:29,790 --> 00:01:34,585
+en tiempo real para calcularlo
+según el tráfico en tiempo real.
+
+24
+00:01:35,635 --> 00:01:39,615
+Podrían agregar campos adicionales
+en cualquier "PTransform" en Dataflow.
+
+25
+00:01:40,215 --> 00:01:42,674
+add_fields en este ejemplo
+
+26
+00:01:42,674 --> 00:01:45,780
+toma los campos de entrada
+
+27
+00:01:45,780 --> 00:01:47,930
+obtiene el conteo de los pasajeros
+
+28
+00:01:47,930 --> 00:01:51,990
+los acumula y agrega un conteo
+de visitantes como conteo
+
+29
+00:01:51,990 --> 00:01:54,070
+de la hora pasada.
+
+30
+00:01:54,510 --> 00:01:58,560
+El mismo código en Dataflow funciona
+en lotes y en datos de transmisión
+
+31
+00:01:58,560 --> 00:02:01,110
+por lo que simplemente
+tienen el método add_fields
+
+32
+00:02:01,110 --> 00:02:04,790
+en las canalizaciones
+del entrenamiento y de las predicciones.
+
+33
+00:02:05,530 --> 00:02:09,735
+La tercera opción
+es usar un enfoque híbrido.
+
+34
+00:02:09,735 --> 00:02:13,000
+Los investigadores de Google
+publicaron cómo hacerlo recientemente
+
+35
+00:02:13,000 --> 00:02:15,995
+y lo veremos en detalle
+en el próximo módulo.
+
+36
+00:02:16,915 --> 00:02:18,855
+Pero la idea es esta.
+
+37
+00:02:19,565 --> 00:02:22,145
+Durante el entrenamiento,
+crearán un conjunto de datos
+
+38
+00:02:22,145 --> 00:02:24,370
+procesados previamente con Dataflow.
+
+39
+00:02:24,370 --> 00:02:29,730
+Sin embargo, las transformaciones
+se implementarán en TensorFlow
+
+40
+00:02:30,110 --> 00:02:32,205
+de modo que durante las predicciones
+
+41
+00:02:32,205 --> 00:02:36,490
+la ingeniería de atributos
+sea parte del gráfico de TensorFlow.
+
+42
+00:02:36,490 --> 00:02:40,140
+Esto es muy ventajoso
+porque Dataflow es muy eficiente
+
+43
+00:02:40,140 --> 00:02:43,815
+en el cálculo de agregados
+en todos los datos.
+
+44
+00:02:43,815 --> 00:02:46,150
+Mientras que TensorFlow es ventajoso
+
+45
+00:02:46,150 --> 00:02:50,130
+para la manipulación
+de campos de entrada sobre la marcha.

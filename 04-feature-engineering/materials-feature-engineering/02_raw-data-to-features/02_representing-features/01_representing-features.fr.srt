@@ -1,0 +1,787 @@
+1
+00:00:00,000 --> 00:00:03,370
+Passons à la représentation
+de caractéristiques avec de vrais exemples.
+
+2
+00:00:03,930 --> 00:00:05,800
+Prenons l'exemple que vous voyez ici.
+
+3
+00:00:05,800 --> 00:00:07,365
+Ce sont mes données brutes.
+
+4
+00:00:07,365 --> 00:00:08,790
+J'ai une glacerie.
+
+5
+00:00:08,790 --> 00:00:12,100
+Je veux savoir
+par quel employé mes glaces sont servies,
+
+6
+00:00:12,100 --> 00:00:15,520
+si le client attend
+1,4 seconde ou 1,4 minute,
+
+7
+00:00:15,520 --> 00:00:17,385
+et quelle note je recevrai.
+
+8
+00:00:17,385 --> 00:00:19,425
+Je veux donc prédire cette note.
+
+9
+00:00:19,425 --> 00:00:22,785
+La satisfaction de mes clients
+dépend de la personne qui les sert,
+
+10
+00:00:22,785 --> 00:00:23,970
+de l'attente,
+
+11
+00:00:23,970 --> 00:00:25,305
+de la glace achetée,
+
+12
+00:00:25,305 --> 00:00:28,080
+de l'emplacement du magasin, etc.
+
+13
+00:00:28,080 --> 00:00:30,585
+Nous avons donc nos données.
+
+14
+00:00:30,585 --> 00:00:32,354
+Ce sont nos données d'entraînement.
+
+15
+00:00:32,354 --> 00:00:35,805
+Je veux les convertir en nombres.
+
+16
+00:00:35,805 --> 00:00:37,755
+Souvenez-vous : tout doit être numérique,
+
+17
+00:00:37,755 --> 00:00:40,810
+car les réseaux de neurones
+traitent des nombres.
+
+18
+00:00:40,810 --> 00:00:44,400
+Je convertis mes données en nombres
+pour obtenir ces caractéristiques.
+
+19
+00:00:44,400 --> 00:00:47,790
+Dans TensorFlow,
+je récupère mon entrée JSON,
+
+20
+00:00:47,790 --> 00:00:51,630
+qui va de mon application Web
+à un entrepôt de données. Je l'extrais.
+
+21
+00:00:51,630 --> 00:00:53,115
+Je crée ces valeurs numériques.
+
+22
+00:00:53,115 --> 00:00:56,955
+Dans TensorFlow, chacune de ces colonnes
+devient une colonne de caractéristiques.
+
+23
+00:00:56,955 --> 00:01:00,250
+Comment convertir des données
+en colonnes de caractéristiques ?
+
+24
+00:01:00,250 --> 00:01:01,770
+Comment les rendre numériques ?
+
+25
+00:01:01,770 --> 00:01:06,540
+Nous avons des valeurs
+comme le prix ou le temps d'attente
+
+26
+00:01:06,540 --> 00:01:07,780
+qui sont déjà numériques.
+
+27
+00:01:07,780 --> 00:01:10,350
+Parfait. Elles sont très faciles à encoder.
+
+28
+00:01:10,350 --> 00:01:12,410
+Nous les utilisons telles quelles.
+
+29
+00:01:12,410 --> 00:01:15,180
+Elles sont numériques
+et ont une magnitude significative.
+
+30
+00:01:15,180 --> 00:01:21,045
+Il est facile pour TensorFlow d'apprendre
+un temps d'attente comme 1,4 ou 2,5.
+
+31
+00:01:22,105 --> 00:01:25,540
+C'est ce que nous appelons
+une colonne à valeurs réelles.
+
+32
+00:01:25,540 --> 00:01:29,475
+J'ajoute donc juste des couches
+comme la colonne à valeurs réelles du prix
+
+33
+00:01:29,475 --> 00:01:32,210
+ou la colonne
+à valeurs réelles du temps d'attente.
+
+34
+00:01:32,210 --> 00:01:37,005
+Ces nombres utilisables tels quels
+deviennent des colonnes à valeurs réelles.
+
+35
+00:01:37,865 --> 00:01:39,360
+Et cette donnée d'entrée ?
+
+36
+00:01:39,360 --> 00:01:42,585
+L'ID de la transaction est égal à 42.
+
+37
+00:01:42,585 --> 00:01:44,670
+C'est bien trop spécifique.
+
+38
+00:01:44,670 --> 00:01:47,230
+Nous ne pouvons pas
+en faire une caractéristique.
+
+39
+00:01:47,230 --> 00:01:49,940
+Et l'ID de l'employé ?
+
+40
+00:01:49,940 --> 00:01:54,045
+L'ID de l'employé est égal à 72365.
+
+41
+00:01:54,045 --> 00:01:57,180
+Est-il numérique ? Oui, c'est un nombre.
+
+42
+00:01:57,180 --> 00:01:59,515
+A-t-il une magnitude significative ?
+
+43
+00:01:59,515 --> 00:02:03,310
+L'employé avec l'ID 72365
+
+44
+00:02:03,310 --> 00:02:07,510
+est-il deux fois meilleur
+que celui avec l'ID 36182 ?
+
+45
+00:02:07,510 --> 00:02:09,235
+Non.
+
+46
+00:02:09,235 --> 00:02:12,059
+Je ne peux donc pas
+utiliser l'ID d'employé tel quel.
+
+47
+00:02:12,059 --> 00:02:13,645
+Je dois faire quelque chose avec.
+
+48
+00:02:13,645 --> 00:02:16,905
+Imaginons
+que ma glacerie compte cinq employés.
+
+49
+00:02:16,905 --> 00:02:22,980
+L'employé numéro 8345,
+l'employé numéro 72365, etc.
+
+50
+00:02:22,980 --> 00:02:31,455
+Je peux prendre cet employé numéro 72365
+et représenter son ID avec ce vecteur.
+
+51
+00:02:31,455 --> 00:02:35,380
+Le vecteur est 01000, parce que j'indique
+
+52
+00:02:35,380 --> 00:02:40,375
+que la deuxième colonne
+correspond à l'employé 72635.
+
+53
+00:02:40,375 --> 00:02:43,655
+Je crée en quelque sorte un masque de bits.
+
+54
+00:02:43,655 --> 00:02:48,340
+La colonne de cet employé
+est égale à 1 et toutes les autres à 0.
+
+55
+00:02:48,340 --> 00:02:50,770
+C'est ce qu'on appelle l'encodage one-hot.
+
+56
+00:02:50,770 --> 00:02:54,095
+Un colonne est chaude,
+et toutes les autres sont froides.
+
+57
+00:02:54,595 --> 00:02:58,740
+Si la glacerie compte cinq employés,
+vous avez donc cinq colonnes.
+
+58
+00:02:58,740 --> 00:03:01,535
+Pour être exact,
+nous en avons en fait généralement quatre,
+
+59
+00:03:01,535 --> 00:03:04,065
+car l'une d'entre elles
+est linéairement indépendante.
+
+60
+00:03:04,065 --> 00:03:07,665
+Oublions ceci. Disons que nous avons
+cinq colonnes pour cinq employés.
+
+61
+00:03:07,665 --> 00:03:10,510
+Dans TensorFlow,
+c'est ce qu'on appelle une colonne éparse.
+
+62
+00:03:10,510 --> 00:03:13,740
+Vous créez une colonne éparse avec des clés.
+
+63
+00:03:13,740 --> 00:03:16,065
+Le nom de la colonne est "employeeId",
+
+64
+00:03:16,065 --> 00:03:18,480
+et les clés sont 8345,
+
+65
+00:03:18,480 --> 00:03:21,160
+72365 selon l'ID de l'employé, etc.
+
+66
+00:03:21,160 --> 00:03:23,970
+Nous avons transmis
+les chaînes pour chacune de ces clés.
+
+67
+00:03:23,970 --> 00:03:28,095
+TensorFlow va prendre ces chaînes,
+fournir une durée d'entraînement directe,
+
+68
+00:03:28,095 --> 00:03:31,230
+notre durée de prédiction,
+et les encoder en mode one-hot,
+
+69
+00:03:31,230 --> 00:03:33,390
+ce qui les rend numériques.
+
+70
+00:03:33,390 --> 00:03:37,200
+Nous indiquons
+que employeeId est la colonne éparse.
+
+71
+00:03:37,200 --> 00:03:41,285
+C'est ce qui se produit
+si nous connaissons les clés à l'avance.
+
+72
+00:03:41,285 --> 00:03:43,960
+Mais si ce n'est pas le cas ?
+
+73
+00:03:45,220 --> 00:03:47,860
+Si vous devez prétraiter vos données d'entrée
+
+74
+00:03:47,860 --> 00:03:52,280
+pour rechercher toutes les clés
+d'un ensemble de données d'entraînement
+
+75
+00:03:52,280 --> 00:03:55,315
+et créer un vocabulaire de clés ?
+
+76
+00:03:55,315 --> 00:03:57,010
+C'est la première étape.
+
+77
+00:03:57,010 --> 00:03:58,540
+C'est le prétraitement.
+
+78
+00:03:58,540 --> 00:04:02,150
+Vous devez effectuer tout ceci
+avant même de commencer l'entraînement.
+
+79
+00:04:02,150 --> 00:04:04,100
+Vous créez ensuite un ensemble de données
+
+80
+00:04:04,100 --> 00:04:06,430
+où ces valeurs prétraitées
+peuvent être utilisées.
+
+81
+00:04:06,430 --> 00:04:09,250
+Avant même d'entraîner votre modèle,
+
+82
+00:04:09,250 --> 00:04:11,800
+vous devez créer ce vocabulaire de clés,
+
+83
+00:04:11,800 --> 00:04:14,755
+qui doit être
+disponible lors de la prédiction.
+
+84
+00:04:14,755 --> 00:04:16,105
+À ce moment-là,
+
+85
+00:04:16,105 --> 00:04:20,544
+vous reviendrez et indiquerez
+que vous avez l'ID d'employé 72365.
+
+86
+00:04:20,544 --> 00:04:22,885
+Le modèle devra alors savoir
+
+87
+00:04:22,885 --> 00:04:28,300
+que l'ID 72365 était la deuxième colonne
+de l'encodage one-hot.
+
+88
+00:04:28,300 --> 00:04:30,490
+Le vocabulaire doit donc être identique
+
+89
+00:04:30,490 --> 00:04:32,790
+et la mappage
+du vocabulaire doit être identique
+
+90
+00:04:32,790 --> 00:04:35,020
+lors de l'entraînement et de la prédiction.
+
+91
+00:04:35,020 --> 00:04:36,690
+Autrement, ce n'est pas bon.
+
+92
+00:04:36,690 --> 00:04:38,980
+Vous vous demandez sans doute
+
+93
+00:04:38,980 --> 00:04:41,460
+ce qui se passera
+si vous recrutez un nouvel employé.
+
+94
+00:04:41,460 --> 00:04:43,270
+Le modèle restera-t-il identique ?
+
+95
+00:04:43,270 --> 00:04:46,270
+Pour le moment, vous n'avez pas
+de place pour un nouvel employé.
+
+96
+00:04:46,270 --> 00:04:50,030
+Vous ne pourrez donc pas
+faire de prédictions pour lui.
+
+97
+00:04:50,030 --> 00:04:53,114
+Vous devez anticiper ce type de problème.
+
+98
+00:04:53,114 --> 00:04:55,215
+Vous risquez
+de devoir ajouter quelque chose.
+
+99
+00:04:55,215 --> 00:04:59,015
+Que faire si j'ai
+un employé inconnu ou introuvable ?
+
+100
+00:04:59,015 --> 00:05:01,615
+Vous déciderez peut-être
+
+101
+00:05:01,615 --> 00:05:03,805
+de calculer la moyenne
+de vos employés actuels
+
+102
+00:05:03,805 --> 00:05:06,165
+et d'utiliser ce nombre.
+
+103
+00:05:06,165 --> 00:05:10,120
+Entre temps, vous recueillez des données
+sur les périodes de travail de cet employé,
+
+104
+00:05:10,120 --> 00:05:12,370
+la satisfaction des clients le concernant,
+
+105
+00:05:12,370 --> 00:05:13,540
+les temps d'attente
+
+106
+00:05:13,540 --> 00:05:14,840
+et les glaces qu'il sert.
+
+107
+00:05:14,840 --> 00:05:16,540
+Une fois que vous avez ces données,
+
+108
+00:05:16,540 --> 00:05:18,775
+vous pouvez
+les utiliser dans votre prédiction.
+
+109
+00:05:19,935 --> 00:05:23,220
+Si vous connaissez les clés à l'avance,
+
+110
+00:05:23,220 --> 00:05:25,650
+vous les utilisez
+pour créer cette colonne éparse,
+
+111
+00:05:25,650 --> 00:05:28,440
+vous les transmettez,
+puis vous les codez en dur.
+
+112
+00:05:28,440 --> 00:05:31,820
+Ce sont donc les différentes manières
+de créer une colonne éparse.
+
+113
+00:05:32,240 --> 00:05:34,950
+Vos données seront parfois déjà indexées.
+
+114
+00:05:34,950 --> 00:05:36,870
+Pourquoi serait-ce le cas ?
+
+115
+00:05:36,870 --> 00:05:39,240
+Vous pouvez par exemple
+avoir un ID d'employé
+
+116
+00:05:39,240 --> 00:05:41,820
+correspondant à des nombres de 1 à 1 000.
+
+117
+00:05:41,820 --> 00:05:44,015
+Ils sont déjà indexés.
+
+118
+00:05:44,015 --> 00:05:47,760
+Ce sont de grands nombres arbitraires
+allant de 1 à N.
+
+119
+00:05:47,760 --> 00:05:50,050
+Dans ce cas,
+vous devez créer une colonne éparse
+
+120
+00:05:50,050 --> 00:05:53,060
+avec la caractéristique
+convertie en nombre entier employeeId,
+
+121
+00:05:53,060 --> 00:05:54,645
+et il y a cinq employés.
+
+122
+00:05:54,645 --> 00:05:58,110
+Ce serait par exemple utile
+dans notre exemple sur les impôts,
+
+123
+00:05:58,110 --> 00:06:00,570
+si nous l'utilisions
+pour l'heure de la journée,
+
+124
+00:06:00,570 --> 00:06:04,495
+car la caractéristique est automatiquement
+convertie en nombre entier de 0 à 23.
+
+125
+00:06:04,495 --> 00:06:06,170
+C'est parfait,
+
+126
+00:06:06,170 --> 00:06:08,600
+parce que l'heure
+de la journée n'est pas numérique,
+
+127
+00:06:08,600 --> 00:06:13,745
+en tout cas pas complètement,
+car 23 est très proche de 0 ou 1.
+
+128
+00:06:13,745 --> 00:06:15,615
+Il n'y a que deux heures de différence.
+
+129
+00:06:15,615 --> 00:06:17,835
+Voyons une troisième possibilité.
+
+130
+00:06:17,835 --> 00:06:20,310
+Imaginons que vous n'avez pas de vocabulaire
+
+131
+00:06:20,310 --> 00:06:22,470
+et qu'il n'est pas converti en nombre entier.
+
+132
+00:06:22,470 --> 00:06:24,765
+Voici une astuce intéressante.
+
+133
+00:06:24,765 --> 00:06:28,710
+Si vous ne voulez pas créer de vocabulaire
+et que vous n'êtes pas intéressé,
+
+134
+00:06:28,710 --> 00:06:33,080
+vous pouvez hacher l'ID d'employé,
+
+135
+00:06:33,080 --> 00:06:35,100
+calculer le hachage,
+
+136
+00:06:35,100 --> 00:06:38,820
+et le diviser en 500 buckets.
+
+137
+00:06:38,820 --> 00:06:40,580
+Pourquoi procéder ainsi ?
+
+138
+00:06:40,580 --> 00:06:43,070
+Si votre entreprise compte 100 employés,
+
+139
+00:06:43,070 --> 00:06:45,020
+et que vous la divisez en 500 buckets,
+
+140
+00:06:45,020 --> 00:06:50,420
+vous obtiendrez en moyenne
+un ou zéro employé par bucket.
+
+141
+00:06:50,420 --> 00:06:52,430
+C'est presque un encodage one-hot,
+
+142
+00:06:52,430 --> 00:06:54,260
+ou plutôt un encodage en mode 500-hot.
+
+143
+00:06:54,260 --> 00:06:58,765
+J'obtiens à peu près le même résultat
+sans créer de vocabulaire au préalable.
+
+144
+00:07:00,085 --> 00:07:03,675
+Et la note des clients ?
+Comment la gérer ?
+
+145
+00:07:03,675 --> 00:07:07,950
+Pour prédire la note des clients,
+qui est un libellé, c'est très simple.
+
+146
+00:07:07,955 --> 00:07:10,580
+Imaginons
+que nous voulons l'utiliser en entrée
+
+147
+00:07:10,580 --> 00:07:12,640
+pour essayer de prédire autre chose.
+
+148
+00:07:12,640 --> 00:07:13,989
+Vous avez donc une note
+
+149
+00:07:13,989 --> 00:07:16,610
+que vous voulez utiliser
+comme caractéristique d'entrée.
+
+150
+00:07:16,610 --> 00:07:18,485
+Vous avez deux options.
+
+151
+00:07:18,485 --> 00:07:21,110
+Vous pouvez la traiter
+comme un nombre continu de 1 à 5.
+
+152
+00:07:21,110 --> 00:07:22,400
+Elle serait donc numérique.
+
+153
+00:07:22,400 --> 00:07:27,410
+Elle aurait une magnitude significative,
+3 étant mieux que 2, par exemple.
+
+154
+00:07:27,410 --> 00:07:31,120
+Vous pouvez aussi estimer
+que quatre étoiles est très différent de cinq
+
+155
+00:07:31,120 --> 00:07:32,135
+ou de deux étoiles,
+
+156
+00:07:32,135 --> 00:07:35,045
+ce qui est un encodage one-hot.
+
+157
+00:07:35,045 --> 00:07:37,055
+Dans certains cas, vous avez le choix.
+
+158
+00:07:37,055 --> 00:07:39,635
+Vous pouvez encoder
+en mode one-hot la note des clients
+
+159
+00:07:39,635 --> 00:07:41,075
+ou la traiter comme un nombre.
+
+160
+00:07:41,075 --> 00:07:44,010
+C'est à vous de voir.
+
+161
+00:07:44,970 --> 00:07:51,490
+Un point auquel vous devez faire attention
+est si un client n'a pas donné de note.
+
+162
+00:07:51,920 --> 00:07:55,345
+Imaginons que vous faites une enquête
+et que le client n'y a pas répondu.
+
+163
+00:07:55,345 --> 00:07:57,200
+Que faire avec les données manquantes ?
+
+164
+00:07:58,090 --> 00:08:00,090
+Une solution est d'utiliser deux colonnes,
+
+165
+00:08:00,090 --> 00:08:03,345
+une pour la note
+et une indiquant si vous avez une note.
+
+166
+00:08:03,345 --> 00:08:07,290
+Dans ce cas,
+le nombre 4 est la note reçue,
+
+167
+00:08:07,290 --> 00:08:10,230
+et le nombre 1 signifie
+que vous avez reçu une note.
+
+168
+00:08:10,230 --> 00:08:13,735
+0 signifie
+que le client n'a pas donné de note.
+
+169
+00:08:14,245 --> 00:08:16,930
+Vous pouvez procéder inversement
+avec l'encodage one-hot.
+
+170
+00:08:16,930 --> 00:08:20,630
+Pour une note de 4, j'ai la valeur 0001.
+
+171
+00:08:20,630 --> 00:08:23,815
+Si je n'ai pas reçu de note, j'ai 0000.
+
+172
+00:08:24,565 --> 00:08:27,800
+Mais ne faites pas l'erreur
+de vouloir faire sans la seconde colonne,
+
+173
+00:08:27,800 --> 00:08:31,845
+car vous mélangeriez des nombres magiques
+avec les valeurs réelles que vous avez.
+
+174
+00:08:31,845 --> 00:08:36,804
+Vous devez ajouter une colonne pour indiquer
+si vous avez observé la valeur ou non.
+
+175
+00:08:37,284 --> 00:08:40,250
+Si vous avez des données manquantes,
+
+176
+00:08:40,250 --> 00:08:41,940
+vous devez avoir une autre colonne.

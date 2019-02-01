@@ -1,0 +1,308 @@
+1
+00:00:00,000 --> 00:00:03,690
+E se eu discretizar o eixo x1 desenhando
+
+2
+00:00:03,690 --> 00:00:07,845
+não apenas uma linha branca, mas
+muitas dessas linhas pretas?
+
+3
+00:00:07,845 --> 00:00:13,245
+E fazemos o mesmo para o eixo x2
+desenhando um monte de linhas pretas.
+
+4
+00:00:13,245 --> 00:00:18,810
+Agora, nós discretizamos os eixos
+x1 e x2.
+
+5
+00:00:18,810 --> 00:00:21,180
+Quando desenhamos duas linhas brancas,
+
+6
+00:00:21,180 --> 00:00:23,265
+temos quatro quadrantes.
+
+7
+00:00:23,265 --> 00:00:24,885
+E agora?
+
+8
+00:00:24,885 --> 00:00:28,845
+Se eu tiver m linhas verticais e
+n linhas horizontais,
+
+9
+00:00:28,845 --> 00:00:34,185
+acabaremos com m + 1 x n + 1
+célula da grade, certo?
+
+10
+00:00:34,185 --> 00:00:42,165
+Vamos considerar como isso fica quando
+discretizamos x1 e x2 e multiplicamos.
+
+11
+00:00:42,165 --> 00:00:48,390
+Lembre-se do diagrama que tínhamos ao
+dividir o espaço de entrada em quadrantes.
+
+12
+00:00:48,390 --> 00:00:53,895
+Basicamente, nós podemos fazer uma
+previsão diferente para cada quadrante.
+
+13
+00:00:53,895 --> 00:00:56,400
+Então, e esta caixa verde?
+
+14
+00:00:56,400 --> 00:00:59,430
+Qual será a previsão para essa caixa?
+
+15
+00:01:00,440 --> 00:01:01,840
+Amarelo, certo?
+
+16
+00:01:02,560 --> 00:01:04,280
+Que tal agora?
+
+17
+00:01:04,280 --> 00:01:07,425
+Azul, mas também há um toque amarelo.
+
+18
+00:01:07,425 --> 00:01:10,960
+Vamos contar o número de pontos azuis e o
+número de pontos amarelos
+
+19
+00:01:10,960 --> 00:01:14,685
+e chamá-lo de 85% azul.
+
+20
+00:01:14,685 --> 00:01:18,435
+Você vê agora como as
+probabilidades estão chegando.
+
+21
+00:01:19,465 --> 00:01:20,700
+E agora?
+
+22
+00:01:22,470 --> 00:01:26,925
+De qualquer forma, vamos ver porque isso
+funciona bem como um modelo linear.
+
+23
+00:01:26,925 --> 00:01:30,869
+Quando você aplica uma codificação
+one-hot no primeiro conjunto de valores
+
+24
+00:01:30,869 --> 00:01:34,924
+e, em seguida, aplica uma codificação
+one-hot no segundo conjunto de valores,
+
+25
+00:01:34,924 --> 00:01:37,630
+e, então, você aplica o
+cruzamento de atributos
+
+26
+00:01:37,630 --> 00:01:46,050
+basicamente deixa com um node que é
+acionado para pontos nesse intervalo.
+
+27
+00:01:46,050 --> 00:01:55,335
+Então pense nisso, o x3 será 1 só se x1
+for igual a 1 e x2 for igual a 1.
+
+28
+00:01:55,335 --> 00:01:58,750
+Portanto, para qualquer ponto
+no espaço de entrada,
+
+29
+00:01:58,750 --> 00:02:02,180
+apenas um intervalo é disparado.
+
+30
+00:02:02,180 --> 00:02:08,940
+Se você pegar esses valores do cruzamento
+e alimentá-los na regressão linear,
+
+31
+00:02:08,940 --> 00:02:12,315
+o que o w3 de espera precisa ser?
+
+32
+00:02:12,315 --> 00:02:19,805
+Sim, a proporção de azuis para amarelos na
+célula da grade correspondente a x1 e x2.
+
+33
+00:02:19,805 --> 00:02:23,970
+É por isso que um cruzamento de
+atributo é tão poderoso.
+
+34
+00:02:23,970 --> 00:02:30,830
+Você discretiza o espaço de entrada e
+memoriza o conjunto de dados de treino.
+
+35
+00:02:30,830 --> 00:02:33,560
+Mas você enxerga como isso
+pode ser problemático?
+
+36
+00:02:34,960 --> 00:02:37,245
+E se você não tiver dados suficientes?
+
+37
+00:02:37,735 --> 00:02:39,300
+O que um modelo vai aprender aqui?
+
+38
+00:02:40,260 --> 00:02:44,450
+Vai aprender que a previsão precisa
+ser azul, verdade?
+
+39
+00:02:45,750 --> 00:02:47,655
+Bem, existem maneiras de contornar isso.
+
+40
+00:02:47,655 --> 00:02:51,330
+Você não tem que discretizar o
+espaço de entrada igualmente.
+
+41
+00:02:51,330 --> 00:02:54,720
+Em vez disso, você pode usar caixas
+de tamanhos diferentes
+
+42
+00:02:54,720 --> 00:03:01,110
+e usar tamanhos vinculados à entropia
+ou ao conteúdo da informação na caixa.
+
+43
+00:03:01,110 --> 00:03:04,530
+Você também pode
+agrupar as caixas.
+
+44
+00:03:04,530 --> 00:03:06,910
+Então, há maneiras de contornar isso.
+
+45
+00:03:06,910 --> 00:03:12,765
+Ainda assim, perceba que os cruzamentos
+de atributos tratam sobre memorização,
+
+46
+00:03:12,765 --> 00:03:15,660
+e memorização é o oposto da
+
+47
+00:03:15,660 --> 00:03:19,575
+generalização, que é o que o aprendizado
+de máquina pretende fazer.
+
+48
+00:03:20,135 --> 00:03:22,170
+Então, você deveria fazer isso?
+
+49
+00:03:22,940 --> 00:03:25,530
+Em um sistema de aprendizado
+de máquina do mundo real,
+
+50
+00:03:25,530 --> 00:03:26,985
+há lugar para ambos.
+
+51
+00:03:26,985 --> 00:03:29,550
+A memorização funciona quando você tem
+
+52
+00:03:29,550 --> 00:03:35,090
+tantos dados que, para qualquer célula de
+grade única no espaço de entrada,
+
+53
+00:03:35,090 --> 00:03:38,240
+a distribuição de dados é
+estatisticamente significativa.
+
+54
+00:03:38,240 --> 00:03:41,460
+Quando esse é o caso, você pode memorizar.
+
+55
+00:03:41,460 --> 00:03:47,130
+Você está apenas aprendendo a média
+para cada célula da grade.
+
+56
+00:03:47,130 --> 00:03:52,770
+A aprendizagem profunda também precisa de
+muitos dados para atuar nesse espaço.
+
+57
+00:03:52,770 --> 00:03:56,670
+Se você quer usar cruzamento de
+atributos ou usar várias camadas,
+
+58
+00:03:56,670 --> 00:03:58,215
+precisa de muitos dados.
+
+59
+00:03:58,935 --> 00:04:02,880
+A propósito, se você estiver familiarizado
+com o aprendizado de máquina tradicional,
+
+60
+00:04:02,880 --> 00:04:05,735
+talvez não tenha ouvido falar
+sobre cruzamentos de atributos.
+
+61
+00:04:05,735 --> 00:04:09,540
+O fato de que os cruzamentos de atributo
+memorizam e só funcionam em conjuntos
+
+62
+00:04:09,540 --> 00:04:13,820
+de dados maiores é uma das razões pelas
+quais você pode não ter ouvido falar.
+
+63
+00:04:15,180 --> 00:04:21,000
+Mas eles serão extremamente úteis em
+conjuntos de dados do mundo real.
+
+64
+00:04:21,000 --> 00:04:22,950
+Quanto maiores forem os dados,
+
+65
+00:04:22,950 --> 00:04:25,345
+menores serão as caixas
+
+66
+00:04:25,345 --> 00:04:28,115
+e mais você poderá memorizá-las.
+
+67
+00:04:28,115 --> 00:04:34,700
+O cruzamento é uma ótima técnica de
+pré-processamento para grandes dados.

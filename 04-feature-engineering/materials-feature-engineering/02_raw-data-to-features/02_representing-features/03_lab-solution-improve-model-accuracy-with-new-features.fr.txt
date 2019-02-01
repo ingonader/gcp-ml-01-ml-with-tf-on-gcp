@@ -1,0 +1,76 @@
+Dans cet atelier, nous allons essayer
+différentes caractéristiques. Nous avons accédé à a_features. Je supprime toutes les cellules pour m'assurer
+que j'exécute bien tout ce que je lance. Nous devons commencer
+par une série d'importations. Nous importons TensorFlow, Pandas, NumPy, etc. Importons-les et chargeons l'ensemble de données
+sur l'immobilier en Californie. Nous allons prédire le prix de maisons
+en Californie avec cet ensemble de données. Nous chargeons
+ensuite l'ensemble de données. Il est bon de savoir ce qu'il contient. Exécutons donc df.head pour afficher les premières lignes. Nous apprenons
+qu'il y a une longitude, une latitude et l'âge médian des maisons. Cet ensemble de données ne fait pas
+référence à des maisons individuelles. Il est en fait agrégé. Vous avez le nombre total de pièces : 5 612. Il ne s'agit bien sûr pas d'une seule maison. Ce sont toutes les pièces d'une agrégation qui correspond à un code postal,
+une commune, ou autre. Nous avons le nombre total
+de pièces dans cette agrégation, le nombre total de chambres, la population, le nombre d'individus. Il y a apparemment
+un millier de personnes dans 472 foyers. Le revenu médian
+est de 1,5 d'une certaine unité. La valeur immobilière médiane
+est de 66 900 d'une certaine unité aussi. C'est donc ce que nous essayons d'apprendre
+à partir de cet ensemble de données. Nous avons donc vu les premières lignes
+de l'ensemble de données. Nous avons ainsi une bonne idée
+des nombres qu'il contient. df.describe() est extrêmement utile. Dans Pandas, il affiche des statistiques
+sur les colonnes numériques. S'il y a des colonnes catégoriques, il n'affiche rien à leur sujet, mais pour chaque colonne numérique (et elles le sont toutes ici), il affiche, par exemple, qu'il y a 17 000 longitudes et 17 000 latitudes
+dans l'ensemble de données. Il s'agit du nombre de lignes
+dans l'ensemble de données. Il est utile de vérifier que toutes les colonnes ont bien 17 000. Sinon, cela signifie qu'il manque
+une ou plusieurs valeurs pour cette ligne. Dans ce cas, premier contrôle de l'intégrité : aucune valeur manquante. Nous avons 17 000 lignes
+pour toutes les valeurs. La longitude moyenne est -119. La latitude moyenne est 35. C'est logique,
+puisqu'il s'agit de la Californie. L'âge moyen des maisons est 28,6. Il s'agit d'années. Donc, environ 30 ans. Le nombre total de pièces est 2 643. Il ne s'agit pas d'une maison individuelle, mais probablement du nombre total
+de pièces dans cette agrégation. Nous devons en faire quelque chose. Le nombre total de chambres, 539, est
+étrange aussi. La population est de 1 429. Le nombre de foyers est 501. Le revenu médian est 3,9, et la valeur médiane
+des maisons est d'environ 207 000. Nous avons donc toutes ces moyennes, ainsi que l'écart type et la valeur minimale. Le nombre minimal de pièces est 2. Le nombre maximal de pièces est 37 937. Cela nous donne un aperçu des données. Nous allons diviser
+ces données en deux parties. Pour cet exercice, nous n'allons pas les enregistrer. La division aléatoire est suffisante. Je crée donc un masque, qui crée à son tour un tableau
+de la longueur du df, soit 17 000, et vérifie si le nombre aléatoire
+est inférieur à 0.8, ce qui signifie qu'environ 80 %
+des valeurs seront égales à 1 et 20 % seront égales à zéro. Le df d'entraînement correspond
+donc à toutes ces valeurs égales à 1, et le df d'évaluation à toutes celles
+dont le masque est de zéro. À ce point, nous obtenons deux structures
+de données, traindf et evaldf. Et je peux ajouter un élément. Je peux imprimer la longueur
+de traindf, qui est d'environ 13 000, et la longueur d'evaldf, qui correspond à environ 20 %, environ 3 400. Nous avons maintenant
+notre ensemble de données d'entraînement et notre ensemble de données d'évaluation. Créons maintenant notre modèle. Pour cela, nous devons d'abord lire nos données. Je vais donc utiliser la fonction make_input, et lui donner une structure de données et le nombre d'itérations de lecture. Je vais utiliser la fonction pandas_input pour récupérer la structure de données et lui ajouter des caractéristiques. Pour démarrer, nous avons regardé le nombre total de pièces. Il est absurde, n'est-ce pas ? Nous n'avons pas
+une maison avec 2 643 pièces. Il s'agit en réalité du nombre total
+de pièces dans cette agrégation, dans ce code postal. Comment normaliser ceci ? Nous devons revenir
+à une valeur pour une seule maison. Nous prenons donc le nombre total de pièces et nous le divisons par le nombre de foyers. Nous obtenons ainsi le nombre de pièces d'une maison classique dans ce code postal. Que reste-t-il
+à normaliser pour ce code postal ? Voyons cela. Les latitudes et les longitudes
+ne posent pas de problème. Nous devons normaliser
+le nombre total de pièces et le nombre total de chambres. Allons-y. Au lieu d'utiliser
+seulement le nombre de pièces, ajoutons le nombre de chambres.
+Est-ce qu'il s'appelle ainsi ? Non, il s'appelle total_bedrooms. total_bedrooms. Et ceci peut s'appeler num_bedrooms. Nous avons donc nos deux caractéristiques. Nous avons créé notre fonction d'entrée. Voyons maintenant
+nos colonnes de caractéristiques. housing_median_age est une colonne numérique. Elle peut être utilisée telle quelle. Si on regarde l'âge médian, on voit que les nombres sont logiques. Ce sont apparemment des années. Nous pouvons les utiliser tels quels. Utilisons donc l'âge médian. Répartissons ensuite
+la latitude dans des bins entre 32 et 42. Pourquoi 32 et 42 ? Si on revient ici, on peut voir
+que la latitude va de 32 à 42. Nous pouvons donc
+la diviser en bins allant de 32 à 42. Que pouvons-nous utiliser d'autre ? Si nous utilisons la latitude, nous pouvons aussi utiliser la longitude. Copions donc ceci, et utilisons également la longitude. Nous allons ajouter la longitude ici. La longitude doit
+être comprise entre -124 et -114. Descendons ici
+et remplaçons ceci par -124 et -114. Un degré de longitude
+est probablement raisonnable. Un degré correspond à environ 100 km. Voilà. Nous pouvons faire ceci. Le nombre de pièces. Nous avons ajouté le nombre de chambres. Faisons également cela. Nombre de pièces, nombre de chambres. Nous avons ensuite le revenu médian. Voilà donc notre ensemble
+de colonnes de caractéristiques. Vous pouvez maintenant procéder
+à l'entraînement et à l'évaluation avec train_and_evaluate, en transmettant train_spec, eval_spec, etc. À ce stade, nous pouvons appeler train_and_evaluate et écrire un modèle entraîné. En exécutant ceci, nous devrions
+obtenir un résultat d'évaluation. L'exécution est en cours. J'ai demandé une exécution sur 5 000 étapes. À ce stade, je suis à l'étape 1 650. Patientons un peu. Une fois l'exécution terminée, le programme enregistre
+régulièrement un dictionnaire qui indique la perte moyenne. Cette dernière n'est pas très utile,
+car elle est calculée sur un lot. Mais cette perte-ci, calculée sur l'ensemble
+de données d'évaluation, est plus logique. La perte moyenne est calculée
+sur l'ensemble de données d'évaluation, ce qui est plus logique. La perte elle-même ne concerne qu'un lot. Nous n'en avons pas besoin. Descendons. Attendons la fin de l'exécution. 4 000… 5 000… Et voilà. Notre perte moyenne pour tout l'ensemble
+de données, la RMSE, est de 0,59. Essayons autre chose. Voici ce qui se passe
+si je n'ai pas le nombre de pièces. N'ajoutons pas ces éléments. Lors de la création de nos colonnes d'entrée, nous déciderons simplement
+de ne pas utiliser le nombre de pièces, le nombre de chambres, la latitude, la longitude ou le revenu médian. Nous avons uniquement l'âge de la maison. Nous procédons ainsi,
+c'est la seule colonne de caractéristiques. Que va-t-il se passer ? Descendons ici. Souvenez-vous
+que nous avons obtenu 0,59 auparavant. Je supprime la cellule, et je relance l'exécution
+avec une seule donnée d'entrée. Qu'obtenons-nous ? Notre perte est de 1,87. Toutes ces caractéristiques
+d'entrée étaient donc utiles, puisque la perte a augmenté
+lorsque nous les avons supprimées. Ceci vous donne donc une idée
+des caractéristiques qui sont utiles. Vous pouvez faire ceci manuellement. Vous pouvez tester ce qui se passe
+si vous n'utilisez que le revenu médian. Le revenu médian est un bon indicateur. Si vous réessayez avec le revenu médian, vous verrez que la perte diminue fortement. Les autres caractéristiques
+ne sont pas aussi utiles. Elles sont utiles, mais pas autant. Le revenu médian est particulièrement utile, car il indique
+ce que les gens peuvent se permettre et que le marché tend à s'aligner là-dessus. Nous avons maintenant
+une perte moyenne de 0,69. Nous sommes passés de 1,38 à 0,69
+simplement en ajoutant le revenu médian. C'est une caractéristique extrêmement utile. En quoi est-ce important dans la pratique ? Ce qui est important, ce sont les données que vous recueillez. Imaginez
+que vous ayez cet ensemble de données, mais que vous n'ayez pas recueilli
+le revenu médian des habitants. Votre modèle ne serait pas bon. C'est pour cette raison que nous disons que l'important dans le machine learning
+n'est pas le modèle lui-même, mais les données que vous lui fournissez. Pour ce modèle,
+il est particulièrement important de connaître le revenu médian des habitants afin de prédire le prix des maisons. C'est une caractéristique très importante. Pour obtenir cette caractéristique, vous devez avoir un pipeline d'extraction
+des données qui apporte les données.

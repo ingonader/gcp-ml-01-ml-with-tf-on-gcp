@@ -1,0 +1,85 @@
+Passons à la représentation
+de caractéristiques avec de vrais exemples. Prenons l'exemple que vous voyez ici. Ce sont mes données brutes. J'ai une glacerie. Je veux savoir
+par quel employé mes glaces sont servies, si le client attend
+1,4 seconde ou 1,4 minute, et quelle note je recevrai. Je veux donc prédire cette note. La satisfaction de mes clients
+dépend de la personne qui les sert, de l'attente, de la glace achetée, de l'emplacement du magasin, etc. Nous avons donc nos données. Ce sont nos données d'entraînement. Je veux les convertir en nombres. Souvenez-vous : tout doit être numérique, car les réseaux de neurones
+traitent des nombres. Je convertis mes données en nombres
+pour obtenir ces caractéristiques. Dans TensorFlow,
+je récupère mon entrée JSON, qui va de mon application Web
+à un entrepôt de données. Je l'extrais. Je crée ces valeurs numériques. Dans TensorFlow, chacune de ces colonnes
+devient une colonne de caractéristiques. Comment convertir des données
+en colonnes de caractéristiques ? Comment les rendre numériques ? Nous avons des valeurs
+comme le prix ou le temps d'attente qui sont déjà numériques. Parfait. Elles sont très faciles à encoder. Nous les utilisons telles quelles. Elles sont numériques
+et ont une magnitude significative. Il est facile pour TensorFlow d'apprendre
+un temps d'attente comme 1,4 ou 2,5. C'est ce que nous appelons
+une colonne à valeurs réelles. J'ajoute donc juste des couches
+comme la colonne à valeurs réelles du prix ou la colonne
+à valeurs réelles du temps d'attente. Ces nombres utilisables tels quels
+deviennent des colonnes à valeurs réelles. Et cette donnée d'entrée ? L'ID de la transaction est égal à 42. C'est bien trop spécifique. Nous ne pouvons pas
+en faire une caractéristique. Et l'ID de l'employé ? L'ID de l'employé est égal à 72365. Est-il numérique ? Oui, c'est un nombre. A-t-il une magnitude significative ? L'employé avec l'ID 72365 est-il deux fois meilleur
+que celui avec l'ID 36182 ? Non. Je ne peux donc pas
+utiliser l'ID d'employé tel quel. Je dois faire quelque chose avec. Imaginons
+que ma glacerie compte cinq employés. L'employé numéro 8345,
+l'employé numéro 72365, etc. Je peux prendre cet employé numéro 72365
+et représenter son ID avec ce vecteur. Le vecteur est 01000, parce que j'indique que la deuxième colonne
+correspond à l'employé 72635. Je crée en quelque sorte un masque de bits. La colonne de cet employé
+est égale à 1 et toutes les autres à 0. C'est ce qu'on appelle l'encodage one-hot. Un colonne est chaude,
+et toutes les autres sont froides. Si la glacerie compte cinq employés,
+vous avez donc cinq colonnes. Pour être exact,
+nous en avons en fait généralement quatre, car l'une d'entre elles
+est linéairement indépendante. Oublions ceci. Disons que nous avons
+cinq colonnes pour cinq employés. Dans TensorFlow,
+c'est ce qu'on appelle une colonne éparse. Vous créez une colonne éparse avec des clés. Le nom de la colonne est "employeeId", et les clés sont 8345, 72365 selon l'ID de l'employé, etc. Nous avons transmis
+les chaînes pour chacune de ces clés. TensorFlow va prendre ces chaînes,
+fournir une durée d'entraînement directe, notre durée de prédiction,
+et les encoder en mode one-hot, ce qui les rend numériques. Nous indiquons
+que employeeId est la colonne éparse. C'est ce qui se produit
+si nous connaissons les clés à l'avance. Mais si ce n'est pas le cas ? Si vous devez prétraiter vos données d'entrée pour rechercher toutes les clés
+d'un ensemble de données d'entraînement et créer un vocabulaire de clés ? C'est la première étape. C'est le prétraitement. Vous devez effectuer tout ceci
+avant même de commencer l'entraînement. Vous créez ensuite un ensemble de données où ces valeurs prétraitées
+peuvent être utilisées. Avant même d'entraîner votre modèle, vous devez créer ce vocabulaire de clés, qui doit être
+disponible lors de la prédiction. À ce moment-là, vous reviendrez et indiquerez
+que vous avez l'ID d'employé 72365. Le modèle devra alors savoir que l'ID 72365 était la deuxième colonne
+de l'encodage one-hot. Le vocabulaire doit donc être identique et la mappage
+du vocabulaire doit être identique lors de l'entraînement et de la prédiction. Autrement, ce n'est pas bon. Vous vous demandez sans doute ce qui se passera
+si vous recrutez un nouvel employé. Le modèle restera-t-il identique ? Pour le moment, vous n'avez pas
+de place pour un nouvel employé. Vous ne pourrez donc pas
+faire de prédictions pour lui. Vous devez anticiper ce type de problème. Vous risquez
+de devoir ajouter quelque chose. Que faire si j'ai
+un employé inconnu ou introuvable ? Vous déciderez peut-être de calculer la moyenne
+de vos employés actuels et d'utiliser ce nombre. Entre temps, vous recueillez des données
+sur les périodes de travail de cet employé, la satisfaction des clients le concernant, les temps d'attente et les glaces qu'il sert. Une fois que vous avez ces données, vous pouvez
+les utiliser dans votre prédiction. Si vous connaissez les clés à l'avance, vous les utilisez
+pour créer cette colonne éparse, vous les transmettez,
+puis vous les codez en dur. Ce sont donc les différentes manières
+de créer une colonne éparse. Vos données seront parfois déjà indexées. Pourquoi serait-ce le cas ? Vous pouvez par exemple
+avoir un ID d'employé correspondant à des nombres de 1 à 1 000. Ils sont déjà indexés. Ce sont de grands nombres arbitraires
+allant de 1 à N. Dans ce cas,
+vous devez créer une colonne éparse avec la caractéristique
+convertie en nombre entier employeeId, et il y a cinq employés. Ce serait par exemple utile
+dans notre exemple sur les impôts, si nous l'utilisions
+pour l'heure de la journée, car la caractéristique est automatiquement
+convertie en nombre entier de 0 à 23. C'est parfait, parce que l'heure
+de la journée n'est pas numérique, en tout cas pas complètement,
+car 23 est très proche de 0 ou 1. Il n'y a que deux heures de différence. Voyons une troisième possibilité. Imaginons que vous n'avez pas de vocabulaire et qu'il n'est pas converti en nombre entier. Voici une astuce intéressante. Si vous ne voulez pas créer de vocabulaire
+et que vous n'êtes pas intéressé, vous pouvez hacher l'ID d'employé, calculer le hachage, et le diviser en 500 buckets. Pourquoi procéder ainsi ? Si votre entreprise compte 100 employés, et que vous la divisez en 500 buckets, vous obtiendrez en moyenne
+un ou zéro employé par bucket. C'est presque un encodage one-hot, ou plutôt un encodage en mode 500-hot. J'obtiens à peu près le même résultat
+sans créer de vocabulaire au préalable. Et la note des clients ?
+Comment la gérer ? Pour prédire la note des clients,
+qui est un libellé, c'est très simple. Imaginons
+que nous voulons l'utiliser en entrée pour essayer de prédire autre chose. Vous avez donc une note que vous voulez utiliser
+comme caractéristique d'entrée. Vous avez deux options. Vous pouvez la traiter
+comme un nombre continu de 1 à 5. Elle serait donc numérique. Elle aurait une magnitude significative,
+3 étant mieux que 2, par exemple. Vous pouvez aussi estimer
+que quatre étoiles est très différent de cinq ou de deux étoiles, ce qui est un encodage one-hot. Dans certains cas, vous avez le choix. Vous pouvez encoder
+en mode one-hot la note des clients ou la traiter comme un nombre. C'est à vous de voir. Un point auquel vous devez faire attention
+est si un client n'a pas donné de note. Imaginons que vous faites une enquête
+et que le client n'y a pas répondu. Que faire avec les données manquantes ? Une solution est d'utiliser deux colonnes, une pour la note
+et une indiquant si vous avez une note. Dans ce cas,
+le nombre 4 est la note reçue, et le nombre 1 signifie
+que vous avez reçu une note. 0 signifie
+que le client n'a pas donné de note. Vous pouvez procéder inversement
+avec l'encodage one-hot. Pour une note de 4, j'ai la valeur 0001. Si je n'ai pas reçu de note, j'ai 0000. Mais ne faites pas l'erreur
+de vouloir faire sans la seconde colonne, car vous mélangeriez des nombres magiques
+avec les valeurs réelles que vous avez. Vous devez ajouter une colonne pour indiquer
+si vous avez observé la valeur ou non. Si vous avez des données manquantes, vous devez avoir une autre colonne.

@@ -1,0 +1,355 @@
+1
+00:00:00,000 --> 00:00:01,935
+All right. So, now you getting the hang of these,
+
+2
+00:00:01,935 --> 00:00:03,600
+time for yet another quiz.
+
+3
+00:00:03,600 --> 00:00:10,520
+Are these features that I'm going to show you noble at prediction time or not? All right.
+
+4
+00:00:10,520 --> 00:00:13,295
+So, let's look at our discount coupon code case again.
+
+5
+00:00:13,295 --> 00:00:16,790
+First up, the total number of discountable items that have been sold.
+
+6
+00:00:16,790 --> 00:00:21,275
+Well, how long of a period are we looking at this number for, this total number?
+
+7
+00:00:21,275 --> 00:00:25,160
+How long does it take for us to get to actually that number, that value?
+
+8
+00:00:25,160 --> 00:00:27,180
+This is not a yes or no answer.
+
+9
+00:00:27,180 --> 00:00:29,120
+There is a question that you need to ask before you can
+
+10
+00:00:29,120 --> 00:00:31,280
+even consider using it as an input.
+
+11
+00:00:31,280 --> 00:00:33,940
+So, our number one is a lot more clarification.
+
+12
+00:00:33,940 --> 00:00:38,135
+Now number two, the total number of discountable items sold in the previous month.
+
+13
+00:00:38,135 --> 00:00:41,245
+Yeah, this is getting a lot closer where we want to be.
+
+14
+00:00:41,245 --> 00:00:44,570
+This seems like something they should have available to you at prediction time.
+
+15
+00:00:44,570 --> 00:00:47,255
+So, let's see if there is a way of defining these things.
+
+16
+00:00:47,255 --> 00:00:50,240
+If it's something as vague as the total number of discountable items
+
+17
+00:00:50,240 --> 00:00:53,415
+sold for eternity, that's way too vague.
+
+18
+00:00:53,415 --> 00:00:54,890
+You don't have the time period.
+
+19
+00:00:54,890 --> 00:00:57,850
+You don't know how long it takes to collect all these items.
+
+20
+00:00:57,850 --> 00:01:00,170
+But if you make a lot more practical like this one,
+
+21
+00:01:00,170 --> 00:01:03,065
+the total number of discoutable items sold on the previous month,
+
+22
+00:01:03,065 --> 00:01:05,150
+sure, that's something we can definitely work with.
+
+23
+00:01:05,150 --> 00:01:07,855
+At this point, you defined it in a way that you can ultimately have it.
+
+24
+00:01:07,855 --> 00:01:11,140
+And of course the time frame is going to depend on the latency in your system.
+
+25
+00:01:11,140 --> 00:01:15,485
+So, that is a prompt for you to find out the answers to these types of things.
+
+26
+00:01:15,485 --> 00:01:17,655
+How long does it actually take for you to get this data
+
+27
+00:01:17,655 --> 00:01:20,590
+in before you can use it in real time?
+
+28
+00:01:20,590 --> 00:01:23,290
+Last one, the number of customers who have
+
+29
+00:01:23,290 --> 00:01:25,580
+viewed ads about a particular item that you have.
+
+30
+00:01:25,580 --> 00:01:28,370
+Again, this is ultimately a question about timing.
+
+31
+00:01:28,370 --> 00:01:31,185
+How long does it take for you to get the ads analysis back from
+
+32
+00:01:31,185 --> 00:01:33,230
+your other systems before we can ultimately
+
+33
+00:01:33,230 --> 00:01:36,630
+potentially use it inside of your prediction model?
+
+34
+00:01:36,920 --> 00:01:41,520
+Here's another quiz. This one is about fraudulent credit card transactions,
+
+35
+00:01:41,520 --> 00:01:44,565
+and whether or not, these features will be known at prediction time.
+
+36
+00:01:44,565 --> 00:01:49,275
+First up, is whether or not a cardholder has purchased these items before from our store.
+
+37
+00:01:49,275 --> 00:01:52,395
+Again, we're going to define this very, very carefully.
+
+38
+00:01:52,395 --> 00:01:57,105
+What you might find out is that your credit card system takes three days to process
+
+39
+00:01:57,105 --> 00:02:01,440
+before you can see which customers have purchased what items in your data warehouse.
+
+40
+00:02:01,440 --> 00:02:05,190
+So, what this really means is that when somebody uses a credit card,
+
+41
+00:02:05,190 --> 00:02:06,989
+we don't know about it immediately,
+
+42
+00:02:06,989 --> 00:02:08,850
+because it takes the store three days to actually
+
+43
+00:02:08,850 --> 00:02:11,355
+send in the transaction to your warehouse.
+
+44
+00:02:11,355 --> 00:02:15,225
+So, if it takes three days before we'll have that data on hand during prediction,
+
+45
+00:02:15,225 --> 00:02:16,754
+when we do our model training,
+
+46
+00:02:16,754 --> 00:02:20,700
+we have to train the data as of three days ago. This is really important.
+
+47
+00:02:20,700 --> 00:02:22,710
+So, let's talk you through this one a little bit more.
+
+48
+00:02:22,710 --> 00:02:27,600
+You can't train with current data and then predict with stale data.
+
+49
+00:02:27,600 --> 00:02:30,060
+So, if you go into your data warehouse for training,
+
+50
+00:02:30,060 --> 00:02:33,690
+you can't use all the values for a customer's credit card history,
+
+51
+00:02:33,690 --> 00:02:37,375
+because not all those values are going to be available at the same time.
+
+52
+00:02:37,375 --> 00:02:40,735
+So, what you have to do is actually modify your training data inside of
+
+53
+00:02:40,735 --> 00:02:43,860
+your warehouse to be as of three days ago, right?
+
+54
+00:02:43,860 --> 00:02:45,155
+To reflect that lag.
+
+55
+00:02:45,155 --> 00:02:48,565
+And the key point is that you have to train with stale data if
+
+56
+00:02:48,565 --> 00:02:52,140
+stale data is all that you're going to have during prediction in a real time.
+
+57
+00:02:52,140 --> 00:02:53,800
+So, let's do a little thought experiment.
+
+58
+00:02:53,800 --> 00:02:56,634
+So, you're doing a prediction on May 15th,
+
+59
+00:02:56,634 --> 00:03:00,930
+the data in your database is only going to be current as of May 12th at prediction time.
+
+60
+00:03:00,930 --> 00:03:02,820
+Which means that during training,
+
+61
+00:03:02,820 --> 00:03:07,440
+you're training on data save for February 12th that you had used for your input.
+
+62
+00:03:07,440 --> 00:03:11,295
+You can only train with the number of times that their credit card has been used,
+
+63
+00:03:11,295 --> 00:03:12,680
+as of February 9th.
+
+64
+00:03:12,680 --> 00:03:14,300
+Again, that's three days lag.
+
+65
+00:03:14,300 --> 00:03:15,930
+You have to correspondingly correct for
+
+66
+00:03:15,930 --> 00:03:20,025
+this staleness few data in prediction through into your training.
+
+67
+00:03:20,025 --> 00:03:22,290
+So, if you train your model assuming that you know
+
+68
+00:03:22,290 --> 00:03:24,360
+exactly the data down into the second or
+
+69
+00:03:24,360 --> 00:03:28,815
+the minute for your credit card transactions at prediction time,
+
+70
+00:03:28,815 --> 00:03:31,770
+you won't have a highly performing machine learning model just
+
+71
+00:03:31,770 --> 00:03:34,800
+because the lags won't correspond between prediction and training.
+
+72
+00:03:34,800 --> 00:03:36,000
+So, you really have to think about
+
+73
+00:03:36,000 --> 00:03:39,335
+the temporal nature of all the input variables that you're using.
+
+74
+00:03:39,335 --> 00:03:41,325
+Okay. Onto the next one,
+
+75
+00:03:41,325 --> 00:03:43,395
+is the item new at the store?
+
+76
+00:03:43,395 --> 00:03:46,775
+Well, if it's new it can't have been purchased before. Yeah sure.
+
+77
+00:03:46,775 --> 00:03:48,410
+This is a great feature. This is something that you
+
+78
+00:03:48,410 --> 00:03:50,150
+should know from your catalog immediately.
+
+79
+00:03:50,150 --> 00:03:52,070
+It's a perfectly valid input.
+
+80
+00:03:52,070 --> 00:03:55,220
+Next up, the category the item being purchased.
+
+81
+00:03:55,220 --> 00:03:56,970
+No problem. This is a super easy one.
+
+82
+00:03:56,970 --> 00:03:58,330
+We'll know it at prediction time.
+
+83
+00:03:58,330 --> 00:04:01,670
+We'll know if it's a grocery at item or if it's an apparel item and electronics item,
+
+84
+00:04:01,670 --> 00:04:03,610
+we can look it up in real time.
+
+85
+00:04:03,610 --> 00:04:07,990
+Now, whether it's an online purchase or an in-store in person purchase.
+
+86
+00:04:07,990 --> 00:04:10,895
+Absolutely. Yeah, we'll know this thing too in real time.
+
+87
+00:04:10,895 --> 00:04:12,725
+It's not a problem, so, let's use it.
+
+88
+00:04:12,725 --> 00:04:15,050
+Again, think of the timing nature for a lot of these things
+
+89
+00:04:15,050 --> 00:04:18,180
+and what other systems could be involved.

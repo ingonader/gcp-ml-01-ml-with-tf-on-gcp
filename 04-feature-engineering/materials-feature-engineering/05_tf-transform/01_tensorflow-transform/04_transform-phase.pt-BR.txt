@@ -1,0 +1,53 @@
+A função de pré-processamento
+transforma os dados de entrada. No Beam, ela é parte do conjunto de dados
+de análise e transformação. No TensorFlow, as
+etapas do pré-processamento são chamadas como parte da
+função de entrada de disponibilização. Ou seja, elas são adicionadas
+ao gráfico do TensorFlow e podem ser executadas
+durante a disponibilização. Como ela será executada como
+parte do gráfico do TensorFlow, a função de pré-processamento é restrita
+a funções que podem ser chamadas nele. Não é possível chamar
+funções comuns do Python, porque o pré-processamento faz parte do
+gráfico do TensorFlow na disponibilização. Veja um exemplo. Aqui, estou pré-processando
+um conjunto de entradas. Qual o tipo dos dados? É um dicionário cujos
+valores são tensores. Lembre-se, esse é o produto da função de entrada de disponibilização
+e representa os dados brutos lidos. As funções de entrada
+geram marcadores de recursos, ou "features". E "features" é um "dict",
+um dicionário. A transformação TF
+converterá os dados recebidos pela transformação P
+em tensores na fase de análise. Nós usamos os tensores para criar novos recursos
+e colocá-los em um dicionário. O primeiro resultado,
+"fare_amount" no meu exemplo, é aprovado sem mudanças. Nós adicionamos o tensor de entrada
+ao resultado, sem alterações. O próximo resultado que
+queremos é um dia da semana. Queremos que seja
+um valor inteiro. No entanto, na entrada a string é "Thu"
+para quinta-feira. Nós precisamos
+pedir para a transformação do TensorFlow converter
+a string em vermelho, como "Thu", em um
+número inteiro, como "3" ou "5", qualquer
+que seja o número. A transformação TF calculará o vocabulário de todos os dias
+possíveis no conjunto de treinamento. Ela fará isso na
+fase de análise e usará essa informação para fazer o
+mapeamento na fase de previsão. Em seguida, queremos reduzir
+"dropflat" para um número entre 0 e 1. Na fase de análise, a transformação TF calculará os
+valores mínimo e máximo da coluna e usará esses valores
+para criar a escala de entrada. Também podemos chamar
+outras funções do TensorFlow. Neste caso, estou usando
+o número de passageiros, que é um inteiro no JSON, e
+calculando para um valor real. Depois de criar e adicionar
+todos os recursos, podemos ver o resultado. A transformação P de análise e
+transformação é executada no treinamento. O que acontece com o
+conjunto de dados de avaliação? Nesse conjunto de dados, realizamos o mesmo canal do Beam
+que usamos no de treinamento. Há uma grande exceção: nós não avaliamos o
+conjunto de dados de avaliação. Se escalonarmos os valores, os valores no conjunto
+de avaliação serão escalonados com base nos valores
+encontrados no conjunto de treinamento. Então, no conjunto
+de dados de avaliação, não chamamos a função de
+análise e transformação, só a de transformação
+do conjunto de dados. Isso chamará tudo que fizemos
+no pré-processamento. Legal, não? Perceba que o conjunto de
+dados de transformação precisa, como entrada, da função de transformação
+computada nos dados de treinamento. Isso que faz
+a mágica acontecer. Quando temos o conjunto
+de dados de transformação, podemos escrever da mesma
+maneira que o de treinamento.

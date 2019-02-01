@@ -1,0 +1,26 @@
+Na lição anterior, falamos sobre o pré-processamento
+de atributos no TensorFlow. Como nós fizemos isso? Usamos colunas de atributos. Agora vamos ver como podemos
+fazer criação de atributos no TensorFlow. Lembre-se de que a função
+de entrada retorna atributos e rótulos. Qual é o tipo de dados dos atributos? Resposta, é um dicionário Python. Digamos que a distância
+do transporte público seja um fator determinante
+para os preços das casas. Queremos adicionar
+um novo atributo que capte a distância da casa até a
+estação de metrô mais próxima. Digamos que a localização da estação
+de metrô faça parte do conjunto de dados e que também faça parte dos atributos. Então, em nosso método, calculamos a
+distância euclidiana entre a casa e a estação de metrô,
+e adicionamos isso ao dicionário. Então, onde este método
+add_engineered vai? Chame o método add_engineered
+de todas as funções de entrada. Quantas funções de entrada nós temos? Em geral, temos três: função de entrada
+de treino, função de entrada de avaliação e função de entrada de serviço. O método add_engineered precisa ser
+chamado de todas as três. Na função de entrada de treino,
+em vez de retornar (features), label, estou unindo os atributos com
+uma chamada para add_engineered. Dessa forma, os atributos extras que estou criando
+são colocados no dicionário Python. A função de entrada de avaliação é
+semelhante à função de entrada de treino. Una as chamadas com add_engineered. Na função de entrada de serviço, você retorna um ServingInputReceiver
+que aceita dois parâmetros. O primeiro é o (features). O segundo parâmetro são os marcadores
+para o que você receber no JSON. Os marcadores permanecem iguais,
+você recebe os mesmos dados brutos. Mas, assim como
+na função de treino, una os (features) com uma chamada
+para add_engineered. Desta forma, os mesmos atributos extras
+que foram criados durante o treinamento também serão colocados no
+dicionário Python.

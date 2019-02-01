@@ -1,0 +1,36 @@
+Vamos ver a fase de análise. Você analisa o
+conjunto de dados de treinamento. Primeiro, é preciso dizer
+ao Beam que tipo de dados esperar. Para isso, defina um esquema. Na primeira linha, eu defino um
+dicionário chamado raw_data_schema e adiciono entradas a
+todas as colunas de string. Esta string é o tipo
+de dados do TensorFlow. Para atualizar o esquema,
+adicione as colunas tf.float32. Isso me dá um
+esquema de dados brutos com todas as colunas que serão
+processadas pelo Beam no DataFlow. O esquema é usado para
+criar um modelo de metadados. Execute a PTransform
+de análise e transformação no conjunto de treinamento para
+receber os dados pré-processados e a função de transformação. Primeiro, execute
+beam.io.read para ler os dados. Isso é semelhante aos canais
+do Beam do módulo anterior. Aqui, estou lendo no BigQuery. Filtre os dados que você
+não quer usar no treinamento. Estou usando uma função
+is_valid que não está neste slide, mostrarei esse
+método mais tarde. Depois, colete os dados
+da leitura e do filtro e os metadados
+brutos do slide anterior e transmita para o conjunto de dados de
+análise e transformação PTransform. O Beam executará essa
+transformação de maneira distribuída e fará a análise solicitada
+no método de pré-processamento. Também mostrarei
+esse método mais tarde. Por hora, os métodos is_valid
+e de pré-processamento são executados pelo Beam
+no conjunto de treinamento para filtrar e pré-processar. Os dados pré-processados
+são retornados em uma coleção P, ou coleção paralela, que chamo
+de conjunto de dados transformado. Observe que as
+transformações realizadas no pré-processamento
+são salvas no segundo valor, na função de transformação.
+Isso é importante. Escreva os dados transformados. Estou escrevendo como TFRecords, o
+formato mais eficiente para o TensorFlow. Para isso, posso usar a PTransform WriteToTFRecord da
+transformação do TensorFlow. Os arquivos serão
+automaticamente fragmentados. Mas observe qual esquema é usado. Não é o esquema de dados brutos,
+é o esquema transformado. Por quê? Claro, o que estamos escrevendo
+são os dados transformados e pré-processados,
+não os dados brutos.

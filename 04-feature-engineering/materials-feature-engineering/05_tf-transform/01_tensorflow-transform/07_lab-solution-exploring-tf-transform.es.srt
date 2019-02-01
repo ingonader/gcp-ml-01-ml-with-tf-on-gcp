@@ -1,0 +1,1618 @@
+1
+00:00:00,170 --> 00:00:01,625
+En este lab
+
+2
+00:00:01,625 --> 00:00:04,495
+probamos tf.Transform.
+
+3
+00:00:04,495 --> 00:00:07,800
+Lo usamos porque nos permite
+
+4
+00:00:07,800 --> 00:00:12,210
+realizar el procesamiento previo
+con Apache Beam
+
+5
+00:00:12,210 --> 00:00:14,850
+pero ejecutarlo en TensorFlow.
+
+6
+00:00:14,850 --> 00:00:16,650
+La idea es crear conjuntos de datos
+
+7
+00:00:16,650 --> 00:00:22,020
+de procesamiento previo a escala
+durante el entrenamiento y la evaluación.
+
+8
+00:00:22,020 --> 00:00:25,490
+Y luego podemos aplicar
+ese procesamiento previo
+
+9
+00:00:25,490 --> 00:00:29,405
+en los datos que ingresan
+para las predicciones
+
+10
+00:00:29,405 --> 00:00:32,950
+y lo podemos hacer como parte
+del gráfico de TensorFlow.
+
+11
+00:00:32,950 --> 00:00:34,770
+Veamos cómo se hace.
+
+12
+00:00:34,770 --> 00:00:39,450
+Primero, tf.Transform
+no es parte de TensorFlow en sí
+
+13
+00:00:39,450 --> 00:00:41,130
+es una biblioteca
+de código abierto
+
+14
+00:00:41,130 --> 00:00:42,900
+pero es una biblioteca independiente.
+
+15
+00:00:42,900 --> 00:00:44,095
+Entonces, primero
+
+16
+00:00:44,095 --> 00:00:48,900
+voy a instalar una versión específica
+de TensorFlow Transform.
+
+17
+00:00:48,900 --> 00:00:52,190
+Debemos ver qué versión
+de TensorFlow
+
+18
+00:00:52,190 --> 00:00:56,035
+estamos usando y la versión
+correspondiente de tf.Transform.
+
+19
+00:00:56,035 --> 00:00:57,980
+Cuando grabé este video
+
+20
+00:00:57,980 --> 00:01:00,530
+usaba TensorFlow 1.5
+
+21
+00:01:00,530 --> 00:01:05,345
+y la versión correspondiente
+de tf.Transform
+
+22
+00:01:05,345 --> 00:01:07,835
+era tf.Transform 0.5.
+
+23
+00:01:07,835 --> 00:01:10,355
+Es posible que esto cambie
+cuando lo hagan ustedes.
+
+24
+00:01:10,355 --> 00:01:14,270
+Actualizaremos el notebook
+para que tenga la versión correcta
+
+25
+00:01:14,270 --> 00:01:19,070
+correspondiente a la versión
+de TensorFlow instalada en los notebooks.
+
+26
+00:01:19,070 --> 00:01:22,580
+En este caso, instalaré tf.Transform 0.5
+
+27
+00:01:22,580 --> 00:01:27,345
+e instalaré el paquete Apache Beam [GCP].
+
+28
+00:01:27,345 --> 00:01:29,915
+Para asegurarnos
+de que todo se comprenda bien
+
+29
+00:01:29,915 --> 00:01:31,720
+viene con Dataflow
+
+30
+00:01:31,720 --> 00:01:35,840
+lo desinstalaremos porque
+Apache Beam [GCP] y Google Cloud Dataflow,
+
+31
+00:01:35,840 --> 00:01:37,300
+son esencialmente lo mismo.
+
+32
+00:01:37,300 --> 00:01:38,775
+Pero, en este caso
+
+33
+00:01:38,775 --> 00:01:41,110
+usaremos solo
+los elementos de código abierto.
+
+34
+00:01:41,110 --> 00:01:46,310
+Usaré "pip uninstall" y "pip install".
+
+35
+00:01:46,310 --> 00:01:50,720
+Demorará unos minutos
+y cuando finalice
+
+36
+00:01:50,720 --> 00:01:55,270
+nos aseguraremos de que el notebook
+seleccione los paquetes de pip correctos.
+
+37
+00:01:55,270 --> 00:01:56,720
+Para hacerlo
+
+38
+00:01:56,720 --> 00:01:59,140
+hay que seleccionar Reset.
+
+39
+00:01:59,140 --> 00:02:03,810
+Debemos esperar a que el circulo
+negro se habilite
+
+40
+00:02:03,810 --> 00:02:06,635
+es decir, que esta celda termine
+
+41
+00:02:06,635 --> 00:02:10,250
+de ejecutarse y las instalaciones
+de pip estén listas.
+
+42
+00:02:10,250 --> 00:02:12,410
+Esperemos un momento.
+
+43
+00:02:15,130 --> 00:02:18,970
+Listo, finalizó.
+
+44
+00:02:18,970 --> 00:02:22,850
+El círculo negro ahora está habilitado.
+
+45
+00:02:22,850 --> 00:02:25,370
+Eso significa que la celda finalizó.
+
+46
+00:02:25,370 --> 00:02:27,445
+Si miramos la celda
+
+47
+00:02:27,445 --> 00:02:32,460
+podemos ver que ejecutó varios comandos.
+
+48
+00:02:33,440 --> 00:02:35,155
+Hacia el final
+
+49
+00:02:35,155 --> 00:02:39,875
+debería ver que desinstaló
+algunas cosas e instaló otras
+
+50
+00:02:39,875 --> 00:02:43,760
+y obtenemos tf.Transform 0.5.
+
+51
+00:02:43,760 --> 00:02:45,370
+Entonces…
+
+52
+00:02:45,370 --> 00:02:47,620
+Lo que podemos hacer primero
+
+53
+00:02:47,620 --> 00:02:50,510
+es asegurarnos que se seleccione.
+
+54
+00:02:50,510 --> 00:02:51,925
+Para ello
+
+55
+00:02:51,925 --> 00:02:53,235
+debemos restablecer.
+
+56
+00:02:53,235 --> 00:02:55,010
+Hago clic en Reset
+
+57
+00:02:55,010 --> 00:02:57,945
+para reiniciar la sesión
+
+58
+00:02:57,945 --> 00:03:00,765
+y ahora se seleccionarán
+los paquetes pip nuevos.
+
+59
+00:03:00,765 --> 00:03:03,865
+Podemos ir hacia abajo
+
+60
+00:03:03,865 --> 00:03:09,710
+y hay una celda que
+dice "pip freeze"
+
+61
+00:03:09,710 --> 00:03:12,380
+que dice lo que hay
+
+62
+00:03:12,380 --> 00:03:15,890
+en el contenedor de Docker
+donde se ejecuta el notebook
+
+63
+00:03:15,890 --> 00:03:21,705
+y uso "grep", en busca de un paquete
+con la palabra "flow" o "beam".
+
+64
+00:03:21,705 --> 00:03:24,890
+La barra vertical significa "o".
+
+65
+00:03:24,890 --> 00:03:29,300
+Haré eso y deberíamos ver
+
+66
+00:03:29,300 --> 00:03:34,485
+TensorFlow Transform
+y Apache Beam instalados.
+
+67
+00:03:34,485 --> 00:03:36,295
+TensorFlow está instalado
+
+68
+00:03:36,295 --> 00:03:39,800
+también está TensorBoard
+y Apache Airflow
+
+69
+00:03:39,800 --> 00:03:41,340
+aunque no los necesitamos.
+
+70
+00:03:41,340 --> 00:03:43,690
+Pero están allí.
+
+71
+00:03:43,690 --> 00:03:46,815
+Ahora podemos importar TensorFlow
+
+72
+00:03:46,815 --> 00:03:49,310
+con "import tensorflow_transform as tft"
+
+73
+00:03:49,310 --> 00:03:52,010
+y luego hay que asegurarse de cambiar
+
+74
+00:03:52,010 --> 00:03:55,160
+el depósito de su proyecto
+al depósito de Qwiklabs.
+
+75
+00:03:55,160 --> 00:03:56,620
+Eso ya lo hice.
+
+76
+00:03:56,620 --> 00:04:00,310
+Ahora, ejecutaré esa celda
+y me aseguraré de que
+
+77
+00:04:00,473 --> 00:04:04,745
+la pueda seleccionar Bash
+que es lo que hace un entorno de SO.
+
+78
+00:04:04,745 --> 00:04:10,950
+Me aseguro de que el proyecto y región 
+de computación sean correctos.
+
+79
+00:04:10,950 --> 00:04:12,585
+Lo próximo que haré
+
+80
+00:04:12,585 --> 00:04:14,760
+es obtener los datos de BigQuery.
+
+81
+00:04:14,760 --> 00:04:17,875
+Pero a diferencia del ejemplo anterior
+
+82
+00:04:17,875 --> 00:04:20,790
+no vamos a filtrar la latitud,
+la longitud, etc.
+
+83
+00:04:20,790 --> 00:04:24,320
+sino que filtraremos con Apache Beam.
+
+84
+00:04:24,320 --> 00:04:27,435
+Así, no aseguramos de que,
+si durante las predicciones,
+
+85
+00:04:27,435 --> 00:04:30,615
+alguien proporciona una entrada incorrecta
+no obtengamos el host.
+
+86
+00:04:30,615 --> 00:04:34,450
+Vamos a seleccionar algunas cosas.
+
+87
+00:04:34,450 --> 00:04:38,005
+Haremos un procesamiento previo
+para obtener el importe de la tarifa, etc.
+
+88
+00:04:38,005 --> 00:04:41,860
+Pero la consulta será más simple aquí
+
+89
+00:04:41,860 --> 00:04:46,480
+porque hicimos algo
+del procesamiento en Apache Beam.
+
+90
+00:04:46,480 --> 00:04:48,945
+Esta vez, vamos a crear
+
+91
+00:04:48,945 --> 00:04:52,210
+un marco de datos válido
+
+92
+00:04:52,210 --> 00:04:54,590
+para mostrarle lo que sucede.
+
+93
+00:04:54,590 --> 00:04:56,035
+Ejecuto la consulta
+
+94
+00:04:56,035 --> 00:04:59,065
+y creo un marco de datos de Panda
+
+95
+00:04:59,065 --> 00:05:01,300
+y una vez que está listo
+
+96
+00:05:01,300 --> 00:05:04,970
+voy a llamar "head"
+que nos darás las primeras líneas
+
+97
+00:05:04,970 --> 00:05:07,105
+y llamaré "describe"
+
+98
+00:05:07,105 --> 00:05:11,119
+que me dará el promedio
+y otras estadísticas
+
+99
+00:05:11,119 --> 00:05:18,270
+como la desviación estándar y los cuantiles
+de este marco de datos en particular.
+
+100
+00:05:20,590 --> 00:05:22,385
+Listo.
+
+101
+00:05:22,385 --> 00:05:28,195
+Ahora tenemos nuestro "df_valid"
+y, como puede ver
+
+102
+00:05:28,195 --> 00:05:33,110
+tiene 11,181 columnas
+de importes de tarifa
+
+103
+00:05:33,110 --> 00:05:34,625
+hora del día, etc.
+
+104
+00:05:37,350 --> 00:05:39,705
+Podemos ver que la consulta es correcta.
+
+105
+00:05:39,705 --> 00:05:43,430
+así que la usaremos para crear un conjunto
+de datos de aprendizaje automático.
+
+106
+00:05:43,430 --> 00:05:46,160
+Esta vez uso tf.Transform y Dataflow.
+
+107
+00:05:46,160 --> 00:05:49,429
+A diferencia del trabajo
+de Dataflow que hicimos
+
+108
+00:05:49,429 --> 00:05:54,670
+ahora debo instalar un paquete adicional
+en las máquinas para ejecutar Dataflow.
+
+109
+00:05:54,670 --> 00:05:55,900
+Para hacerlo
+
+110
+00:05:55,900 --> 00:05:58,975
+escribo un "requirements.txt".
+
+111
+00:05:58,975 --> 00:06:02,890
+Recuerde que en la instalación de pip
+
+112
+00:06:02,890 --> 00:06:07,660
+usamos TensorFlow Transform 0.5.0.
+
+113
+00:06:07,660 --> 00:06:09,565
+Eso es lo que haremos aquí.
+
+114
+00:06:09,565 --> 00:06:13,465
+Escribimos "requirements.txt"
+
+115
+00:06:13,465 --> 00:06:20,540
+En este archivo, indicamos que queremos
+instalar TensorFlow Transform 0.5.0
+
+116
+00:06:22,265 --> 00:06:24,730
+Y ahora que escribimos
+el archivo de requisitos
+
+117
+00:06:24,730 --> 00:06:30,025
+podemos ejecutar nuestro
+trabajo de Dataflow
+
+118
+00:06:30,025 --> 00:06:33,055
+con "requirements.txt"
+como un archivo de requisitos.
+
+119
+00:06:33,055 --> 00:06:36,760
+Esto le indica a Dataflow que debe pasar
+por el archivo de requisitos
+
+120
+00:06:36,760 --> 00:06:42,085
+e instalar todos los paquetes
+de Python que necesitamos.
+
+121
+00:06:42,085 --> 00:06:44,760
+¿Qué estamos haciendo en este trabajo?
+
+122
+00:06:44,760 --> 00:06:47,670
+En este trabajo,
+al igual que en los anteriores
+
+123
+00:06:47,670 --> 00:06:50,475
+vamos a leer desde BigQuery
+
+124
+00:06:50,475 --> 00:06:54,245
+vamos a crear registros.
+
+125
+00:06:54,245 --> 00:06:56,140
+Pero a diferencia de antes
+
+126
+00:06:56,140 --> 00:06:58,100
+cuando creamos registros en CSV
+
+127
+00:06:58,100 --> 00:07:00,740
+en este caso, voy a crear
+ejemplos de TensorFlow
+
+128
+00:07:00,740 --> 00:07:02,315
+porque son más eficientes.
+
+129
+00:07:02,315 --> 00:07:03,315
+¿Cómo funciona?
+
+130
+00:07:03,315 --> 00:07:07,515
+También crearemos el conjunto de datos de
+entrenamiento y el conjunto de evaluación
+
+131
+00:07:07,515 --> 00:07:10,300
+Veamos esto paso a paso.
+
+132
+00:07:10,300 --> 00:07:15,355
+Lo primero es decidir qué tipo
+de procesamiento previo queremos hacer.
+
+133
+00:07:15,355 --> 00:07:18,290
+Hay dos tipos de procesamiento previo
+
+134
+00:07:18,290 --> 00:07:21,351
+un tipo sirve si queremos verificar
+
+135
+00:07:21,351 --> 00:07:26,134
+si la fila de entradas
+que obtenemos es válida.
+
+136
+00:07:27,333 --> 00:07:29,240
+Lo que obtenemos de BigQuery
+
+137
+00:07:29,240 --> 00:07:33,144
+es un diccionario de entradas
+
+138
+00:07:33,308 --> 00:07:39,585
+y, durante la predicción,
+también obtenemos un diccionario de JSON.
+
+139
+00:07:39,585 --> 00:07:42,170
+Así que el mismo código funcionará
+
+140
+00:07:42,170 --> 00:07:46,115
+en el conjunto de datos
+de BigQuery y en el de JSON.
+
+141
+00:07:46,115 --> 00:07:47,115
+¿Qué haremos?
+
+142
+00:07:47,115 --> 00:07:49,520
+Vamos a obtener entradas
+
+143
+00:07:49,520 --> 00:07:53,460
+la longitud de recogida y destino
+la latitud de recogida y destino
+
+144
+00:07:53,460 --> 00:07:54,790
+la hora del día
+
+145
+00:07:54,790 --> 00:07:56,195
+el día de la semana, etc.
+
+146
+00:07:56,195 --> 00:07:57,700
+Intentaremos obtener todo esto
+
+147
+00:07:57,700 --> 00:08:00,385
+pero si no pudiéramos obtener alguna
+
+148
+00:08:00,385 --> 00:08:02,370
+diremos que no es válida.
+
+149
+00:08:02,370 --> 00:08:04,240
+Así que usaremos
+"try" y "except".
+
+150
+00:08:04,240 --> 00:08:06,330
+Procesaremos todo esto
+
+151
+00:08:06,330 --> 00:08:08,230
+y si alguna entrada
+es una excepción
+
+152
+00:08:08,230 --> 00:08:10,375
+diremos que no es válida.
+
+153
+00:08:10,375 --> 00:08:14,696
+Cuando las obtengamos,
+diremos que es válida
+
+154
+00:08:14,810 --> 00:08:16,500
+si reúne todas estas condiciones.
+
+155
+00:08:16,500 --> 00:08:19,010
+Si la tarifa es mayor que 2.5
+
+156
+00:08:19,010 --> 00:08:22,675
+la longitud de recogida
+es mayor que -78, etc.
+
+157
+00:08:22,675 --> 00:08:24,155
+En todas estas pruebas
+
+158
+00:08:24,155 --> 00:08:25,485
+si todas son correctas
+
+159
+00:08:25,485 --> 00:08:28,065
+las entradas serán válidas.
+
+160
+00:08:28,065 --> 00:08:30,545
+Para el procesamiento previo
+
+161
+00:08:30,545 --> 00:08:33,830
+tomaremos los datos
+
+162
+00:08:33,830 --> 00:08:37,059
+y mejoraremos el entrenamiento
+de la red neuronal.
+
+163
+00:08:37,059 --> 00:08:38,530
+¿Qué haremos?
+
+164
+00:08:38,530 --> 00:08:43,890
+Tomaremos las entradas de tarifas
+y las pasaremos sin cambios.
+
+165
+00:08:43,890 --> 00:08:48,265
+Pueden ser las tarifas
+o cualquier otra función como esta.
+
+166
+00:08:48,265 --> 00:08:51,870
+En este caso, llamo "tf.identity".
+
+167
+00:08:51,870 --> 00:08:56,055
+El día de la semana es un número entero.
+
+168
+00:08:56,055 --> 00:08:59,690
+BigQuery nos da un número entero
+como 1, 2, 3, 4.
+
+169
+00:08:59,690 --> 00:09:02,465
+En el lab anterior
+
+170
+00:09:02,465 --> 00:09:04,020
+de ingeniería de funciones
+
+171
+00:09:04,020 --> 00:09:05,800
+¿qué hicimos?
+
+172
+00:09:05,800 --> 00:09:09,140
+Lo ingresamos hard-coded
+en el vocabulario.
+
+173
+00:09:09,140 --> 00:09:12,485
+En este caso, le indicaremos
+a TensorFlow Transform
+
+174
+00:09:12,485 --> 00:09:15,825
+que aprenda el vocabulario de un conjunto
+de datos de entrenamiento.
+
+175
+00:09:15,825 --> 00:09:20,850
+Por ahora, no sabemos
+qué significa este número
+
+176
+00:09:20,850 --> 00:09:23,590
+pero sabemos que lo que
+se obtenga de la predicción
+
+177
+00:09:23,590 --> 00:09:25,520
+se convertirá automáticamente.
+
+178
+00:09:25,520 --> 00:09:29,190
+Tomaremos el día de la semana y
+convertiremos esa string
+
+179
+00:09:29,190 --> 00:09:33,025
+en un número entero
+en base al vocabulario.
+
+180
+00:09:33,025 --> 00:09:34,860
+Eso es lo que hace
+"string_to_int".
+
+181
+00:09:34,860 --> 00:09:38,965
+La hora del día
+ya es un número entero
+
+182
+00:09:38,965 --> 00:09:40,985
+así que la pasamos sin cambios.
+
+183
+00:09:40,985 --> 00:09:44,690
+La longitud de recogida
+es un número de punto flotante
+
+184
+00:09:44,690 --> 00:09:46,810
+así que lo podemos usar sin cambios
+
+185
+00:09:46,810 --> 00:09:51,745
+pero sabemos que el entrenamiento
+de redes neuronales funciona mejor
+
+186
+00:09:51,745 --> 00:09:54,116
+y el descenso de gradientes
+funciona mejor
+
+187
+00:09:54,116 --> 00:09:56,270
+si los valores de entrada
+son números pequeños
+
+188
+00:09:56,270 --> 00:09:59,715
+si están en el rango de,
+por ejemplo, cero a uno.
+
+189
+00:09:59,715 --> 00:10:02,825
+Eso es lo que queremos
+que haga TensorFlow Transform
+
+190
+00:10:02,825 --> 00:10:08,060
+que ajuste este valor
+de cero a uno.
+
+191
+00:10:08,060 --> 00:10:10,910
+Recuerde que para
+ajustar de cero a uno
+
+192
+00:10:10,910 --> 00:10:16,440
+TensorFlow Transform debe conocer
+el valor mínimo y el máximo.
+
+193
+00:10:16,440 --> 00:10:18,610
+Lo obtendrá del conjunto de datos.
+
+194
+00:10:18,610 --> 00:10:20,540
+Por eso tenemos las dos fases
+
+195
+00:10:20,540 --> 00:10:25,800
+tenemos la fase de análisis
+y la fase de transformación.
+
+196
+00:10:25,800 --> 00:10:29,870
+Entonces, aunque escribimos
+que Transform ajuste de cero a uno
+
+197
+00:10:29,870 --> 00:10:34,495
+sabe que para hacerlo
+en la fase de análisis
+
+198
+00:10:34,495 --> 00:10:36,690
+debe encontrar
+el valor mínimo y el máximo.
+
+199
+00:10:36,690 --> 00:10:39,350
+Hacemos lo mismo
+para todos los elementos
+
+200
+00:10:39,350 --> 00:10:42,210
+y luego configuramos
+"cast (inputs ['passengers']"
+
+201
+00:10:42,210 --> 00:10:43,210
+como punto flotante
+
+202
+00:10:43,210 --> 00:10:50,780
+y en las entradas de pasajeros
+usamos "ones_like"
+
+203
+00:10:50,780 --> 00:10:55,390
+para obtener una cantidad igual de unos
+y los transmitimos como una string.
+
+204
+00:10:55,390 --> 00:10:59,270
+En este caso, todas nuestras claves
+son en esencia la string 1.
+
+205
+00:10:59,270 --> 00:11:02,450
+Pero es solo un ejemplo
+
+206
+00:11:02,450 --> 00:11:05,685
+de que puede llamar funciones
+de TensorFlow arbitrarias.
+
+207
+00:11:05,685 --> 00:11:10,065
+Lo clave es que el procesamiento previo
+sean todas funciones de TensorFlow.
+
+208
+00:11:10,065 --> 00:11:13,700
+Una vez que terminamos
+aplicamos ingeniería
+
+209
+00:11:13,700 --> 00:11:16,060
+nuevamente
+con las funciones de TensorFlow.
+
+210
+00:11:16,060 --> 00:11:18,640
+En este caso, tomo las latitudes
+de recogida y destino
+
+211
+00:11:18,640 --> 00:11:20,660
+las extraigo y tomo
+la longitud de recogida
+
+212
+00:11:20,660 --> 00:11:23,760
+y de destino
+y las extraigo.
+
+213
+00:11:23,760 --> 00:11:27,615
+Luego, tomo la diferencia de latitud
+y longitud calculadas y las ajusto.
+
+214
+00:11:27,615 --> 00:11:31,295
+No tenemos que preocuparnos
+
+215
+00:11:31,424 --> 00:11:33,375
+por cuál la diferencia o el ajuste
+
+216
+00:11:33,375 --> 00:11:35,920
+TensorFlow Transform averigua
+
+217
+00:11:35,920 --> 00:11:38,695
+cuál es el mínimo y máximo
+para el ajuste correcto.
+
+218
+00:11:38,695 --> 00:11:40,720
+Luego, tomo estos valores ajustados
+
+219
+00:11:40,720 --> 00:11:46,365
+y los proceso con la distancia
+euclidiana de los valores ajustados.
+
+220
+00:11:46,365 --> 00:11:48,580
+No tenemos que volver a ajustarlos
+
+221
+00:11:48,580 --> 00:11:51,660
+porque sabemos que si las distancias
+están entre cero y uno
+
+222
+00:11:51,660 --> 00:11:54,225
+la raíz cuadrada también
+será de entre cero y uno.
+
+223
+00:11:56,985 --> 00:11:59,150
+De hecho, podría ser de un poco más
+
+224
+00:11:59,150 --> 00:12:02,770
+como de 1.4 si ambos son 1,
+pero está cerca.
+
+225
+00:12:02,770 --> 00:12:06,280
+Son número pequeños, entonces
+no debemos ajustar.
+
+226
+00:12:06,280 --> 00:12:11,320
+Ahora que la función de procesamiento
+previo está lista.
+
+227
+00:12:11,320 --> 00:12:18,240
+Aún debemos llamar al método "is_valid"
+y al método "preprocess_tft".
+
+228
+00:12:18,240 --> 00:12:23,644
+Llamamos a ambos métodos
+desde la transformación de Beam.
+
+229
+00:12:23,644 --> 00:12:24,995
+¿Cómo lo hacemos?
+
+230
+00:12:24,995 --> 00:12:29,070
+Primero, configuramos los metadatos
+
+231
+00:12:29,070 --> 00:12:33,145
+de los datos sin procesar
+que vamos a leer.
+
+232
+00:12:33,145 --> 00:12:34,695
+¿qué son los datos sin procesar?
+
+233
+00:12:34,695 --> 00:12:37,520
+Son los datos que vienen de BigQuery.
+
+234
+00:12:37,520 --> 00:12:42,240
+Digamos que el día de la semana y la clave
+
+235
+00:12:42,240 --> 00:12:45,920
+son strings y el importe de la tarifa
+
+236
+00:12:45,920 --> 00:12:47,580
+la longitud y latitud de recogida
+
+237
+00:12:47,580 --> 00:12:49,490
+todas estas cosas, son
+puntos flotantes
+
+238
+00:12:49,490 --> 00:12:52,350
+creamos un esquema
+de datos sin procesar
+
+239
+00:12:52,350 --> 00:12:54,870
+que es básicamente
+un diccionario
+
+240
+00:12:54,870 --> 00:13:00,175
+con el nombre de la columna, ya sea
+una string, un punto flotante o un número.
+
+241
+00:13:00,175 --> 00:13:03,030
+La hora del día y los pasajeros
+son números enteros.
+
+242
+00:13:03,030 --> 00:13:04,695
+Son datos sin procesar.
+
+243
+00:13:04,695 --> 00:13:06,670
+Esto proviene de BigQuery
+
+244
+00:13:06,670 --> 00:13:10,675
+Tomamos los datos sin procesar
+
+245
+00:13:10,675 --> 00:13:15,135
+e indicamos que escriba los metadatos
+de los datos sin procesar.
+
+246
+00:13:15,135 --> 00:13:18,040
+Lo escribimos para que la entrada de JSON
+
+247
+00:13:18,040 --> 00:13:24,005
+que ingresa el usuario también pertenezca
+a estos metadatos de datos sin procesar.
+
+248
+00:13:24,005 --> 00:13:26,970
+Es decir, que tenga esta forma
+
+249
+00:13:26,970 --> 00:13:30,540
+y que lo note la función
+de entrada de entrega.
+
+250
+00:13:30,540 --> 00:13:32,710
+Entonces, indicamos que
+
+251
+00:13:32,710 --> 00:13:36,530
+lea los datos de BigQuery
+con la consulta que creamos
+
+252
+00:13:36,530 --> 00:13:41,625
+y los filtre con el método "is_valid".
+
+253
+00:13:41,625 --> 00:13:43,810
+Para esto sirve este método
+
+254
+00:13:43,810 --> 00:13:46,935
+Se llama como parte de un filtro de Beam.
+
+255
+00:13:46,935 --> 00:13:53,730
+El filtro de Beam se usa con las reglas
+que especificamos en la función "is_valid".
+
+256
+00:13:53,730 --> 00:13:56,370
+Así, llamamos
+
+257
+00:13:56,370 --> 00:13:58,855
+"AnalizeAndTransformDataset".
+
+258
+00:13:58,855 --> 00:14:02,890
+Debemos especificar
+la función de transformación.
+
+259
+00:14:02,890 --> 00:14:06,265
+Esta función es
+"preprocess_tft"
+
+260
+00:14:06,265 --> 00:14:08,965
+es la que hace el ajuste.
+
+261
+00:14:08,965 --> 00:14:14,929
+Ahora, recibimos el conjunto de datos
+transformado y la función de transformación
+
+262
+00:14:14,929 --> 00:14:21,210
+y tomamos "transformed_data"
+y lo escribimos como "tf.record"
+
+263
+00:14:21,210 --> 00:14:24,529
+con el sufijo .gz
+
+264
+00:14:24,529 --> 00:14:26,945
+es decir, comprimidos
+para ahorrar espacio.
+
+265
+00:14:26,945 --> 00:14:30,580
+Hacemos lo mismo
+con los datos de prueba.
+
+266
+00:14:30,580 --> 00:14:31,980
+En los datos
+de entrenamiento
+
+267
+00:14:31,980 --> 00:14:33,490
+creé una consulta de 1
+
+268
+00:14:33,490 --> 00:14:36,285
+y en los datos de prueba
+cree la consulta de 2
+
+269
+00:14:36,285 --> 00:14:42,365
+para configurarla, indiqué que
+según si pasa 1 o 2
+
+270
+00:14:42,365 --> 00:14:43,725
+esa es la fase
+
+271
+00:14:43,725 --> 00:14:49,625
+tomo las primeras líneas de los depósitos
+de hash o las últimas líneas.
+
+272
+00:14:49,625 --> 00:14:54,850
+Así obtengo mi conjunto de datos
+de entrenamiento o de evaluación.
+
+273
+00:14:56,650 --> 00:14:58,075
+Vayamos hacia abajo.
+
+274
+00:14:58,075 --> 00:14:59,870
+Una vez que hicimos eso
+
+275
+00:14:59,870 --> 00:15:03,710
+escribo mi conjunto de datos
+
+276
+00:15:03,710 --> 00:15:10,330
+de prueba transformado
+y también lo escribo en la evaluación.
+
+277
+00:15:10,330 --> 00:15:11,625
+Esto es muy importante
+
+278
+00:15:11,820 --> 00:15:15,725
+tenemos que escribir los metadatos
+de las transformaciones.
+
+279
+00:15:15,725 --> 00:15:19,485
+Así, todos los métodos de TF que llamamos
+
+280
+00:15:19,485 --> 00:15:21,375
+se almacenan en el gráfico.
+
+281
+00:15:21,375 --> 00:15:25,840
+Lo que hace es escribir un modelo.
+
+282
+00:15:25,840 --> 00:15:28,380
+Un modelo no es algo que entrena
+
+283
+00:15:28,380 --> 00:15:33,200
+sino que está compuesto
+de operaciones de TensorFlow
+
+284
+00:15:33,200 --> 00:15:38,260
+que se colocaran enfrente
+del gráfico del modelo normal
+
+285
+00:15:38,260 --> 00:15:41,310
+para que las entradas
+que ingrese el usuario
+
+286
+00:15:41,310 --> 00:15:48,225
+pasen por las funciones de transformación
+de TensorFlow hacia su modelo normal.
+
+287
+00:15:48,225 --> 00:15:51,760
+Con esto, estamos listos
+
+288
+00:15:51,760 --> 00:15:55,270
+para crear un conjunto de datos
+de procesamiento previo.
+
+289
+00:15:55,270 --> 00:15:56,850
+Si lo configuro como verdadero
+
+290
+00:15:56,850 --> 00:15:59,990
+crearé un pequeño conjunto de datos
+pero lo configuraré como falso.
+
+291
+00:15:59,990 --> 00:16:01,750
+Esto se ejecutará en Dataflow
+
+292
+00:16:01,750 --> 00:16:05,120
+y lo creará.
+
+293
+00:16:09,820 --> 00:16:14,445
+Si vuelve a recibir el error de que
+la API de Dataflow no está habilitada
+
+294
+00:16:14,445 --> 00:16:18,945
+vaya al proyecto de Qwiklabs
+y habilítela.
+
+295
+00:16:18,945 --> 00:16:23,190
+Así, el trabajo de Dataflow debería
+iniciarse y cuando finalice
+
+296
+00:16:23,190 --> 00:16:27,650
+debería poder ver
+los archivos en preprocess.tft.
+
+297
+00:16:27,650 --> 00:16:34,025
+Cuando termine, el entrenamiento
+es parecido al que había antes
+
+298
+00:16:34,025 --> 00:16:35,150
+pero veámoslo
+
+299
+00:16:35,150 --> 00:16:37,240
+busquemos las diferencias.
+
+300
+00:16:37,240 --> 00:16:41,315
+Veamos la transformación de TensorFlow
+debajo de "taxifare.txt"
+
+301
+00:16:41,315 --> 00:16:45,725
+y abramos "model.py"
+
+302
+00:16:45,725 --> 00:16:51,605
+¿Cuál es la diferencia aquí?
+
+303
+00:16:51,605 --> 00:16:56,015
+Las columnas de entrada
+están igual que antes.
+
+304
+00:16:56,015 --> 00:16:58,615
+La agrupación en depósitos,
+la ingeniería de funciones
+
+305
+00:16:58,615 --> 00:17:00,280
+se crearon las columnas amplias
+
+306
+00:17:00,280 --> 00:17:01,780
+y las columnas profundas
+
+307
+00:17:01,780 --> 00:17:05,819
+todo esto es idéntico a lo que había
+antes del procesamiento previo
+
+308
+00:17:05,819 --> 00:17:09,619
+cuando lo hicimos con Dataflow.
+
+309
+00:17:09,619 --> 00:17:15,280
+También teníamos una función de ingeniería
+adicional que llamamos para tres lugares.
+
+310
+00:17:15,280 --> 00:17:16,865
+En este caso
+
+311
+00:17:16,865 --> 00:17:20,260
+no necesitamos hacer eso. No tenemos
+la función de ingeniería adicional
+
+312
+00:17:20,260 --> 00:17:22,210
+lo que hacía esa función
+
+313
+00:17:22,210 --> 00:17:26,405
+ahora lo hace TensorFlow Transform
+como parte del gráfico.
+
+314
+00:17:26,405 --> 00:17:28,880
+Indicamos que
+
+315
+00:17:28,880 --> 00:17:32,250
+cuando alguien me da
+una función de entrega
+
+316
+00:17:32,250 --> 00:17:35,360
+leeré desde
+esta función de transformación
+
+317
+00:17:35,360 --> 00:17:39,625
+todas las operaciones
+que realizamos
+
+318
+00:17:39,625 --> 00:17:41,805
+tomaré los datos sin procesar
+
+319
+00:17:41,805 --> 00:17:43,470
+que ingresa,
+que son estos
+
+320
+00:17:43,470 --> 00:17:49,495
+y aplicaré todo lo que sucede
+en la función TensorFlow Transform,
+
+321
+00:17:49,495 --> 00:17:51,170
+todo lo que hicimos.
+
+322
+00:17:51,170 --> 00:17:55,690
+Es decir, todo el código que llamamos
+en "preprocess.tft".
+
+323
+00:17:55,690 --> 00:18:00,870
+Le indicamos que aplique eso
+a mis funciones
+
+324
+00:18:00,870 --> 00:18:02,850
+en el marcador de posición
+de mi función.
+
+325
+00:18:02,850 --> 00:18:04,875
+Lo aplico en los marcadores de posición
+
+326
+00:18:04,875 --> 00:18:06,429
+obtiene los atributos
+
+327
+00:18:06,429 --> 00:18:09,680
+y ahora ese es el par de elementos
+que obtenemos.
+
+328
+00:18:09,680 --> 00:18:13,375
+Los marcadores de posición de atributos
+es lo que nos proporciona el usuario
+
+329
+00:18:13,375 --> 00:18:15,520
+lo que estaba en JSON.
+
+330
+00:18:15,520 --> 00:18:20,360
+Los atributos son el resultado
+de tomar lo que estaba en JSON
+
+331
+00:18:20,360 --> 00:18:26,660
+y aplicarlo en la función
+de transformación tf.transform.
+
+332
+00:18:26,660 --> 00:18:28,700
+Aplica todas esas operaciones
+
+333
+00:18:28,700 --> 00:18:32,000
+en los marcadores de posición
+de atributos y muestra eso.
+
+334
+00:18:32,000 --> 00:18:35,615
+Ahora, tenemos una función
+de entrada de entrega.
+
+335
+00:18:35,615 --> 00:18:38,345
+Cuando leemos el conjunto de datos
+¿qué tenemos que hacer?
+
+336
+00:18:38,345 --> 00:18:40,100
+Cuando leemos el conjunto de datos
+
+337
+00:18:40,100 --> 00:18:42,335
+tenemos que aplicar
+estas transformaciones.
+
+338
+00:18:42,335 --> 00:18:46,065
+Por suerte, no tenemos
+que escribir ese código
+
+339
+00:18:46,065 --> 00:18:48,740
+ya que TensorFlow Transform
+
+340
+00:18:48,740 --> 00:18:52,200
+tiene un compositor
+de funciones de entrada
+
+341
+00:18:52,200 --> 00:18:55,310
+al que le pedimos que cree
+una función de entrada de entrenamiento
+
+342
+00:18:55,310 --> 00:18:58,195
+que aplique todo esto en
+"transformed_metadata"
+
+343
+00:18:58,195 --> 00:19:04,395
+y que lo lea con gzip y eso es todo.
+
+344
+00:19:04,395 --> 00:19:07,940
+Tiene una función de entrada
+de entrenamiento incorporada
+
+345
+00:19:07,940 --> 00:19:10,490
+que sabe cómo leer
+los registros de TensorFlow.
+
+346
+00:19:10,490 --> 00:19:14,890
+Así que no tenemos que escribir
+todo el código que necesitaríamos
+
+347
+00:19:14,890 --> 00:19:16,490
+para leer un conjunto de datos
+
+348
+00:19:16,490 --> 00:19:18,290
+y aplicar un CSV para decodificar
+
+349
+00:19:18,290 --> 00:19:20,715
+todo eso no es necesario.
+
+350
+00:19:20,715 --> 00:19:22,715
+Simplemente usamos la función
+
+351
+00:19:22,715 --> 00:19:27,060
+de entrada de entrenamiento
+para que haga el trabajo.
+
+352
+00:19:27,060 --> 00:19:30,390
+El entrenamiento y la evaluación
+son iguales que antes
+
+353
+00:19:30,390 --> 00:19:31,970
+creamos "train_spec"
+
+354
+00:19:31,970 --> 00:19:33,619
+creamos "eval_spec"
+
+355
+00:19:33,619 --> 00:19:35,030
+y pasamos el estimador
+
+356
+00:19:35,030 --> 00:19:37,135
+"train_spec" y eval_spec".
+
+357
+00:19:37,135 --> 00:19:41,485
+La diferencia es que como leemos Gzip
+
+358
+00:19:41,485 --> 00:19:43,900
+la función de lectura es Gzip.
+
+359
+00:19:43,900 --> 00:19:50,510
+que es un "TFRecordReader"
+que lee Gzip.
+
+360
+00:19:50,510 --> 00:19:52,880
+Eso es todo.

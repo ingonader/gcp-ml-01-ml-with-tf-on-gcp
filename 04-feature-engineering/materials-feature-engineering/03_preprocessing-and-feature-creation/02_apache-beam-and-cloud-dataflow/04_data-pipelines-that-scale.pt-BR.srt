@@ -1,0 +1,455 @@
+1
+00:00:00,000 --> 00:00:01,530
+Nesta parte do módulo,
+
+2
+00:00:01,530 --> 00:00:05,280
+você aprenderá o que é necessário
+para implementar um canal que será
+
+3
+00:00:05,280 --> 00:00:08,325
+dimensionado à medida que o tamanho do
+conjunto de dados aumenta.
+
+4
+00:00:08,325 --> 00:00:10,075
+Vamos olhar mais de perto.
+
+5
+00:00:10,975 --> 00:00:13,960
+Alguns de vocês podem já estar
+familiarizados com o MapReduce.
+
+6
+00:00:13,960 --> 00:00:17,950
+Trata-se de uma estrutura de processamento
+de dados distribuída tolerante a falhas
+
+7
+00:00:17,950 --> 00:00:22,435
+descrita pelo Google em uma influente
+pesquisa acadêmica publicada em 2004.
+
+8
+00:00:22,435 --> 00:00:24,190
+Ele ainda é muito usado,
+
+9
+00:00:24,190 --> 00:00:26,735
+por exemplo, pelo projeto Apache Hadoop.
+
+10
+00:00:26,735 --> 00:00:30,960
+Você precisa conhecer os conceitos básicos
+da biblioteca do MapReduce,
+
+11
+00:00:30,960 --> 00:00:35,160
+pois o Dataflow e o Apache Beam se baseiam
+em ideias bem-sucedidas dessa biblioteca.
+
+12
+00:00:35,160 --> 00:00:37,980
+E também incluem inovações
+que foram desenvolvidas
+
+13
+00:00:37,980 --> 00:00:42,065
+pelos pesquisadores e engenheiros
+do Google depois de 2004.
+
+14
+00:00:42,805 --> 00:00:44,025
+O diagrama na tela
+
+15
+00:00:44,025 --> 00:00:46,950
+lhe dará uma rápida
+introdução ao MapReduce.
+
+16
+00:00:47,430 --> 00:00:49,379
+Para processar dados no MapReduce,
+
+17
+00:00:49,379 --> 00:00:51,060
+você começa com fragmentação,
+
+18
+00:00:51,060 --> 00:00:52,905
+em outras palavras,
+divisão dos dados.
+
+19
+00:00:53,405 --> 00:00:56,610
+Os fragmentos de dados individuais são
+distribuídos em dispositivos de
+
+20
+00:00:56,610 --> 00:01:00,900
+armazenamento, em vários nós de computação
+em um cluster de computação distribuída.
+
+21
+00:01:01,460 --> 00:01:04,090
+No diagrama, isso é mostrado
+quando os dados
+
+22
+00:01:04,090 --> 00:01:07,690
+são divididos entre os nós 1 a 3
+no cluster de computação.
+
+23
+00:01:09,850 --> 00:01:12,850
+Para executar um job de processamento
+de dados nessa biblioteca,
+
+24
+00:01:12,850 --> 00:01:15,830
+você grava o código para as
+funções Map e Reduce.
+
+25
+00:01:15,830 --> 00:01:17,340
+Vamos ver primeiro a Map.
+
+26
+00:01:18,110 --> 00:01:20,540
+A Map será uma função sem estado,
+
+27
+00:01:20,540 --> 00:01:25,040
+para que possa ser programada para ser
+executada em paralelo nos nós do cluster.
+
+28
+00:01:25,040 --> 00:01:30,560
+Cada Map lê os dados do armazenamento
+no nó em que está sendo executado,
+
+29
+00:01:30,560 --> 00:01:33,980
+processa os dados e gera uma saída.
+
+30
+00:01:34,840 --> 00:01:38,390
+A saída das operações Map é embaralhada
+
+31
+00:01:38,390 --> 00:01:42,515
+dos diferentes nós no cluster ao próximo
+estágio de processamento chamado Reduce.
+
+32
+00:01:42,515 --> 00:01:46,920
+Você pode pensar em reduções como uma
+operação de agregação sobre dados.
+
+33
+00:01:47,680 --> 00:01:49,490
+As agregações podem ser operações como
+
+34
+00:01:49,490 --> 00:01:52,805
+contagem do número de elementos de dados
+ou somas computacionais.
+
+35
+00:01:52,805 --> 00:01:56,040
+Quando as operações Reduce
+estão concluídas,
+
+36
+00:01:56,040 --> 00:01:59,130
+o resultado se torna a saída da etapa
+MapReduce em um canal.
+
+37
+00:02:01,790 --> 00:02:03,830
+Se você quiser fazer uma transformação
+
+38
+00:02:03,830 --> 00:02:07,510
+no canal de processamento de dados e
+permitir que o Dataflow seja executado
+
+39
+00:02:07,510 --> 00:02:11,615
+em escala com distribuição automática
+em muitos nós em um cluster,
+
+40
+00:02:11,615 --> 00:02:15,160
+você precisa usar a classe ParDo
+do Apache Beam.
+
+41
+00:02:15,500 --> 00:02:17,905
+ParDo significa função de execução
+em paralelo.
+
+42
+00:02:17,905 --> 00:02:22,750
+As etapas de transformação criadas usando
+ParDo parecem os mapas no MapReduce.
+
+43
+00:02:23,690 --> 00:02:26,060
+As transformações usadas com ParDo
+
+44
+00:02:26,060 --> 00:02:29,105
+precisam ser sem estado para serem
+executadas em paralelo.
+
+45
+00:02:29,755 --> 00:02:32,600
+Isso é um pouco restritivo,
+mas útil para muitas tarefas.
+
+46
+00:02:33,040 --> 00:02:37,340
+Por exemplo: você está criando um canal
+de processamento de dados e analisando
+
+47
+00:02:37,340 --> 00:02:40,490
+os arquivos de registro do servidor da Web
+e pode precisar filtrar
+
+48
+00:02:40,490 --> 00:02:44,045
+as entradas de registro que incluem o
+endereço IP de um visitante no site.
+
+49
+00:02:44,045 --> 00:02:46,660
+Você pode fazer isso com uma
+transformação sem estado
+
+50
+00:02:46,660 --> 00:02:51,155
+ou, se quiser extrair o valor do endereço
+IP da string da entrada de registro,
+
+51
+00:02:51,155 --> 00:02:53,145
+pode fazer isso sem estado.
+
+52
+00:02:53,205 --> 00:02:56,630
+Outras operações de processamento sem
+estado, como a conversão de strings
+
+53
+00:02:56,630 --> 00:03:00,715
+em números inteiros ou outro cálculo que
+funcione, que eram parte da entrada,
+
+54
+00:03:00,715 --> 00:03:04,300
+como uma linha de dados, são todos bons
+candidatos para uma ParDo.
+
+55
+00:03:06,230 --> 00:03:09,800
+Se estiver usando Python para implementar
+o canal de processamento de dados,
+
+56
+00:03:09,800 --> 00:03:13,190
+há métodos auxiliares que permitem
+que você comece a usar a ParDo.
+
+57
+00:03:13,190 --> 00:03:19,020
+O Beam.Map mostrado no slide é projetado
+apenas para relações de um para um.
+
+58
+00:03:19,020 --> 00:03:22,920
+Por exemplo: se você está processando
+palavras em um documento, e para cada
+
+59
+00:03:22,920 --> 00:03:28,305
+palavra no documento, quer retornar um par
+com a própria palavra e o comprimento,
+
+60
+00:03:28,305 --> 00:03:31,530
+há um relacionamento
+de um para um, porque cada palavra
+
+61
+00:03:31,530 --> 00:03:35,310
+só pode ser mapeada para um comprimento
+em termos do número de caracteres delas.
+
+62
+00:03:35,310 --> 00:03:39,870
+Portanto, se você usar beam.Map
+para transformação em seu canal,
+
+63
+00:03:39,870 --> 00:03:43,335
+o Dataflow manipulará automaticamente
+a execução da transformação,
+
+64
+00:03:43,335 --> 00:03:48,750
+como cálculos de comprimentos de palavras
+em vários nós em um cluster do Dataflow.
+
+65
+00:03:49,220 --> 00:03:53,389
+Ao contrário do Map, o beam.FlatMap
+é compatível com transformações
+
+66
+00:03:53,389 --> 00:03:58,090
+que podem gerar qualquer número de saídas
+para uma entrada, incluindo zero saídas.
+
+67
+00:03:58,090 --> 00:04:02,130
+Continuando com o exemplo em que você
+está processando palavras de um documento
+
+68
+00:04:02,130 --> 00:04:06,140
+e talvez para cada palavra você queira
+gerar a lista de vogais para ela,
+
+69
+00:04:06,140 --> 00:04:07,640
+obviamente você pode ter zero,
+
+70
+00:04:07,640 --> 00:04:10,505
+uma, duas ou até
+mais vogais por palavra.
+
+71
+00:04:10,505 --> 00:04:15,890
+As transformações no beam.FlatMap também
+podem executar em paralelo com o Dataflow.
+
+72
+00:04:17,470 --> 00:04:20,055
+Se você estiver usando Java
+para implementar seu canal,
+
+73
+00:04:20,055 --> 00:04:23,080
+basta codificar ParDo no método estático
+
+74
+00:04:23,080 --> 00:04:27,645
+na transformação e passar o resultado ao
+próximo código de aplicação no canal.
+
+75
+00:04:27,645 --> 00:04:30,360
+Se você quer usar
+a operação de chave GroupBy,
+
+76
+00:04:30,360 --> 00:04:33,055
+é fácil adicioná-la ao canal.
+
+77
+00:04:33,055 --> 00:04:36,310
+Por exemplo: se você tem
+um canal que processa
+
+78
+00:04:36,310 --> 00:04:40,660
+endereços postais e tenta encontrar todos
+os códigos postais para cada cidade,
+
+79
+00:04:40,660 --> 00:04:44,590
+uma vez que seu canal tenha
+uma PCollection de pares de chave-valor,
+
+80
+00:04:44,590 --> 00:04:48,850
+como o mostrado com um
+par contendo a chave e o código postal,
+
+81
+00:04:48,850 --> 00:04:55,730
+a saída criada por beam.GroupByKey produz
+uma PCollection de pares, em que cada um
+
+82
+00:04:55,730 --> 00:05:00,530
+tem a cidade como chave e a lista de
+CEPs da cidade como valor.
+
+83
+00:05:02,790 --> 00:05:06,485
+O groupByKey é semelhante à etapa
+de reprodução aleatória no MapReduce,
+
+84
+00:05:06,485 --> 00:05:10,820
+mas a operação combinada do PerKey é mais
+geral, e inclui a reprodução aleatória
+
+85
+00:05:10,820 --> 00:05:15,525
+e etapas Reduce para ajudar a implementar
+agregações como soma, contagem.
+
+86
+00:05:15,525 --> 00:05:20,125
+Você pode usar o método combined.globally
+para calcular todo o conjunto de dados.
+
+87
+00:05:20,125 --> 00:05:23,735
+Por exemplo, se você está processando
+dados de transações financeiras,
+
+88
+00:05:23,735 --> 00:05:28,505
+de modo que cada linha da PCollection é
+uma transação de valores de vendas,
+
+89
+00:05:28,505 --> 00:05:32,195
+para calcular o total de vendas
+em todas as transações,
+
+90
+00:05:32,195 --> 00:05:36,450
+você pode usar o combined.global com
+a operação de soma como argumento.
+
+91
+00:05:36,450 --> 00:05:40,755
+Combined também é compatível com
+agregações mais refinadas.
+
+92
+00:05:40,755 --> 00:05:44,130
+Por exemplo, se os registros de transações
+financeiras incluírem
+
+93
+00:05:44,130 --> 00:05:47,265
+o nome do vendedor,
+além do valor de vendas,
+
+94
+00:05:47,265 --> 00:05:49,830
+você poderá passar a operação de soma
+
+95
+00:05:49,830 --> 00:05:54,490
+para a combined.perKey e usá-la para
+combinar o total de vendas por vendedor.

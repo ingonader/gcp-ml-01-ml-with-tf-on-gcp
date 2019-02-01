@@ -1,0 +1,62 @@
+Las combinaciones de atributos
+combinan dos o más atributos categóricos. Si tenemos atributos continuos,
+podemos discretizarlos y, luego, realizar una combinación
+de atributos. Veamos lo que esto significa
+para el tamaño del espacio de entrada mediante un par de ejemplos. Supongamos que queremos
+realizar la predicción del nivel de tráfico en una ciudad tenemos dos entradas de fila la hora del día y el día de la semana. ¿Cuántas entradas tendríamos
+si hiciéramos la codificación de un solo 1 de la hora del día
+y del día de la semana y las alimentáramos al modelo? ¿Dijeron 24 + 7 = 31? Cuando se realiza la codificación
+de un solo 1 de la hora del día se obtienen 24 nodos de entrada podrían tener 23 si consideraran
+a los ceros como una entrada válida. pero normalmente reservamos los ceros
+para los datos faltantes entonces, digamos 24 nodos de entrada. De manera similar,
+si realizan la codificación de un solo 1 del día de la semana,
+obtienen 7 nodos de entrada. Entonces, en total tenemos
+31 nodos de entrada. Pero sabemos que el tráfico
+no es igual a las 5 p.m. todos los días. El tráfico el miércoles es muy diferente
+que el fin de semana a esa misma hora. ¿Hay una forma fácil de hacer
+que el modelo lo aprenda? Claro. Ya saben cómo hacerlo. Realicen una combinación de atributos
+de las dos entradas de la fila. Estamos concatenando la hora del día
+con el día de la semana. Y esto permite que nuestro modelo aprenda
+la combinación de hora y día muy rápido. Excelente. Pero ¿cuántas entradas tenemos ahora? No son 24 + 7. Ahora tenemos 24 veces 7 todas las combinaciones posibles. Pasamos de 24 + 7 = 31 entradas
+a 24 * 7 = 168 entradas. Cuando realicen combinaciones de atributos
+obtendrán muchas más entradas. Los científicos de datos
+se preocupan a menudo de que la codificación
+de un solo 1 de variables categóricas aumente el tamaño de sus modelos. La codificación de un solo 1
+causa muchos problemas a los marcos de trabajo
+de AA tradicionales. ¿Cómo usamos las combinaciones
+de atributos? Les da una crisis nerviosa. Internamente, TensorFlow usa
+una representación dispersa tanto para la codificación de un solo 1
+y para las combinaciones de atributos por lo que no tiene problemas con esto. Para cualquier fila de datos de entrada
+de su conjunto de datos ¿cuántos nodos se encienden en x3? Solo uno. ¿Ven por qué? Para cada etiqueta,
+cada observación en la tabla se realiza en un momento específico que corresponde a una hora
+y un día de la semana específicos. Entonces, podría haber una observación
+a las 3 p.m. a la hora del día de la entrada y el miércoles,
+el día de la semana de la entrada. Entonces, si realizan la combinación
+de atributos, ¿que obtendrán? Tendrán un nodo de entrada. El nodo de entrada que corresponde
+a las 3 p.m. el miércoles. Ese nodo de entrada será 1. Todos los otros nodos de entrada
+para x3 serán 0. La entrada consistirá
+en 167 ceros y un 1. Y cuando realicen una combinación
+de atributos la entrada será muy dispersa. Tengan esto en mente. TensorFlow nos proporciona herramientas
+sencillas para hacerlo. Veamos las respuestas
+del cuestionario. a) La respuesta es no. La discretización es buena
+porque permite a un modelo aprender las relaciones lineales
+que existen en un único atributo. Sin embargo, una ciudad
+existe en más de una dimensión por lo que aprender las relaciones
+de ciertas ciudades requiere que se realice la combinación
+de latitud y longitud. ¿Qué opinan de b? La respuesta de nuevo es no. La discretización es una buena idea. Sin embargo, la ciudad es una conjunción
+de latitud y longitud. Por lo que combinaciones
+de atributos separadas evitan que el modelo aprenda
+precios específicos de ciudades. ¿Y qué opinan de c? La respuesta es sí. La combinación
+de una latitud discretizada con una longitud discretizada
+permite que el modelo aprenda los efectos de ciudades específicas
+en las habitaciones por persona. La discretización evita
+que un cambio de latitud produzca el mismo resultado
+que un cambio en longitud. Según el nivel de detalle
+de los grupos discretizados (bins) esta combinación
+de atributos podría aprender efectos relacionados con ciudades
+y barrios específicos o, incluso, cuadras. La cuarta es no. En este ejemplo la combinación de atributos
+con valores reales no es una buena idea. Por ejemplo, combinar el valor real de la latitud con habitaciones por persona
+permite un cambio de un 10% en un atributo digamos una latitud sea equivalente a un 10% 
+de cambio en el otro atributo digamos las habitaciones por persona. Esto es tan problemático
+que ni siquiera es posible en TensorFlow. La combinación solo es posible
+con columnas categóricas o discretizadas.

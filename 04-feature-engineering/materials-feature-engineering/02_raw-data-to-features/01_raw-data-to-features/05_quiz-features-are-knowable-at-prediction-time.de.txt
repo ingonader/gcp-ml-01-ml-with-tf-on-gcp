@@ -1,0 +1,50 @@
+Wir machen einen weiteren Test. Können Sie die genannten Merkmale
+schon zum Zeitpunkt der Vorhersage kennen? Wir kommen wieder auf unser
+Beispiel mit den Rabattgutscheinen zurück. Punkt 1: die Anzahl
+der verkauften rabattfähigen Artikel. Mit welchem
+Zeitraum haben wir es hier zu tun? Wie lange
+dauert es, diesen Wert zu erreichen? Es gibt keine einfache Antwort hier. Sie benötigen zusätzliche Informationen, bevor Sie diesen Wert
+als Eingabe in Betracht ziehen können. Punkt 2: die Anzahl der im letzten
+Monat verkauften rabattfähigen Artikel. Ja, das kommt der Sache schon näher. Diesen Wert könnten Sie
+zum Zeitpunkt der Vorhersage kennen. Daran lässt sich
+möglicherweise ein Muster erkennen. Eine vage Angabe wie die Anzahl
+der verkauften rabattfähigen Artikel ohne Zeitangabe – das funktioniert nicht. Ohne Zeitraum wissen Sie nicht, wie lange es dauert,
+alle diese Artikel zu erfassen. Doch wenn Sie einen Praxisbezug haben, wie bei Punkt 2 mit dem letzten Monat, dann können Sie damit arbeiten. Sie haben den Wert so
+definiert, dass Sie ihn erfassen können. Der Zeitrahmen ist allerdings
+von der Latenz in Ihrem System abhängig. Das ist ein Hinweis für Sie,
+nach Antworten auf solche Dinge zu suchen. Wie lange dauert
+die Erfassung der Daten tatsächlich, bevor ich sie in Echtzeit nutzen kann? Letzter Punkt: die Anzahl der Kunden, die Anzeigen zu einem
+Artikel gesehen haben, den Sie anbieten. Auch hier geht es um die Zeit. Wie lange dauert es, die Anzeigenanalyse aus Ihren anderen Systemen zu erhalten, bevor wir sie
+im Vorhersagemodell verwenden können? Ein weiterer Test: Es geht
+um betrügerische Kreditkartentransaktionen und ob die genannten Merkmale
+zum Zeitpunkt der Vorhersage bekannt sind. Punkt 1: Hat der Karteninhaber
+die Artikel schon einmal bei uns gekauft? Wir beginnen wieder
+mit einer sorgfältigen Definition. Möglicherweise benötigt
+Ihr System drei Verarbeitungstage, bevor Sie in Ihrem Data Warehouse sehen,
+welcher Kunde welche Artikel gekauft hat. Die Transaktionsdaten
+sind nicht sofort verfügbar, weil es 3 Tage dauert,
+bis die Daten vom Geschäft an unser Data Warehouse gesendet werden. Wenn es 3 Tage dauert,
+bis uns die Daten zur Verfügung stehen, müssen wir beim Trainieren unseres Modells die Daten von vor 3 Tagen verwenden. Das ist ein wichtiger Punkt,
+auf den wir genauer eingehen müssen. Sie können nicht mit aktuellen Daten
+trainieren und mit alten Daten vorhersagen. Wenn Sie Trainingsdaten
+aus dem Data Warehouse abrufen, können Sie nicht einfach alle
+Transaktionswerte eines Kunden abrufen, da nicht alle Werte
+zur selben Zeit verfügbar sind. Daher müssen Sie
+als Trainingsdaten in Ihrem System Daten von vor 3 Tagen einsetzen –
+um die Verzögerung zu berücksichtigen. Wenn Sie zur Vorhersage in Echtzeit nur auf alte Daten zugreifen können,
+müssen Sie auch mit alten Daten trainieren. Wir machen ein kleines Gedankenexperiment. Sie führen
+am 15. Mai eine Vorhersage durch. Ihre Datenbankdaten sind bei
+der Vorhersage auf dem Stand vom 12. Mai. Beim Trainieren verwenden Sie z. B. Daten vom 12. Februar,
+die Sie als Eingabewerte genutzt haben. Sie können nur die Anzahl
+der Kreditkartentransaktionen trainieren, die am 9. Februar vorlagen –
+aufgrund der 3-tägigen Verzögerung. Sie müssen den veralteten
+Zustand der Daten bei der Vorhersage beim Trainieren entsprechend anpassen. Wenn Sie beim Trainieren
+Ihres Modells davon ausgehen, die Transaktionsdaten bei der Vorhersage bis auf die Sekunde
+oder Minute genau zu kennen, wird Ihr Modell keine
+aussagekräftigen Informationen liefern, da die Verzögerung bei der Vorhersage
+nicht den Trainingsdaten entspricht. Sie müssen immer den zeitlichen Aspekt aller Eingabevariablen berücksichtigen. Weiter gehts mit Punkt 2. Ist der Artikel neu im Sortiment? Wenn er neu ist,
+kann er noch nicht gekauft worden sein. Das ist ein nützliches Merkmal, das Sie in Ihrem Katalog finden. Es ist ein sinnvoller Eingabewert. Punkt 3:
+die Kategorie des gekauften Artikels. Das ist einfach. Diesen Wert kennen wir bei der Vorhersage. Wir können in Echtzeit nachsehen, ob es ein Lebensmittel-,
+Bekleidungs- oder Elektronikartikel ist. Punkt 4: Ist es ein
+Onlinekauf oder ein Kauf im Geschäft? Das können wir
+auch in Echtzeit herausfinden. Wir können es also verwenden. Denken Sie immer an den zeitlichen Faktor und an alle beteiligten Systeme.

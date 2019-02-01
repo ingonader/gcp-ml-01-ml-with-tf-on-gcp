@@ -1,0 +1,279 @@
+1
+00:00:00,000 --> 00:00:01,149
+Certo.
+
+2
+00:00:01,149 --> 00:00:02,940
+Para começar este laboratório,
+
+3
+00:00:02,940 --> 00:00:07,375
+verifique se o navegador está aberto
+no painel do Google Cloud Platform.
+
+4
+00:00:07,375 --> 00:00:11,755
+Comece clicando em
+"Ativar o Google Cloud Shell".
+
+5
+00:00:12,485 --> 00:00:15,800
+É essencial que você tenha o ambiente
+do Cloud Shell preparado
+
+6
+00:00:15,800 --> 00:00:19,055
+com o código-fonte e os
+pacotes necessários para executá-lo.
+
+7
+00:00:19,055 --> 00:00:21,620
+Se você concluiu recentemente
+o laboratório anterior,
+
+8
+00:00:21,620 --> 00:00:24,605
+já deve ter o código
+e os pacotes instalados.
+
+9
+00:00:24,605 --> 00:00:26,930
+No entanto, se você acha
+que está perdendo
+
+10
+00:00:26,930 --> 00:00:30,610
+o diretório do analista de dados de
+treinamento no ambiente do Cloud Shell,
+
+11
+00:00:30,610 --> 00:00:35,090
+pare aqui e conclua o laboratório anterior
+antes de avançar.
+
+12
+00:00:35,090 --> 00:00:37,430
+Se o ambiente do Cloud Shell
+estiver configurado,
+
+13
+00:00:37,430 --> 00:00:40,730
+você poderá usar o editor de código
+do Cloud Shell
+
+14
+00:00:40,730 --> 00:00:44,650
+para abrir o código-fonte do canal do
+Apache Beam usado neste laboratório.
+
+15
+00:00:44,650 --> 00:00:49,230
+Você pode encontrá-lo em
+training-data-analyst, courses,
+
+16
+00:00:49,230 --> 00:00:52,080
+data analysis, lab2,
+
+17
+00:00:52,080 --> 00:00:56,890
+diretório Python, no arquivo
+is_popular.py.
+
+18
+00:00:56,890 --> 00:01:01,045
+Há mais código neste arquivo agora
+em comparação com o laboratório anterior.
+
+19
+00:01:01,045 --> 00:01:05,140
+Então, em seguida, você verá
+o código com mais detalhes.
+
+20
+00:01:05,790 --> 00:01:08,430
+Se rolar para baixo até
+o corpo do método principal,
+
+21
+00:01:08,430 --> 00:01:11,330
+observe o argumento
+de entrada para o código.
+
+22
+00:01:11,820 --> 00:01:15,085
+Como entrada, o canal usa
+os arquivos de código-fonte Java
+
+23
+00:01:15,085 --> 00:01:17,475
+no diretório de ajuda do Java.
+
+24
+00:01:18,185 --> 00:01:22,140
+Além disso, observe que a saída
+do canal será armazenada
+
+25
+00:01:22,140 --> 00:01:25,080
+no diretório /tmp,
+sendo que os arquivos têm
+
+26
+00:01:25,080 --> 00:01:30,060
+prefixo de saída por padrão, mas claro que
+é possível sobrescrever a configuração.
+
+27
+00:01:30,060 --> 00:01:32,640
+Depois que os dados são lidos do
+Google Cloud Storage,
+
+28
+00:01:32,640 --> 00:01:37,370
+a próxima etapa desse canal é verificar
+as linhas que começam com o termo-chave.
+
+29
+00:01:37,860 --> 00:01:39,850
+Como você lembra do laboratório anterior,
+
+30
+00:01:39,850 --> 00:01:43,745
+o termo-chave para esse canal
+é a palavra-chave "import".
+
+31
+00:01:43,745 --> 00:01:48,855
+Em seguida, o canal processa os nomes
+dos pacotes importados.
+
+32
+00:01:49,715 --> 00:01:54,480
+Observe que isso depende do método
+usado pelo pacote, que, por sua vez,
+
+33
+00:01:54,480 --> 00:01:56,520
+busca pelos nomes dos pacotes na
+
+34
+00:01:56,520 --> 00:02:00,480
+instrução de importação
+e extrai o nome do pacote em si,
+
+35
+00:02:00,480 --> 00:02:02,280
+removendo a palavra-chave "import"
+
+36
+00:02:02,280 --> 00:02:04,555
+e o caractere de ponto e vírgula
+de fechamento.
+
+37
+00:02:04,555 --> 00:02:07,500
+Finalmente, quando o nome
+do pacote é encontrado,
+
+38
+00:02:07,500 --> 00:02:13,280
+a função de separação do nome do pacote
+retorna os prefixos para cada nome.
+
+39
+00:02:13,280 --> 00:02:17,700
+Por exemplo, para um pacote
+com.example.appname,
+
+40
+00:02:17,700 --> 00:02:24,980
+a função retornará prefixos com,
+com.example, com.example.appname.
+
+41
+00:02:24,980 --> 00:02:27,740
+Para cada um desses pacotes,
+o método
+
+42
+00:02:27,740 --> 00:02:32,290
+retorna um par: o prefixo do pacote
+e um dígito 1 para cada ocorrência.
+
+43
+00:02:32,290 --> 00:02:34,900
+As ocorrências são adicionadas usando
+
+44
+00:02:34,900 --> 00:02:39,150
+a operação combined.perKey
+e a função de soma como argumento.
+
+45
+00:02:39,870 --> 00:02:42,310
+Os cinco principais
+combinadores identificam
+
+46
+00:02:42,310 --> 00:02:45,390
+os cinco principais pacotes
+importados com mais frequência.
+
+47
+00:02:45,390 --> 00:02:50,290
+Em seguida, você pode executar
+o arquivo is_popular.py.
+
+48
+00:02:50,290 --> 00:02:53,790
+Uma vez que o canal termina
+a execução, você pode olhar
+
+49
+00:02:53,790 --> 00:02:57,780
+o diretório de saída e, se você listar
+o conteúdo do arquivo de saída,
+
+50
+00:02:57,780 --> 00:03:02,681
+poderá ver os pacotes mais conhecidos,
+especificamente org,
+
+51
+00:03:02,681 --> 00:03:08,565
+org.apache, org.apache.beam
+e org.apache.beam.sdk.
+
+52
+00:03:09,445 --> 00:03:12,520
+Observe que, nesta implementação do canal,
+
+53
+00:03:12,520 --> 00:03:15,775
+é possível modificar o destino da saída.
+
+54
+00:03:15,775 --> 00:03:20,410
+Por exemplo, se você substituir os
+padrões para solicitar que o canal grave
+
+55
+00:03:20,410 --> 00:03:26,005
+os resultados no diretório /tmp,
+sendo myoutput o prefixo,
+
+56
+00:03:26,005 --> 00:03:31,160
+você pode executar o canal novamente
+e encontrará as novas instâncias da saída.
+
+57
+00:03:31,160 --> 00:03:36,064
+As novas instâncias do arquivo de saída
+terão o prefixo myoutput.
+
+58
+00:03:36,264 --> 00:03:38,434
+Tudo certo.
+Isso é tudo para este laboratório.

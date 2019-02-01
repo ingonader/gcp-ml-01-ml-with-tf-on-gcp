@@ -1,0 +1,97 @@
+Hi. Mein Name ist Carl Osipov und ich bin Program Manager bei Google. Ich helfe unseren Kunden,
+die Google Cloud nutzen, erfolgreich Systeme
+für maschinelles Lernen zu implementieren, die skalierbar und produktionsreif sind. Dieser Abschnitt des Moduls beschreibt
+die Vorverarbeitung von Eingabedaten und die Erstellung von Merkmalen. Das sind zwei Techniken, mit denen Sie Merkmale
+für ein ML-System vorbereiten können. Für den Anfang sehen wir uns Beispiele für Vorverarbeitung
+und Merkmalerstellung an und Sie lernen
+die Herausforderungen kennen, die diese Techniken
+beim Feature Engineering mit sich bringen. In den zwei übrigen Teilen des Abschnitts sehen Sie dann,
+wie Sie diese Herausforderungen mit Tools wie Google Cloud Dataflow
+und Cloud Dataprep meistern können. Okay.
+Hier sind zunächst ein paar Beispiele, die Ihnen ein Gefühl dafür geben, wann Sie Vorverarbeitung
+und Merkmalerstellung nutzen sollten. Manche Werte
+in einem Merkmalsatz müssen normalisiert oder neu skaliert werden,
+bevor sie vom ML-Modell genutzt werden. Skalieren bedeutet hier,
+ein reellwertiges Merkmal wie einen Preis mit der gezeigten Formel in einen Wert
+zwischen null und eins umzuwandeln. Es gibt viele Gründe,
+Werte neu zu skalieren. Meistens soll Skalierung
+die Leistung des ML-Trainings erhöhen, insbesondere
+die Leistung des Gradientenverfahrens. Sie benötigen
+für die Formel zur Neuskalierung sowohl den Mindest-
+als auch den Höchstwert des Merkmals. Wenn Sie diese Werte nicht kennen, müssen Sie zum Auffinden wahrscheinlich
+Ihr gesamtes Dataset vorverarbeiten. Vorverarbeitung kann auch nützlich sein
+für kategorische Werte im Dataset wie die Städtenamen hier im Code-Snippet. Um zum Beispiel in TensorFlow
+eine One-Hot-Codierung anzuwenden, mit der Sie verschiedene Städte
+als Binärwertmerkmale darstellen können, nutzen Sie die TensorFlow API-Methode
+"categorical_column_with_vocabulary_list" Dafür übergeben Sie
+der Methode eine Liste von Werten, in diesem Fall verschiedene Städtenamen. Wenn Ihnen so ein Wörterbuch
+mit Schlüsselwerten fehlt, können Sie
+mit einem Vorverarbeitungsschritt über das gesamte Dataset eines erstellen. In diesem Modul
+behandeln wir drei Technologien, die Ihnen das Implementieren
+der Vorverarbeitung erleichtern. Mit BigQuery und Apache Beam wird das vollständige Eingabe-Dataset
+vor dem Training verarbeitet. Dazu gehören Vorgänge wie
+das Ausschließen von Datenpunkten aus dem Trainings-Dataset und auch die Berechnung
+von Statistiken und Vokabularen aus dem gesamten Eingabe-Dataset. Zur Erinnerung:
+Für manche Merkmale benötigen Sie Statistiken
+über ein begrenztes Zeitfenster. Vielleicht möchten Sie
+die mittlere Anzahl der Produkte wissen, die in der letzten Stunde
+auf einer Website verkauft wurden. Für solche Zeitfenstermerkmale nutzen Sie Batch-
+und Streamingdaten-Pipelines von Beam. Andere Merkmale, die Datenpunkt
+für Datenpunkt vorverarbeitet werden, können entweder direkt in TensorFlow
+oder mit Beam implementiert werden. Sie sehen also, dass Apache Beam und die ergänzende
+Google Cloud-Technologie Cloud Dataflow für diesen Modulteil wichtig sein werden. Zunächst beschreibe ich
+ein paar Einschränkungen, die das Feature Engineering mit BigQuery
+und TensorFlow allein mit sich bringt, und dann erkläre ich,
+wie Beam dem abhilft. BigQuery ist
+ein extrem skalierbares, sehr schnelles, vollständig verwaltetes Data Warehouse,
+erhältlich als Dienst von Google Cloud. BigQuery kann Ihnen
+das Feature Engineering erleichtern, da Sie darin mit Standard-SQL häufige Vorverarbeitungsaufgaben
+implementieren können. Wenn Sie beispielsweise ein Dataset mit 10 Milliarden Einträgen zu Taxifahrten
+in New York City vorverarbeiten, können manche Einträge
+falsche Daten enthalten wie teure Fahrten
+über Distanzen von null Kilometern. Sie können diese falschen Daten
+mit einer SQL-Anweisung aus Ihrem Dataset herausfiltern. Diese Anweisung wird
+in BigQuery in Sekunden ausgeführt. Sie können
+auch andere Anweisungen schreiben und Standard SQL mit mathematischen
+und Datenverarbeitungsfunktionen nutzen. Diese können nützlich sein,
+um einfache Berechnungen wie Additionen von Quelldaten auszuführen
+oder auch gängige Datenformate zu parsen, um z. B. die Tageszeit aus Einträgen
+mit Zeitstempeln zu extrahieren. Wenn Trainingsbeispiele
+mit SQL vorverarbeiten möchten, müssen Sie unbedingt darauf achten, in TensorFlow genau die gleiche
+Vorverarbeitungslogik zu implementieren. Als Nächstes sehen Sie zwei Ansätze zum Schreiben
+von Vorverarbeitungscode in TensorFlow. In der Praxis werden Sie vielleicht
+dem ersten oder dem zweiten Ansatz folgen, manchmal aber auch beiden. Viele häufige Vorverarbeitungsschritte können mit einer der vorhandenen Methoden der Feature Columns API
+von TensorFlow geschrieben werden. Wenn Sie z. B. ein reellwertiges Merkmal
+diskretisieren möchten, können Sie
+die Methode "bucketized_column" anwenden. Sollte der Vorverarbeitungsschritt,
+den Sie brauchen, in der TensorFlow API nicht verfügbar sein, können Sie die Funktionen
+aus den Eingabeparametern für Training, Bewertung und Test
+übernehmen und anpassen. Die folgenden Folien
+veranschaulichen dies weiter. Als erste Option implementieren Sie
+Ihren eigenen Vorverarbeitungscode. In diesem Beispiel ist der Vorverarbeitungscode
+in der Methode "add_engineered" enthalten und es werden keine globalen Statistiken
+aus dem Quell-Dataset benötigt. Um aus den Längen- und Breitengraden
+die euklidische Distanz zu berechnen, gibt der Code
+neben dem Wörterbuch des Ausgangsmerkmals den neuen Merkmalwert zurück,
+der mit der Distanzformel berechnet wurde. Damit das Merkmal der euklidischen Distanz bei Training, Bewertung
+und Bereitstellung berücksichtigt wird, fassen
+alle entsprechenden "input_fn"-Funktionen die noch nicht vorverarbeiteten Merkmale
+im Aufruf von "add_engineered" zusammen. Wenn der benötigte Vorverarbeitungsschritt in der TensorFlow API
+enthalten ist, haben Sie Glück. Sie können dann
+die Hilfsmethoden einfach aufrufen, wenn Sie die Merkmalspalten definieren. In diesem Beispiel
+wird mit der Methode "bucketized_column" der Breitengrad
+aus den Quelldaten entnommen. Dabei wird darauf geachtet,
+dass die Werte zwischen 38 und 42 liegen. Als Nächstes
+werden die ursprünglichen Breitenwerte in einen der sich gegenseitig
+ausschließenden Buckets ausgegeben, wobei die Zahl der Buckets vom Parameter
+"nbuckets" bestimmt wird. Die Pflege von Vorverarbeitungscode
+in SQL für BigQuery und in TensorFlow
+kann sehr komplex und schwierig werden. Wie Sie gesehen haben, ist einer der Vorteile von Apache Beam
+bei der Vorverarbeitung von Merkmalen, dass derselbe Code für Training und Bereitstellung
+eines Modells verwendbar ist. Allerdings haben Sie
+bei der Verwendung von Apache Beam keinen Zugriff
+auf praktische TensorFlow-Hilfsmethoden. Das bedeutet,
+dass Sie wie in unserem Beispiel Ihren eigenen Vorverarbeitungscode
+implementieren müssen. In diesem Modulteil
+haben Sie konkrete Beispiele gesehen, wo Apache Beam Ihnen
+die Vorverarbeitung erleichtern kann.

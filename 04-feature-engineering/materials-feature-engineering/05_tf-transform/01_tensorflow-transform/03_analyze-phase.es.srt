@@ -1,0 +1,215 @@
+1
+00:00:00,520 --> 00:00:02,920
+Veamos la fase de análisis.
+
+2
+00:00:02,920 --> 00:00:07,075
+Recuerde que analiza el conjunto
+de datos de entrenamiento.
+
+3
+00:00:07,075 --> 00:00:11,260
+Primero le indica a Beam
+qué datos puede recibir.
+
+4
+00:00:11,260 --> 00:00:14,275
+Para eso, configuramos un esquema.
+
+5
+00:00:14,275 --> 00:00:20,365
+En la primera línea, configuro
+un diccionario llamado "raw_data_schema".
+
+6
+00:00:20,365 --> 00:00:25,005
+Agrego entradas para
+todas las columnas de strings.
+
+7
+00:00:25,005 --> 00:00:29,315
+La string aquí es
+el tipo de datos TensorFlow.
+
+8
+00:00:29,315 --> 00:00:33,306
+Luego, actualizo el esquema
+de datos sin procesar
+
+9
+00:00:33,492 --> 00:00:37,689
+con las columnas
+de tipo "tf.float32".
+
+10
+00:00:39,016 --> 00:00:42,605
+Ahora tengo un esquema
+de datos sin procesar
+
+11
+00:00:42,605 --> 00:00:44,727
+que tiene las columnas
+del conjunto de datos
+
+12
+00:00:44,727 --> 00:00:48,115
+que procesará Beam
+en Dataflow.
+
+13
+00:00:48,954 --> 00:00:53,130
+Este esquema se usa para
+crear una plantilla de metadatos.
+
+14
+00:00:53,957 --> 00:00:58,760
+Ahora, ejecute
+"analyze-and-transform PTransform"
+
+15
+00:00:58,760 --> 00:01:01,270
+en el conjunto de datos
+de entrenamiento para obtener
+
+16
+00:01:01,577 --> 00:01:05,765
+datos de entrenamiento procesados
+y la función de transformación.
+
+17
+00:01:06,560 --> 00:01:11,185
+Use "beam.io.read" para leer
+los datos de entrenamiento.
+
+18
+00:01:11,185 --> 00:01:17,035
+Se parece a las canalizaciones de Beam
+que vio en el módulo anterior.
+
+19
+00:01:17,035 --> 00:01:19,765
+Aquí, estoy leyendo desde BigQuery.
+
+20
+00:01:20,746 --> 00:01:24,375
+Ahora, filtre los datos
+con los que no quiere entrenar.
+
+21
+00:01:24,375 --> 00:01:28,507
+Lo hago con la función "is_valid"
+que explicaré
+
+22
+00:01:28,621 --> 00:01:31,395
+más adelante en este módulo.
+
+23
+00:01:32,268 --> 00:01:37,250
+Luego, tome los datos sin procesar
+que obtuvo con la lectura y el filtro
+
+24
+00:01:37,250 --> 00:01:40,805
+y los metadatos de datos sin procesar
+que obtuvo en la diapositiva anterior
+
+25
+00:01:40,805 --> 00:01:45,245
+y páselos por "analyze-and-transform
+dataset PTransform".
+
+26
+00:01:45,721 --> 00:01:49,985
+Beam ejecutará la transformación
+de forma distribuida
+
+27
+00:01:49,985 --> 00:01:55,550
+y hará todo el análisis que le indicó
+en el método "preprocess".
+
+28
+00:01:55,550 --> 00:01:58,455
+Le mostraré ese método luego.
+
+29
+00:01:59,061 --> 00:02:03,260
+Por ahora, Beam ejecuta el método
+"is_valid" y el método "preprocess"
+
+30
+00:02:03,260 --> 00:02:09,775
+en el conjunto de datos de entrenamiento
+para filtrarlo y procesarlo.
+
+31
+00:02:10,583 --> 00:02:15,495
+Los datos de procesamiento previo
+vuelven en una colección paralela
+
+32
+00:02:15,495 --> 00:02:18,805
+que llamaré "transformed_dataset"
+
+33
+00:02:18,805 --> 00:02:22,550
+pero las transformaciones que realizó
+
+34
+00:02:22,550 --> 00:02:27,170
+en el procesamiento previo están guardadas
+en el segundo valor de retorno
+
+35
+00:02:27,170 --> 00:02:30,770
+"transform_fn".
+Esto es importante.
+
+36
+00:02:30,770 --> 00:02:34,510
+Tome los datos de transformación
+y escríbalos.
+
+37
+00:02:34,510 --> 00:02:41,645
+Aquí, los escribo como "TFRecords", que es
+el formato más eficiente de TensorFlow.
+
+38
+00:02:41,645 --> 00:02:45,685
+Puedo hacerlo con
+"WriteToTFRecord"
+
+39
+00:02:45,685 --> 00:02:49,545
+que viene con TensorFlow Transform.
+
+40
+00:02:49,545 --> 00:02:53,105
+Los archivos
+se fragmentarán automáticamente
+
+41
+00:02:53,105 --> 00:02:56,640
+pero preste atención
+al esquema que se usa.
+
+42
+00:02:57,238 --> 00:03:01,390
+No se usa el esquema de datos 
+sin procesar, sino el de transformación.
+
+43
+00:03:01,702 --> 00:03:03,037
+¿Por qué?
+
+44
+00:03:03,921 --> 00:03:08,165
+Porque estamos escribiendo
+datos transformados
+
+45
+00:03:08,165 --> 00:03:12,680
+los datos procesados,
+no los datos sin procesar.

@@ -1,0 +1,51 @@
+Maintenant que vous comprenez ce que sont
+les caractéristiques et leur intérêt, passons à la mise en œuvre
+des croisements de caractéristiques. Pour créer un croisement
+de caractéristiques avec TensorFlow, utilisez la méthode "crossed_column"
+dans le module "tf.feature_column", soit le module dans lequel
+vous avez obtenu une colonne numérique et une colonne catégorique
+avec une liste de vocabulaire. C'est le module d'où
+ces éléments viennent. Le premier argument de mon exemple est
+la liste des colonnes catégoriques. Vous transmettez une liste afin de croiser
+un certain nombre de colonnes. Souvenez-vous qu'il s'agit
+de colonnes catégoriques. Si vous disposez de données numériques, divisez-les en buckets avant d'effectuer
+le croisement de caractéristiques. Lorsque vous divisez une colonne numérique
+en buckets, vous tracez les lignes noires
+dont nous parlions précédemment. Vous discrétisez la colonne. Quel est le second argument ? 24 fois 7 est le nombre total
+de buckets de hachage. TensorFlow effectue
+un croisement de caractéristiques, puis calcule un hachage de celui-ci et le place dans l'un des buckets. Même si j'ai indiqué 24 fois 7 ici, il n'est pas garanti
+qu'il n'y aura pas de collision. Il est tout à fait possible que le hachage
+du mercredi à 15h, module 168, soit identique à celui
+du dimanche à 16h, module 168. Dans ce cas, ces deux combinaisons
+jour/heure seront traitées ensemble. Approfondissons un peu cette idée. Maintenant,
+TensorFlow va ignorer ces étapes et passer directement à la représentation
+du croisement de caractéristiques haché, mais il est bon de penser
+à ce qui se produit. Pour faire simple, imaginons
+qu'au lieu de 24 fois 7, j'aie indiqué ici six. Que se passe-t-il ? Lors du croisement de caractéristiques, nous transmettons
+deux colonnes catégoriques. "dayofweek" a sept valeurs uniques, "hourofday" en a 24. Le croisement de caractéristiques a donc
+24×7=168 valeurs uniques. Prenons maintenant le mercredi à 15h. Disons que 15h est notre numéro 15 et mercredi notre jour numéro trois. La valeur de la caractéristique croisée sera donc 87 sur 168. Je calcule alors le hachage de 87
+et je fais un module six. Supposons que j'obtienne
+la case numéro trois pour ce croisement
+de caractéristiques haché. C'est ce que la colonne
+de la caractéristique jour/heure contiendra pour le mercredi à 15h. Une valeur encodée en mode one-hot
+correspondant au numéro trois. Encore une fois, TensorFlow n'effectue pas
+réellement ces étapes. Il n'a pas besoin d'encoder
+en mode one-hot avant le croisement de caractéristiques. S'il le faisait, il ne serait pas
+très efficace en termes de mémoire. Mais vous voyez ainsi ce qui se passe
+d'un point de vue conceptuel. Le nombre de buckets de hachage contrôle
+la parcimonie et les collisions. Si, comme dans la diapositive précédente, nous donnions au bucket de hachage une valeur très inférieure
+au nombre de valeurs uniques du croisement de caractéristiques, de nombreuses collisions se produiraient. Le mercredi à 15h, le mercredi à 19h, le mardi à 2h, etc. se retrouveraient dans le même bucket
+et seraient traités de la même façon. En moyenne, un sixième du croisement
+de caractéristiques sera dans un bucket. Comme nous avons en moyenne
+168 valeurs uniques, chaque bucket contiendra
+28 combinaisons jour/heure différentes. C'est pourquoi la quantité de données que le croisement de caractéristiques
+peut mémoriser est limitée. Mais la mémoire utilisée est
+également très faible. Il n'y a que six buckets. D'une certaine manière, nous regroupons des combinaisons jour/heure
+dans un bucket. Et si nous passions à l'autre extrême
+et que nous définissions un nombre de buckets de hachage si élevé que le risque
+de collision devienne minime ? Définissons-le par exemple sur 300. En moyenne, un bucket contiendra une ou zéro combinaison jour/heure. Il pourrait en contenir deux, mais c'est très peu probable. Utiliser une valeur élevée pour les buckets de hachage donne donc
+une représentation clairsemée du croisement de caractéristiques. En pratique, je choisis
+généralement un nombre entre la moitié de la racine carrée de n
+et le double de n, selon que je veux privilégier
+la mémorisation ou la parcimonie, mais c'est juste
+une bonne pratique personnelle.

@@ -1,0 +1,379 @@
+1
+00:00:00,000 --> 00:00:03,000
+Imaginez que vous écriviez
+un modèle de machine learning
+
+2
+00:00:03,000 --> 00:00:07,710
+qui peut vous dire
+si une voiture est un taxi ou non.
+
+3
+00:00:07,710 --> 00:00:12,230
+Nous savons que les voitures blanches
+à Rome et les voitures jaunes à New York
+
+4
+00:00:12,230 --> 00:00:13,710
+sont généralement des taxis.
+
+5
+00:00:13,710 --> 00:00:17,040
+Mais nous voulons
+que notre modèle l'apprenne
+
+6
+00:00:17,040 --> 00:00:20,650
+à partir d'un ensemble de données
+constitué d'immatriculations de voitures.
+
+7
+00:00:20,650 --> 00:00:24,395
+Supposons que nos données
+d'entrée ressemblent à ceci :
+
+8
+00:00:24,395 --> 00:00:27,222
+rouge, Rome ; blanc, Rome, etc.,
+
+9
+00:00:27,222 --> 00:00:30,690
+et que les libellés indiquent
+si la voiture est un taxi.
+
+10
+00:00:30,690 --> 00:00:35,250
+La couleur de la voiture et la ville sont
+les caractéristiques d'entrée.
+
+11
+00:00:35,250 --> 00:00:37,800
+Vous devez les utiliser
+
+12
+00:00:37,800 --> 00:00:42,090
+dans votre modèle linéaire pour prédire
+si la voiture est un taxi.
+
+13
+00:00:42,090 --> 00:00:44,490
+Comment procéderiez-vous ?
+
+14
+00:00:44,490 --> 00:00:46,820
+Vous prenez la première donnée d'entrée,
+
+15
+00:00:46,820 --> 00:00:50,020
+la couleur de la voiture,
+et vous l'encodez en mode one-hot.
+
+16
+00:00:50,020 --> 00:00:52,110
+Vous prenez la seconde donnée d'entrée,
+
+17
+00:00:52,110 --> 00:00:54,920
+le nom de la ville,
+et vous l'encodez en mode one-hot.
+
+18
+00:00:54,920 --> 00:01:00,150
+Vous envoyez ensuite le tout
+directement à votre modèle linéaire.
+
+19
+00:01:00,150 --> 00:01:04,519
+Donnons par exemple une pondération
+de 0,8 aux voitures jaunes,
+
+20
+00:01:04,519 --> 00:01:09,615
+car 80 % d'entre elles
+sont des taxis dans l'ensemble de données.
+
+21
+00:01:09,615 --> 00:01:12,840
+Nous avons donc w3=0,8.
+
+22
+00:01:12,840 --> 00:01:15,945
+Bien sûr, vous ne donnez pas
+une pondération de 0,8.
+
+23
+00:01:15,945 --> 00:01:18,910
+Celle-ci sera apprise
+par la descente de gradient.
+
+24
+00:01:18,910 --> 00:01:21,515
+C'est ce qui va se produire.
+
+25
+00:01:21,515 --> 00:01:25,055
+Malheureusement, cette pondération
+de 0,8 est vraie
+
+26
+00:01:25,055 --> 00:01:27,615
+pour les voitures jaunes
+de toutes les villes,
+
+27
+00:01:27,615 --> 00:01:28,950
+pas seulement New York.
+
+28
+00:01:28,950 --> 00:01:31,890
+Comment résoudre ce problème ?
+
+29
+00:01:31,890 --> 00:01:35,145
+En donnant une pondération élevée
+à New York ?
+
+30
+00:01:35,145 --> 00:01:37,275
+Ce n'est pas bon.
+
+31
+00:01:37,275 --> 00:01:40,860
+Toutes les voitures à New York ont
+maintenant cette pondération élevée.
+
+32
+00:01:40,860 --> 00:01:47,130
+Vous voyez le problème ?
+
+33
+00:01:47,130 --> 00:01:50,225
+En ajoutant un croisement
+de caractéristiques ?
+
+34
+00:01:50,225 --> 00:01:55,550
+Nous avons maintenant un nœud d'entrée
+pour les voitures rouges à New York,
+
+35
+00:01:55,550 --> 00:01:58,119
+un deuxième pour les voitures jaunes
+à New York,
+
+36
+00:01:58,119 --> 00:02:00,590
+un troisième pour les voitures blanches
+à New York,
+
+37
+00:02:00,590 --> 00:02:02,970
+un quatrième pour les voitures vertes
+à New York,
+
+38
+00:02:02,970 --> 00:02:05,525
+et la même chose pour les voitures à Rome.
+
+39
+00:02:05,525 --> 00:02:08,840
+Maintenant, le modèle peut
+rapidement apprendre
+
+40
+00:02:08,840 --> 00:02:12,560
+que les voitures jaunes à New York
+et les voitures blanches à Rome
+
+41
+00:02:12,560 --> 00:02:17,255
+sont généralement des taxis, et donner
+une pondération élevée à ces deux nœuds.
+
+42
+00:02:17,255 --> 00:02:20,310
+Pour le reste, la pondération sera nulle.
+
+43
+00:02:20,310 --> 00:02:21,975
+Problème résolu.
+
+44
+00:02:21,975 --> 00:02:28,740
+C'est pour cela que les croisements
+de caractéristiques sont si puissants.
+
+45
+00:02:28,740 --> 00:02:33,440
+Ils donnent beaucoup de puissance
+aux modèles linéaires.
+
+46
+00:02:33,440 --> 00:02:38,280
+Combinés à d'immenses
+volumes de données, ils constituent
+
+47
+00:02:38,280 --> 00:02:43,835
+une stratégie très efficace pour entraîner
+des espaces ultra-complexes.
+
+48
+00:02:43,835 --> 00:02:46,727
+Les réseaux de neurones sont
+une autre façon
+
+49
+00:02:46,727 --> 00:02:49,620
+d'entraîner des espaces ultra-complexes.
+
+50
+00:02:49,620 --> 00:02:52,585
+Cependant, les croisements
+de caractéristiques permettent
+
+51
+00:02:52,585 --> 00:02:54,285
+de conserver les modèles linéaires.
+
+52
+00:02:54,285 --> 00:03:00,875
+Sans eux, l'expressivité
+des modèles linéaires serait très limitée.
+
+53
+00:03:00,875 --> 00:03:04,879
+Avec les croisements de caractéristiques
+et un ensemble de données volumineux,
+
+54
+00:03:04,879 --> 00:03:08,910
+un modèle linéaire peut apprendre d'un
+espace d'entrée dans ses moindres recoins.
+
+55
+00:03:08,910 --> 00:03:12,285
+Les croisements de caractéristiques
+permettent donc à un modèle linéaire
+
+56
+00:03:12,285 --> 00:03:14,785
+de mémoriser
+de grands ensembles de données.
+
+57
+00:03:14,785 --> 00:03:19,269
+Vous pouvez affecter une pondération
+à chaque croisement de caractéristiques.
+
+58
+00:03:19,269 --> 00:03:23,580
+Ainsi, le modèle apprend ces combinaisons
+de caractéristiques.
+
+59
+00:03:23,580 --> 00:03:26,035
+Même s'il s'agit d'un modèle linéaire,
+
+60
+00:03:26,035 --> 00:03:29,332
+la relation sous-jacente entre
+les données d'entrée
+
+61
+00:03:29,332 --> 00:03:34,580
+et les résultats n'est pas linéaire.
+
+62
+00:03:34,580 --> 00:03:39,615
+Pourquoi voulons-nous tellement faire
+fonctionner les modèles linéaires ?
+
+63
+00:03:39,615 --> 00:03:42,065
+Remémorez-vous le cours précédent.
+
+64
+00:03:42,065 --> 00:03:47,005
+Nous avons parlé de problèmes
+convexes et non convexes.
+
+65
+00:03:47,005 --> 00:03:52,445
+Les réseaux de neurones avec
+de nombreuses couches sont non convexes.
+
+66
+00:03:52,445 --> 00:03:57,665
+En revanche, optimiser des modèles
+linéaires est un problème convexe.
+
+67
+00:03:57,665 --> 00:04:00,895
+Or, les problèmes convexes sont
+
+68
+00:04:00,895 --> 00:04:04,645
+bien plus faciles à résoudre
+que les problèmes non convexes.
+
+69
+00:04:04,645 --> 00:04:06,905
+Pendant longtemps,
+
+70
+00:04:06,905 --> 00:04:11,635
+les modèles linéaires clairsemés étaient
+le seul algorithme dont nous disposions
+
+71
+00:04:11,635 --> 00:04:16,160
+pour gérer des milliards
+d'exemples d'entraînement
+
+72
+00:04:16,160 --> 00:04:18,010
+et de caractéristiques d'entrée.
+
+73
+00:04:18,010 --> 00:04:23,360
+Les prédécesseurs de TensorFlow
+chez Google (SETI, SmartASS, Siebel)
+
+74
+00:04:23,360 --> 00:04:26,410
+étaient tous capables d'apprendre
+à très grande échelle.
+
+75
+00:04:26,410 --> 00:04:29,800
+Ceci a changé ces dernières années.
+
+76
+00:04:29,800 --> 00:04:33,870
+Aujourd'hui, les réseaux de neurones
+peuvent aussi gérer des données
+
+77
+00:04:33,870 --> 00:04:38,580
+à très grande échelle,
+souvent avec l'aide de GPU et de TPU.
+
+78
+00:04:38,580 --> 00:04:41,177
+Cependant,
+les modèles linéaires clairsemés
+
+79
+00:04:41,177 --> 00:04:43,775
+restent une solution rapide et économique.
+
+80
+00:04:43,775 --> 00:04:49,010
+Les utiliser pour prétraiter
+des caractéristiques
+
+81
+00:04:49,010 --> 00:04:54,220
+permet souvent à votre réseau de neurones
+de converger plus rapidement.

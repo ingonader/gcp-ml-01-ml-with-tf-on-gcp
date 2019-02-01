@@ -1,0 +1,323 @@
+1
+00:00:00,000 --> 00:00:04,785
+Feature crosses combine two or more categorical features.
+
+2
+00:00:04,785 --> 00:00:10,915
+If we have continuous features we can discretize them and then do a feature cross.
+
+3
+00:00:10,915 --> 00:00:13,860
+Let's see what this means for the size of
+
+4
+00:00:13,860 --> 00:00:18,090
+the input space by looking at a couple of examples.
+
+5
+00:00:18,090 --> 00:00:22,300
+Suppose we want to predict a traffic level in a city,
+
+6
+00:00:22,300 --> 00:00:24,460
+we have two raw inputs,
+
+7
+00:00:24,460 --> 00:00:27,535
+the hour of the day and the day of the week.
+
+8
+00:00:27,535 --> 00:00:32,660
+How many inputs would we have if we simply one
+
+9
+00:00:32,660 --> 00:00:38,320
+hot encoded the hour of day and the day of the week and provided it to the model?
+
+10
+00:00:38,320 --> 00:00:42,990
+Did you say 24 plus 7, so 31?
+
+11
+00:00:42,990 --> 00:00:47,520
+When you one hot encode the hour of the day you get 24 input nodes, well,
+
+12
+00:00:47,520 --> 00:00:51,650
+you can get away with 23 by treating all zeros as a valid input,
+
+13
+00:00:51,650 --> 00:00:54,795
+but normally we reserve all zeros for missing data,
+
+14
+00:00:54,795 --> 00:00:57,965
+so let's say 24 input nodes.
+
+15
+00:00:57,965 --> 00:01:03,590
+And similarly, when you one hot encode the day of the week you get seven input nodes.
+
+16
+00:01:03,590 --> 00:01:07,885
+So, in total we have 31 input nodes.
+
+17
+00:01:07,885 --> 00:01:13,345
+But we know that the traffic is not the same at 5:00 PM every day.
+
+18
+00:01:13,345 --> 00:01:19,285
+5:00 PM on Wednesday is very different from 5:00 PM on the weekend.
+
+19
+00:01:19,285 --> 00:01:23,450
+Is there an easy way to get the model to learn this?
+
+20
+00:01:23,450 --> 00:01:25,590
+Sure. You know to do this?
+
+21
+00:01:25,590 --> 00:01:28,970
+Now, Feature cross, the two raw inputs.
+
+22
+00:01:28,970 --> 00:01:33,780
+We are now concatenating the hour of the day with the day of the week.
+
+23
+00:01:33,780 --> 00:01:39,590
+And this letter model learned the combination of hour and day quickly.
+
+24
+00:01:39,590 --> 00:01:40,950
+Great.
+
+25
+00:01:40,950 --> 00:01:45,285
+But how many inputs do we now have?
+
+26
+00:01:45,285 --> 00:01:49,605
+Not 24 plus 7,
+
+27
+00:01:49,605 --> 00:01:53,640
+we now have 24 times 7,
+
+28
+00:01:53,640 --> 00:01:56,395
+all the possible combinations.
+
+29
+00:01:56,395 --> 00:02:06,925
+So, we went from 24 plus 7 equals 31 inputs to 24 times 7 equals 168 inputs.
+
+30
+00:02:06,925 --> 00:02:12,075
+When you do feature crosses you get way more inputs.
+
+31
+00:02:12,075 --> 00:02:15,210
+Data scientist often worry that
+
+32
+00:02:15,210 --> 00:02:20,425
+one hot encoding categorical variables increases the size of their model.
+
+33
+00:02:20,425 --> 00:02:25,955
+Even one hot encoding gives traditional machine learning frameworks a lot of trouble.
+
+34
+00:02:25,955 --> 00:02:28,280
+How will they handle feature crosses?
+
+35
+00:02:28,280 --> 00:02:29,970
+They'll have a heart attack.
+
+36
+00:02:29,970 --> 00:02:34,160
+Internally, TensorFlow uses a sparse representation
+
+37
+00:02:34,160 --> 00:02:37,460
+for both one hot encoding and for feature crosses,
+
+38
+00:02:37,460 --> 00:02:39,365
+so it has no problem with this.
+
+39
+00:02:39,365 --> 00:02:42,605
+For any particular raw of your input dataset,
+
+40
+00:02:42,605 --> 00:02:48,640
+how many nodes in X3 are let up? Just one.
+
+41
+00:02:48,640 --> 00:02:51,980
+Do you see why? For every label
+
+42
+00:02:51,980 --> 00:02:56,595
+every observation in the table is taken at a specific time.
+
+43
+00:02:56,595 --> 00:03:00,490
+That corresponds to a specific hour of a specific day of the week.
+
+44
+00:03:00,490 --> 00:03:04,210
+So, you could have an observation at 3:00 PM,
+
+45
+00:03:04,210 --> 00:03:06,190
+in the hour of the day in the input,
+
+46
+00:03:06,190 --> 00:03:09,105
+and Wednesday in the day of the week input.
+
+47
+00:03:09,105 --> 00:03:11,925
+So, feature cross this and what do you have?
+
+48
+00:03:11,925 --> 00:03:13,670
+You have one input node.
+
+49
+00:03:13,670 --> 00:03:19,990
+The input node that corresponds to 3:00 PM on Wednesday and that input node will be one.
+
+50
+00:03:19,990 --> 00:03:24,475
+All the other input nodes for X3 will be zero.
+
+51
+00:03:24,475 --> 00:03:32,470
+The input therefore will consist of 167 zeros and 1 one.
+
+52
+00:03:32,470 --> 00:03:38,045
+And when you do a feature cross the input is very, very sparse.
+
+53
+00:03:38,045 --> 00:03:39,490
+So, keep this in mind.
+
+54
+00:03:39,490 --> 00:03:43,105
+TensorFlow will give us easy tools to deal with this.
+
+55
+00:03:43,105 --> 00:03:45,705
+Let's look at the responses of the parse.
+
+56
+00:03:45,705 --> 00:03:48,500
+a. Answer is no.
+
+57
+00:03:48,500 --> 00:03:51,420
+Binning is good because it enables
+
+58
+00:03:51,420 --> 00:03:55,395
+a model to learn linear relationships within a single feature.
+
+59
+00:03:55,395 --> 00:04:00,220
+However, a city exists in more than one dimension,
+
+60
+00:04:00,220 --> 00:04:07,590
+so learning cities specific relationships requires crossing latitude and longitude.
+
+61
+00:04:07,590 --> 00:04:10,315
+So, how about the second one, b?
+
+62
+00:04:10,315 --> 00:04:13,425
+Answer again is still no.
+
+63
+00:04:13,425 --> 00:04:16,665
+Binning is a good idea, however,
+
+64
+00:04:16,665 --> 00:04:20,175
+the city is a conjunction of latitude and longitude.
+
+65
+00:04:20,175 --> 00:04:26,320
+So, separate feature crosses prevent the model from learning city-specific prices.
+
+66
+00:04:26,320 --> 00:04:30,140
+How about c?
+
+67
+00:04:30,140 --> 00:04:33,820
+That's yes. Crossing a binned latitude with
+
+68
+00:04:33,820 --> 00:04:41,030
+a binned longitude enables the model to learn city-specific effects of rooms per person.
+
+69
+00:04:41,030 --> 00:04:47,780
+Binning prevents a change in latitude producing the same result as a change in longitude.
+
+70
+00:04:47,780 --> 00:04:50,890
+And depending on the granularity of the bins,
+
+71
+00:04:50,890 --> 00:04:52,760
+this feature cross could learn
+
+72
+00:04:52,760 --> 00:04:59,125
+city-specific or neighborhood-specific or even block-specific affects.
+
+73
+00:04:59,125 --> 00:05:01,825
+Fourth one, no.
+
+74
+00:05:01,825 --> 00:05:03,520
+In this example,
+
+75
+00:05:03,520 --> 00:05:08,755
+crossing real valued features is not a good idea.
+
+76
+00:05:08,755 --> 00:05:11,290
+Crossing the real value of say,
+
+77
+00:05:11,290 --> 00:05:16,880
+latitude with rooms per person enables a 10 percent change in one feature,
+
+78
+00:05:16,880 --> 00:05:18,320
+lets say a latitude,
+
+79
+00:05:18,320 --> 00:05:23,890
+to be equivalent to a 10 percent change in the other feature say, rooms per person.
+
+80
+00:05:23,890 --> 00:05:28,325
+This is so problematic that this is not even possible in TensorFlow.
+
+81
+00:05:28,325 --> 00:05:34,530
+Crossing is only possible with categorical or discretized columns.

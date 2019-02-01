@@ -1,0 +1,207 @@
+1
+00:00:00,000 --> 00:00:03,120
+We use a transform function to transform
+
+2
+00:00:03,120 --> 00:00:07,770
+the evaluation dataset and we wrote the transformed evaluation data.
+
+3
+00:00:07,770 --> 00:00:13,450
+For what type of data did we use analyze and transform dataset?
+
+4
+00:00:13,450 --> 00:00:16,650
+Right, the training data.
+
+5
+00:00:16,650 --> 00:00:20,950
+And we use transform dataset for the evaluation data.
+
+6
+00:00:20,950 --> 00:00:25,580
+Even though we created the preprocessed features using Beam,
+
+7
+00:00:25,580 --> 00:00:30,670
+the preprocessed method couldn't have arbitrary Python code.
+
+8
+00:00:30,670 --> 00:00:35,080
+It had to consist solely of TensorFlow functions.
+
+9
+00:00:35,080 --> 00:00:37,930
+The reason these functions needed to be in
+
+10
+00:00:37,930 --> 00:00:42,010
+TensorFlow was that they're part of the prediction graph.
+
+11
+00:00:42,010 --> 00:00:44,320
+And why are they part of the prediction graph?
+
+12
+00:00:44,320 --> 00:00:47,455
+So that the end user can give the model
+
+13
+00:00:47,455 --> 00:00:51,420
+raw data and the model can do the necessary preprocessing.
+
+14
+00:00:51,420 --> 00:00:55,525
+But, how will the model know what functions to call?
+
+15
+00:00:55,525 --> 00:00:59,569
+In order for the model to know what functions to call,
+
+16
+00:00:59,569 --> 00:01:02,735
+we need to save the transform function.
+
+17
+00:01:02,735 --> 00:01:05,060
+And that's what I'm doing here.
+
+18
+00:01:05,060 --> 00:01:09,020
+I'm saving the transform function itself into
+
+19
+00:01:09,020 --> 00:01:14,695
+a directory called metadata alongside by trained model,
+
+20
+00:01:14,695 --> 00:01:19,510
+then we tell the input function to pickup the metadata.
+
+21
+00:01:19,510 --> 00:01:24,755
+Which input function? All three.
+
+22
+00:01:24,755 --> 00:01:29,460
+First, let's look at the training and evaluation input functions.
+
+23
+00:01:29,460 --> 00:01:32,405
+They read the preprocessed features.
+
+24
+00:01:32,405 --> 00:01:39,745
+So, notice that I specify that the schema corresponds to the transformed metadata.
+
+25
+00:01:39,745 --> 00:01:46,560
+Change the training and evaluation input functions to read the preprocessed features.
+
+26
+00:01:46,600 --> 00:01:49,760
+TensorFlow transform comes with
+
+27
+00:01:49,760 --> 00:01:54,695
+a nice helper function called build training input function.
+
+28
+00:01:54,695 --> 00:01:59,710
+I'm using this for both training and evaluation by changing
+
+29
+00:01:59,710 --> 00:02:04,535
+the input paths variable to point to either the train data path,
+
+30
+00:02:04,535 --> 00:02:08,680
+or the eval data path depending on the mode.
+
+31
+00:02:09,320 --> 00:02:14,205
+The serving input function accepts the raw data.
+
+32
+00:02:14,205 --> 00:02:18,270
+So here, I'm passing in the raw data metadata,
+
+33
+00:02:18,270 --> 00:02:20,640
+not the transformed metadata.
+
+34
+00:02:20,640 --> 00:02:23,815
+Well, the raw data alone isn't enough,
+
+35
+00:02:23,815 --> 00:02:29,410
+we could also have arbitrary TensorFlow functions in the preprocessing code.
+
+36
+00:02:29,410 --> 00:02:33,960
+Those operations are stored in saved_model.pb.
+
+37
+00:02:33,960 --> 00:02:38,340
+But again, nor does a nice TensorFlow transform helper
+
+38
+00:02:38,340 --> 00:02:43,140
+function build parsing transforming serving input function.
+
+39
+00:02:43,140 --> 00:02:47,020
+Parse the Json according to raw data schema.
+
+40
+00:02:47,020 --> 00:02:51,900
+Transform the raw data based on the TensorFlow operations in saved_model.pb,
+
+41
+00:02:51,900 --> 00:02:53,880
+then send it along to the model.
+
+42
+00:02:53,880 --> 00:02:59,325
+The client code just needs to send the raw input variables,
+
+43
+00:02:59,325 --> 00:03:00,930
+so that hasn't changed.
+
+44
+00:03:00,930 --> 00:03:06,530
+The serving input function receives the input variables and remains the same as before.
+
+45
+00:03:06,530 --> 00:03:10,010
+It accepts raw data and sends it to the model.
+
+46
+00:03:10,850 --> 00:03:13,830
+So, why does a model work?
+
+47
+00:03:13,830 --> 00:03:19,865
+The DNN regressor or whatever model we use cannot deal with a string at DHU.
+
+48
+00:03:19,865 --> 00:03:24,645
+The reason it works is that all the code that you wrote in preprocessed,
+
+49
+00:03:24,645 --> 00:03:27,995
+that code is now part of the model graph itself.
+
+50
+00:03:27,995 --> 00:03:34,350
+This happens because a model reads the metadata and it includes a preprocessing code.
+
+51
+00:03:34,350 --> 00:03:38,090
+So, that's how TensorFlow transform works.
+
+52
+00:03:38,090 --> 00:03:42,050
+Let's now use it on a taxi fare prediction problem.

@@ -1,0 +1,99 @@
+Neste laboratório, vamos experimentar atributos diferentes. Então, o que fizemos foi ir
+ao a_features, deixe-me limpar todas as células. Para ter certeza de que tudo o que estou
+executando está sendo, de fato, executado. E a primeira coisa é fazer
+um monte de importações. Estamos importando TensorFlow, importando Pandas, NumPy etc. Vamos em frente e importá-los
+e, em seguida, carregar o conjunto de dados, que é o conjunto
+de dados de imóveis da Califórnia. É isso que vamos fazer. Vamos tentar prever o preço das casas na
+Califórnia deste conjunto de dados. Acabamos de carregar o conjunto de dados, então é bom saber o que há nele. Então vamos em frente e fazer df.head. Isso nos mostra as primeiras linhas, e vemos que há
+longitude e latitude, a idade média do imóvel. Esse conjunto de dados não são casas
+individuais, mas sim um agregado. Então você tem o número total
+de cômodos, é 5.612. Obviamente, esta não é uma casa, são todos os cômodos dessa agregação,
+que são um código postal ou um município, ou o
+que for essa agregação. Portanto, temos o número total de cômodos, o número total de quartos, a população, o número de pessoas. São cerca de mil pessoas, parece. E isso é em 472 domicílios. A renda média é de 1,5
+em algumas unidades. E o valor médio do imóvel é de 66.900
+novamente e algumas unidades. Isso é basicamente o que estamos
+tentando aprender com o conjunto de dados. Estas são as primeiras linhas
+deste conjunto de dados. É bom para basicamente ter uma ideia
+de como esses números se parecem. Mas o df.describe() é extremamente útil. O que df.describe() faz no Pandas é mostrar estatísticas
+das colunas numéricas. Portanto, se houver
+colunas categóricas, ele não nos mostrará nada sobre isso, mas todas as colunas numéricas, e aqui todas são numéricas, ele nos mostrará, por exemplo, que há 17 mil longitudes
+no conjunto de dados, 17 mil latitudes no conjunto de dados. Este é o número de linhas
+no conjunto de dados e isso é uma boa ideia para
+basicamente verificar que todos eles são, de fato, 17 mil. Se algum deles não for, isso indica que um ou mais valores
+dessa linha estão faltando. Portanto, neste caso, número um: verificação de integridade, nenhum valor está faltando. Temos 17 mil linhas para todos os valores. A longitude média é de -119. A latitude média é 35. Isso faz sentido porque é Califórnia. A idade média do imóvel é de 28,6. Isso são anos.
+Então, cerca de 30 anos de idade. O número total de cômodos é de 2.643. Isso não é uma casa individual, verdade? Esse provavelmente é o número total
+de cômodos nessa unidade de agregação. Temos que fazer algo com isso. O número total de quartos parece
+estranho, 539, a população é 1.429, o número de domicílios é de 501, e a renda média é de 3,9 e, digamos que o valor mediano de
+habitação seja de 27 mil neste caso. Certo?
+Então essa é a média de todos eles. E então você tem o desvio padrão, o valor mínimo que existe, o número mínimo de cômodos é dois. O número máximo de cômodos é de 37.937. Isso nos dá uma ideia
+de como são esses dados. E o que vamos fazer é basicamente
+dividir esses dados em duas partes e aqui, para experimentação, não vamos salvá-los em lugar algum, a divisão aleatória é boa o suficiente. Então, basicamente, estou criando uma
+máscara, e a máscara está criando uma matriz do comprimento
+do dfs, então são 17 mil. E verificando se o aleatório
+é menor que 0,8. Então, isso significa que
+80% dos valores serão 1 e 20% dos valores serão 0,
+aproximadamente. Portanto, traindf
+é todos aqueles valores para os quais é 1 e evaldf é todos
+os valores para os quais a máscara é 0. Então, neste ponto, teremos dois frames de dados,
+traindf e evaldf. E posso adicionar algo novo. Posso imprimir o comprimento
+de traindf, que é cerca de 13 mil. E também posso imprimir
+um comprimento de evaldf, que é cerca de 20%, cerca de 3.400. Neste ponto, temos nosso conjunto
+de dados de treinamento, nosso conjunto de dados de avaliação. Vamos em frente e criar nosso modelo. E para isso, a primeira coisa é ler nossos dados. Então eu vou fazer a função
+make_input_fn, dar um frame de dados, o número de períodos que queremos ler, e vou usar a função pandas_input_fn para pegar o frame de dados,
+mas não apenas ele, pois adicionarei atributos extras a ele. E para você começar, olhe o número de cômodos, o número total de cômodos aqui. Isso é meio ridículo, certo? Não temos uma casa com 2.643 cômodos.
+Isso não está certo. O que isso realmente é é o número total de cômodos
+nessa agregação, nesse código postal. Então, o que nós temos
+que normalizar? Temos que reduzi-lo
+ao valor de uma casa única. O que estamos fazendo é pegar
+o número total de cômodos e dividindo-o pelo número de residências. E isso nos diz o número
+de cômodos naquela casa, em uma casa típica, nesse código postal. O que mais nós temos que normalizar
+para o número de CEP? Vamos ver isso. As latitudes e longitudes parecem
+estar bem, como estão. O número total de cômodos
+temos que normalizar. E também temos que normalizar
+o número total de quartos. Vamos fazer isso. Em vez de fazer um número
+de cômodos, além disso, vamos fazer o número de quartos,
+como é chamado. Não, é chamado de total_bedrooms. total_bedrooms. E isso pode ser o num_bedrooms. Esses são nossos dois atributos extras. Criamos nossa função de entrada,
+e agora nossas colunas de atributos, a housing_median_age é uma
+coluna numérica. Poderia ser usada assim, certo? A idade média, quando olhamos para ela, esses números fazem sentido. Estes parecem ser anos. Então podemos usá-los como eles são. Então, vamos usar a idade média. Vamos em frente e tomar a latitude
+e intervalar entre 32 e 42. Por que 32 e 42? Porque voltamos para cá e vemos
+que a latitude varia entre 32 e 42. Assim, podemos intervalar a latitude
+entre 32 e 42. O que mais devemos usar? Se estiver usando a latitude, pode também usar a longitude. Vamos em frente e pegar isso. E também fazer a longitude. Faremos a longitude aqui. Mas os limites da longitude precisam
+estar entre -124 e -114. Então vamos descer aqui
+e mudar isso para -124 e -114 e um grau de longitude
+é provavelmente razoável. Um grau é basicamente cerca de 100 km. Então isso está certo. Então podemos fazer isso. O número de cômodos. Lembre-se que nós adicionamos
+o número de quartos, então vamos em frente e fazer isso também. Número de cômodos, número de quartos. E então temos a renda média. Esse é o nosso conjunto
+de colunas de atributos. Vamos em frente para treinar e avaliar, usando train_and_evaluate
+passando na train_spec, a eval_spec etc. E neste ponto, podemos chamar train_and_evaluate e gravar um modelo treinado. E quando executamos isso, devemos ter uma saída de avaliação. Então estamos executando. Pedimos para executar
+por cinco mil etapas. Neste ponto, estou na etapa 1.650. Então vamos apenas esperar um pouco. E quando terminar, observe que, de vez em quando, salva um dicionário, especificando qual é a perda média. A perda média não é tão útil porque
+a perda é computada em um lote. Então não é tão boa assim. Mas esta perda, esta é a perda no conjunto de dados
+de avaliação e faz mais sentido. Vamos em frente e,
+na verdade, a perda, a perda média é computada no conjunto
+de avaliação que faz mais sentido. A perda em si é apenas em lote. Então não precisamos disso. Vamos descer. Vamos esperar que isso seja feito, Quatro mil, cinco mil.
+E aí está. Nossa perda média em todo o conjunto
+de dados, o RMSC, é de 0,59. Agora vamos tentar outra coisa. Vamos em frente e ver o que acontece
+se eu não tenho o número de cômodos. Então não vamos adicionar esses
+extras, e o que poderíamos fazer é, ao criar nossas colunas de entrada, decidiremos não usar o número de cômodos, o número de quartos, toda latitude, toda longitude ou a renda média. Tudo o que temos é a idade da casa. Então, se fizermos isso, e essa é
+a nossa única coluna de atributos. O que acontece? Vamos descer aqui. Lembre-se que tínhamos 0,59 antes. Eu vou limpar a célula, e executar novamente, desta vez
+apenas com uma entrada. E neste momento, o que conseguimos? Neste ponto, nossa perda é de 1,87. Então, obviamente, todos esses atributos
+de entrada foram úteis. Certo? Porque, mais uma vez, a perda aumentou,
+quando não os tínhamos. Então, isso dá uma ideia de que tipos de atributos são úteis e você pode
+fazer isso manualmente, pode simplesmente
+ir em frente e dizer "o que acontece se eu usar
+apenas a renda média?" E a renda média
+é um ótimo indicador. Portanto, se o usarmos
+e tentarmos isso novamente, descobriremos que a perda
+diminui drasticamente. E os outros atributos não são tão úteis. São, mas não tanto. A renda média é particularmente útil
+porque é o que as pessoas podem pagar e o mercado tende a corresponder
+ao que as pessoas podem pagar. Então observe que agora temos
+uma perda média de 0,69. Passamos de 1,38 para 0,69 simplesmente
+adicionando um atributo, a renda média. Ela foi um atributo extremamente útil. Agora, como isso importa no mundo real? A maneira como isso importa
+no mundo real é, realmente importa
+que dados você coleta. Imagine que você tenha
+esse conjunto de dados e que não tenha coletado a renda média
+das pessoas daquele bairro. Seu modelo seria muito ruim. Isso é o que queremos dizer
+quando falamos que o que importa para um modelo de aprendizado
+de máquina não é o modelo em si, mas os dados que são colocados no modelo. E realmente importa
+para esse modelo específico que você tenha a renda média das
+pessoas que moram no bairro, para poder prever os preços
+das casas naquele bairro. Esse é um atributo muito importante. E para ter esse atributo, você precisa ter o canal de engenharia
+de dados para trazer esses dados a ele

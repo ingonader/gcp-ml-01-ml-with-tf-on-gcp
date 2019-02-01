@@ -1,0 +1,91 @@
+Para este lab, deberán
+copiar el código fuente de GitHub a su ambiente de Cloud Shell. También tendrán que ejecutar un script para descargar algunas bibliotecas
+con las dependencias para la canalización. Estos pasos tomarán
+algunos minutos en completarse. Ahora, el video avanza rápido
+mientras se realizan estos pasos hasta que se instala el código fuente
+y se descargan las bibliotecas. En Cloud Shell,
+podemos usar distintos editores para ver
+el código fuente de la canalización. Podemos usar un editor
+basado en texto, como Nano. Sin embargo, en este video me verán utilizar un editor gráfico
+que viene incorporado en Cloud Shell. Una vez se carga este editor en el menú de la izquierda podemos abrir la carpeta
+training-data-analyst courses, data_analysis, lab2, python para acceder al código fuente
+de la canalización en el archivo grep.py. El código fuente toma como entrada
+los archivos Java de la línea 26. Usaremos el archivo Java especificado
+con la instrucción de comodín. Para cada uno de los archivos la transformación busca líneas
+de código fuente de Java que contengan la palabra clave,
+que en este caso es "import". Podemos ver los detalles de la
+implementación de la canalización en las líneas 32 a la 34. Fíjense en el paso grep de la canalización que usa el método my_grep
+que se definió en la línea 20. El método my_grep busca
+el término de búsqueda "import" y, para todas las líneas
+que contienen el término de búsqueda el resultado se escribe
+en el directorio /tmp/output. Para ejecutar
+la canalización en Cloud Shell simplemente usaremos el comando python y pasaremos el nombre
+del archivo de código fuente con la implementación de la canalización. La canalización se completó correctamente y podemos confirmarlo si miramos
+los archivos de salida de la canalización. La canalización identificó correctamente
+todas las líneas de código fuente de Java que contenían la palabra clave "import". En lo que queda del lab tomarán este código fuente
+de la canalización y lo prepararán para ejecutarlo
+en la plataforma Google Cloud Dataflow. Pero antes, debemos
+seguir algunos pasos previos. Primero, debemos buscar
+las API de Dataflow en GCP y habilitarlas
+con el botón "Enable" que aparece aquí. Esto tomará unos minutos por lo que aceleraremos
+el video mientras se habilitan las API. Podemos confirmar
+que se habilitaron las API si vemos el botón "Disable"
+en la pantalla "Dataflow API". Luego, debemos
+asegurarnos de haber creado un depósito en Cloud Storage
+para nuestra canalización. Podemos crear el depósito y es importante
+que le asignemos un nombre único y que esté configurado
+como depósito regional. Asigné us-east4
+en la región de Virginia del Norte. Con el depósito listo copiarán los archivos
+del código fuente de la entrada para la canalización de Cloud Shell
+al depósito de Google Cloud. Para ello, usamos el comando gscopy. Recuerden que deseamos copiar
+los archivos de código fuente de Java para la canalización
+porque esta no tiene acceso al sistema de archivos de Cloud Shell mientras se ejecuta
+en Google Cloud Dataflow. Una vez que el comando gsutil cp
+termina de copiar los archivos podemos volver al depósito en
+Google Cloud Storage en el navegador. Actualizamos la página y confirmamos
+que los archivos se copiaron con éxito. Estos son los cuatro archivos
+de Java que se usarán como entrada para la canalización
+que se ejecuta en Google Cloud Dataflow. Ahora, veamos el código fuente
+de la implementación de la canalización que se modificó para ejecutarse en
+la plataforma de Google Cloud Dataflow. Está en el archivo grepc.py. Observen que este usa constantes
+para los nombres de proyectos y depósitos. En mi caso, usé la misma ID única
+para el proyecto y el depósito. Les voy a asignar el mismo valor a ambos. El código también
+especifica algunos parámetros que necesitaré para ejecutar
+esta canalización en Cloud Dataflow. Por ejemplo, hay que especificar
+el nombre del trabajo que ejecuta la canalización y el runner de Dataflow
+que ejecutará la canalización en Dataflow. Aquí, la entrada
+y la salida se especifican como rutas al depósito
+de Google Cloud Storage. El resto del código
+de la canalización no cambia. Para ejecutar la canalización en Dataflow seguimos usando el comando python
+y pasamos como argumentos el nombre de archivo del código fuente
+de la implementación de la canalización. Ya que el código fuente
+utilizó el runner de Dataflow el código se empaquetará
+como bibliotecas de Dataflow y se enviará como un trabajo
+que ejecutará una canalización en la plataforma de Google Cloud Dataflow. Cuando el comando python
+termina de ejecutarse volveremos a GCP y abriremos Dataflow con el menú de tres líneas,
+a la izquierda, o la barra de búsqueda. Desde el panel de control de Dataflow podemos supervisar la canalización
+que enviamos como uno de los trabajos. Aquí, el trabajo se llama "example2" porque ese fue el nombre que utilicé
+en el archivo grepc.py. En primer lugar, observen
+que el trabajo no terminó de iniciarse. Dice que se está ajustando
+la escala automáticamente y muestra que solo está usando
+un núcleo virtual para la ejecución. Al lado derecho, podemos
+ver opciones de la canalización y otra información acerca del trabajo. En la sección de registro podemos ver que la canalización
+aún no se está ejecutando porque está iniciando
+uno de los trabajadores. Para confirmarlo, podemos mirar
+el gráfico en la sección Autoscaling. Podemos ver que el trabajo
+espera usar un trabajador. Ahora, la cantidad de trabajadores
+aumentó de cero a uno. Esto significa que se aprovisionó
+exactamente una instancia virtual para ejecutar esta canalización. Esta canalización tardará
+unos minutos en terminar de ejecutarse. Por eso, el video
+se adelantará unos minutos hasta que se complete el trabajo. Si vemos la canalización las marcas verdes indican que se completaron
+todos los pasos de las transformaciones. Si revisamos el gráfico
+de abajo a la derecha veremos que todos los trabajadores
+que usamos para ejecutar la canalización redujeron su escala. Para ver la salida de esta canalización copiamos los archivos de salida de
+Google Cloud Storage a Cloud Shell. Una vez copiados los archivos podemos revisarlos
+directamente en Cloud Shell o podemos abrir
+Google Cloud Storage en el navegador donde encontraremos los archivos
+en el depósito, en la carpeta Java Help. Los archivos tendrán
+un prefijo de salida. Los nombres tendrán el formato
+"0 of 4", "01 of 4", "02 of 4", etcétera. Para revisar el contenido de los archivos se debe usar la casilla de verificación
+"Public link", que ven a la derecha. Aquí, observamos
+el contenido del primer archivo.

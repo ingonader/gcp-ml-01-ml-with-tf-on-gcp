@@ -1,0 +1,80 @@
+En esta parte del módulo conocerán lo que se necesita
+para implementar una canalización que se va escalando a medida
+que crece el conjunto de datos. Veamos. Tal vez, algunos ya conocen MapReduce. Es un marco de trabajo de procesamiento
+de datos distribuido y tolerante a fallas que fue descrito por Google en un artículo
+de investigación muy influyente, en 2004. Se sigue usando con mucha frecuencia por ejemplo, en el proyecto Apache ParDo. Es importante conocer
+los conceptos básicos de MapReduce porque Dataflow y Apache Beam
+utilizan ideas de ese marco de trabajo. Aunque también incluyen innovaciones
+desarrolladas por los investigadores e ingenieros de Google después de 2004. El diagrama que aparece en la pantalla
+es una introducción rápida a MapReduce. Para procesar datos en MapReduce,
+primero los "fragmentamos" o subdividimos. Los fragmentos de datos se distribuyen
+en dispositivos de almacenamiento en múltiples nodos
+de procesamiento de un clúster. En el diagrama, vemos que los datos
+se reparten entre los nodos 1 a 3. en el clúster de procesamiento. Para ejecutar un trabajo de procesamiento
+de datos en este marco de trabajo escribiremos código
+para las funciones Map y Reduce. Primero, veamos a Map. Un Map debe ser una función
+sin estado, para que se pueda programar su ejecución en paralelo
+en todos los nodos del clúster. Cada Map lee los datos del almacenamiento
+del nodo en el que se ejecuta los procesa y genera un resultado. La salida de las operaciones Map se mezcla con la de los otros nodos del clúster
+para pasar a la siguiente etapa: Reduce. Las reducciones son como
+operaciones de agregación con datos. Las agregaciones son procesos
+como contar la cantidad elementos de datos o calcular sumas. Una vez que finalizan
+las operaciones de reducción el resultado se transforma en la salida
+del paso de MapReduce en una canalización. Si queremos tomar una transformación en la canalización
+de procesamiento de datos y dejamos
+que Dataflow la ejecute a escala con distribución automática
+en varios nodos de un clúster debemos usar
+la clase ParDo de Apache Beam. ParDo es una contracción de "parallel do". Los pasos de transformación
+creados con ParDo son parecidos a los Map en MapReduce. Las transformaciones
+realizadas con ParDo no deben tener estado,
+para poder ejecutarlas en paralelo. Es un poco restrictivo,
+pero útil para realizar muchas tareas. Por ejemplo, si creamos
+una canalización de procesamiento de datos para analizar archivos
+de registro de servidores web y necesitamos filtrar
+las entradas de registro que tienen la dirección de IP
+de un visitante del sitio web. Podemos hacerlo
+con una transformación sin estado o, para extraer el valor de la dirección
+de IP de la string de la entrada lo podemos hacer sin estado. Otras operaciones
+de procesamiento sin estado como convertir strings en números enteros o cualquier cálculo que use
+solo con parte de la entrada como una fila de datos,
+también pueden hacerse con ParDo. Si usamos Python para implementar
+la canalización de procesamiento de datos hay métodos de ayuda
+para comenzar a usar ParDo. Beam.Map, que aparece en la pantalla,
+se diseñó solo para relaciones uno a uno. Por ejemplo, si procesamos
+las palabras de un documento y, por cada palabra, queremos mostrar
+un par, con la palabra y su longitud existe una relación uno a uno,
+ya que cada palabra puede corresponderse solo con una longitud, determinada
+por la cantidad de caracteres que posee. Si usamos beam.Map para la transformación
+en nuestra canalización, Dataflow manejará automáticamente la ejecución
+durante la transformación como los cálculos de la longitud
+de palabras en varios nodos de un clúster de Dataflow. A diferencia de Map, beam.FlatMap
+admite transformaciones que pueden generar cualquier cantidad
+de salidas para una entrada, incluso cero. Volvamos al ejemplo
+de las palabras del documento y supongamos que, por cada palabra,
+queremos obtener una lista de sus vocales. El resultado puede ser 0, 1, 2
+o incluso más vocales por palabra. Las transformaciones de beam.FlatMap
+también pueden ejecutarse en paralelo con Dataflow. Si usamos Java
+para implementar la canalización simplemente llamamos
+a ParDo.of seguido del método estático en la transformación y pasamos
+el resultado al siguiente llamado apply de la canalización. Para usar la operación GroupByKey,
+es muy fácil agregarla a la canalización. Por ejemplo, si tenemos una canalización
+que procesa direcciones postales e intenta encontrar todos
+los códigos postales de cada ciudad una vez que la canalización
+tenga una PCollection de pares clave-valor como aquí, con el par
+que incluye una clave y un código postal la salida creada por beam.GoupByKey
+producirá una PCollection de pares cada uno de los cuales
+incluye la ciudad como clave y una lista
+de códigos postales como valor. Si bien GroupByKey es similar
+al paso de mezcla de MapReduce la operación Combine.PerKey
+es más general y además incluye tanto pasos de mezcla como de reducción para ayudarnos a implementar
+agregaciones como sum o count. Podemos usar el método Combine.globally
+para hacer cálculos con todos los datos. Por ejemplo, si procesamos
+datos de transacciones financieras y cada fila de la PCollection
+es el monto de venta de una transacción para calcular el total de ventas
+de todas las transacciones podemos usar Combine.global
+con la operación sum como argumento. Combine también es compatible
+con agregaciones más detalladas. Por ejemplo, si sus registros
+de transacciones financieras incluyen los nombres de los vendedores,
+además de los montos de venta podemos pasar la operación Sum
+a Combine.PerKey a fin de combinar
+el total de ventas por vendedor.

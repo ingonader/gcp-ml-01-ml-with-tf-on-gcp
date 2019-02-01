@@ -1,0 +1,804 @@
+1
+00:00:00,720 --> 00:00:04,840
+En la siguiente parte, aprenderán
+más acerca de Google Cloud Dataflow
+
+2
+00:00:04,840 --> 00:00:07,900
+una tecnología complementaria
+para Apache Beam.
+
+3
+00:00:07,900 --> 00:00:11,350
+Ambas los pueden ayudar
+a construir y ejecutar preprocesamientos
+
+4
+00:00:11,350 --> 00:00:12,640
+e ingeniería de atributos.
+
+5
+00:00:13,110 --> 00:00:17,300
+Antes que nada, ¿qué es Cloud Dataflow?
+
+6
+00:00:17,300 --> 00:00:20,070
+Podemos pensar
+en el preprocesamiento de atributos
+
+7
+00:00:20,070 --> 00:00:24,250
+o cualquier transformación
+de datos, en términos de canalizaciones.
+
+8
+00:00:24,250 --> 00:00:27,980
+Cuando hablo de canalizaciones,
+me refiero a una secuencia de pasos
+
+9
+00:00:27,980 --> 00:00:30,940
+que cambian los datos
+de un formato a otro.
+
+10
+00:00:30,940 --> 00:00:34,660
+Supongamos que tenemos datos
+en un almacén de datos, como BigQuery.
+
+11
+00:00:34,660 --> 00:00:38,820
+Podemos usar BigQuery
+como entrada para la canalización.
+
+12
+00:00:38,820 --> 00:00:41,310
+Con una serie de pasos,
+podemos transformar los datos
+
+13
+00:00:41,310 --> 00:00:44,520
+o incluso agregar nuevos atributos
+como parte de la transformación.
+
+14
+00:00:44,520 --> 00:00:48,510
+Por último, podemos guardar el resultado
+en un álbum, como Google Cloud Storage.
+
+15
+00:00:49,550 --> 00:00:52,200
+Cloud Dataflow es una plataforma
+
+16
+00:00:52,200 --> 00:00:56,350
+que permite ejecutar
+estas canalizaciones de procesamiento.
+
+17
+00:00:56,350 --> 00:01:01,610
+Dataflow ejecuta canalizaciones
+escritas en los lenguajes Python y Java.
+
+18
+00:01:01,610 --> 00:01:06,260
+Dataflow es tan superior como plataforma
+para la transformación de datos
+
+19
+00:01:06,260 --> 00:01:09,920
+porque es una oferta sin servidores
+totalmente administrada de Google
+
+20
+00:01:09,920 --> 00:01:13,410
+que permite ejecutar canalizaciones
+de procesamiento de datos a escala.
+
+21
+00:01:13,980 --> 00:01:16,180
+Como desarrolladores,
+podemos desentendernos
+
+22
+00:01:16,180 --> 00:01:19,945
+de la administración del tamaño
+del clúster que ejecuta la canalización.
+
+23
+00:01:19,945 --> 00:01:22,940
+Dataflow puede cambiar
+la cantidad de recursos de procesamiento
+
+24
+00:01:22,940 --> 00:01:26,970
+y de servidores en los que se ejecuta
+la canalización, de manera muy flexible
+
+25
+00:01:26,970 --> 00:01:30,200
+según la cantidad de datos
+que necesiten procesarse.
+
+26
+00:01:30,200 --> 00:01:32,695
+A fin de escribir código para Dataflow
+
+27
+00:01:32,695 --> 00:01:36,340
+se usa una biblioteca
+de código abierto llamada Apache Beam.
+
+28
+00:01:36,340 --> 00:01:38,942
+Para implementar
+una canalización de procesamiento
+
+29
+00:01:38,942 --> 00:01:45,100
+se escribe código con las API de Beam
+y luego se lo implementa en Dataflow.
+
+30
+00:01:45,100 --> 00:01:49,360
+Una de las ventajas de Apache Beam
+es que el código escrito para Beam
+
+31
+00:01:49,360 --> 00:01:52,964
+es similar a como pensamos
+en las canalizaciones de procesamiento.
+
+32
+00:01:53,650 --> 00:01:56,540
+Veamos la canalización
+que aparece en esta imagen.
+
+33
+00:01:56,790 --> 00:02:00,410
+Este código de ejemplo de Python
+analiza la cantidad de palabras
+
+34
+00:02:00,410 --> 00:02:02,840
+en líneas de texto de documentos.
+
+35
+00:02:02,840 --> 00:02:05,460
+Como entrada para la canalización
+
+36
+00:02:05,460 --> 00:02:08,780
+podemos leer archivos
+de texto de Google Cloud Storage.
+
+37
+00:02:08,780 --> 00:02:13,840
+Luego, transformamos los datos
+y contamos las palabras en cada línea.
+
+38
+00:02:13,840 --> 00:02:18,830
+Como explicaré, estas transformaciones
+pueden escalarse automáticamente
+
+39
+00:02:18,830 --> 00:02:21,000
+con Dataflow
+para que se ejecute en paralelo.
+
+40
+00:02:21,900 --> 00:02:26,210
+A continuación, se pueden agrupar líneas
+según la cantidad de palabras
+
+41
+00:02:26,210 --> 00:02:29,370
+usando grouping
+y otras operaciones de agregación.
+
+42
+00:02:29,370 --> 00:02:31,050
+También se pueden filtrar valores.
+
+43
+00:02:31,050 --> 00:02:34,985
+Por ejemplo, podemos ignorar las líneas
+que tengan menos de diez palabras.
+
+44
+00:02:34,985 --> 00:02:39,075
+Tras realizar todas las operaciones
+de transformación, agrupación y filtrado
+
+45
+00:02:39,075 --> 00:02:42,405
+la canalización escribe
+el resultado en Google Cloud Storage.
+
+46
+00:02:43,845 --> 00:02:47,765
+Observen que esta implementación
+separa la definición de la canalización
+
+47
+00:02:47,765 --> 00:02:49,595
+de la ejecución de la canalización.
+
+48
+00:02:50,165 --> 00:02:54,050
+Todos los pasos previos
+al llamado al método p.run
+
+49
+00:02:54,050 --> 00:02:56,650
+simplemente definen
+lo que debe hacer la canalización.
+
+50
+00:02:56,650 --> 00:03:00,690
+La canalización se ejecuta
+solo cuando se llama al método run.
+
+51
+00:03:01,350 --> 00:03:03,770
+Una de las mayores ventajas de Apache Beam
+
+52
+00:03:03,770 --> 00:03:07,365
+es que procesa datos
+por lotes o por transferencia
+
+53
+00:03:07,365 --> 00:03:09,770
+con el mismo código para la canalización.
+
+54
+00:03:09,770 --> 00:03:15,490
+De hecho, el nombre "Beam"
+es una contracción de "batch" y "stream".
+
+55
+00:03:15,490 --> 00:03:17,600
+¿Qué importancia tiene esto?
+
+56
+00:03:17,600 --> 00:03:23,450
+Porque sin importar si los datos vienen
+de una fuente en lotes, como Cloud Storage
+
+57
+00:03:23,450 --> 00:03:26,410
+o de una de transmisión
+de datos, como Pub/Sub
+
+58
+00:03:26,410 --> 00:03:29,360
+podemos reutilizar
+la misma lógica en la canalización.
+
+59
+00:03:29,360 --> 00:03:33,940
+También podemos enviar los datos
+a destinos en lotes o con transmisión.
+
+60
+00:03:33,940 --> 00:03:37,000
+También podemos cambiar
+fácilmente entre estas fuentes de datos
+
+61
+00:03:37,000 --> 00:03:40,680
+sin modificar la lógica
+de la implementación de la canalización.
+
+62
+00:03:41,420 --> 00:03:42,410
+Veamos cómo hacerlo.
+
+63
+00:03:43,270 --> 00:03:47,340
+Fíjense en el código
+que las operaciones de lectura y escritura
+
+64
+00:03:47,340 --> 00:03:50,320
+se hacen mediante los métodos beam.io.
+
+65
+00:03:50,320 --> 00:03:52,880
+Estos métodos usan conectores diferentes.
+
+66
+00:03:52,880 --> 00:03:55,300
+Por ejemplo, el conector de Pub/Sub
+
+67
+00:03:55,300 --> 00:03:59,640
+puede leer el contenido de los mensajes
+que se transmiten hacia la canalización.
+
+68
+00:03:59,640 --> 00:04:04,020
+Otros conectores leen texto sin procesar
+de Cloud Storage o un sistema de archivos.
+
+69
+00:04:04,020 --> 00:04:07,140
+Apache Beam tiene diversos conectores
+
+70
+00:04:07,140 --> 00:04:10,310
+para ayudarnos a usar servicios
+de Google Cloud, como BigQuery.
+
+71
+00:04:10,310 --> 00:04:13,990
+Además, como Apache Beam
+es un proyecto de código abierto
+
+72
+00:04:13,990 --> 00:04:16,649
+las empresas pueden
+implementar sus propios conectores.
+
+73
+00:04:16,649 --> 00:04:20,010
+Antes de seguir avanzando,
+revisemos la terminología
+
+74
+00:04:20,010 --> 00:04:23,460
+que utilizaré
+constantemente en este módulo.
+
+75
+00:04:23,460 --> 00:04:27,687
+Ya conocen las canalizaciones
+de procesamiento que ejecuta Dataflow.
+
+76
+00:04:28,388 --> 00:04:32,860
+En el lado derecho,
+se observa el grafo de la canalización.
+
+77
+00:04:32,860 --> 00:04:36,720
+Exploremos las canalizaciones
+de Apache Beam con más detalle.
+
+78
+00:04:36,720 --> 00:04:41,644
+La canalización debe tener un origen,
+del que se obtienen los datos de entrada.
+
+79
+00:04:42,662 --> 00:04:45,605
+La canalización tiene una serie de pasos
+
+80
+00:04:45,605 --> 00:04:48,370
+que se denominan
+"transformaciones" en Beam.
+
+81
+00:04:49,360 --> 00:04:52,015
+Cada transformación funciona
+en una estructura de datos
+
+82
+00:04:52,015 --> 00:04:53,410
+llamada PCollection.
+
+83
+00:04:53,410 --> 00:04:57,113
+Pronto les explicaré en detalle
+lo que son las PCollections.
+
+84
+00:04:57,113 --> 00:04:59,833
+Por ahora, recuerden
+que cada transformación
+
+85
+00:04:59,833 --> 00:05:04,663
+obtiene una PCollection como entrada
+y genera otra PCollection como resultado.
+
+86
+00:05:05,550 --> 00:05:09,310
+El resultado de la última transformación
+de una canalización es importante.
+
+87
+00:05:09,600 --> 00:05:12,830
+Se va a un receptor,
+que es la salida de la canalización.
+
+88
+00:05:14,570 --> 00:05:18,090
+Para ejecutar una canalización,
+se necesita algo llamado "runner".
+
+89
+00:05:18,090 --> 00:05:21,758
+Un runner toma
+la canalización y la ejecuta.
+
+90
+00:05:21,758 --> 00:05:24,179
+Los runners son
+específicos de cada plataforma.
+
+91
+00:05:24,179 --> 00:05:28,640
+Es decir, hay uno específico para
+ejecutar una canalización en Dataflow
+
+92
+00:05:29,030 --> 00:05:33,580
+Hay otro runner específico si deseamos
+usar Apache Spark para la canalización.
+
+93
+00:05:33,580 --> 00:05:38,140
+También hay un runner directo
+que la ejecutará en la computadora local.
+
+94
+00:05:38,660 --> 00:05:42,032
+También es posible implementar
+su propio runner personalizado
+
+95
+00:05:42,032 --> 00:05:44,714
+para una plataforma propia
+de procesamiento distribuido.
+
+96
+00:05:45,930 --> 00:05:49,200
+¿Cómo se implementan estas canalizaciones?
+
+97
+00:05:49,200 --> 00:05:51,552
+Si revisamos el código de la diapositiva
+
+98
+00:05:51,552 --> 00:05:56,575
+vemos que la operación de la canalización
+en el método main es beam.Pipeline
+
+99
+00:05:56,575 --> 00:05:58,930
+que crea una instancia de canalización.
+
+100
+00:05:58,930 --> 00:06:02,140
+Una vez creada,
+cada transformación se implementa
+
+101
+00:06:02,140 --> 00:06:04,780
+como un argumento
+del método apply de la canalización.
+
+102
+00:06:05,800 --> 00:06:08,927
+En la versión de Python
+de la biblioteca de Apache Beam
+
+103
+00:06:08,927 --> 00:06:12,510
+el operador de barra vertical
+se sobrecarga para llamar al método apply.
+
+104
+00:06:12,510 --> 00:06:16,540
+Por esto tenemos esta sintaxis extraña
+con varios operadores de barra vertical.
+
+105
+00:06:16,560 --> 00:06:18,960
+Me gusta porque es más fácil de leer.
+
+106
+00:06:19,790 --> 00:06:24,540
+Las cadenas read, countwords
+y write son los nombres legibles
+
+107
+00:06:24,540 --> 00:06:27,770
+que se pueden especificar
+para cada transformación.
+
+108
+00:06:28,670 --> 00:06:34,340
+Fíjense en que esta canalización
+lee y escribe en Google Cloud Storage.
+
+109
+00:06:34,340 --> 00:06:36,680
+Como les mencioné antes
+
+110
+00:06:36,680 --> 00:06:40,330
+ninguno de los operadores
+de la canalización la ejecuta en realidad.
+
+111
+00:06:40,330 --> 00:06:43,140
+Cuando necesitamos
+que la canalización procese datos
+
+112
+00:06:43,140 --> 00:06:47,560
+debemos llamar al método run
+para que ejecute esa instancia.
+
+113
+00:06:47,560 --> 00:06:50,940
+Como dije, cada vez que usen
+el operador de barra vertical
+
+114
+00:06:50,940 --> 00:06:53,955
+entregarán una estructura de datos
+de PCollection como entrada
+
+115
+00:06:53,955 --> 00:06:56,730
+y recibirán otra como salida.
+
+116
+00:06:56,730 --> 00:07:01,580
+Es importante saber que las PCollections,
+al contrario de otras estructuras de datos
+
+117
+00:07:01,580 --> 00:07:05,230
+no almacenan todos sus datos en memoria.
+
+118
+00:07:05,230 --> 00:07:07,924
+Recuerden que Dataflow es elástica
+
+119
+00:07:07,924 --> 00:07:10,902
+y puede usar un clúster
+de servidores en una canalización.
+
+120
+00:07:10,902 --> 00:07:13,850
+Una PCollection es como
+una estructura de datos con indicadores
+
+121
+00:07:13,850 --> 00:07:16,780
+hacia donde el clúster
+de Dataflow almacena los datos.
+
+122
+00:07:17,460 --> 00:07:21,350
+Por eso, Dataflow puede ofrecer
+escalamiento elástico de la canalización.
+
+123
+00:07:22,300 --> 00:07:24,830
+Supongamos que tenemos
+una PCollection de líneas.
+
+124
+00:07:24,830 --> 00:07:28,680
+Por ejemplo, las líneas pueden provenir
+de un archivo en Google Cloud Storage.
+
+125
+00:07:29,470 --> 00:07:32,317
+Una manera de implementar
+la transformación es tomar
+
+126
+00:07:32,317 --> 00:07:35,149
+una PCollection de cadenas,
+denominadas líneas en el código
+
+127
+00:07:35,149 --> 00:07:37,631
+y mostrar una PCollection de enteros.
+
+128
+00:07:39,111 --> 00:07:43,580
+Este paso específico de transformación
+calcula la longitud de cada línea.
+
+129
+00:07:43,580 --> 00:07:47,980
+Como saben, el SDK de Apache Beam
+viene con diversos conectores
+
+130
+00:07:47,980 --> 00:07:51,410
+que le permiten a Dataflow
+leer de muchas fuentes de datos
+
+131
+00:07:51,410 --> 00:07:55,670
+como archivos de texto en
+Cloud Storage o sistemas de archivos.
+
+132
+00:07:55,670 --> 00:07:59,650
+Con diferentes conectores,
+hasta se puede leer de fuentes de datos
+
+133
+00:07:59,650 --> 00:08:03,426
+de transmisión en tiempo real,
+como Google Cloud Pub/Sub o Kafka.
+
+134
+00:08:04,066 --> 00:08:08,250
+Uno de los conectores se usa para el
+almacén de datos de BigQuery en GCP.
+
+135
+00:08:09,320 --> 00:08:13,370
+Si usamos el conector de BigQuery,
+hay que especificar la instrucción de SQL
+
+136
+00:08:13,370 --> 00:08:18,750
+que BigQuery evaluará para mostrar
+una tabla con los resultados en filas.
+
+137
+00:08:18,750 --> 00:08:22,164
+Las filas de la tabla se pasan
+a la canalización en una PCollection
+
+138
+00:08:22,164 --> 00:08:24,556
+para exportar
+el resultado de una canalización.
+
+139
+00:08:24,556 --> 00:08:29,080
+Existen conectores para Cloud Storage,
+Pub/Sub y BigQuery, entre otros.
+
+140
+00:08:29,080 --> 00:08:32,300
+También podemos escribir
+los resultados en el sistema de archivos.
+
+141
+00:08:32,690 --> 00:08:36,269
+Es importante tener presente,
+si escribimos en un sistema de archivos
+
+142
+00:08:36,269 --> 00:08:39,689
+que Dataflow puede distribuir
+la ejecución de la canalización
+
+143
+00:08:39,689 --> 00:08:41,730
+en un clúster de servidores.
+
+144
+00:08:41,730 --> 00:08:44,340
+Es decir, puede haber varios servidores
+
+145
+00:08:44,340 --> 00:08:47,390
+intentando escribir sus resultados
+en el sistema de archivos.
+
+146
+00:08:47,390 --> 00:08:49,370
+Para evitar problemas de contención
+
+147
+00:08:49,370 --> 00:08:53,340
+en los que varios servidores intentan
+escribir en el mismo archivo a la vez
+
+148
+00:08:53,340 --> 00:08:57,660
+el conector de I/O de texto fragmenta
+la salida de manera predeterminada
+
+149
+00:08:57,660 --> 00:09:01,550
+y escribe el resultado en varios archivos.
+
+150
+00:09:01,550 --> 00:09:05,625
+Por ejemplo, esta canalización
+escribe el resultado en un archivo
+
+151
+00:09:05,625 --> 00:09:08,390
+con el prefijo "output"
+en el conector de datos.
+
+152
+00:09:09,080 --> 00:09:12,270
+Supongamos que se escribirá
+un total de diez archivos.
+
+153
+00:09:12,270 --> 00:09:17,620
+Dataflow escribirá archivos llamados
+"output 0 of 10.txt", "output 1 of 10.txt"
+
+154
+00:09:17,620 --> 00:09:18,880
+y así sucesivamente.
+
+155
+00:09:18,880 --> 00:09:23,960
+Si hacemos esto, tendremos el problema
+de contención del que hablamos antes.
+
+156
+00:09:24,090 --> 00:09:27,500
+No usar la fragmentación
+solo tiene sentido cuando trabajamos
+
+157
+00:09:27,500 --> 00:09:31,130
+con conjuntos de datos pequeños,
+que puedan procesarse en un solo nodo.
+
+158
+00:09:31,130 --> 00:09:33,670
+Con una canalización
+implementada en Python
+
+159
+00:09:33,670 --> 00:09:36,025
+podemos ejecutar el código
+directamente en Shell
+
+160
+00:09:36,025 --> 00:09:37,480
+con el comando Python.
+
+161
+00:09:38,000 --> 00:09:40,114
+Para enviar
+la canalización como un trabajo
+
+162
+00:09:40,114 --> 00:09:42,228
+y ejecutarlo en Dataflow en GCP
+
+163
+00:09:42,228 --> 00:09:44,915
+debemos proporcionar
+información adicional.
+
+164
+00:09:44,915 --> 00:09:48,075
+Hay que incluir argumentos
+con el nombre del proyecto de GCP
+
+165
+00:09:48,075 --> 00:09:51,270
+su ubicación en un depósito
+de Google Cloud Storage
+
+166
+00:09:51,270 --> 00:09:54,465
+donde Dataflow almacenará
+datos temporales y de staging.
+
+167
+00:09:54,465 --> 00:09:57,145
+También se debe especificar
+el nombre del runner
+
+168
+00:09:57,145 --> 00:09:59,495
+que en este caso es el runner de DataFlow.

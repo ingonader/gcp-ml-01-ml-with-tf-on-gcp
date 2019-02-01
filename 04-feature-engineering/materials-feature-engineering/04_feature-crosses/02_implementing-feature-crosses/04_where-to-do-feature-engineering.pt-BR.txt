@@ -1,0 +1,71 @@
+Então, falamos sobre algumas maneiras
+de representar atributos e fazer engenharia de atributos, com escalonamento,
+cruzamentos de atributos, criação, incorporação etc. Mas onde isso entra no seu
+modelo de aprendizado de máquina? Lembre-se de que seu modelo
+consiste nessas partes, uma função de entrada para ler e os dados, colunas de atributos
+que são como marcadores de posição para o que que você lê, um estimador que você cria
+passando nas colunas de atributos e depois configura a
+especificação de treino, de avaliação, exportador etc e, por fim,
+você chama o treino e a avaliação. Onde a engenharia de atributos
+se encaixa em tudo isso? Há três lugares possíveis
+para fazer engenharia de atributos. Você pode fazer isso em tempo real
+enquanto lê os dados, na própria função de entrada ou criando colunas de atributos. Você também pode fazer isso como uma etapa
+separada antes de fazer o treinamento. Em seguida, sua função de entrada
+lê os atributos pré-processados. E se você fizer isso como uma etapa
+de pré-processamento separada, fará o pré-processamento
+no fluxo de dados, de modo que você pode fazer
+a escala de maneira distribuída. Você pode fazer isso em um fluxo de dados
+simples do Python, mas faça isso apenas se o fluxo de dados
+também fizer parte do canal de serviço. Em outras palavras, você está fazendo
+um lote de job de previsão de fluxo. Você pode aplicar as mesmas etapas de
+pré-processamento nas entradas de serviço. A terceira opção é fazer o
+pré-processamento no fluxo de dados e criar atributos de pré-processador, mas informe ao gráfico de previsão
+que você quer as mesmas transformações realizadas
+no TensorFlow durante o serviço. Para fazer isso, você usará
+a transformação do TensorFlow. Como vimos na seção anterior, um pré-processamento pode ser feito
+no TensorFlow com a criação de uma
+nova coluna de atributos. Então, você intervala a coluna
+para criar uma nova, você está fazendo
+o pré-processamento. E essa é uma coluna de atributos
+que você enviará ao estimador. Aqui, eu estou pegando
+a coluna de atributos de metragem quadrada e dobrando-a em quatro intervalos. O primeiro intervalo é de casas
+com menos de 500 pés quadrados. O segundo é de 500 a 1.000 pés quadrados. O terceiro é de casas
+entre 1.000 e 2.500 pés quadrados, e o último é de casas
+com mais de 2.500 pés quadrados. Eu adiciono a coluna intervalada na lista
+de colunas do atributo original. E agora o regressor linear
+vê a metragem quadrada de duas formas. Como uma coluna numérica de valor real e como uma coluna categórica intervalada. É claro que, se eu quisesse, poderia substituir uma coluna numérica
+pela intervalada, de modo que o regressor linear visse só
+a metragem quadrada na forma categórica. Então, é o que estou fazendo aqui, substituindo featcols {0}
+pela versão intervalada. Aqui está outro exemplo de como fazer
+cruzamentos de atributos, mas desta vez
+também dentro da incorporação. Poderíamos pegar
+a latitude e a longitude das casas e definir os intervalos nos quais
+queremos discretizá-las. Aqui, estou usando N intervalos
+igualmente espaçados. Um método que usei para descobrir os
+limites é usar approx quantize, uma função sequel do Big Query. Isso faz com que cada uma das barras tenha
+o mesmo número de exemplos de treinamento. No entanto, não importa como
+você conseguir os limites, uma vez que temos os limites, intervalos lat e lon, no meu caso, podemos criar as latitudes e longitudes
+da casa em b_lat e b_lon. E então, como discutimos, podemos fazer cruzamentos
+de atributos nas duas colunas categóricas b_lat e b_lon. Aqui, estou escolhendo fazer cruzamentos
+de atributos em nbuckets#buckets. Em média, então, cada #bucket conterá
+apenas um cruzamento de atributo. Isso está entre a minha regra geral de 1/2 raiz quadrada e o dobro
+sobre a qual falei na aula anterior. Por fim, inseri os dados em nbuckets
+por quatro dimensões. A vantagem de fazer isso, de colocar o pré-processamento diretamente no TensorFlow é que essas operações
+fazem parte do seu gráfico de modelo e, portanto, são realizadas de modo
+idêntico no treinamento e no serviço. Agora, o que isso significa na vida real? Primeiro, discretizamos as latitudes. Isso traz apenas os números reais, de modo que todas as casas aproximadamente
+na mesma latitude tenham o mesmo valor. Isso pode ajudar um pouco com sobreajuste, mas somente discretizar a latitude
+não ajuda muito. Então, discretizamos as longitudes. Isso dobra os valores de longitude o que pode nos ajudar como antes
+um pouco com sobreajuste, mas a discretização das longitudes
+também não faz muita diferença. Mas o que acontece quando o atributo
+cruza os dois valores discretizados? Essencialmente, pegamos o mapa
+e o dividimos em células da grade, de modo que qualquer casa pertença
+a apenas uma dessas células da grade. Assim, durante o treinamento,
+isso nos permitirá memorizar o preço médio das casas
+em cada célula da grade. Obviamente, quanto mais fina a resolução
+da grade, mais específica será a previsão. Mas também será menos generalizável, porque pode não haver
+casas vendidas suficientes em uma célula da grade para
+que formemos uma boa estimativa. Durante a previsão, dada uma casa, sabemos a que célula da grade
+ela pertence e, assim, podemos extrair o valor memorizado
+para essa célula da grade. A incorporação permite que as células
+da grade sejam semelhantes umas às outras, talvez todas as células da grade
+de frente para o mar peguem todas essas células da grade e as façam ter valores semelhantes.

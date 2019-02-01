@@ -1,0 +1,765 @@
+1
+00:00:00,720 --> 00:00:04,840
+Na próxima parte da sessão, você aprenderá
+mais sobre o Google Cloud Dataflow,
+
+2
+00:00:04,840 --> 00:00:07,900
+que é uma tecnologia complementar
+ao Apache Beam.
+
+3
+00:00:07,900 --> 00:00:11,350
+E ambos podem ajudá-lo a criar e
+executar pré-processamento
+
+4
+00:00:11,350 --> 00:00:12,620
+e engenharia de atributos.
+
+5
+00:00:13,110 --> 00:00:17,130
+Então, em primeiro lugar,
+o que é o Cloud Dataflow?
+
+6
+00:00:17,130 --> 00:00:20,370
+Uma das maneiras de pensar
+sobre o pré-processamento de atributos,
+
+7
+00:00:20,370 --> 00:00:24,250
+ou até mesmo qualquer transformação
+de dados, é pensar em termos de canais.
+
+8
+00:00:24,250 --> 00:00:26,380
+Quando digo canal,
+
+9
+00:00:26,380 --> 00:00:30,940
+quero dizer uma sequência de etapas
+que mudam dados de um formato para outro.
+
+10
+00:00:30,940 --> 00:00:34,660
+Suponha que você tenha dados em um
+armazenamento de dados, como o BigQuery.
+
+11
+00:00:34,660 --> 00:00:38,820
+Então, você pode usar o BigQuery
+como uma entrada para seu canal.
+
+12
+00:00:38,820 --> 00:00:41,400
+Faça uma sequência de etapas
+para transformar os dados,
+
+13
+00:00:41,400 --> 00:00:44,660
+talvez introduza alguns novos atributos
+como parte da transformação.
+
+14
+00:00:44,660 --> 00:00:48,380
+Por fim, salve o resultado em um álbum,
+como o Google Cloud Storage.
+
+15
+00:00:49,550 --> 00:00:52,200
+O Cloud Dataflow é uma plataforma
+
+16
+00:00:52,200 --> 00:00:56,350
+que permite executar esses tipos de canais
+de processamento de dados.
+
+17
+00:00:56,350 --> 00:01:01,610
+Ele pode executar canais escritos em
+linguagens de programação Python e Java.
+
+18
+00:01:01,610 --> 00:01:04,770
+O Dataflow define-se também
+como uma plataforma
+
+19
+00:01:04,770 --> 00:01:09,310
+para transformações de dados, porque é uma
+oferta do Google, totalmente gerenciada
+
+20
+00:01:09,310 --> 00:01:13,100
+e sem servidor, que executa canais
+de processamento de dados em escala.
+
+21
+00:01:13,880 --> 00:01:17,290
+Como desenvolvedor, você não precisa se
+preocupar em gerenciar o tamanho
+
+22
+00:01:17,290 --> 00:01:19,095
+do cluster que executa o canal.
+
+23
+00:01:19,095 --> 00:01:22,910
+O Dataflow pode alterar a quantidade
+de atributos do computador,
+
+24
+00:01:22,910 --> 00:01:26,970
+o número de servidores que executará o
+canal, e fazer isso de maneira elástica,
+
+25
+00:01:26,970 --> 00:01:30,200
+dependendo da quantidade de dados
+que o canal precisa processar.
+
+26
+00:01:30,200 --> 00:01:31,865
+A maneira como você grava o código
+
+27
+00:01:31,865 --> 00:01:36,340
+para o Dataflow é usando uma biblioteca
+de código aberto chamada Apache Beam.
+
+28
+00:01:36,340 --> 00:01:40,532
+Para implementar um canal de processamento
+de dados, você grava o código usando
+
+29
+00:01:40,532 --> 00:01:45,100
+as APIs do Apache Beam e, em seguida,
+implanta o código no Cloud Dataflow.
+
+30
+00:01:45,100 --> 00:01:49,180
+Algo que torna o Apache Beam fácil
+de usar é que o código escrito para o Beam
+
+31
+00:01:49,180 --> 00:01:53,054
+é semelhante ao que as pessoas pensam
+sobre canais de processamento de dados.
+
+32
+00:01:53,650 --> 00:01:55,880
+Dê uma olhada no canal no centro do slide.
+
+33
+00:01:56,790 --> 00:02:00,410
+Esta amostra de código Python analisa
+o número de palavras
+
+34
+00:02:00,410 --> 00:02:02,840
+em linhas de texto em documentos.
+
+35
+00:02:02,840 --> 00:02:05,460
+Então, como uma entrada para o canal,
+
+36
+00:02:05,460 --> 00:02:08,780
+você pode querer ler arquivos de texto
+do Google Cloud Storage.
+
+37
+00:02:08,780 --> 00:02:14,590
+Aí, você transforma os dados, descobre o
+número de palavras em cada linha de texto.
+
+38
+00:02:14,590 --> 00:02:18,020
+Explicarei em breve que esse tipo de
+transformação pode ser escalonado
+
+39
+00:02:18,020 --> 00:02:21,140
+automaticamente pelo Dataflow,
+para ser executado em paralelo.
+
+40
+00:02:21,900 --> 00:02:27,180
+Depois, no canal, agrupe as linhas pelo
+número de palavras, usando o agrupamento
+
+41
+00:02:27,180 --> 00:02:29,370
+e outras operações de agregação.
+
+42
+00:02:29,370 --> 00:02:31,050
+Você também pode filtrar valores.
+
+43
+00:02:31,050 --> 00:02:34,985
+Por exemplo, para ignorar linhas
+com menos de dez palavras.
+
+44
+00:02:34,985 --> 00:02:39,075
+Depois que as operações de transformação,
+agrupamento e filtragem são concluídas,
+
+45
+00:02:39,075 --> 00:02:42,295
+o canal grava o resultado
+no Google Cloud Storage.
+
+46
+00:02:43,845 --> 00:02:47,765
+Observe que essa implementação
+separa a definição do canal
+
+47
+00:02:47,765 --> 00:02:49,105
+da execução dele.
+
+48
+00:02:50,165 --> 00:02:54,350
+Todas etapas que você vê, antes de chamar
+o método p.run, estão apenas definindo
+
+49
+00:02:54,350 --> 00:02:56,650
+o que o canal deveria fazer.
+
+50
+00:02:56,650 --> 00:03:00,430
+O canal é executado apenas quando
+você chama esse método.
+
+51
+00:03:01,350 --> 00:03:05,860
+Um ponto legal do Apache Beam é que ele
+é compatível com processamento de dados
+
+52
+00:03:05,860 --> 00:03:09,770
+em lote e streaming,
+usando o mesmo código de canal.
+
+53
+00:03:09,770 --> 00:03:15,490
+Na verdade, o nome da biblioteca, Beam,
+vem da contração de "batch" e "stream".
+
+54
+00:03:15,490 --> 00:03:17,560
+Então por que você deveria se preocupar?
+
+55
+00:03:17,560 --> 00:03:21,530
+Isso significa que, independente dos dados
+serem provenientes de uma fonte em lote,
+
+56
+00:03:21,530 --> 00:03:25,360
+como o Google Cloud Storage, ou de uma
+fonte de dados de streaming,
+
+57
+00:03:25,360 --> 00:03:29,360
+como o Pub/Sub, você pode reutilizar
+a mesma lógica de canal.
+
+58
+00:03:29,360 --> 00:03:33,940
+Você também pode enviar dados para
+destinos em lote e em streaming.
+
+59
+00:03:33,940 --> 00:03:36,770
+Você também pode alterar facilmente
+essas fontes de dados
+
+60
+00:03:36,770 --> 00:03:40,100
+no canal, sem ter que alterar a lógica da
+implementação do canal.
+
+61
+00:03:41,420 --> 00:03:42,490
+Veja como.
+
+62
+00:03:43,270 --> 00:03:46,140
+Observe no código na tela que
+as operações de leitura
+
+63
+00:03:46,140 --> 00:03:50,320
+e gravação são feitas usando
+os métodos beam.io.
+
+64
+00:03:50,320 --> 00:03:52,880
+Esses métodos usam conectores diferentes.
+
+65
+00:03:52,880 --> 00:03:55,300
+Por exemplo, o conector Pub/Sub
+
+66
+00:03:55,300 --> 00:03:59,640
+pode ler o conteúdo das mensagens que
+são transmitidas para o canal.
+
+67
+00:03:59,640 --> 00:04:04,420
+Outros conectores podem remover texto do
+Cloud Storage ou do sistema de arquivos.
+
+68
+00:04:04,420 --> 00:04:07,140
+O Apache Beam tem vários conectores
+
+69
+00:04:07,140 --> 00:04:10,310
+para ajudar você a usar serviços no
+Google Cloud, como o BigQuery.
+
+70
+00:04:10,310 --> 00:04:13,990
+Além disso, como o Apache Beam é
+um projeto de código aberto,
+
+71
+00:04:13,990 --> 00:04:16,649
+as empresas podem implementar
+conectores próprios.
+
+72
+00:04:16,649 --> 00:04:20,010
+Antes de irmos além,
+vamos abordar algumas terminologias
+
+73
+00:04:20,010 --> 00:04:23,460
+que eu vou usar várias vezes
+neste módulo.
+
+74
+00:04:23,460 --> 00:04:27,517
+Você já sabe sobre canais de processamento
+que podem ser executados no Dataflow.
+
+75
+00:04:28,388 --> 00:04:32,860
+No lado direito do slide, você pode ver
+o gráfico para o canal.
+
+76
+00:04:32,860 --> 00:04:36,720
+Vamos explorar os canais do Apache Beam
+mais detalhadamente.
+
+77
+00:04:36,720 --> 00:04:41,524
+O canal precisa ter uma fonte, que é onde
+ele consegue os dados de entrada.
+
+78
+00:04:42,472 --> 00:04:45,035
+O canal tem uma série de etapas.
+
+79
+00:04:45,035 --> 00:04:48,210
+Cada uma delas no Beam
+é chamada de transformação.
+
+80
+00:04:49,360 --> 00:04:53,370
+Cada transformação funciona em uma
+estrutura de dados chamada PCollection.
+
+81
+00:04:53,370 --> 00:04:57,113
+Darei uma explicação detalhada
+das PCollections em breve.
+
+82
+00:04:57,113 --> 00:05:01,533
+Por ora, lembre-se que cada transformação
+tem uma PCollection como entrada
+
+83
+00:05:01,533 --> 00:05:04,470
+e envia o resultado
+para outra PCollection.
+
+84
+00:05:05,550 --> 00:05:09,340
+O resultado da última transformação
+em um canal é importante.
+
+85
+00:05:09,760 --> 00:05:13,260
+Ele vai para um coletor,
+que é a saída do canal.
+
+86
+00:05:14,570 --> 00:05:18,090
+Para executar um canal, você precisa
+de algo chamado executor.
+
+87
+00:05:18,090 --> 00:05:20,858
+O executor pega o código do canal
+e o executa.
+
+88
+00:05:20,858 --> 00:05:26,030
+Executores são específicos da plataforma,
+ou seja, há um executor do Dataflow
+
+89
+00:05:26,030 --> 00:05:29,030
+para executar um canal no Cloud Dataflow.
+
+90
+00:05:29,030 --> 00:05:33,580
+Há outro executor se você quiser usar o
+Apache Spark para executar o canal.
+
+91
+00:05:33,580 --> 00:05:37,620
+Há também um executor direto, que
+executará um canal no computador local.
+
+92
+00:05:38,660 --> 00:05:42,132
+Se quiser, você pode implementar
+seu próprio executor personalizado
+
+93
+00:05:42,132 --> 00:05:44,734
+para sua própria plataforma
+de computação distribuída.
+
+94
+00:05:45,930 --> 00:05:49,200
+Então, como você implementa
+esses canais?
+
+95
+00:05:49,200 --> 00:05:50,992
+Se você olhar no código no slide,
+
+96
+00:05:50,992 --> 00:05:54,515
+notará que a operação do
+canal no método principal
+
+97
+00:05:54,515 --> 00:05:58,930
+é o beam.pipeline
+que cria uma instância do canal.
+
+98
+00:05:58,930 --> 00:06:01,400
+Depois de criada, cada transformação
+
+99
+00:06:01,400 --> 00:06:04,870
+é implementada como um argumento
+para o método apply do canal.
+
+100
+00:06:05,800 --> 00:06:08,507
+Na versão Python
+da biblioteca Apache Beam,
+
+101
+00:06:08,507 --> 00:06:12,510
+o operador do canal está sobrecarregado
+para chamar o método apply.
+
+102
+00:06:12,510 --> 00:06:16,560
+Por isso temos essa sintaxe com operadores
+de canal em cima uns dos outros.
+
+103
+00:06:16,560 --> 00:06:18,980
+Eu gosto, é muito mais fácil ler assim.
+
+104
+00:06:19,790 --> 00:06:24,540
+As strings, como read, countwords e write,
+são apenas os nomes legíveis
+
+105
+00:06:24,540 --> 00:06:27,620
+que você pode especificar
+para cada transformação no canal.
+
+106
+00:06:28,670 --> 00:06:34,340
+Observe que este canal está lendo
+do Google Cloud Storage e gravando nele.
+
+107
+00:06:34,340 --> 00:06:36,680
+E, como indiquei anteriormente,
+
+108
+00:06:36,680 --> 00:06:40,330
+nenhum dos operadores de canal
+realmente o administra.
+
+109
+00:06:40,330 --> 00:06:43,140
+Quando você precisa que o canal
+processe alguns dados,
+
+110
+00:06:43,140 --> 00:06:47,560
+é necessário chamar o método de execução
+na instância do canal para executá-lo.
+
+111
+00:06:47,560 --> 00:06:51,280
+Como mencionei anteriormente, toda vez
+que você usa o operador de canal,
+
+112
+00:06:51,280 --> 00:06:56,730
+fornece uma estrutura de dados PCollection
+como entrada e retorna uma como saída.
+
+113
+00:06:56,730 --> 00:07:01,130
+Algo importante sobre PCollections é que,
+diferente de muitas estruturas de dados,
+
+114
+00:07:01,130 --> 00:07:05,230
+a PCollection não armazena todos os
+dados na memória.
+
+115
+00:07:05,230 --> 00:07:07,424
+Lembre-se, o Dataflow é elástico
+
+116
+00:07:07,424 --> 00:07:10,902
+e pode usar um cluster de servidores
+por meio de um canal.
+
+117
+00:07:10,902 --> 00:07:14,450
+Portanto, PCollection é como uma estrutura
+de dados com ponteiros para onde
+
+118
+00:07:14,450 --> 00:07:16,800
+o cluster do Dataflow armazena dados.
+
+119
+00:07:17,460 --> 00:07:21,060
+É assim que o Dataflow pode fornecer
+escalonamento elástico do canal.
+
+120
+00:07:22,300 --> 00:07:24,830
+Digamos que temos uma
+PCollection de linhas.
+
+121
+00:07:24,830 --> 00:07:28,580
+Por exemplo, as linhas podem vir
+de um arquivo do Google Cloud Storage.
+
+122
+00:07:29,470 --> 00:07:33,707
+Um meio de implementar a transformação
+é fazer uma PCollection de strings,
+
+123
+00:07:33,707 --> 00:07:37,827
+chamadas de linhas no código, e retornar
+uma PCollection de números inteiros.
+
+124
+00:07:38,981 --> 00:07:43,820
+Essa etapa de transformação específica no
+código calcula o comprimento das linhas.
+
+125
+00:07:43,820 --> 00:07:48,050
+Como você já sabe, o SDK do Apache Beam
+vem com uma variedade de conectores
+
+126
+00:07:48,050 --> 00:07:51,410
+que permitem que o Dataflow leia
+de muitas fontes de dados,
+
+127
+00:07:51,410 --> 00:07:55,670
+incluindo arquivos de texto no Google
+Cloud Storage ou sistemas de arquivos.
+
+128
+00:07:55,670 --> 00:07:59,470
+Com diferentes conectores, é possível
+ler até de fontes de dados de streaming
+
+129
+00:07:59,470 --> 00:08:03,686
+em tempo real, como o Google
+Cloud Pub/Sub ou Kafka.
+
+130
+00:08:03,686 --> 00:08:07,860
+Um dos conectores é para o armazenamento
+de dados do BigQuery no GCP.
+
+131
+00:08:09,320 --> 00:08:13,370
+Ao usar o conector do BigQuery,
+você precisa especificar a instrução SQL
+
+132
+00:08:13,370 --> 00:08:18,750
+que o BigQuery avaliará para retornar uma
+tabela com linhas de resultados.
+
+133
+00:08:18,750 --> 00:08:22,324
+As linhas da tabela são passadas para
+o canal em uma PCollection
+
+134
+00:08:22,324 --> 00:08:24,556
+para exportar o resultado de um canal.
+
+135
+00:08:24,556 --> 00:08:29,080
+Há conectores para o Cloud Storage,
+Pub/Sub, BigQuery e muito mais.
+
+136
+00:08:29,080 --> 00:08:32,680
+Claro, você pode apenas gravar
+os resultados no sistema de arquivos.
+
+137
+00:08:32,690 --> 00:08:37,559
+Algo importante ao gravar em um sistema
+de arquivos é que o Dataflow
+
+138
+00:08:37,559 --> 00:08:41,730
+pode distribuir a execução do canal
+por meio de um cluster de servidores.
+
+139
+00:08:41,730 --> 00:08:44,340
+Isso significa que pode
+haver vários servidores
+
+140
+00:08:44,340 --> 00:08:47,390
+tentando gravar resultados
+no sistema de arquivos.
+
+141
+00:08:47,390 --> 00:08:51,570
+Para evitar problemas de contenção em que
+vários servidores tentam um bloqueio de
+
+142
+00:08:51,570 --> 00:08:56,210
+arquivo no mesmo arquivo ao mesmo tempo,
+por padrão, o conector de E/S de texto
+
+143
+00:08:56,210 --> 00:09:01,550
+fragmentará a saída gravando os resultados
+em vários arquivos no sistema de arquivos.
+
+144
+00:09:01,550 --> 00:09:05,575
+Por exemplo, aqui, o canal está gravando
+o resultado em um arquivo
+
+145
+00:09:05,575 --> 00:09:07,980
+com a saída de prefixo
+no conector de dados.
+
+146
+00:09:09,080 --> 00:09:12,270
+Digamos que haja um total de 10
+arquivos que serão gravados.
+
+147
+00:09:12,270 --> 00:09:18,690
+Assim, o Dataflow gravará arquivos como
+saída 0 de 10 txt, saída 1 de 10 txt etc.
+
+148
+00:09:18,690 --> 00:09:20,880
+Tenha em mente que, se você fizer isso,
+
+149
+00:09:20,880 --> 00:09:24,270
+terá o problema de contenção de
+bloqueio de arquivo que mencionei antes.
+
+150
+00:09:24,270 --> 00:09:28,400
+Portanto, só faz sentido usar as gravações
+ao trabalhar com conjuntos de dados
+
+151
+00:09:28,400 --> 00:09:31,550
+menores que podem ser processados
+em um único nó.
+
+152
+00:09:31,550 --> 00:09:33,670
+Com um canal implementado em Python,
+
+153
+00:09:33,670 --> 00:09:37,150
+você pode executar o código diretamente
+no Shell usando o comando Python.
+
+154
+00:09:38,000 --> 00:09:41,808
+Para enviar o canal como um job a ser
+executado no Dataflow no GCP,
+
+155
+00:09:41,808 --> 00:09:44,915
+você precisa fornecer algumas
+informações adicionais.
+
+156
+00:09:44,915 --> 00:09:49,455
+Você precisa incluir argumentos com o
+nome do projeto do GCP, local no intervalo
+
+157
+00:09:49,455 --> 00:09:54,465
+do Google Cloud Storage, onde o Dataflow
+manterá dados de teste e temporários.
+
+158
+00:09:54,465 --> 00:09:57,145
+E você também precisa especificar
+o nome do executor,
+
+159
+00:09:57,145 --> 00:09:58,995
+que neste caso é o DataflowRunner.

@@ -1,0 +1,493 @@
+1
+00:00:00,000 --> 00:00:01,530
+Dans cette partie du module,
+
+2
+00:00:01,530 --> 00:00:04,260
+vous allez apprendre à mettre en œuvre
+
+3
+00:00:04,260 --> 00:00:08,595
+un pipeline qui s'adaptera
+à la taille de votre ensemble de données.
+
+4
+00:00:08,595 --> 00:00:10,075
+Voyons cela de plus près.
+
+5
+00:00:10,075 --> 00:00:13,960
+Certains d'entre vous connaissent
+peut-être déjà MapReduce.
+
+6
+00:00:13,960 --> 00:00:17,950
+Ce framework de traitement des données
+tolérant aux pannes et distribué
+
+7
+00:00:17,950 --> 00:00:22,375
+a été décrit par Google dans un article
+de recherche bien connu publié en 2004.
+
+8
+00:00:22,375 --> 00:00:24,250
+Il est encore très utilisé aujourd'hui,
+
+9
+00:00:24,250 --> 00:00:26,735
+par exemple par le projet Apache ParDo.
+
+10
+00:00:26,735 --> 00:00:30,960
+Vous devez connaître les concepts
+de base du framework MapReduce,
+
+11
+00:00:30,960 --> 00:00:35,160
+car Dataflow et Apache Beam se basent
+sur des idées porteuses de ce framework.
+
+12
+00:00:35,160 --> 00:00:37,980
+Ils incluent aussi
+des innovations développées
+
+13
+00:00:37,980 --> 00:00:42,075
+par les chercheurs
+et les ingénieurs de Google après 2004.
+
+14
+00:00:42,075 --> 00:00:44,025
+Le schéma à l'écran vous donne
+
+15
+00:00:44,025 --> 00:00:46,950
+un rapide aperçu de MapReduce.
+
+16
+00:00:46,950 --> 00:00:49,379
+Pour traiter des données dans MapReduce,
+
+17
+00:00:49,379 --> 00:00:51,060
+commencez par partitionner,
+
+18
+00:00:51,060 --> 00:00:52,905
+c'est-à-dire diviser, les données.
+
+19
+00:00:52,905 --> 00:00:56,120
+Les partitions de données
+individuelles sont distribuées
+
+20
+00:00:56,120 --> 00:00:58,380
+sur des appareils de stockage
+
+21
+00:00:58,380 --> 00:01:00,900
+de différents nœuds
+de calcul d'un cluster distribué.
+
+22
+00:01:00,900 --> 00:01:04,090
+Sur le schéma, vous pouvez voir
+que les données sont réparties
+
+23
+00:01:04,090 --> 00:01:09,120
+entre les nœuds 1 à 3
+du cluster de calcul.
+
+24
+00:01:09,120 --> 00:01:12,850
+Pour exécuter une tâche de traitement
+de données dans ce framework,
+
+25
+00:01:12,850 --> 00:01:15,830
+écrivez du code correspondant
+aux fonctions "Map" et "Reduce".
+
+26
+00:01:15,830 --> 00:01:17,340
+Voyons d'abord "Map".
+
+27
+00:01:17,340 --> 00:01:20,540
+La fonction "Map" doit être sans état,
+
+28
+00:01:20,540 --> 00:01:25,040
+ce qui permet de programmer son exécution
+parallèle sur plusieurs nœuds du cluster.
+
+29
+00:01:25,040 --> 00:01:30,560
+Chaque "Map" lit les données de l'espace
+de stockage du nœud où elle s'exécute,
+
+30
+00:01:30,560 --> 00:01:33,980
+traite les données et génère un résultat.
+
+31
+00:01:33,980 --> 00:01:38,390
+Les résultats
+des opérations "Map" sont brassés
+
+32
+00:01:38,390 --> 00:01:40,205
+depuis les différents nœuds du cluster
+
+33
+00:01:40,205 --> 00:01:42,915
+vers l'étape de traitement
+suivante, nommée "Reduce".
+
+34
+00:01:42,915 --> 00:01:46,920
+Les réductions correspondent
+à une opération d'agrégation des données.
+
+35
+00:01:46,920 --> 00:01:49,490
+Les opérations
+d'agrégation peuvent consister
+
+36
+00:01:49,490 --> 00:01:52,805
+à compter le nombre d'éléments
+de données ou à calculer des sommes.
+
+37
+00:01:52,805 --> 00:01:55,710
+Une fois
+les opérations "Reduce" terminées,
+
+38
+00:01:55,710 --> 00:02:01,170
+le résultat devient la sortie
+de l'étape "MapReduce" dans un pipeline.
+
+39
+00:02:01,170 --> 00:02:03,830
+Si vous voulez que
+Dataflow exécute une transformation
+
+40
+00:02:03,830 --> 00:02:07,280
+de votre pipeline de transformation
+des données à grande échelle
+
+41
+00:02:07,280 --> 00:02:11,615
+avec une distribution automatique
+sur de nombreux nœuds dans un cluster,
+
+42
+00:02:11,615 --> 00:02:15,380
+utilisez la classe ParDo d'Apache Beam.
+
+43
+00:02:15,380 --> 00:02:18,465
+ParDo est l'abréviation de "parallel do"
+("exécution parallèle").
+
+44
+00:02:18,465 --> 00:02:21,410
+Les étapes de transformation créées
+avec ParDo sont semblables
+
+45
+00:02:21,410 --> 00:02:23,200
+aux opérations "Map" de MapReduce.
+
+46
+00:02:23,200 --> 00:02:26,060
+Les transformations utilisées avec ParDo
+
+47
+00:02:26,060 --> 00:02:29,105
+doivent être sans état
+pour pouvoir s'exécuter en parallèle.
+
+48
+00:02:29,105 --> 00:02:33,140
+Cette condition est un peu restrictive,
+mais utile pour de nombreuses tâches.
+
+49
+00:02:33,140 --> 00:02:36,930
+Par exemple, vous créez
+un pipeline de traitement de données
+
+50
+00:02:36,930 --> 00:02:40,010
+qui analyse les fichiers
+d'un serveur Web, et vous devez exclure
+
+51
+00:02:40,010 --> 00:02:43,815
+les entrées de journaux qui contiennent
+l'adresse IP des visiteurs de votre site.
+
+52
+00:02:43,815 --> 00:02:46,330
+Vous pouvez effectuer
+une transformation sans état
+
+53
+00:02:46,330 --> 00:02:50,295
+ou extraire sans état la valeur
+de l'adresse IP de la chaîne
+
+54
+00:02:50,295 --> 00:02:52,855
+dans l'entrée de journal.
+
+55
+00:02:52,855 --> 00:02:55,017
+Les autres opérations
+de traitement sans état,
+
+56
+00:02:55,017 --> 00:02:57,180
+comme la conversion de chaînes en entiers
+
+57
+00:02:57,180 --> 00:03:00,715
+ou tout calcul qui n'implique
+qu'une partie des données d'entrée,
+
+58
+00:03:00,715 --> 00:03:06,600
+par exemple une ligne de données,
+sont toutes adaptées à un ParDo.
+
+59
+00:03:06,600 --> 00:03:10,570
+Si vous mettez en œuvre votre pipeline de
+traitement des données à l'aide de Python,
+
+60
+00:03:10,570 --> 00:03:14,060
+il existe des méthodes d'aide
+qui vous aideront à prendre ParDo en main.
+
+61
+00:03:14,060 --> 00:03:19,020
+La méthode "beam.Map" présentée ici
+est conçue pour les relations un à un.
+
+62
+00:03:19,020 --> 00:03:22,920
+Par exemple, si vous traitez des mots
+dans un document, et que vous voulez
+
+63
+00:03:22,920 --> 00:03:28,305
+renvoyer pour chaque mot
+une paire contenant le mot et sa longueur,
+
+64
+00:03:28,305 --> 00:03:31,530
+il s'agit d'une relation
+un à un, car chaque mot
+
+65
+00:03:31,530 --> 00:03:35,310
+ne peut être associé qu'à une longueur
+correspondant au nombre de caractères.
+
+66
+00:03:35,310 --> 00:03:39,870
+Si vous utilisez "beam.Map"
+pour transformer votre pipeline,
+
+67
+00:03:39,870 --> 00:03:43,335
+Dataflow gérera automatiquement
+l'exécution de la transformation,
+
+68
+00:03:43,335 --> 00:03:46,042
+par exemple le calcul
+de la longueur des mots
+
+69
+00:03:46,042 --> 00:03:48,750
+sur plusieurs nœuds
+dans un cluster Dataflow.
+
+70
+00:03:48,750 --> 00:03:53,389
+Contrairement à "Map", "beam.FlatMap" est
+compatible avec les transformations
+
+71
+00:03:53,389 --> 00:03:58,090
+qui peuvent générer n'importe quel nombre
+de résultats, y compris zéro résultat.
+
+72
+00:03:58,090 --> 00:04:02,130
+Continuons avec l'exemple
+où vous traitez des mots dans un document.
+
+73
+00:04:02,130 --> 00:04:06,140
+Vous voulez obtenir la liste
+des voyelles pour chaque mot.
+
+74
+00:04:06,140 --> 00:04:07,640
+Il peut bien sûr y avoir zéro,
+
+75
+00:04:07,640 --> 00:04:10,505
+une ou deux voyelles par mot, ou plus.
+
+76
+00:04:10,505 --> 00:04:14,380
+Les transformations de "beam.FlatMap"
+peuvent aussi être exécutées
+
+77
+00:04:14,380 --> 00:04:17,110
+en parallèle par Dataflow.
+
+78
+00:04:17,110 --> 00:04:20,055
+Si vous utilisez Java pour
+mettre en œuvre votre pipeline,
+
+79
+00:04:20,055 --> 00:04:23,080
+il suffit d'appeler
+la méthode statique "ParDo.of"
+
+80
+00:04:23,080 --> 00:04:25,625
+sur votre transformation
+et de transmettre le résultat
+
+81
+00:04:25,625 --> 00:04:27,645
+au prochain code "apply"
+de votre pipeline.
+
+82
+00:04:27,645 --> 00:04:30,360
+Si vous voulez utiliser
+l'opération "GroupByKey",
+
+83
+00:04:30,360 --> 00:04:33,055
+il est facile
+de l'ajouter à votre pipeline.
+
+84
+00:04:33,055 --> 00:04:36,310
+Imaginons par exemple
+que vous avez un pipeline qui traite
+
+85
+00:04:36,310 --> 00:04:40,660
+des adresses postales et tente de trouver
+tous les codes postaux de chaque ville.
+
+86
+00:04:40,660 --> 00:04:43,570
+Votre pipeline disposera d'une PCollection
+
+87
+00:04:43,570 --> 00:04:48,850
+de paires valeur/clé, comme ces paires
+contenant la clé et le code postal.
+
+88
+00:04:48,850 --> 00:04:54,280
+Le résultat créé par "beam.GroupByKey"
+produira une PCollection de paires
+
+89
+00:04:54,280 --> 00:05:00,940
+contenant chacune une clé (la ville) et
+une valeur (la liste des codes postaux).
+
+90
+00:05:00,940 --> 00:05:06,485
+Si "GroupByKey" est semblable à
+l'étape de brassage de "MapReduce",
+
+91
+00:05:06,485 --> 00:05:10,820
+l'opération "Combine.PerKey", plus
+générale, inclut des étapes de brassage
+
+92
+00:05:10,820 --> 00:05:13,107
+et de réduction
+qui permettent de mettre en œuvre
+
+93
+00:05:13,107 --> 00:05:15,395
+des agrégations comme "sum" ou "count".
+
+94
+00:05:15,395 --> 00:05:18,395
+Vous pouvez utiliser
+la méthode "Combine.globally"
+
+95
+00:05:18,395 --> 00:05:21,215
+pour réaliser des calculs
+sur l'ensemble de données entier.
+
+96
+00:05:21,215 --> 00:05:24,505
+Par exemple, si vous traitez
+des données de transactions financières,
+
+97
+00:05:24,505 --> 00:05:28,505
+et que chaque ligne de votre PCollection
+est une transaction commerciale,
+
+98
+00:05:28,505 --> 00:05:32,195
+pour calculer le total des ventes
+sur toutes les transactions,
+
+99
+00:05:32,195 --> 00:05:36,450
+vous pouvez utiliser "Combine.globally"
+avec l'opération "sum" en argument.
+
+100
+00:05:36,450 --> 00:05:40,755
+"Combine" est aussi compatible
+avec des agrégations plus précises.
+
+101
+00:05:40,755 --> 00:05:44,420
+Par exemple, si les enregistrements
+des transactions financières comprennent
+
+102
+00:05:44,420 --> 00:05:47,265
+le nom du vendeur
+en plus du montant de la vente,
+
+103
+00:05:47,265 --> 00:05:49,320
+vous pouvez transférer l'opération "sum"
+
+104
+00:05:49,320 --> 00:05:55,100
+à "Combine.PerKey" pour obtenir
+les ventes totales par vendeur.

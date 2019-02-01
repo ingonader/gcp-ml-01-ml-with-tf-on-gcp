@@ -1,0 +1,120 @@
+Vamos seguir e representar atributos
+com alguns exemplos reais. Vejamos este exemplo aqui. Estes são meus dados brutos, estou em uma sorveteria, estou tentando descobrir se o sorvete
+é servido por algum funcionário, e se o cliente esperou 1,4 segundo
+ou 1,4 minuto e qual será a classificação. Quero prever essa classificação. O quanto meu cliente vai estar satisfeito,
+com base em quem o serviu, quanto tempo esperou, o que comprou, o local da loja
+e mais. Certo, estes são nossos dados. Estes são os dados de treinamento, eu os aproveito e, por fim, tenho
+que transformar todos em números. Lembre-se da regra,
+tudo precisa ser numérico, porque as redes neurais
+lidam com números. Então, pego meus dados, transformo-os
+em números e esses são meus atributos. Então, no Tensorflow, vou pegar a
+entrada do JSON, sai no meu aplicativo da Web que entra
+em um armazenamento, eu pego, crio esses valores numéricos no
+TensorFlow e cada uma dessas colunas, então uma coluna de atributos. Como pegamos dados assim
+e os tornamos colunas de atributos? Como torná-los numéricos? O primeiro ponto é que alguns
+valores, como preço ou tempo de espera, já são numéricos. Ótimo.
+São super fáceis de codificar. Vamos apenas pegá-los
+e usá-los como estão. São numéricos e tem
+magnitude significativa. Então, 2,5 ou 1,4 para o tempo de espera
+é fácil para o TensorFlow aprender. Isso é o que chamamos
+de coluna de valor real. Digamos, camadas como
+o preço da coluna de valor real, camadas como o tempo
+de espera da coluna de valor real. Podemos usar esses números como
+estão, e serão colunas de valor real. E esta entrada? O ID da transação é igual a 42. Isso é muito específico. Descarte, não podemos
+usar isso como um atributo. E quanto ao código do funcionário? O código do funcionário é igual a 72365. É numérico? Sim, é um número, mas tem magnitude significativa? Alguém com um
+código de funcionário como 72365 é duas vezes melhor que um funcionário
+com um código de 36182? Não, certo? Portanto, não posso usar
+o código do funcionário como está. Tenho que fazer algo neles. Digamos que minha sorveteria
+tenha cinco funcionários. Funcionário número 8345,
+funcionário número 72365 etc. O que posso fazer é dizer, se esse
+número de empregado é 72365, eu representarei o código dele
+por este vetor que você vê aqui. O vetor é 01000 porque eu defino a segunda coluna como
+correspondente àquele empregado 72365. Basicamente, faço algo
+como uma máscara de bits. Você deixa aquela coluna do
+funcionário 1 e todas as outras colunas 0. Isso é o que chamamos
+de codificação one-hot. Uma coluna que é hot e todas as outras não. Então, se você tem cinco funcionários
+em uma sorveteria, você tem basicamente cinco colunas. Na verdade, temos quatro, porque
+uma delas é linearmente independente. Não vamos nos preocupar, vamos dizer
+que temos 5 funcionários para 5 colunas. No TensorFlow, isso é chamado
+de coluna esparsa. Basicamente queremos criar uma
+coluna esparsa com as chaves, e o nome da coluna é "employeeID", e as chaves são 8345, 72365 para o código do funcionário etc. Acabamos de passar as strings
+para cada uma dessas chaves, e depois o TensorFlow pegará a string e
+fornecerá um tempo de treino direto, o tempo de previsão, representá-los,
+fazer codificação one-hot. Isso os tornará numéricos, e dizemos que employeeID
+é sua coluna esparsa. Isto é, se conhecermos as chaves
+de antemão. E se você não conhece as chaves
+de antemão? O que você faz se tiver que
+pegar seus dados de entrada e precisar pré-processá-los
+e encontrar todas as chaves que estão no
+conjunto de dados de treino, e criar o que é chamado
+de vocabulário de chaves? Esse é o seu primeiro passo. Esse é o pré-processamento. Você precisa fazer tudo isso
+antes mesmo de fazer seu treino e, em seguida, criar um novo
+conjunto de dados em que os valores pré-processados
+possam ser usados. Então, antes mesmo de começar
+a treinar seu modelo, você precisa criar este
+vocabulário de chaves e ele precisa estar
+disponível no momento da previsão, porque na hora da previsão, você vai voltar e dizer: "Eu tenho o código de funcionário 72365 e o modelo precisa saber que,
+no tempo de treino, ele sabia que 72365 era a segunda coluna
+para a codificação one-hot" Assim, o vocabulário precisa ser idêntico, e o mapeamento do
+vocabulário precisa ser idêntico entre o tempo de treino e a previsão, caso contrário, não é bom. Muitos de vocês
+podem estar se perguntando, o que acontece se você
+contratar outro funcionário, o modelo ainda será o mesmo? Neste momento, você não tem lugar
+para esse novo funcionário. Isso significa que você não pode
+prever esse novo funcionário. Esse tipo de coisa você
+precisa pensar de antemão, você pode precisar
+adicionar algo. O que faço com um funcionário que não
+conheço ou que não é encontrado, e você decide que, talvez, vá dizer a média de todos os funcionários e
+simplesmente usar esse número de entrada. Enquanto isso, você coleta dados do
+horário em que esse funcionário trabalha e a satisfação do cliente
+associada a ele, além de diferentes
+tempos de espera e diferentes itens servidos. Depois de coletar isso, você pode use isso na sua previsão. Então, se você conhece a chave, se você conhece
+a chave de antemão, você cria aquela coluna esparsa
+com as chaves, e você as passa e faz
+a codificação one-hot. Essas são as diferentes maneiras
+de criar uma coluna esparsa. Às vezes, seus dados
+já podem estar indexados. E por que eles
+precisam ser indexados? Talvez você tenha
+um código de funcionário composto por números de 1 a 1000, Nesse ponto, eles já estão indexados. São arbitrariamente números grandes em
+todo lugar, apenas um para adicionar. Se esse é o caso, eles querem
+criar uma coluna esparsa com o atributo projetado,
+que é o código do funcionário, e há cinco funcionários. Onde isso é útil, digamos em nosso
+exemplo do táxi, é que usamos isso para a hora do dia, porque é projetado
+automaticamente de 0 a 23. É perfeito como um atributo projetado, porque a hora do dia não é numérica e não é completamente
+não numérica porque o número 23 é muito
+próximo do número 0 ou 1, está a apenas duas
+horas de distância. Vamos ver a terceira possibilidade. Suponha que você não tenha um vocabulário e não esteja projetado, aqui está um truque
+legal que você pode fazer. Se você não quer criar um vocabulário
+e não se importa, o que você vai fazer é, pegar meu código de funcionário,
+gerar hash, calcular o hash do código de funcionário, e dividir esse hash em 500 intervalos.
+Por quê? Digamos que você está em
+uma empresa que tem 100 funcionários, e você o divide em 500 intervalos, então, em média, cada funcionário,
+cada intervalo, terá zero empregado
+ou um funcionário é quase como codificação one-hot ou 500 codificações one-hot. Isso me leva ao mesmo lugar sem ter que
+criar esse vocabulário antes. Classificação do cliente. O que fazemos com isso? Para tentar prever
+a classificação do cliente, e é um rótulo,
+não estamos preocupados. Digamos que estamos
+tentando usá-la como uma entrada, porque estamos tentando
+prever outra coisa. Então, você tem algo como
+uma classificação, e quer usá-la como
+recurso de entrada, você poderia fazer uma
+de duas coisas. Pode tratá-la como um número contínuo
+de um a cinco, é numérico, e tem uma certa magnitude significativa,
+como 3 é mais do que 2, ou você pode dizer que 4 estrelas
+é diferente de 5 estrelas, muito diferente de 2 estrelas, que é apenas uma codificação one-hot. Portanto, em alguns casos,
+você tem escolhas, na classificação do cliente,
+você faz codificação one-hot ou pode tratá-lo
+como um número. Cabe a você como lidar
+com essa classificação. Algo que você precisa observar
+é o que você faz para um cliente que
+não forneceu uma classificação? Digamos que você faz uma pesquisa e o
+cliente não responde a sua pesquisa. O que fazer com os dados que faltam? Uma opção é usar duas colunas, uma para a classificação e outra para
+saber se temos ou não uma classificação. Neste caso, o número 4 é uma classificação
+que um cliente deu a você, e 1 significa que ele, de fato,
+deu uma classificação, já que 0 significa que ele
+não nos classificou. É possível fazer o contrário, se estiver
+fazendo uma codificação one-hot. Digamos que tenho
+uma classificação de 4, que é 0001, ou que eu não recebi
+uma classificação, 0000. Mas não cometa o erro de não ter uma
+segunda coluna, classificada ou não, porque não queremos misturar
+números mágicos com os valores reais. Você precisa adicionar uma coluna extra
+para indicar se observou ou não o valor. Então, se você tem dados faltando, a ideia principal é que é necessário ter outra coluna.

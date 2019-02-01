@@ -1,0 +1,262 @@
+1
+00:00:00,000 --> 00:00:03,120
+Nous avons utilisé une fonction
+de transformation pour transformer
+
+2
+00:00:03,120 --> 00:00:07,770
+l'ensemble de données d'évaluation et
+nous avons écrit les données transformées.
+
+3
+00:00:07,770 --> 00:00:13,450
+Pour quel type de données avons-nous
+utilisé AnalyzeAndTransformDataset ?
+
+4
+00:00:13,450 --> 00:00:16,650
+Les données d'entraînement.
+
+5
+00:00:16,650 --> 00:00:20,660
+Nous avons utilisé TransformDataset
+pour les données d'évaluation.
+
+6
+00:00:20,660 --> 00:00:25,580
+Même si nous avons créé les
+caractéristiques prétraitées avec Beam,
+
+7
+00:00:25,580 --> 00:00:30,670
+la méthode prétraitée ne pouvait pas
+correspondre à du code Python arbitraire.
+
+8
+00:00:30,670 --> 00:00:35,080
+Elle devait consister uniquement
+en des fonctions TensorFlow.
+
+9
+00:00:35,080 --> 00:00:37,930
+La raison derrière ceci est
+
+10
+00:00:37,930 --> 00:00:41,750
+qu'elles font partie
+du graphique de prédiction.
+
+11
+00:00:41,750 --> 00:00:44,320
+Pourquoi font-elles partie
+du graphique de prédiction ?
+
+12
+00:00:44,320 --> 00:00:47,455
+Pour que l'utilisateur final puisse
+donner les données brutes
+
+13
+00:00:47,455 --> 00:00:51,420
+au modèle afin qu'il effectue
+le prétraitement nécessaire.
+
+14
+00:00:51,420 --> 00:00:55,525
+Mais comment le modèle sait-il
+quelles fonctions appeler ?
+
+15
+00:00:55,525 --> 00:00:59,569
+Pour que le modèle sache
+quelles fonctions appeler,
+
+16
+00:00:59,569 --> 00:01:02,735
+nous devons enregistrer
+la fonction de transformation.
+
+17
+00:01:02,735 --> 00:01:05,060
+C'est ce que je fais ici.
+
+18
+00:01:05,060 --> 00:01:09,020
+J'enregistre la fonction de transformation
+
+19
+00:01:09,020 --> 00:01:14,695
+dans un répertoire nommé "metadata"
+avec mon modèle entraîné.
+
+20
+00:01:14,695 --> 00:01:20,710
+Je demande ensuite à la fonction d'entrée
+de récupérer les métadonnées.
+
+21
+00:01:20,710 --> 00:01:23,775
+Quelle fonction d'entrée ?
+
+22
+00:01:23,775 --> 00:01:24,755
+Les trois.
+
+23
+00:01:24,755 --> 00:01:29,460
+Voyons d'abord les fonctions d'entrée
+d'entraînement et d'évaluation.
+
+24
+00:01:29,460 --> 00:01:32,405
+Ce sont elles qui lisent
+les caractéristiques prétraitées.
+
+25
+00:01:32,405 --> 00:01:39,745
+J'ai indiqué que le schéma correspondait
+aux métadonnées transformées.
+
+26
+00:01:39,745 --> 00:01:43,760
+Modifiez les fonctions d'entrée
+d'entraînement et d'évaluation
+
+27
+00:01:43,760 --> 00:01:46,600
+pour qu'elles lisent
+les caractéristiques prétraitées.
+
+28
+00:01:46,600 --> 00:01:49,760
+TensorFlow Transform inclut
+
+29
+00:01:49,760 --> 00:01:54,695
+une fonction d'aide pratique
+nommée "build_training_input".
+
+30
+00:01:54,695 --> 00:01:59,710
+Je l'utilise
+pour l'entraînement et l'évaluation
+
+31
+00:01:59,710 --> 00:02:02,675
+en modifiant la variable
+"input_paths" pour qu'elle redirige
+
+32
+00:02:02,675 --> 00:02:10,380
+vers "train_data_path"
+ou vers "eval_data_path" selon le mode.
+
+33
+00:02:10,380 --> 00:02:14,205
+La fonction d'entrée de diffusion accepte
+les données brutes.
+
+34
+00:02:14,205 --> 00:02:18,270
+Je transmets donc ici
+les métadonnées des données brutes,
+
+35
+00:02:18,270 --> 00:02:20,640
+et non les métadonnées transformées.
+
+36
+00:02:20,640 --> 00:02:24,365
+Si les données brutes
+ne suffisent pas, nous pouvons
+
+37
+00:02:24,365 --> 00:02:29,410
+ajouter des fonctions TensorFlow
+arbitraires au code de prétraitement.
+
+38
+00:02:29,410 --> 00:02:33,960
+Ces opérations sont stockées
+dans saved_model.pb.
+
+39
+00:02:33,960 --> 00:02:38,950
+Nous disposons à nouveau d'une fonction
+d'aide pratique de TensorFlow Transform,
+
+40
+00:02:38,950 --> 00:02:43,140
+"build_parsing
+_transforming_serving_input".
+
+41
+00:02:43,140 --> 00:02:47,020
+Analysez le JSON
+d'après le schéma des données brutes.
+
+42
+00:02:47,020 --> 00:02:51,900
+Transformez les données brutes avec les
+opérations TensorFlow de saved_model.pb,
+
+43
+00:02:51,900 --> 00:02:53,880
+puis envoyez-les avec le modèle.
+
+44
+00:02:53,880 --> 00:02:59,325
+Le code du client n'a plus qu'à envoyer
+les variables des données d'entrée brutes.
+
+45
+00:02:59,325 --> 00:03:00,930
+Ceci ne change pas.
+
+46
+00:03:00,930 --> 00:03:06,530
+La fonction d'entrée de diffusion reçoit
+les variables d'entrée et reste identique.
+
+47
+00:03:06,530 --> 00:03:11,650
+Elle accepte les données brutes
+et les envoie au modèle.
+
+48
+00:03:11,650 --> 00:03:13,830
+Alors pourquoi un modèle fonctionne-t-il ?
+
+49
+00:03:13,830 --> 00:03:19,865
+Le régresseur DNN ou tout autre modèle
+ne peut pas gérer une chaîne comme "Thu".
+
+50
+00:03:19,865 --> 00:03:24,645
+S'il fonctionne, c'est parce que le code
+que vous avez écrit pour le prétraitement
+
+51
+00:03:24,645 --> 00:03:27,995
+fait maintenant partie
+du graphique du modèle.
+
+52
+00:03:27,995 --> 00:03:32,110
+Ceci se produit parce que
+le modèle lit les métadonnées
+
+53
+00:03:32,110 --> 00:03:34,350
+et inclut un code de prétraitement.
+
+54
+00:03:34,350 --> 00:03:38,090
+C'est ainsi que
+TensorFlow Transform fonctionne.
+
+55
+00:03:38,090 --> 00:03:41,940
+Utilisons-le maintenant
+pour prédire le prix de courses en taxi.

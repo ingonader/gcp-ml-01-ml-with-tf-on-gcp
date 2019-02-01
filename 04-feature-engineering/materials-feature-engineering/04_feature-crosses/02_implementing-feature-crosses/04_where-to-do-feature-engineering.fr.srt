@@ -1,0 +1,475 @@
+1
+00:00:00,000 --> 00:00:03,570
+Nous avons vu différentes manières
+de représenter
+
+2
+00:00:03,570 --> 00:00:05,920
+et d'extraire des caractéristiques :
+
+3
+00:00:05,920 --> 00:00:08,165
+le scaling, les croisements
+de caractéristiques,
+
+4
+00:00:08,165 --> 00:00:10,930
+les représentations vectorielles
+continues, etc.
+
+5
+00:00:10,930 --> 00:00:14,400
+Où ces éléments entrent-ils en jeu
+dans votre modèle de machine learning ?
+
+6
+00:00:14,400 --> 00:00:17,595
+Souvenez-vous que votre modèle comprend
+
+7
+00:00:17,595 --> 00:00:20,805
+une fonction d'entrée qui lit les données,
+
+8
+00:00:20,805 --> 00:00:23,002
+des colonnes
+de caractéristiques qui servent
+
+9
+00:00:23,002 --> 00:00:25,200
+d'espaces réservés pour les données lues
+
+10
+00:00:25,200 --> 00:00:29,055
+et un estimateur que vous créez
+lors de la transmission des colonnes.
+
+11
+00:00:29,055 --> 00:00:33,240
+Vous configurez ensuite "train_spec",
+"eval_spec", "exporter", etc.,
+
+12
+00:00:33,240 --> 00:00:35,590
+puis vous appelez "train_and_evaluate".
+
+13
+00:00:35,590 --> 00:00:39,480
+Où se positionne l'extraction
+de caractéristiques dans tout ceci ?
+
+14
+00:00:39,480 --> 00:00:42,570
+Elle peut se faire à trois endroits :
+
+15
+00:00:42,570 --> 00:00:45,510
+à la volée lors de la lecture des données,
+
+16
+00:00:45,510 --> 00:00:47,350
+dans la fonction d'entrée elle-même
+
+17
+00:00:47,350 --> 00:00:49,575
+ou en créant des colonnes
+de caractéristiques.
+
+18
+00:00:49,575 --> 00:00:54,600
+Vous pouvez également l'effectuer lors
+d'une étape séparée avant l'entraînement.
+
+19
+00:00:54,600 --> 00:00:58,110
+Votre fonction d'entrée lit ensuite
+les caractéristiques prétraitées.
+
+20
+00:00:58,110 --> 00:01:01,740
+Si vous effectuez l'extraction
+lors d'une étape de prétraitement séparée,
+
+21
+00:01:01,740 --> 00:01:04,560
+le prétraitement s'effectue dans Dataflow,
+
+22
+00:01:04,560 --> 00:01:07,950
+ce qui vous permet de travailler
+à grande échelle de manière distribuée.
+
+23
+00:01:07,950 --> 00:01:10,725
+Dataflow permet l'utilisation
+de code Python simple
+
+24
+00:01:10,725 --> 00:01:16,740
+mais uniquement si Dataflow fait partie
+de votre pipeline de diffusion.
+
+25
+00:01:16,740 --> 00:01:20,520
+En d'autres termes, vous effectuez un lot
+de tâches de prédiction par flux.
+
+26
+00:01:20,520 --> 00:01:25,185
+Vous appliquez ainsi le même prétraitement
+aux données d'entrée de diffusion.
+
+27
+00:01:25,185 --> 00:01:29,940
+Une troisième solution est d'effectuer
+le prétraitement dans Dataflow
+
+28
+00:01:29,940 --> 00:01:32,775
+et de créer un ensemble
+de caractéristiques prétraitées,
+
+29
+00:01:32,775 --> 00:01:35,670
+en indiquant au graphique de prédiction
+que vous voulez
+
+30
+00:01:35,670 --> 00:01:41,145
+que la même transformation soit effectuée
+dans TensorFlow pendant la diffusion.
+
+31
+00:01:41,145 --> 00:01:44,625
+Pour ce faire, vous devez utiliser
+TensorFlow Transform.
+
+32
+00:01:44,625 --> 00:01:47,280
+Comme nous l'avons vu
+dans la section précédente,
+
+33
+00:01:47,280 --> 00:01:50,740
+une partie du prétraitement peut
+être effectuée dans TensorFlow
+
+34
+00:01:50,740 --> 00:01:52,860
+en créant une colonne de caractéristiques.
+
+35
+00:01:52,860 --> 00:01:56,410
+Lorsque vous divisez ensuite une colonne
+en buckets pour créer une colonne.
+
+36
+00:01:56,410 --> 00:01:58,200
+il s'agit de prétraitement.
+
+37
+00:01:58,200 --> 00:02:02,460
+C'est la colonne de caractéristiques
+que vous enverrez à l'estimateur.
+
+38
+00:02:02,460 --> 00:02:07,050
+Je prends ici la colonne
+de caractéristiques de la superficie
+
+39
+00:02:07,050 --> 00:02:09,990
+et je la discrétise en quatre intervalles.
+
+40
+00:02:09,990 --> 00:02:14,760
+Le premier correspond aux maisons
+de moins de 500 pieds carrés,
+
+41
+00:02:14,760 --> 00:02:18,555
+le second à celles
+entre 500 et 1 000 pieds carrés,
+
+42
+00:02:18,555 --> 00:02:22,410
+le troisième aux maisons
+entre 1 000 et 2 500 pieds carrés
+
+43
+00:02:22,410 --> 00:02:27,060
+et le dernier à celles
+de plus de 2 500 pieds carrés.
+
+44
+00:02:27,060 --> 00:02:32,910
+J'ajoute la colonne en buckets
+à la liste d'origine des colonnes.
+
+45
+00:02:32,910 --> 00:02:40,555
+Maintenant, les deux régresseurs linéaires
+voient la superficie sous deux formes,
+
+46
+00:02:40,555 --> 00:02:43,125
+une colonne numérique à valeur réelle
+
+47
+00:02:43,125 --> 00:02:46,725
+et une colonne catégorique en buckets.
+
+48
+00:02:46,725 --> 00:02:49,050
+Bien sûr, si je le voulais,
+
+49
+00:02:49,050 --> 00:02:52,605
+je pourrais remplacer une colonne
+numérique par la colonne en buckets
+
+50
+00:02:52,605 --> 00:02:57,655
+pour que le régresseur linéaire ne voie
+la superficie que sous forme catégorique.
+
+51
+00:02:57,655 --> 00:02:59,450
+C'est ce que je fais ici.
+
+52
+00:02:59,450 --> 00:03:05,500
+Je remplace "featcols[0]"
+par la version en buckets.
+
+53
+00:03:05,520 --> 00:03:09,745
+Voici un autre exemple
+de croisements de caractéristiques,
+
+54
+00:03:09,745 --> 00:03:13,360
+avec cette fois
+une représentation vectorielle continue.
+
+55
+00:03:13,360 --> 00:03:17,560
+Nous pouvons prendre la latitude
+et la longitude des maisons,
+
+56
+00:03:17,560 --> 00:03:21,220
+et définir les intervalles
+permettant de les discrétiser.
+
+57
+00:03:21,220 --> 00:03:26,860
+J'utilise ici "nbuckets" avec
+des intervalles espacés de manière égale.
+
+58
+00:03:26,860 --> 00:03:31,855
+Pour déterminer les limites,
+j'ai utilisé "APPROX_QUANTILES",
+
+59
+00:03:31,855 --> 00:03:33,550
+une fonction SQL de BigQuery
+
+60
+00:03:33,550 --> 00:03:37,960
+qui permet d'obtenir le même nombre
+d'exemples d'entraînement dans chaque bin.
+
+61
+00:03:37,960 --> 00:03:40,850
+Peu importe la méthode
+d'obtention des limites,
+
+62
+00:03:40,850 --> 00:03:42,794
+une fois que nous les avons,
+
+63
+00:03:42,794 --> 00:03:45,665
+"latbuckets" et "lonbuckets"
+dans mon exemple,
+
+64
+00:03:45,665 --> 00:03:49,120
+nous pouvons discrétiser les latitudes
+et les longitudes des maisons
+
+65
+00:03:49,120 --> 00:03:51,470
+dans "b_lat" et "b_lon".
+
+66
+00:03:51,470 --> 00:03:54,010
+Puis, comme nous l'avons vu,
+
+67
+00:03:54,010 --> 00:03:58,675
+nous pouvons croiser
+les deux colonnes "b_lat" et "b_lon".
+
+68
+00:03:58,675 --> 00:04:04,990
+Je choisis ici de les croiser
+dans les buckets de hachage "nbuckets²".
+
+69
+00:04:04,990 --> 00:04:09,065
+Chaque bucket de hachage
+contiendra en moyenne
+
+70
+00:04:09,065 --> 00:04:11,005
+un seul croisement de caractéristiques.
+
+71
+00:04:11,005 --> 00:04:14,770
+La bonne pratique expliquée précédemment
+selon laquelle la valeur doit se situer
+
+72
+00:04:14,770 --> 00:04:18,459
+entre la moitié de la racine carrée
+et le double est donc respectée.
+
+73
+00:04:18,459 --> 00:04:25,475
+Enfin, j'ai intégré les données dans
+nbuckets divisés par quatre dimensions.
+
+74
+00:04:25,475 --> 00:04:28,119
+L'avantage d'effectuer
+
+75
+00:04:28,119 --> 00:04:30,910
+le prétraitement
+directement dans TensorFlow
+
+76
+00:04:30,910 --> 00:04:35,350
+est que ces opérations font partie
+de votre graphique de modèle.
+
+77
+00:04:35,350 --> 00:04:43,105
+Elles sont donc effectuées de la même
+façon pour l'entraînement et la diffusion.
+
+78
+00:04:43,105 --> 00:04:46,790
+Qu'est-ce que cela signifie en pratique ?
+
+79
+00:04:46,790 --> 00:04:51,060
+Nous discrétisons d'abord les latitudes,
+
+80
+00:04:51,060 --> 00:04:54,280
+ce qui divise les nombres
+à valeur réelle en bins
+
+81
+00:04:54,280 --> 00:05:00,515
+et fait en sorte que les maisons
+à la même latitude ont la même valeur.
+
+82
+00:05:00,515 --> 00:05:03,450
+Cela limite un peu le surapprentissage,
+
+83
+00:05:03,450 --> 00:05:07,895
+mais se contenter de discrétiser
+les latitudes n'est pas très utile.
+
+84
+00:05:07,895 --> 00:05:11,325
+Nous discrétisons ensuite les longitudes.
+
+85
+00:05:11,325 --> 00:05:18,425
+Elles sont divisées en bins, ce qui limite
+aussi un peu le surapprentissage,
+
+86
+00:05:18,425 --> 00:05:22,280
+mais n'est pas très utile non plus.
+
+87
+00:05:22,280 --> 00:05:28,030
+Mais que se passe-t-il si on croise
+les deux valeurs discrétisées ?
+
+88
+00:05:28,030 --> 00:05:34,075
+En bref, nous avons
+divisé la carte en cellules,
+
+89
+00:05:34,075 --> 00:05:41,015
+de sorte que chaque maison
+appartienne à une seule cellule.
+
+90
+00:05:41,015 --> 00:05:44,830
+Pendant l'entraînement,
+nous pourrons ainsi
+
+91
+00:05:44,830 --> 00:05:50,455
+mémoriser le prix moyen
+des maisons dans chaque cellule.
+
+92
+00:05:50,455 --> 00:05:57,850
+Bien sûr, plus la résolution de la grille
+est fine, plus la prédiction est précise.
+
+93
+00:05:57,850 --> 00:06:01,575
+Elle sera aussi
+moins facile à généraliser,
+
+94
+00:06:01,575 --> 00:06:04,210
+car il risque de ne pas y avoir
+assez de maisons vendues
+
+95
+00:06:04,210 --> 00:06:07,210
+dans une cellule
+pour permettre une estimation correcte.
+
+96
+00:06:07,210 --> 00:06:11,050
+Lors de la prédiction d'une maison donnée,
+
+97
+00:06:11,050 --> 00:06:13,690
+nous savons
+à quelle cellule elle appartient.
+
+98
+00:06:13,690 --> 00:06:17,560
+Nous extrayons ainsi
+la valeur mémorisée correspondante.
+
+99
+00:06:17,560 --> 00:06:24,505
+Avec la représentation vectorielle
+continue, les cellules similaires,
+
+100
+00:06:24,505 --> 00:06:30,640
+par exemple
+toutes les maisons en bord de mer,
+
+101
+00:06:30,640 --> 00:06:33,850
+ont des valeurs similaires.

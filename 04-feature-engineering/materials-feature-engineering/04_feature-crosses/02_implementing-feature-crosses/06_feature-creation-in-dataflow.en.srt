@@ -1,0 +1,151 @@
+1
+00:00:00,000 --> 00:00:04,485
+Recall that there are three possible places to do feature engineering.
+
+2
+00:00:04,485 --> 00:00:07,710
+We have looked at how to do feature preprocessing and
+
+3
+00:00:07,710 --> 00:00:11,490
+feature creation on the fly intenser flow.
+
+4
+00:00:11,490 --> 00:00:17,660
+The other option is to do the preprocessing of feature creation in Cloud Dataflow.
+
+5
+00:00:17,660 --> 00:00:23,130
+Here, dataflow is used to create a preprocessed or augmented
+
+6
+00:00:23,130 --> 00:00:28,955
+data set and this new data set is used to train the model.
+
+7
+00:00:28,955 --> 00:00:34,995
+During prediction, we need to figure out a way to carry out the same preprocessing steps.
+
+8
+00:00:34,995 --> 00:00:41,545
+So this method works best if dataflow is part of a prediction runtime as well.
+
+9
+00:00:41,545 --> 00:00:46,425
+Recall that the reference architecture for GCP does this.
+
+10
+00:00:46,425 --> 00:00:51,950
+Dataflow, because it can handle both streaming data and batch data,
+
+11
+00:00:51,950 --> 00:00:56,550
+is part of the pipeline in both training and prediction.
+
+12
+00:00:56,550 --> 00:00:58,210
+If you do this,
+
+13
+00:00:58,210 --> 00:01:02,715
+then dataflow is a fine place to do preprocessing.
+
+14
+00:01:02,715 --> 00:01:08,910
+Dataflow is ideal for features that involve time-windowed aggregation.
+
+15
+00:01:08,910 --> 00:01:13,725
+For example, you might want to use as a feature
+
+16
+00:01:13,725 --> 00:01:19,640
+the average number of people who look at a product in the past one hour.
+
+17
+00:01:19,640 --> 00:01:25,290
+In training, you can use dataflow to compute this from log files,
+
+18
+00:01:25,290 --> 00:01:29,790
+but the nature of such a feature implies that you have to use dataflow
+
+19
+00:01:29,790 --> 00:01:34,965
+in real time to compute that based on your real time traffic.
+
+20
+00:01:34,965 --> 00:01:39,905
+You could add extra fields in any Ptransform in dataflow.
+
+21
+00:01:39,905 --> 00:01:42,394
+The add fields in this example,
+
+22
+00:01:42,394 --> 00:01:45,780
+it's a pardue that takes the input fields,
+
+23
+00:01:45,780 --> 00:01:47,640
+pulls out the passenger count,
+
+24
+00:01:47,640 --> 00:01:53,715
+accumulates them and adds a visitor count as the past hour count.
+
+25
+00:01:53,715 --> 00:01:59,260
+The same code and dataflow works in both batch and stream so you simply have
+
+26
+00:01:59,260 --> 00:02:04,765
+the add fields method in both the training pipeline and in the predictions pipeline.
+
+27
+00:02:04,765 --> 00:02:09,175
+The third option is to use a hybrid approach.
+
+28
+00:02:09,175 --> 00:02:12,770
+Google researchers publish how to do this recently,
+
+29
+00:02:12,770 --> 00:02:16,255
+and we look at it in detail in the next module.
+
+30
+00:02:16,255 --> 00:02:19,075
+But the gist of this is this,
+
+31
+00:02:19,075 --> 00:02:23,975
+during training you will create a preprocessed data set using dataflow.
+
+32
+00:02:23,975 --> 00:02:29,840
+However, your transformations themselves will be implemented in TenserFlow.
+
+33
+00:02:29,840 --> 00:02:32,095
+So that during predictions,
+
+34
+00:02:32,095 --> 00:02:35,890
+the feature engineering is part of the TenserFlow graph.
+
+35
+00:02:35,890 --> 00:02:39,580
+This is very advantageous because dataflow is
+
+36
+00:02:39,580 --> 00:02:43,285
+great at computing aggregates over all of the data.
+
+37
+00:02:43,285 --> 00:02:46,360
+While TensorFlow is advantageous when it
+
+38
+00:02:46,360 --> 00:02:50,510
+comes to manipulating the input fields on the fly.

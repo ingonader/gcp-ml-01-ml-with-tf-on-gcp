@@ -1,0 +1,523 @@
+1
+00:00:00,000 --> 00:00:02,970
+Remember I said that using a large value for
+
+2
+00:00:02,970 --> 00:00:07,085
+hash buckets leads to a very sparse representation.
+
+3
+00:00:07,085 --> 00:00:11,065
+But what if we do one more thing, what if,
+
+4
+00:00:11,065 --> 00:00:16,030
+instead of one-hot encoding the feature cross and then using it as is,
+
+5
+00:00:16,030 --> 00:00:18,835
+we pass it through a dense layer.
+
+6
+00:00:18,835 --> 00:00:23,270
+We can then train the model to predict traffic as before.
+
+7
+00:00:23,270 --> 00:00:27,620
+This dense layer shown by the yellow and green nodes,
+
+8
+00:00:27,620 --> 00:00:32,190
+this dense layer here creates what is called an embedding.
+
+9
+00:00:32,190 --> 00:00:38,340
+The grey and blue boxes denote zeroes and ones,
+
+10
+00:00:38,340 --> 00:00:41,220
+for any row in the input data set,
+
+11
+00:00:41,220 --> 00:00:43,590
+for any training example,
+
+12
+00:00:43,590 --> 00:00:46,230
+only one of the boxes is lit,
+
+13
+00:00:46,230 --> 00:00:49,895
+and that box shown in blue is one,
+
+14
+00:00:49,895 --> 00:00:54,185
+the grey boxes for that example they are zero.
+
+15
+00:00:54,185 --> 00:00:59,040
+Atdifferent training example will correspond to a different hour of day,
+
+16
+00:00:59,040 --> 00:01:01,460
+and so it will light up a different box,
+
+17
+00:01:01,460 --> 00:01:06,175
+and that box will be one and the other boxes will be zero.
+
+18
+00:01:06,175 --> 00:01:10,100
+However, the yellow and green boxes they're different,
+
+19
+00:01:10,100 --> 00:01:11,980
+they're not one hat encoded,
+
+20
+00:01:11,980 --> 00:01:16,270
+they will be real valued numbers, floating point values.
+
+21
+00:01:16,270 --> 00:01:21,405
+Why? Because they are a weighted some of the feature crossed values.
+
+22
+00:01:21,405 --> 00:01:25,965
+So what's happening at the yellow and green nodes?
+
+23
+00:01:25,965 --> 00:01:31,200
+The thing to realize is that the weights that go into the embedding layer,
+
+24
+00:01:31,200 --> 00:01:32,850
+the weights that go into
+
+25
+00:01:32,850 --> 00:01:38,275
+the yellow and green nodes those weights are learned from the data.
+
+26
+00:01:38,275 --> 00:01:42,885
+Imagine that we have lots and lots of traffic observations,
+
+27
+00:01:42,885 --> 00:01:48,850
+maybe every time a car or a bicycle or a truck passes a particular signal,
+
+28
+00:01:48,850 --> 00:01:51,055
+we have a traffic observation,
+
+29
+00:01:51,055 --> 00:01:55,295
+so we have the data for an entire city all the signals,
+
+30
+00:01:55,295 --> 00:01:57,985
+so millions of training examples.
+
+31
+00:01:57,985 --> 00:02:01,960
+Wait a second, did I just say what I just said?
+
+32
+00:02:01,960 --> 00:02:05,475
+That my data set consists of traffic observations,
+
+33
+00:02:05,475 --> 00:02:10,230
+one trainee example for every vehicle at a signal?
+
+34
+00:02:10,230 --> 00:02:14,770
+If you're new to machine learning I can almost bet that you
+
+35
+00:02:14,770 --> 00:02:20,190
+thought that our training dataset consisted of aggregated traffic counts,
+
+36
+00:02:20,190 --> 00:02:25,385
+maybe the total number of vehicles on the road at every hour of every day.
+
+37
+00:02:25,385 --> 00:02:29,790
+But that's a small data set and it's just a toy problem.
+
+38
+00:02:29,790 --> 00:02:33,495
+If you do that you will only learn averages,
+
+39
+00:02:33,495 --> 00:02:36,360
+and that's fundamentally uninteresting
+
+40
+00:02:36,360 --> 00:02:40,065
+and fit only for writing newspaper articles such as,
+
+41
+00:02:40,065 --> 00:02:44,400
+models predict the traffic levels next year will be 10 percent more.
+
+42
+00:02:44,400 --> 00:02:46,500
+But remember what we said,
+
+43
+00:02:46,500 --> 00:02:51,390
+that machine learning is a way to learn the long tail to make
+
+44
+00:02:51,390 --> 00:02:58,240
+fine grained predictions and derive insights beyond just a gross averages.
+
+45
+00:02:58,240 --> 00:03:01,395
+Well this is what that means in practice.
+
+46
+00:03:01,395 --> 00:03:06,735
+Instead of dealing with a few hundred rows of an aggregated data set,
+
+47
+00:03:06,735 --> 00:03:11,250
+we have minute fine grained observations of
+
+48
+00:03:11,250 --> 00:03:17,335
+cars at every signal and that is a traffic data set we are going to use.
+
+49
+00:03:17,335 --> 00:03:19,630
+Our predictions are going to be,
+
+50
+00:03:19,630 --> 00:03:21,660
+number of cars, number of trucks,
+
+51
+00:03:21,660 --> 00:03:24,980
+number of bicycles, at any given time,
+
+52
+00:03:24,980 --> 00:03:27,435
+at any given point in the city.
+
+53
+00:03:27,435 --> 00:03:32,545
+Fine grained predictions, that's what machine learning is about.
+
+54
+00:03:32,545 --> 00:03:36,280
+Anyway, let's go back to our lesson.
+
+55
+00:03:36,280 --> 00:03:38,900
+So, we have vehicle observations,
+
+56
+00:03:38,900 --> 00:03:42,595
+the data set might include the vehicle type,
+
+57
+00:03:42,595 --> 00:03:45,690
+car, bicycle, bus, truck,
+
+58
+00:03:45,690 --> 00:03:50,020
+the direction of travel, location, et cetera.
+
+59
+00:03:50,020 --> 00:03:57,015
+That data set includes a timestamp from which we extract the day and the hour,
+
+60
+00:03:57,015 --> 00:04:01,460
+and then we feature cross them to get x_3 in the diagram.
+
+61
+00:04:01,460 --> 00:04:10,695
+And as we discussed x_3 is essentially one hat encoded into a number of hash buckets.
+
+62
+00:04:10,695 --> 00:04:15,270
+We now take this and pass it through a dense layer
+
+63
+00:04:15,270 --> 00:04:20,484
+whose weights are trained to predict a number of things about the traffic,
+
+64
+00:04:20,484 --> 00:04:26,205
+maybe we're going to predict the time for the next vehicle to arrive at the intersection,
+
+65
+00:04:26,205 --> 00:04:29,470
+so that we can control the length of the traffic signal.
+
+66
+00:04:29,470 --> 00:04:37,320
+The point is, that by training these weights on this data set something neat happens.
+
+67
+00:04:37,320 --> 00:04:43,085
+The feature cross of day hour has 168 unique values,
+
+68
+00:04:43,085 --> 00:04:49,420
+but we are forcing it to be represented with just two real valued numbers.
+
+69
+00:04:49,420 --> 00:04:58,270
+And so the model learns how to embed the feature cross in lower-dimensional space.
+
+70
+00:04:58,270 --> 00:05:05,195
+Maybe the green box tends to capture the traffic in pedestrians and bicycles,
+
+71
+00:05:05,195 --> 00:05:09,400
+while the yellow tends to capture automobiles.
+
+72
+00:05:09,400 --> 00:05:13,000
+So, 8:00 AM on Tuesday and 9:00 AM on
+
+73
+00:05:13,000 --> 00:05:18,385
+Wednesday may correspond to completely different boxes in the feature cross.
+
+74
+00:05:18,385 --> 00:05:21,370
+However, if the traffic patterns in
+
+75
+00:05:21,370 --> 00:05:26,370
+most intersections in the city are similar at those two times,
+
+76
+00:05:26,370 --> 00:05:29,510
+the real valued representation of
+
+77
+00:05:29,510 --> 00:05:34,945
+this two day hour combinations will end up being quite similar.
+
+78
+00:05:34,945 --> 00:05:38,410
+Maybe there are lots of people bicycling and walking at
+
+79
+00:05:38,410 --> 00:05:41,930
+those times and also lots of cars,
+
+80
+00:05:41,930 --> 00:05:46,600
+the weights for 8 AM and 9 AM get adjusted such that
+
+81
+00:05:46,600 --> 00:05:52,195
+the real valued numbers with the green and the yellow are quite similar at that time.
+
+82
+00:05:52,195 --> 00:05:55,015
+But at 11 AM on Tuesday,
+
+83
+00:05:55,015 --> 00:05:57,940
+and 2 PM on Wednesday there are not
+
+84
+00:05:57,940 --> 00:06:02,800
+that many pedestrians but still you have a moderate number of cars.
+
+85
+00:06:02,800 --> 00:06:05,305
+So you see that the numbers are close.
+
+86
+00:06:05,305 --> 00:06:09,475
+Similarly 2:00 Am on Tuesday and 3:00 Am on Wednesday
+
+87
+00:06:09,475 --> 00:06:14,575
+might end up with very similar numbers reflecting no traffic at all.
+
+88
+00:06:14,575 --> 00:06:16,350
+The key thing is that
+
+89
+00:06:16,350 --> 00:06:21,729
+similar day hour combinations in terms of traffic tend to be similar,
+
+90
+00:06:21,729 --> 00:06:23,800
+and day hour combinations that have
+
+91
+00:06:23,800 --> 00:06:29,560
+very different traffic conditions tend to be far apart in the two dimensional space.
+
+92
+00:06:29,560 --> 00:06:33,985
+This is what we mean when we say that the model learns to
+
+93
+00:06:33,985 --> 00:06:39,100
+embed the feature cross in a lower-dimensional space.
+
+94
+00:06:39,100 --> 00:06:43,310
+So how do you implement this in Tenserflow?
+
+95
+00:06:43,310 --> 00:06:46,035
+To create an embedding,
+
+96
+00:06:46,035 --> 00:06:50,920
+use the embedding column method in TFF feature column.
+
+97
+00:06:50,920 --> 00:06:54,985
+Pass in the categorical column you want to embed,
+
+98
+00:06:54,985 --> 00:06:57,725
+here we are passing in the feature cross,
+
+99
+00:06:57,725 --> 00:07:02,480
+and then specify the number of embedding dimensions,
+
+100
+00:07:02,480 --> 00:07:07,045
+and that's it, for such a powerful idea,
+
+101
+00:07:07,045 --> 00:07:09,325
+it's a super easy.
+
+102
+00:07:09,325 --> 00:07:12,590
+Why do I say it's a powerful idea?
+
+103
+00:07:12,590 --> 00:07:17,540
+One of the cool things about embedding is that the embedding that you have learned on
+
+104
+00:07:17,540 --> 00:07:23,970
+one problem can often apply to other similar machine learning models.
+
+105
+00:07:23,970 --> 00:07:26,549
+Maybe you have learned how to represent
+
+106
+00:07:26,549 --> 00:07:31,800
+day hour combinations based on a fine grained traffic data set in London,
+
+107
+00:07:31,800 --> 00:07:35,070
+but now you're putting in new traffic signals in
+
+108
+00:07:35,070 --> 00:07:39,245
+Frankfurt but you haven't collected this data for Frankfurt.
+
+109
+00:07:39,245 --> 00:07:41,440
+As a quick shortcut,
+
+110
+00:07:41,440 --> 00:07:45,990
+you could use a learned embedding from London in Frankfurt.
+
+111
+00:07:45,990 --> 00:07:52,500
+After all, you just want to present day hour combinations in a suitable way and
+
+112
+00:07:52,500 --> 00:07:55,530
+the embedding trained on London data is going to
+
+113
+00:07:55,530 --> 00:07:58,785
+be better than building the data using heuristics,
+
+114
+00:07:58,785 --> 00:08:01,165
+like early morning or rush hour.
+
+115
+00:08:01,165 --> 00:08:03,090
+So how do you do it?
+
+116
+00:08:03,090 --> 00:08:06,785
+You simply load it from the saved model for London,
+
+117
+00:08:06,785 --> 00:08:11,100
+and tell the model not to train this layer.
+
+118
+00:08:11,100 --> 00:08:15,155
+You could also choose to load the embedding from London,
+
+119
+00:08:15,155 --> 00:08:18,540
+and simply use it as a starting point for Frankfurt.
+
+120
+00:08:18,540 --> 00:08:21,355
+And if you want to do that,
+
+121
+00:08:21,355 --> 00:08:25,570
+you would set trainable equals true in the layer.
+
+122
+00:08:25,730 --> 00:08:30,445
+Embeddings are an extremely powerful concept,
+
+123
+00:08:30,445 --> 00:08:35,555
+and transfer learning of embeddings makes them even more so.
+
+124
+00:08:35,555 --> 00:08:39,755
+They are particularly useful when dealing with very sparse columns.
+
+125
+00:08:39,755 --> 00:08:44,055
+For day hour where we had 168 unique combinations,
+
+126
+00:08:44,055 --> 00:08:45,845
+it's not that big deal,
+
+127
+00:08:45,845 --> 00:08:49,895
+but we'll see embeddings a lot than we get the language models.
+
+128
+00:08:49,895 --> 00:08:55,845
+There you might have 100,000 unique words and you want to embed them,
+
+129
+00:08:55,845 --> 00:09:01,335
+represent them in the lower-dimensions space of maybe 30 or 50 dimensions.
+
+130
+00:09:01,335 --> 00:09:09,340
+Feature crosses and embeddings are very useful in real world machine learning models.
+
+131
+00:09:09,340 --> 00:09:15,260
+So if necessary, go back and review these two lessons before you proceed.

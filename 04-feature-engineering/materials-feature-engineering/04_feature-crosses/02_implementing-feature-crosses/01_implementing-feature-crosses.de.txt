@@ -1,0 +1,44 @@
+Sie wissen nun, was Merkmale sind
+und warum wir sie verwenden. Fahren wir damit fort,
+wie Sie Merkmalkreuzungen implementieren. Sie können in TensorFlow
+eine Merkmalkreuzung erstellen, indem Sie im Modul "tf.feature_column"
+die Methode "crossed_column" verwenden. Dasselbe Modul enthält auch die Methoden "numeric_column" und
+"categorical_column_with_vocabulary_list" Es ist exakt dasselbe Module. Das erste Argument in diesem Beispiel
+ist die Liste der kategorischen Spalten. Sie übergeben eine Liste, damit Sie zwei oder drei Spalten
+oder eine beliebige Anzahl kreuzen können. Denken Sie daran, dass diese Spalten 
+kategorische Spalten sein müssen. Wenn Sie numerische Daten haben, erstellen Sie daraus Buckets.
+Dann können Sie diese kreuzen. Wenn Sie einen Bucket erstellen, zeichnen Sie quasi die schwarzen Linien,
+die wir behandelt haben. Sie diskretisieren die Spalte. Was stellt das zweite Argument dar? 24 mal 7 ist
+die Gesamtzahl der Hash-Buckets. TensorFlow kreuzt die Merkmale, berechnet einen Hash der Merkmalkreuzung und legt den Hash
+in einem von mehreren Buckets ab. Auch wenn ich hier 24 mal 7 angegeben habe, gibt es keine Garantie,
+dass keine Kollision auftritt. Es ist durchaus möglich, dass der Hash von Mittwoch 15:00 Uhr
+modulo 168 zufällig denselben Wert ergibt wie Hash von Sonntag 16.00 Uhr modulo 168. In dem Fall betrachten wir diese beiden
+Tag/Stunde-Kombinationen gemeinsam. Dringen wir etwas tiefer vor. TensorFlow überspringt diese Schritte und geht direkt zur Darstellung
+des Hash der Merkmalkreuzung. Wir sollten uns aber ansehen,
+was dort passiert. Zur Vereinfachung nehmen wir an,
+wir verwenden 6 anstelle von 24 mal 7. Was passiert? Wir übergeben für die Merkmalkreuzung
+zwei kategorische Spalten. "dayofweek" hat 7 eindeutige Werte. "hourofday" hat 24 eindeutige Werte. Demnach hat die Merkmalkreuzung
+24 mal 7 oder 168 eindeutige Werte. Betrachten wir Mittwoch 15:00 Uhr. Sagen wir, 15:00 Uhr ist Stunde 15 und Mittwoch ist Tag 3. Dieser Wert der Merkmalkreuzung wäre dann Nummer 87 von 168. Ich berechne den Hash von 87
+und wende dann aber modulo 6 an. Nehmen wir an, ich erhalte Feld Nummer 3
+für diesen Merkmalkreuzungs-Hash. Dieser Wert ist dann für Mittwoch 15:00 Uhr
+in der Tag/Stunde-Merkmalspalte enthalten. Ein One-Hot-codierter Wert,
+der der Nummer 3 entspricht. TensorFlow führt diese Schritte nicht aus. Es muss keine One-Hot-Codierung
+vor dem Kreuzen der Merkmale anwenden. Es wäre hinsichtlich
+des Arbeitsspeichers nicht sehr effizient. Es hilft uns aber,
+das Konzept zu verstehen. Die Anzahl der Hash-Buckets
+steuert die Dichte und Kollisionen. Wie auf der vorherigen Folie legen wir die Anzahl
+der Hash-Buckets deutlich kleiner aus als die Anzahl
+der eindeutigen Werte der Merkmalkreuzung. Wir werden eine Menge Kollisionen erhalten: vielleicht Mittwoch 15:00 Uhr, Mittwoch 19:00 Uhr, Donnerstag 2:00 Uhr usw. Alle fallen in denselben Bucket
+und werden gleich behandelt. Im Durchschnitt sind in einem Bucket
+ein Sechstel der Werte der Merkmalkreuzung. Da wir 168 eindeutige Werte haben, enthält jeder Bucket durchschnittlich
+28 verschiedene Tag/Stunde-Kombinationen. Daher ist Menge der Daten begrenzt,
+die die Merkmalkreuzung memorieren kann. Es wird aber auch
+nur wenig Arbeitsspeicher verwendet, da wir nur 6 Buckets haben. Wir aggregieren sozusagen in einem Bucket
+mehrere Tag/Stunde-Kombinationen. Was wäre aber,
+wenn wir als das andere Extrem die Anzahl der Hash-Buckets derart erhöhen, dass kaum Chancen
+für eine Kollision bestehen? Legen wir dazu
+die Anzahl der Hash-Buckets auf 300 fest. Jetzt enthält jeder Bucket statistisch eine oder keine Tag/Stunde-Kombination. Er kann zwei enthalten, doch sind die Chancen dafür sehr gering. Eine hohe Anzahl
+von Hash-Buckets führt also zu einer
+dünnen Darstellung der Merkmalkreuzung. In der Praxis wähle ich eine Anzahl
+zwischen der Hälfte der Wurzel aus N und dem Doppelten von N, abhängig davon, ob ich mehr Wert
+auf Memorieren oder auf Dichte lege. Das ist aber nur meine eigene Faustregel.

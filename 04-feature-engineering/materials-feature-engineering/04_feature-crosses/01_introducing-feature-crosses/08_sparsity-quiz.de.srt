@@ -1,0 +1,381 @@
+1
+00:00:00,000 --> 00:00:04,785
+Merkmalkreuzungen kombinieren
+zwei oder mehr kategorische Merkmale.
+
+2
+00:00:04,785 --> 00:00:10,915
+Wir können kontinuierliche Merkmale
+diskretisieren und anschließend kreuzen.
+
+3
+00:00:10,915 --> 00:00:15,220
+Sehen wir uns an, was das
+für die Größe des Eingaberaums bedeutet,
+
+4
+00:00:15,220 --> 00:00:18,090
+indem wir uns einige Beispiele ansehen.
+
+5
+00:00:18,090 --> 00:00:22,300
+Angenommen wir möchten in einer Stadt
+das Verkehrsaufkommen vorhersagen.
+
+6
+00:00:22,300 --> 00:00:24,460
+Wir haben zwei Roheingaben,
+
+7
+00:00:24,460 --> 00:00:27,535
+die Stunde des Tages und den Wochentag.
+
+8
+00:00:27,535 --> 00:00:31,399
+Wie viele Eingaben haben wir,
+
+9
+00:00:31,399 --> 00:00:36,179
+wenn wir einfach die Stunde
+und den Wochentag One-Hot-codieren
+
+10
+00:00:36,179 --> 00:00:38,320
+und an das Modell senden?
+
+11
+00:00:38,320 --> 00:00:42,990
+War Ihre Antwort 24 plus 7 gleich 31?
+
+12
+00:00:42,990 --> 00:00:47,520
+Durch One-Hot-Codieren der Stunde
+erhalten wir 24 Eingabeknoten.
+
+13
+00:00:47,520 --> 00:00:51,650
+Es reichen auch 23, wenn "Alles null"
+als gültige Eingabe behandelt wird,
+
+14
+00:00:51,650 --> 00:00:54,795
+doch reservieren wir "Alles null"
+normalerweise für fehlende Daten.
+
+15
+00:00:54,795 --> 00:00:57,965
+Wir haben also 24 Eingabeknoten.
+
+16
+00:00:57,965 --> 00:01:03,590
+One-Hot-Codieren
+des Wochentags ergibt 7 Eingabeknoten.
+
+17
+00:01:03,590 --> 00:01:07,885
+Wir haben also insgesamt 31 Eingabeknoten.
+
+18
+00:01:07,885 --> 00:01:13,345
+Wir wissen aber, dass der Verkehr
+um 5:00 Uhr nicht jeden Tag gleich ist.
+
+19
+00:01:13,345 --> 00:01:19,285
+Mittwoch 5:00 Uhr herrscht anderer Verkehr
+als 5:00 Uhr am Wochenende.
+
+20
+00:01:19,285 --> 00:01:23,450
+Gibt es einen einfachen Weg,
+das Modell dies lernen zu lassen?
+
+21
+00:01:23,450 --> 00:01:26,070
+Sicher. Sie wissen jetzt, wie.
+
+22
+00:01:26,070 --> 00:01:28,970
+Über eine Merkmalkreuzung
+der beiden Roheingaben.
+
+23
+00:01:28,970 --> 00:01:33,780
+Wir verknüpfen jetzt
+die Stunde mit dem Wochentag.
+
+24
+00:01:33,780 --> 00:01:40,370
+So lernt unser Modell
+die Kombination aus Stunde und Tag schnell.
+
+25
+00:01:40,370 --> 00:01:41,940
+Toll.
+
+26
+00:01:41,940 --> 00:01:45,285
+Aber wie viele Eingaben haben wir jetzt?
+
+27
+00:01:45,285 --> 00:01:49,605
+Nicht 24 plus 7.
+
+28
+00:01:49,605 --> 00:01:53,640
+Wir haben jetzt 24 mal 7,
+
+29
+00:01:53,640 --> 00:01:56,395
+alle möglichen Kombinationen.
+
+30
+00:01:56,395 --> 00:02:06,925
+Wir haben nicht mehr 24 + 7 = 31 Eingaben,
+sondern 24 * 7 = 168 Eingaben.
+
+31
+00:02:06,925 --> 00:02:12,075
+Durch Merkmalkreuzungen
+erhalten wir deutlich mehr Eingaben.
+
+32
+00:02:12,075 --> 00:02:15,210
+Data Scientists sorgen sich oft,
+
+33
+00:02:15,210 --> 00:02:20,425
+dass das One-Hot-Codieren
+kategorischer Variablen Modelle vergrößert.
+
+34
+00:02:20,425 --> 00:02:23,610
+Auch bei Frameworks
+für herkömmliches maschinelles Lernen
+
+35
+00:02:23,610 --> 00:02:25,955
+führt One-Hot-Codieren zu vielen Problemen.
+
+36
+00:02:25,955 --> 00:02:28,280
+Wie verarbeiten 
+sie dann Merkmalkreuzungen?
+
+37
+00:02:28,280 --> 00:02:29,970
+Sie bekommen einen Herzanfall.
+
+38
+00:02:29,970 --> 00:02:34,160
+Intern verwendet
+TensorFlow eine dünne Darstellung
+
+39
+00:02:34,160 --> 00:02:37,460
+für One-Hot-Codierung
+und auch für Merkmalkreuzungen.
+
+40
+00:02:37,460 --> 00:02:39,365
+Es gibt damit also kein Problem.
+
+41
+00:02:39,365 --> 00:02:47,335
+In wie vielen Knoten in x3 kann
+eine Reihe des Eingabe-Datasets vorkommen?
+
+42
+00:02:47,335 --> 00:02:48,640
+Nur in einem.
+
+43
+00:02:48,640 --> 00:02:50,580
+Sehen Sie, warum?
+
+44
+00:02:50,580 --> 00:02:56,595
+Für jedes Label findet jede Beobachtung
+in der Tabelle zu einer festen Zeit statt.
+
+45
+00:02:56,595 --> 00:03:00,490
+Das entspricht einer festen Stunde
+an einem festen Wochentag.
+
+46
+00:03:00,490 --> 00:03:06,190
+Sie können eine Beobachtung um 15:00 Uhr
+als Eingabe für Stunde haben,
+
+47
+00:03:06,190 --> 00:03:09,105
+und Mittwoch als Eingabe für Wochentag.
+
+48
+00:03:09,105 --> 00:03:11,925
+Kreuzen Sie diese Merkmale
+
+49
+00:03:11,925 --> 00:03:13,670
+und Sie haben einen Eingabeknoten.
+
+50
+00:03:13,670 --> 00:03:19,990
+Dieser einzelne Eingabeknoten
+entspricht dann Mittwoch 15.00 Uhr.
+
+51
+00:03:19,990 --> 00:03:24,475
+Jeder andere 
+Eingabeknoten für x3 ist null.
+
+52
+00:03:24,475 --> 00:03:32,470
+Die Eingabe besteht daher
+aus 167 Nullen und 1 Eins.
+
+53
+00:03:32,470 --> 00:03:38,045
+Wenn Sie Merkmalkreuzungen
+verwenden, ist die Eingabe sehr dünn.
+
+54
+00:03:38,045 --> 00:03:39,490
+Das sollten Sie sich merken.
+
+55
+00:03:39,490 --> 00:03:43,105
+In TensorFlow
+haben wir dafür einfache Tools.
+
+56
+00:03:43,105 --> 00:03:45,705
+Sehen wir uns
+die Antworten zu diesem Quiz an.
+
+57
+00:03:45,705 --> 00:03:48,500
+a) Die Antwort ist nein.
+
+58
+00:03:48,500 --> 00:03:50,340
+Binning ist gut,
+
+59
+00:03:50,340 --> 00:03:55,395
+da das Modell so lineare Beziehungen
+innerhalb eines Merkmals lernen kann.
+
+60
+00:03:55,395 --> 00:04:00,220
+Eine Stadt besteht aber
+in mehr als einer Dimension.
+
+61
+00:04:00,220 --> 00:04:03,505
+Daher erfordert das Lernen
+von städtespezifischen Beziehungen
+
+62
+00:04:03,505 --> 00:04:07,590
+das Kreuzen 
+von Breitengrad und Längengrad.
+
+63
+00:04:07,590 --> 00:04:10,315
+Was ist mit Antwort b)?
+
+64
+00:04:10,315 --> 00:04:13,425
+Die Antwort ist wieder nein.
+
+65
+00:04:13,425 --> 00:04:15,635
+Binning ist eine gute Idee,
+
+66
+00:04:15,635 --> 00:04:20,175
+doch ist die Stadt eine Verbindung
+aus Breitengrad und Längengrad.
+
+67
+00:04:20,175 --> 00:04:22,507
+Bei getrennten Merkmalkreuzungen
+
+68
+00:04:22,507 --> 00:04:26,320
+kann das Modell daher
+städtespezifische Preise nicht lernen.
+
+69
+00:04:26,320 --> 00:04:30,140
+Was ist mit c)?
+
+70
+00:04:30,140 --> 00:04:35,140
+Ja. Durch Kreuzen von Binning-Breitengrad
+und Binning-Längengrad
+
+71
+00:04:35,140 --> 00:04:41,030
+kann das Modell städtespezifische Effekte
+von Zimmern pro Person lernen.
+
+72
+00:04:41,030 --> 00:04:44,405
+Binning verhindert,
+dass eine Änderung im Breitengrad
+
+73
+00:04:44,405 --> 00:04:47,780
+zum selben Ergebnis führt
+wie eine Änderung im Längengrad.
+
+74
+00:04:47,780 --> 00:04:50,890
+Abhängig von der Granularität der Bins
+
+75
+00:04:50,890 --> 00:04:54,010
+kann diese Merkmalkreuzung
+zum Lernen von Effekten dienen,
+
+76
+00:04:54,022 --> 00:04:59,125
+die spezifisch für Städte,
+Gegenden oder sogar Wohnblöcke sind.
+
+77
+00:04:59,125 --> 00:05:01,825
+Vierte Antwort: nein.
+
+78
+00:05:01,825 --> 00:05:08,750
+In diesem Beispiel ist es keine gute Idee,
+reellwertige Merkmale zu kreuzen.
+
+79
+00:05:08,750 --> 00:05:13,710
+Das Kreuzen der reellen Breitengradwerte
+mit Zimmern pro Person führt dazu,
+
+80
+00:05:13,710 --> 00:05:18,390
+dass eine Änderung
+von 10 Prozent beim Breitengrad
+
+81
+00:05:18,390 --> 00:05:23,880
+äquivalent zu einer 10-Prozent-Änderung
+bei Zimmern pro Person sein muss.
+
+82
+00:05:23,890 --> 00:05:28,325
+Das ist so problematisch,
+dass es in TensorFlow sogar unmöglich ist.
+
+83
+00:05:28,325 --> 00:05:34,490
+Nur kategorische
+oder diskretisierte Spalten sind kreuzbar.

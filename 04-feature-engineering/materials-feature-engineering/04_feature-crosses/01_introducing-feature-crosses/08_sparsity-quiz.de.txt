@@ -1,0 +1,51 @@
+Merkmalkreuzungen kombinieren
+zwei oder mehr kategorische Merkmale. Wir können kontinuierliche Merkmale
+diskretisieren und anschließend kreuzen. Sehen wir uns an, was das
+für die Größe des Eingaberaums bedeutet, indem wir uns einige Beispiele ansehen. Angenommen wir möchten in einer Stadt
+das Verkehrsaufkommen vorhersagen. Wir haben zwei Roheingaben, die Stunde des Tages und den Wochentag. Wie viele Eingaben haben wir, wenn wir einfach die Stunde
+und den Wochentag One-Hot-codieren und an das Modell senden? War Ihre Antwort 24 plus 7 gleich 31? Durch One-Hot-Codieren der Stunde
+erhalten wir 24 Eingabeknoten. Es reichen auch 23, wenn "Alles null"
+als gültige Eingabe behandelt wird, doch reservieren wir "Alles null"
+normalerweise für fehlende Daten. Wir haben also 24 Eingabeknoten. One-Hot-Codieren
+des Wochentags ergibt 7 Eingabeknoten. Wir haben also insgesamt 31 Eingabeknoten. Wir wissen aber, dass der Verkehr
+um 5:00 Uhr nicht jeden Tag gleich ist. Mittwoch 5:00 Uhr herrscht anderer Verkehr
+als 5:00 Uhr am Wochenende. Gibt es einen einfachen Weg,
+das Modell dies lernen zu lassen? Sicher. Sie wissen jetzt, wie. Über eine Merkmalkreuzung
+der beiden Roheingaben. Wir verknüpfen jetzt
+die Stunde mit dem Wochentag. So lernt unser Modell
+die Kombination aus Stunde und Tag schnell. Toll. Aber wie viele Eingaben haben wir jetzt? Nicht 24 plus 7. Wir haben jetzt 24 mal 7, alle möglichen Kombinationen. Wir haben nicht mehr 24 + 7 = 31 Eingaben,
+sondern 24 * 7 = 168 Eingaben. Durch Merkmalkreuzungen
+erhalten wir deutlich mehr Eingaben. Data Scientists sorgen sich oft, dass das One-Hot-Codieren
+kategorischer Variablen Modelle vergrößert. Auch bei Frameworks
+für herkömmliches maschinelles Lernen führt One-Hot-Codieren zu vielen Problemen. Wie verarbeiten 
+sie dann Merkmalkreuzungen? Sie bekommen einen Herzanfall. Intern verwendet
+TensorFlow eine dünne Darstellung für One-Hot-Codierung
+und auch für Merkmalkreuzungen. Es gibt damit also kein Problem. In wie vielen Knoten in x3 kann
+eine Reihe des Eingabe-Datasets vorkommen? Nur in einem. Sehen Sie, warum? Für jedes Label findet jede Beobachtung
+in der Tabelle zu einer festen Zeit statt. Das entspricht einer festen Stunde
+an einem festen Wochentag. Sie können eine Beobachtung um 15:00 Uhr
+als Eingabe für Stunde haben, und Mittwoch als Eingabe für Wochentag. Kreuzen Sie diese Merkmale und Sie haben einen Eingabeknoten. Dieser einzelne Eingabeknoten
+entspricht dann Mittwoch 15.00 Uhr. Jeder andere 
+Eingabeknoten für x3 ist null. Die Eingabe besteht daher
+aus 167 Nullen und 1 Eins. Wenn Sie Merkmalkreuzungen
+verwenden, ist die Eingabe sehr dünn. Das sollten Sie sich merken. In TensorFlow
+haben wir dafür einfache Tools. Sehen wir uns
+die Antworten zu diesem Quiz an. a) Die Antwort ist nein. Binning ist gut, da das Modell so lineare Beziehungen
+innerhalb eines Merkmals lernen kann. Eine Stadt besteht aber
+in mehr als einer Dimension. Daher erfordert das Lernen
+von städtespezifischen Beziehungen das Kreuzen 
+von Breitengrad und Längengrad. Was ist mit Antwort b)? Die Antwort ist wieder nein. Binning ist eine gute Idee, doch ist die Stadt eine Verbindung
+aus Breitengrad und Längengrad. Bei getrennten Merkmalkreuzungen kann das Modell daher
+städtespezifische Preise nicht lernen. Was ist mit c)? Ja. Durch Kreuzen von Binning-Breitengrad
+und Binning-Längengrad kann das Modell städtespezifische Effekte
+von Zimmern pro Person lernen. Binning verhindert,
+dass eine Änderung im Breitengrad zum selben Ergebnis führt
+wie eine Änderung im Längengrad. Abhängig von der Granularität der Bins kann diese Merkmalkreuzung
+zum Lernen von Effekten dienen, die spezifisch für Städte,
+Gegenden oder sogar Wohnblöcke sind. Vierte Antwort: nein. In diesem Beispiel ist es keine gute Idee,
+reellwertige Merkmale zu kreuzen. Das Kreuzen der reellen Breitengradwerte
+mit Zimmern pro Person führt dazu, dass eine Änderung
+von 10 Prozent beim Breitengrad äquivalent zu einer 10-Prozent-Änderung
+bei Zimmern pro Person sein muss. Das ist so problematisch,
+dass es in TensorFlow sogar unmöglich ist. Nur kategorische
+oder diskretisierte Spalten sind kreuzbar.

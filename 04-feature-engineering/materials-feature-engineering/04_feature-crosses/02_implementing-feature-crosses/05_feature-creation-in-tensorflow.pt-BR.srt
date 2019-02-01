@@ -1,0 +1,172 @@
+1
+00:00:00,890 --> 00:00:02,520
+Na lição anterior,
+
+2
+00:00:02,520 --> 00:00:06,421
+falamos sobre o pré-processamento
+de atributos no TensorFlow.
+
+3
+00:00:07,290 --> 00:00:08,860
+Como nós fizemos isso?
+
+4
+00:00:09,450 --> 00:00:11,370
+Usamos colunas de atributos.
+
+5
+00:00:12,060 --> 00:00:16,084
+Agora vamos ver como podemos
+fazer criação de atributos no TensorFlow.
+
+6
+00:00:18,250 --> 00:00:22,240
+Lembre-se de que a função
+de entrada retorna atributos e rótulos.
+
+7
+00:00:23,730 --> 00:00:26,406
+Qual é o tipo de dados dos atributos?
+
+8
+00:00:27,382 --> 00:00:30,194
+Resposta, é um dicionário Python.
+
+9
+00:00:31,335 --> 00:00:34,145
+Digamos que a distância
+do transporte público
+
+10
+00:00:34,145 --> 00:00:38,155
+seja um fator determinante
+para os preços das casas.
+
+11
+00:00:38,155 --> 00:00:41,935
+Queremos adicionar
+um novo atributo que capte
+
+12
+00:00:41,935 --> 00:00:46,205
+a distância da casa até a
+estação de metrô mais próxima.
+
+13
+00:00:47,065 --> 00:00:51,465
+Digamos que a localização da estação
+de metrô faça parte do conjunto de dados
+
+14
+00:00:51,465 --> 00:00:54,030
+e que também faça parte dos atributos.
+
+15
+00:00:54,030 --> 00:00:58,740
+Então, em nosso método, calculamos a
+distância euclidiana entre a casa
+
+16
+00:00:58,740 --> 00:01:02,330
+e a estação de metrô,
+e adicionamos isso ao dicionário.
+
+17
+00:01:03,820 --> 00:01:07,202
+Então, onde este método
+add_engineered vai?
+
+18
+00:01:08,914 --> 00:01:13,172
+Chame o método add_engineered
+de todas as funções de entrada.
+
+19
+00:01:14,910 --> 00:01:17,070
+Quantas funções de entrada nós temos?
+
+20
+00:01:17,800 --> 00:01:23,080
+Em geral, temos três: função de entrada
+de treino, função de entrada de avaliação
+
+21
+00:01:23,080 --> 00:01:25,102
+e função de entrada de serviço.
+
+22
+00:01:25,102 --> 00:01:29,270
+O método add_engineered precisa ser
+chamado de todas as três.
+
+23
+00:01:31,050 --> 00:01:36,880
+Na função de entrada de treino,
+em vez de retornar (features), label,
+
+24
+00:01:36,890 --> 00:01:41,860
+estou unindo os atributos com
+uma chamada para add_engineered.
+
+25
+00:01:41,870 --> 00:01:42,970
+Dessa forma,
+
+26
+00:01:42,970 --> 00:01:47,289
+os atributos extras que estou criando
+são colocados no dicionário Python.
+
+27
+00:01:48,680 --> 00:01:52,780
+A função de entrada de avaliação é
+semelhante à função de entrada de treino.
+
+28
+00:01:52,780 --> 00:01:55,820
+Una as chamadas com add_engineered.
+
+29
+00:01:57,000 --> 00:01:59,339
+Na função de entrada de serviço,
+
+30
+00:01:59,339 --> 00:02:04,290
+você retorna um ServingInputReceiver
+que aceita dois parâmetros.
+
+31
+00:02:04,320 --> 00:02:07,239
+O primeiro é o (features).
+
+32
+00:02:07,239 --> 00:02:12,220
+O segundo parâmetro são os marcadores
+para o que você receber no JSON.
+
+33
+00:02:12,220 --> 00:02:15,790
+Os marcadores permanecem iguais,
+você recebe os mesmos dados brutos.
+
+34
+00:02:15,790 --> 00:02:18,470
+Mas, assim como
+na função de treino,
+
+35
+00:02:18,470 --> 00:02:22,550
+una os (features) com uma chamada
+para add_engineered.
+
+36
+00:02:22,550 --> 00:02:27,870
+Desta forma, os mesmos atributos extras
+que foram criados durante o treinamento
+
+37
+00:02:27,870 --> 00:02:30,530
+também serão colocados no
+dicionário Python.

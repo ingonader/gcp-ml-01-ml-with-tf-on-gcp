@@ -1,0 +1,635 @@
+1
+00:00:00,000 --> 00:00:02,969
+Você se lembra que eu disse que
+usar um valor grande para
+
+2
+00:00:02,969 --> 00:00:07,085
+intervalos de hash leva a uma
+representação muito esparsa?
+
+3
+00:00:07,085 --> 00:00:09,570
+Mas e se fizermos mais uma coisa?
+
+4
+00:00:09,570 --> 00:00:12,770
+E se, em vez de aplicar
+a codificação one-hot
+
+5
+00:00:12,770 --> 00:00:16,030
+no cruzamento de atributo e usá-lo assim,
+
+6
+00:00:16,030 --> 00:00:18,835
+o passamos por uma camada densa?
+
+7
+00:00:18,835 --> 00:00:23,270
+Podemos então treinar o modelo
+para prever o tráfego como antes.
+
+8
+00:00:23,270 --> 00:00:27,620
+Essa camada densa, mostrada
+pelos nodes amarelos e verdes,
+
+9
+00:00:27,620 --> 00:00:32,189
+essa camada densa aqui cria o que é
+chamado de incorporação.
+
+10
+00:00:33,254 --> 00:00:34,254
+Incorporação.
+
+11
+00:00:34,259 --> 00:00:38,340
+As caixas cinzas e azuis
+denotam zeros e uns,
+
+12
+00:00:38,340 --> 00:00:41,220
+para qualquer linha no conjunto
+de dados de entrada,
+
+13
+00:00:41,220 --> 00:00:43,590
+para qualquer exemplo de treinamento,
+
+14
+00:00:43,590 --> 00:00:46,230
+apenas uma das caixas é acesa,
+
+15
+00:00:46,230 --> 00:00:49,895
+e a caixa mostrada em azul é uma,
+
+16
+00:00:49,895 --> 00:00:54,185
+as caixas cinzas para
+esse exemplo são zero.
+
+17
+00:00:54,185 --> 00:00:59,040
+Um exemplo de treinamento diferente
+corresponderá a uma hora diferente do dia,
+
+18
+00:00:59,040 --> 00:01:01,460
+e assim ele acenderá
+uma caixa diferente,
+
+19
+00:01:01,460 --> 00:01:06,175
+e essa caixa será uma e as
+outras caixas serão zero.
+
+20
+00:01:06,175 --> 00:01:10,100
+No entanto, as caixas amarelas e
+verdes são diferentes,
+
+21
+00:01:10,100 --> 00:01:12,220
+elas não têm codificação one-hot,
+
+22
+00:01:12,220 --> 00:01:16,270
+elas serão valores reais,
+valores de ponto flutuante.
+
+23
+00:01:16,270 --> 00:01:21,405
+Por quê? Porque eles são pesados, alguns
+dos valores do cruzamento de atributo.
+
+24
+00:01:21,405 --> 00:01:25,965
+Então, o que está acontecendo
+nos nodes amarelos e verdes?
+
+25
+00:01:25,965 --> 00:01:31,060
+Perceba que as ponderações que entram
+na camada de incorporação,
+
+26
+00:01:31,060 --> 00:01:32,850
+as ponderações que entram nos
+
+27
+00:01:32,850 --> 00:01:38,275
+nodes amarelos e verdes são
+aprendidos dos dados.
+
+28
+00:01:38,275 --> 00:01:42,885
+Imagine que temos muitas
+observações de tráfego.
+
+29
+00:01:42,885 --> 00:01:48,850
+Talvez toda vez que um carro, bicicleta ou
+caminhão passa por um sinal,
+
+30
+00:01:48,850 --> 00:01:51,055
+temos uma observação de tráfego.
+
+31
+00:01:51,055 --> 00:01:55,295
+Então temos os dados para toda
+uma cidade, todos os sinais.
+
+32
+00:01:55,295 --> 00:01:57,985
+Milhões de exemplos de treinamento.
+
+33
+00:01:57,985 --> 00:02:01,960
+Espere um segundo,
+acabei de dizer o que eu disse?
+
+34
+00:02:01,960 --> 00:02:05,475
+Que meu conjunto de dados
+consiste em observações de tráfego,
+
+35
+00:02:05,475 --> 00:02:10,229
+um exemplo de treino
+para cada veículo em um sinal?
+
+36
+00:02:10,229 --> 00:02:15,230
+Se você é novo no aprendizado de máquina,
+posso apostar que você pensou que o
+
+37
+00:02:15,230 --> 00:02:20,190
+conjunto de dados de treino consistia
+em contagens de tráfego agregadas.
+
+38
+00:02:20,190 --> 00:02:25,385
+Talvez o número total de veículos na
+estrada, a cada hora de cada dia.
+
+39
+00:02:25,385 --> 00:02:29,790
+Mas isso é um pequeno conjunto de dados
+e é apenas uma amostra.
+
+40
+00:02:29,790 --> 00:02:33,495
+Se você fizer isso,
+você só aprenderá as médias,
+
+41
+00:02:33,495 --> 00:02:36,360
+e isso é completamente desinteressante,
+
+42
+00:02:36,360 --> 00:02:40,065
+e serve apenas para escrever
+artigos de jornal, como
+
+43
+00:02:40,065 --> 00:02:44,400
+"modelos preveem que os níveis de tráfego
+no próximo ano serão 10% maiores".
+
+44
+00:02:44,400 --> 00:02:46,500
+Mas lembre-se do que dissemos,
+
+45
+00:02:46,500 --> 00:02:51,120
+que o aprendizado de máquina é uma
+maneira de aprender a extensão,
+
+46
+00:02:51,120 --> 00:02:58,240
+para fazer previsões refinadas e derivar
+insights, além de apenas uma média bruta.
+
+47
+00:02:58,240 --> 00:03:01,395
+Isso é o que isso significa na prática.
+
+48
+00:03:01,395 --> 00:03:06,735
+Em vez de lidar com centenas de linhas
+de um conjunto de dados agregado,
+
+49
+00:03:06,735 --> 00:03:11,250
+temos minuciosas observações
+específicas de
+
+50
+00:03:11,250 --> 00:03:17,335
+carros em cada sinal, e esse é um conjunto
+de dados de tráfego que vamos usar.
+
+51
+00:03:17,335 --> 00:03:19,630
+Nossas previsões serão:
+
+52
+00:03:19,630 --> 00:03:21,660
+número de carros, número de caminhões,
+
+53
+00:03:21,660 --> 00:03:24,980
+número de bicicletas, a qualquer momento,
+
+54
+00:03:24,980 --> 00:03:27,435
+em qualquer ponto da cidade.
+
+55
+00:03:27,435 --> 00:03:30,145
+Previsões refinadas.
+
+56
+00:03:30,145 --> 00:03:32,560
+É disso que se trata
+o aprendizado de máquina.
+
+57
+00:03:32,560 --> 00:03:35,390
+Enfim, vamos voltar para a nossa aula.
+
+58
+00:03:36,890 --> 00:03:38,900
+Então, temos observações de veículos.
+
+59
+00:03:39,540 --> 00:03:42,595
+O conjunto de dados
+pode incluir o tipo de veículo,
+
+60
+00:03:42,595 --> 00:03:45,690
+carro, bicicleta, ônibus, caminhão etc.
+
+61
+00:03:45,690 --> 00:03:50,020
+A direção da viagem, localização etc.
+
+62
+00:03:50,020 --> 00:03:57,015
+Esse conjunto inclui um carimbo de
+data/hora do qual extraímos o dia e a hora
+
+63
+00:03:57,015 --> 00:04:01,390
+e, em seguida, aplicamos o cruzamento de
+atributos para ter x3 no diagrama.
+
+64
+00:04:01,390 --> 00:04:10,695
+E como discutimos, x3 é uma codificação
+one-hot em vários intervalos de hash.
+
+65
+00:04:10,695 --> 00:04:15,270
+Agora pegamos isso e passamos
+por uma camada densa
+
+66
+00:04:15,270 --> 00:04:20,483
+com as ponderações treinadas para prever
+uma série de aspectos sobre o tráfego.
+
+67
+00:04:20,483 --> 00:04:26,205
+Talvez vamos prever o tempo para o
+próximo veículo chegar ao cruzamento,
+
+68
+00:04:26,205 --> 00:04:29,470
+para que possamos controlar o tempo
+do sinal de trânsito.
+
+69
+00:04:29,470 --> 00:04:37,320
+O ponto é que, treinando as ponderações no
+conjunto de dados, algo de bom acontece.
+
+70
+00:04:37,320 --> 00:04:43,085
+O cruzamento de atributos do dia-hora
+tem 168 valores exclusivos,
+
+71
+00:04:43,085 --> 00:04:49,420
+mas estamos forçando para que seja
+representado com dois números reais.
+
+72
+00:04:49,420 --> 00:04:58,270
+Assim, o modelo aprende como incorporar o
+cruzamento no espaço de menor dimensão.
+
+73
+00:04:58,270 --> 00:05:05,195
+Talvez a caixa verde tenda a capturar o
+tráfego de pedestres e bicicletas,
+
+74
+00:05:05,195 --> 00:05:09,400
+enquanto a amarela tende
+a capturar automóveis.
+
+75
+00:05:09,400 --> 00:05:13,000
+Assim, 8:00 de terça-feira
+e 9:00 de quarta-feira
+
+76
+00:05:13,000 --> 00:05:18,385
+podem corresponder a caixas diferentes
+no cruzamento de atributos.
+
+77
+00:05:18,385 --> 00:05:21,370
+No entanto, se os padrões de tráfego na
+
+78
+00:05:21,370 --> 00:05:26,370
+maioria das interseções da cidade forem
+semelhantes nesses dois momentos,
+
+79
+00:05:26,370 --> 00:05:29,510
+a representação de valor real
+
+80
+00:05:29,510 --> 00:05:34,945
+dessas duas combinações dia-hora acabará
+sendo bastante semelhante.
+
+81
+00:05:34,945 --> 00:05:38,410
+Talvez haja muitas pessoas andando de
+bicicleta e caminhando
+
+82
+00:05:38,410 --> 00:05:41,930
+nesses horários e também muitos carros.
+
+83
+00:05:41,930 --> 00:05:46,600
+As ponderações para 8h e 9h são
+ajustadas de tal forma que os
+
+84
+00:05:46,600 --> 00:05:52,195
+números reais verde e amarelo sejam
+bastante semelhantes naquele momento.
+
+85
+00:05:52,195 --> 00:05:55,015
+Mas às 11h da terça-feira
+
+86
+00:05:55,015 --> 00:05:57,940
+e às 14h da quarta-feira não há
+
+87
+00:05:57,940 --> 00:06:02,800
+muitos pedestres, mas você ainda
+tem um número moderado de carros.
+
+88
+00:06:02,800 --> 00:06:05,305
+Você vê que os
+números estão próximos.
+
+89
+00:06:05,305 --> 00:06:09,475
+Igualmente, 2h da terça-feira
+e 3h da quarta-feira
+
+90
+00:06:09,475 --> 00:06:14,575
+podem acabar com números muito
+parecidos, sem refletir nenhum tráfego.
+
+91
+00:06:14,575 --> 00:06:18,530
+O principal é que
+combinações dia-hora semelhantes
+
+92
+00:06:18,530 --> 00:06:21,729
+em termos de tráfego
+tendem a ser semelhantes,
+
+93
+00:06:21,729 --> 00:06:23,800
+e as combinações que têm condições
+
+94
+00:06:23,800 --> 00:06:29,560
+de tráfego muito diferentes tendem a estar
+muito distantes no espaço bidimensional.
+
+95
+00:06:29,560 --> 00:06:33,985
+É isso que queremos dizer quando
+falamos que o modelo aprende
+
+96
+00:06:33,985 --> 00:06:39,100
+a incorporar o cruzamento de atributos
+em um espaço de dimensões inferiores.
+
+97
+00:06:39,100 --> 00:06:43,310
+Então, como você implementa
+isso no TensorFlow?
+
+98
+00:06:43,310 --> 00:06:46,035
+Para criar uma incorporação,
+
+99
+00:06:46,035 --> 00:06:50,920
+use o método de incorporação de coluna
+na coluna do atributo TFF.
+
+100
+00:06:50,920 --> 00:06:54,985
+Passe na coluna categórica
+que você quer incorporar,
+
+101
+00:06:54,985 --> 00:06:57,725
+aqui estamos passando no
+cruzamento de atributos
+
+102
+00:06:57,725 --> 00:07:02,480
+e, em seguida, especifique o número
+de dimensões de incorporação.
+
+103
+00:07:02,480 --> 00:07:07,045
+E é isso. Para uma ideia tão poderosa,
+
+104
+00:07:07,045 --> 00:07:09,325
+isso é muito fácil.
+
+105
+00:07:09,325 --> 00:07:12,590
+Por que eu digo que
+é uma ideia poderosa?
+
+106
+00:07:12,590 --> 00:07:17,540
+Um dos pontos legais sobre isso
+é que a incorporação que você aprendeu
+
+107
+00:07:17,540 --> 00:07:23,970
+em um problema se aplica a outros modelos
+similares de aprendizado de máquina.
+
+108
+00:07:23,970 --> 00:07:26,549
+Talvez você tenha aprendido a representar
+
+109
+00:07:26,549 --> 00:07:31,800
+combinações dia-hora com base em conjuntos
+de dados de tráfego refinados em Londres,
+
+110
+00:07:31,800 --> 00:07:36,280
+e agora você está colocando
+novos sinais de trânsito em Frankfurt,
+
+111
+00:07:36,280 --> 00:07:39,245
+mas não coletou esses
+dados para Frankfurt.
+
+112
+00:07:39,245 --> 00:07:41,440
+Como um atalho,
+
+113
+00:07:41,440 --> 00:07:45,990
+você poderia usar uma incorporação
+aprendida de Londres em Frankfurt.
+
+114
+00:07:45,990 --> 00:07:52,500
+Afinal de contas, você só quer apresentar
+as combinações dia-hora adequadamente
+
+115
+00:07:52,500 --> 00:07:55,530
+e a integração treinada
+nos dados de Londres será
+
+116
+00:07:55,530 --> 00:07:58,785
+melhor do que criar os
+dados usando heurística,
+
+117
+00:07:58,785 --> 00:08:01,165
+como o início da manhã ou a hora do rush.
+
+118
+00:08:01,165 --> 00:08:03,090
+Como você faz isso?
+
+119
+00:08:03,090 --> 00:08:06,785
+Você simplesmente a carrega
+do modelo salvo em Londres
+
+120
+00:08:06,785 --> 00:08:11,100
+e diz ao modelo para não
+treinar essa camada.
+
+121
+00:08:11,100 --> 00:08:15,155
+Você também pode optar por
+carregar a incorporação de Londres
+
+122
+00:08:15,155 --> 00:08:18,540
+e usá-la como ponto
+de partida para Frankfurt.
+
+123
+00:08:18,540 --> 00:08:21,355
+E se você quiser fazer isso,
+
+124
+00:08:21,355 --> 00:08:24,790
+você definiria trainable=true na camada.
+
+125
+00:08:26,630 --> 00:08:30,445
+Incorporações são um conceito
+extremamente poderoso,
+
+126
+00:08:30,445 --> 00:08:35,554
+e transferir o aprendizado das
+incorporações torna-as ainda mais.
+
+127
+00:08:35,554 --> 00:08:39,755
+Elas são úteis ao lidar
+com colunas muito esparsas.
+
+128
+00:08:39,755 --> 00:08:44,054
+Para o dia-hora em que tivemos
+168 combinações exclusivas,
+
+129
+00:08:44,054 --> 00:08:45,845
+não é grande coisa,
+
+130
+00:08:45,845 --> 00:08:49,895
+mas veremos muito sobre incorporações
+nos modelos de linguagens.
+
+131
+00:08:49,895 --> 00:08:55,845
+Lá você pode ter 100 mil palavras únicas
+e quer incorporá-las,
+
+132
+00:08:55,845 --> 00:09:01,335
+representá-las no espaço de dimensões
+inferior de talvez 30 ou 50 dimensões
+
+133
+00:09:01,335 --> 00:09:06,220
+Cruzamentos de atributos
+e incorporações são úteis
+
+134
+00:09:06,220 --> 00:09:09,340
+nos modelos de aprendizado
+de máquina reais.
+
+135
+00:09:09,327 --> 00:09:14,797
+Então, se necessário, volte e revise estas
+duas lições antes de prosseguir.

@@ -1,0 +1,687 @@
+1
+00:00:00,000 --> 00:00:02,969
+Je vous ai expliqué
+qu'utiliser une valeur longue
+
+2
+00:00:02,969 --> 00:00:07,085
+pour les buckets de hachage entraînait
+une représentation très clairsemée.
+
+3
+00:00:07,085 --> 00:00:10,805
+Et si nous faisions
+quelque chose de plus ?
+
+4
+00:00:10,805 --> 00:00:14,180
+Si, au lieu d'encoder en mode one-hot
+le croisement de caractéristiques,
+
+5
+00:00:14,180 --> 00:00:16,030
+puis de l'utiliser tel quel,
+
+6
+00:00:16,030 --> 00:00:18,835
+nous le faisions passer
+à travers une couche dense ?
+
+7
+00:00:18,835 --> 00:00:23,270
+Nous pourrions alors entraîner le modèle
+pour prédire le trafic comme avant.
+
+8
+00:00:23,270 --> 00:00:27,620
+La couche dense représentée
+par les nœuds jaunes et verts
+
+9
+00:00:27,620 --> 00:00:32,189
+crée une représentation
+vectorielle continue (RVC).
+
+10
+00:00:32,189 --> 00:00:38,340
+Les cases grises et bleues représentent
+des zéros et des uns.
+
+11
+00:00:38,340 --> 00:00:41,220
+Pour toute ligne de l'ensemble de données,
+
+12
+00:00:41,220 --> 00:00:43,590
+pour tout exemple d'entraînement,
+
+13
+00:00:43,590 --> 00:00:46,230
+une seule case est allumée.
+
+14
+00:00:46,230 --> 00:00:49,895
+La case en bleu symbolise "un".
+
+15
+00:00:49,895 --> 00:00:54,185
+Dans cet exemple,
+les cases grises sont des zéros.
+
+16
+00:00:54,185 --> 00:00:59,040
+Un autre exemple d'entraînement correspond
+à une autre heure de la journée.
+
+17
+00:00:59,040 --> 00:01:01,460
+Il allumera donc une case différente.
+
+18
+00:01:01,460 --> 00:01:06,175
+Cette case sera "un"
+et les autres seront "zéro".
+
+19
+00:01:06,175 --> 00:01:10,100
+Cependant, les cases jaunes
+et vertes sont différentes.
+
+20
+00:01:10,100 --> 00:01:12,150
+Elles ne sont pas encodées
+en mode one-hot.
+
+21
+00:01:12,150 --> 00:01:16,270
+Ce sont des valeurs réelles
+à virgule flottante.
+
+22
+00:01:16,270 --> 00:01:19,115
+Pourquoi ? Parce qu'elles sont
+la somme pondérée
+
+23
+00:01:19,115 --> 00:01:21,405
+des valeurs d'un croisement
+de caractéristiques.
+
+24
+00:01:21,405 --> 00:01:25,965
+Que se passe-t-il au niveau
+des nœuds jaunes et verts ?
+
+25
+00:01:25,965 --> 00:01:31,200
+Les pondérations de la couche
+de représentation vectorielle continue,
+
+26
+00:01:31,200 --> 00:01:34,290
+les pondérations
+des nœuds jaunes et verts,
+
+27
+00:01:34,290 --> 00:01:38,275
+sont apprises à partir des données.
+
+28
+00:01:38,275 --> 00:01:42,885
+Imaginez que nous ayons des observations
+de trafic en énorme quantité.
+
+29
+00:01:42,885 --> 00:01:48,850
+À chaque fois qu'une voiture, un vélo
+ou un camion franchit un feu donné,
+
+30
+00:01:48,850 --> 00:01:51,055
+nous avons une observation de trafic.
+
+31
+00:01:51,055 --> 00:01:55,295
+Nous avons donc les données correspondant
+à tous les feux d'une ville entière,
+
+32
+00:01:55,295 --> 00:01:57,985
+soit des millions
+d'exemples d'entraînement.
+
+33
+00:01:57,985 --> 00:02:01,960
+Mais attendez,
+qu'est-ce que je viens de dire ?
+
+34
+00:02:01,960 --> 00:02:05,475
+Que mon ensemble de données consistait
+en observations de trafic,
+
+35
+00:02:05,475 --> 00:02:10,229
+avec un exemple d'entraînement
+pour chaque véhicule à un feu ?
+
+36
+00:02:10,229 --> 00:02:14,770
+Si vous découvrez le machine learning,
+je suis à peu près sûr que
+
+37
+00:02:14,770 --> 00:02:17,860
+vous vous êtes dit que l'ensemble
+de données était constitué
+
+38
+00:02:17,860 --> 00:02:20,190
+de décomptes de trafic agrégés,
+
+39
+00:02:20,190 --> 00:02:25,385
+peut-être du nombre total de véhicules
+sur la route à chaque heure, chaque jour.
+
+40
+00:02:25,385 --> 00:02:29,790
+Ce serait alors un petit ensemble
+de données sans intérêt.
+
+41
+00:02:29,790 --> 00:02:33,495
+Vous n'apprendriez que des moyennes,
+
+42
+00:02:33,495 --> 00:02:36,360
+ce qui n'est pas intéressant du tout
+
+43
+00:02:36,360 --> 00:02:40,065
+et servirait uniquement à écrire
+des articles de journaux du type
+
+44
+00:02:40,065 --> 00:02:44,400
+"Des modèles prédisent que le trafic
+va augmenter de 10 % l'an prochain".
+
+45
+00:02:44,400 --> 00:02:46,500
+Souvenez-vous.
+
+46
+00:02:46,500 --> 00:02:51,390
+Le machine learning permet
+d'apprendre la longue traîne
+
+47
+00:02:51,390 --> 00:02:54,120
+pour faire des prédictions précises
+
+48
+00:02:54,120 --> 00:02:58,240
+et obtenir des statistiques
+allant plus loin que de simples moyennes.
+
+49
+00:02:58,240 --> 00:03:01,395
+Voici ce que cela signifie en pratique.
+
+50
+00:03:01,395 --> 00:03:06,735
+Au lieu de traiter un ensemble de données
+agrégé de quelques centaines de lignes,
+
+51
+00:03:06,735 --> 00:03:11,250
+nous disposons des observations précises
+
+52
+00:03:11,250 --> 00:03:13,895
+des voitures à chaque feu.
+
+53
+00:03:13,895 --> 00:03:17,335
+Voilà l'ensemble de données
+que nous allons utiliser.
+
+54
+00:03:17,335 --> 00:03:19,630
+Nos prédictions seront
+
+55
+00:03:19,630 --> 00:03:21,660
+le nombre de voitures, de camions,
+
+56
+00:03:21,660 --> 00:03:24,980
+de vélos, à n'importe quel moment
+
+57
+00:03:24,980 --> 00:03:27,435
+et à n'importe quel endroit de la ville.
+
+58
+00:03:27,435 --> 00:03:32,545
+Les prédictions précises sont l'essence
+du machine learning.
+
+59
+00:03:32,545 --> 00:03:36,280
+Revenons à notre cours.
+
+60
+00:03:36,280 --> 00:03:38,900
+Nous avons des observations
+sur les véhicules.
+
+61
+00:03:38,900 --> 00:03:42,595
+L'ensemble de données peut
+inclure le type de véhicule
+
+62
+00:03:42,595 --> 00:03:45,690
+(voiture, vélo, bus, camion),
+
+63
+00:03:45,690 --> 00:03:50,020
+le sens de circulation,
+l'emplacement, etc.
+
+64
+00:03:50,020 --> 00:03:57,015
+L'ensemble de données inclut un horodatage
+dont nous extrayons l'heure et le jour.
+
+65
+00:03:57,015 --> 00:04:01,460
+Nous les croisons ensuite
+pour obtenir x3 dans le schéma.
+
+66
+00:04:01,460 --> 00:04:07,585
+Pour rappel, x3 est encodé
+en mode one-hot,
+
+67
+00:04:07,585 --> 00:04:10,695
+c'est-à-dire divisé en buckets de hachage.
+
+68
+00:04:10,695 --> 00:04:15,270
+Nous le passons maintenant
+à travers une couche dense dont
+
+69
+00:04:15,270 --> 00:04:20,483
+les pondérations sont entraînées pour
+prédire différents éléments du trafic.
+
+70
+00:04:20,483 --> 00:04:23,385
+Nous pouvons par exemple
+prédire l'heure d'arrivée
+
+71
+00:04:23,385 --> 00:04:26,205
+du prochain véhicule à l'intersection
+
+72
+00:04:26,205 --> 00:04:29,470
+pour contrôler la durée du feu.
+
+73
+00:04:29,470 --> 00:04:34,880
+En entraînant ces pondérations
+sur cet ensemble de données,
+
+74
+00:04:34,880 --> 00:04:37,320
+quelque chose de génial se produit.
+
+75
+00:04:37,320 --> 00:04:43,085
+Le croisement de caractéristiques du jour
+et de l'heure inclut 168 valeurs uniques,
+
+76
+00:04:43,085 --> 00:04:49,420
+mais nous le forçons à être représenté
+par deux nombres à valeur réelle.
+
+77
+00:04:49,420 --> 00:04:55,900
+Le modèle apprend à intégrer
+le croisement de caractéristiques
+
+78
+00:04:55,900 --> 00:04:58,270
+dans un espace de plus petite dimension.
+
+79
+00:04:58,270 --> 00:05:05,195
+La case verte va peut-être capturer
+le trafic des piétons et des vélos,
+
+80
+00:05:05,195 --> 00:05:09,400
+et la case jaune celui des automobiles.
+
+81
+00:05:09,400 --> 00:05:13,880
+8h le mardi et 9h le mercredi
+
+82
+00:05:13,880 --> 00:05:16,755
+peuvent donc correspondre
+à des cases différentes
+
+83
+00:05:16,755 --> 00:05:18,385
+du croisement de caractéristiques.
+
+84
+00:05:18,385 --> 00:05:21,370
+Cependant, si les tendances
+du trafic de la plupart
+
+85
+00:05:21,370 --> 00:05:26,370
+des intersections de la ville
+sont similaires à ces deux moments,
+
+86
+00:05:26,370 --> 00:05:29,510
+les représentations à valeur réelle
+
+87
+00:05:29,510 --> 00:05:34,945
+de ces deux combinaisons heure/jour
+seront très similaires.
+
+88
+00:05:34,945 --> 00:05:38,410
+Il peut y avoir
+de nombreuses personnes à vélo et à pied
+
+89
+00:05:38,410 --> 00:05:41,930
+à ces heures,
+et aussi de nombreuses voitures.
+
+90
+00:05:41,930 --> 00:05:46,600
+Les pondérations pour 8h et 9h
+sont ajustées
+
+91
+00:05:46,600 --> 00:05:49,775
+de façon que les nombres à valeur réelle
+des cases vertes et jaunes
+
+92
+00:05:49,775 --> 00:05:52,195
+soient similaires à cette heure.
+
+93
+00:05:52,195 --> 00:05:55,015
+Cependant, à 11h le mardi
+
+94
+00:05:55,015 --> 00:05:57,940
+et à 14h le mercredi,
+
+95
+00:05:57,940 --> 00:06:02,800
+il y a peu de piétons,
+mais un nombre modéré de voitures.
+
+96
+00:06:02,800 --> 00:06:05,305
+Les nombres sont donc proches.
+
+97
+00:06:05,305 --> 00:06:09,475
+De même, à 2h du matin le mardi
+et 3h du matin le mercredi,
+
+98
+00:06:09,475 --> 00:06:14,575
+les nombres très similaires
+indiquent un trafic quasi inexistant.
+
+99
+00:06:14,575 --> 00:06:16,350
+Le point essentiel est que
+
+100
+00:06:16,350 --> 00:06:21,729
+les combinaisons heure/jour semblables en
+termes de trafic sont souvent similaires,
+
+101
+00:06:21,729 --> 00:06:23,800
+et que les combinaisons heure/jour
+
+102
+00:06:23,800 --> 00:06:27,830
+présentant des conditions de trafic
+très différentes sont souvent éloignées
+
+103
+00:06:27,830 --> 00:06:29,560
+dans l'espace à deux dimensions.
+
+104
+00:06:29,560 --> 00:06:33,985
+C'est ce que nous voulons dire
+quand nous affirmons que le modèle apprend
+
+105
+00:06:33,985 --> 00:06:36,542
+à intégrer le croisement
+de caractéristiques
+
+106
+00:06:36,542 --> 00:06:39,100
+dans un espace de plus petite dimension.
+
+107
+00:06:39,100 --> 00:06:43,310
+Comment mettre ceci en œuvre
+dans TensorFlow ?
+
+108
+00:06:43,310 --> 00:06:46,035
+Pour créer une représentation vectorielle
+continue,
+
+109
+00:06:46,035 --> 00:06:50,920
+utilisez la méthode "embedding_column"
+dans "tf.feature_column".
+
+110
+00:06:50,920 --> 00:06:54,985
+Passez la colonne catégorique
+que vous voulez intégrer.
+
+111
+00:06:54,985 --> 00:06:57,725
+Ici, il s'agit du croisement
+de caractéristiques.
+
+112
+00:06:57,725 --> 00:07:02,480
+Indiquez ensuite le nombre de dimensions.
+
+113
+00:07:02,480 --> 00:07:04,375
+Et voilà.
+
+114
+00:07:04,375 --> 00:07:09,325
+Pour une idée aussi puissante,
+c'est particulièrement facile.
+
+115
+00:07:09,325 --> 00:07:12,590
+Pourquoi est-ce que je dis
+que l'idée est puissante ?
+
+116
+00:07:12,590 --> 00:07:17,540
+Un atout des représentations vectorielles
+continues est que celles que vous apprenez
+
+117
+00:07:17,540 --> 00:07:23,910
+sur un problème peuvent souvent
+convenir à des modèles de ML similaires.
+
+118
+00:07:23,910 --> 00:07:26,629
+Vous avez peut-être appris
+à représenter des combinaisons
+
+119
+00:07:26,629 --> 00:07:31,800
+jour/heure sur un ensemble
+de données précis sur le trafic à Londres.
+
+120
+00:07:31,800 --> 00:07:35,070
+Vous ajoutez maintenant
+des feux à Francfort,
+
+121
+00:07:35,070 --> 00:07:39,245
+mais vous n'avez pas encore recueilli
+les données correspondantes.
+
+122
+00:07:39,245 --> 00:07:41,440
+Pour gagner du temps,
+
+123
+00:07:41,440 --> 00:07:44,730
+vous pouvez appliquer
+une RVC entraînée pour Londres.
+
+124
+00:07:44,730 --> 00:07:46,100
+à Francfort.
+
+125
+00:07:46,100 --> 00:07:52,500
+Après tout, vous voulez juste présenter
+les combinaisons jour/heure correctement,
+
+126
+00:07:52,500 --> 00:07:55,950
+et utiliser la RVC entraînée sur
+les données de Londres sera un moyen
+
+127
+00:07:55,950 --> 00:07:59,125
+plus efficace que de créer
+les données avec la méthode heuristique,
+
+128
+00:07:59,125 --> 00:08:01,165
+comme tôt le matin
+ou aux heures de pointe.
+
+129
+00:08:01,165 --> 00:08:03,090
+Alors, comment procéder ?
+
+130
+00:08:03,090 --> 00:08:06,785
+Il suffit de charger la RVC à partir
+du modèle enregistré pour Londres
+
+131
+00:08:06,785 --> 00:08:11,100
+et d'indiquer au modèle
+de ne pas entraîner cette couche.
+
+132
+00:08:11,100 --> 00:08:15,155
+Vous pouvez aussi charger
+la RVC de Londres
+
+133
+00:08:15,155 --> 00:08:18,540
+et l'utiliser comme point de départ
+pour Francfort.
+
+134
+00:08:18,540 --> 00:08:21,355
+Si vous voulez procéder ainsi,
+
+135
+00:08:21,355 --> 00:08:25,740
+vous devez définir
+"trainable=true" dans la couche.
+
+136
+00:08:25,740 --> 00:08:30,445
+Les représentations vectorielles continues
+sont un concept extrêmement puissant,
+
+137
+00:08:30,445 --> 00:08:35,554
+d'autant plus que
+leur apprentissage peut être transféré.
+
+138
+00:08:35,554 --> 00:08:39,755
+Elles sont particulièrement utiles
+pour les colonnes très clairsemées.
+
+139
+00:08:39,755 --> 00:08:44,054
+Pour le jour et l'heure,
+nous avons 168 combinaisons uniques.
+
+140
+00:08:44,054 --> 00:08:45,845
+Ce n'est pas énorme,
+
+141
+00:08:45,845 --> 00:08:48,135
+mais vous verrez beaucoup de RVC
+
+142
+00:08:48,135 --> 00:08:50,425
+quand nous parlerons
+des modèles linguistiques.
+
+143
+00:08:50,425 --> 00:08:55,845
+Vous aurez alors peut-être
+100 000 mots uniques à intégrer
+
+144
+00:08:55,845 --> 00:09:01,335
+et à représenter dans un espace
+à 30 ou 50 dimensions.
+
+145
+00:09:01,335 --> 00:09:06,840
+Les croisements de caractéristiques
+et les RVC sont très utiles
+
+146
+00:09:06,840 --> 00:09:09,340
+dans les modèles de ML
+en conditions réelles.
+
+147
+00:09:09,340 --> 00:09:15,260
+Si nécessaire, révisez ces deux leçons
+avant de poursuivre.

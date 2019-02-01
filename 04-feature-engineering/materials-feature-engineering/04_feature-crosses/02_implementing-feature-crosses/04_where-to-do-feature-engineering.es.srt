@@ -1,0 +1,523 @@
+1
+00:00:00,650 --> 00:00:02,860
+Hablamos bastante sobre varias formas
+
+2
+00:00:02,860 --> 00:00:05,900
+de representar los atributos
+y de hacer ingeniería de atributos
+
+3
+00:00:05,900 --> 00:00:08,245
+mediante escalamiento,
+combinaciones de atributos
+
+4
+00:00:08,245 --> 00:00:10,750
+creación, incorporación, etcétera.
+
+5
+00:00:10,750 --> 00:00:13,910
+Pero ¿dónde se aplica esto
+en su modelo de aprendizaje automático?
+
+6
+00:00:13,910 --> 00:00:16,835
+Recuerden que su modelo
+consiste en lo siguiente
+
+7
+00:00:17,975 --> 00:00:21,205
+una función de entrada para leer los datos
+
+8
+00:00:21,205 --> 00:00:24,020
+columnas de atributos
+que actúan como marcadores de posición
+
+9
+00:00:24,020 --> 00:00:25,510
+para lo que leerán
+
+10
+00:00:25,510 --> 00:00:29,335
+un estimador que crean
+para pasar las columnas de atributos
+
+11
+00:00:29,335 --> 00:00:33,130
+y, luego, configuran TrainSpec,
+EvalSpec, export, etcétera.
+
+12
+00:00:33,130 --> 00:00:36,120
+Y finalmente,
+llaman a train_and_evaluate.
+
+13
+00:00:36,120 --> 00:00:39,290
+¿Dónde entra la ingeniería de atributos
+en todo esto?
+
+14
+00:00:39,290 --> 00:00:43,010
+Hay tres lugares posibles
+para realizar ingeniería de atributos.
+
+15
+00:00:43,010 --> 00:00:45,890
+Podrían hacerlo sobre la marcha,
+mientras se leen los datos
+
+16
+00:00:45,890 --> 00:00:47,550
+en la función de entrada misma
+
+17
+00:00:47,550 --> 00:00:50,135
+o mediante la creación
+de columnas de atributos.
+
+18
+00:00:50,135 --> 00:00:53,020
+Alternativamente, podrían hacerlo
+como un paso independiente
+
+19
+00:00:53,020 --> 00:00:54,930
+antes de empezar el entrenamiento.
+
+20
+00:00:54,930 --> 00:00:58,700
+Luego, su función de entrada leerá
+los atributos procesados previamente.
+
+21
+00:00:58,700 --> 00:01:01,740
+Si lo hacen como un paso
+de procesamiento previo independiente
+
+22
+00:01:01,740 --> 00:01:04,560
+lo harán en Dataflow
+
+23
+00:01:04,560 --> 00:01:08,040
+de modo que lo puedan hacer
+a escala y de manera distribuida.
+
+24
+00:01:08,040 --> 00:01:10,725
+Podrían hacerlo en Dataflow para Python
+
+25
+00:01:10,725 --> 00:01:15,160
+pero solo deberían hacerlo
+si Dataflow también es parte
+
+26
+00:01:15,160 --> 00:01:16,990
+de su canalización de predicción.
+
+27
+00:01:16,990 --> 00:01:20,460
+En otras palabras, están procesando
+un lote de predicciones de transmisión
+
+28
+00:01:20,460 --> 00:01:23,685
+y podrán aplicar los mismos
+pasos de procesamiento previo
+
+29
+00:01:23,685 --> 00:01:25,755
+en las entradas de predicción.
+
+30
+00:01:25,755 --> 00:01:29,940
+La tercera opción es hacer
+el procesamiento previo en Dataflow
+
+31
+00:01:29,940 --> 00:01:32,835
+y crear un conjunto
+de atributos procesados previamente
+
+32
+00:01:32,835 --> 00:01:35,390
+pero indicar al gráfico de predicción
+
+33
+00:01:35,390 --> 00:01:39,785
+que desean las mismas transformaciones
+realizadas en TensorFlow
+
+34
+00:01:39,785 --> 00:01:41,735
+durante la predicción.
+
+35
+00:01:41,735 --> 00:01:45,275
+Para hacerlo,
+usarán TensorFlow Transform.
+
+36
+00:01:45,275 --> 00:01:47,280
+Cómo vimos en la sección anterior
+
+37
+00:01:47,280 --> 00:01:50,560
+una parte del procesamiento previo
+se pueden realizar en TensorFlow
+
+38
+00:01:50,560 --> 00:01:53,410
+mediante la creación
+de una nueva columna de atributos.
+
+39
+00:01:53,410 --> 00:01:56,410
+Cuando agrupan una columna
+para crear una nueva
+
+40
+00:01:56,410 --> 00:01:58,610
+están haciendo procesamiento previo.
+
+41
+00:01:58,610 --> 00:02:02,970
+Y esa es la columna de atributos
+que enviarán al estimador.
+
+42
+00:02:02,970 --> 00:02:07,060
+Aquí, estoy tomando la columna
+de atributos de los pies cuadrados
+
+43
+00:02:07,060 --> 00:02:10,550
+y discretizándola en cuatro intervalos.
+
+44
+00:02:10,550 --> 00:02:14,910
+El primer intervalo es de casas
+con menos de 500 pies cuadrados.
+
+45
+00:02:14,910 --> 00:02:18,555
+El segundo
+es de 500 a 1,000 pies cuadrados.
+
+46
+00:02:18,555 --> 00:02:22,410
+El tercero es de casas de
+entre 1,000 y 2,500 pies cuadrados
+
+47
+00:02:22,410 --> 00:02:27,060
+y el último es de casas
+de más de 2,500 pies cuadrados.
+
+48
+00:02:27,700 --> 00:02:31,530
+Adjunto la columna agrupada
+en la lista original
+
+49
+00:02:31,530 --> 00:02:33,250
+de columnas de atributos.
+
+50
+00:02:33,250 --> 00:02:40,315
+Y ahora el regresor lineal
+ve los pies cuadrados dos formas.
+
+51
+00:02:40,785 --> 00:02:43,435
+Como columna de valor numérico real
+
+52
+00:02:43,435 --> 00:02:47,195
+y como columna categórica agrupada.
+
+53
+00:02:47,195 --> 00:02:49,050
+Por supuesto, si quisiera
+
+54
+00:02:49,050 --> 00:02:52,835
+podría reemplazar una columna numérica
+por la agrupada
+
+55
+00:02:52,835 --> 00:02:56,275
+de modo que el regresor lineal
+solo vea los pies cuadrados
+
+56
+00:02:56,275 --> 00:02:57,875
+de forma categórica.
+
+57
+00:02:57,875 --> 00:02:59,450
+Eso es lo que estoy haciendo aquí
+
+58
+00:02:59,450 --> 00:03:05,210
+reemplazo featcols [0]
+por la versión agrupada.
+
+59
+00:03:06,540 --> 00:03:09,745
+Aquí tenemos otro ejemplo
+de combinaciones de atributos
+
+60
+00:03:09,745 --> 00:03:13,360
+pero esta vez,
+dentro de una incorporación.
+
+61
+00:03:13,920 --> 00:03:17,560
+Podríamos tomar la latitud
+y la longitud de las casas
+
+62
+00:03:17,560 --> 00:03:21,700
+y definir los intervalos
+para discretizar los valores.
+
+63
+00:03:21,700 --> 00:03:26,860
+Aquí, estoy usando nbuckets
+con intervalos a espacios iguales.
+
+64
+00:03:27,400 --> 00:03:31,855
+Un método que usé para averiguar
+los límites es usar un cuantil prox
+
+65
+00:03:31,855 --> 00:03:33,730
+una función de SQL de BigQuery.
+
+66
+00:03:33,730 --> 00:03:36,890
+Esto permite que cada uno
+de los segmentos tengan la misma cantidad
+
+67
+00:03:36,890 --> 00:03:38,370
+de ejemplos de entrenamiento.
+
+68
+00:03:38,370 --> 00:03:41,120
+Sin importar cómo obtengan los límites
+
+69
+00:03:41,120 --> 00:03:42,794
+una vez que los tengan
+
+70
+00:03:42,794 --> 00:03:45,665
+los segmentos Iat y los segmentos Ion
+en mi caso
+
+71
+00:03:45,665 --> 00:03:49,335
+podemos agrupar las latitudes
+y las longitudes de las casas
+
+72
+00:03:49,335 --> 00:03:51,265
+en b_lat y b_lon.
+
+73
+00:03:51,965 --> 00:03:54,240
+Y, luego, cómo vimos
+
+74
+00:03:54,240 --> 00:03:56,610
+podríamos realizar la combinación
+de atributos
+
+75
+00:03:56,610 --> 00:03:58,990
+de las dos columnas categóricas,
+b_lat y b_lon.
+
+76
+00:03:58,990 --> 00:04:04,360
+Aquí, elijo combinarlas
+en nbuckets al cuadrado segmentos hash.
+
+77
+00:04:05,580 --> 00:04:11,265
+En promedio, cada segmento hash
+tendrá solo una combinación de atributos.
+
+78
+00:04:11,265 --> 00:04:13,960
+Esto está al medio de mi regla general
+
+79
+00:04:13,960 --> 00:04:16,509
+de la mitad de la raíz cuadrada de N
+y el doble de N
+
+80
+00:04:16,509 --> 00:04:19,159
+que les comenté en la lección anterior.
+
+81
+00:04:19,159 --> 00:04:25,105
+Finalmente, incorporo los datos
+en nbuckets por 4 dimensiones.
+
+82
+00:04:26,035 --> 00:04:28,119
+La ventaja de hacer esto
+
+83
+00:04:28,119 --> 00:04:32,180
+de agregar el procesamiento previo
+directamente en TensorFlow
+
+84
+00:04:32,180 --> 00:04:35,770
+es que estas operaciones
+son parte del gráfico del modelo
+
+85
+00:04:35,770 --> 00:04:40,635
+y se realizan de manera idéntica,
+tanto durante el entrenamiento
+
+86
+00:04:40,635 --> 00:04:42,135
+como durante la predicción.
+
+87
+00:04:43,735 --> 00:04:46,790
+¿Qué significa esto en el mundo real?
+
+88
+00:04:47,450 --> 00:04:51,450
+Primero, discretizamos las latitudes.
+
+89
+00:04:51,450 --> 00:04:54,560
+Esto solo agrupa los números
+de valor real
+
+90
+00:04:54,560 --> 00:04:58,850
+de modo que todas las casas
+que están en la misma latitud aproximada
+
+91
+00:04:58,850 --> 00:05:01,020
+tengan el mismo valor.
+
+92
+00:05:01,020 --> 00:05:03,630
+Podría ayudar un poco con el sobreajuste
+
+93
+00:05:03,630 --> 00:05:07,675
+pero solo discretizar la latitud
+no logra mucho.
+
+94
+00:05:08,645 --> 00:05:11,765
+Luego, discretizamos las longitudes.
+
+95
+00:05:11,765 --> 00:05:18,425
+Esto agrupa los valores de las longitudes
+y podría ayudar un poco con el sobreajuste
+
+96
+00:05:18,425 --> 00:05:22,280
+pero discretizar las longitudes
+no logra mucho tampoco.
+
+97
+00:05:22,830 --> 00:05:28,030
+Pero qué ocurre cuando se combinan
+los dos valores discretizados.
+
+98
+00:05:28,610 --> 00:05:33,345
+Básicamente, lo que hicimos
+es desglosar el mapa en celdas
+
+99
+00:05:33,345 --> 00:05:40,795
+de cuadrícula, de modo que cualquier casa
+pertenezca solo a una de esas celdas.
+
+100
+00:05:41,795 --> 00:05:45,940
+Durante el entrenamiento,
+esto nos permitirá memorizar
+
+101
+00:05:45,940 --> 00:05:51,055
+el precio promedio de las casas
+en cada celda de la cuadrícula.
+
+102
+00:05:51,055 --> 00:05:54,700
+Obviamente, mientras más fina
+sea la resolución de la cuadrícula
+
+103
+00:05:54,700 --> 00:05:57,520
+más específica será la predicción.
+
+104
+00:05:58,260 --> 00:06:01,865
+Pero también será menos generalizable
+
+105
+00:06:01,865 --> 00:06:04,410
+porque no habrá suficientes casas vendidas
+
+106
+00:06:04,410 --> 00:06:07,830
+en una celda de cuadrícula
+como para formar una buena estimación.
+
+107
+00:06:07,830 --> 00:06:11,050
+Durante la predicción
+de una casa específica
+
+108
+00:06:11,050 --> 00:06:13,690
+sabemos a qué celda pertenece
+
+109
+00:06:13,690 --> 00:06:17,560
+y podemos obtener el valor memorizado
+de esta celda de cuadrícula.
+
+110
+00:06:18,300 --> 00:06:22,250
+Lo que hace la incorporación
+es permitir que las celdas
+
+111
+00:06:22,250 --> 00:06:24,610
+que son similares entre sí
+
+112
+00:06:24,610 --> 00:06:28,950
+tal vez todas las celdas de casas
+que tienen vista al mar
+
+113
+00:06:28,950 --> 00:06:33,230
+que todas esas celdas
+tengan valores similares.

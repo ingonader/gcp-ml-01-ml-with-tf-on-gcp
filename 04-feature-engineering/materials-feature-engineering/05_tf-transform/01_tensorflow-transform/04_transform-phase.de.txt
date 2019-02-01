@@ -1,0 +1,39 @@
+Wir haben auf das Bewertungs-Dataset
+eine Transformationsfunktion angewendet und dann die transformierten
+Bewertungsdaten geschrieben. Für welche Art von Daten haben wir
+"AnalyzeAndTransformDataset" verwendet? Richtig, für die Trainingsdaten. Und wir haben "TransformDataset"
+für die Bewertungsdaten verwendet. Obwohl wir die vorverarbeiteten Merkmale
+mit Beam erstellt haben, konnte die Methode "preprocessed"
+keinen beliebigen Python-Code enthalten. Sie durfte ausschließlich
+aus TensorFlow-Funktionen bestehen. Die Funktionen müssen
+aus TensorFlow stammen, da sie Teil des Vorhersagegraphen sind. Und warum sind sie
+Teil des Vorhersagegraphen? Damit der Endbenutzer
+Rohdaten in das Modell eingeben kann und das Modell die notwendige
+Vorverarbeitung durchführen kann. Aber wie weiß das Modell, welche
+Funktionen aufgerufen werden sollen? Damit das Modell weiß, welche
+Funktionen aufgerufen werden sollen, müssen wir die
+Transformationsfunktion speichern. Genau das mache ich hier. Ich speichere die Transformationsfunktion in das Verzeichnis "metadata",
+zusammen mit einem trainierten Modell. Dann weisen wir die Eingabefunktion an,
+die Metadaten abzurufen. Welche Eingabefunktion? Alle drei. Sehen wir uns zuerst die Eingabefunktionen
+für Training und Bewertung an. Sie lesen die vorverarbeiteten Merkmale. Beachten Sie, dass das Schema
+den transformierten Metadaten entspricht. Ändern Sie Eingabefunktionen
+für Training und Bewertung, sodass sie
+die vorverarbeiteten Merkmale lesen. In TensorFlow Transform gibt es
+eine praktische Hilfsfunktion namens "build_training_input_fn". Ich benutze sie sowohl für
+Training als auch für Bewertung, indem ich die Variablen der Eingabepfade
+so ändere, dass sie abhängig vom Modus entweder auf den Trainingsdatenpfad oder
+auf den Bewertungsdatenpfad verweist. Die Funktion "serving_input"
+akzeptiert die Rohdaten. Hier übergebe ich "rawdata_metadata", nicht die transformierten Metadaten. Wenn die Rohdaten allein nicht ausreichen, können wir beliebige TensorFlow-Funktionen
+im Vorverarbeitungscode verwenden. Diese Operationen werden
+in "saved_model.pb" gespeichert. Aber auch hier gibt es eine
+gute TensorFlow Transform-Hilfsfunktion: "build_parsing_transforming_serving_input". Parsen Sie die JSON-Datei
+nach dem Rohdatenschema. Transformieren Sie die Rohdaten
+auf Basis der TensorFlow-Operationen in "saved_model.pb" und
+senden Sie sie dann an das Modell. Der Clientcode darf nur die
+unverarbeiteten Eingabevariablen senden. Das hat sich nicht geändert. Die Funktion "serving_input" empfängt die
+Eingabevariablen und bleibt unverändert. Sie akzeptiert Rohdaten
+und sendet sie an das Modell. Warum funktioniert ein Modell also? Der DNN-Regressor oder ein anderes Modell
+kann den String "Thu" nicht verarbeiten. Der Grund, das es funktioniert, ist,
+dass der gesamte Code in "preprocessed" jetzt Teil des Modellgraphen selbst ist. Das geschieht, 
+weil das Modell die Metadaten liest und den Vorbereitungscode einschließt. So funktioniert TensorFlow Transform. Verwenden wir es jetzt,
+um Taxikosten vorherzusagen.

@@ -1,0 +1,78 @@
+Pour cet atelier, vous aurez besoin de copier le code source de GitHub
+sur votre environnement Cloud Shell. Vous devrez aussi exécuter
+un script permettant de télécharger des bibliothèques qui contiendront
+les dépendances de votre pipeline. Ces étapes prennent quelques minutes. Vous pouvez maintenant voir la vidéo
+passer en avance rapide pendant ces étapes d'installation du code source
+et de téléchargement des bibliothèques. Depuis Cloud Shell, vous pouvez utiliser
+différents éditeurs permettant d'afficher le code source du pipeline. Vous pouvez utiliser
+un éditeur texte comme Nano. Dans cette vidéo, j'utiliserai l'éditeur graphique
+intégré de Cloud Shell. Une fois l'éditeur chargé, vous pouvez ouvrir dans le menu de gauche le dossier "training-data-analyst/ courses/data_analysis/lab2/python" et accéder au code source
+du pipeline dans le fichier "grep.py". Le code source prend en entrée les fichiers Java
+en surbrillance ici, ligne 26. Vous utiliserez les fichiers Java indiqués
+avec l'instruction à caractère générique. Pour chaque fichier, la transformation recherche des lignes
+de code source Java contenant le mot clé. Le terme de recherche est "import". Vous pouvez voir les détails de mise
+en œuvre du pipeline aux lignes 32 à 34. L'étape "grep" du pipeline utilise la méthode "my_grep" définie ligne 20. Cette méthode recherche "import" et, pour toutes les lignes qui le contiennent, le résultat est écrit
+dans le répertoire "/tmp/output". Pour exécuter le pipeline sur Cloud Shell, vous utilisez simplement
+la commande Python et transmettez le nom du fichier de code source
+avec la mise en œuvre du pipeline. Le pipeline s'est bien terminé.
+Vous pouvez le vérifier en regardant les fichiers
+de sortie créés par le pipeline. Le pipeline a correctement identifié
+toutes les lignes de code source Java
+qui contiennent le mot clé "import". Dans la suite de l'atelier, vous allez préparer
+le code source du pipeline pour l'exécuter
+sur la plate-forme Google Cloud Dataflow. Avant cela, quelques étapes sont nécessaires. Vous devez d'abord
+rechercher les API Dataflow dans GCP et les activer
+avec le bouton "Activer" à l'écran. L'activation prend quelques instants. La vidéo va donc passer en avance
+rapide le temps que les API s'activent. Vous pouvez voir que les API sont activées lorsque l'écran des API Dataflow
+contient le bouton "Désactiver". Vous devez ensuite
+vérifier que vous disposez d'un bucket Cloud Storage
+pour votre pipeline. Vous pouvez créer ce bucket. Il est important de lui affecter un nom unique et
+de le configurer comme bucket régional. J'ai affecté la région
+us-east4 (Virginie du nord). Une fois que le bucket est prêt, copiez les fichiers
+du code source d'entrée de votre pipeline depuis Cloud Shell
+dans le bucket Google Cloud Storage. Pour ce faire, utilisez
+la commande "gscopy". Souvenez-vous que vous copiez ces fichiers de code source Java
+pour votre pipeline, car celui-ci n'a pas accès
+à votre système de fichiers Cloud Shell pendant qu'il s'exécute
+sur Google Cloud Dataflow. Une fois que la commande "gsutil"
+a terminé de copier les fichiers, revenez dans le bucket
+Cloud Storage dans votre navigateur, actualisez la page et vérifiez
+que les fichiers ont bien été copiés. Voici les quatre fichiers Java
+qui seront utilisés en entrée de votre pipeline
+exécuté sur Google Cloud Dataflow. Regardez ensuite le code source
+de mise en œuvre du pipeline. Il a été modifié pour s'exécuter
+sur la plate-forme Google Cloud Dataflow. Il se trouve dans le fichier "grepc.py". Le code contient des constantes
+pour les noms des projets et des buckets. Dans mon cas, j'ai utilisé le même
+ID unique pour le projet et le bucket. Je mets donc la même valeur pour les deux. Le code contient également des paramètres nécessaires pour
+exécuter le pipeline sur Cloud Dataflow. Par exemple,
+vous devez spécifier le nom de la tâche et de l'exécuteur qui font tourner
+votre pipeline sur Dataflow. Les données d'entrée et le résultats sont indiqués sous la forme de chemins
+vers votre bucket Google Cloud Storage. Le reste du code
+du pipeline reste identique. Pour exécuter votre pipeline sur Dataflow, utilisez la commande Python
+et transmettez dans les arguments le nom du fichier contenant le code source
+de mise en œuvre du pipeline. Ici, comme le code source utilise
+l'exécuteur Dataflow, votre code sera empaqueté
+avec les bibliothèques Dataflow et envoyé sous forme de tâche
+pour exécuter le pipeline sur la plate-forme Google Cloud Dataflow. Une fois la commande Python exécutée, revenez sur GCP et ouvrez Dataflow à l'aide du menu en forme de hamburger
+sur la gauche ou de la barre de recherche. Depuis le tableau de bord de Dataflow, vous pouvez surveiller le pipeline
+envoyé parmi les tâches. La tâche s'appelle ici "examplejob2", car c'est le nom que j'ai utilisé
+dans le fichier "grepc.py". Vous remarquez d'abord que
+la tâche n'est pas entièrement démarrée. Elle est en cours d'autoscaling et n'utilise actuellement qu'un seul
+cœur virtuel pour son exécution. Sur la droite, vous pouvez voir les options du pipeline
+et d'autres informations sur la tâche. La section "Journaux"
+indique que le pipeline n'est pas encore en cours d'exécution, car il est en train de démarrer
+l'un des nœuds de calcul. Vous pouvez le vérifier sur le graphique
+de la section "Autoscaling". Vous pouvez voir ici que la tâche prévoit
+d'utiliser un nœud de calcul cible. Actuellement, le nombre de nœuds
+de calcul est passé de zéro à un. Cela signifie qu'exactement
+une instance virtuelle a été provisionnée pour exécuter le pipeline. L'exécution du pipeline va prendre
+quelques minutes. La vidéo va donc passer en avance rapide jusqu'à la fin de l'exécution. Si vous regardez le pipeline de plus près, les coches vertes vous indiquent que chaque étape
+de transformation a bien été effectuée. Sur le graphique en bas à droite, vous pouvez voir
+que tous les nœuds utilisés pour exécuter le pipeline ont été réduits. Vous pouvez vérifier
+le résultat de ce pipeline en copiant les fichiers de sortie
+de Google Cloud Storage vers Cloud Shell. Une fois les fichiers copiés, vous pouvez les consulter
+directement dans Cloud Shell ou ouvrir Cloud Storage
+dans votre navigateur et rechercher les fichiers de votre bucket
+dans le dossier "javahelp". Les fichiers auront le préfixe "output". Ils seront nommés "04", "0104", "0204", etc. Pour consulter le contenu des fichiers, il est important de cocher la case
+"Lien public" sur la droite. Vous pouvez voir ici
+le contenu du premier fichier.

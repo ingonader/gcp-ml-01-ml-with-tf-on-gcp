@@ -1,0 +1,106 @@
+Estávamos falando sobre três lugares
+possíveis para a engenharia de recursos. Dissemos que você
+pode usar o TensorFlow, com colunas de recursos
+usando o recurso de dicionário e adicionando código
+arbitrário do TensorFlow. Essa é uma maneira eficiente. O código do TensorFlow
+e uma GPU ou TPU. Mas por que eu digo código
+arbitrário do TensorFlow? Porque ele precisa ser executado
+como parte da sua função de modelo, como parte do
+gráfico do TensorFlow. Não é possível fazer uma consulta
+no banco de dados corporativo e colocar um valor nele. Você pode criar um TensorFlow
+personalizado em C++ e chamá-lo. Não vamos falar
+disso por enquanto. Você também só pode fazer coisas
+que usam esse valor de entrada. Se você quiser calcular
+uma média móvel, é um processo difícil. Veremos modelos de sequência com processamento parecido
+com o de uma série temporal. Vários valores de entrada, mas
+a entrada é a sequência inteira. O limite que estamos definindo
+para o processamento do TensorFlow é que só podemos pré-processar
+uma única entrada. Os modelos do TensorFlow,
+com exceção dos de sequência, tendem a ser sem estado. Nos dois últimos capítulos, também vimos
+como pré-processar ou criar recursos no Apache Beam
+no Cloud Dataflow. O Dataflow permite executar código arbitrário
+do Python ou Java, e permite processar vários
+valores de entrada com estado. Por exemplo, você pode calcular
+uma média de intervalo de tempo. Como o número médio de bicicletas
+em um cruzamento na última hora. No entanto, também é preciso
+executar o código de previsão em um canal para
+ver o número médio de bicicletas em um
+cruzamento na última hora. Isso é útil em exemplos, como as médias de intervalo de tempo,
+em que você precisa de um canal. Mas e se você só quiser
+um valor mínimo ou máximo para escalonar os valores ou conseguir o vocabulário para converter
+valores categóricos em números? Executar o canal do
+Dataflow em uma previsão só para receber esses valores parece um pouco exagerado. É aqui que entra a tf.transform. Trata-se de um híbrido
+entre as duas abordagens. Com a transformação do TensorFlow,
+você se limita aos métodos do TensorFlow. Mas também consegue
+a eficiência dele. Você também pode usar todo o
+seu conjunto de dados de treinamento, porque a tf.transform usa o Dataflow no treinamento, mas
+só o TensorFlow durante a previsão. Vamos ver como a transformação
+do TensorFlow funciona. Ela é um híbrido entre o
+Apache Beam e o TensorFlow. Está entre os dois. O pré-processamento do Dataflow
+só funciona no contexto de um canal. Pense em termos de dados
+de streaming, como de IoT, Internet das Coisas,
+ou dados de voos. O canal do Dataflow
+pode envolver as previsões, pode chamar essas previsões
+e salvá-las no Bigtable. Essas previsões
+são disponibilizadas para qualquer um que acessar
+a página nos próximos 60 segundos. Depois, uma nova previsão
+fica disponível no Bigtable. Ou seja,
+quando ouvir Dataflow, pense em pré-processamento para
+modelos de aprendizado de máquina. Você pode usar o Dataflow
+para pré-processamento que precisa manter o estado,
+como intervalos de tempo. Para o pré-processamento dinâmico
+para modelos de ML, use o TensorFlow. Use o TensorFlow para pré-processamento
+baseado apenas na entrada fornecida. Se você colocar tudo desta caixa
+pontilhada no gráfico do TensorFlow, é fácil para
+os clientes chamarem um aplicativo da Web
+e receber o processamento. Mas pense no que
+há no meio disso tudo. Por exemplo, você quer
+escalonar as entradas com base nos valores
+mínimo e máximo. Para fazer isso, você precisa usar o Dataflow para
+analisar o conjunto de dados inteiro, encontrar esses valores e fazer a transformação
+no Dataflow para escalonar
+cada valor de entrada. É isso que a tf.transform faz. É um híbrido entre o
+Apache Beam e o TensorFlow. Para entender
+como isso funciona, considere que, em geral, o
+pré-processamento tem duas etapas. Suponha que
+você queira escalonar os dados brutos de entrada para que o gradiente
+descendente funcione melhor. Para fazer isso, você precisa encontrar
+os valores mínimo e máximo no recurso numérico em todo
+o conjunto de dados de treinamento. Em seguida, você precisa
+escalonar cada valor da entrada em relação aos valores mínimo e máximo
+computados no conjunto de dados. Ou você quer encontrar o vocabulário
+de chaves em uma variável categórica. Digamos que seu recurso categórico
+é o fabricante de um veículo. Você analisará o conjunto
+de dados de treinamento para encontrar os valores
+possíveis de um recurso específico. Basicamente, você recebe
+a lista de todos os fabricantes. Depois, se encontrar
+20 fabricantes diferentes, você fará uma codificação simples da
+coluna com um vetor de comprimento 20. Viu o que está acontecendo? A primeira etapa percorre todo
+o conjunto de dados uma vez. Ela é chamada
+de fase de análise. A segunda etapa envolve a
+transformação dos dados de entrada. Ela é chamada de
+fase de transformação. Qual tecnologia,
+o Beam ou o TensorFlow, é mais adequada para uma análise
+do conjunto de dados de treinamento? Qual tecnologia,
+o Beam ou o TensorFlow, é mais adequada para a transformação
+dinâmica dos dados de entrada? Análise no Beam e
+transformação no TensorFlow. Há duas PTransforms
+na tf.transform. AnalyzeAndTransformDataset,
+executada no Beam para criar um conjunto de
+dados de treinamento pré-processado, e TransformDataset, executada no Beam para
+criar o conjunto de dados de avaliação. Lembre-se, a computação
+dos valores mínimo e máximo, etc., a análise, é feita apenas
+no conjunto de treinamento. Não podemos usar o
+conjunto de avaliação para isso. Assim, o conjunto
+de avaliação é escalonado com os valores encontrados
+no de treinamento. Mas e se o valor máximo no
+conjunto de avaliação for maior? Isso simula uma situação
+em que você implanta seu modelo e encontra
+um valor maior na previsão. Não é diferente. Não é possível usar um conjunto de
+avaliação para computar valores, etc. Não há como fazer isso. No entanto, o código
+de transformação chamado é executado no TensorFlow
+no momento da previsão. Outra maneira de pensar nesse
+processo é que há duas fases. A fase de análise. Ela é executada no Beam ao criar
+o conjunto de dados de treinamento. A fase de transformação. Ela é executada no TensorFlow
+durante a previsão. Então, faça a execução no Beam para criar seus conjuntos de dados
+de treinamento e avaliação.

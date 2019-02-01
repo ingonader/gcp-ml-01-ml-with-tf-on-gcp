@@ -1,0 +1,39 @@
+La fonction de prétraitement permet
+de transformer les données d'entrée. Dans Beam, elle est appelée dans le cadre
+de la méthode AnalyzeAndTransformDataset. Dans TensorFlow, les éléments à prétraiter sont généralement appelés dans le cadre
+de la fonction d'entrée de diffusion. En d'autres termes, cette fonction
+est ajoutée au graphique TensorFlow et peut être exécutée
+dans TensorFlow lors de la diffusion. Comme elle est exécutée
+dans le cadre du graphique TensorFlow, la fonction de prétraitement est limitée
+aux fonctions appelées depuis TensorFlow. Vous ne pouvez pas
+appeler des fonctions Python standards, car le prétraitement fait partie du
+graphique TensorFlow lors de la diffusion. Voyons un exemple. Je prends un ensemble
+de données d'entrée et je les prétraite. De quel type sont les données d'entrée ? Il s'agit d'un dictionnaire
+dont les valeurs sont des Tensors. Souvenez-vous. C'est le résultat renvoyé
+par la fonction d'entrée de diffusion, soit les données brutes lues. Les fonctions d'entrée
+renvoient "features, labels" et sont donc des caractéristiques. "features" est "dict", un dictionnaire. tf.Transform convertit
+en Tensors les données qui arrivent par le biais de PTransform lors de la phase d'analyse. Nous utilisons les Tensors pour créer des caractéristiques,
+que nous ajoutons au dictionnaire. Le premier résultat, le montant
+de la course dans mon exemple, est transmis tel quel. Nous ajoutons le Tensor d'entrée
+au résultat, sans modification. Le résultat suivant que nous voulons
+obtenir est le jour de la semaine. Nous voulons que ce soit un nombre entier. Cependant, dans les données d'entrée, il s'agit d'une chaîne comme "Thu"
+pour "Thursday" (ou jeudi). Nous demandons donc à TensorFlow Transform de convertir une chaîne qui est lue, telle que "Thu", en nombre entier comme "3" ou "5". tf.Transform calcule le vocabulaire de tous les jours de la semaine possibles
+dans l'ensemble de données d'entraînement pendant la phase d'analyse et utilise ces informations pour effectuer le mappage "string_to_int"
+lors de la phase de prédiction. Nous allons ensuite convertir "dropofflat"
+en un nombre entre zéro et un. Lors de la phase d'analyse, tf.Transform calcule le minimum
+et le maximum de la colonne, et les utilise pour mettre
+les données d'entrée à l'échelle. Nous pouvons aussi invoquer
+d'autres fonctions TensorFlow. Dans ce cas, je prends
+le nombre d'entrée de passagers, qui est un nombre entier dans JSON, et je le convertis
+en nombre avec une valeur réelle. Une fois toutes
+les caractéristiques créées et ajoutées, nous pouvons afficher le résultat. La fonction
+PTransform AnalyzeAndTransform s'effectue sur l'ensemble de données d'entraînement. Que doit-il se passer sur
+l'ensemble de données d'évaluation ? Pour l'ensemble de données d'évaluation, nous utilisons à peu près le même pipeline
+Beam que pour celui d'entraînement, à une exception près. Nous n'analysons pas
+l'ensemble de données d'évaluation. Les valeurs
+de l'ensemble de données d'évaluation seront mises à l'échelle
+d'après le minimum et le maximum trouvés dans l'ensemble de données d'entraînement. Nous n'appelons donc pas
+AnalyzeAndTransform sur l'ensemble de données d'entraînement. Nous appelons uniquement TransformDataset, qui se charge d'appeler
+toutes nos actions de prétraitement. Pratique, non ? Cependant, TransformDataset a besoin en entrée de la fonction de transformation
+calculée sur les données d'entraînement. C'est ce qui permet à la magie d'opérer. Une fois l'ensemble de données transformé, nous pouvons l'écrire de la même façon
+que l'ensemble de données d'entraînement.

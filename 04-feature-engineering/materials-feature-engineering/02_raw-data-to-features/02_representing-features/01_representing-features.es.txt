@@ -1,0 +1,101 @@
+Pasemos a representar algunos
+atributos con ejemplos reales. Tomemos este ejemplo que ven aquí. Estos son mis datos sin procesar. Estoy en una heladería. Trato de averiguar si mi helado
+lo sirvió cierto empleado si el cliente esperó
+1.4 segundos o 1.4 minutos y cuál será la calificación. Quiero predecir esa calificación. Cuán satisfecho estará mi cliente
+según quién lo atendió cuánto tiempo esperó, qué compró cuál es la ubicación
+de la tienda y mucho más. Muy bien, estos son nuestros datos. Estos son nuestros datos de entrenamiento. Tomaré estos datos
+y los convertiré en números. ¿Recuerdan la regla?
+Todo debe ser numérico porque las redes neuronales
+usan números. Tomaré mis datos, los convertiré
+en números y esos serán mis atributos. En TensorFlow, tomaré
+esto que es una entrada JSON proviene de mi aplicación web
+que va a un almacén de datos la obtengo y creo estos valores numéricos. En TensorFlow, cada una de estas columnas
+se convierte en una columna de atributo. ¿Cómo tomamos datos como estos y los convertimos
+en columnas de atributos? ¿Cómo los hacemos numéricos? Primero, hay algunos valores,
+como el precio y el tiempo de espera que ya son numéricos. Es muy simple codificarlos los usamos tal cual están. Son numéricos
+y tienen una magnitud significativa. Es muy fácil
+que TensorFlow aprenda valores como 2.5 y 1.4
+para el tiempo de espera. Esto es lo que llamamos
+una columna de valores reales. Capas como la columna
+del valor real de precio capas como la columna
+del valor real del tiempo de espera. Estos números que podemos usar como están,
+serán columnas de valores reales. ¿Qué opinan de esta entrada? El ID de la transacción es igual a 42. Es demasiado específica. Elimínenla. No podemos
+usarla como atributo. ¿Qué tal el ID del empleado? El ID del empleado es igual a 72365. ¿Es numérico? Bueno, es un número. Pero ¿tiene una magnitud significativa? Alguien con el ID de empleado 723665 ¿es dos veces mejor
+que un empleado con el ID 36182? No. No puedo usar
+el ID del empleado como está. Tengo que hacer algo con él. Supongamos que mi heladería
+tiene cinco empleados. El empleado número 8345,
+el número 72365, etcétera. Lo que puedo hacer
+es representar el ID del empleado número 72365
+con este vector que ven aquí. El vector es 01000
+porque defino que la segunda columna corresponde al empleado 72365. Básicamente, hago una máscara de bits. Codifican la columna de ese empleado
+como 1 y las demás como 0. Esto se llama codificación de un solo 1 hay una columna que es 1 y las otras que son 0. Si tienen cinco
+empleados en una heladería tendrán cinco columnas. En realidad, usamos cuatro porque una es linealmente
+independiente para ser precisos. No importa. Supongamos que tenemos
+cinco empleados y cinco columnas. En TensorFlow,
+se llama columna dispersa. Indican que quieren crear
+una columna dispersa con las claves y el nombre de la columna
+es employeeId y las claves son 8345 72365 para employeeId, etc. Pasamos los strings
+para cada una de las claves. En TensorFlow tomamos el string
+y configuramos un tiempo de entrenamiento el tiempo de predicción
+para representarlos y codificarlos como un solo 1.
+Esto los convertirá en numéricos. Lo que hacemos es indicar
+que employeeId es la columna dispersa. Esto funciona si conocemos
+las claves de antemano. ¿Qué hacemos
+si no las conocemos de antemano? ¿Qué hacen si tienen
+que tomar sus datos de entrada procesarlos previamente
+para encontrar todas las claves del conjunto de datos de entrenamiento y crear lo que se llama
+un vocabulario de claves. Este es el primer paso:
+el procesamiento previo. Tienen que hacer todo esto
+incluso antes del entrenamiento. Luego, crearán un nuevo conjunto de datos en el que se puedan usar
+estos valores procesados previamente. Así que antes de entrenar su modelo necesitan crear este vocabulario de claves que debe estar disponible
+en el momento de la predicción porque en ese momento regresarán y dirán "tengo el ID de empleado 72365" el modelo necesita
+saber en el momento de la predicción que 72365 era la segunda columna
+para la codificación de un solo 1. El vocabulario debe ser idéntico y la asignación del vocabulario
+debe ser idéntica entre los períodos
+de entrenamiento y de predicción de otro modo, no sirve. Muchos deben preguntarse ¿qué ocurre si se contrata
+a un nuevo empleado? ¿el modelo será el mismo? En este momento, no tienen
+lugar para el nuevo empleado. Lo que significa que no podrán
+realizar predicciones para él. Deben pensar en esto de antemano puede que tengan agregar algo. ¿Qué hago si tengo un empleado
+que no conozco o no se lo encuentra? Decidirán que quizás usarán el promedio
+de los empleados actuales, lo deducirán. Mientras tanto, recolectarán
+los datos de las horas que el empleado estuvo en servicio y la satisfacción
+del cliente asociada al empleado para diferentes tiempos de espera
+y productos servidos y una vez que hayan recolectado eso,
+podrán usarlo en su predicción. Si conocen la clave de antemano crearán la columna dispersa con las claves transferirán las claves
+y finalmente las incrustarán. Estas son las diferentes
+formas de crear una columna dispersa. A veces sus datos
+podrían ya estar indexados. ¿Por qué ocurriría esto? Por ejemplo, tal vez tienen
+ID de empleados que son números del 1 al 1,000. En ese punto, ya están indexados. Hay números grandes arbitrarios
+en todas partes, de 1 a N. Si es así, supongamos
+que deseo crear una columna dispersa con el atributo entero,
+que es el ID del empleado y hay cinco empleados. ¿Cuándo es útil?
+En el ejemplo de los impuestos lo usaremos para la hora del día porque está automáticamente
+en enteros del 0 al 23. Es perfecto para un atributo entero porque la hora del día no es numérica no es completamente numérica porque el número 23
+está muy cerca del cero o el uno está a solo dos horas. Veamos una tercera posibilidad. Supongamos que no tienen un vocabulario y no está en enteros aquí tienen un truco que pueden usar. Si no quieren crear
+un vocabulario y no les interesa pueden tomar el ID
+del empleado, generar un hash procesar el hash del ID del empleado y dividirlo en 500 segmentos, por ejemplo. ¿Por qué harían esto? Supongamos que su empresa
+tiene 100 empleados y generan un hash de 500 segmentos en promedio cada empleado
+o cada segmento tendrá cero empleados o uno es casi como una codificación de un solo 1 o una de 500. Logro lo mismo sin tener
+que crear un vocabulario primero. La calificación del cliente,
+¿qué hacemos con eso? Si tratamos de predecir
+la calificación del cliente es una etiqueta,
+no debemos preocuparnos. Supongamos que intentamos
+utilizarla como entrada porque queremos predecir algo más. Si tienen una calificación
+y quieren usarla como atributo de entrada pueden usar uno de estos dos enfoques pueden tratarla como un número
+continuo, como del 1 al 5 y de alguna manera,
+tiene una magnitud significativa por ejemplo, 3 es más que 2 o 4 estrellas es muy diferente de 5 y muy diferente de 2 estrellas que es una codificación de un solo 1. En algunos casos tienen opciones. Con la calificación,
+pueden usar la codificación de un solo 1 o tratarla como número.
+Depende de ustedes. Pero deben tener cuidado con lo siguiente ¿qué hacen con un cliente
+que no proporcionó una calificación? Supongamos que hicieron una encuesta
+y el cliente no respondió. ¿Qué hacen con los datos faltantes? Una opción es usar dos columnas una para la calificación
+y otra para indicar si obtuvieron una. En este caso, el 4
+es la calificación de un cliente 1 significa
+que proporcionó una calificación y 0 significa
+que no proporcionó una calificación. Y también pueden hacerlo
+de la otra forma si usan codificación de un solo 1,
+dirán que tienen una calificación de 4 que es 0001, o que no obtuvieron
+una calificación, que es 0000. Pero no cometan el error de no tener
+una segunda columna, con calificación o no porque no deben mezclar
+números mágicos con valores reales. Deben agregar una columna extra
+para declarar sí vieron el valor o no. Entonces, si tienen datos faltantes,
+necesitan otra columna.

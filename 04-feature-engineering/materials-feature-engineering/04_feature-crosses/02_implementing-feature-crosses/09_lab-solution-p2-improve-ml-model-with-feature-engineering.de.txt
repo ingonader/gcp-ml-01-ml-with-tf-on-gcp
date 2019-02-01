@@ -1,0 +1,165 @@
+Ich habe Datalab gestartet und das Notebook
+"feateng.ipython" geöffnet. Werfen wir nun einen Blick darauf. In diesem Notebook
+arbeiten wir mit Merkmalspalten und ergänzen Merkmalverknüpfungen in TensorFlow. Wir lesen Daten aus BigQuery,
+erstellen Datasets mit Dataflow und nutzen 
+ein breites und tiefes Modell. Wir verbinden jetzt also
+viele der besprochenen Aspekte. Das weite und tiefe Modell
+erläutere ich jetzt auch. Worum geht es nun? Wir haben bereits ein Taximodell erstellt. Es fehlen aber noch die menschlichen Einblicke. Das machen wir jetzt. Dabei nutzen wir unser Wissen darüber, wie Taxis funktionieren und wie New York angelegt ist. So erhält das Modell Tipps,
+um diese Dinge leichter zu lernen. Ich erläutere während des Kurses,
+wo die einzelnen Einblicke herkommen. Zuerst werden die Daten importiert. Achten Sie darauf,
+das Projekt zu ändern, um es dem Qwiklabs-Projekt zuzuordnen. Ändern Sie auch den Bucket,
+um ihn dem Qwiklabs-Projekt zuzuordnen. Legen Sie auch die Region fest,
+in der der Code ausgeführt werden soll. Jetzt kann die Abfrage ausgeführt werden. Damit werden auch die Daten bereinigt. So wird Folgendes gewährleistet: Es werden nur
+positive Streckenwerte abgerufen, der Fahrpeis beträgt mehr als 2,50, Längen- und Breitengrad
+des Startorts haben sinnvolle Werte und es waren Fahrgäste im Taxi. So stehen für eine Taxifahrt
+die korrekten Daten zur Verfügung, bevor sie für das Training genutzt werden. Ich teile die Daten zudem auf Basis
+des Hashs von "pickup_datetime" auf. Das habe ich bereits
+beim Erstellen von Datasets erklärt. Danach erstelle ich die Abfrage. Darin sind "tolls_amount" und
+"fare_amount" zusammengefügt zu "fare_amount". So können wir die
+Gesamtkosten einer Taxifahrt ermitteln. Dann wird "DAYOFWEEK" als
+"dayofweek" verwendet. Das hat folgenden Grund: Die Verkehrsbedingungen sind
+je nach Wochentag verschieden. Wir wissen, freitags
+gibt es mehr Verkehr als sonntags. Wir wissen auch,
+der Verkehr variiert je nach Tageszeit. Freitag morgens um 2 Uhr ist
+weniger Verkehr als nachmittags um 16 Uhr. Warum ist das relevant? In New York wird neben der Fahrstrecke
+die im Taxi verbrachte Zeit bezahlt. Hier kommen also
+menschliche Einblicke ins Spiel. Steht das Taxi im Stau,
+muss dafür gezahlt werden, weil man das Taxi besetzt. Der Fahrer kann
+keinen anderen Gast aufnehmen. Die Zeit ist also relevant. Die Dauer der Fahrt ist relevant. Vor der Fahrt ist nicht bekannt,
+wie lange sie dauern wird. Das soll das Modell
+für maschinelles Lernen lernen. Zum Bestimmen der Fahrtdauer
+ist die Startzeit ein wichtiger Faktor. Die Ankunftszeit ist egal,
+die ist nicht bekannt. Wir wissen aber,
+wann die Fahrt beginnt. Eingaben für das Modell sind daher: Startzeit, Tag der Woche und Tageszeit. Außerdem ist der Startort bekannt. Und wir wissen, wo der Fahrgast aussteigt. Wann die Fahrt endet, wissen wir nicht, aber der Zielort ist bekannt. Längen- und Breitengrad
+des Zielortes sind bekannt. Das und die Anzahl der Fahrgäste
+müssen also eingegeben werden. Dann erstellen wir einen Schlüssel. Den brauchen wir hier nicht. Bei Batchvorhersagen werden
+aber große Datenmengen gesendet. Da ist eine eindeutige ID
+für jede Zeile im Dataset nützlich. Der Schlüssel ist also eine Art
+eindeutige ID aller Eingabespalten. Das führe ich für 
+alle gültigen Daten durch. Jetzt können wir das Dataset erstellen. Dafür entfernen wir zuerst
+alle eventuell vorhandenen Datasets. Dann erstellen wir
+aus allen Spalten eine CSV-Datei. Zuerst müssen wir prüfen,
+ob die Spalten richtig sind: "fare_amount", 
+"dayofweek", "hourofday" usw. Diese sollen einbezogen werden. In BigQuery ist der Tag der Woche
+im Dataset aber eine Zahl. Die Ausgabe ist z. B. die Nummer 2. Das ist nicht gewollt,
+da wir nicht wissen, welcher Tag für "2" steht. Wann ist Tag 1?
+Sonntag, Montag, Dienstag? Wir machen es dem Clientcode einfach. Wir ersetzen die Zahlen
+durch die Namen der Wochentage. Bei "dayofweek" = 1 ist Sonntag gemeint. "dayofweek" = 2 ist Montag usw. Das ist der Code hier: Das Ergebnis in BigQuery ist eine Zahl. Diese wird durch einen String ersetzt. Dann wird jeweils ein Komma angefügt. Und das ist die Ausgabe der CSV-Datei. Zum Erstellen der Datei werden
+die Daten aus BigQuery ausgelesen. Das erfolgt mit der Abfrage,
+die wir gerade erstellt haben. Dann konvertiere ich die Daten
+mit der erwähnten Funktion ins CSV-Format. Die Wochentage werden nicht als Zahlen, sondern als Strings ausgegeben. Dann wird eine CSV-Datei erstellt. Wenn ich den Code nun ausführe, haben wir hier "preprocess". In der nächsten Zelle rufe ich
+"preprocess" im Dataflow-Runner auf. Oder man erstellt hier im direkten Runner
+ein kleineres Dataset, um lokal auszuführen. Hier verwende ich den Dataflow-Runner. Die Ausführung dauert nun eine Weile. Ich rufe nun die Konsole auf. Im Dataflow-Runner können wir sehen,
+dass der Job gestartet wurde. Ich öffne also Dataflow... Was haben wir hier? Dataflow... Eine Dataflow API wurde
+noch nicht verwendet oder aktiviert. Wenn Sie diesen Fehler sehen, gehen Sie zu "APIs & Dienste". Suchen Sie 
+nach dem zu aktivierenden Dienst. In unserem Fall gebe ich Dataflow ein. Nun wird die Dataflow API angezeigt. Diese aktiviere ich jetzt. Sobald die API aktiviert wurde... ...es dauert etwas... ...sollten wir die Zelle
+erneut ausführen können. Ok, die API wurde aktiviert. Ich rufe das Datalab-Notebook auf,
+um die Zelle erneut auszuführen. Nun sollte es funktionieren. Ok, das hat geklappt. Ich rufe Dataflow 
+erneut über das Menü auf. Hier sieht man, der Code wird ausgeführt. Das dauert eine Weile. Wenn es fertig ist, finden Sie in Ihrem Bucket in der Cloud Training-Dateien. Wir könnten nun hier unten fortfahren, ich möchte aber warten,
+bis der Vorgang abgeschlossen ist. Dann können wir hier weitermachen. Ich halte das Video jetzt an. Wir kommen zurück,
+sobald der Dataflow-Job abgeschlossen ist. Hier ist zu sehen,
+dass es ca. 8 Minuten gedauert hat. Der letzte Schritt war erfolgreich und die Anzahl der Workers sinkt wieder. Je nach verfügbaren
+und verwendeten Workern sehen Ihre Werte anders aus. Wenn der Job fertig ist, rufen Sie das Notebook auf, um zu prüfen,
+ob die Ausgabedateien vorhanden sind. Das tue ich hier
+mit "gs" in "gsutil ls" im Bucket. Wir haben hier die Dateien
+"train.csv" und "valid.csv", also eine Trainings- und
+eine Validierungsdatei. Mit dem Unix-Befehl "cat" rufen wir nun
+die ersten paar Einträge auf. Damit werden alle Zeilen
+durch einen Head geleitet, und die ersten werden angezeigt. Wie erwartet ist der Tag der Woche ein String. Freitag, Mittwoch usw. Dann sieht man die Breitengrade, Längengrade, Starts
+und Ziele der Fahrten. In der letzten Spalte steht ein Schlüssel. Der wird im Modell ignoriert, aber wenn wir im Datasaet für jede Zeile
+eine eindeutige ID benötigen, ist er da. Mit dieser Datei kann nun
+ein Modell entwickelt werden. Dabei ist es praktisch, nicht ständig wieder
+in die Cloud wechseln zu müssen. Dafür erstelle ich 
+das Verzeichnis "Sample" und kopiere nur eine der Dateien hinein. Die Dateien sind fragmentiert. Daher kopiere ich nur den ersten Teil
+in das lokale Verzeichnis "Sample". Jetzt können wir uns den Code ansehen. Das kann man im Notebook machen. Ich mache es aber außerhalb. Hier ist unser Projekt "taxifare". Wie zuvor finden wir darin einen Trainer
+sowie "model.py" und "task.py". "model.py" enthält
+aber nicht nur Rohdaten, sondern auch
+im Feature Engineering bearbeitete Daten. Hier sieht man die vorhandenen Spalten. Dabei gibt es jetzt
+noch einige zusätzliche Spalten. Es gibt den Tag der Woche, Tageszeit usw. Das sind die Eingabespalten. "dayofweek" hat
+eine "vocabulary_list" für die Wochentage: Sonntag, Montag, Dienstag usw. "hourofday" ist auch
+eine kategorische Spalte, hat aber eine "identity".
+Es ist schon eine Ganzzahl, also eins, zwei, drei, vier usw. Dann gibt es numerische Spalten
+für Längen- und Breitengrade der Starts und der Ziele usw. Außerdem erstelle ich
+einige Spalten für Feature Engineering. Den Code dafür sehen wir uns später an, aber diese Spalten enthalten
+die Breitengrad-Differenz. Dieser Wert ist nützlich, weil er eine zurückgelegte Strecke
+von Norden nach Süden oder umgekehrt angibt. Damit sieht man also
+Breitengrad-Veränderungen recht gut. Die Längengrad-Differenz ist nützlich aufgrund der Ausbreitung von New York City. Alle Fahren über die mautpflichtigen Brücken
+sorgen für starke Längengrad-Änderungen. Diese Differenz ist also auch hilfreich. Und es gibt einen euklidischen Abstand. Das ist die gerade Linie
+zwischen Start und Ziel. Diese Funktion ist auch praktisch, weil das Modell
+Distanzen so nicht lernen muss, sondern diese direkt verfügbar sind. Das ist das Feature Engineering. Jetzt kann man einen Estimator erstellen. Dieser enthält 
+alle vorhandenen Eingabespalten. Es ist wie mit dem Haus-Dataset
+in der Feature-Engineering-Übung. Die Breiten- und Längengrad-Buckets
+werden in Buckets kategorisiert. Der Start-Breitengrad wird
+zwischen 38 und 42 kategorisiert und der Längengrad von -76 bis -72.
+Das sind die Grenzen von New York City. Damit haben wir kategorisierte
+Breitengrade für Start und Ziel. Dasselbe gilt für die Längengrade: Es gibt Start- und Ziel-Längengrade
+und alle sind in Buckets kategorisiert. Was bedeutet es,
+etwas in Buckets zu kategorisieren? Es erfolgt eine Diskretisierung. Ein numerischer Wert wird kategorisch,
+weil er in einem dieser Buckets ist. Die kategorischen Werte werden
+im Feature Crossing verknüpft. Was passiert z. B. wenn wir
+Start-Breitengrad und -Längengrad verknüpfen? Breiten- und Längengrad sind da,
+und wir verknüpfen die Merkmale. Damit wird der Startort
+in eine Rasterzelle gesetzt, die dem Startort enspricht. Das ist das Merkmal "ploc".
+Es ist jetzt wie eine Rasterzelle. Das Merkmal "dloc" ist analog dazu
+eine Rasterzelle, die dem Ziel entspricht. Beides sind nur Rasterzellenpunkte. Jetzt werden die Merkmale
+Startort und Zielort verknüpft. Damit lernt das Modell aus allen Fahrten
+von einem Ort zum anderen, was sie kosten. Es braucht aber genug Daten. Man kann das nicht oft genug sagen: Feature Crossing ist
+eine sehr leistungsstarke Funktion, es funktioniert aber nur mit genug Daten, denn Feature Crossing ist Auswendiglernen. Es funktioniert, wenn in jedem Bucket
+ausreichend Daten vorhanden sind. Hier gibt es Millionen von Taxifahrten. Wir haben also genug Daten. Zur Wiederholung:
+Wir kategorisieren Start-Längengrad, Ziel-Längengrad, erstellen eine Funktion für "ploc" und
+"dloc" und verknüpfen diese Merkmale. Nun gibt es ein Start/Ziel-Paar,
+das auch ein verknüpftes Merkmal ist. Jetzt kommen Tag und Stunde. Wir wissen, der Verkehr ist
+tages- und uhrzeitabhängig. Freitag 15 Uhr ist anders
+als Mittwoch oder Sonntag 15 Uhr. Beim Verknüpfen muss man festlegen,
+wie viele Buckets verwendet werden sollen. Das ist sehr flexibel,
+von doppelt so vielen möglichen Werten bis zur vierten Wurzel 
+der möglichen Werte. Hier verwende ich einfach alle Werte. Die Bucket-Anzahl ist also 24 x 7. Das muss man ausprobieren
+und per Hyperparameter abstimmen. Es gibt keine korrekte Anzahl
+der zu verwendenden Hash-Buckets. Nun sehen wir uns nochmal alle Daten an: Welche sind spärlich und kategorisch, welche Daten sind dicht und numerisch? Die spärlichen, kategorischen Spalten
+sortieren wir in den weiten Netzwerkteil, da sie sich gut 
+für lineare Modelle eignen. Eingebettete Spalten sind
+ein Beispiel für dichte Spalten. Hier sind spärliche Daten enthalten. Das ist auch nützliche dichte Information. Alle spärlichen Spalten werden also
+in die weiten Spalten sortiert. Alle dichten Daten,
+werden in die tiefen Spalten sortiert. Dann erstellen wir
+einen kombinierten DNN-Linear-Regressor. Damit erhält das Modell extra Leistung. Auch ein DNN-Regressor funktioniert, dabei wird alles 
+als tiefe Spalten geparst. Die Kombination aus DNN
+und linear ermöglicht aber, spärliche und dichte Daten
+unterschiedlich zu behandeln. Es werden verschiedene Optimierer genutzt. Der Regressor ist darauf abgestimmt, dass ein Dataset mit realen Daten
+dichte und spärliche Merkmale enthält. Dieser Regressor ist daher
+sehr gut für diese Art von Daten geeignet. Hier parsen wir also,
+welche Merkmale linear sind und welche Merkmale
+ein DNN-Modell benötigen. Wir geben die Anzahl der Einheiten an,
+die das DNN-Modell verwenden soll. Das ist das Modell. Es gibt aber auch noch
+das Feature Engineering. Den verwendeten Rohdaten
+soll noch etwas hinzugefügt werden. Das tun wir
+mit den Feature-Engineering-Spalten. Das sind "latdiff" und "londiff"
+und wir verarbeiten sie wie folgt: "latdiff" ist die Differenz
+zwischen zwei Breitengraden. "londiff" ist die Differenz
+zwischen zwei Längengraden. Dann geben wir die Funktion
+zur Bereitstellungseingabe an. Diese Information liefert der Endnutzer. "londiff" bzw. "latdiff" liefert er nicht.
+Das kann der Endnutzer nicht berechnen. Er gibt uns nur die Rohdaten. Wir prüfen nun alle Eingabespalten. Die ersten beiden können wir ignorieren. Die erste enthält die Tarife.
+Das ist ein Label und keine Eingabe. Gehen wir zur zweiten Spalte,
+die ignoriert werden kann. Hier sind die zwei Spalten,
+die ignoriert werden können. Der Tag der Woche
+und die Tageszeit werden ignoriert. Alle anderen Daten werden einbezogen. Das sind alles Gleitkommazahlen. Der Tag der Woche ist ein String. Die Tageszeit hat das int32-Format. Damit erstellen wir einen Empfänger
+für die Bereitstellungseingabe. Wichtig ist, dass wir nicht nur
+die Merkmale von den Endnutzern nutzen, sondern auch alle im Feature Engineering
+erstellten Merkmale ins Modell einbeziehen. Das Lesen der Daten erfolgt jetzt
+ähnliche wie in vorigen Szenarien. Auch das Trainieren und Bewerten ist ähnlich. Wir können den Code nun ausführen. Ich gehe hierher zurück. Wir können das Modell
+an einem kleineren Dataset testen. Dann können wir es 
+in der Cloud trainieren. Wir können "gcloud ml-engine" verwenden. Beim Ausführen des Modells
+sollte der RMSE leicht besser sein. Das Modell hat sich somit verbessert. Der nächste Schritt ist
+die Hyperparameter-Abstimmung, um gute Parameter des Modells zu ermitteln. Dafür beschäftigen wir uns
+mit Hyperparameter-Abstimmung. Damit erhält man
+die Parameter für diese Modelle. In diesem Projekt
+sind das hier die besten Parameter. Jetzt können wir das Modell
+in einem viel größeren Dataset ausführen. Das ist ein zentraler Punkt
+beim maschinellen Lernen: Die beste Leistung erreicht man,
+wenn mit großen Datasets trainiert wird. Der Dataflow-Job vorhin dauerte
+nur ca. 10 Minuten. Dann ging es weiter. Der Dataflow-Job jetzt
+läuft ungefähr eine Stunde und erstellt ein Dataset
+mit Millionen von Zeilen. Damit können wir trainieren und der RMSE sollte dann viel besser sein. Hier war wesentlich, Rohdaten
+mit Feature Engineering zu bearbeiten, um bei wichtigen Merkmalen,
+menschliche Einblicke einzubeziehen. Zum Beispiel Verkehr und Entfernung, das Überfahren von Grenzen und Fahrten von Ost nach West
+oder Nord nach Süd usw. Die Differenz der Längen- und Breitengrade,
+der euklidische Abstand und Merkmalsverknüpfungen. Mit all diesen Daten verbessern wir das Modell.

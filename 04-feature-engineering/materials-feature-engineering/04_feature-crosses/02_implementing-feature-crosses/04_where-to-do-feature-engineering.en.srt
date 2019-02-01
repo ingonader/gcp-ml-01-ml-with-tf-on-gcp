@@ -1,0 +1,387 @@
+1
+00:00:00,000 --> 00:00:04,200
+So, we have talked about quite a few ways to represent features,
+
+2
+00:00:04,200 --> 00:00:05,900
+and to do feature engineering,
+
+3
+00:00:05,900 --> 00:00:08,245
+with scaling feature crosses,
+
+4
+00:00:08,245 --> 00:00:10,420
+creating, embedding et cetera.
+
+5
+00:00:10,420 --> 00:00:13,770
+But where does this go into your machine learning model?
+
+6
+00:00:13,770 --> 00:00:17,595
+Recall that your model consists of these parts,
+
+7
+00:00:17,595 --> 00:00:20,805
+an input function to read and the data,
+
+8
+00:00:20,805 --> 00:00:25,200
+feature columns that act as placeholders for the things that you read,
+
+9
+00:00:25,200 --> 00:00:29,055
+an estimator that you create passing in the feature columns,
+
+10
+00:00:29,055 --> 00:00:31,740
+and then you set up your train spec, eval spec,
+
+11
+00:00:31,740 --> 00:00:35,590
+exporter et cetera, and finally you call train and evaluate.
+
+12
+00:00:35,590 --> 00:00:39,480
+Where does the feature engineering fit into all of this?
+
+13
+00:00:39,480 --> 00:00:42,570
+There are three possible places to do feature engineering.
+
+14
+00:00:42,570 --> 00:00:45,510
+You could do it on the fly as you read in the data,
+
+15
+00:00:45,510 --> 00:00:47,350
+in the input function itself,
+
+16
+00:00:47,350 --> 00:00:49,575
+or by creating feature columns.
+
+17
+00:00:49,575 --> 00:00:54,600
+Alternately, you could do it as a separate step before you do the training.
+
+18
+00:00:54,600 --> 00:00:58,110
+Then your input function reads the preprocessed features.
+
+19
+00:00:58,110 --> 00:01:01,740
+And if you do it as a separate preprocessing step,
+
+20
+00:01:01,740 --> 00:01:04,560
+you will do the preprocessing in data flow, so,
+
+21
+00:01:04,560 --> 00:01:07,920
+that you can do at scale in a distributed way.
+
+22
+00:01:07,920 --> 00:01:10,725
+You could do it in plain Python data flow,
+
+23
+00:01:10,725 --> 00:01:16,740
+but you should do that only if data flow is also part of your serving pipeline.
+
+24
+00:01:16,740 --> 00:01:20,520
+In other words, you are doing a batch of stream prediction job.
+
+25
+00:01:20,520 --> 00:01:25,185
+And so, you can apply the same preprocessing steps on the serving inputs.
+
+26
+00:01:25,185 --> 00:01:29,940
+The third option is to do the preprocessing in data flow,
+
+27
+00:01:29,940 --> 00:01:32,775
+and create a preprocessor features,
+
+28
+00:01:32,775 --> 00:01:35,670
+but tell prediction graph that you want
+
+29
+00:01:35,670 --> 00:01:41,145
+the same transformations carried out in tensorflow during serving.
+
+30
+00:01:41,145 --> 00:01:44,625
+To do that you will use tensorflow transform.
+
+31
+00:01:44,625 --> 00:01:47,280
+As we saw in the previous section,
+
+32
+00:01:47,280 --> 00:01:52,860
+some preprocessing can be done in tensorflow by creating a new feature column.
+
+33
+00:01:52,860 --> 00:01:56,410
+Then your bucketize the column to create a new column,
+
+34
+00:01:56,410 --> 00:01:58,200
+you are doing preprocessing.
+
+35
+00:01:58,200 --> 00:02:02,460
+And that's a feature column that you will send to the estimator.
+
+36
+00:02:02,460 --> 00:02:07,050
+So here, I'm taking the square footage feature column,
+
+37
+00:02:07,050 --> 00:02:09,990
+and bending it into four intervals.
+
+38
+00:02:09,990 --> 00:02:14,760
+The first interval is houses less than 500 square feet.
+
+39
+00:02:14,760 --> 00:02:18,555
+The second is 500 to 1,000 square feet.
+
+40
+00:02:18,555 --> 00:02:22,410
+Third, are houses between 1,000 and 2,500 square feet,
+
+41
+00:02:22,410 --> 00:02:27,060
+and the last are houses of more than 2,500 square feet.
+
+42
+00:02:27,060 --> 00:02:32,910
+I append the bucketized column into the original feature column list.
+
+43
+00:02:32,910 --> 00:02:40,555
+And now both linear regressor sees the square footage in two forms.
+
+44
+00:02:40,555 --> 00:02:43,125
+As a real valued numeric column,
+
+45
+00:02:43,125 --> 00:02:46,725
+and as a bucketized categorical column.
+
+46
+00:02:46,725 --> 00:02:49,050
+Of course if I wanted to,
+
+47
+00:02:49,050 --> 00:02:52,605
+I could replace a numeric column by the bucketized one,
+
+48
+00:02:52,605 --> 00:02:57,635
+so that the linear regressor only sees the square footage in categorical form.
+
+49
+00:02:57,635 --> 00:02:59,450
+So, that's what I'm doing here,
+
+50
+00:02:59,450 --> 00:03:05,500
+replacing feet calls square brackets zero with the bucketized version.
+
+51
+00:03:05,520 --> 00:03:09,745
+Here is another example of doing feature crosses,
+
+52
+00:03:09,745 --> 00:03:13,360
+but this time also within embedding.
+
+53
+00:03:13,360 --> 00:03:17,560
+We could take the latitude and longitude of the houses,
+
+54
+00:03:17,560 --> 00:03:21,220
+and define the intervals into which we want to discretize them.
+
+55
+00:03:21,220 --> 00:03:26,860
+Here, I'm using N buckets equally spaced intervals.
+
+56
+00:03:26,860 --> 00:03:31,855
+One method I've used to figure out the boundaries is to use approx quantize,
+
+57
+00:03:31,855 --> 00:03:33,550
+a big query sequel function.
+
+58
+00:03:33,550 --> 00:03:37,960
+This allows each of the bins to contain the same number of training examples.
+
+59
+00:03:37,960 --> 00:03:40,850
+Regardless of how you get the boundaries though,
+
+60
+00:03:40,850 --> 00:03:42,794
+once we have the boundaries,
+
+61
+00:03:42,794 --> 00:03:45,665
+lat buckets and lon buckets in my case,
+
+62
+00:03:45,665 --> 00:03:51,470
+we could build the house latitudes and longitudes into b_lat and b_lon.
+
+63
+00:03:51,470 --> 00:03:54,010
+And then as we discussed,
+
+64
+00:03:54,010 --> 00:03:58,675
+we could feature cross the two categorical columns b_lat and b_lon.
+
+65
+00:03:58,675 --> 00:04:04,990
+Here, I'm choosing to feature cross them into nbucket squared hash buckets.
+
+66
+00:04:04,990 --> 00:04:11,005
+On average then, each hash bucket will contain only one feature cross.
+
+67
+00:04:11,005 --> 00:04:13,960
+This is in-between my rule of thumb of
+
+68
+00:04:13,960 --> 00:04:18,460
+1/2 square root and twice and that I talked about in the previous lesson.
+
+69
+00:04:18,460 --> 00:04:25,475
+And finally, I embedded the data into nbuckets by four dimensions.
+
+70
+00:04:25,475 --> 00:04:28,119
+The advantage of doing this,
+
+71
+00:04:28,119 --> 00:04:30,910
+of putting the preprocessing directly in
+
+72
+00:04:30,910 --> 00:04:35,350
+tensorflow is that these operations are part of your model graph,
+
+73
+00:04:35,350 --> 00:04:43,105
+and so they are carried out in an identical fashion in both training and in surfing.
+
+74
+00:04:43,105 --> 00:04:46,790
+Now, what does this mean in real life?
+
+75
+00:04:46,790 --> 00:04:51,060
+First, we discretize the latitudes.
+
+76
+00:04:51,060 --> 00:04:54,280
+This just brings the real value numbers,
+
+77
+00:04:54,280 --> 00:05:00,515
+so that all the houses in approximately the same latitude get the same value.
+
+78
+00:05:00,515 --> 00:05:03,450
+It might help a bit with overfitting,
+
+79
+00:05:03,450 --> 00:05:07,895
+but just discretizing the latitude doesn't accomplish much.
+
+80
+00:05:07,895 --> 00:05:11,325
+Then we discretize the longitudes.
+
+81
+00:05:11,325 --> 00:05:18,425
+This bends the longitude values it might help us before a bit with overfitting,
+
+82
+00:05:18,425 --> 00:05:22,280
+but discretizing the longitudes doesn't accomplish much either.
+
+83
+00:05:22,280 --> 00:05:28,030
+But what happens when the feature across the two discretized values.
+
+84
+00:05:28,030 --> 00:05:34,075
+We have essentially taken the map and broken it into grid cells
+
+85
+00:05:34,075 --> 00:05:41,015
+such that any house belongs to only one of those grid cells.
+
+86
+00:05:41,015 --> 00:05:44,830
+So, during training this will allow us to
+
+87
+00:05:44,830 --> 00:05:50,455
+memorize the average price of houses in each grid cell.
+
+88
+00:05:50,455 --> 00:05:57,850
+Obviously, the finer the resolution of the grid the more specific the prediction will be.
+
+89
+00:05:57,850 --> 00:06:01,735
+But it will also be less generalizable,
+
+90
+00:06:01,735 --> 00:06:04,150
+because there might not be enough houses sold
+
+91
+00:06:04,150 --> 00:06:07,210
+in a grid cell for us to form a good estimate.
+
+92
+00:06:07,210 --> 00:06:11,050
+During prediction given a house,
+
+93
+00:06:11,050 --> 00:06:13,690
+we know which grid cell it belongs to, and so,
+
+94
+00:06:13,690 --> 00:06:17,560
+we can pull out the memorized value for that grid cell.
+
+95
+00:06:17,560 --> 00:06:24,505
+What embedding does is it allows the grid cells that are similar to each other,
+
+96
+00:06:24,505 --> 00:06:30,640
+maybe all the grid cells that are along the ocean front take all this grid cells,
+
+97
+00:06:30,640 --> 00:06:33,850
+and make them have similar values.

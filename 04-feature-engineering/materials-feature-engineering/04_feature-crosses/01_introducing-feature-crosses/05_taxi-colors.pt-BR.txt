@@ -1,0 +1,50 @@
+Imagine que você está gravando um modelo
+de aprendizado de máquina que olha para um carro e diz se
+é ou não um táxi. Sabemos que carros brancos em Roma e
+amarelos em Nova York tendem a ser táxis. Mas queremos que nosso modelo de
+aprendizado de máquina aprenda isso de um conjunto de dados que
+consiste em registros de carro. Suponhamos que os dados de entrada
+sejam assim: vermelho, Roma, branco, Roma etc, os rótulos são
+independentes de ser um táxi ou não. Basicamente, a cor do carro e a cidade são
+os dois recursos de entrada, e você precisa usá-los no modelo linear para prever se o
+carro é ou não um táxi. Como você faria? Você pega a primeira entrada, a cor do carro, e aplica uma
+codificação one-hot. Você pega a segunda entrada, o nome da cidade, e aplica uma
+codificação one-hot. Pegue isso e envie diretamente
+para o modelo linear. Agora, digamos que você dê um peso de 0,8
+para carros amarelos, porque 80% dos carros amarelos no conjunto
+de dados de treinamento são táxis. Portanto, w3 agora é 0,8. Claro, você não vai dar um peso de 0,8. Esse peso será aprendido pelo
+gradiente descendente, mas é isso que ele fará. Infelizmente, o peso 0,8 é verdadeiro
+para carros amarelos em todas as cidades, não apenas em Nova York. Como você consertaria isso? Você daria um alto peso a Nova York? Isso não funciona. Agora, todos os carros de
+Nova York têm esse peso alto. Você vê o problema? Adicione um cruzamento de
+atributo e o que acontece? Temos um node de entrada correspondente
+a carros vermelhos em Nova York e outro a carros amarelos em Nova York, e um terceiro a carros
+brancos em Nova York, e um quarto a carros
+verdes em Nova York e, da mesma forma, para carros em Roma. Agora, o modelo pode aprender rapidamente
+que carros amarelos em Nova York e carros brancos em Roma tendem a ser
+táxis, e dão aos dois nodes um peso alto. Todo o resto, peso zero. Problema resolvido. É por isso que os cruzamentos de
+atributos são tão poderosos. Os cruzamentos de atributos trazem
+muita energia para modelos lineares. Usar cruzamentos de atributos
+e dados massivos é uma estratégia muito eficiente para
+aprender espaços altamente complexos. As redes neurais fornecem outra maneira
+de aprender espaços altamente complexos. Mas os cruzamentos de atributos permitem
+que modelos lineares permaneçam no jogo. Sem os cruzamentos, a expressividade dos
+modelos lineares seria bastante limitada. Com os cruzamentos de atributos, depois de
+ter um conjunto de dados grande, um modelo linear pode aprender todos os
+detalhes do espaço de entrada. Os cruzamentos de atributos permitem que
+um modelo linear memorize grandes dados. A ideia é: você pode atribuir um peso para
+cada cruzamento de atributos, e, desta maneira, o modelo aprende
+sobre combinações de atributos. Portanto, mesmo que seja um modelo linear, o relacionamento subjacente real
+entre entradas e saídas não é linear. Por que estamos tão preocupados em
+fazer modelos lineares funcionarem bem? Pense no curso anterior. Conversamos sobre problemas
+convexos e problemas não convexos. Redes neurais com muitas
+camadas não são convexas. Mas otimizar modelos lineares
+é um problema convexo, e problemas convexos são muito, muito mais fáceis do que
+problemas não convexos. Assim, por muito tempo, modelos lineares esparsos eram o único
+algoritmo que tínhamos capaz de escalonar para bilhões de exemplos de
+treino e de recursos de entrada. Os predecessores do TensorFlow no
+Google, SETI, SmartAss, Siebel, eram todos aprendizes
+de grande escala. Isso mudou nos últimos anos e as redes neurais agora também podem
+lidar com dados em grande escala, geralmente com a ajuda de GPUs e TPUs, mas modelos lineares esparsos ainda são
+uma opção rápida e de baixo custo. Usar modelos lineares esparsos como
+um pré-processador para atributos geralmente significa que a rede
+neural converge muito mais rápido.

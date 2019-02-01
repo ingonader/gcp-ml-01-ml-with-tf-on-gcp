@@ -1,0 +1,249 @@
+1
+00:00:00,000 --> 00:00:02,400
+Wie bereits gesagt: Wenn Sie Ihre Daten
+
+2
+00:00:02,400 --> 00:00:05,140
+nicht analysieren können,
+ist Machine Learning unmöglich.
+
+3
+00:00:05,140 --> 00:00:08,130
+In diesem Thema
+befassen wir uns ausschließlich damit,
+
+4
+00:00:08,130 --> 00:00:11,030
+Funktionen aus Rohdaten
+zu erstellen und zu ändern.
+
+5
+00:00:11,030 --> 00:00:13,125
+Willkommen bei der Funktionsentwicklung.
+
+6
+00:00:13,125 --> 00:00:15,730
+Sie müssen drei Schritte ausführen,
+
+7
+00:00:15,730 --> 00:00:18,190
+um ein effektives
+Maschinenlernmodell zu erstellen.
+
+8
+00:00:18,190 --> 00:00:21,220
+Zuerst müssen Sie ein
+Scale-out auf große Datasets durchführen,
+
+9
+00:00:21,220 --> 00:00:23,780
+wie beim Thema Cloud ML besprochen.
+
+10
+00:00:23,780 --> 00:00:26,735
+Als Nächstes kommt
+die eigentliche Funktionsentwicklung.
+
+11
+00:00:26,735 --> 00:00:29,130
+In diesem Modul befassen wir uns damit,
+
+12
+00:00:29,130 --> 00:00:32,040
+Funktionen zu erstellen
+und unsere Eingaben zu transformieren,
+
+13
+00:00:32,040 --> 00:00:34,805
+damit wir sie in einem
+Maschinenlernmodell anwenden können.
+
+14
+00:00:34,805 --> 00:00:37,630
+Außerdem sprechen
+wir über synthetische Funktionen,
+
+15
+00:00:37,630 --> 00:00:40,520
+die nicht ursprünglich
+in Ihrem Dataset vorhanden sind,
+
+16
+00:00:40,520 --> 00:00:43,255
+aber die Leistung
+Ihres Modells erheblich verbessern.
+
+17
+00:00:43,255 --> 00:00:45,245
+Wir befassen uns mit der Erstellung
+
+18
+00:00:45,245 --> 00:00:48,920
+und Transformation von Funktionen und
+der Erstellung synthetischer Funktionen,
+
+19
+00:00:48,920 --> 00:00:51,470
+was zusammen als
+Vorverarbeitung bezeichnet wird.
+
+20
+00:00:51,470 --> 00:00:54,595
+Unsere Vorverarbeitung
+findet im Kontext von Cloud ML statt,
+
+21
+00:00:54,595 --> 00:00:56,885
+das große Datenmengen ermöglicht.
+
+22
+00:00:56,885 --> 00:01:00,720
+Nach der Modellerstellung gehen wir auf
+die Hyper-Parameter-Feinabstimmung ein.
+
+23
+00:01:00,720 --> 00:01:04,080
+Damit lassen sich die Funktionen
+im Kontext des Datasets optimieren,
+
+24
+00:01:04,080 --> 00:01:06,530
+mit dem sie letztendlich trainiert werden.
+
+25
+00:01:06,530 --> 00:01:10,230
+Als Erstes wandeln wir Rohdaten
+in nützliche Funktionsvektoren um,
+
+26
+00:01:10,230 --> 00:01:13,255
+die in ML-Modellen genutzt werden können.
+
+27
+00:01:13,255 --> 00:01:15,445
+Die Ausgangssituation ist wie folgt.
+
+28
+00:01:15,445 --> 00:01:17,750
+Sie möchten ein Modell entwickeln,
+
+29
+00:01:17,750 --> 00:01:21,260
+um den Preis eines Hauses
+anhand bestimmter Eingaben vorherzusagen.
+
+30
+00:01:21,260 --> 00:01:25,315
+Was für Datenpunkte
+würden Sie dafür überhaupt benötigen?
+
+31
+00:01:25,315 --> 00:01:28,310
+Vielleicht die Anzahl der Quadratmeter
+
+32
+00:01:28,310 --> 00:01:30,555
+oder die Größe des Grundstücks.
+
+33
+00:01:30,555 --> 00:01:33,225
+Vielleicht die Anzahl der Zimmer?
+
+34
+00:01:33,225 --> 00:01:36,915
+Oder der letzte Preis,
+zu dem es verkauft wurde?
+
+35
+00:01:36,915 --> 00:01:39,290
+Sie können sich
+wahrscheinlich denken,
+
+36
+00:01:39,290 --> 00:01:42,690
+dass die Lage ein wichtiger
+Faktor für den Preis eines Hauses ist.
+
+37
+00:01:42,690 --> 00:01:46,495
+Als Bewohner der San Francisco Bay Area
+bin ich mir dessen schmerzlich bewusst.
+
+38
+00:01:46,495 --> 00:01:49,465
+Wäre es nicht toll,
+wenn Ihre Rohdaten für diese Berechnung
+
+39
+00:01:49,465 --> 00:01:52,680
+schon auf das Nötigste reduziert wären?
+
+40
+00:01:52,680 --> 00:01:56,985
+In einem Format, dass Sie einfach
+direkt in ein ML-Modell übertragen können?
+
+41
+00:01:56,985 --> 00:01:59,980
+Das wird leider niemals passieren.
+
+42
+00:01:59,980 --> 00:02:03,600
+Die Funktionsentwicklung, dieser
+Prozess, mit dem wir uns hier befassen,
+
+43
+00:02:03,600 --> 00:02:07,889
+kann 50 bis 75 % der Bearbeitungszeit
+eines ML-Projekts in Anspruch nehmen.
+
+44
+00:02:07,889 --> 00:02:10,395
+Wir haben noch nicht
+einmal mit dem ML-Teil begonnen.
+
+45
+00:02:10,395 --> 00:02:12,680
+Bisher geht es nur
+um die Optimierung der Daten.
+
+46
+00:02:12,680 --> 00:02:14,385
+Das ist von hoher Bedeutung.
+
+47
+00:02:14,385 --> 00:02:16,610
+Worauf wir eigentlich hinauswollen,
+
+48
+00:02:16,610 --> 00:02:18,570
+zeigt dieses kurze Beispiel.
+
+49
+00:02:18,570 --> 00:02:21,250
+Links befinden sich
+Rohdaten für Häuser in einem Vektor.
+
+50
+00:02:21,250 --> 00:02:24,740
+Diese müssen mindestens einem Feld
+rechts in einem Proto zugeordnet werden.
+
+51
+00:02:24,740 --> 00:02:27,620
+Dadurch können wir sie in
+unserem ML-Modell zum Trainieren nutzen.
+
+52
+00:02:27,620 --> 00:02:30,750
+Das mag nach einer
+einfachen Aufgabe aussehen.
+
+53
+00:02:30,750 --> 00:02:34,080
+Doch woher wissen wir,
+welche Funktionen erforderlich sind,
+
+54
+00:02:34,080 --> 00:02:37,900
+oder wie eine Funktion aussehen sollte?
