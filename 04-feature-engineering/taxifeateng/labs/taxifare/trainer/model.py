@@ -59,7 +59,10 @@ def build_estimator(model_dir, nbuckets, hidden_units):
      The model is a wide-and-deep model, i.e. [wide_cols] & [deep_cols].
     """
     
+    ## [[here]] -- change "euclidean" to "pcount" (12:49)
+
     ## retrieve input features into separate variables:
+    #(dayofweek, hourofday, plat, plon, dlat, dlon, pcount, latdiff, londiff, euclidean) = INPUT_COLUMNS
     (dayofweek, hourofday, plat, plon, dlat, dlon, pcount, latdiff, londiff, euclidean) = INPUT_COLUMNS
     
     ## transform features: 
@@ -112,6 +115,8 @@ def build_estimator(model_dir, nbuckets, hidden_units):
 
     return estimator # TODO: Add estimator definition here
 
+
+
 # Create feature engineering function that will be used in the input and serving input functions
 def add_engineered(features):
     # TODO: Add any engineered features to the dict
@@ -131,35 +136,63 @@ def add_engineered(features):
     
     return features   
 
+
+
+# # Create serving input function to be able to serve predictions
+# def serving_input_fn():
+#     # ## code in prepared file for lab:
+#     # feature_placeholders = {  
+#     #     # TODO: What features will user provide? What will their types be?
+#     #     ## numeric features:
+#     #     column.name : tf.placeholder(tf.float32, [None]) for column in INPUT_COLUMNS[2:7]
+#     # }
+#     ## code trials:
+#     feature_placeholders = {}
+#     ## non-numeric features:
+#     feature_placeholders['dayofweek'] = tf.placeholder(tf.string, [None])
+#     feature_placeholders['hourofday'] = tf.placeholder(tf.int32, [None])
+#     ## numeric features:
+#     feature_placeholders['pickuplat'] = tf.placeholder(tf.float32, [None])
+#     feature_placeholders['pickuplon'] = tf.placeholder(tf.float32, [None])
+#     feature_placeholders['dropofflat'] = tf.placeholder(tf.float32, [None])
+#     feature_placeholders['dropofflon'] = tf.placeholder(tf.float32, [None])
+#     feature_placeholders['passengers'] = tf.placeholder(tf.float32, [None])
+# 
+#     # TODO: Add any extra placeholders for inputs you'll generate
+#     features = add_engineered(feature_placeholders.copy())
+# 
+#     # ## [[?]] this part is not part of the model solution... 
+#     # what is going on? --> hence, commented out.
+#     # features = {
+#     #     key: tf.expand_dims(tensor, -1)
+#     #     for key, tensor in feature_placeholders.items()
+#     # }
+#     return tf.estimator.export.ServingInputReceiver(
+#       features, # TODO: Wrap this with a call to add_engineered
+#       feature_placeholders
+#     )
+
+## new implementation -- [[here]]:
+## similar to course video:
+
 # Create serving input function to be able to serve predictions
 def serving_input_fn():
-    # feature_placeholders = {
-    #     # TODO: What features will user provide? What will their types be?
-    #     ## numeric features:
-    #     column.name : tf.placeholder(tf.float32, [None]) for column in INPUT_COLUMNS[2:7]
-    # }
-    feature_placeholders = {}
-    ## non-numeric features:
+    feature_placeholders = {  
+        ## numeric features:
+        ## (ignoring the first two columns):
+        column.name : tf.placeholder(tf.float32, [None]) for column in INPUT_COLUMNS[2:]
+    }
     feature_placeholders['dayofweek'] = tf.placeholder(tf.string, [None])
     feature_placeholders['hourofday'] = tf.placeholder(tf.int32, [None])
-    ## numeric features:
-    feature_placeholders['pickuplat'] = tf.placeholder(tf.float32, [None])
-    feature_placeholders['pickuplon'] = tf.placeholder(tf.float32, [None])
-    feature_placeholders['dropofflat'] = tf.placeholder(tf.float32, [None])
-    feature_placeholders['dropofflon'] = tf.placeholder(tf.float32, [None])
-    feature_placeholders['passengers'] = tf.placeholder(tf.float32, [None])
+    ## no add engineered here, but below
+    ## needs to be done _after_ the features are created!!!
 
-    # TODO: Add any extra placeholders for inputs you'll generate
-    features = add_engineered(feature_placeholders.copy())
-
-    # ## [[?]] this part is not part of the model solution... 
-    # what is going on? --> hence, commented out.
-    # features = {
-    #     key: tf.expand_dims(tensor, -1)
-    #     for key, tensor in feature_placeholders.items()
-    # }
+    features = {
+        key: tf.expand_dims(tensor, -1)
+        for key, tensor in feature_placeholders.items()
+    }
     return tf.estimator.export.ServingInputReceiver(
-      features, # TODO: Wrap this with a call to add_engineered
+      add_engineered(features), 
       feature_placeholders
     )
 
@@ -189,9 +222,30 @@ def read_dataset(filename, mode, batch_size = 512):
         return batch_features, batch_labels
     return _input_fn
 
-# Create estimator train and evaluate function
+
+
+## Create estimator train and evaluate function
+#def train_and_evaluate(args):
+#    estimator = build_estimator(args['output_dir'], args['nbuckets'], args['hidden_units'])
+#    train_spec = tf.estimator.TrainSpec(
+#        input_fn = read_dataset(
+#            filename = args['train_data_paths'],
+#            mode = tf.estimator.ModeKeys.TRAIN,
+#            batch_size = args['train_batch_size']),
+#        max_steps = args['train_steps'])
+#    exporter = tf.estimator.LatestExporter('exporter', serving_input_fn)
+#    eval_spec = tf.estimator.EvalSpec(
+#        input_fn = read_dataset(
+#            filename = args['eval_data_paths'],
+#            mode = tf.estimator.ModeKeys.EVAL,
+#            batch_size = args['eval_batch_size']),
+#        steps = None,
+#        exporters = exporter)
+#    tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
+
+## new implementation copied from coursera course video (18:45):
 def train_and_evaluate(args):
-    estimator = build_estimator(args['output_dir'], args['nbuckets'], args['hidden_units'])
+    estimator = build_estimator(args['output_dir'], args['nbuckets'], args['hidden_units'].split(' '))
     train_spec = tf.estimator.TrainSpec(
         input_fn = read_dataset(
             filename = args['train_data_paths'],
@@ -207,3 +261,13 @@ def train_and_evaluate(args):
         steps = None,
         exporters = exporter)
     tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
+
+def get_eval_metrics():
+    return {
+        'rmse': tflearn.MetricSpec(metric_fn = metrics.streaming_root_mean_squared_error),
+        'training/hptuning/metric': tflearn.MetricSpec(metric_fn = metrics.streaming_root_mean_squared_error),
+    }
+
+
+
+
