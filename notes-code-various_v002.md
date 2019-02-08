@@ -95,6 +95,11 @@ BUCKET = project_name
 BUCKET = BUCKET.replace("qwiklabs-gcp-", "inna-bckt-")
 REGION = 'europe-west1'  ## note: Cloud ML Engine not availabe in europe-west3!
 
+# set environment variables:
+os.environ['BUCKET'] = BUCKET
+os.environ['PROJECT'] = PROJECT
+os.environ['REGION'] = REGION
+
 print(PROJECT)
 print(BUCKET)
 print("gsutil mb -l {0} gs://{1}".format(REGION, BUCKET))
@@ -114,6 +119,11 @@ gcloud config set compute/region $REGION
 ## inspect data in cloud storage bucket:
 %bash
 gsutil cat -r -512 gs://${BUCKET}/babyweight/preproc/eval.csv-00000-of-*
+```
+
+```bash
+## ensure we predict locally with our current Python environment
+gcloud config set ml_engine/local_python `which python`
 ```
 
 
