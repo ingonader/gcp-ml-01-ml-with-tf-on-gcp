@@ -1,0 +1,30 @@
+Certo, queremos mostrar como funciona
+um Estimator do Keras. Então agora temos um método
+chamado make_keras_estimator, com um output_dir. E o que ele faz é importar o Keras
+do TensorFlow. Este é o mesmo modelo
+de série temporal de antes, mas, desta vez, vou tratá-lo como
+uma rede neural de entrada simples. Então, estou pegando isso
+e criando um modelo sequencial do Keras, dizendo que quero criar uma rede densa
+com 32 nós de entrada, fazer uma ativação ReLu, e então uma saída, que é um Dense(1), e minha perda será mean_squared_error, meu otimizador será adam, e minha matriz de avaliação
+será mean_absolute_error e mean absolute (percentage) error. Então, posso pegar
+keras.estimator.model_to_estimator, passando para este
+modelo do Keras compilado. Então, lembre-se:
+crie o modelo Keras, compile-o e passe-o para model_to_estimator. Agora este código já faz parte deste pacote simplernn,
+então deixe-me mostrar-lhe isso. Aqui estamos nós no simplernn. E, no simplernn, há um trainer,
+um model.py. No model.py, havia a função
+simplernn original que usava os atributos, rótulos e modo, e
+fazia tudo do Estimator personalizado. Há também um make_keras_estimator. Aqui está o make_keras_estimator. Então make_keras_estimator tem o código
+que acabei de mostrar. Ele cria um modelo sequencial,
+uma camada densa e faz uma ativação disso com atualização,
+cria outra camada densa, e faz as métricas de perda etc. Quando fazemos train_and_evaluate,
+eu basicamente tenho uma opção use_keras. E se alguém diz use_keras,
+eu os chamo de make_keras_estimator. Caso contrário, chamo
+o Estimator da classe base, passando na função simple_rnn. É basicamente o mesmo código
+com o parâmetro use_keras. E esse parâmetro é passado da linha
+de comando usando task.py. Portanto, em task.py, há um novo argumento
+chamado --keras. Então, dependendo se isso
+é definido ou não, basicamente passamos argumentos
+de Keras para model.train_and_evaluate. Então isso será verdadeiro ou falso. Agora, se voltarmos
+para o nosso bloco de notas, poderemos ver
+qual será o efeito do --keras. Por causa da transferência de --keras, isso vai executar
+o código simplernn. Vai executar em train.csv e value.csv, mas usará o Keras. E isso também funcionará.

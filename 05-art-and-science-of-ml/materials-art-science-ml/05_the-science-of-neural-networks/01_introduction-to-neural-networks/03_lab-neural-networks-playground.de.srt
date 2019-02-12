@@ -1,0 +1,1013 @@
+1
+00:00:00,000 --> 00:00:04,115
+Im praktischen Teil experimentieren wir mit
+neuronalen Netzen in TensorFlow Playground.
+
+2
+00:00:04,115 --> 00:00:06,945
+In diesem Lab mit dem
+Neuronale-Netze-Spielplatz
+
+3
+00:00:06,945 --> 00:00:08,900
+versuchen wir mit TensorFlow Playground,
+
+4
+00:00:08,900 --> 00:00:11,240
+neuronale Netzwerke
+zu erstellen und Daten zu trainieren.
+
+5
+00:00:11,240 --> 00:00:13,540
+Sie sollen die Probleme
+mit zwei Verfahren lösen.
+
+6
+00:00:13,540 --> 00:00:17,310
+Zuerst trainieren Sie die Modelle
+manuell mit Feature Engineering.
+
+7
+00:00:17,310 --> 00:00:19,560
+Sie versuchen dabei
+anhand Ihres eigenen Wissens
+
+8
+00:00:19,560 --> 00:00:23,720
+abzuschätzen, wie Features am besten
+zu kombinieren und transformieren sind.
+
+9
+00:00:23,720 --> 00:00:26,010
+Dann geben Sie die Verantwortung
+
+10
+00:00:26,010 --> 00:00:27,450
+an das neuronale Netzwerk ab
+
+11
+00:00:27,450 --> 00:00:30,190
+und ergänzen es mit Schichten
+und Neuronen. Mit einfachen
+
+12
+00:00:30,190 --> 00:00:34,065
+Eingabefeatures prüfen wir, ob es
+Feature Engineering selbst ausführen kann.
+
+13
+00:00:34,065 --> 00:00:35,925
+Willkommen zurück
+bei TensorFlow Playground.
+
+14
+00:00:35,925 --> 00:00:38,310
+In diesem Lab prüfen wir,
+ob Feature Engineering
+
+15
+00:00:38,310 --> 00:00:41,565
+die Leistung des
+neuronalen Netzes übertreffen kann.
+
+16
+00:00:41,565 --> 00:00:44,820
+Ich denke, das wird nicht
+möglich sein. Wir werden sehen.
+
+17
+00:00:44,820 --> 00:00:48,390
+Ok. In diesem Diagramm hier versuchen wir,
+
+18
+00:00:48,390 --> 00:00:54,750
+die blauen und orangefarbenen Punkte zu
+klassifizieren. Ein Klassifizierungsproblem.
+
+19
+00:00:54,750 --> 00:00:57,840
+Die Punkte sind in zwei
+konzentrischen Kreisen angeordnet.
+
+20
+00:00:57,840 --> 00:01:00,000
+In diesem Fall gibt es
+jedoch sehr viel Rauschen.
+
+21
+00:01:00,000 --> 00:01:03,090
+Daher findet
+eine große Vermischung statt.
+
+22
+00:01:03,090 --> 00:01:09,340
+Ich möchte nun sehen, wie
+sich X1 und X2 beim Training verhalten.
+
+23
+00:01:09,740 --> 00:01:14,400
+Wie Sie sehen,
+lernt das Modell nicht viel.
+
+24
+00:01:14,400 --> 00:01:17,400
+Alles ist irgendwie ineinander
+verlaufen und ziemlich weiß.
+
+25
+00:01:17,400 --> 00:01:19,640
+Daher gibt es wenige
+Entweder/Oder-Ergebnisse,
+
+26
+00:01:19,640 --> 00:01:22,060
+nach der Skala hier unten,
+-1 oder 1.
+
+27
+00:01:22,060 --> 00:01:25,220
+Der Lerneffekt ist also gering.
+Das geht bestimmt besser.
+
+28
+00:01:25,220 --> 00:01:28,095
+Mit Feature Engineering
+weiß ich, dass das ein Kreis ist.
+
+29
+00:01:28,095 --> 00:01:31,005
+Ich setze also X1 und X2 ins Quadrat
+
+30
+00:01:31,005 --> 00:01:34,530
+und versuche es jetzt. Was passiert?
+
+31
+00:01:34,530 --> 00:01:37,290
+Wow! Schauen Sie. Das wird eine Ellipse.
+
+32
+00:01:37,290 --> 00:01:42,295
+Das heißt, das Modell
+hat diese Funktion fast verstanden.
+
+33
+00:01:42,295 --> 00:01:44,230
+Wir wissen, dass
+das ein Kreis sein soll,
+
+34
+00:01:44,230 --> 00:01:45,550
+es gibt aber viel Rauschen
+und Ähnliches.
+
+35
+00:01:45,550 --> 00:01:47,465
+Deshalb ist er etwas verzogen.
+
+36
+00:01:47,465 --> 00:01:50,820
+Ok. Vielleicht kann ich
+den Verlust wenigstens unter
+
+37
+00:01:50,820 --> 00:01:53,900
+0,275 bringen, wenn ich X1 und X2,
+
+38
+00:01:53,900 --> 00:01:57,210
+die linearen Formen, deaktiviere.
+
+39
+00:01:57,370 --> 00:02:00,060
+Aha, 2,85.
+
+40
+00:02:00,060 --> 00:02:02,715
+Gut, das sieht etwas runder aus.
+
+41
+00:02:02,715 --> 00:02:05,790
+Der Testverlust ist etwas besser.
+
+42
+00:02:05,790 --> 00:02:09,389
+Wir versuchen nun
+dasselbe mit neuronalen Netzen.
+
+43
+00:02:09,389 --> 00:02:12,525
+Wir gehen zurück zur
+Methode mit X1 und X2.
+
+44
+00:02:12,525 --> 00:02:15,855
+Das Ergebnis vorhin
+war ja wirklich schlecht.
+
+45
+00:02:15,855 --> 00:02:18,950
+Wir fügen nun eine Zwischenschicht
+und zwei zusätzliche Neuronen hinzu.
+
+46
+00:02:21,530 --> 00:02:27,975
+Wie Sie sehen, scheint es schwierig
+zu sein, diese Funktion zu verstehen.
+
+47
+00:02:27,975 --> 00:02:31,950
+Das Problem ist, dass die Kapazität
+in diesen beiden Neuronen nicht ausreicht,
+
+48
+00:02:31,950 --> 00:02:35,715
+die hochdimensionale Darstellung
+reicht nicht, um diese Verteilung zu lernen.
+
+49
+00:02:35,715 --> 00:02:37,395
+Wir unterbrechen erstmal hier.
+
+50
+00:02:37,395 --> 00:02:39,580
+Lassen Sie uns ein
+weiteres Neuron hinzufügen.
+
+51
+00:02:39,580 --> 00:02:42,510
+Vielleicht reicht diese Kapazität
+aus, um die Funktion zu trainieren.
+
+52
+00:02:42,510 --> 00:02:43,250
+Gut.
+
+53
+00:02:43,250 --> 00:02:49,635
+Es funktioniert noch nicht richtig.
+
+54
+00:02:49,635 --> 00:02:53,985
+Schauen Sie hier.
+
+55
+00:02:53,985 --> 00:02:55,540
+Das hat lange gedauert,
+
+56
+00:02:55,540 --> 00:02:58,810
+aber die Form dieser
+Funktion wird langsam erkannt.
+
+57
+00:02:58,810 --> 00:03:02,540
+Hier das erinnert an eine rechteckige Form.
+
+58
+00:03:02,540 --> 00:03:06,440
+Wir sind hier an einem
+Wendepunkt angekommen, was die
+
+59
+00:03:06,440 --> 00:03:10,355
+Menge an Neuronen anbelangt,
+die diese Verteilung hier darstellen können.
+
+60
+00:03:10,355 --> 00:03:13,540
+Sehen wir also, ob es mit einem
+zusätzlichen Neuron einfacher ist.
+
+61
+00:03:13,540 --> 00:03:17,070
+Gut. Sehen Sie sich das an.
+
+62
+00:03:17,070 --> 00:03:19,020
+Das ging viel schneller.
+
+63
+00:03:19,020 --> 00:03:21,000
+Wir haben hier nur vier Neuronen.
+
+64
+00:03:21,000 --> 00:03:25,510
+Was passiert, wenn wir sehr
+viele zusätzliche Neuronen hinzufügen?
+
+65
+00:03:25,700 --> 00:03:29,490
+Okay, mal sehen.
+Fügen wir weitere vier hinzu.
+
+66
+00:03:29,490 --> 00:03:32,260
+Was passiert?
+
+67
+00:03:32,260 --> 00:03:36,670
+Das ist bereits trainiert.
+
+68
+00:03:36,960 --> 00:03:38,460
+Es ist jetzt viel langsamer.
+
+69
+00:03:38,460 --> 00:03:41,765
+Der Aufwand ist viel größer, weil alle
+Zwischenschichten durchlaufen werden.
+
+70
+00:03:41,765 --> 00:03:44,005
+Früher oder später wird es klappen.
+
+71
+00:03:44,005 --> 00:03:47,290
+Ich befürchte, dass es zu
+einer Überanpassung kommt.
+
+72
+00:03:47,290 --> 00:03:50,675
+Sie sehen, die Form
+ist nicht mehr einfach rund,
+
+73
+00:03:50,675 --> 00:03:52,480
+sondern eine Art verrücktes Polygon.
+
+74
+00:03:52,480 --> 00:03:56,520
+Das heißt, die Daten werden überangepasst
+und der Testverlust ist nicht besonders gut.
+
+75
+00:03:56,520 --> 00:03:58,055
+Er ist viel höher als vorher.
+
+76
+00:03:58,055 --> 00:04:01,600
+Sehen wir uns
+einige andere Verteilungen an.
+
+77
+00:04:02,030 --> 00:04:05,910
+Hier haben wir das klassische
+"exklusive ODER".
+
+78
+00:04:05,910 --> 00:04:09,260
+Wenn X und Y jeweils
+beide positiv oder negativ sind,
+
+79
+00:04:09,260 --> 00:04:14,240
+sehen wir die blaue Klasse,
+bei entweder/oder die orangefarbene Klasse.
+
+80
+00:04:14,240 --> 00:04:17,540
+Ist es möglich,
+das nur mit X1, X2 zu lernen?
+
+81
+00:04:20,240 --> 00:04:23,069
+Sie sehen, wie schon vorher,
+
+82
+00:04:23,069 --> 00:04:27,515
+sind X1 und X2 nicht leistungsstark
+genug, um diese Funktion zu beschreiben.
+
+83
+00:04:27,515 --> 00:04:29,480
+Sie sind praktisch durchweg null.
+
+84
+00:04:29,480 --> 00:04:33,120
+Ist es möglich, die Funktion
+mit Feature Engineering zu beschreiben?
+
+85
+00:04:33,120 --> 00:04:35,580
+Mit Feature Engineering führe ich
+
+86
+00:04:35,580 --> 00:04:38,475
+X1, X2 ein, denn ich weiß,
+wie die Funktion aussieht.
+
+87
+00:04:38,475 --> 00:04:42,150
+Ich starte das Training. Schauen Sie.
+
+88
+00:04:42,150 --> 00:04:46,205
+Sehr gut. Der Testverlust liegt bei 0,17.
+Das ist großartig.
+
+89
+00:04:46,205 --> 00:04:49,010
+Okay. Das war sehr einfach.
+
+90
+00:04:49,010 --> 00:04:52,220
+Und hier ist die Gewichtung: 0,19. Das ist
+großartig.
+
+91
+00:04:52,220 --> 00:04:54,800
+Ja, hier gibt es Rauschen,
+das heißt, einige Ergebnisse sind falsch,
+
+92
+00:04:54,800 --> 00:04:57,635
+überwiegend ist jedoch alles richtig.
+
+93
+00:04:57,635 --> 00:05:00,240
+Vergleichen wir nun,
+ob das mit maschinellem Lernen
+
+94
+00:05:00,240 --> 00:05:03,255
+und neuronalen Netzwerken besser geht.
+
+95
+00:05:03,255 --> 00:05:06,330
+Wir fügen X1 und X2 wieder zusammen
+
+96
+00:05:06,330 --> 00:05:08,950
+und fügen eine Zwischenschicht ein.
+
+97
+00:05:08,950 --> 00:05:10,850
+Auch hier müssen
+wir das Ergebnis abwarten.
+
+98
+00:05:10,850 --> 00:05:13,440
+Ich möchte die Menge
+so klein wie möglich halten.
+
+99
+00:05:13,440 --> 00:05:17,670
+Ich versuche, die Zahl auf zwei
+Neuronen zu beschränken und zu trainieren.
+
+100
+00:05:17,670 --> 00:05:19,920
+Wie Sie sehen, kann die Funktion
+
+101
+00:05:19,920 --> 00:05:21,720
+jedoch nicht nachempfunden werden.
+
+102
+00:05:21,720 --> 00:05:24,450
+Die Komplexität und die Kapazität
+dieses Modells reichen nicht aus.
+
+103
+00:05:24,450 --> 00:05:27,240
+Wir halten hier an und
+fügen ein drittes Neuron hinzu.
+
+104
+00:05:27,240 --> 00:05:30,910
+Wir starten das Training.
+
+105
+00:05:32,690 --> 00:05:35,250
+Wie Sie sehen,
+
+106
+00:05:35,250 --> 00:05:37,605
+fällt es dem Netz sehr schwer,
+die Funktion zu erlernen.
+
+107
+00:05:37,605 --> 00:05:39,450
+Nun, vielleicht steht
+es noch auf der Kippe
+
+108
+00:05:39,450 --> 00:05:42,260
+und wir müssen ihm etwas mehr Zeit geben.
+
+109
+00:05:42,260 --> 00:05:44,340
+Es scheint aber zu hängen.
+
+110
+00:05:44,340 --> 00:05:46,875
+Vielleicht hilft eine
+erneute Initialisierung.
+
+111
+00:05:46,875 --> 00:05:48,900
+Mal sehen, was passiert.
+
+112
+00:05:48,900 --> 00:05:51,635
+Wir haben alles ausprobiert,
+die Initialisierung ausgeführt.
+
+113
+00:05:51,635 --> 00:05:54,020
+Die Funktion scheint
+irgendwie trainiert zu werden.
+
+114
+00:05:54,020 --> 00:05:57,930
+Das Ergebnis sieht aber eher
+aus wie eine diagonale Sanduhr.
+
+115
+00:05:57,930 --> 00:06:00,540
+Ja, das ist nicht ganz die Funktion.
+
+116
+00:06:00,540 --> 00:06:02,535
+Wie Sie sehen, ist der Verlust viel größer.
+
+117
+00:06:02,535 --> 00:06:03,570
+Erhöhen wir auf vier.
+
+118
+00:06:03,570 --> 00:06:06,570
+Das hilft vielleicht.
+
+119
+00:06:06,570 --> 00:06:10,040
+Noch immer eine Sanduhr. Sie gleicht aber
+
+120
+00:06:10,040 --> 00:06:12,800
+mehr und mehr einer Reihe von Quadraten.
+
+121
+00:06:12,800 --> 00:06:15,470
+Das entspricht genau der Funktion.
+Es wird besser ...
+
+122
+00:06:15,470 --> 00:06:18,620
+Ich möchte testen, ob es
+mit weiteren Neuronen
+
+123
+00:06:18,620 --> 00:06:23,350
+zu einer Überanpassung kommt.
+
+124
+00:06:27,110 --> 00:06:31,575
+Wie Sie sehen, ist
+der Trainingsverlust viel langsamer.
+
+125
+00:06:31,575 --> 00:06:36,425
+Jedoch gleichen
+die Formen mehr und mehr Quadraten.
+
+126
+00:06:36,755 --> 00:06:39,390
+Das sieht sehr gut aus.
+
+127
+00:06:43,940 --> 00:06:48,375
+Testen wir eine andere Verteilung.
+
+128
+00:06:48,375 --> 00:06:50,850
+Hier haben wir eine Spirale.
+
+129
+00:06:50,850 --> 00:06:53,090
+Eigentlich zwei Spiralen,
+die einander umkreisen.
+
+130
+00:06:53,090 --> 00:06:55,685
+Es sieht aus wie das Bild einer Galaxie.
+
+131
+00:06:55,685 --> 00:06:58,810
+Ich möchte versuchen,
+das Modell mit X1 und X2 zu trainieren.
+
+132
+00:06:58,810 --> 00:07:01,080
+Ich bezweifle sehr, dass es möglich ist.
+
+133
+00:07:01,080 --> 00:07:03,510
+Wie Sie hier sehen,
+
+134
+00:07:03,510 --> 00:07:05,615
+wurde die Verteilung
+überhaupt nicht erlernt.
+
+135
+00:07:05,615 --> 00:07:07,790
+Im Grunde liegt das nahe bei null.
+
+136
+00:07:07,790 --> 00:07:10,005
+Das Modell kann nicht
+entscheiden, was was ist.
+
+137
+00:07:10,005 --> 00:07:12,930
+Wir testen nun Feature Engineering.
+
+138
+00:07:12,930 --> 00:07:14,600
+Los geht's.
+
+139
+00:07:14,600 --> 00:07:16,335
+Was denken Sie?
+
+140
+00:07:16,335 --> 00:07:19,690
+Versuchen wir Kreise.
+
+141
+00:07:19,730 --> 00:07:22,710
+Keine Verbesserung.
+Aktivieren wir diese Features.
+
+142
+00:07:22,710 --> 00:07:24,120
+Das sind Sinus und Kosinus,
+
+143
+00:07:24,120 --> 00:07:28,160
+oder sinex1 und sinex2. Es läuft.
+
+144
+00:07:28,160 --> 00:07:31,570
+Ich habe
+sechs Features aktiviert.
+
+145
+00:07:31,570 --> 00:07:33,045
+Das Netz scheint zu lernen.
+
+146
+00:07:33,045 --> 00:07:34,230
+Wie Sie sehen,
+
+147
+00:07:34,230 --> 00:07:36,270
+füllt sich der Bereich hier oben.
+
+148
+00:07:36,270 --> 00:07:39,570
+Hier bleibt eine große Lücke.
+Ich weiß nicht, wie sich das entwickelt.
+
+149
+00:07:39,570 --> 00:07:43,360
+Die Extrapolation ist
+wirklich sehr stark hier.
+
+150
+00:07:43,360 --> 00:07:45,080
+Das ist also nicht wirklich besser.
+
+151
+00:07:45,080 --> 00:07:47,480
+Hier ist der Prozess
+irgendwie ins Stocken geraten.
+
+152
+00:07:47,480 --> 00:07:50,115
+Funktioniert das mit
+neuronalen Netzwerken besser?
+
+153
+00:07:50,115 --> 00:07:52,150
+Ich deaktiviere alle und
+
+154
+00:07:52,150 --> 00:07:53,990
+füge eine Zwischenschicht hinzu.
+
+155
+00:07:53,990 --> 00:07:57,100
+Ich starte mit zwei Neuronen
+und teste, ob sie ausreichen.
+
+156
+00:07:58,100 --> 00:08:03,075
+Das Ergebnis ist wirklich nicht viel
+besser als vorher mit nur X1 und X2.
+
+157
+00:08:03,075 --> 00:08:06,050
+Die Kapazität reicht
+nicht aus, um dieses Modell zu trainieren.
+
+158
+00:08:06,050 --> 00:08:09,880
+Erhöhen wir auf drei Neuronen.
+Gibt es einen Lerneffekt?
+
+159
+00:08:09,880 --> 00:08:16,015
+Es läuft etwas besser als beim letzten Mal.
+Hier gibt es Extrapolation.
+
+160
+00:08:16,015 --> 00:08:18,880
+Das Ergebnis ist jedoch
+noch nicht so gut wie vorher, als ich
+
+161
+00:08:18,880 --> 00:08:23,455
+alle sechs oder
+sieben Features aktiviert hatte.
+
+162
+00:08:23,455 --> 00:08:27,835
+Also gut. Vielleicht sollte ich
+ein weiteres Neuron hinzufügen.
+
+163
+00:08:27,835 --> 00:08:33,220
+Vielleicht noch eine weitere Schicht.
+Hilft das?
+
+164
+00:08:33,470 --> 00:08:37,340
+Gut. Wie Sie sehen, ist der
+
+165
+00:08:37,340 --> 00:08:40,719
+Trainingsverlust sehr niedrig, aber
+der Testverlust ist nicht besonders gut.
+
+166
+00:08:40,719 --> 00:08:42,700
+Hier hängt der Prozess irgendwie.
+
+167
+00:08:45,300 --> 00:08:48,755
+Lassen Sie uns weitere
+Zwischenschichten hinzufügen.
+
+168
+00:08:48,755 --> 00:08:52,040
+Insgesamt vier Neuronen pro Schicht.
+
+169
+00:08:52,040 --> 00:08:53,180
+Hoffentlich reicht das aus.
+
+170
+00:08:53,180 --> 00:08:56,605
+Wie sieht das Ergebnis aus?
+
+171
+00:08:56,605 --> 00:08:59,170
+Okay, beide Werte
+sind ziemlich stark gesunken.
+
+172
+00:08:59,170 --> 00:09:04,035
+Allerdings wurde noch keine Entscheidung 
+getroffen, denn der gesamte Bildschirm ist weiß.
+
+173
+00:09:04,035 --> 00:09:07,190
+Jetzt aber. Hier ist der Wendepunkt.
+
+174
+00:09:07,190 --> 00:09:09,100
+Der Verlust geht stark nach unten.
+
+175
+00:09:10,490 --> 00:09:14,636
+Der Testverlust geht jedoch
+gleichzeitig nach oben.
+
+176
+00:09:16,350 --> 00:09:19,660
+Nun verläuft er gerade.
+Die Kapazität reicht nicht aus.
+
+177
+00:09:19,660 --> 00:09:24,350
+Ich gehe jetzt bis an die obere Grenze und
+füge pro Schicht acht Neuronen hinzu.
+
+178
+00:09:24,350 --> 00:09:28,310
+Das reicht hoffentlich aus, um diese
+sehr komplexe und verrauschte Funktion
+
+179
+00:09:28,310 --> 00:09:29,300
+zu trainieren.
+
+180
+00:09:30,870 --> 00:09:31,870
+Also gut.
+
+181
+00:09:32,720 --> 00:09:34,720
+Starten wir das Training.
+
+182
+00:09:37,230 --> 00:09:40,920
+Wie Sie sehen,
+verläuft das Training hier sehr langsam.
+
+183
+00:09:40,920 --> 00:09:45,121
+Ich hoffe, dass wir noch herausfinden,
+wie diese Funktion am besten funktioniert.
+
+184
+00:09:46,640 --> 00:09:49,110
+Der Trainingsverlust geht nach unten.
+
+185
+00:09:49,110 --> 00:09:50,894
+Was ist mit dem Testverlust?
+Er geht nach oben.
+
+186
+00:10:00,190 --> 00:10:03,680
+Jetzt wird der Testverlust aber stabiler.
+
+187
+00:10:04,880 --> 00:10:07,410
+Wenn Sie selbst experimentieren,
+
+188
+00:10:07,410 --> 00:10:09,605
+können die Ergebnisse
+etwas abweichen, weil es
+
+189
+00:10:09,605 --> 00:10:13,170
+zu zufälligen Initialisierungen des Netzwerks
+kommen kann. Testen wir ein anderes.
+
+190
+00:10:16,900 --> 00:10:19,750
+Dieses ist vielleicht etwas vielversprechender.
+
+191
+00:10:25,700 --> 00:10:28,955
+Ja, tatsächlich,
+es sieht vielversprechender aus.
+
+192
+00:10:29,430 --> 00:10:35,516
+Schauen Sie, was passiert.
+Es lernt dazu und wird aufgefüllt.
+
+193
+00:10:36,560 --> 00:10:40,960
+Sieht aus, als gäbe es eine Überanpassung, 
+denn der Testverlust divergiert.
+
+194
+00:10:41,465 --> 00:10:43,025
+Das ist nicht gut.
+
+195
+00:10:48,950 --> 00:10:51,840
+Wir warten noch etwas.
+
+196
+00:10:51,840 --> 00:10:53,565
+Wie Sie sehen,
+
+197
+00:10:53,565 --> 00:10:55,245
+ist es selbst mit diesem gewaltigen Netzwerk
+
+198
+00:10:55,245 --> 00:10:59,000
+nicht möglich,
+diese Verteilung gut zu trainieren.
+
+199
+00:10:59,000 --> 00:11:00,785
+Es gibt viele Extrapolationen
+
+200
+00:11:00,785 --> 00:11:06,470
+und großes Rätselraten und ist
+nicht gut für den Testverlust.
+
+201
+00:11:06,470 --> 00:11:07,880
+Schauen Sie hier.
+
+202
+00:11:07,880 --> 00:11:12,030
+Der Testverlust geht plötzlich nach unten.
+Sehr gut.
+
+203
+00:11:19,940 --> 00:11:24,155
+Das Netz
+erlernt die Funktion zunehmend.
+
+204
+00:11:24,155 --> 00:11:28,429
+Es ist aber sehr langsam,
+weil das Netzwerk sehr groß ist.
+
+205
+00:11:32,000 --> 00:11:34,725
+Zur Erinnerung: Zwischen allen Schichten
+
+206
+00:11:34,725 --> 00:11:37,845
+befinden sich jeweils 64 Gewichtungen.
+
+207
+00:11:37,845 --> 00:11:39,240
+Sie haben jeweils sechs Schichten.
+
+208
+00:11:39,240 --> 00:11:40,870
+Das heißt sechs mal 64, nur hier.
+
+209
+00:11:40,870 --> 00:11:46,515
+Dabei sind diejenigen zwischen den
+Feature-Schichten und der Ausgabeschicht nicht berücksichtigt.
+
+210
+00:11:46,515 --> 00:11:48,322
+Da sind jeweils weitere acht.
+
+211
+00:11:50,810 --> 00:11:54,255
+Sehen Sie sich das an. Das ist großartig.
+
+212
+00:11:54,255 --> 00:11:56,530
+Die Funktion wird sehr gut erlernt.
+
+213
+00:11:56,530 --> 00:11:59,470
+Hier gibt es jedoch Extrapolationen,
+
+214
+00:11:59,470 --> 00:12:00,670
+und hier Interpolationen.
+
+215
+00:12:00,670 --> 00:12:04,592
+Die orangefarbene Spitze
+geht direkt durch die Spirale.
+
+216
+00:12:07,430 --> 00:12:11,300
+Mit der Zeit wird es aber immer besser.
+
+217
+00:12:11,300 --> 00:12:13,640
+Der Testverlust wird immer niedriger.
+
+218
+00:12:13,640 --> 00:12:18,210
+Die Form ist jedoch in
+hohem Maße überangepasst.
+
+219
+00:12:23,030 --> 00:12:26,170
+Jetzt ist sie fertig. Wie Sie sehen,
+ist es uns endlich gelungen,
+
+220
+00:12:26,170 --> 00:12:30,125
+mit dem neuronalen Netzwerk
+all diese Formen zu ermitteln.
+
+221
+00:12:30,125 --> 00:12:33,170
+In manchen Fällen erfüllt das
+neuronale Netz die Aufgabe besser,
+
+222
+00:12:33,170 --> 00:12:36,200
+in anderen Fällen, etwa
+bei der Spirale, war nur diese Methode
+
+223
+00:12:36,200 --> 00:12:38,190
+überhaupt in der Lage,
+die Form zu ermitteln.

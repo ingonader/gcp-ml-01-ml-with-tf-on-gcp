@@ -1,0 +1,60 @@
+Armazenar o vetor de entrada como
+uma matriz codificada é má ideia. Uma representação densa
+é muito ineficiente para o armazenamento
+e a computação. Chamamos qualquer
+elemento armazenado, todos os valores de um tensor
+de entrada, de um tensor denso. Isso não tem a ver
+com os dados no tensor, mas com o armazenamento. Considere os dados
+nesta matriz. Você acha que a matriz
+é densa ou esparsa? Ela é extremamente
+esparsa, claro. Cada exemplo nesta matriz representa
+filmes assistidos pelo usuário. Pense na sua experiência, quantos filmes
+você classificou? Não queremos gravar as entradas
+em um formato denso. Não queremos armazenar
+todos os valores do tensor. Não queremos armazenar as
+entradas em um formato denso, nem armazenar todos
+os valores do tensor, então o que faremos? Seria bom armazenar os
+dados de maneira esparsa e compactada na memória. Sera bom poder fazer
+computações como multiplicação de matrizes
+diretamente nos tensores esparsos, sem precisar convertê-los
+em representações densas. Para isso, criamos um
+mapeamento de dicionário de cada recurso
+para um inteiro. Shrek pode ser o inteiro 0
+e Harry Potter pode ser o inteiro 300 ou 230,
+algum número arbitrário. Não há incorporação aqui. Agora, cada filme tem um
+inteiro arbitrário associado a ele. Depois, você tem
+uma fila na matriz que representa os filmes
+que um usuário já viu. Basta armazenar o código
+dos filmes que o usuário viu. Na fila de exemplo, o usuário viu três filmes, então o tensor esparso
+tem três entradas. Para qualquer inteiro
+que não esteja na lista, assumimos que o usuário
+não assistiu o filmes. Assim, as três entradas
+são uma só, e o restante são zeros na
+representação densa equivalente. Há duas etapas aqui. A etapa de pré-processamento
+computa o dicionário, e a segunda usa o dicionário para 
+criar uma representação esparsa eficiente. Se você pensa que
+isso é familiar e é como criar o vocabulário para
+colunas categóricas, está certo. As colunas categóricas são representadas
+pelo TensorFlow como tensores esparsos. Então, as colunas categóricas são
+um exemplo de elemento esparso. O TensorFlow pode fazer
+operações matemáticas em tensores esparsos sem
+convertê-los em densos. Isso economiza memória
+e otimiza a computação. Vimos como criar um cruzamento de
+recursos a partir de colunas categóricas. Esse foi um exemplo de matemática
+realizado em termos de tensores esparsos. Por isso, mesmo que cruzamos colunas
+discretizadas de latitude e longitude e cruzamos os pontos de início e fim
+da corrida de táxi, por exemplo, não houve problema com a memória
+ou com a velocidade de computação. Vimos como criar uma
+coluna de incorporação a partir de um
+cruzamento de recursos. O mesmo código funciona
+para uma única coluna categórica, e é isso que estou mostrando. A capacidade de lidar com tensores
+esparsos é o motivo para o código de criação de uma coluna de incorporação
+a partir de dados categóricos no TensorFlow funciona sem
+problemas de memória ou velocidade. É um detalhe de
+implementação mágico. Lembra que falamos
+que não é preciso um processo de treinamento
+separado para as incorporações? São apenas duas etapas. Primeiro, represente a entrada
+a partir dos dados originais. Depois, envie por uma
+camada de incorporação. Na primeira etapa, represente a
+entrada como um tensor esparso. Na segunda, basta chamar
+a coluna de incorporação. Mas como esse código funciona?

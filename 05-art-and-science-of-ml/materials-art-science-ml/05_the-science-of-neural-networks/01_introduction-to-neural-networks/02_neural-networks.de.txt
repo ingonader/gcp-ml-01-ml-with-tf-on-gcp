@@ -1,0 +1,281 @@
+Neuronale Netzwerke wurden 
+in anderen Kursen schon behandelt. Jetzt wollen wir
+in die Tiefe gehen. Feature Crosses haben sich für
+das folgende Problem bereits bewährt: Wenn x1 die horizontale Dimension und x2 die vertikale Dimension ist, ließ sich die Verteilung durch keine lineare
+Kombination der beiden Features beschreiben. Erst mit Feature Engineering 
+und der Kreuzung von x1 und x2 zum neuen Feature x3,
+das x1 mal x2 entspricht, konnten wir 
+unsere Datenverteilung beschreiben. Das heißt also, dass wir 
+mit manuellem Feature Engineering mühelos alle nichtlinearen 
+Probleme lösen können. Ist das richtig? 
+Leider gibt es in der realen Welt fast nie solche einfach
+zu beschreibenden Verteilungen. Obwohl seit Jahren die klügsten
+Köpfe an Feature Engineering arbeiten, sind der Methode Grenzen gesetzt. Welche Feature Crosses brauchen Sie z. B.,
+um diese Verteilung zu modellieren? Das sieht aus wie zwei Kreise 
+übereinander oder vielleicht zwei Spiralen. Was immer es ist, es ist sehr chaotisch. Diese Art von Beispielen zeigt
+den Nutzen neuronaler Netzwerke. Sie können algorithmisch komplexe Feature
+Crosses und Transformationen erstellen. Es gibt sehr viel 
+komplexere Räume als diese Spirale, die den Einsatz
+neuronaler Netze erforderlich machen. Als Alternative zu Feature Crossing 
+können neuronale Netze Features kombinieren. Beim Entwurf 
+der Architektur des neuronalen Netzes möchten wir das Modell so strukturieren,
+dass Features kombiniert werden. Dann möchten wir auf einer weiteren
+Schicht die Kombinationen kombinieren und dann noch eine Schicht hinzufügen,
+um diese Kombinationen zu kombinieren usw. Wie wählen wir 
+die richtigen Kombinationen der Features und die Kombinationen
+der kombinierten Features usw.? Das Modell lernt 
+das Ganze durch Training. Das ist der Grundgedanke
+hinter neuronalen Netzwerken. Der Ansatz ist nicht
+unbedingt besser als Feature Crossing. Er ist aber eine flexible Alternative, 
+die oftmals gute Ergebnisse liefert. Hier eine grafische
+Darstellung eines linearen Modells. Es gibt drei Eingaben: 
+x1, x2 und x3. Sie sind durch blaue Kreise dargestellt. Sie werden mit Gewichtungen 
+von den Rändern kombiniert, um eine Ausgabe zu erzeugen. Oft gibt es zusätzlich einen Bias-Term. Zur Vereinfachung
+wird er hier nicht gezeigt. Dies ist ein lineares Modell. 
+Es ist eine Form von y gleich w1 mal x1, plus w2 mal x2, plus w3 mal x3. Nun fügen wir eine Zwischenschicht
+in das Netzwerk der Knoten und Kanten ein. Die Eingabeschicht hat drei Knoten,
+die Zwischenschicht ebenfalls drei. Das sind aber verborgene Knoten. Da diese Schicht 
+vollständig verbunden ist, gibt es drei mal drei Kanten
+oder neun Gewichtungen. Das ist nun sicher 
+ein nichtlineares Modell, mit dem wir unsere 
+nichtlinearen Probleme lösen können. Stimmts?
+Leider nicht. Warum? Als Eingabe 
+in den ersten verborgenen Knoten dient die gewichtete 
+Summe von w1 mal x1, plus w4 mal x2, plus w7 mal x3. Die Eingabe 
+in den zweiten verborgenen Knoten ist die gewichtete Summe w2 mal x1 
+plus w5 mal x2 plus w8 mal x3. Als Eingabe 
+in den dritten verborgenen Knoten dient die gewichtete Summe w3 mal x1 
+plus w6 mal x2 plus w9 mal x3. Bei der Kombination im Ausgabeknoten ergibt sich w10 mal h1, plus w11 mal h2, plus w12 mal h3. Sie erinnern sich: h1, h2 und h3 sind nur lineare
+Kombinationen der Eingabefeatures. Wenn wir sie erweitern, 
+erhalten wir daher einen komplexen Satz 
+an gewichteten Konstanten multipliziert mit 
+den einzelnen Eingabewerten x1, x2 und x3. Jedes Paar an Gewichtungen kann 
+durch eine neue Gewichtung ersetzt werden. Kommt Ihnen das bekannt vor? Das ist genau dasselbe
+lineare Modell wie zuvor. Außer der zusätzlichen 
+Zwischenschicht mit Neuronen. Was ist passiert? Was passiert, wenn wir eine
+weitere Zwischenschicht einfügen? Leider fällt auch
+dieses Modell in sich zusammen zu einer Matrix mit einer Gewichtung
+multipliziert jeweils mit den drei Eingaben. Es ist dasselbe lineare Modell. Wir können diesen Prozess 
+immer weiter fortführen. Das Ergebnis wäre immer dasselbe. Allerdings wären Training 
+und Vorhersage viel rechenintensiver für eine weitaus 
+komplexere Architektur als nötig. Aus Sicht der linearen Algebra werden mehrere Matrizen
+in einer Kette multipliziert. Hier multipliziere ich
+eine Drei-mal-drei-Matrix, also die transponierte 
+Gewichtungsmatrix zwischen Eingabe- und 
+erster Zwischenschicht, mit dem Drei-mal-eins-Eingabevektor.
+Heraus kommt der Drei-mal-eins-Vektor. Das sind die Werte in den einzelnen
+verborgenen Neuronen in Zwischenschicht eins. Zur Definition der Werte 
+der Neuronen der zweiten Zwischenschicht habe ich die transponierte 
+Drei-mal-drei-Gewichtungsmatrix multipliziert, die Zwischenschicht eins 
+mit Zwischenschicht zwei zum resultierenden Vektor 
+in Zwischenschicht eins verbindet. Man kann jetzt
+beide Drei-mal-drei-Gewichtungsmatrizen zu einer zusammenfassen. Dafür wird zuerst
+das Matrixprodukt von links innen statt von rechts berechnet. Wir erhalten immer
+noch dieselbe Form für h2, den Wertevektor des Neurons 
+der zweiten Zwischenschicht. Wenn ich die finale Schicht 
+zwischen zweiter Zwischenschicht und Ausgabeschicht hinzufüge, muss ich alles mit 
+der transponierten Gewichtungsmatrix zwischen den letzten 
+beiden Schichten multiplizieren. Auch wenn Sie beim Einspeisen 
+durch ein neuronales Netzwerk die Matrix von 
+rechts nach links multiplizieren, indem Sie sie 
+von links nach rechts anwenden, sehen Sie, dass unsere lange Kette der Matrixverflechtungen zu einem
+Vektor mit nur drei Werten kollabiert. Wenn Sie dieses Modell für eine
+einfache lineare Regression von drei Gewichtungen nebeneinander trainieren und
+beide unten beim selben Minimum ankommen, wird sich die Matrixproduktkette trotz des
+massiven Rechenaufwands zur Berechnung aller 21 Gewichtungen zur
+unteren Gleichung verdichten. Die Gewichtung wird exakt den einfachen
+linearen Regressionsgewichten entsprechen. Der ganze Aufwand für dasselbe Ergebnis. Sie mögen jetzt denken, "Wie bitte? Geht es bei neuronalen Netzen nicht darum,
+schichtweise Neuronen einzufügen? Wie kann ich Deep Learning ausführen, 
+wenn alle Schichten zu einer zusammenfallen?" Dann sage ich Ihnen:
+Es gibt eine einfache Lösung. Wir fügen eine nichtlineare
+Transformationsschicht hinzu. Dafür verwenden wir 
+eine nichtlineare Aktivierungsfunktion wie Sigmoid, Tanh oder ReLU. Für die Grafik ist, 
+genau wie in TensorFlow, vorstellbar, dass jedes Neuron
+tatsächlich zwei Knoten hat. Der erste Knoten ist das Ergebnis
+der gewichteten Summe aus wx plus b, der zweite das Ergebnis der Übergabe des Ergebnisses 
+an die Aktivierungsfunktion. Es gibt also
+Eingaben der Aktivierungsfunktion gefolgt von den 
+Ausgaben der Aktivierungsfunktion. Die Aktivierungsfunktion
+fungiert also als Übergangspunkt. Nur durch Aufnahme dieser 
+nichtlinearen Transformation verhindern wir, 
+dass das neuronale Netz zu einem flachen Netz komprimiert wird. Wenn es eine Schicht mit
+nichtlinearen Aktivierungsfunktionen gibt, an anderer Stelle aber zwei oder mehr Schichten mit linearen Aktivierungsfunktionen,
+können sie zu einem Netz verdichtet werden. In der Regel sind in 
+neuronalen Netzwerken alle Schichten, von der ersten bis
+zur vorletzten Schicht, nichtlinear. Die letzte Transformationsschicht
+ist dann linear für Regression, Sigmoid- und Softmax-Funktionen, 
+die ich bei der Klassifizierung bespreche. Alles hängt 
+von der geplanten Ausgabe ab. Beleuchten wir das Problem noch 
+einmal aus Sicht der linearen Algebra: Bei Anwendung von linearer 
+Transformation auf Matrizen oder Vektoren werden Matrizen oder Vektoren multipliziert,
+um das gewünschte Ergebnis zu erhalten. Genauso kann ich 
+Matrizen für die Skalierung mit einer Konstanten multiplizieren. Eigentlich werden sie aber
+mit einer Identitätsmatrix multipliziert, die mit der Konstanzen multipliziert wird. Es ergibt sich eine Diagonalmatrix
+mit der Konstanten in der Diagonalen. Sie würde zu einem 
+einfachen Matrixprodukt kollabiert. Füge ich jedoch eine Nichtlinearität ein, lässt sich der Vorgang
+nicht in einer Matrix darstellen, da ich die Funktion
+elementweise auf die Eingabe anwende. Beispiel: Ich habe 
+eine nichtlineare Aktivierungsfunktion zwischen erster 
+und zweiter Zwischenschicht. Ich wende hier
+eine Funktion des Produkts aus transponierter Gewichtungsmatrix der 
+ersten Zwischenschicht und Eingabevektor an. Die niedrigere Gleichung ist die
+Aktivierungsfunktion in ReLU. Da ich die Transformation nicht mithilfe
+der linearen Algebra darstellen kann, kann dieser Teil der Transformationskette 
+nicht kollabiert werden. Die Komplexität 
+des Modells bleibt also erhalten und wird nicht in eine rein lineare
+Kombination der Eingaben überführt. Die Gewichtungsmatrizen der zweiten
+Zwischenschicht und der Ausgabeschicht können weiter kollabiert werden, da hier
+keine nichtlineare Funktion angewendet wird. Das heißt, zwei oder mehr
+aufeinanderfolgende lineare Schichten können unabhängig von ihrer Anzahl
+immer zu einer Schicht reduziert werden. Wenn Sie also komplexe Funktionen
+in Ihrem Netzwerk erstellen möchten, sind lineare Aktivierungsfunktionen 
+im gesamten Netzwerk zu empfehlen, außer in der letzten Schicht, wenn Sie zum
+Schluss eine andere Ausgabe benötigen. Warum sind nichtlineare 
+Aktivierungsfunktionen in neuronalen Netzen wichtig? Sie verhindern, dass die Schichten zu einem rein
+linearen Modell reduziert werden. Sie unterstützen nicht nur die Erstellung interessanter Transformationen
+im Featureraum, sondern auch tiefe
+kompositorische Funktionen. Wie erläutert, lässt sich 
+bei zwei oder mehr Schichten mit linearen Aktivierungsfunktionen
+das Produkt der Matrizen zusammenzufassen als eine Matrix multipliziert
+mit dem Eingabe-Feature-Vektor. Das resultierende Modell ist dann 
+langsamer und berechnungsintensiver aber funktional weniger komplex. Nichtlinearitäten 
+fügen der Verlustfunktion keine Regularisierung hinzu und 
+führen nicht zur vorzeitigen Beendigung. Nichtlineare Aktivierungsfunktionen erzeugen zwar komplexe 
+Transformationen im Vektorraum, die Dimension ändert sich jedoch nicht.
+Der Vektorraum bleibt gleich. Auch wenn er gedehnt,
+gedrückt oder gedreht wird. Wie in einem früheren Kurs erwähnt, gibt es viele nichtlineare
+Aktivierungsfunktionen mit Sigmoid und der skalierten
+und verschobenen Sigmoid-Funktion. Hier war der hyperbolische 
+Tangens eine der ersten Funktionen. Wie erwähnt, 
+kann es zur Sättigung und damit zum Problem
+der verschwindenden Gradienten kommen. Bei Nullgradienten werden die Modellgewichtungen nicht
+aktualisiert und das Training stoppt. Die rektifizierte
+Lineareinheit, kurz ReLU, gehört zu meinen Lieblingsfunktionen,
+denn sie ist einfach und funktioniert gut. In der positiven Domain ist sie linear, sodass es keine Sättigung gibt, 
+in der negativen Domain ist sie null. In Netzen mit ReLU als Aktivierung
+in der Zwischenschicht ist das Training oft 10 mal schneller 
+als in Netzen mit Sigmoid. Da jedoch die Funktion
+in negativen Domains immer null ist, kann es passieren,
+dass die echten Schichten sterben. Was meine ich damit? Wenn Sie die ersten Eingaben in der negativen Domain erhalten
+und die Ausgabe der Aktivierung null ist, hilft das in der nächsten Schicht nicht, 
+Eingaben in der positiven Domain zu erhalten. Das Problem potenziert sich 
+und erzeugt viele Nullaktivierungen bei der Backpropagation, bei der
+die Gewichtungen aktualisiert werden, denn die Ableitung der Fehler 
+wird mit ihrer Aktivierung multipliziert. Heraus kommt ein Nullgradient. Ergebnis: eine Gewichtung 
+von null, die Gewichtungen ändern sich nicht und das Training
+schlägt für diese Schicht fehl. Zum Glück wurden viele
+clevere Methoden entwickelt, die ReLu so modifizieren,
+dass das Training nicht zum Stocken kommt, und trotzdem viele Vorteile 
+von vanilla ReLu genutzt werden. Hier sehen wir nochmal vanilla ReLu. Der max-Operator kann 
+auch durch die abschnittsweise lineare Gleichung dargestellt werden. Hier ergibt die Funktion 
+bei kleiner als null "null" und bei größer als 
+oder gleich null ergibt die Funktion "X". Eine reibungslose
+Approximation der ReLU-Funktion ist die analytische Funktion des
+natürlichen Logarithmus von eins, plus das exponenzielle X. Das ist die Softplus-Funktion. Interessanterweise ist die Ableitung der
+Softplus-Funktion eine logistische Funktion. Die Vorteile der Softplus-Funktion: Sie ist stetig und 
+bei Null differenzierbar, im Gegensatz zur ReLu-Funktion. Aufgrund des natürlichen
+Logarithmus und der Exponentialfunktion gibt es im Vergleich zu ReLUs
+zusätzlichen Berechnungsaufwand und ReLUs erzielen in der Praxis
+immer noch genauso gute Ergebnisse. Daher wird in der Regel von 
+Softplus für Deep Learning abgeraten. Um das Problem der sterbenden ReLUs 
+aufgrund von Nullaktivierungen zu lösen, wurde Leaky ReLU entwickelt. Wie ReLUs haben auch Leaky ReLUs
+eine abschnittsweise lineare Funktion. In der negativen Domain gibt es jedoch statt null eine Neigung
+ungleich null, genauer 0,01. Auch wenn die Einheit nicht aktiviert ist, ermöglichen Leaky ReLUs kleinen
+Gradienten ungleich null den Durchgang, sodass die Gewichtungen aktualisiert
+und die Trainingserfolge fortgesetzt werden. Eine Weiterentwicklung von Leaky ist
+die parametrische ReLU oder PReLU. Statt willkürlich ein Hundertstel eines X
+in die negative Domain durchzulassen, lässt diese Funktion Alpha von X durch. Was aber ist der Parameter Alpha? Im Grafen stelle ich Alpha
+für Visualisierungszwecke auf 0,5 ein. In der Praxis handelt es sich 
+tatsächlich um einen Parameter, der im Training zusammen 
+mit den anderen Parametern erlernt wird. So müssen wir diesen Wert
+nicht selbst einrichten. Er wird während des Trainings
+über die Daten ermittelt. Der erlernte Wert sollte besser sein,
+als der über die Priorität eingerichtete. Beachten Sie, dass bei Alpha 
+unter eins die Formel mit dem max-Wert in die kompakte Form 
+zurückgeschrieben werden kann. Genauer, der max-Wert
+von x oder Alpha mal x. Es gibt auch randomisierte Leaky ReLUs, 
+bei denen Alpha nicht trainiert, sondern nach Zufallsprinzip aus einer
+gleichmäßigen Verteilung gewählt wird. Der Effekt kann einem
+Abbruch gleichkommen, weil Sie technisch gesehen für 
+jeden Alpha-Wert ein anderes Netz haben. Daher entsteht etwas wie ein Ensemble. In der Testphase
+werden alle Werte von Alpha zu einem deterministischen Wert gemittelt,
+der für Vorhersagen verwendet wird. Eine weitere Variante ist ReLU6. Das ist ebenfalls eine abschnittsweise
+lineare Funktion mit drei Segmenten. Wie die normale ReLU-Funktion,
+ist sie in der negativen Domain null. In der positiven Domain hat
+ReLU6 jedoch immer den Wert sechs. Warum bleibt der Wert bei sechs? Es gibt ReLU-Einheiten, 
+die einen Wert von sechs repliziert durch verschobene
+Bernoulli-Einheiten haben und keine unendliche Menge.
+Das liegt an der festen Obergrenze, Diese Einheiten werden
+im Allgemeinen ReLU n-Einheiten genannt. Dabei ist "n" die Obergrenze. In Tests wurde sechs
+als optimaler Wert ermittelt. Mit ReLU6-Einheiten können Modelle
+wenige Features schneller trainieren. Sie wurden zuerst 
+in Deep Convolutional Elite Networks für CIFAR-10-Bild-Datasets verwendet. Sie sind außerdem nützlich 
+für die Vorbereitung des Netzwerks auf Festkomma-Genauigkeit für Inferenzen. Wenn es für 
+die Obergrenze keine Grenze gibt, verlieren Sie zu viele Bits
+an den Q-Teil der Festkommazahl. Bei der Obergrenze "sechs" bleiben aber genug 
+Bit für den Bruchteil der Zahl sodass die Repräsentation
+für eine gute Inferenz ausreicht. Schließlich gibt es die exponentielle
+lineare Einheit oder ELU. Sie ist im nicht negativen Teil des
+Eingabebereichs annähernd linear, dazu gleichmäßig, 
+monoton und, noch wichtiger, im negativen Teil der Eingabe nicht null. Sie ist auch besser 
+nullzentriert als vanilla ReLUs, was das Lernen beschleunigen kann. Hauptnachteil der ELUs: Sie sind kompositionell 
+aufwändiger als ReLUs weil die Exponentialfunktion
+berechnet werden muss. Neuronale Netzwerke
+können beliebig komplex sein. Es kann viele Schichten geben,
+viele Neuronen pro Schicht, Ausgaben, Eingaben,
+verschiedene Aktivierungsfunktionen usw. Was ist der Zweck mehrerer Schichten? Mit jeder erhöht sich die Komplexität
+der Funktionen, die ich erstellen kann. Jede nachfolgende Schicht ist eine
+Komposition der vorherigen Funktionen. Da wir in Zwischenschichten nichtlineare 
+Aktivierungsfunktionen verwenden, wird ein Stack an 
+Datentransformationen erstellt, die die Daten drehen, 
+dehnen und pressen. Zur Erinnerung: Der Zweck all dessen ist 
+die Übertragung der Daten, sodass sie gut auf eine Hyperebene passen und Regression oder Trennung der Daten
+für die Klassifizierung möglich ist. Das Mapping erfolgt vom ursprünglichen in
+einen neuen, verschachtelten Featureraum. Was passiert, wenn ich einer Schicht
+zusätzliche Neuronen hinzufüge? Jedes neue Neuron fügt dem
+Vektorraum eine neue Dimension hinzu. Wenn ich mit 
+drei Eingabeneuronen beginne, starte ich im R3-Vektorraum. Wenn die nächste Schicht 4 Neuronen hat,
+befinde ich mich in einem R4-Vektorraum. Als es im vorherigen Kurs
+um Kernel-Methoden ging, konnten wir das Dataset
+im ursprünglichen Eingabevektorraum nicht einfach mit einer
+Hyperebene separieren. Erst nach Hinzufügen der Dimension
+und Umwandlung der Daten, die genau an die neue
+Dimension angepasst wurden, war es möglich,
+die Datenklassen sauber zu trennen. Das gilt auch
+für die neuronalen Netzwerke. Welchen Effekt 
+haben mehrere Ausgabeknoten? Bei mehreren Ausgabeknoten 
+können Sie mit mehreren Labels vergleichen und die entsprechenden 
+Bereiche zurückpropagieren. Nehmen Sie als Beispiel 
+die Bildklassifizierung. In jedem Bild befinden sich 
+mehrere Entitäten oder Klassen. Wir können nicht nur eine Klasse
+vorhersagen, es kann viele geben. Hier ist diese 
+Flexibilität also großartig. Neuronale Netzwerke
+sollten beliebig komplex sein. Brauche ich mehr verborgene 
+Dimensionen, kann ich XXX hinzufügen, Um die funktionale Komposition 
+zu erweitern, kann ich XXX hinzufügen. Habe ich mehrere Labels,
+kann ich XXX hinzufügen. Die korrekte Antwort lautet:
+Neuronen, Schichten, Ausgaben, Um verborgene Dimensionen zu ändern,
+kann ich die Neuronenzahl ändern. So wird die Dimensionen des Vektorraums
+für den Zwischenvektor festgelegt. Hat eine Schicht vier Neuronen, befindet sie sich 
+in einem Raum mit vier Vektoren. Eine Schicht mit 500 Neuronen
+befindet sich im R500-Vektorraum. Das heißt, sie hat
+500 echte Dimensionen. Das Hinzufügen einer Schicht ändert 
+nicht die Dimension der vorherigen Schicht, vielleicht nicht einmal
+die Dimension der zugehörigen Schicht, außer die Zahl der Neuronen ist
+in der vorherigen Schicht anders. Zusätzliche Schichten sorgen für
+eine bessere Komposition der Funktionen. Erinnern Sie sich: 
+g von f von x ist die Komposition der Funktion g
+mit der Funktion f für die Eingabe x. Daher wandle ich zuerst x mit f
+und dann das Ergebnis mit g um. Je größer die Zahl der Schichten, 
+desto tiefer die verschachtelten Funktionen. Das ist ideal für die Zusammensetzung 
+nichtlinearer Funktionen zu verschachtelten Feature Maps, die für Menschen schwer, 
+aber für Computer gut geeignet sind, und helfen, 
+Daten so vor- und aufzubereiten, dass wir sie 
+analysieren und verwerten können. Die Informationen und Erkenntnisse
+erhalten wir in den Ausgabeschichten. Sie enthalten während der Interferenz
+die Antworten auf das formulierte ML-Problem. Wenn Sie nur wissen möchten, 
+wie groß die Wahrscheinlichkeit ist, dass das Bild einen Hund zeigt, 
+reicht ein Ausgabeknoten. Wenn Sie die Wahrscheinlichkeit für Katze, Hund, 
+Vogel oder Elch interessiert, brauchen Sie
+für jede Möglichkeit einen Knoten. Die anderen drei Antworten sind falsch.
+Mindestens zwei Wörter stimmen nicht.

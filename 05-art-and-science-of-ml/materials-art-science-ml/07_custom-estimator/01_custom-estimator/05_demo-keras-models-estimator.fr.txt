@@ -1,0 +1,33 @@
+Bien. Nous voulions vous montrer
+comment fonctionne un Estimator Keras. Nous avons donc une méthode
+appelée make_keras_estimator avec un output_dir. Vous voyez ensuite ce qu'elle fait avec
+la ligne "from tensorflow import keras". C'est toujours
+le même modèle de série temporelle. Mais cette fois, je vais seulement le traiter
+comme un réseau de neurones à neuf entrées. Je prends donc cela,
+je crée un modèle séquentiel Keras et j'indique que je veux créer
+un réseau dense de 32 nœuds d'entrée. J'effectue une activation ReLU. Et j'ai ensuite une sortie,
+à savoir Dense(1). Et ma perte va être mean_squared_error. Mon optimiseur va être adam. Et ma matrice d'évaluation va être
+mae (erreur absolue moyenne) et mape (erreur absolue
+moyenne en pourcentage). Et je peux ensuite utiliser
+keras.estimator.model_to_estimator en transmettant ce modèle compilé Keras. Souvenez-vous
+que vous créez le modèle Keras, puis vous le compilez
+et le transmettez dans model_to_estimator. Ce code se trouve déjà
+dans ce package simplernn. Je vous montre cela. Nous sommes donc
+maintenant dans simplernn. Et dans simplernn, il y a un dossier trainer
+dans lequel figure le fichier model.py. Et dans model.py, il y avait
+la fonction simple_rnn d'origine qui utilisait features, labels et mode, et effectuait tout ce qui est dévolu
+à un Estimator personnalisé. Il y a aussi un make_keras_estimator. Voici le make_keras_estimator qui contient le code
+que je viens de vous montrer. Il crée un modèle séquentiel
+et une couche dense. Il en effectue l'activation avec ReLU,
+crée une autre couche dense, puis calcule les dernières statistiques, etc. Et lorsque nous exécutons
+le train_and_evaluate, nous avons une option use_keras. Et si quelqu'un utilise use_keras,
+j'appelle make_keras_estimator. Sinon, j'appelle l'Estimator de classe de base
+en transmettant la fonction simple_rnn. Il s'agit donc du même code
+avec ce paramètre use_keras. Et ce paramètre est transmis à partir
+de la ligne de commande au moyen de task.py. Et donc, dans task.py, il y a
+un nouvel argument appelé --keras. Et donc, en fonction de ce qui est défini, nous transmettons des arguments de keras
+à model.train_and_evaluate. Cela sera donc vrai ou faux. Donc maintenant, si nous revenons
+dans notre bloc-notes, vous pouvez voir
+que l'effet de --keras sera ici. En raison de la transmission de --keras, cela va se traduire
+par l'exécution du code simplernn. Il va être exécuté
+avec train.csv et valid.csv, mais c'est Keras qui va être utilisé. Et cela fonctionnera également.

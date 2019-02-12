@@ -1,0 +1,179 @@
+Mettons en pratique
+nos nouvelles connaissances en créant un modèle de ML à l'aide de réseaux
+de neurones dans TensorFlow. Cet atelier s'intitule : Création d'un modèle
+de ML à l'aide de réseaux de neurones. Vous allez utiliser un Estimator standardisé,
+la classe DNNRegressor, dans TensorFlow pour prédire le prix moyen d'un logement
+en fonction de différentes caractéristiques. Les données sont basées sur un recensement
+de 1990 pour la Californie. Ces données sont fournies par pâté de maisons,
+et leurs caractéristiques correspondent au nombre total de pièces ou d'habitants
+dans ce pâté de maison, respectivement. Bienvenue. Nous allons passer en revue une partie
+de notre code pour voir comment créer un réseau de neurones à l'aide de la classe
+DNNRegressor dans TensorFlow. Nous allons donc apprendre
+à nous servir d'un réseau de neurones. Nous allons utiliser ces données
+sur le logement, d'après un recensement de 1990 pour la Californie. Elles sont fournies par pâté de maisons. Il s'agit du nombre total de pièces
+dans ce pâté de maisons ou du nombre total d'habitants
+du pâté de maisons, respectivement. Utilisons un ensemble de caractéristiques
+pour évaluer le prix du logement. Commençons par tout configurer. Dans la première cellule, on va charger
+les bibliothèques nécessaires. On va importer math,
+shutil, numpy, pandas et tensorflow. Assurez-vous que verbosity est défini
+sur "INFO" pour obtenir de nombreux résultats. Vérifiez que float-format
+est défini pour Pandas. Nous allons charger notre ensemble de données
+depuis cette URL ici, california_housing_train,
+dans un DataFrame Pandas. Ensuite, nous examinons les données.
+Vous devriez vous familiariser avec les données avant de vous en servir.
+Nous allons afficher un résumé des statistiques utiles de chaque colonne,
+y compris la moyenne, l'écart type, les valeurs maximale et minimale,
+et divers quantiles. D'abord, nous allons afficher
+l'en-tête du DataFrame, à savoir les cinq premières lignes
+de l'ensemble de données : longitude, latitude, âge moyen du logement,
+total des pièces, total des chambres, population, foyers, revenu moyen
+et valeur moyenne du logement qui correspond à mon étiquette.
+C'est ce que je vais prédire à l'aide des autres caractéristiques.
+Regardons les statistiques. Je me sers de df.describe
+pour afficher le nombre, la moyenne, l'écart type,
+la valeur minimale, le 25e centile, le 50e centile, le 75e centile
+et la valeur maximale. Comme vous pouvez le voir ici,
+les données ont l'air propres. Toutefois, les données sont fournies
+par pâté de maisons. Nous allons donc devoir trouver la solution
+pour obtenir les données par maison. Je prends le nombre de pièces qui est égal
+au nombre total de pièces du pâté de maisons divisé par le nombre total de foyers
+du même pâté de maisons. J'obtiens ainsi le nombre moyen
+de pièces par maison. Il en va de même pour les chambres.
+Pour le nombre de chambres, je divise le nombre total de chambres
+dans le pâté de maisons par le nombre de foyers du même pâté de maisons
+pour obtenir le nombre moyen des chambres. Pour le nombre de personnes par maison,
+je prends la population du pâté de maisons que je divise par le nombre de foyers
+pour obtenir le nombre moyen d'habitants par maison.
+Si je lance df.describe, nous allons voir mes colonnes d'origine ici,
+mais de nouvelles colonnes sont ajoutées ici. Il s'agit du nombre moyen de pièces par maison,
+du nombre moyen de chambres par maison et du nombre moyen d'habitants par maison. Excellent. Je peux maintenant
+placer ces statistiques de population, ces statistiques au niveau du pâté de maisons,
+telles que le total des pièces, le total des chambres, la population,
+le nombre de foyers. Je vais incorporer toutes ces colonnes
+sans avoir à créer un DataFrame. Je lance df.describe, et je vois alors
+que mes nouvelles caractéristiques sont ici, et que mes anciennes caractéristiques sont là.
+Voici mon étiquette. Les données que j'ai utilisées
+auparavant ont disparu. Les données sont affichées par maison. Nous allons maintenant créer
+un réseau de neurones qui comportera les données des caractéristiques
+au bon format. Nous allons créer
+des colonnes de caractéristiques. Souvenez-vous que ces colonnes
+nous permettent de présenter nos données dans un format
+qui soit utilisable par notre modèle. Si la notation à virgule flottante
+est déjà utilisée, nous devons tout de même décider si elle doit être utilisée
+dans une colonne ou non. C'est ici qu'elle se trouve, et je crée
+une boucle pour toutes les colonnes : âge moyen du logement, revenu moyen,
+nombre de pièces, nombre de chambres et personnes par maison. Après cela, je vais poursuivre
+l'extraction des caractéristiques. Je vais créer une colonne longitude. Il s'agit d'une colonne compartimentée
+pour des valeurs numériques de longitude, Son espacement linéaire est compris
+entre -124,3 et -114,3 avec un pas de 5. Pour créer une colonne latitude,
+je procède de la même manière, mais avec un espacement compris
+entre 32,5 et 42 avec 10 buckets. Je procède ainsi, car la Californie
+est un État plus long que large. La latitude devrait donc comporter
+un plus grand nombre de buckets, 10 buckets contre cinq buckets
+pour la longitude. J'affiche les noms
+des colonnes de caractéristiques. Ici, je peux voir revenu moyen,
+personnes par maison, nombre de chambres, âge moyen du logement, longitude,
+nombre de chambres et latitude. C'est parfait, mais nous devons
+nous assurer que nous répartissons cela dans un ensemble de données
+d'apprentissage et d'évaluation, afin que je puisse vérifier la progression
+de mon modèle durant l'entraînement. Pour ce faire, je vais créer
+un masquage aléatoire qui me permet de vérifier
+la longueur du DataFrame. Je vais créer toutes ces valeurs aléatoires
+à partir d'une distribution uniforme. Si la valeur est inférieure à 0,8, je vais 
+l'enregistrer dans ce vecteur de masquage. Ce vecteur de masquage correspond en fait
+à la longueur du DataFrame, mais il s'agit en fait
+de valeurs vraies ou fausses. C'est un masquage de type booléen
+que j'applique à mon DataFrame. Pour toutes les valeurs vraies, ces lignes
+sont placées dans un DataFrame d'apprentissage. Pour toutes les valeurs fausses,
+représentées par le tilde ici, les lignes sont placées
+dans un DataFrame d'évaluation. La répartition s'effectue ainsi à 80 %
+dans le DataFrame d'entraînement, et les 20 % de données restantes
+sont placées dans le DataFrame d'évaluation. Ici, j'ai un facteur de démultiplication,
+comme vous le voyez, il est de 100 000. Je vais m'en servir
+pour mettre à l'échelle mes étiquettes, car leurs valeurs sont trop grandes.
+Elles ont toutes des échelles différentes. On a des centaines de milliers,
+presque des millions, et ces nombres à virgule flottante
+sont bien plus petits, avec un ou deux chiffres.
+Je vais les mettre à l'échelle. Je vais aussi créer ma taille de lot ici
+et la définir sur 100, soit 100 lignes à la fois
+sous chacun de ces DataFrames. Je vais ensuite créer
+ma fonction d'entrée d'apprentissage. Pour cela, je vais utiliser tf.Estimator
+avec la fonction pandas_input_fn, où x représente mes caractéristiques. Je vais créer ainsi
+un dictionnaire de Tensors. Ce sera la sortie obtenue. Cela va transformer mon DataFrame
+d'apprentissage de valeur moyenne du logement dans cette colonne, et je vais obtenir y,
+qui deviendra alors un Tensor pour mes étiquettes. Le nombre d'itérations va être égal à 1. J'ai la taille du lot
+et je vais brasser les données. Là, j'ai ma fonction d'entrée d'évaluation. Une fois de plus, je vais utiliser
+pandas_input_fn. Je vais utiliser presque les mêmes paramètres
+que pour le DataFrame d'entrée. Cependant, je vais avoir shuffle=False,
+car je ne veux pas brasser mon ensemble d'évaluations,
+à des fins de reproductibilité. Je crée aussi une autre fonction, print_rmse,
+qui va afficher la racine carrée de l'erreur quadratique moyenne
+de mon modèle. Elle appelle son nom
+et la fonction d'entrée associée. Pour cela, je vais [inaudible] statistiques.
+Je vais utiliser model.evaluate pour mon Estimator. Souvenez-vous
+que mon Estimator est défini sur modèle. Je vais le faire passer en fonction d'entrée.
+Cette fonction d'entrée va passer à print-rmse et je vais opter pour un pas. Je vais obtenir mes statistiques
+et je devrais avoir un dictionnaire. Il s'agit toujours
+d'un problème de régression. Je vais donc avoir une perte,
+une perte moyenne et un pas global. Je vais ensuite afficher la RMSE
+sur cet ensemble de données. Je vais devoir utiliser la racine carrée,
+car actuellement la perte moyenne est exprimée avec la MSE. Pour obtenir la RMSE,
+je prends la racine carrée. Vous avez peut-être remarqué
+que je multiplie cela par l'échelle. C'est pour revenir aux unités correctes,
+comme le prix, la valeur moyenne du logement. Je vais maintenant créer
+la régression linéaire. Je crée un répertoire de sortie,
+où mes fichiers sont enregistrés durant l'apprentissage, comme mes points
+de contrôle, mes journaux d'événements et les modèles, par exemple. Je vais supprimer cela, pour m'assurer
+que je pars de zéro à chaque fois. Je vais donc supprimer toute l'arborescence,
+afin de disposer d'un dossier vide et propre. Je vais créer un optimiseur personnalisé.
+Comme il s'agit d'une régression linéaire, je vais utiliser FtrlOptimizer,
+ce qui est généralement un bon choix. Je vais appliquer
+un taux d'apprentissage de 0,01. Ensuite, je vais créer mon modèle.
+Ici, je vais créer mon Estimator, à savoir LinearRegressor,
+et je passe mon répertoire de modèle, où se trouvent mes données de sortie.
+Enfin, dans les colonnes de caractéristiques, j'ai les valeurs de mes colonnes.
+Voilà tous les Tensors. Pour l'optimiseur, j'utilise
+mon optimiseur personnalisé, FtrlOptimizer. Pour ce qui est du pas,
+je vais opter pour 100 fois la longueur du DataFrame
+que je divise par la taille du lot. Autrement dit, il s'agit 
+d'un apprentissage avec 100 itérations. J'appelle model.train
+qui va utiliser la fonction d'entrée, plus particulièrement train_input_fn,
+et mon nombre de pas, à savoir celui que j'ai créé ici.
+Cela va me servir à entraîner mon modèle. Et enfin, je vais afficher la racine carrée
+de l'erreur quadratique moyenne du modèle. Je vais appeler ma fonction d'entrée
+d'évaluation, qui s'appliquera à mon ensemble. Comme vous pouvez le voir,
+lorsque j'effectue l'apprentissage, j'ai la configuration par défaut ici.
+Je crée un point de contrôle, puis je lance le processus d'apprentissage.
+Je calcule la perte au niveau du pas 1. Voici le nombre de pas par seconde.
+Au fil de l'apprentissage, la perte va en diminuant
+avec un peu de chance. Nous voyons que la perte moyenne finale
+pour l'évaluation est de 0,93, après 137 pas globaux,
+et que la perte totale est de 3 141. Quant à l'évaluation, en multipliant
+les valeurs par l'échelle appliquée à l'ensemble d'évaluation,
+on obtient une RMSE de 96 583 $. N'oubliez pas que la RMSE est avant tout
+l'écart type des valeurs résiduelles. Les valeurs résiduelles sont la différence
+entre votre prédiction et l'étiquette réelle. Voyons maintenant si nous pouvons
+faire mieux avec DNNRegressor. Tout reste pareil, mais cette fois,
+je vais utiliser AdamOptimizer, car il est généralement plus efficace
+sur DNNRegressor que FtrlOptimizer. Je vais remplacer LinearRegressor
+par DNNRegressor. Je le passe et je procède
+comme auparavant pour le reste. Toutefois, je vais ajouter mes unités cachées
+et je vais avoir 1, 2, 3 couches ici, où la première couche
+compte 100 neurones cachés, la deuxième couche compte 50 neurones cachés
+et la dernière 20 neurones cachés. Je passe les colonnes de caractéristiques,
+l'optimiseur que j'ai créé, qui utilise Adam cette fois.
+J'applique un abandon de 10 %. N'oubliez pas qu'il s'agit
+de la probabilité d'abandon et non de la probabilité "keep"
+comme c'est le cas pour d'autres installations. Je crée le même nombre de pas qu'avant,
+j'effectue le même l'apprentissage et j'affiche la RMSE.
+Voyons si je peux faire mieux. Tout est traité de la même manière, lorsque la configuration par défaut
+sert à effectuer l'apprentissage. Voyons les derniers pas. La perte moyenne d'apprentissage
+est de 0,67, ce qui est déjà bon signe, car elle est inférieure
+au chiffre précédent de 0,93. Quant à la RMSE, elle est de 81 974 $.
+Comme vous le voyez, l'écart type est bien inférieur
+au précédent, ce qui signifie que ce modèle est bien plus performant.
+Vous pouvez opter pour une configuration plus complexe et utiliser
+bien d'autres algorithmes sophistiqués. Cela vous montre bien
+qu'un réseau de neurones peut générer de bien meilleures performances
+que la régression linéaire. Enfin, nous pouvons appeler
+le programme dans TensorBoard, afin de voir sa progression.

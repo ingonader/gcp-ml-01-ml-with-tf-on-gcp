@@ -1,0 +1,250 @@
+Agora que aprendemos
+sobre regularização de L1, vamos nos aprofundar
+na regressão logística e ver por que é importante
+usar a regularização. Suponha que queremos prever os resultados
+de lançamentos de moedas. Sabemos que, para uma moeda comum, o valor esperado é de 50%
+cara e 50% coroa. E se tivéssemos uma moeda ruim, com uma curva? Digamos que queremos generalizar a
+previsão de lançamentos de moedas para todas as moedas,
+boas e ruins, grandes e pequenas, pesadas e leves etc. Que atributos podemos usar para prever
+se um lançamento será cara ou coroa? Talvez pudéssemos usar o ângulo da curva
+porque ele distribui X% da massa na outra dimensão e/ou cria
+uma diferença na rotação, devido à resistência do ar
+ou centro de massa. A massa da moeda também pode ser
+um bom atributo, assim como tamanho, propriedades
+como diâmetro, espessura etc. Poderíamos usar engenharia
+de atributos nisso para conseguir o volume da moeda
+e a densidade. Talvez o tipo de material,
+ou materiais, que compõem a moeda
+sejam informações úteis. Esses atributos seriam fáceis de medir. Porém, eles são apenas um lado da moeda,
+com o perdão do trocadilho. O resto se resume à ação
+do lançamento em si, como a velocidade linear e angular
+que foi dada à moeda, o ângulo do lançamento, o ângulo ao cair, a velocidade do vento etc. Estes podem ser
+mais difíceis de medir. Agora que temos todos esses atributos, qual é o modelo mais simples que podemos
+usar para prever cara ou coroa? Regressão linear, claro. Mas o que poderia dar errado
+com essa escolha? Nossos rótulos são cara ou coroa, ou pensando de outra forma, cara ou não,
+o que poderia ser representado com uma codificação one-hot
+de 1 para cara e 0 para não. Mas, se usarmos a regressão linear com uma função de perda
+de erro quadrática média padrão, nossas previsões podem acabar ficando
+fora do intervalo de 0 e 1. O que significa se previrmos 2,75
+para o estado de lançamento da moeda? Isso não faz sentido. Um modelo que minimiza o erro quadrado
+não tem nenhuma restrição para tratar como uma probabilidade
+em 0 a 1, mas isso é o que precisamos aqui. Você pode imaginar um modelo que prevê
+valores menores que 0 ou maiores que 1
+para alguns exemplos novos. Isso significaria que não podemos usar
+esse modelo como uma probabilidade. Truques simples como limitar as previsões
+em 0 ou 1 introduziriam um viés. Então, precisamos de algo mais, em particular, uma nova função de perda. Converter isso da regressão linear para a
+regressão logística pode resolver. Em um curso anterior, passamos pela história do ML
+e usamos a função de ativação sigmoide. Vamos olhar isso mais
+profundamente agora. A função de ativação sigmoide
+pega a soma ponderada, W transposto de X, mais B de uma regressão linear
+e em vez de apenas produzir isso e calcular a perda do erro
+quadrático médio, mudamos a função de ativação
+de linear para sigmoide, que toma isso como um argumento
+e esmaga suavemente entre 0 e 1. A entrada no sigmoide, normalmente a saída
+da regressão linear, é chamada de logit. Estamos realizando uma transformação
+não linear no modelo linear. Observe como a probabilidade se assemelha
+a 0, quando os logits vão para infinito negativo, e para 1,
+quando vão para o infinito positivo. O que isso implica ao treinamento? Ao contrário do erro
+quadrático médio, o sigmoide nunca adivinha
+a probabilidade de 1,0 ou 0,0. Isso significa que a movimentação
+constante dos gradientes descendentes, para ter
+a perda cada vez mais próxima de 0, levará as ponderações mais perto
+de mais ou menos infinito na ausência de regularização, o que pode trazer problemas. Primeiro, como podemos interpretar
+a saída de um sigmoide? É apenas uma função que varia de 0 a 1, das quais há muitas,
+ou é algo mais? A boa notícia é que há algo mais: é uma estimativa
+de probabilidade calibrada. Além do intervalo, a função sigmoide é a função
+de distribuição cumulativa da distribuição de probabilidade
+logística, em que a função quantílica é o inverso do logit, que modela
+as probabilidades de registro. Portanto, o oposto de um sigmoide
+pode ser considerado probabilidades. Desta maneira, podemos pensar
+em calibração como o fato de as saídas serem
+valores reais como probabilidades. Isso está em contraste
+com saídas não calibradas como um vetor de incorporação
+que é internamente informativo, mas os valores não têm correlação real. Muitas funções de ativação de saída, na verdade, um número infinito, podem fornecer um número entre 0 e 1,
+mas somente este sigmoide é comprovadamente
+uma estimativa calibrada da probabilidade de ocorrência
+do conjunto de dados de treino. Usando este fato sobre
+a função de ativação sigmoide, podemos moldar problemas de classificação
+binária em problemas probabilísticos. Por exemplo, em vez de um modelo apenas
+prever um sim ou não, como se um cliente
+comprará um item, ele pode agora prever a probabilidade
+do cliente comprar um item. Isso, combinado com um limite, pode fornecer muito mais poder preditivo
+do que apenas uma resposta binária. Agora que calculamos a saída
+de regressões logísticas para uma probabilidade calibrada entre
+0 e 1, como podemos encontrar o erro e usá-lo para atualizar as
+ponderações por meio da retropropagação? Usamos uma função de perda
+chamada entropia cruzada, que também é a perda de registro. Ao contrário do erro quadrático médio, há menos ênfase nos erros
+em que a saída é relativamente próxima do rótulo, que é quase linear
+em comparação com o quadrático. No entanto, diferentemente
+do erro quadrático médio, a entropia cruzada cresce muito quando a
+previsão está próxima ao oposto do rótulo. Em outras palavras, há uma penalidade
+muito alta quando o modelo não apenas erra, mas o faz
+com muita confiança. Além disso, a derivada do erro quadrático
+médio pode causar problemas no treino. À medida que empurramos a saída
+para mais perto de 0 ou 1, e o gradiente, que é a saída vezes um
+menos a saída, fica menor e altera as ponderações
+cada vez menos. O treino pode parar completamente. No entanto, o gradiente
+por meio da entropia é uma função logística vezes 1
+menos a função logística, que convenientemente cancela
+durante a retropropagação, portanto, sem esse problema. No entanto, a regularização
+é importante na regressão logística porque levar a perda para 0
+é difícil e perigoso. Primeiro, como o gradiente descendente
+procura minimizar a entropia cruzada, ele empurra os valores de saída próximos
+de 1 para rótulos positivos e próximos de 0
+para rótulos negativos. Devido à equação do sigmoide, a função se assemelha a 0
+quando a lógica é infinito negativo e a 1 quando a lógica é infinito positivo. Para ter os logits no infinito
+negativo ou positivo, pense que as ponderações são aumentadas,
+levando a problemas de estabilidade numérica,
+estouros positivos ou negativos. Isso é perigoso e pode
+arruinar nosso treinamento. Além disso, perto das assíntotas como você vê no gráfico, a função sigmoide se torna mais plana. Isso significa que a derivada está ficando
+cada vez mais próxima de 0. Como usamos a derivada e a retropropagação
+para atualizar as ponderações, é importante que o gradiente
+não se torne 0, ou então, o treino será interrompido. Isso é chamado saturação, quando todas as ativações
+acabam nesses platôs, o que leva a um problema de gradiente
+de fuga e dificulta o treinamento. Isso também é um insight
+potencialmente útil aqui. Imagine que você atribua um
+código exclusivo para cada exemplo e mapeie cada um para o próprio atributo. Se você usar uma regressão logística
+não regulamentada, isso levará ao sobreajuste absoluto. À medida que o modelo tenta levar a perda
+para 0 nos exemplos e nunca chega lá, as ponderações para cada atributo
+do indicador serão levados ao infinito positivo ou negativo. Isso pode acontecer na prática, em dados de alta dimensão
+com cruzamentos de atributos. Muitas vezes, há uma enorme massa
+de cruzamentos raros que acontece apenas em um exemplo cada. Então, como podemos
+nos proteger do sobreajuste? Qual destes é importante
+na realização de regressão logística? A resposta correta é A e B. A adição de regularização
+à regressão logística ajuda a manter o modelo mais simples
+com ponderações de parâmetro menores. Esse termo de penalidade,
+adicionado à função de perda, garante que a entropia cruzada por meio
+do gradiente descendente não siga empurrando as ponderações mais perto de mais ou menos infinito,
+causando problemas numéricos. Além disso, com logits menores, podemos ficar nas partes menos planas da função sigmoide, tornando nossos
+gradientes menos próximos de 0, e permitindo que atualizações de
+ponderações e o treino continuem. C é incorreto, assim como E, porque a regularização não transforma as saídas em uma
+estimativa de probabilidade calibrada. O melhor da regressão logística
+é que ela já produz a estimativa da propriedade calibrada, já que a função sigmoide é uma função de distribuição cumulativa da
+distribuição de probabilidade logística. Isso nos permite, de fato, prever probabilidades em vez de apenas
+respostas binárias como sim ou não, verdadeiro ou falso,
+comprar ou vender etc. Para compensar o sobreajuste, fazemos
+a regularização e a parada antecipada. Para a regularização, a complexidade do
+modelo aumenta com ponderações grandes e quando ajustamos e começamos a ter
+ponderações maiores para cenários raros, acabamos aumentando a perda,
+então paramos. A regularização de L2 manterá os valores
+de ponderação menores e a regularização de L1 manterá o modelo
+mais esparso ao derrubar atributos fracos. Para encontrar opções ideais de
+hiperparâmetero L1 e L2, durante o ajuste dele,
+procure o ponto na função de perda de validação
+em que conseguiu o valor mais baixo. Nesse ponto, qualquer regularização
+a menos aumenta sua variância, começa a sobreajustar
+e prejudica a generalização, e qualquer regularização a mais
+aumenta seu viés, começa a diminuir
+e prejudica sua generalização. As paradas antecipadas param de treinar
+quando o sobreajuste começa. Conforme você treina o modelo, você precisa avaliá-lo no conjunto
+de dados de validação, cada etapa, período, minuto etc. Conforme o treino continua,
+tanto o erro de treino, quanto o erro de validação
+estarão diminuindo, mas, em algum momento, o erro de validação
+pode começar a aumentar. É nesse ponto que o modelo está começando
+a memorizar o conjunto de dados de treino e a perder a capacidade de generalizar
+para o conjunto de dados de validação e, mais importante, para os dados novos
+que usaremos para esse modelo. Usar a parada antecipada interrompe
+o modelo neste ponto e, em seguida, faria o backup
+e usaria as ponderações da etapa anterior, antes de atingir o erro
+de validação e o ponto de função. Aqui, a perda é apenas L(w, D), ou seja, nenhum termo de regularização. Curiosamente, a parada antecipada
+é um equivalente aproximado da regularização de L2
+e é frequentemente usada no lugar dela, porque é mais barata. Felizmente, na prática,
+sempre usamos a regularização exposta L1 e L2 e também uma certa quantidade
+da regularização de parada antecipada. Mesmo que a regularização de L2 e a parada
+antecipada pareçam um pouco redundantes, para sistemas liberais,
+você não pode escolher os hiperparâmetros ideais, e a parada
+antecipada ajuda a corrigir isso. É ótimo ter uma probabilidade do nosso
+modelo de regressão logística. No entanto, às vezes, os usuários só querem que uma
+decisão seja feita para eles, para os problemas reais deles. Se o e-mail precisa ser enviado para
+a pasta de spam ou não, o empréstimo será aprovado ou não, por qual caminho devemos guiar o usuário. Como podemos usar a estimativa
+de probabilidade para ajudar a ferramenta usada no modelo
+a tomar uma decisão? Escolhemos um limite. Um limite simples de um problema
+de classificação binária é todas as probabilidades
+menores ou iguais a 50% como não e todas as probabilidades maiores
+que 50% como sim. No entanto, para certos problemas reais, os ponderamos em uma divisão diferente, como 60-40, 20-80, 19-91 etc. Dependendo de como queremos o equilíbrio
+dos erros tipo 1 e tipo 2, em outras palavras, nosso saldo
+de falsos positivos e falsos negativos. Para classificação binária, teremos
+quatro resultados possíveis: verdadeiros positivos,
+verdadeiros negativos, falsos positivos
+e falsos negativos. Combinações desses valores podem levar
+a métricas de avaliação como precisão, que é o número de verdadeiros positivos
+divididos por todos os positivos e retorno, que é o número
+de verdadeiros positivos dividido pela soma de verdadeiros
+positivos e falsos negativos, que dá a sensibilidade ou
+taxa de verdadeiros positivos. Você pode ajustar sua escolha de limite
+para otimizar a métrica de sua escolha. Há uma maneira fácil
+de nos ajudar a fazer isso? Uma curva de característica de operação
+do receptor, ou curva ROC, mostra como uma certa previsão do modelo cria
+taxas diferentes de positivo verdadeiro em relação a falso positivo, quando
+limites diferentes de decisão são usados. Conforme diminuímos o limite, estamos mais
+propensos a ter mais falsos positivos, mas também aumentaremos o número de
+verdadeiros positivos que encontrarmos. Idealmente, um modelo perfeito teria 0
+falsos positivos e 0 falsos negativos, e, ligando isso nas equações, daria uma taxa positiva verdadeira de 1
+e uma taxa falsa positiva de 0. Para criar uma curva, escolhemos cada
+limite de decisão possível e reavaliamos. Cada valor de limite cria um único ponto, mas avaliando muitos limites,
+em algum momento uma curva é formada. Felizmente, há um algoritmo baseado
+em classificação eficiente para isso. Cada milha criaria
+uma curva ROC diferente. E como usar essas curvas para comparar
+o desempenho relativo dos modelos quando não sabemos exatamente qual
+limite de decisão queremos usar? Podemos usar a área abaixo da curva
+como um desempenho de medida agregado em todos os
+possíveis limites de classificação. AUC ajuda você a escolher entre os modelos quando você não sabe qual
+será o limite do seu sistema. É como perguntar, se escolhermos um
+positivo e negativo aleatórios, qual é a probabilidade de o meu modelo
+pontuá-los na ordem relativa correta? Os pontos positivos da AUC são a escala e variante e limiar
+e variante de classificação. As pessoas gostam de usá-la
+por esses motivos. As pessoas às vezes também usam AUC
+para a curva de ganho de retorno, ou mais recentemente, curvas de ganho
+de retorno de precisão, que usam combinações diferentes dos quatro resultados de produção
+como métricas ao longo dos eixos. No entanto, tratar isso apenas como uma
+medida agregada pode mascarar os efeitos. Por exemplo, uma pequena melhora na AUC
+pode vir por meio de um trabalho melhor de classificação dos negativos muito
+improváveis como ainda mais improváveis. O que é bom, mas potencialmente
+não benéfico. Ao avaliar nossos modelos
+de regressão logística, precisamos garantir que as previsões
+sejam sem viés. Quando falamos de viés
+nesse sentido, não estamos falando do termo de viés
+na equação linear dos modelos. Em vez disso, deveria haver uma mudança geral na direção
+positiva ou negativa. Uma maneira simples de verificar
+o viés da predição é comparar as previsões de valor médio feitas pelo
+modelo, em um conjunto de dados, com o valor médio dos rótulos
+nesse conjunto de dados. Se eles não estiverem próximos, você pode ter um problema. O viés é como um sinal de alerta, e podemos usá-lo como
+um indicador de algo errado. Se você tem um viés, definitivamente tem um problema. Mas mesmo sem viés, não significa que tudo
+no seu sistema é perfeito, mas é uma boa verificação
+de integridade. Se você tem um viés, pode ter um conjunto
+de atributos incompletos, um canal com bugs, uma amostra
+de treino tendenciosa etc. É possível procurar por viés
+em fatias de dados, o que pode ajudar a orientar melhorias
+na remoção do viés do modelo. Vejamos um exemplo de como fazer isso. Aqui está um gráfico de calibração do
+navegador de experimento simples. Você notará que isso não é
+uma escala de registro, já que estamos comparando as probabilidades de
+registro intervaladas previstas com as observadas. Você notará que tudo está bem
+calibrado no intervalo moderado, mas o extremo final baixo é bem ruim. Isso pode acontecer quando partes da
+base de dados não estão bem representadas ou por causa de ruído, ou devido
+à regularização excessivamente forte. A organização em intervalos
+pode ser feita de duas formas: quebrando as previsões de destino, ou distribuindo por quantis. Por que precisamos organizar a previsão para fazer gráficos de calibração
+na previsão de probabilidades? Para qualquer evento,
+o rótulo verdadeiro é 0 ou 1. Por exemplo, não clicou ou clicou. Mas nossos valores de previsão serão
+sempre um palpite probabilístico entre os valores, como 0,1 ou 0,33. Para qualquer exemplo individual,
+estamos sempre desligados. Mas se você agrupar exemplos suficientes, gostaríamos de ver isso na média,
+a soma dos 0 e 1 verdadeiros é quase a mesma que a
+probabilidade média que estamos prevendo. Qual destes é importante ao
+realizar a regressão logística? A resposta correta é todas as opções. É importante que o
+modelo generalize, de modo que tenhamos as melhores
+previsões em dados novos, que é o motivo pelo qual o criamos. Para ajudar nisso, é importante não
+sobreajustarmos dados. Portanto, adicionar termos
+de penalidade à função objetiva, como a regularização de L1 para dispersão,
+L2 para manter a ponderação pequena, e a parada antecipada podem ajudar nisso. Também é importante escolher
+um limite ajustado para decidir quais decisões tomar quando
+a estimativa de probabilidade for exibida, para minimizar ou maximizar a métrica de
+negócios, conforme importante para você. Se isso não estiver bem definido, podemos usar mais meios estatísticos, como calcular o número de verdadeiros
+e falsos positivos e negativos, e combiná-los em métricas diferentes, como as taxas
+de verdadeiro e falso positivo. Podemos repetir este processo para muitos limites diferentes
+e, em seguida, traçar a área abaixo da curva, AUC, para ter uma medida
+agregada relativa do desempenho do modelo. Por fim, é importante que
+nossas previsões sejam sem viés, e, mesmo que não haja viés, ainda precisamos ser diligentes para
+garantir um bom desempenho do modelo. Começamos a procurar por vieses
+certificando-nos de que a média das previsões é
+próxima às observações dos erros. Uma maneira de descobrir onde os vieses
+podem estar é examinar fatias de dados e usar algo como um gráfico de calibração para isolar as áreas problemáticas
+para refinamento adicional.

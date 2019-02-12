@@ -1,0 +1,339 @@
+1
+00:00:00,000 --> 00:00:04,160
+Let's start with the first section of this module; Regularization.
+
+2
+00:00:04,160 --> 00:00:08,100
+Remember our global training a model is to minimize the loss value.
+
+3
+00:00:08,100 --> 00:00:09,975
+If you craft the loss curve,
+
+4
+00:00:09,975 --> 00:00:12,180
+both on the training and test data,
+
+5
+00:00:12,180 --> 00:00:14,115
+it may look something like this.
+
+6
+00:00:14,115 --> 00:00:19,875
+The graph shows loss on the Y-axis versus time on the X-axis.
+
+7
+00:00:19,875 --> 00:00:21,855
+Notice anything wrong here?
+
+8
+00:00:21,855 --> 00:00:24,685
+Yeah, the loss value is nicely trending down on
+
+9
+00:00:24,685 --> 00:00:29,280
+the training data but shoots upwards at some point on the test data.
+
+10
+00:00:29,280 --> 00:00:31,050
+That can't be good.
+
+11
+00:00:31,050 --> 00:00:34,785
+Clearly some amount of overfitting is going on here,
+
+12
+00:00:34,785 --> 00:00:38,490
+it seems to be correlated with the number of training iterations.
+
+13
+00:00:38,490 --> 00:00:40,045
+How could we address this?
+
+14
+00:00:40,045 --> 00:00:43,350
+We could reduce the number of training iteration and stop early.
+
+15
+00:00:43,350 --> 00:00:45,800
+Early stopping is definitely an option,
+
+16
+00:00:45,800 --> 00:00:47,820
+but there must be better ones.
+
+17
+00:00:47,820 --> 00:00:51,395
+Here's where regularization comes into the picture.
+
+18
+00:00:51,395 --> 00:00:55,335
+Let's take our intuition using Tensorflow playground.
+
+19
+00:00:55,335 --> 00:00:58,980
+You must have seen and used this playground in previous courses.
+
+20
+00:00:58,980 --> 00:01:00,870
+But to quickly remind you,
+
+21
+00:01:00,870 --> 00:01:06,835
+Tensorflow playground is a handy little tool for visualizing how neural networks learn.
+
+22
+00:01:06,835 --> 00:01:12,615
+we extensively use it throughout this specialization to intuitively grasp the concepts.
+
+23
+00:01:12,615 --> 00:01:15,645
+Let me draw your attention to the screen.
+
+24
+00:01:15,645 --> 00:01:18,030
+There is something odd going on here.
+
+25
+00:01:18,030 --> 00:01:22,680
+That is a region in the bottom left that's hinting towards blue,
+
+26
+00:01:22,680 --> 00:01:25,170
+there is nothing in the data suggesting blue.
+
+27
+00:01:25,170 --> 00:01:29,610
+The model decision is kind of crazy.
+
+28
+00:01:29,610 --> 00:01:31,140
+Why do you think that is?
+
+29
+00:01:31,140 --> 00:01:36,310
+Notice the relative thickness of the five lines running from input to output?
+
+30
+00:01:36,310 --> 00:01:40,050
+These lines show the relative weight of the five features.
+
+31
+00:01:40,050 --> 00:01:43,045
+The lines emanating from X1 and
+
+32
+00:01:43,045 --> 00:01:47,140
+X2 are much thicker than those coming from the feature crosses.
+
+33
+00:01:47,140 --> 00:01:50,110
+So the feature crosses are contributing far
+
+34
+00:01:50,110 --> 00:01:53,510
+less to the model than the normal uncrossed features.
+
+35
+00:01:53,510 --> 00:01:57,160
+Removing all the feature crosses gives a sanier model.
+
+36
+00:01:57,160 --> 00:02:01,105
+You should try this for yourself and see how curved boundaries suggestive
+
+37
+00:02:01,105 --> 00:02:05,610
+of overfitting disappears and test loss converges.
+
+38
+00:02:05,610 --> 00:02:09,250
+After 1000 iterations, test loss should be
+
+39
+00:02:09,250 --> 00:02:13,645
+a slightly lower value than the feature crosses there in play.
+
+40
+00:02:13,645 --> 00:02:18,350
+Although your results may vary a bit depending on the dataset.
+
+41
+00:02:18,350 --> 00:02:22,830
+The data in this exercise is basically linear data plus noise.
+
+42
+00:02:22,830 --> 00:02:27,960
+If you use a model that's too complicated such as the one with too many crosses,
+
+43
+00:02:27,960 --> 00:02:31,870
+be given the opportunity to fit to the noise in the training data,
+
+44
+00:02:31,870 --> 00:02:35,880
+after that the costs of making the model perform badly on test data.
+
+45
+00:02:35,880 --> 00:02:38,950
+Clearly early stopping cannot help us here.
+
+46
+00:02:38,950 --> 00:02:42,750
+As the model complexity that we need to bring under control.
+
+47
+00:02:42,750 --> 00:02:46,145
+But how could we measure model complexity and avoid it?
+
+48
+00:02:46,145 --> 00:02:49,740
+We concluded that simpler models are usually better.
+
+49
+00:02:49,740 --> 00:02:52,920
+We don't want to cook with every spice in the spice rack.
+
+50
+00:02:52,920 --> 00:02:57,540
+There's a whole field around this called generalization theory or GT theory,
+
+51
+00:02:57,540 --> 00:03:01,440
+that goes about defining the statistical framework.
+
+52
+00:03:01,440 --> 00:03:05,069
+The easiest way to think about it though, is by intuition,
+
+53
+00:03:05,069 --> 00:03:09,270
+based on 14th century principles laid out by William Ockham.
+
+54
+00:03:09,270 --> 00:03:13,680
+While training model, we will apply Ockham's Razor principle as
+
+55
+00:03:13,680 --> 00:03:18,420
+our heuristic guide in favoring simpler models with less assumptions about the training.
+
+56
+00:03:18,420 --> 00:03:19,740
+Let's look into some of
+
+57
+00:03:19,740 --> 00:03:22,050
+the most common regularization techniques that
+
+58
+00:03:22,050 --> 00:03:24,600
+can help us apply this principle in practice.
+
+59
+00:03:24,600 --> 00:03:27,705
+The idea is to penalize model complexity.
+
+60
+00:03:27,705 --> 00:03:30,930
+So far in our training process,
+
+61
+00:03:30,930 --> 00:03:34,310
+we've been trying to minimize loss of the data given the model.
+
+62
+00:03:34,310 --> 00:03:37,815
+We need to balance that against the complexity of the model.
+
+63
+00:03:37,815 --> 00:03:41,040
+Before we talk about how to measure model complexity,
+
+64
+00:03:41,040 --> 00:03:45,570
+let's pause and understand why we said balance complexity against loss.
+
+65
+00:03:45,570 --> 00:03:50,625
+The truth is that oversimplified models are useless.
+
+66
+00:03:50,625 --> 00:03:52,340
+If you take it to the extreme,
+
+67
+00:03:52,340 --> 00:03:54,315
+you will end up with no model.
+
+68
+00:03:54,315 --> 00:03:57,090
+We need to find the right balance between
+
+69
+00:03:57,090 --> 00:04:00,000
+simplicity and accurate fitting of the training data.
+
+70
+00:04:00,000 --> 00:04:02,580
+I hope by now it's clear why this approach is
+
+71
+00:04:02,580 --> 00:04:05,580
+arguably more principled than early stopping.
+
+72
+00:04:05,580 --> 00:04:10,185
+Regularization is one of the major fields of research within machine learning.
+
+73
+00:04:10,185 --> 00:04:13,020
+There are many published techniques and more to come.
+
+74
+00:04:13,020 --> 00:04:15,330
+We already mentioned early stopping.
+
+75
+00:04:15,330 --> 00:04:17,715
+We also started exploring the group of methods
+
+76
+00:04:17,715 --> 00:04:20,775
+under the umbrella parameter norm penalties.
+
+77
+00:04:20,775 --> 00:04:24,045
+There are also data set augmentation methods,
+
+78
+00:04:24,045 --> 00:04:28,260
+noise robustness, sparse representation, and many more.
+
+79
+00:04:28,260 --> 00:04:32,520
+In this module, we will have a closer look at L1 and L2
+
+80
+00:04:32,520 --> 00:04:36,765
+regularization methods from Parameter Norm Penalties Group of Techniques.
+
+81
+00:04:36,765 --> 00:04:38,250
+But before we do that,
+
+82
+00:04:38,250 --> 00:04:43,240
+let's quickly remind ourselves what problem regularization is solving for us.
+
+83
+00:04:43,240 --> 00:04:47,990
+Regularization refers to any technique that helps generalize a model.
+
+84
+00:04:47,990 --> 00:04:50,790
+A generalized model performs well not just on
+
+85
+00:04:50,790 --> 00:04:53,830
+training data but also on never seen test data.

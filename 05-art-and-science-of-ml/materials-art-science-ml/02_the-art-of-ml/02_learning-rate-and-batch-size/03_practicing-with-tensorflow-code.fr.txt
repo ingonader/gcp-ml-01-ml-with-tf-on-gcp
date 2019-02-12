@@ -1,0 +1,18 @@
+Maintenant que nous connaissons
+tous ces facteurs, comment les définir
+dans le code TensorFlow ? Examinons de plus près
+un exemple de code. Nous contrôlons la taille de lot
+via la fonction "input". Le taux d'apprentissage est un paramètre
+de l'algorithme d'optimisation, FtrlOptimizer dans le cas présent. Le taux de régularisation est aussi un paramètre
+de l'algorithme d'optimisation. Après avoir défini l'optimiseur, nous le passons à l'objet "estimateur". Ici, l'estimateur est une instance
+de la classe "LinearRegressor". Au lieu de définir le nombre d'itérations,
+vous devez spécifier le nombre de pas, car le nombre d'itérations ne peut pas garantir un entraînement distribué
+sans échec. Vous devez ajuster le nombre de pas
+en fonction de la taille de lot et du taux d'apprentissage. Par exemple, si vous devez effectuer
+un traitement pendant 100 itérations et que vous avez 1 000 exemples, pour une taille de lot de 1 000,
+vous auriez 100 pas, et pour une taille de lot de 100,
+vous auriez 1 000 pas. Fondamentalement, le nombre de pas
+est égal au nombre d'itérations multiplié par le nombre d'exemples
+divisé par la taille de lot. Rappelez-vous, si vous réduisez
+le taux d'apprentissage, vous devrez entraîner votre modèle
+plus longtemps.

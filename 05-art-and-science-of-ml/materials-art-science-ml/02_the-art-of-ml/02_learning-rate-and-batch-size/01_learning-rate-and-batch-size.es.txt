@@ -1,0 +1,52 @@
+Con esto llegamos
+a la segunda sección de este módulo en la que hablaremos de dos
+hiperparámetros importantes la tasa de aprendizaje
+y el tamaño del lote. Para comenzar, experimentemos 
+con ellos en Playground. Comencemos con la tasa de aprendizaje. La tasa de aprendizaje controla el tamaño 
+del paso en el espacio del peso. Con un tamaño del lote igual a 30 y todos los demás parámetros constantes definí mi primera
+tasa de aprendizaje en 0.01. TensorFlow Playground
+usa puntos de inicio aleatorios. Es posible que su resultado
+sea distinto del mío. Note que hay algunas variaciones
+en la curva de pérdida pero converge muy rápidamente. En mi caso, obtuve un valor de pérdida
+de 0.139 en los datos de prueba con menos de 300 ciclos de entrenamiento. Cuando cambié
+la tasa de aprendizaje a 0.001 observé un rendimiento mucho más lento. En mi caso, tomó casi 3,000 ciclos para llegar a una pérdida de prueba
+comparable al experimento anterior. Lo bueno es que no habrá
+mucha variación en la curva de pérdida. Debería converger de manera
+lenta pero constante. Veamos los efectos del tamaño del lote. El tamaño del lote controla la cantidad
+de muestras para calcular el gradiente. Con la tasa de aprendizaje en 0.01 y todos los otros parámetros constantes primero probé
+un tamaño del lote igual a 100. Si está haciendo lo mismo que yo tal vez se pregunte cómo aumentar
+el tamaño del lote más allá de 30. No se preocupe, no es un error. Está diseñado así. La IU no permite sobrepasar 30 pero se puede cambiar en la URL. Con un tamaño de lote igual a 100 observé una convergencia bastante lenta. Tomó más de 1,000 ciclos llegar a un valor de pérdida similar
+al de experimentos anteriores. Pero no hubo pasos con mucho ruido. Cuando reduje el tamaño de lote a 5 obtuve resultados muy rápidos. Básicamente, solo tardó 65 ciclos con una pérdida de prueba similar
+a la de experimentos anteriores. Pero hubo algunos pasos ruidosos
+visibles en la curva de pérdida. El rendimiento del modelo
+es muy sensible a la tasa de aprendizaje y el tamaño del lote. ¿No se siente
+como afinar un instrumento musical? Le dije que esto tiene algo de arte. Recordemos nuestros hallazgos. La tasa de aprendizaje controla el tamaño
+del paso en el espacio del peso. Si los pasos son muy pequeños el entrenamiento tardará mucho. Por otro lado,
+si los pasos son muy grandes rebotará por todos lados e incluso
+podría ignorar el punto óptimo. Una tasa de aprendizaje de 0.001 equivale a un tamaño de paso
+de 1/1,000 del espacio de entrada. Podría ser una tasa
+de aprendizaje muy baja si tiene una superficie
+de optimización muy grande. El valor predeterminado
+para el Estimator LinearRegressor en la biblioteca de TensorFlow
+está definido en 0.2 o 1/raíz cuadrada
+de la cantidad de atributos. Esto supone que los valores
+de atributos y etiquetas son números pequeños. La otra opción es el tamaño del lote que controla la cantidad de muestras
+con la que calculamos el gradiente. Si el tamaño de lote es muy pequeño podríamos terminar rebotando,
+porque el lote puede no ser una buena representación
+de la entrada. Por otro lado, si el tamaño
+del lote es muy grande el entrenamiento tardará mucho. Como regla general entre 40 y 100 suele ser un buen rango
+para el tamaño del lote. Puede llegar hasta 500. Ya que estamos hablando de lotes no olvidemos
+la redistribución del lote. Tal vez haya escuchado
+que es bueno redistribuir los ejemplos. Pero ¿por qué? Piense en títulos de libros, como estos. Supongamos que quiere
+entrenar un modelo para sugerirle un libro a un usuario. Observe que los libros
+están ordenados alfabéticamente. Si usa la base de datos como está cada lote de entrenamiento
+contendrá un subconjunto de títulos basado en el orden alfabético. Le daría a su pobre modelo una visión
+muy reducida del dominio del problema y le impediría descubrir toda la verdad. No queremos ser malos profesores. Queremos que cada lote sea representativo
+de todo el conjunto de datos. La mayoría de los conjuntos de datos
+tienen un orden inherente. Por ejemplo,
+estos títulos ordenados alfabéticamente registros de clientes
+ordenados por código postal compras archivadas
+por temporadas o año, etc. Si redistribuimos correctamente
+el conjunto de datos nos aseguramos de que cada lote
+sea representativo del conjunto de datos. Recuerde que el gradiente
+se calcula dentro del lote. Si el lote no es representativo la pérdida variará mucho de lote a lote.

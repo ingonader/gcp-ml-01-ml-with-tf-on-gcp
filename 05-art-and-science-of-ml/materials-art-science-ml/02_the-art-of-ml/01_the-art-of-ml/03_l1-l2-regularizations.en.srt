@@ -1,0 +1,309 @@
+1
+00:00:00,520 --> 00:00:05,520
+We know we are going to use regularization
+methods that penalize model complexity.
+
+2
+00:00:05,520 --> 00:00:08,130
+Now the question is,
+how to measure model complexity.
+
+3
+00:00:09,170 --> 00:00:13,630
+Both L1 and L2 regularization
+methods represent model complexity
+
+4
+00:00:13,630 --> 00:00:17,950
+as the magnitude of the weight vector,
+and try to keep that in check.
+
+5
+00:00:17,950 --> 00:00:20,830
+From linear algebra you should
+
+6
+00:00:20,830 --> 00:00:25,380
+remember that the magnitude of a vector
+is represented by the norm function.
+
+7
+00:00:25,380 --> 00:00:29,200
+Let's quickly review L1 and
+L2 norm functions.
+
+8
+00:00:29,200 --> 00:00:32,140
+The weight vector can be of
+any number of dimensions, but
+
+9
+00:00:32,140 --> 00:00:35,010
+it's easier to visualize it
+in two-dimensional space.
+
+10
+00:00:35,010 --> 00:00:42,570
+So a vector with w0 =a, w1=b,
+would look like this green arrow.
+
+11
+00:00:42,570 --> 00:00:44,660
+Now, what's the magnitude of this vector?
+
+12
+00:00:46,320 --> 00:00:50,790
+You may instantly think C because
+you are applying the most common way
+
+13
+00:00:50,790 --> 00:00:55,010
+that we learn in high school,
+the Euclidean distance from the origin.
+
+14
+00:00:55,010 --> 00:00:58,949
+C would be the square root of
+sum of s squared plus b squared.
+
+15
+00:01:00,440 --> 00:01:05,780
+In linear algebra, this is called the L2
+norm, denoted by the double bars and
+
+16
+00:01:05,780 --> 00:01:11,160
+the subscript of 2, or no subscript at
+all, because 2 is the known default.
+
+17
+00:01:11,160 --> 00:01:15,580
+The L2 norm is calculated as the square
+root of sum of the squared values of
+
+18
+00:01:15,580 --> 00:01:17,710
+all vector components.
+
+19
+00:01:17,710 --> 00:01:21,410
+But that's not the only way magnitude
+of a vector can be calculated.
+
+20
+00:01:23,030 --> 00:01:26,010
+Another common method is L1 norm.
+
+21
+00:01:26,010 --> 00:01:30,490
+L1 measures absolute value of
+a plus absolute value of b,
+
+22
+00:01:30,490 --> 00:01:32,760
+basically the yellow
+path highlighted here.
+
+23
+00:01:33,830 --> 00:01:38,420
+Now remember, we're looking for
+a way to define model complexity.
+
+24
+00:01:38,420 --> 00:01:41,470
+We used L1 and
+L2 as regularization methods,
+
+25
+00:01:41,470 --> 00:01:45,860
+where model complexity is measured in the
+form the magnitude of the weight vector.
+
+26
+00:01:46,880 --> 00:01:50,460
+In other words, if we keep
+the magnitude of our weight vector
+
+27
+00:01:50,460 --> 00:01:53,570
+smaller than certain value,
+we've achieved our goal.
+
+28
+00:01:54,730 --> 00:01:57,410
+Now let's visualize what it means for
+
+29
+00:01:57,410 --> 00:02:01,930
+the L2 norm of our weight vector to
+be under certain value, let's say 1.
+
+30
+00:02:01,930 --> 00:02:06,910
+Since L2 is the Euclidean distance
+from the origin, our desired vector
+
+31
+00:02:06,910 --> 00:02:11,250
+should be bound within this circle with
+a radius of 1, centered on the origin.
+
+32
+00:02:13,020 --> 00:02:18,040
+When trying to keep L1 norm under certain
+value, the area in which our weight vector
+
+33
+00:02:18,040 --> 00:02:20,960
+can reside will take the shape
+of this yellow diamond.
+
+34
+00:02:22,060 --> 00:02:26,660
+The most important takeaway here is that,
+when applying L1 regularization,
+
+35
+00:02:26,660 --> 00:02:30,550
+the optimal value of certain
+weights can end up being zero.
+
+36
+00:02:30,550 --> 00:02:34,560
+And that's because of the extreme
+diamond shape of this optimal region
+
+37
+00:02:34,560 --> 00:02:36,495
+that we are interested in.
+
+38
+00:02:36,495 --> 00:02:40,666
+Thus as opposed to the smooth
+circular shape in L2 regularization.
+
+39
+00:02:42,831 --> 00:02:49,300
+Let's go back to the problem at hand, how
+to regularize our model using vector norm.
+
+40
+00:02:49,300 --> 00:02:53,690
+This is how you apply L2 regularization,
+also known as weight decay.
+
+41
+00:02:55,260 --> 00:02:58,810
+Remember we're trying to keep
+the weight values close to the origin.
+
+42
+00:02:58,810 --> 00:03:03,430
+In 2D space, the weight factor
+would be confined within a circle.
+
+43
+00:03:03,430 --> 00:03:06,360
+You can easily expand
+the concept to 3D space, but
+
+44
+00:03:06,360 --> 00:03:08,700
+beyond 3D is hard to visualize, don't try.
+
+45
+00:03:10,050 --> 00:03:14,730
+To be perfectly honest in machine learning
+we cheat a little in the math department.
+
+46
+00:03:14,730 --> 00:03:18,920
+We use the square of the L2 norm to
+simplify calculation of derivatives.
+
+47
+00:03:20,090 --> 00:03:22,807
+Notice there is a new
+parameter here lambda,
+
+48
+00:03:22,807 --> 00:03:26,525
+this is a simple scalar value that
+allows us to control how much
+
+49
+00:03:26,525 --> 00:03:31,191
+emphasis we want to put on model
+simplicity over minimizing training error.
+
+50
+00:03:33,514 --> 00:03:37,730
+It's another tuning parameter
+which must be explicitly set.
+
+51
+00:03:37,730 --> 00:03:42,830
+Unfortunately, the best value for
+any given problem is data dependent.
+
+52
+00:03:42,830 --> 00:03:47,220
+So we'll need to do some tuning
+either manually or automatically
+
+53
+00:03:47,220 --> 00:03:51,710
+using a tool like hyperparameter tuning
+which we will cover in the next module.
+
+54
+00:03:53,840 --> 00:04:00,430
+To apply L1 regularization,
+we simply swap our L2 norm with L1 norm.
+
+55
+00:04:00,430 --> 00:04:02,770
+Careful though,
+the outcome could be very different.
+
+56
+00:04:04,560 --> 00:04:09,190
+L1 regularization results in
+a solution that's more sparse.
+
+57
+00:04:09,190 --> 00:04:12,770
+Sparsity in this context refers to
+the fact that some of the weights
+
+58
+00:04:12,770 --> 00:04:15,680
+end up having the optimal value of zero.
+
+59
+00:04:15,680 --> 00:04:18,380
+Remember the diamond shape
+of the optimal area?
+
+60
+00:04:18,380 --> 00:04:21,330
+This property of L1
+regularization extensively
+
+61
+00:04:21,330 --> 00:04:23,510
+used as a feature selection mechanism.
+
+62
+00:04:23,510 --> 00:04:28,048
+Feature selection simplifies the ML
+problem by causing a subset of
+
+63
+00:04:28,048 --> 00:04:29,920
+the weight to become zero.
+
+64
+00:04:29,920 --> 00:04:35,060
+Zero weight then highlight the subsitive
+features that can't be safely discarded.

@@ -1,0 +1,1299 @@
+1
+00:00:00,000 --> 00:00:03,060
+Da Sie sich nun besser
+mit neuronalen Netzwerken auskennen,
+
+2
+00:00:03,060 --> 00:00:04,890
+können wir uns dem Training, Problemen
+
+3
+00:00:04,890 --> 00:00:07,140
+und Techniken zuwenden,
+mit denen das Training
+
+4
+00:00:07,140 --> 00:00:10,060
+beschleunigt
+und die Generalisierung optimiert wird.
+
+5
+00:00:10,060 --> 00:00:14,970
+In TensorFlow ist die Nutzung
+von Estimator API und DNNRegressor
+
+6
+00:00:14,970 --> 00:00:17,420
+fast identisch mit
+der Nutzung von LinearRegressor.
+
+7
+00:00:17,420 --> 00:00:20,100
+Es müssen nur ein paar
+Codeparameter hinzugefügt werden.
+
+8
+00:00:20,100 --> 00:00:24,210
+Wir nutzen erfolgsabhängige Optimierer
+wie das Standardprogramm Adagrad
+
+9
+00:00:24,210 --> 00:00:26,600
+oder andere wie Adam.
+
+10
+00:00:26,600 --> 00:00:30,150
+Wir müssen
+den Parameter "hidden_units" hinzufügen,
+
+11
+00:00:30,150 --> 00:00:31,425
+der eine Liste ist.
+
+12
+00:00:31,425 --> 00:00:34,710
+Der Anzahl der Listenelemente
+und verborgenen Ebenen ist identisch.
+
+13
+00:00:34,710 --> 00:00:39,390
+Die Werte sind die jeweilige
+Neuronenzahl für eine verborgene Ebene.
+
+14
+00:00:39,390 --> 00:00:42,625
+Sie lernen auch
+den neuen Parameter "dropout" kennen.
+
+15
+00:00:42,625 --> 00:00:44,430
+Darum geht es in einigen Minuten.
+
+16
+00:00:44,430 --> 00:00:47,580
+Doch jetzt aktivieren
+und deaktivieren wir für jedes Beispiel
+
+17
+00:00:47,580 --> 00:00:51,855
+einzelne Neuronen,
+um die Generalisierung zu optimieren.
+
+18
+00:00:51,855 --> 00:00:54,240
+Sehen Sie sich bitte
+die Tentacle-Dokumentation für
+
+19
+00:00:54,240 --> 00:00:56,430
+alle konfigurierbaren Parameter an.
+
+20
+00:00:56,430 --> 00:00:59,170
+Diese könnten allesamt
+
+21
+00:00:59,170 --> 00:01:01,360
+hyperparameterisiert werden,
+
+22
+00:01:01,360 --> 00:01:04,435
+um die Generalisierungsleistung
+Ihres Modells zu optimieren.
+
+23
+00:01:04,435 --> 00:01:09,345
+Rückpropagierung ist ein klassisches Thema
+in Kursen über neuronale ML-Netzwerke.
+
+24
+00:01:09,345 --> 00:01:10,760
+Es kann jedoch so sein,
+
+25
+00:01:10,760 --> 00:01:13,360
+als würde man erklären,
+wie ein Compiler erstellt wird:
+
+26
+00:01:13,360 --> 00:01:15,759
+unverzichtbar für das tiefere Verständnis,
+
+27
+00:01:15,759 --> 00:01:18,415
+aber anfangs nicht unbedingt erforderlich.
+
+28
+00:01:18,415 --> 00:01:21,280
+Wichtig ist, dass es
+einen effizienten Algorithmus für
+
+29
+00:01:21,280 --> 00:01:25,360
+Ableitungen gibt und dass sie von
+TensorFlow automatisch berechnet werden.
+
+30
+00:01:25,360 --> 00:01:28,330
+Wir werden über Problemfälle sprechen,
+
+31
+00:01:28,330 --> 00:01:29,910
+z. B. verschwundene Gradienten,
+
+32
+00:01:29,910 --> 00:01:32,190
+explodierende Gradienten
+und inaktive Ebenen.
+
+33
+00:01:32,190 --> 00:01:38,109
+Beim Training können speziell bei großen
+Netzwerken Gradienten verschwinden.
+
+34
+00:01:38,109 --> 00:01:43,610
+Jede weitere Ebene im Netzwerk kann
+das Signal-Rausch-Verhältnis reduzieren,
+
+35
+00:01:43,610 --> 00:01:45,490
+z. B. wenn auf Ihren verborgenen Ebenen
+
+36
+00:01:45,490 --> 00:01:49,000
+die Aktivierungsfunktionen
+"sigmoid" und "tanh" verwendet werden.
+
+37
+00:01:49,000 --> 00:01:51,530
+Zu Beginn der Sättigung landen Sie
+
+38
+00:01:51,530 --> 00:01:54,715
+in den hohen asymptotischen
+Regionen der Funktion, doch der Abhang
+
+39
+00:01:54,715 --> 00:01:58,000
+kommt immer näher, bis ungefähr 0.
+
+40
+00:01:58,000 --> 00:02:00,930
+Wenn Sie bei der Rückpropagierung
+rückwärts durchs Netz gehen,
+
+41
+00:02:00,930 --> 00:02:04,150
+kann der Gradient kleiner werden, weil Sie
+
+42
+00:02:04,150 --> 00:02:07,800
+diese kleinen Gradienten so lange
+verbinden, bis der Gradient verschwindet.
+
+43
+00:02:07,800 --> 00:02:10,854
+Dann werden Ihre
+Gewichtungen nicht mehr aktualisiert
+
+44
+00:02:10,854 --> 00:02:13,900
+und das Training wird abrupt abgebrochen.
+
+45
+00:02:13,900 --> 00:02:17,065
+Die einfache Lösung: nicht sättigende,
+
+46
+00:02:17,065 --> 00:02:21,900
+nicht lineare Aktivierungsfunktionen
+wie ReLUs oder ELUs verwenden.
+
+47
+00:02:21,900 --> 00:02:26,710
+Beim entgegengesetzten Problem
+können Gradienten explodieren,
+
+48
+00:02:26,710 --> 00:02:31,315
+weil sie so groß werden,
+dass unsere Gewichtungen quasi überlaufen.
+
+49
+00:02:31,315 --> 00:02:34,295
+Selbst wenn man mit
+relativ kleinen Gradienten beginnt,
+
+50
+00:02:34,295 --> 00:02:36,025
+z. B. mit dem Wert  2,
+
+51
+00:02:36,025 --> 00:02:39,230
+können sie sich verbinden
+und über mehrere Ebenen erstrecken.
+
+52
+00:02:39,230 --> 00:02:43,280
+Das gilt besonders für
+Sequenzmodelle mit langen Sequenzen.
+
+53
+00:02:43,280 --> 00:02:46,400
+Es kann auf Lernraten ankommen,
+weil wir bei der Aktualisierung
+
+54
+00:02:46,400 --> 00:02:48,965
+der Gewichtungen den
+Gradienten mit der Lernrate
+
+55
+00:02:48,965 --> 00:02:51,830
+multipliziert und das
+von der Gewichtung abgezogen haben.
+
+56
+00:02:51,830 --> 00:02:55,700
+Selbst wenn der Gradient nicht groß ist, 
+kann er bei einer Lernrate von über 1
+
+57
+00:02:55,700 --> 00:03:00,725
+zu groß und zum Problem für uns
+und unser Netzwerk werden.
+
+58
+00:03:00,725 --> 00:03:04,010
+Es gibt zahlreiche Wege,
+das Problem zu minimieren:
+
+59
+00:03:04,010 --> 00:03:06,905
+z.  B. Organisation von
+Gewichtungen und kleinere Batches.
+
+60
+00:03:06,905 --> 00:03:09,380
+Grading and Clipping
+ist eine weitere Methode,
+
+61
+00:03:09,380 --> 00:03:12,694
+bei der wir prüfen, ob der
+normale Gradient einen Wert überschreitet,
+
+62
+00:03:12,694 --> 00:03:15,855
+den Sie hyperparametrisieren
+und optimieren können. Dann können Sie
+
+63
+00:03:15,855 --> 00:03:19,965
+die Gradiententeile neu skalieren, damit
+Ihr Maximum nicht überschritten wird.
+
+64
+00:03:19,965 --> 00:03:21,910
+Bei der Batch-Normalisierung
+
+65
+00:03:21,910 --> 00:03:26,105
+wird das Problem der internen
+Kovarianzverschiebung behoben.
+
+66
+00:03:26,105 --> 00:03:28,990
+Sie beschleunigt das Training,
+weil Gradienten besser fließen.
+
+67
+00:03:28,990 --> 00:03:33,295
+Oft können eine höhere Lernrate genutzt
+und manchmal Drop-out verhindert werden.
+
+68
+00:03:33,295 --> 00:03:37,960
+Die Konkurrenz wird wegen geringen Mini-Batch-
+Rauschens bis zu den eigenen Regeln gebremst.
+
+69
+00:03:37,960 --> 00:03:39,975
+Suchen Sie für die Batch-Normalisierung
+
+70
+00:03:39,975 --> 00:03:42,035
+zuerst nach dem Mini-Batch-Mittelwert,
+
+71
+00:03:42,035 --> 00:03:44,455
+und dann nach der Standardabweichung.
+
+72
+00:03:44,455 --> 00:03:46,840
+Normalisieren Sie die Knoteneingaben,
+
+73
+00:03:46,840 --> 00:03:52,570
+skalieren und verschieben Sie
+dann um "Gamma mal X plus Beta",
+
+74
+00:03:52,570 --> 00:03:55,360
+wobei Gamma
+und Beta gelernte Parameter sind.
+
+75
+00:03:55,360 --> 00:03:59,290
+Wenn Gamma gleich Quadratwurzelvarianz
+und Beta gleich Mittelwert von X ist,
+
+76
+00:03:59,290 --> 00:04:01,810
+wird die Originalfunktion
+wiederhergestellt.
+
+77
+00:04:01,810 --> 00:04:06,145
+So können Sie den Bereich der Eingaben
+steuern, damit sie nicht zu groß werden.
+
+78
+00:04:06,145 --> 00:04:09,190
+Am besten liegen
+Ihre Gradienten so nah wie möglich bei 1,
+
+79
+00:04:09,190 --> 00:04:12,100
+insbesondere bei sehr großen Netzen.
+
+80
+00:04:12,100 --> 00:04:15,910
+So werden Verbindungen
+sowie Unter- oder Überlauf vermieden.
+
+81
+00:04:15,910 --> 00:04:20,750
+Ein weiteres Problem des Verfahrens:
+reale Ebenen können inaktiv werden.
+
+82
+00:04:20,750 --> 00:04:23,830
+Mit TensorBoard können
+wir die Zusammenfassungen
+
+83
+00:04:23,830 --> 00:04:28,000
+während und nach dem Training
+der neuronalen Netzwerkmodelle verfolgen.
+
+84
+00:04:28,000 --> 00:04:33,085
+Mit einem Candy und einem Estimator wird
+automatisch für jede verborgene GN-Ebene
+
+85
+00:04:33,085 --> 00:04:35,470
+eine skalare Zusammenfassung erstellt,
+
+86
+00:04:35,470 --> 00:04:38,410
+der Sie die Nullwerte
+der Aktivierungen entnehmen können.
+
+87
+00:04:38,410 --> 00:04:41,530
+ReLUs halten an, wenn sie
+durch die Eingaben in der negativen
+
+88
+00:04:41,530 --> 00:04:44,870
+Domain bleiben.
+Ihre Aktivierung erhält dann den Wert 0.
+
+89
+00:04:44,870 --> 00:04:49,149
+Es ist aber nicht das Ende, weil dann
+der Beitrag für die nächste Ebene 0 ist.
+
+90
+00:04:49,149 --> 00:04:51,250
+Egal, womit sie von den Gewichtungen
+
+91
+00:04:51,250 --> 00:04:55,340
+verknüpft werden: Für die nächsten
+Neuronen sind Aktivierung und Eingabe 0.
+
+92
+00:04:55,340 --> 00:04:59,020
+Mit Nullen bleibt auch das
+nächste Neuron in der negativen Domain.
+
+93
+00:04:59,020 --> 00:05:01,570
+Auch die Aktivierungen
+haben dann den Wert 0
+
+94
+00:05:01,570 --> 00:05:04,960
+und es kommt zum Lawineneffekt.
+
+95
+00:05:04,960 --> 00:05:08,495
+Die Gradienten bei
+der folgenden Rückpropagierung sind 0.
+
+96
+00:05:08,495 --> 00:05:12,460
+Es fehlen also die Gewichtungen
+und das Training wird daher angehalten.
+
+97
+00:05:12,460 --> 00:05:17,265
+Wir haben über undichte und parametrische
+ReLUs und langsamere ELUs gesprochen.
+
+98
+00:05:17,265 --> 00:05:19,865
+Sie können
+Lernraten senken, um nicht aktivierte
+
+99
+00:05:19,865 --> 00:05:22,375
+oder verschwundene
+ReLU-Ebenen zu verhindern.
+
+100
+00:05:22,375 --> 00:05:26,860
+Ein wegen einer zu hohen Lernrate
+großer Gradient kann Gewichtungen
+
+101
+00:05:26,860 --> 00:05:31,735
+so aktualisieren, dass sie von
+keinem Datenpunkt mehr aktiviert werden.
+
+102
+00:05:31,735 --> 00:05:33,639
+Da der Gradient 0 ist, wird die
+
+103
+00:05:33,639 --> 00:05:35,450
+Gewichtung nicht sinnvoll aktualisiert
+
+104
+00:05:35,450 --> 00:05:38,980
+und das Problem bleibt dauerhaft bestehen.
+
+105
+00:05:38,980 --> 00:05:41,020
+Nun testen wir,
+
+106
+00:05:41,020 --> 00:05:42,610
+was mit dem Modell geschieht,
+
+107
+00:05:42,610 --> 00:05:45,325
+wenn es zwei nützliche
+Signale gibt, beide unabhängig
+
+108
+00:05:45,325 --> 00:05:49,210
+mit dem Label verknüpft,
+aber die Skalierungen sind verschieden.
+
+109
+00:05:49,210 --> 00:05:51,280
+Beispiel: Wir haben
+
+110
+00:05:51,280 --> 00:05:56,285
+einen Prädiktor für Suppen mit Funktionen,
+die für bestimmte Zutaten stehen.
+
+111
+00:05:56,285 --> 00:05:59,260
+Wird die Funktion für
+Hühnerbrühe in Litern gemessen
+
+112
+00:05:59,260 --> 00:06:02,160
+und die Funktion
+für Rinderbrühe in Millilitern,
+
+113
+00:06:02,160 --> 00:06:05,955
+sind die Bewertung des Dufts und
+die Zusammenführung von Werten schwierig,
+
+114
+00:06:05,955 --> 00:06:10,240
+da die besten Lernraten der Dimensionen
+wohl unterschiedlich sind. Wenn Ihre Daten
+
+115
+00:06:10,240 --> 00:06:13,940
+gut organisiert sind
+und im rechenfreundlichen Bereich liegen,
+
+116
+00:06:13,940 --> 00:06:17,820
+wirkt sich dies positiv
+auf das Training Ihrer ML-Modelle aus.
+
+117
+00:06:17,820 --> 00:06:20,755
+Durch kleine und um 0 zentrierte Werte
+
+118
+00:06:20,755 --> 00:06:24,185
+werden das Training beschleunigt
+und numerische Probleme vermieden.
+
+119
+00:06:24,185 --> 00:06:27,935
+Deshalb ist Batch-Normalisierung
+gut gegen explodierende Gradienten.
+
+120
+00:06:27,935 --> 00:06:31,910
+So bewegen sich nicht nur
+die anfänglichen Eingabefunktionen,
+
+121
+00:06:31,910 --> 00:06:34,490
+sondern alle
+Zwischenfunktionen innerhalb eines
+
+122
+00:06:34,490 --> 00:06:37,950
+geeigneten Bereichs, damit keine
+Probleme mit unseren Ebenen entstehen.
+
+123
+00:06:37,950 --> 00:06:41,280
+So wird auch das NaN-Problem
+vermieden, bei dem das Modell scheitert,
+
+124
+00:06:41,280 --> 00:06:44,790
+wenn die Werte den Bereich
+der numerischen Genauigkeit überschreiten.
+
+125
+00:06:44,790 --> 00:06:47,010
+Durch die Skalierung
+von Funktionen und/oder
+
+126
+00:06:47,010 --> 00:06:50,685
+niedrigeren Lernraten
+lässt sich dieses Problem vermeiden.
+
+127
+00:06:50,685 --> 00:06:55,050
+Ausreißerwerte sollten im Sinne
+der Generalisierung vermieden werden.
+
+128
+00:06:55,050 --> 00:06:58,130
+Gelingt es, Anomalien
+schon vor dem Training zu erfassen
+
+129
+00:06:58,130 --> 00:07:02,365
+und aus dem Dataset zu entfernen,
+kann dies eine große Hilfe sein.
+
+130
+00:07:02,365 --> 00:07:06,950
+Es existiert keine spezielle
+Einheitsmethode für alle Daten.
+
+131
+00:07:06,950 --> 00:07:11,045
+Für jeden Ansatz gibt es
+gute und schlechte Beispiele.
+
+132
+00:07:11,045 --> 00:07:14,850
+Man kann mit verschiedenen
+Methoden für kleine Werte sorgen.
+
+133
+00:07:14,850 --> 00:07:20,420
+Bei der linearen Skalierung suchen Sie
+erst nach den kleinsten und größten Daten.
+
+134
+00:07:20,420 --> 00:07:21,910
+Dann ziehen wir für jeden Wert
+
+135
+00:07:21,910 --> 00:07:23,960
+das Minimum ab und teilen das Ergebnis
+
+136
+00:07:23,960 --> 00:07:26,955
+durch die Differenz zwischen
+Maximum und Minimum bzw. Bereich.
+
+137
+00:07:26,955 --> 00:07:29,510
+So liegen alle Werte zwischen 0 und 1,
+
+138
+00:07:29,510 --> 00:07:31,820
+wobei 0 das Minimum und 1 das Maximum ist.
+
+139
+00:07:31,820 --> 00:07:34,695
+Das nennt man Normalisierung.
+
+140
+00:07:34,695 --> 00:07:37,845
+Beim Hard Capping oder Clipping
+
+141
+00:07:37,845 --> 00:07:40,575
+legen Sie Minimum und Maximum fest.
+
+142
+00:07:40,575 --> 00:07:43,880
+Wenn das Minimum z. B. -7 sein darf
+
+143
+00:07:43,880 --> 00:07:47,540
+und mein Maximum 10,
+dann werden alle Werte,
+
+144
+00:07:47,540 --> 00:07:50,575
+die kleiner als -7 sind,
+zu -7. Alle Werte, die größer
+
+145
+00:07:50,575 --> 00:07:53,430
+als 10 sind, werden 10.
+
+146
+00:07:53,430 --> 00:07:58,730
+Bei der Log-Skalierung wenden Sie die
+Logarithmusfunktion auf Eingabedaten an.
+
+147
+00:07:58,730 --> 00:08:01,600
+Dies ist speziell für große
+Datenbereiche sinnvoll, wenn Sie
+
+148
+00:08:01,600 --> 00:08:05,140
+diese kondensieren und die Größe
+des Werts stärker betonen möchten.
+
+149
+00:08:05,140 --> 00:08:10,625
+Die Standardisierung
+ist eine weitere Methode.
+
+150
+00:08:10,625 --> 00:08:14,120
+Hier berechnen Sie den Mittelwert
+Ihrer Daten und die Standardabweichung.
+
+151
+00:08:14,120 --> 00:08:15,750
+Dann ziehen Sie den Mittelwert
+
+152
+00:08:15,750 --> 00:08:19,245
+von jedem Datenpunkt ab und teilen
+das durch die Standardabweichung.
+
+153
+00:08:19,245 --> 00:08:22,260
+So werden Ihre Daten um 0 zentriert,
+
+154
+00:08:22,260 --> 00:08:25,910
+weil der neue Mittelwert 0
+und die neue Standardabweichung 1 ist.
+
+155
+00:08:25,910 --> 00:08:29,335
+Natürlich können Sie Ihre Daten
+auch auf andere Weise skalieren.
+
+156
+00:08:29,335 --> 00:08:33,924
+Welche Option ist richtig, wenn mein
+Modell explodierende Gradienten aufweist?
+
+157
+00:08:33,924 --> 00:08:36,220
+Die korrekte Antwort lautet A, B,
+
+158
+00:08:36,220 --> 00:08:41,245
+C und D. Das Problem tritt
+oft bei zu großen Gewichtungen auf.
+
+159
+00:08:41,245 --> 00:08:44,015
+Dies kann passieren,
+wenn unsere Lernrate zu hoch wird.
+
+160
+00:08:44,015 --> 00:08:46,610
+Weitere Probleme sind möglich:
+
+161
+00:08:46,610 --> 00:08:50,225
+numerische Stabilität,
+Divergenz und inaktive ReLUs.
+
+162
+00:08:50,225 --> 00:08:56,290
+Daher empfiehlt es sich,
+die Lernrate zu senken.
+
+163
+00:08:56,290 --> 00:08:58,840
+Auch die Autorisierung
+von Gewichtungen kann
+
+164
+00:08:58,840 --> 00:09:02,170
+sinnvoll sein, weil hohe
+Gewichtungen bestraft werden.
+
+165
+00:09:02,170 --> 00:09:04,660
+Gradienten explodieren dann seltener.
+
+166
+00:09:04,660 --> 00:09:07,690
+Beim Gradienten-Clipping wird erreicht,
+
+167
+00:09:07,690 --> 00:09:10,770
+dass Gradienten einen
+festgelegten Wert nicht überschreiten
+
+168
+00:09:10,770 --> 00:09:14,595
+So können hohe Lernraten vermieden werden.
+
+169
+00:09:14,595 --> 00:09:16,390
+Ist die Rate jedoch hoch genug,
+
+170
+00:09:16,390 --> 00:09:19,070
+können Gewichtungen
+weiterhin sehr hohe Werte erreichen.
+
+171
+00:09:19,070 --> 00:09:21,140
+Durch Batch-Normalisierung
+
+172
+00:09:21,140 --> 00:09:24,975
+bewegen sich die Zwischeneingaben
+auf jeder Ebene in kleineren Bereichen.
+
+173
+00:09:24,975 --> 00:09:27,770
+Zu große Gewichtungen sind so
+bedeutend unwahrscheinlicher,
+
+174
+00:09:27,770 --> 00:09:30,910
+der zusätzliche Rechenaufwand
+aber nur gering.
+
+175
+00:09:30,910 --> 00:09:33,385
+Explodierende Gradienten
+sind leicht zu behandeln.
+
+176
+00:09:33,385 --> 00:09:35,210
+Ein Arzt ist jedenfalls nicht nötig.
+
+177
+00:09:35,210 --> 00:09:38,860
+Sie können mit den Tools ganz
+leicht testen, was am besten funktioniert.
+
+178
+00:09:38,860 --> 00:09:41,845
+Eine andere Regularisierung
+für das Erstellen generalisierbarer
+
+179
+00:09:41,845 --> 00:09:45,770
+Modelle ist das Hinzufügen von
+Drop-out-Ebenen zu neuronalen Netzwerken.
+
+180
+00:09:45,770 --> 00:09:49,800
+Ich füge mindestens einer Ebene einen
+Wrapper hinzu, um Drop-out zu nutzen.
+
+181
+00:09:49,800 --> 00:09:53,390
+In TensorFlow wird der übergebene
+Parameter als Drop-out bezeichnet.
+
+182
+00:09:53,390 --> 00:09:55,410
+Er gibt die Wahrscheinlichkeit an,
+
+183
+00:09:55,410 --> 00:09:58,860
+mit der ein Neuron im Netzwerk
+vorübergehend deaktiviert wird.
+
+184
+00:09:58,860 --> 00:10:01,575
+Wählen Sie diesen Wert
+mit Bedacht aus, weil andere
+
+185
+00:10:01,575 --> 00:10:04,110
+Drop-out-Funktionen
+Keep-Wahrscheinlichkeit nutzen,
+
+186
+00:10:04,110 --> 00:10:06,295
+das Gegenstück zur
+
+187
+00:10:06,295 --> 00:10:07,710
+Drop-Wahrscheinlichkeit oder
+
+188
+00:10:07,710 --> 00:10:11,130
+der Wahrscheinlichkeit, dass ein
+Neuron aktiviert oder deaktiviert wird.
+
+189
+00:10:11,130 --> 00:10:14,530
+Sie möchten schließlich
+keine Drop-Wahrscheinlichkeit von 10 %,
+
+190
+00:10:14,530 --> 00:10:17,640
+wenn Sie gerade nur 10 %
+zufällig in Ihren Knoten behalten.
+
+191
+00:10:17,640 --> 00:10:20,485
+Das wäre ein unbeabsichtigtes Sparmodell.
+
+192
+00:10:20,485 --> 00:10:23,035
+Wie funktioniert Drop-out?
+
+193
+00:10:23,035 --> 00:10:26,045
+Angenommen, die
+Drop-out-Wahrscheinlichkeit ist 20 %.
+
+194
+00:10:26,045 --> 00:10:28,895
+Ein Zufallsalgorithmus
+ermittelt bei Vorwärtsdurchläufen
+
+195
+00:10:28,895 --> 00:10:32,340
+an das Netzwerk einen Wert für
+Neuronen und Drop-out-Wrapped-Ebene.
+
+196
+00:10:32,340 --> 00:10:36,660
+Ist der Wert größer als 20
+und das Neuron bleibt im Netzwerk aktiv,
+
+197
+00:10:36,660 --> 00:10:38,920
+wird das Neuron deaktiviert
+
+198
+00:10:38,920 --> 00:10:41,920
+und unabhängig von
+den Eingaben der Wert 0 ausgegeben.
+
+199
+00:10:41,920 --> 00:10:45,305
+Es wird weder negativ noch positiv
+zum Netzwerk beigetragen, da sich
+
+200
+00:10:45,305 --> 00:10:49,730
+durch die 0 nichts ändert und simuliert
+wird, das Neuron sei nicht vorhanden.
+
+201
+00:10:49,730 --> 00:10:54,145
+Da jeder Knoten nur eine
+bestimmte Zeit erhalten bleibt,
+
+202
+00:10:54,145 --> 00:10:56,685
+werden die Aktivierungen
+durch "1 mehr als 1 minus
+
+203
+00:10:56,685 --> 00:10:59,440
+Drop-out-Wahrscheinlichkeit"
+skaliert. Mit anderen Worten:
+
+204
+00:10:59,440 --> 00:11:02,070
+"1 mehr als Keep-Wahrscheinlichkeit" während
+
+205
+00:11:02,070 --> 00:11:05,790
+des Trainings, sodass wir
+den Erwartungswert der Aktivierung haben.
+
+206
+00:11:05,790 --> 00:11:08,900
+Ohne Training und die Erfordernis,
+einen Knoten zu ändern,
+
+207
+00:11:08,900 --> 00:11:11,900
+verschwindet der Wrapper
+und die Neuronen in der vorigen
+
+208
+00:11:11,900 --> 00:11:13,815
+Drop-out-Wrapper-Ebene sind immer
+
+209
+00:11:13,815 --> 00:11:16,685
+aktiv und nutzen die vom
+Modell trainierten Gewichtungen.
+
+210
+00:11:16,685 --> 00:11:21,580
+Der große Vorteil ist,
+dass ein Ensemblemodell erstellt wird,
+
+211
+00:11:21,580 --> 00:11:24,530
+weil es für jeden Vorwärtsdurchlauf
+
+212
+00:11:24,530 --> 00:11:27,990
+ein anderes Netzwerk gibt
+und der Mini-Daten-Batch sichtbar ist.
+
+213
+00:11:27,990 --> 00:11:30,740
+Wenn all dies zusammengefügt wird, ist es,
+
+214
+00:11:30,740 --> 00:11:33,690
+als würde ich neuronale
+"Two-to-the-N"-Netzwerke trainieren,
+
+215
+00:11:33,690 --> 00:11:36,005
+wobei "N" die Anzahl
+der Drop-out-Neuronen wäre.
+
+216
+00:11:36,005 --> 00:11:38,735
+Sie würden dann
+im Ensemble so zusammenarbeiten wie
+
+217
+00:11:38,735 --> 00:11:41,805
+Entscheidungsbäume in einem Random Forest.
+
+218
+00:11:41,805 --> 00:11:44,050
+Es gibt außerdem den Zusatzeffekt,
+
+219
+00:11:44,050 --> 00:11:46,440
+dass die Daten des
+gesamten Netzes verteilt werden
+
+220
+00:11:46,440 --> 00:11:48,030
+und nicht nur der Großteil
+
+221
+00:11:48,030 --> 00:11:50,870
+des Signals auf einen
+bestimmten Abschnitt des Netzwerks
+
+222
+00:11:50,870 --> 00:11:54,850
+– wie Wasser, das in einen Fluss mit
+mehreren Armen und Dämmen umgeleitet wird,
+
+223
+00:11:54,850 --> 00:11:59,190
+damit alle Wege Wasser
+führen und keiner austrocknet.
+
+224
+00:11:59,190 --> 00:12:02,440
+So kann das Netzwerk
+mehr Kapazität nutzen,
+
+225
+00:12:02,440 --> 00:12:06,140
+weil das Signal gleichmäßiger
+auf das gesamte Netzwerk übertragen wird.
+
+226
+00:12:06,140 --> 00:12:08,615
+Training
+und Generalisierung werden verbessert,
+
+227
+00:12:08,615 --> 00:12:12,105
+ohne dass sich in beliebten Pfaden
+Abhängigkeiten von Neuronen entwickeln.
+
+228
+00:12:12,105 --> 00:12:15,900
+Typische Drop-out-Werte
+liegen zwischen 20 und 50 %.
+
+229
+00:12:15,900 --> 00:12:17,555
+Sind sie erheblich niedriger,
+
+230
+00:12:17,555 --> 00:12:21,205
+ist der Netzwerkeffekt gering,
+da kaum Knoten deaktiviert werden.
+
+231
+00:12:21,205 --> 00:12:22,530
+Sind sie höher,
+
+232
+00:12:22,530 --> 00:12:25,035
+entfällt das Training, da das Netzwerk
+
+233
+00:12:25,035 --> 00:12:28,200
+nicht die Kapazität hat,
+ohne Verteilung zu lernen.
+
+234
+00:12:28,200 --> 00:12:31,400
+Sie sollten das auch
+in größeren Netzwerken nutzen,
+
+235
+00:12:31,400 --> 00:12:35,045
+weil das Modell mehr Kapazität hat,
+unabhängige Darstellungen zu lernen.
+
+236
+00:12:35,045 --> 00:12:38,310
+Mit anderen Worten:
+Das Netzwerk kann mehr Pfade ausprobieren.
+
+237
+00:12:38,310 --> 00:12:39,980
+Je mehr Sie deaktivieren,
+
+238
+00:12:39,980 --> 00:12:41,440
+desto weniger behalten Sie,
+
+239
+00:12:41,440 --> 00:12:43,290
+desto stärker die Regularisierung.
+
+240
+00:12:43,290 --> 00:12:45,720
+Ist die Drop-out-Wahrscheinlichkeit 1,
+
+241
+00:12:45,720 --> 00:12:47,810
+behalten Sie nichts
+und jedes Neuron in der
+
+242
+00:12:47,810 --> 00:12:50,380
+Wrapped-Drop-out-Ebene
+wird aus dem Neuron entfernt.
+
+243
+00:12:50,380 --> 00:12:52,600
+Es wird eine Nullaktivierung ausgegeben.
+
+244
+00:12:52,600 --> 00:12:54,760
+Bei der Rückpropagierung werden dann
+
+245
+00:12:54,760 --> 00:12:58,015
+keine Gewichtungen aktualisiert
+und diese Ebene lernt nichts.
+
+246
+00:12:58,015 --> 00:13:00,035
+Ist die Wahrscheinlichkeit 0,
+
+247
+00:13:00,035 --> 00:13:03,455
+bleiben alle Neuronen aktiv.
+Es gibt keine Drop-out-Regularisierung.
+
+248
+00:13:03,455 --> 00:13:06,460
+Im Grunde handelt es sich
+um eine aufwendigere Rechenvariante
+
+249
+00:13:06,460 --> 00:13:09,750
+ohne Drop-out-Wrapper, denn es
+müssen weiter Werte ermittelt werden.
+
+250
+00:13:09,750 --> 00:13:13,505
+Sie möchten natürlich
+irgendwo zwischen 0 und 1 landen,
+
+251
+00:13:13,505 --> 00:13:17,065
+mit Drop-out-Wahrscheinlichkeiten
+zwischen 10 und 50 %, wobei eine gute
+
+252
+00:13:17,065 --> 00:13:20,635
+Baseline bei 20 % beginnt,
+um dann mehr hinzuzufügen.
+
+253
+00:13:20,635 --> 00:13:22,875
+Es gibt keinen Einheitswert für
+
+254
+00:13:22,875 --> 00:13:25,785
+Drop-out-Wahrscheinlichkeit
+bei Modellen und Datenverteilung.
+
+255
+00:13:25,785 --> 00:13:28,300
+Drop-out ist eine andere Form der ___.
+
+256
+00:13:28,300 --> 00:13:33,155
+Daten müssen ___ Pfade nutzen, um eine
+ausgeglichenere Verteilung zu erreichen.
+
+257
+00:13:33,155 --> 00:13:35,650
+Außerdem wird ___ Learning simuliert.
+
+258
+00:13:35,650 --> 00:13:39,290
+Drop-out-Aktivierungen müssen mit
+dem inversen Wert für ___ skaliert werden.
+
+259
+00:13:39,290 --> 00:13:41,830
+Während ___ wird Drop-out entfernt.
+
+260
+00:13:41,830 --> 00:13:45,355
+Die korrekte Antwort lautet E.
+Drop-out ist eine andere Form
+
+261
+00:13:45,355 --> 00:13:48,765
+der Regularisierung, um die
+Generalisierung des Modells zu optimieren.
+
+262
+00:13:48,765 --> 00:13:52,160
+Dabei werden Knoten mit
+Drop-out-Wahrscheinlichkeit deaktiviert,
+
+263
+00:13:52,160 --> 00:13:56,545
+um Daten auf mehr Pfade zu leiten und
+eine ausgeglichenere Verteilung zu erhalten.
+
+264
+00:13:56,545 --> 00:13:58,605
+Sonst können verknüpfte Daten
+
+265
+00:13:58,605 --> 00:14:01,425
+und Aktivierungen lernen,
+bevorzugte Pfade einzuschlagen.
+
+266
+00:14:01,425 --> 00:14:03,595
+Dies kann zu wenig
+Training für das Netzwerk
+
+267
+00:14:03,595 --> 00:14:06,775
+bedeuten und zu geringer
+Effektivität neuer Daten führen.
+
+268
+00:14:06,775 --> 00:14:11,305
+Drop-out simuliert auch Ensemble Learning,
+da wegen der zufälligen Deaktivierung von
+
+269
+00:14:11,305 --> 00:14:15,760
+Knoten für Vorwärtsdurchläufe ein Aggregat
+von "Two-to-the-N"-Modellen erstellt wird,
+
+270
+00:14:15,760 --> 00:14:17,795
+"n" ist die Anzahl der Drop-out-Knoten.
+
+271
+00:14:17,795 --> 00:14:19,740
+Jeder Batch sieht ein anderes Netzwerk,
+
+272
+00:14:19,740 --> 00:14:24,120
+damit das Modell nicht überangepasst
+werden kann, siehe Random Forest.
+
+273
+00:14:24,120 --> 00:14:28,105
+Drop-out-Aktivierungen werden mit der
+inversen Keep-Wahrscheinlichkeit skaliert,
+
+274
+00:14:28,105 --> 00:14:30,365
+also mit "1 minus
+Drop-out-Wahrscheinlichkeit".
+
+275
+00:14:30,365 --> 00:14:34,195
+Wir erwarten, dass der Knoten während
+des Trainings korrekt skaliert wird,
+
+276
+00:14:34,195 --> 00:14:36,340
+da er für Inferenzen immer aktiv ist
+
+277
+00:14:36,340 --> 00:14:39,020
+und wir Drop-out
+während Inferenzen entfernen.

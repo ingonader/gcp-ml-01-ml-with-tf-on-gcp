@@ -1,0 +1,67 @@
+Digamos que você leu uma pesquisa
+acadêmica que fala sobre um modelo legal para prever os valores
+futuros de uma série temporal. Eles até lhe dão o código, que usa conceitos estranhos
+como o LSTMCell, funções não familiares do TensorFlow
+como o static_rnn e até faz algumas operações de baixo
+nível do TensorFlow como o matmul. Por enquanto, não vamos nos preocupar
+com o que isso significa ou como funciona. Vamos olhar modelos sequenciais no nono
+curso da especialização. Por enquanto, vamos tratar esta função
+como um Blackbox. Basicamente, a entrada
+é uma série temporal, uma matriz de valores
+organizada por tempo. N_INPUTS é uma duração
+dessa série temporal. As previsões são a saída do modelo. Há números N_OUTPUTS na matriz da saída,
+que representam os valores futuros da série temporal, conforme
+previsto pelo modelo. Então, você tem um modelo
+e gostaria de treiná-lo. Observe algo aqui: este é apenas o modelo, apenas a matemática, se preferir. Ainda precisamos ler os dados, ainda precisamos treinar, avaliar etc., e queremos fazer isso de uma maneira
+distribuída e tolerante a falhas. Queremos adicionar a engenharia. Naturalmente, queremos envolvê-la
+na biblioteca do Estimator, porque é a maneira de conseguir treino
+distribuído, previsão escalonada etc. Então, vamos ver como fazer isso. O primeiro passo é observar
+a função train_and_evaluate. São necessários três parâmetros:
+estimator, train_spec, eval_spec. train_spec e eval_spec são os mesmos
+que em um Estimator automático. Eles controlam como alimentar
+os dados de entrada, usando a função de entrada
+e o conjunto de dados. Eles também controlam
+quanto tempo treinar, com que frequência avaliar
+e quando exportar. A diferença aqui é o primeiro parâmetro
+para treinar e avaliar, o Estimator. Antes, criaríamos um Estimator por meio de um regressor linear ou um regressor DNN
+ou um classificador linear etc. Criaríamos um Estimator automático
+ou pré-criado. Agora, porém, criamos
+um Estimator de classe base. Observe que estou configurando-o para
+apenas tf.estimators.Estimator. O Estimator da classe base
+toma dois parâmetros. O segundo parâmetro, apenas
+Estimators automáticos [inaudível], é onde salvar os pontos de verificação,
+o diretório de saída. O primeiro parâmetro é a função do modelo. O que esta função de modelo,
+myfunc, parece? Myfunc é um estimator_spec. O que quero dizer é que myfunc
+retorna um tf.estimator.EstimatorSpec. São necessários três parâmetros:
+atributos, destinos e modo. atributos e destinos
+precisam ser familiares. Isso é o que é retornado, por exemplo, de uma função de entrada de treinamento. Atributos são um dicionário de atributos, então, neste caso, pego esse dicionário e
+extraio o tensor correspondente ao NCOL. Destinos são simplesmente o rótulo. Mais uma vez, o que é retornado
+da função de entrada de treinamento. O modo é um dos três valores:
+treino, avaliação ou previsão. Veremos em breve
+por que você pode querer este modo. Destes três valores de entrada, a tarefa do myfunc é criar
+e retornar um estimator_spec. Há seis coisas em um estimator_spec. O primeiro modo de parâmetro
+pode simplesmente ser passado. O que você consegue nele,
+apenas repasse. O segundo parâmetro
+são as previsões, as saídas do modelo. As previsões precisam ser um dicionário, fornecer um nome da chave
+e o tensor correspondente. Então, aqui, meu predictions_dict consiste
+em apenas uma chave, que eu estou chamando de predicted.
+E o tensor, é claro, é a saída do modelo
+da pesquisa acadêmica. Usamos as previsões para criar
+as saídas exportadas. A ideia é que poderíamos exportar
+outras coisas além das previsões. Por exemplo, você pode querer exportar
+uma incorporação treinada do modelo, é aqui que você faria isso. Especifique uma chave
+e o tensor correspondente. Vamos ver outras coisas
+que formam o estimator_spec: a perda, a operação de treinamento
+e a operação métrica de avaliação. A operação de treinamento precisa ser
+executada somente se o modo for TRAIN. A métrica de avaliação precisa ser
+calculada apenas se o modo for EVAL. Então, defino a perda como o erro médio
+quadrático entre os destinos, os rótulos e as previsões. A operação de treino consiste em otimizar
+a função de perda usando, neste caso, o gradiente
+descendente estocástico. Talvez porque isso foi usado na pesquisa
+acadêmica que descreve esse modelo. A métrica de avaliação é um dicionário que consiste em todas
+as métricas que queremos avaliar. Aqui, estou computando apenas
+um erro quadrático médio raiz. Durante as previsões, nenhuma
+dessas operações precisa ser executada. Por quê? Porque não teremos um rótulo. Então, nós definimos todas essas
+operações como nenhuma, e é isso. Em resumo, chamamos train_and_evaluate
+com um Estimator de classe base, passamos isso em uma função
+que retorna um estimator_spec, e é isso. Temos um Estimator personalizado.

@@ -1,0 +1,252 @@
+1
+00:00:00,000 --> 00:00:03,990
+Es gibt also zahlreiche Einstellungen,
+die sie datenabhängig anpassen müssen.
+
+2
+00:00:03,990 --> 00:00:08,715
+Dabei die perfekte Kombination zu finden,
+erscheint wie eine große Herausforderung.
+
+3
+00:00:08,715 --> 00:00:10,455
+Denken Sie nur an die Permutation,
+
+4
+00:00:10,455 --> 00:00:13,815
+die mit zahlreichen Rastersuchalgorithmen
+automatisiert werden könnte.
+
+5
+00:00:13,815 --> 00:00:17,780
+Die Suche nach der richtigen
+Kombination kann aber ewig dauern
+
+6
+00:00:17,780 --> 00:00:20,670
+und viele Stunden an
+Rechenressourcen verbrauchen.
+
+7
+00:00:20,670 --> 00:00:23,610
+Wäre es nicht schön,
+eine Trainingsschleife zu haben,
+
+8
+00:00:23,610 --> 00:00:26,600
+die das Metatraining
+und all diese Hyperparameter übernimmt,
+
+9
+00:00:26,600 --> 00:00:30,090
+um die richtigen Einstellungen zu finden?
+
+10
+00:00:30,090 --> 00:00:33,675
+Genau dafür steht Ihnen 
+Google Vizier zur Verfügung.
+
+11
+00:00:33,675 --> 00:00:36,300
+Im Wesentlichen
+können Sie sich zurücklehnen.
+
+12
+00:00:36,300 --> 00:00:40,240
+Der Google Vizier-Algorithmus automatisiert
+die Hyperparameter-Abstimmung,
+
+13
+00:00:40,240 --> 00:00:42,820
+ohne dass Sie die Details kennen müssen.
+
+14
+00:00:42,820 --> 00:00:46,270
+Wenn Sie wissen möchten,
+was in der Blackbox passiert,
+
+15
+00:00:46,270 --> 00:00:50,510
+lesen Sie
+die hier verlinkte Forschungsarbeit.
+
+16
+00:00:50,510 --> 00:00:55,100
+Sie müssen aber nur wissen, dass
+Cloud ML Engine Ihnen die Arbeit abnimmt.
+
+17
+00:00:55,100 --> 00:01:00,155
+Sie konfigurieren den Job richtig,
+dann erledigt die ML Engine den Rest.
+
+18
+00:01:00,155 --> 00:01:05,555
+Betrachten wir einige Voraussetzungen
+für automatisch abgestimmte Hyperparameter.
+
+19
+00:01:05,555 --> 00:01:08,825
+Sie sollten schon
+mit der Cloud ML Engine gearbeitet haben.
+
+20
+00:01:08,825 --> 00:01:12,830
+Das ist die serverlose Plattform
+für Training und Hosting von ML-Modellen.
+
+21
+00:01:12,830 --> 00:01:17,215
+ML Engine abstrahiert sehr gut
+den Ablauf der Hyperparameter-Abstimmung.
+
+22
+00:01:17,215 --> 00:01:21,575
+So können Sie diesen Service nutzen:
+
+23
+00:01:21,575 --> 00:01:24,390
+Sie müssen
+den abzustimmenden Hyperparameter
+
+24
+00:01:24,390 --> 00:01:27,815
+als Befehlszeilenargument ausdrücken.
+
+25
+00:01:27,815 --> 00:01:32,725
+Sorgen Sie dafür, dass sich
+Trainingsdurchläufe nicht überschreiben.
+
+26
+00:01:32,725 --> 00:01:38,420
+Zuletzt müssen Sie diese Hyperparameter
+an den Trainingsjob übergeben.
+
+27
+00:01:38,420 --> 00:01:42,600
+Bevor wir ein Lab
+zur Hyperparameter-Abstimmung starten,
+
+28
+00:01:42,600 --> 00:01:46,595
+sehen wir uns kurz an,
+wie diese drei Schritte im Code aussehen.
+
+29
+00:01:46,595 --> 00:01:48,195
+Der erste Schritt besteht darin,
+
+30
+00:01:48,195 --> 00:01:53,640
+alle abzustimmenden Hyperparameter
+als Befehlszeilenargument zu definieren.
+
+31
+00:01:53,640 --> 00:01:57,050
+Zum Beispiel
+habe ich hier zwei Hyperparameter:
+
+32
+00:01:57,050 --> 00:02:03,220
+die Anzahl der Buckets zum Diskretisieren
+von Breitengrad und Längengrad
+
+33
+00:02:03,220 --> 00:02:07,640
+und die Anzahl der versteckten Einheiten
+im neuronalen Deep-Learning-Netzwerk.
+
+34
+00:02:07,640 --> 00:02:09,500
+Im zweiten Schritt sorgen wir dafür,
+
+35
+00:02:09,500 --> 00:02:13,220
+dass die verschiedenen Testläufe
+sich nicht gegenseitig überschreiben.
+
+36
+00:02:13,220 --> 00:02:18,940
+Wir tun dies mit einer guten
+Namenskonvention für die Ausgabeordner.
+
+37
+00:02:18,940 --> 00:02:24,775
+Hier wird z. B. der Ausgabename durch
+ein Suffix mit dem Wert "trial" eindeutig.
+
+38
+00:02:24,775 --> 00:02:30,545
+Im letzten Schritt übermitteln wir
+die Hyperparameter an den Trainingsjob:
+
+39
+00:02:30,545 --> 00:02:34,580
+Zuerst erstellen Sie eine
+YAML-Datei wie diese hier,
+
+40
+00:02:34,580 --> 00:02:39,705
+dann übermitteln Sie den Pfad zur
+YAML-Datei über Befehlszeilenparameter
+
+41
+00:02:39,705 --> 00:02:43,745
+an den Befehl "gcloud ml-engine" wie hier.
+
+42
+00:02:43,745 --> 00:02:48,180
+Sehen wir uns nun den
+Inhalt der YAML-Datei genauer an.
+
+43
+00:02:48,180 --> 00:02:53,590
+Wir wollen in diesem Beispiel
+die RMSE des Bewertungsdatasets minimieren.
+
+44
+00:02:53,590 --> 00:03:00,080
+Wir möchten mit ML-Engine die optimale
+Batchgröße zwischen 64 und 512 finden.
+
+45
+00:03:00,080 --> 00:03:03,685
+Denken Sie daran, das dies keine
+Rastersuche ist, sondern viel intelligenter.
+
+46
+00:03:03,685 --> 00:03:05,860
+Beachten Sie hier "maxTrials".
+
+47
+00:03:05,860 --> 00:03:10,135
+ML Engine durchsucht algorithmisch
+viel versprechende Bereiche.
+
+48
+00:03:10,135 --> 00:03:13,120
+Sie startet zufällig parallele Tests,
+
+49
+00:03:13,120 --> 00:03:16,250
+deren Anzahl
+durch "maxParallelTrials" festgelegt ist,
+
+50
+00:03:16,250 --> 00:03:17,935
+und beginnt die Suche.
+
+51
+00:03:17,935 --> 00:03:21,180
+Hier lassen wir ML Engine systematisch
+
+52
+00:03:21,180 --> 00:03:24,425
+verschiedene neuronale
+Netzwerkarchitekturen testen.
+
+53
+00:03:24,425 --> 00:03:27,570
+Sind Sie bereit, es selbst zu versuchen?
+Dann los!

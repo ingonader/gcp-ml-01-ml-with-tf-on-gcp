@@ -1,0 +1,233 @@
+Maintenant que nous avons étudié
+les réseaux de neurones, voyons l'apprentissage, les principaux
+pièges et certaines des techniques permettant d'accélérer l'apprentissage
+et d'améliorer la généralisation. Dans TensorFlow, si vous vous servez
+de l'API Estimator, l'utilisation de DNNRegressor
+est très semblable à celle de LinearRegressor. Il suffit d'ajouter
+quelques paramètres au code. On peut utiliser des optimiseurs
+de type Momentum, tels qu'Adagrad qui est fourni par défaut, ou essayer
+de nombreux autres tels qu'Adam. On doit également ajouter un paramètre
+appelé hidden_units, qui est une liste. Le nombre d'éléments dans cette liste
+correspond au nombre de couches cachées, et les valeurs de chaque élément
+correspondent au nombre de neurones de cette couche cachée.
+Vous verrez également un nouveau paramètre appelé dropout. Nous y reviendrons.
+Pour l'instant, sachez qu'il permet d'activer ou de désactiver des neurones
+un par un, pour améliorer les performances en termes de généralisation. Reportez-vous
+à la documentation de TensorFlow qui contient l'ensemble
+des paramètres configurables. Vous pourriez vous en servir
+en tant qu'hyperparamètres afin d'ajuster votre modèle et d'optimiser
+les performances de généralisation. La rétropropagation fait partie des sujets
+généralement abordés dans un cours sur les réseaux de neurones du ML.
+Mais, c'est un peu comme lorsqu'on apprend à créer un compilateur. C'est crucial
+si on veut approfondir ses connaissances, mais ce n'est pas nécessaire
+pour comprendre le concept initialement. L'important, c'est de savoir qu'il existe
+un algorithme efficace pour le calcul des dérivées, qui est effectué
+automatiquement par TensorFlow. Certaines problématiques valent la peine
+d'être abordées, telles que la disparition des gradients, l'explosion des gradients
+et les couches mortes. D'abord, durant le processus d'apprentissage
+des réseaux profonds particulièrement, les gradients peuvent diminuer.
+Chaque couche supplémentaire du réseau peut réduire le signal vs le bruit.
+C'est le cas lorsque vous utilisez une fonction d'activation sigmoïde ou tanh
+dans vos couches cachées. Alors que vous atteignez le point
+de saturation, vous vous trouvez dans la région asymptotique
+de la fonction qui commence à se stabiliser. La courbe se rapproche de plus en plus de 0. Lors de la phase descendante
+de la rétropropagation, votre gradient diminue de plus en plus,
+car vous amalgamez tous ces petits gradients
+jusqu'à ce que le gradient disparaisse. Lorsque cela se produit, vos pondérations
+ne sont plus mises à jour, et l'apprentissage s'arrête donc. Pour résoudre ce problème,
+il suffit d'utiliser des fonctions d'activation non linéaires et non saturées
+telles que les fonctions ReLU, ELU, etc. On peut être confronté au problème
+inverse, en cas d'explosion du gradient, lorsque l'augmentation des pondérations
+est telle qu'elle crée un débordement. Même en commençant
+avec un petit gradient de 2, il est facile d'aboutir à un gradient de taille
+en présence de nombreuses couches. C'est le cas en particulier
+pour les modèles de séquence comportant une longue séquence.
+Les taux d'apprentissage peuvent être un facteur, car
+à la mise à jour des pondérations, on a multiplié le gradient
+par le taux d'apprentissage, puis on a soustrait ce résultat
+de la pondération actuelle. Bien que le gradient ne soit pas important,
+un taux d'apprentissage supérieur à 1 peut le faire trop augmenter
+et nous poser problème, ainsi qu'au réseau. Il existe de nombreuses techniques
+pour minimiser ce problème, telles que la régularisation des pondérations
+et des tailles de lot plus petites, ou le bornement de la norme du gradient,
+pour vérifier si le gradient dépasse un certain seuil que vous pouvez
+régler avec un hyperparamètre. Dans ce cas, vous pouvez remettre
+à l'échelle les composants du gradient pour qu'ils n'excèdent pas
+les valeurs maximales. La normalisation des lots peut aussi être
+utile pour résoudre le décalage de covariance interne. Elle permet d'accélérer le flux des gradients,
+et donc l'apprentissage. Elle utilise souvent un taux d'apprentissage
+plus élevé et peut éliminer l'abandon qui ralentit la compilation
+selon son type de régularisation, en raison du bruit généré par les mini-lots.
+Pour effectuer une normalisation par lot, vous devez d'abord trouver la moyenne
+ainsi que l'écart type des mini-lots, puis normaliser les entrées de ce nœud et enfin effectuer une mise à l'échelle
+et un décalage équivalant à γx + β, où gamma et bêta
+représentent les paramètres appris. Si gamma est égal à la racine carrée
+de la variance de x, et bêta est égal à la moyenne des x, la fonction
+d'activation d'origine est restaurée. Vous pouvez ainsi contrôler
+la taille de la plage de vos entrées. Dans l'idéal, vous devez garder les gradients
+aussi proches de la valeur 1 que possible, particulièrement pour les réseaux
+très profonds, pour éviter leur amalgame,
+voire un dépassement positif ou négatif. La descente de gradient peut aboutir
+à un autre problème courant, la mort des couches ReLU réelles.
+Heureusement, avec TensorBoard, on peut surveiller les résumés
+durant et après l'apprentissage des modèles de ML. En cas d'utilisation d'un DNNEstimator
+standardisé, un résumé scalaire est automatiquement enregistré
+pour chaque couche cachée du DNN indiquant la fraction des valeurs 0
+des activations pour cette couche. Les fonctions ReLU s'arrêtent
+lorsque leurs entrées les gardent dans le domaine négatif
+générant ainsi une valeur d'activation de 0. L'impact ne se limite pas là. Leur contribution dans la couche suivante
+est égale à 0, car, en dépit des pondérations assurant la connexion aux neurones suivants,
+l'activation et donc l'entrée sont égales à 0. Une fois que quelques zéros figurent
+dans les neurones suivants, il est impossible de passer
+dans le domaine positif. Les activations de ces neurones
+sont alors égales à 0 et le problème continue de se propager. Ensuite, on effectue la rétropropagation,
+et leurs gradients sont égaux à 0. On n'a donc plus de pondérations,
+et l'apprentissage s'arrête. Aïe. On a évoqué l'utilisation des fonctions
+Leaky ReLU ou paramétriques, voire des fonctions ELU plus lentes, mais vous pouvez aussi réduire les taux
+d'apprentissage pour éviter la non-activation et donc la mort des couches ReLU. Un gradient important, résultant
+d'un taux d'apprentissage trop élevé peut mettre à jour les pondérations
+de sorte qu'aucun point de donnée ne pourra plus l'activer.
+Le gradient étant égal à 0, on ne mettra pas à jour la pondération
+avec une valeur plus raisonnable de sorte que le problème
+persistera indéfiniment. Faisons appel à notre intuition.
+Qu'arrivera-t-il à notre modèle, si on a deux signaux utiles,
+tous deux corrélés avec l'étiquette, mais avec des échelles différentes ? Par exemple, on pourrait avoir un prédicteur de bonnes soupes
+dont les caractéristiques représentent la qualité des ingrédients. Si la caractéristique du bouillon de volaille
+est mesurée en litres, et celle du bouillon de bœuf en millilitres,
+il se pourrait fort que la descente de gradient stochastique
+ait du mal à atteindre le point de convergence, car le taux d'apprentissage optimal de ces deux
+dimensions diffèrent très probablement. Disposer de données propres et dans une plage
+de calcul adéquate présente bien des avantages durant le processus d'apprentissage
+des modèles de ML. Des valeurs de caractéristiques basses
+et plus particulièrement centrées sur 0 aident à accélérer l'apprentissage
+et évitent les problèmes numériques. C'est pourquoi la normalisation par lot
+est utile pour les explosions de gradients, car elle permet de conserver non seulement
+les caractéristiques d'entrée initiales, mais également toutes les caractéristiques
+intermédiaires dans une plage opérationnelle pour éviter tout problème
+au niveau des couches. Cela nous aide aussi à éviter le piège NaN
+selon lequel notre modèle peut exploser si les valeurs excèdent
+la plage de précision numérique. Une combinaison de caractéristiques
+mises à l'échelle et/ou d'un taux d'apprentissage inférieur
+peut nous aider à éviter cet écueil. Il est également judicieux d'éviter
+les anomalies pour faciliter la généralisation. La détection de ces valeurs anormales
+et leur exclusion de l'ensemble de données avant l'apprentissage
+peuvent s'avérer fort utiles. N'oubliez pas qu'il n'existe pas de méthode
+unique adaptée à toutes les données. Chacune de ces approches présente
+des avantages et des inconvénients. Il existe plusieurs façons de réduire
+nos valeurs de caractéristiques. D'abord, on a la mise à l'échelle linéaire
+où l'on identifie les valeurs minimale et maximale
+des données. Ensuite, pour chaque valeur, on soustrait la valeur minimale,
+puis on divise par la différence entre les valeurs maximale
+et minimale (plage). Les valeurs seront
+alors comprises entre 0 et 1, 0 étant la valeur minimale
+et 1 la valeur maximale. On parle aussi de normalisation. On peut aussi utiliser le bornement
+de la norme du gradient, pour lequel vous définissez
+des valeurs minimale et maximale. Par exemple, si ma valeur minimale est définie
+sur -7 et ma valeur maximale sur 10, alors toutes les valeurs inférieures à -7
+prennent la valeur -7, et toutes les valeurs supérieures à 10
+prennent la valeur 10. Une autre méthode, l'échelle logarithmique, consiste à appliquer la fonction logarithmique
+à vos données d'entrée. C'est très utile si vous avez
+une vaste plage de données et que vous souhaitez la condenser
+en fonction de la grandeur de la valeur. La standardisation est une autre méthode
+déjà évoquée avec la normalisation par lot. Dans ce cas, vous calculez la moyenne
+de vos données et l'écart type. Une fois cela fait, vous soustrayez la moyenne
+de chaque point de donnée, puis vous divisez par l'écart type. Ainsi, vos données sont centrées sur 0, car votre nouvelle moyenne est égale à 0
+et le nouvel écart type est alors égal à 1. Il existe bien d'autres façons
+de mettre à l'échelle vos données. Lesquels de ces conseils s'appliquent
+si mon modèle génère des explosions de gradients ? La bonne réponse est A, B, C, D. Ce problème survient souvent
+lorsque les pondérations deviennent trop importantes,
+ce qui est le cas lorsque le taux d'apprentissage
+est trop élevé. Cela peut générer
+toutes sortes d'autres problèmes tels que la stabilité numérique,
+la divergence et la mort des ReLU. Il est donc conseillé de réduire le taux
+d'apprentissage pour trouver le juste milieu. La régularisation des pondérations
+peut également s'avérer utile, car une pénalité est appliquée
+aux pondérations importantes, ce qui permet d'éviter
+les explosions de gradients. Le bornement de la norme du gradient
+permet également de s'assurer que les gradients ne dépassent pas un seuil spécifique
+que nous avons défini. Cela peut aider à réduire un peu
+un taux d'apprentissage élevé. Mais, si le taux est assez élevé,
+les pondérations ont tendance à atteindre de très hautes valeurs. La normalisation par lot peut vous aider
+à garder les entrées intermédiaires des couches dans une plage plus restreinte. Il est donc bien moins probable
+que les pondérations soient hors plage, et ce, avec un faible coût supplémentaire
+en termes de calcul. Il y a de nombreuses solutions
+en cas d'explosion. Il vous suffit de faire des tests
+avec ces outils et d'identifier la méthode
+qui convient le mieux. Il existe une autre forme de régularisation
+qui facilite le développement de modèles plus généralisables : l'ajout de
+couches d'abandon aux réseaux de neurones. Pour utiliser cette méthode,
+j'ajoute un wrapper à une ou plusieurs couches.
+Dans TensorFlow, ce paramètre s'appelle dropout.
+Il correspond à la probabilité d'abandonner un neurone temporairement
+plutôt que de le garder activé. Soyez prudent lorsque vous définissez
+ce chiffre, car certaines fonctions disposant d'un mécanisme d'abandon,
+utilisent la probabilité "keep", qui est le complément
+de la probabilité "drop", à savoir la probabilité d'activation
+ou de désactivation d'un neurone. Vous ne voulez pas appliquer
+une probabilité "drop" de 10 % seulement, et découvrir que vous appliquez en fait
+une probabilité "keep" de 10 % seulement dans les nœuds de façon aléatoire,
+créant ainsi un modèle creux. Comment fonctionne l'abandon exactement ? Supposons que nous ayons défini
+une probabilité d'abandon de 20 %. Pour chaque propagation avant
+dans le réseau, l'algorithme jette le dé pour chaque neurone
+et la couche associée au DropoutWrapper. Si le nombre de jets est supérieur à 20,
+le neurone reste actif dans le réseau, sinon le neurone est abandonné
+et génère une valeur de sortie de 0 quelles que soient les valeurs d'entrée, et ce,
+sans ajout ni positif, ni négatif au réseau. En effet, l'ajout d'un zéro n'a aucun effet,
+comme si le neurone n'existait pas. Pour compenser le fait
+que chaque nœud n'est conservé qu'un certain pourcentage du temps,
+les activations sont mises à l'échelle 1 ÷ 1 moins la probabilité d'abandon,
+c'est-à-dire 1 divisé par la probabilité "keep" durant l'apprentissage, pour que l'activation
+ait cette valeur attendue. En l'absence d'apprentissage,
+et sans aucun changement de code, le wrapper disparaît et les neurones dans la couche auparavant associée
+au DropoutWrapper restent activés et utilisent les pondérations
+entraînées par le modèle. L'avantage de cette méthode,
+c'est qu'elle permet de créer un groupe de modèles, car pour chaque propagation avant,
+on dispose en fait d'un réseau différent
+pour le mini-lot de données. Lorsqu'on ajoute tout cela, cela revient à entraîner
+2 réseaux de neurones à la puissance n, où n est le nombre de neurones abandonnés. Ces réseaux travaillent en groupe comme des schémas de décision
+au sein d'un ensemble aléatoire. Cette méthode a par ailleurs
+l'avantage d'étendre la distribution des données
+du réseau entier, plutôt que la majeure partie du signal
+soit concentrée sur une branche du réseau. Généralement, j'assimile cela
+au détournement de l'eau d'une rivière à l'aide de plusieurs barrages
+pour s'assurer que tous les ruisseaux sont approvisionnés en eau
+et ne s'assèchent pas. Votre réseau tire meilleur parti
+de sa capacité, car le signal circule de façon plus
+homogène dans tout le réseau. L'apprentissage et la généralisation
+s'en trouvent améliorées sans que des dépendances se créent au niveau
+des neurones dans les voies les plus utilisées. Les valeurs typiques d'abandon
+sont de 20 à 50 %. Pour toute valeur très inférieure à cela, l'effet sur le réseau est insignifiant,
+en raison du nombre réduit d'abandons. Pour toute valeur supérieure, l'apprentissage n'est pas aussi efficace,
+car le réseau devient creux au point de perdre sa capacité 
+d'apprentissage sans distribution. Cette méthode est toute conseillée
+sur des réseaux plus importants, car le modèle peut mieux apprendre
+les représentations indépendantes. En d'autres termes, le réseau dispose
+d'un plus grand nombre de voies. Plus vous abandonnez de neurones, et donc moins vous en gardez, plus la régularisation est solide. Si vous définissez
+la probabilité d'abandon sur 1, vous ne conservez aucun neurone, et chaque neurone de la couche
+associée au DropoutWrapper est supprimé, et la valeur de sortie
+de l'activation est de 0. Durant la rétropropagation, cela signifie que les pondérations ne sont pas mises à jour
+et que la couche n'apprend rien. Si vous définissez la probabilité sur 0,
+tous les neurones restent actifs et la régularisation par abandon
+n'a pas lieu. C'est une façon plus coûteuse
+en termes de calcul de ne pas avoir de DropoutWrapper,
+car vous devez tout de même jeter le dé. Vous voulez bien évidemment
+être quelque part entre 0 et 1, plus spécifiquement, avec une probabilité
+d'abandon entre 10 et 50 %. La valeur de référence est de 20 % au départ,
+puis vous augmentez au besoin. Il n'y a pas de probabilité d'abandon unique
+qui s'applique à tous les modèles et distributions de données. L'abandon est une autre méthode de [blanc]. Il force les données à circuler
+dans des voies [blanc] pour une distribution plus homogène. Il émule l'apprentissage de [blanc]. Pour mettre à l'échelle les activations d'abandon, n'oubliez pas d'appliquer
+l'inverse de la [blanc]. L'abandon est supprimé durant [blanc]. La bonne réponse est E.
+Un abandon est une autre méthode de régularisation en vue d'améliorer
+la capacité de généralisation du modèle. Les nœuds sont désactivés
+selon une probabilité d'abandon, ce qui force les données à circuler
+dans des voies multiples pour une distribution plus homogène. Autrement, les données
+et activations associées peuvent apprendre à préférer certaines voies,
+ce qui pourrait aboutir à un sous-apprentissage du réseau,
+et à de mauvaises performances sur de nouvelles données. L'abandon émule l'apprentissage de groupe en cumulant 2 modèles à la puissance n,
+en raison de la désactivation aléatoire des nœuds pour chaque propagation avant,
+où n représente le nombre de nœuds abandonnés. Chaque lot est vu par un réseau différent,
+pour éviter un surapprentissage du modèle sur l'ensemble d'apprentissage. Pour mettre à l'échelle les activations
+d'abandon, n'oubliez pas d'appliquer l'inverse de la probabilité "keep",
+soit 1 moins la probabilité d'abandon. L'objectif est de mettre à l'échelle le nœud
+durant l'apprentissage, car durant l'inférence, il est actif, puisqu'on supprime l'abandon
+pendant l'inférence.

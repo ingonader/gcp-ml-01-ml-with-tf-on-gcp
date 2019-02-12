@@ -1,0 +1,255 @@
+1
+00:00:00,000 --> 00:00:01,830
+In the previous course,
+
+2
+00:00:01,830 --> 00:00:05,670
+we looked at embeddings from the standpoint of a feature cross.
+
+3
+00:00:05,670 --> 00:00:09,765
+But embeddings are useful for any categorical column.
+
+4
+00:00:09,765 --> 00:00:14,385
+To see why, let's look at embeddings from a different standpoint.
+
+5
+00:00:14,385 --> 00:00:19,260
+Let's say that we want to recommend movies to customers.
+
+6
+00:00:19,260 --> 00:00:25,155
+Let's say that our business has a million users and 500,000 movies.
+
+7
+00:00:25,155 --> 00:00:27,015
+That's quite small, by the way.
+
+8
+00:00:27,015 --> 00:00:31,950
+YouTube and eight other Google properties have a billion users.
+
+9
+00:00:31,950 --> 00:00:37,500
+For every user, our task is to recommend five to 10 movies.
+
+10
+00:00:37,500 --> 00:00:40,425
+We want to pick movies that they will watch,
+
+11
+00:00:40,425 --> 00:00:41,970
+and will rate highly.
+
+12
+00:00:41,970 --> 00:00:46,980
+We need to do this for a million users and for each user,
+
+13
+00:00:46,980 --> 00:00:51,585
+select five to 10 movies from 500,000 of them.
+
+14
+00:00:51,585 --> 00:00:54,255
+So what is our input dataset?
+
+15
+00:00:54,255 --> 00:00:58,875
+Our input dataset, if we represented it as a matrix,
+
+16
+00:00:58,875 --> 00:01:03,485
+is one million rows by 500,000 columns.
+
+17
+00:01:03,485 --> 00:01:10,975
+The numbers in the diagram denote movies that customers have watched and rated.
+
+18
+00:01:10,975 --> 00:01:15,130
+What we need to do is to figure out the rest of the matrix.
+
+19
+00:01:15,130 --> 00:01:16,690
+To solve this problem,
+
+20
+00:01:16,690 --> 00:01:21,525
+some method is needed to determine which movies are similar to each other.
+
+21
+00:01:21,525 --> 00:01:29,765
+One approach is to organize movies by similarity using some attribute of the movies.
+
+22
+00:01:29,765 --> 00:01:32,530
+For example, we might look at
+
+23
+00:01:32,530 --> 00:01:37,450
+the average age of the audience and put the movies in a line.
+
+24
+00:01:37,450 --> 00:01:44,035
+So the cartoons and animated movies show up on the left hand side and the darker,
+
+25
+00:01:44,035 --> 00:01:47,590
+adult-oriented movies show up to the right.
+
+26
+00:01:47,590 --> 00:01:51,370
+Then we can say that if you liked The Incredibles,
+
+27
+00:01:51,370 --> 00:01:54,640
+perhaps you're a child or you have a young child,
+
+28
+00:01:54,640 --> 00:01:58,975
+and so we can recommend Shrek to you.
+
+29
+00:01:58,975 --> 00:02:04,765
+But Blue and Memento are arthouse movies,
+
+30
+00:02:04,765 --> 00:02:10,070
+whereas Star Wars and Dark Knight Rises are both blockbusters.
+
+31
+00:02:10,070 --> 00:02:13,125
+If someone watched and liked Blue,
+
+32
+00:02:13,125 --> 00:02:18,430
+they are more likely to like Memento than a movie about Batman.
+
+33
+00:02:18,430 --> 00:02:23,080
+Similarly, someone who watched and liked Star Wars is
+
+34
+00:02:23,080 --> 00:02:28,405
+more likely to like The Dark Knight Rises than some arthouse movie.
+
+35
+00:02:28,405 --> 00:02:31,335
+How do we solve this problem?
+
+36
+00:02:31,335 --> 00:02:35,315
+What if we add a second dimension?
+
+37
+00:02:35,315 --> 00:02:39,280
+Perhaps the second dimension is a total number of
+
+38
+00:02:39,280 --> 00:02:44,030
+tickets sold for that movie when it was released in theaters.
+
+39
+00:02:44,030 --> 00:02:50,225
+Now, we see that Star Wars and The Dark Knight Rises are close to each other.
+
+40
+00:02:50,225 --> 00:02:53,480
+Blue and Memento are close to each other.
+
+41
+00:02:53,480 --> 00:02:57,290
+Shrek and Incredibles are close to each other as well.
+
+42
+00:02:57,290 --> 00:03:03,110
+Harry Potter is in-between the cartoons and Star Wars and that kids watch it,
+
+43
+00:03:03,110 --> 00:03:06,630
+some adults watch it and it's a blockbuster.
+
+44
+00:03:06,630 --> 00:03:10,750
+Notice how adding the second dimension has helped
+
+45
+00:03:10,750 --> 00:03:15,085
+bring movies that are good recommendations closer together.
+
+46
+00:03:15,085 --> 00:03:19,740
+It conforms much better to our intuition.
+
+47
+00:03:19,740 --> 00:03:24,110
+Do we have to stop at two dimensions? Of course not.
+
+48
+00:03:24,110 --> 00:03:26,455
+By adding even more dimensions,
+
+49
+00:03:26,455 --> 00:03:30,075
+we can create finer and finer distinctions.
+
+50
+00:03:30,075 --> 00:03:33,870
+And sometimes these finer distinctions can
+
+51
+00:03:33,870 --> 00:03:38,940
+translate into better recommendations, but not always.
+
+52
+00:03:38,940 --> 00:03:43,635
+The danger of overfitting exists here also.
+
+53
+00:03:43,635 --> 00:03:48,550
+So, the idea is that we have an input that has n dimensions.
+
+54
+00:03:48,550 --> 00:03:52,520
+So what is n in the case of the movies that we looked at?
+
+55
+00:03:52,520 --> 00:03:54,520
+500,000, right?
+
+56
+00:03:54,520 --> 00:03:56,360
+Remember that the movie ID is
+
+57
+00:03:56,360 --> 00:04:00,720
+a categorical feature and would normally be one heart encoding it.
+
+58
+00:04:00,720 --> 00:04:04,260
+So, n = 500,000.
+
+59
+00:04:04,260 --> 00:04:08,770
+In our case, we represented all the movies in a two dimensional space,
+
+60
+00:04:08,770 --> 00:04:10,710
+so d = 2.
+
+61
+00:04:10,710 --> 00:04:15,335
+The key point is that d is much much less than n,
+
+62
+00:04:15,335 --> 00:04:20,930
+and the assumption is that user interest in movies can be represented by
+
+63
+00:04:20,930 --> 00:04:24,005
+d aspects we don't need
+
+64
+00:04:24,005 --> 00:04:28,930
+a much larger number of aspects to represent user interest in movies.

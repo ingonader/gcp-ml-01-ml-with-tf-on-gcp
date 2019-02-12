@@ -1,0 +1,349 @@
+1
+00:00:00,000 --> 00:00:02,985
+Bem-vindo de volta. Neste módulo,
+
+2
+00:00:02,985 --> 00:00:07,200
+vamos aprender a escrever
+Estimators personalizados.
+
+3
+00:00:07,200 --> 00:00:10,065
+Neste curso, vamos analisar
+vários itens
+
+4
+00:00:10,065 --> 00:00:13,410
+que todos que usam ML precisam ter
+no toolkit.
+
+5
+00:00:13,410 --> 00:00:17,150
+Os Estimators automáticos ajudam muito,
+
+6
+00:00:17,150 --> 00:00:21,930
+mas haverá casos em que você
+vai querer ir além deles.
+
+7
+00:00:21,930 --> 00:00:23,535
+Para fazer isso,
+
+8
+00:00:23,535 --> 00:00:26,470
+você aprenderá a escrever
+um Estimator personalizado.
+
+9
+00:00:26,470 --> 00:00:28,640
+Ao escrever um Estimator personalizado,
+
+10
+00:00:28,640 --> 00:00:33,599
+você poderá ganhar maior controle
+sobre a própria função do módulo,
+
+11
+00:00:33,599 --> 00:00:35,820
+aproveitando ao mesmo tempo
+
+12
+00:00:35,820 --> 00:00:38,400
+a API Estimator e a capacidade dela
+
+13
+00:00:38,400 --> 00:00:41,590
+de distribuir o treinamento
+e a avaliação do seu modelo.
+
+14
+00:00:41,590 --> 00:00:45,270
+Por fim, usarei esta oportunidade
+para explicar
+
+15
+00:00:45,270 --> 00:00:48,705
+a relação entre o TensorFlow e o Keras,
+
+16
+00:00:48,705 --> 00:00:51,110
+porque essa é uma pergunta
+que me fazem bastante.
+
+17
+00:00:51,110 --> 00:00:56,940
+O Keras entra em cena quando você pensa em
+Estimators personalizados porque oferece
+
+18
+00:00:56,940 --> 00:01:01,280
+um modo prático de escrever a função de
+modelo para um Estimator personalizado.
+
+19
+00:01:01,280 --> 00:01:03,510
+O Keras, se você ainda
+não ouviu falar dele,
+
+20
+00:01:03,510 --> 00:01:06,550
+é um front-end de código aberto
+muito intuitivo
+
+21
+00:01:06,550 --> 00:01:08,550
+para modelos de aprendizagem profunda.
+
+22
+00:01:08,550 --> 00:01:11,340
+Vamos ver modelos do Keras
+brevemente neste módulo.
+
+23
+00:01:11,340 --> 00:01:17,910
+Você também aprenderá a incorporar modelos
+do Keras na biblioteca do Estimator.
+
+24
+00:01:17,910 --> 00:01:22,395
+Lembre-se que a API Estimator
+faz algumas coisas para nós.
+
+25
+00:01:22,395 --> 00:01:26,365
+Ela resolve problemas associados
+a dados sem memória,
+
+26
+00:01:26,365 --> 00:01:28,105
+usando a API Dataset.
+
+27
+00:01:28,105 --> 00:01:31,530
+Ela nos fornece uma maneira prática
+de distribuir nosso treinamento
+
+28
+00:01:31,530 --> 00:01:35,595
+e nossa avaliação, oferecendo
+a função de treinamento e avaliação.
+
+29
+00:01:35,595 --> 00:01:40,800
+Ela exporta resumos para que não apenas
+possamos treinar e avaliar,
+
+30
+00:01:40,800 --> 00:01:42,720
+mas também monitorar.
+
+31
+00:01:42,720 --> 00:01:47,385
+Isso nos permite exportar pontos
+de verificação na hora em que avaliamos.
+
+32
+00:01:47,385 --> 00:01:51,000
+Os pontos de verificação em si
+fornecem recuperação de falhas.
+
+33
+00:01:51,000 --> 00:01:55,525
+A exportação permite que um modelo seja
+implantado facilmente para que,
+
+34
+00:01:55,525 --> 00:01:59,895
+na produção, possamos veicular
+previsões de um modelo treinado.
+
+35
+00:01:59,895 --> 00:02:04,800
+As métricas de avaliação também permitem
+o ajuste de hiperparâmetros.
+
+36
+00:02:04,800 --> 00:02:10,885
+Gosto do Estimator principalmente porque
+ele nos dá um modelo rápido.
+
+37
+00:02:11,435 --> 00:02:12,625
+Qual a velocidade dele?
+
+38
+00:02:12,625 --> 00:02:15,930
+Vimos isso no terceiro curso
+da especialização.
+
+39
+00:02:15,930 --> 00:02:19,410
+Se você quer treinar um modelo
+para prever preços de imóveis,
+
+40
+00:02:19,410 --> 00:02:24,070
+pode ajustar todo o código de treino
+para ler conjuntos de dados de memória
+
+41
+00:02:24,070 --> 00:02:29,270
+e treinar o modelo. Você pode ajustar
+todo o código de treino em um slide.
+
+42
+00:02:29,270 --> 00:02:32,340
+Adicionar a capacidade de fazer
+o treinamento do distribuidor,
+
+43
+00:02:32,340 --> 00:02:34,080
+não só grandes conjuntos de dados,
+
+44
+00:02:34,080 --> 00:02:38,405
+mas fazer treinamento em muitas máquinas
+de uma maneira tolerante a falhas,
+
+45
+00:02:38,405 --> 00:02:42,720
+traz alguns conceitos extras de
+especificação dos parâmetros de treino
+
+46
+00:02:42,720 --> 00:02:48,285
+e avaliação e por quanto tempo
+e com que frequência fazer isso.
+
+47
+00:02:48,285 --> 00:02:52,480
+Além disso, tivemos que especificar
+uma assinatura especializada
+
+48
+00:02:52,480 --> 00:02:54,740
+para que pudéssemos produzir o modelo.
+
+49
+00:02:54,740 --> 00:03:01,040
+Ainda assim, o Estimator pré-criado é um
+código muito simples que faz com que
+
+50
+00:03:01,040 --> 00:03:04,525
+muitas coisas difíceis
+sejam fáceis de realizar
+
+51
+00:03:04,525 --> 00:03:08,425
+por meio de uma função poderosa
+de treino e avaliação.
+
+52
+00:03:09,795 --> 00:03:15,335
+Contudo, há situações em que os Estimators
+automáticos podem ser insuficientes.
+
+53
+00:03:15,335 --> 00:03:19,545
+Você pode usar Estimators pré-criados
+ou automáticos somente se
+
+54
+00:03:19,545 --> 00:03:24,170
+existir um Estimator automático
+para o que você quer fazer exatamente.
+
+55
+00:03:24,170 --> 00:03:28,725
+A equipe do TensorFlow tenta capturar
+os tipos mais comuns de modelos,
+
+56
+00:03:28,725 --> 00:03:34,505
+mas, obviamente, nunca haverá um modelo
+automático para cada variação necessária.
+
+57
+00:03:34,505 --> 00:03:37,850
+Nesse caso, você vai querer aproveitar
+
+58
+00:03:37,850 --> 00:03:41,540
+o máximo possível
+da capacidade do Estimator,
+
+59
+00:03:41,540 --> 00:03:45,905
+e ainda poderá alterar
+o modelo matemático em uso.
+
+60
+00:03:45,905 --> 00:03:48,020
+A ideia é que você,
+
+61
+00:03:48,020 --> 00:03:49,745
+como cientista de dados,
+
+62
+00:03:49,745 --> 00:03:53,300
+queira definir o layout da rede neural,
+
+63
+00:03:53,300 --> 00:03:57,395
+a última função,
+a maneira de formatar as saídas,
+
+64
+00:03:57,395 --> 00:04:00,090
+mas raramente se preocupará em mudar
+
+65
+00:04:00,090 --> 00:04:03,190
+o modo como os workers e
+os servidores de parâmetros se comunicam.
+
+66
+00:04:03,190 --> 00:04:07,805
+Portanto, use Estimators criados em
+funcionalidade para tudo isso,
+
+67
+00:04:07,805 --> 00:04:13,535
+mas retenha um controle refinado
+sobre o próprio modelo.
+
+68
+00:04:13,535 --> 00:04:19,505
+Aliás, o que o Keras faz é nos permitir
+escrever nosso próprio modelo.
+
+69
+00:04:19,505 --> 00:04:21,015
+Se você estiver usando o Keras,
+
+70
+00:04:21,015 --> 00:04:23,760
+pode querer escrever um modelo
+usando o Keras,
+
+71
+00:04:23,760 --> 00:04:28,135
+mas treinar e avaliar o modelo do Keras
+usando o Estimator.
+
+72
+00:04:28,135 --> 00:04:30,930
+Então, usar o modelo de kerastorator é
+
+73
+00:04:30,930 --> 00:04:35,760
+apenas outro exemplo do tipo
+de flexibilidade que você pode querer,
+
+74
+00:04:35,760 --> 00:04:39,520
+e é sobre isso
+que vamos falar neste módulo.

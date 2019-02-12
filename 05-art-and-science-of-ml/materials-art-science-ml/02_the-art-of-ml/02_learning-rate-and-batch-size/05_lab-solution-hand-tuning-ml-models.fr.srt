@@ -1,0 +1,605 @@
+1
+00:00:00,000 --> 00:00:03,800
+Dans cet atelier, vous avez expérimenté
+le réglage manuel des hyperparamètres.
+
+2
+00:00:03,800 --> 00:00:05,610
+Examinons les résultats.
+
+3
+00:00:05,610 --> 00:00:07,920
+Nous effectuons
+une régression linéaire simple
+
+4
+00:00:07,920 --> 00:00:11,790
+pour prédire les prix des logements
+en fonction du nombre de pièces.
+
+5
+00:00:12,370 --> 00:00:14,195
+Nous évaluerons la précision du modèle
+
+6
+00:00:14,195 --> 00:00:16,985
+en gardant un œil sur la RMSE
+(erreur quadratique moyenne).
+
+7
+00:00:16,985 --> 00:00:21,455
+Nous ajusterons le taux d'apprentissage et
+la taille de lot pour améliorer la RMSE.
+
+8
+00:00:21,455 --> 00:00:25,720
+Les données utilisées dans cet atelier
+sont basées sur le recensement effectué
+
+9
+00:00:25,720 --> 00:00:27,420
+en 1990 en Californie.
+
+10
+00:00:28,220 --> 00:00:32,970
+Intéressons-nous
+au bloc-notes Python affiché à l'écran.
+
+11
+00:00:32,970 --> 00:00:35,380
+En premier lieu,
+je charge quelques bibliothèques,
+
+12
+00:00:35,380 --> 00:00:36,500
+rien de bien excitant.
+
+13
+00:00:37,150 --> 00:00:40,080
+L'avertissement qui s'affiche ici
+peut être ignoré.
+
+14
+00:00:40,080 --> 00:00:43,820
+Selon la version que vous utilisez,
+ce message peut apparaître ou non.
+
+15
+00:00:43,820 --> 00:00:49,080
+Ensuite, j'importe l'ensemble de données
+depuis cette URL publique
+
+16
+00:00:50,460 --> 00:00:53,430
+dans une structure de données Pandas.
+
+17
+00:00:54,250 --> 00:00:56,140
+Pour l'analyse des données,
+
+18
+00:00:56,140 --> 00:00:58,890
+nous allons nous intéresser
+à certains enregistrements
+
+19
+00:01:00,610 --> 00:01:03,480
+et à certaines statistiques
+tirées de ces données.
+
+20
+00:01:05,680 --> 00:01:08,680
+Cet ensemble de données
+présente un problème de granularité.
+
+21
+00:01:08,680 --> 00:01:11,775
+Il est à l'échelle des quartiers,
+
+22
+00:01:11,775 --> 00:01:13,500
+et non à l'échelle des logements.
+
+23
+00:01:13,500 --> 00:01:16,610
+Nous devons corriger cela
+avant de commencer à l'utiliser.
+
+24
+00:01:17,080 --> 00:01:18,250
+Pour ce faire,
+
+25
+00:01:18,250 --> 00:01:21,090
+nous allons simplement créer
+une nouvelle colonne de données
+
+26
+00:01:21,090 --> 00:01:25,095
+basée sur le nombre total de pièces
+comptabilisé pour un quartier
+
+27
+00:01:25,705 --> 00:01:29,105
+divisé par le nombre de logements
+situés dans ce quartier.
+
+28
+00:01:29,105 --> 00:01:34,145
+Cela nous permet d'obtenir le nombre
+moyen de pièces par logement.
+
+29
+00:01:34,475 --> 00:01:37,975
+Si j'exécute une commande "describe",
+
+30
+00:01:37,975 --> 00:01:40,800
+j'obtiens le tableau statistique suivant.
+
+31
+00:01:40,800 --> 00:01:43,640
+Avant de passer
+à l'entraînement du modèle,
+
+32
+00:01:43,640 --> 00:01:46,635
+nous allons rapidement identifier
+l'ensemble de données concerné
+
+33
+00:01:46,635 --> 00:01:48,780
+et repréciser ce que nous allons faire.
+
+34
+00:01:48,780 --> 00:01:52,170
+Voici la colonne que nous venons de créer
+(num_rooms, nombre de pièces)
+
+35
+00:01:52,170 --> 00:01:54,760
+en "divisant" deux colonnes existantes.
+
+36
+00:01:54,760 --> 00:01:56,285
+Ce sera notre caractéristique.
+
+37
+00:01:56,285 --> 00:01:59,210
+En gros, cette colonne fait office
+d'entrée pour notre modèle.
+
+38
+00:01:59,210 --> 00:02:00,990
+Nous allons utiliser notre modèle
+
+39
+00:02:00,990 --> 00:02:04,460
+pour prédire l'âge médian des logements
+(colonne housing_median_age).
+
+40
+00:02:04,460 --> 00:02:08,780
+Le nom de la colonne "âge médian"
+sera donc notre "libellé".
+
+41
+00:02:10,960 --> 00:02:14,045
+Dans cette cellule,
+je définis les éléments nécessaires
+
+42
+00:02:14,045 --> 00:02:15,925
+pour démarrer l'entraînement.
+
+43
+00:02:16,515 --> 00:02:19,360
+La fonction "training"...
+
+44
+00:02:19,360 --> 00:02:23,780
+La fonction "input" utilise les données
+présentes dans la structure de données.
+
+45
+00:02:26,690 --> 00:02:30,400
+Rappelez-vous que le nombre de pièces
+(num_rooms) est notre caractéristique,
+
+46
+00:02:30,400 --> 00:02:34,170
+et que la valeur "median_house_value"
+est le libellé.
+
+47
+00:02:37,690 --> 00:02:40,700
+Ici, je définis
+le répertoire de sortie (outdir).
+
+48
+00:02:40,700 --> 00:02:44,140
+Et pour m'assurer que je repartirai
+à chaque fois de zéro,
+
+49
+00:02:44,140 --> 00:02:48,250
+je configure la suppression automatique
+du contenu de ce répertoire.
+
+50
+00:02:49,000 --> 00:02:52,094
+J'ai mentionné que nous allions effectuer
+une régression linéaire.
+
+51
+00:02:52,094 --> 00:02:54,950
+J'utilise pour cela
+la fonction "LinearRegressor"
+
+52
+00:02:54,950 --> 00:02:56,840
+de la bibliothèque TensorFlow,
+
+53
+00:02:56,840 --> 00:03:01,505
+puis je communique la caractéristique et
+le répertoire de sortie à cet estimateur,
+
+54
+00:03:01,505 --> 00:03:03,655
+enfin, je démarre l'entraînement ici.
+
+55
+00:03:03,655 --> 00:03:05,030
+Comme je l'ai déjà dit,
+
+56
+00:03:05,030 --> 00:03:09,000
+j'évaluerai la performance du modèle
+en surveillant la valeur RMSE,
+
+57
+00:03:09,000 --> 00:03:11,230
+j'utilise pour cela
+la fonction "print_rmse".
+
+58
+00:03:12,240 --> 00:03:13,790
+Si j'exécute cette cellule,
+
+59
+00:03:17,650 --> 00:03:23,080
+je constate que la valeur RMSE retournée
+est exceptionnellement élevée.
+
+60
+00:03:23,080 --> 00:03:28,330
+C'est assez incroyable, car la valeur RMSE
+est normalement exprimée en "centièmes".
+
+61
+00:03:28,330 --> 00:03:31,980
+Ce nombre est totalement surréaliste.
+
+62
+00:03:31,980 --> 00:03:33,680
+Alors, que se passe-t-il ici ?
+
+63
+00:03:33,680 --> 00:03:35,460
+C'est une question d'échelle.
+
+64
+00:03:35,460 --> 00:03:38,100
+L'information est rapportée
+à l'échelle "100 000",
+
+65
+00:03:38,100 --> 00:03:40,650
+et nous devons appliquer cette échelle
+
+66
+00:03:40,650 --> 00:03:43,925
+pour obtenir une valeur RMSE appropriée.
+
+67
+00:03:43,925 --> 00:03:46,375
+C'est ce que je fais
+dans la cellule suivante.
+
+68
+00:03:47,535 --> 00:03:52,830
+Je divise juste la valeur "Y" en fonction
+de l'échelle que je viens de mentionner,
+
+69
+00:03:52,830 --> 00:03:55,340
+et je ne touche pas aux autres éléments.
+
+70
+00:03:55,860 --> 00:03:58,860
+Maintenant, si j'exécute cette cellule,
+
+71
+00:03:58,860 --> 00:04:03,635
+le taux d'erreur renvoyé
+est d'environ 7,4 %.
+
+72
+00:04:03,635 --> 00:04:06,440
+Pour un début,
+ce n'est pas trop mauvais,
+
+73
+00:04:06,440 --> 00:04:08,245
+mais nous pouvons faire mieux.
+
+74
+00:04:08,245 --> 00:04:10,250
+Voyons cela dans la cellule suivante.
+
+75
+00:04:10,250 --> 00:04:13,840
+Je vais modifier le taux d'apprentissage
+et la taille de lot pour voir
+
+76
+00:04:13,840 --> 00:04:16,600
+si cela permet
+de réduire le taux d'erreur.
+
+77
+00:04:18,000 --> 00:04:20,490
+L'échelle reste la même (100 000).
+
+78
+00:04:20,490 --> 00:04:23,325
+Ici, je définis la taille de lot,
+
+79
+00:04:23,325 --> 00:04:24,960
+Je choisis la valeur 10.
+
+80
+00:04:26,490 --> 00:04:29,295
+Comme précédemment,
+nous partirons systématiquement de zéro,
+
+81
+00:04:29,295 --> 00:04:32,104
+le répertoire de sortie
+sera réinitialisé à chaque fois.
+
+82
+00:04:32,104 --> 00:04:36,370
+Ici j'ajoute le taux d'apprentissage,
+j'opte pour la valeur 0,01.
+
+83
+00:04:38,220 --> 00:04:41,240
+Nous utilisons encore une fois
+un outil de régression linéaire,
+
+84
+00:04:41,240 --> 00:04:43,800
+le reste du code ne change presque pas.
+
+85
+00:04:43,800 --> 00:04:46,050
+Seule petite différence
+avec le code précédent,
+
+86
+00:04:46,050 --> 00:04:48,540
+comme nous utilisons
+des lots de taille inférieure,
+
+87
+00:04:48,540 --> 00:04:51,170
+nous devons augmenter le nombre de pas.
+
+88
+00:04:51,170 --> 00:04:52,865
+C'est ici que ça se passe.
+
+89
+00:04:52,865 --> 00:04:54,970
+Enfin, nous allons "imprimer"
+la valeur RMSE,
+
+90
+00:04:54,970 --> 00:04:57,020
+et observer
+les effets de nos modifications.
+
+91
+00:05:02,140 --> 00:05:04,840
+Souvenez-vous, avant de spécifier
+
+92
+00:05:04,840 --> 00:05:07,250
+le taux d'apprentissage
+et la taille de lot,
+
+93
+00:05:07,250 --> 00:05:09,245
+nous avions un taux d'erreur de 7,4 %.
+
+94
+00:05:09,245 --> 00:05:15,045
+Ces petites modifications nous ont permis
+de faire tomber ce taux à 3,6 %.
+
+95
+00:05:15,045 --> 00:05:18,145
+Vous devriez essayer différentes
+valeurs pour ces hyperparamètres
+
+96
+00:05:18,145 --> 00:05:20,625
+pour obtenir les meilleures
+performances possibles.
+
+97
+00:05:20,625 --> 00:05:25,160
+La dernière fois que j'ai "joué" avec,
+j'ai réduit le taux d'erreur à 2,528 %.
+
+98
+00:05:26,990 --> 00:05:29,630
+Voilà, je pense
+avoir abordé tous les points
+
+99
+00:05:29,630 --> 00:05:32,030
+dont je souhaitais vous parler
+dans cet atelier.
+
+100
+00:05:33,810 --> 00:05:39,345
+On me demande très souvent
+s'il existe une méthode standard
+
+101
+00:05:39,345 --> 00:05:41,930
+pour le réglage de ces paramètres.
+
+102
+00:05:41,930 --> 00:05:42,940
+Pour faire court,
+
+103
+00:05:42,940 --> 00:05:46,735
+je dirais que les effets des différents
+hyperparamètres dépendent des données.
+
+104
+00:05:46,735 --> 00:05:48,755
+Il n'y a pas de règle absolue.
+
+105
+00:05:48,755 --> 00:05:51,420
+Vous devez effectuer des tests
+avec vos propres données.
+
+106
+00:05:51,420 --> 00:05:55,150
+Il existe toutefois quelques règles
+de base qui pourraient vous être utiles.
+
+107
+00:05:55,810 --> 00:05:58,430
+Lorsque vous surveillez
+le taux d'erreur d'entraînement,
+
+108
+00:05:58,430 --> 00:06:00,930
+celui-ci devrait diminuer progressivement.
+
+109
+00:06:01,360 --> 00:06:04,090
+Généralement,
+il chutera d'abord de façon abrupte,
+
+110
+00:06:04,090 --> 00:06:08,210
+puis se stabilisera à mesure
+que l'entraînement converge.
+
+111
+00:06:08,210 --> 00:06:11,945
+Si l'entraînement ne converge pas,
+essayez d'allonger sa durée.
+
+112
+00:06:12,535 --> 00:06:15,350
+Si le taux d'erreur
+diminue trop lentement,
+
+113
+00:06:15,350 --> 00:06:17,650
+vous pouvez augmenter
+le taux d'apprentissage
+
+114
+00:06:17,650 --> 00:06:19,160
+pour accélérer les choses.
+
+115
+00:06:19,570 --> 00:06:24,055
+Mais parfois, l'inverse peut se produire
+avec un taux d'apprentissage trop élevé.
+
+116
+00:06:24,855 --> 00:06:27,350
+Si le taux d'erreur d'entraînement
+est très variable,
+
+117
+00:06:27,350 --> 00:06:29,360
+essayez de réduire
+le taux d'apprentissage.
+
+118
+00:06:29,490 --> 00:06:30,980
+Réduire le taux d'apprentissage
+
+119
+00:06:30,980 --> 00:06:34,415
+et augmenter le nombre de pas
+ou la taille des lots donne
+
+120
+00:06:34,415 --> 00:06:36,465
+souvent de bons résultats.
+
+121
+00:06:37,085 --> 00:06:41,505
+Une taille de lot trop petite
+peut également causer de l'instabilité.
+
+122
+00:06:41,505 --> 00:06:45,170
+Utilisez d'abord une valeur plus élevée,
+100, ou même 1 000,
+
+123
+00:06:45,170 --> 00:06:48,280
+puis réduisez-la jusqu'à ce que
+vous constatiez une dégradation.
+
+124
+00:06:48,830 --> 00:06:52,110
+Encore une fois, ne suivez jamais
+ces règles aveuglément,
+
+125
+00:06:52,110 --> 00:06:54,130
+car les effets dépendent des données.
+
+126
+00:06:54,130 --> 00:06:56,400
+Vous devez toujours
+expérimenter et vérifier.
+
+127
+00:06:58,700 --> 00:07:02,400
+Pour conclure cet atelier, je vous propose
+d'ajouter des caractéristiques
+
+128
+00:07:02,400 --> 00:07:04,425
+et d'examiner les résultats.
+
+129
+00:07:04,425 --> 00:07:06,800
+Cela ne devrait pas prendre trop de temps,
+
+130
+00:07:06,800 --> 00:07:09,210
+cinq à dix minutes tout au plus.
+
+131
+00:07:09,210 --> 00:07:14,880
+Vous pouvez ajouter des caractéristiques
+pour observer le comportement du modèle.

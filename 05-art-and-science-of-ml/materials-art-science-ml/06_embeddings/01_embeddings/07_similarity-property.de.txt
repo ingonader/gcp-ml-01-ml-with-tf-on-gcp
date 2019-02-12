@@ -1,0 +1,67 @@
+Wir haben angefangen über Einbettungen am Beispiel von Film-IDs zu sprechen. Das waren kategoriale Merkmale. Dann haben wir dasselbe Beispiel
+auf Wörter in einer Anzeige angewendet und das waren Textmerkmale. Was haben beide gemein? Einbettungen gelten nicht nur
+für kategoriale oder Textmerkmale, sondern sie drehen sich um mehr. Ich zeige Ihnen hier ein
+klassisches ML-Problem namens MNIST. Die Idee besteht darin, handschriftliche
+Zahlen aus gescannten Bildern zu erkennen. Sie nehmen also jedes Bild und jedes Pixel im Bild ist ein Input. Das meine ich hier mit roher Bitmap. Die Bilder sind 28 auf 28, also haben wir 784 Pixel in dieser Bitmap. Betrachten wir dieses Feld von 784 Zahlen. Ein Großteil des Felds
+entspricht leeren Pixeln. Hier sind Einbettungen auch hilfreich. Wir nehmen die 784 Zahlen und
+stellen sie als dünnbesetzten Tensor dar. An sich speichern wir die Pixel nur, wo die handschriftliche Ziffer erscheint. Wir speichern nur die Pixel,
+in denen die Ziffer schwarz ist und senden sie dann
+durch eine 3D-Einbettung. Wir können dann ein normales
+zweischichtiges neuronales Netzwerk haben und wir könnten weitere
+Merkmale durchleiten, wenn wir möchten, und dann trainieren wir das Modell, um die tatsächliche Zahl im Bild auf der
+Grundlage dieser Merkmale vorherzusagen. Warum habe ich hier eine Logit-Ebene? Diese bilden die
+Ausgabeebene eines neuronalen Netzwerks. Ein Logit ist, was die Ausgabe bei
+einem Klassifikationsproblem sein muss. Wenn wir einen linearen oder
+einen DNN-Klassifikator verwenden, ist die Ausgabeebene
+ein Logit, ein einzelnes Logit. Aber das gilt nur, wenn
+wir eine Ausgabe haben. Im Fall des MNIST-Problems haben wir 10 Gesamtklassen. Im Wesentlichen die Ziffern Null, Eins, Zwei bis Neun. Deshalb habe ich nicht ein Logit, sondern eine Logit-Ebene. Ich habe ein Logit je mögliche Ziffer. Wenn wir eine Logit-Ebene
+anstelle eines einzelnen Logits haben, ist nicht sicher, dass die Wahrscheinlichkeit
+aller Ziffern insgesamt 1 ergibt. Das ist die Rolle von Softmax. Softmax normalisiert die Logits, sodass
+die Gesamtwahrscheinlichkeit 1 ergibt. Entschuldigen Sie die Abschweifung,
+wir haben über Einbettungen geredet. Also hier, wenn wir das Modell trainieren,
+um handschriftliche Ziffern zu erkennen, wird jedes Bild von
+drei Zahlen dargestellt. Im Gegensatz zum kategorialen Fall wird die Raw-Bitmap
+jedoch nicht one-hot-codiert. Wir bekommen also
+nicht drei Zahlen je Pixel. Stattdessen entsprechen
+die drei Zahlen allen Pixeln, die für ein bestimmtes
+Bild eingeschaltet sind. In TensorBoard können
+Sie diese Einbettungen visualisieren, den 3D-Vektor, der
+jedem 784-Pixel-Bild entspricht. Hier haben wir den Labels
+unterschiedliche Farben zugewiesen und wie Sie sehen,
+geschieht etwas richtig Tolles. Alle Fünfer sind im 3D-Raum gruppiert,
+ebenso wie alle Siebener und alle Nullen. In anderen Worten: Die 3D-Zahlen die jedes
+handschriftliche Bild darstellen, sind derart, dass ähnliche Elemente
+im 3D-Raum nahe beieinanderliegen. Das trifft auf
+Einbettungen kategorialer Variablen zu, auf Text in natürlicher Sprache sowie auf rohe Bitmaps. Was haben sie also alle gemein? Sie alle sind "dünnbesetzt" - sparse. Wenn Sie eine Sparse-Vektor-Codierung
+durch eine Einbettungsspalte senden und die Einbettungsspalte als Eingabe für
+ein DNN verwenden und das DNN anlernen, dann haben die trainierten Einbettungen
+diese Ähnlichkeitswahrscheinlichkeit, natürlich nur, sofern
+Sie genügend Daten haben und die Lernphase
+eine gute Genauigkeit erzielt. Sie können diese Ähnlichkeitseigenschaft in anderen Situationen nutzen. Nehmen wir etwa an, Ihre Aufgabe ist es,
+ein diesem Lied ähnliches Lied zu finden. Sie könnten eine Einbettung der den
+Liedern zugeordneten Audiodatei erstellen. Sie nehmen den Audioclip und
+stellen ihn als ein Wertefeld dar. Dann, genau wie beim MNIST-Bild, nehmen Sie das Feld und senden
+es durch eine Einbettungsschicht. Sie verwenden es, um ein
+sinnvolles ML-Problem zu trainieren. Vielleicht verwenden Sie ein Audiosignal, um ein Modell anzulernen, mit dem Sie das Musikgenre
+oder die nächste Note voraussagen. Unabhängig davon, für welches
+Voraussageziel Sie das Modell anlernen, schafft die Einbettung eine Darstellung
+des Audioclips mit niedrigerer Dimension. Nun, um ähnliche Lieder zu finden, berechnen Sie einfach den
+euklidischen Abstand zwischen zwei Clips, zwischen ihren Einbettungen, und das wird
+ein Maß für die Ähnlichkeit zweier Lieder. Die Einbettungsvektoren dienen auch
+als Input für Clustering-Algorithmen. Das Ähnlichkeitsprinzip ermöglicht auch
+die Einbettung unterschiedlicher Merkmale. Etwa Text in zwei verschiedenen Sprachen oder Text und das dazugehörige Audio zum Definieren der
+Ähnlichkeit zwischen ihnen. In allen unseren Beispielen haben wir drei als Anzahl
+der Einbettungen verwendet. Natürlich können Sie auch
+eine andere Anzahl verwenden. Aber welche Anzahl sollten Sie wählen? Die Anzahl der Einbettungen ist
+der Hyperparameter Ihres ML-Modells. Sie müssen verschiedene
+Einbettungsdimensionen ausprobieren, da hier ein Kompromiss zu machen ist. Einbettungen höherer Dimensionen können das Verhältnis zwischen
+Eingangswerten genauer darstellen. Aber, je mehr Dimensionen Sie haben, desto höher ist
+die Gefahr der Überanpassung. Das Modell wird außerdem größer
+und das Anlernen dadurch langsamer. Ein guter Ausgangspunkt ist die vierte Wurzel aus der
+Gesamtzahl der möglichen Werte. Zum Beispiel, wenn Sie Film-IDs einbetten und 500.000 Filme im Katalog führen, ist die Gesamtzahl
+der möglichen Werte 500.000. Ein guter Ausgangspunkt wäre
+also die vierte Wurzel aus 500.000. Die Quadratwurzel aus 500.000 ist etwa 700 und die Quadratwurzel aus 700 ist etwa 26. Ich würde also
+wahrscheinlich mit rund 25 anfangen. Bei einer Hyperparameter-Abstimmung
+der Anzahl der Einbettungsdimensionen empfiehlt sich ein
+Suchbereich von, sagen wir, 15 bis 35. Aber das ist 
+natürlich nur eine Faustregel.

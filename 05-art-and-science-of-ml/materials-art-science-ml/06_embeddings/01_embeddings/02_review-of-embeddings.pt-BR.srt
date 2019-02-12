@@ -1,0 +1,329 @@
+1
+00:00:00,730 --> 00:00:05,162
+Você viu as incorporações
+brevemente no último curso
+
+2
+00:00:05,162 --> 00:00:07,115
+junto com os cruzamentos
+de recursos,
+
+3
+00:00:07,115 --> 00:00:11,410
+mas elas estão em todo lugar
+no aprendizado de máquina de hoje
+
+4
+00:00:11,410 --> 00:00:15,950
+e não se limitam a cruzamentos de
+recursos ou a dados estruturados.
+
+5
+00:00:15,950 --> 00:00:22,390
+Você as usará em modelos
+de imagem e texto.
+
+6
+00:00:22,390 --> 00:00:27,425
+Vamos recapitular como
+entendemos as incorporações.
+
+7
+00:00:27,425 --> 00:00:30,780
+Podemos criar um modelo
+de aprendizado de máquina
+
+8
+00:00:30,780 --> 00:00:34,025
+para prever algo
+sobre o tráfego,
+
+9
+00:00:34,025 --> 00:00:38,010
+talvez o tempo até
+um veículo chegar
+
+10
+00:00:38,010 --> 00:00:42,150
+a um cruzamento, e temos
+várias entradas no nosso modelo.
+
+11
+00:00:42,150 --> 00:00:46,185
+Olhamos especificamente
+entradas categóricas:
+
+12
+00:00:46,185 --> 00:00:48,645
+hora do dia e dia da semana.
+
+13
+00:00:49,045 --> 00:00:52,635
+Dissemos que um
+modelo seria melhorado
+
+14
+00:00:52,635 --> 00:00:58,775
+se, em vez de tratar o dia e a hora
+como entradas independentes,
+
+15
+00:00:58,775 --> 00:01:03,310
+nós as concatenássemos para criar
+um cruzamento de recursos.
+
+16
+00:01:03,310 --> 00:01:09,145
+Dissemos que, se usarmos um
+número grande de intervalos de hash,
+
+17
+00:01:09,145 --> 00:01:13,690
+podemos ter a confiança
+de que cada intervalo
+
+18
+00:01:13,690 --> 00:01:17,840
+contém uma
+combinação hora/dia.
+
+19
+00:01:18,420 --> 00:01:22,800
+Foi aí que apresentamos
+as incorporações.
+
+20
+00:01:22,800 --> 00:01:30,620
+Dissemos que se, em vez de
+codificar o cruzamento e deixar,
+
+21
+00:01:30,620 --> 00:01:33,785
+pudéssemos transferir
+para uma camada densa
+
+22
+00:01:33,785 --> 00:01:38,135
+e treinar o modelo
+para prever o tráfego,
+
+23
+00:01:38,135 --> 00:01:44,860
+essa camada densa, mostrada pelos nós
+amarelo e verde, cria uma incorporação.
+
+24
+00:01:45,300 --> 00:01:48,965
+As incorporações
+são valores reais,
+
+25
+00:01:48,965 --> 00:01:53,210
+porque são uma soma
+dos valores de cruzamentos.
+
+26
+00:01:53,950 --> 00:01:58,820
+É preciso ver que os pesos
+da camada de incorporação,
+
+27
+00:01:58,820 --> 00:02:01,300
+formada pelos nós
+amarelo e verde,
+
+28
+00:02:01,300 --> 00:02:05,100
+são aprendidos nos dados.
+
+29
+00:02:05,530 --> 00:02:10,164
+O ponto é que, ao treinar esses
+pesos em um conjunto de dados
+
+30
+00:02:10,164 --> 00:02:15,724
+para resolver um problema útil,
+algo interessante ocorre.
+
+31
+00:02:15,724 --> 00:02:19,100
+O cruzamento de hora do dia
+
+32
+00:02:19,100 --> 00:02:23,640
+tem 68 valores únicos,
+mas nós forçamos o valor
+
+33
+00:02:23,640 --> 00:02:28,535
+a ser representado
+por dois números reais.
+
+34
+00:02:28,535 --> 00:02:34,485
+Então, o modelo aprende
+como incorporar o cruzamento
+
+35
+00:02:34,485 --> 00:02:37,175
+em um espaço
+dimensional menor.
+
+36
+00:02:37,175 --> 00:02:41,840
+Sugerimos que talvez a
+caixa verde tenda a capturar
+
+37
+00:02:41,840 --> 00:02:46,880
+o tráfego de pedestres,
+e a amarela o tráfego de veículos,
+
+38
+00:02:46,880 --> 00:02:51,800
+mas não importa o que
+essas dimensões capturam.
+
+39
+00:02:51,800 --> 00:02:57,060
+O importante é que as
+informações da hora do dia
+
+40
+00:02:57,060 --> 00:03:02,150
+e do dia da semana dos
+cruzamentos de tráfego na cidade
+
+41
+00:03:02,150 --> 00:03:06,229
+são unidos em
+apenas dois números.
+
+42
+00:03:06,229 --> 00:03:10,785
+Se você fizer isso em um conjunto
+de dados grande e bom o bastante,
+
+43
+00:03:10,785 --> 00:03:16,550
+esses números têm
+uma propriedade útil:
+
+44
+00:03:16,550 --> 00:03:20,110
+tempos semelhantes
+em termos de tráfego
+
+45
+00:03:20,110 --> 00:03:23,440
+recebem valores
+reais próximos,
+
+46
+00:03:23,440 --> 00:03:26,600
+e tempos diferentes
+em termos de tráfego
+
+47
+00:03:26,600 --> 00:03:29,635
+recebem valores
+reais diferentes.
+
+48
+00:03:30,865 --> 00:03:34,795
+Depois, vimos como criar
+uma incorporação no TensorFlow.
+
+49
+00:03:35,145 --> 00:03:36,600
+Para criar,
+
+50
+00:03:36,600 --> 00:03:40,970
+usamos o método embedding_column
+em tf.feature_column
+
+51
+00:03:40,970 --> 00:03:45,590
+e transferimos a coluna categórica
+que você quer incorporar.
+
+52
+00:03:45,590 --> 00:03:49,095
+Isso funciona com qualquer
+coluna categórica,
+
+53
+00:03:49,095 --> 00:03:51,620
+não apenas um
+cruzamento de recursos.
+
+54
+00:03:52,170 --> 00:03:57,075
+Você pode incorporar
+qualquer coluna categórica.
+
+55
+00:03:57,565 --> 00:04:03,230
+Finalmente, vimos como é
+rápido usar as incorporações
+
+56
+00:04:03,230 --> 00:04:09,620
+aprendidas em um problema e
+aplicá-las em um problema semelhante.
+
+57
+00:04:09,620 --> 00:04:13,965
+Talvez você tenha visto como
+representar a hora e o dia
+
+58
+00:04:13,965 --> 00:04:19,185
+com dois valores reais ao treinar
+com os dados de tráfego de Londres.
+
+59
+00:04:19,185 --> 00:04:23,140
+Como um início rápido,
+você pode usar os mesmos pesos
+
+60
+00:04:23,140 --> 00:04:25,930
+para começar o
+modelo de Frankfurt.
+
+61
+00:04:26,580 --> 00:04:30,240
+Você pode ainda usar
+a incorporação aprendida
+
+62
+00:04:30,240 --> 00:04:34,685
+no problema de tráfego para prever
+a audiência de um programa de TV.
+
+63
+00:04:34,685 --> 00:04:38,420
+A ideia é que o tráfego e
+
+64
+00:04:38,420 --> 00:04:43,505
+a audiência dependem
+do mesmo fator latente:
+
+65
+00:04:43,505 --> 00:04:49,815
+as pessoas estão na rua
+ou em casa ou no trabalho?
+
+66
+00:04:49,815 --> 00:04:53,039
+Transferir o aprendizado
+pode funcionar em problemas
+
+67
+00:04:53,039 --> 00:05:00,270
+que parecem diferentes, contanto que eles
+compartilhem os mesmos fatores latentes.

@@ -1,0 +1,965 @@
+1
+00:00:00,000 --> 00:00:03,010
+Mettons en pratique
+nos nouvelles connaissances
+
+2
+00:00:03,010 --> 00:00:06,815
+en créant un modèle de ML à l'aide de réseaux
+de neurones dans TensorFlow.
+
+3
+00:00:06,815 --> 00:00:10,760
+Cet atelier s'intitule : Création d'un modèle
+de ML à l'aide de réseaux de neurones.
+
+4
+00:00:10,760 --> 00:00:15,480
+Vous allez utiliser un Estimator standardisé,
+la classe DNNRegressor, dans TensorFlow
+
+5
+00:00:15,480 --> 00:00:19,480
+pour prédire le prix moyen d'un logement
+en fonction de différentes caractéristiques.
+
+6
+00:00:19,480 --> 00:00:23,015
+Les données sont basées sur un recensement
+de 1990 pour la Californie.
+
+7
+00:00:23,015 --> 00:00:27,060
+Ces données sont fournies par pâté de maisons,
+et leurs caractéristiques correspondent
+
+8
+00:00:27,060 --> 00:00:31,900
+au nombre total de pièces ou d'habitants
+dans ce pâté de maison, respectivement.
+
+9
+00:00:31,900 --> 00:00:33,010
+Bienvenue.
+
+10
+00:00:33,010 --> 00:00:36,575
+Nous allons passer en revue une partie
+de notre code pour voir comment créer
+
+11
+00:00:36,575 --> 00:00:40,005
+un réseau de neurones à l'aide de la classe
+DNNRegressor dans TensorFlow.
+
+12
+00:00:40,005 --> 00:00:44,210
+Nous allons donc apprendre
+à nous servir d'un réseau de neurones.
+
+13
+00:00:44,210 --> 00:00:47,595
+Nous allons utiliser ces données
+sur le logement, d'après un recensement
+
+14
+00:00:47,595 --> 00:00:48,880
+de 1990 pour la Californie.
+
+15
+00:00:48,880 --> 00:00:50,790
+Elles sont fournies par pâté de maisons.
+
+16
+00:00:50,790 --> 00:00:53,560
+Il s'agit du nombre total de pièces
+dans ce pâté de maisons
+
+17
+00:00:53,560 --> 00:00:56,650
+ou du nombre total d'habitants
+du pâté de maisons, respectivement.
+
+18
+00:00:56,650 --> 00:01:00,185
+Utilisons un ensemble de caractéristiques
+pour évaluer le prix du logement.
+
+19
+00:01:00,185 --> 00:01:01,670
+Commençons par tout configurer.
+
+20
+00:01:01,670 --> 00:01:04,950
+Dans la première cellule, on va charger
+les bibliothèques nécessaires.
+
+21
+00:01:04,950 --> 00:01:09,495
+On va importer math,
+shutil, numpy, pandas et tensorflow.
+
+22
+00:01:09,495 --> 00:01:13,640
+Assurez-vous que verbosity est défini
+sur "INFO" pour obtenir de nombreux résultats.
+
+23
+00:01:13,640 --> 00:01:16,215
+Vérifiez que float-format
+est défini pour Pandas.
+
+24
+00:01:16,215 --> 00:01:20,055
+Nous allons charger notre ensemble de données
+depuis cette URL ici,
+
+25
+00:01:20,055 --> 00:01:24,400
+california_housing_train,
+dans un DataFrame Pandas.
+
+26
+00:01:24,400 --> 00:01:27,555
+Ensuite, nous examinons les données.
+Vous devriez vous familiariser
+
+27
+00:01:27,555 --> 00:01:30,955
+avec les données avant de vous en servir.
+Nous allons afficher un résumé
+
+28
+00:01:30,955 --> 00:01:34,615
+des statistiques utiles de chaque colonne,
+y compris la moyenne, l'écart type,
+
+29
+00:01:34,615 --> 00:01:37,150
+les valeurs maximale et minimale,
+et divers quantiles.
+
+30
+00:01:37,150 --> 00:01:40,095
+D'abord, nous allons afficher
+l'en-tête du DataFrame,
+
+31
+00:01:40,095 --> 00:01:44,525
+à savoir les cinq premières lignes
+de l'ensemble de données :
+
+32
+00:01:44,525 --> 00:01:48,740
+longitude, latitude, âge moyen du logement,
+total des pièces, total des chambres,
+
+33
+00:01:48,740 --> 00:01:52,740
+population, foyers, revenu moyen
+et valeur moyenne du logement
+
+34
+00:01:52,740 --> 00:01:55,565
+qui correspond à mon étiquette.
+C'est ce que je vais prédire
+
+35
+00:01:55,565 --> 00:01:59,170
+à l'aide des autres caractéristiques.
+Regardons les statistiques.
+
+36
+00:01:59,170 --> 00:02:02,765
+Je me sers de df.describe
+pour afficher le nombre,
+
+37
+00:02:02,765 --> 00:02:06,610
+la moyenne, l'écart type,
+la valeur minimale, le 25e centile,
+
+38
+00:02:06,610 --> 00:02:09,695
+le 50e centile, le 75e centile
+et la valeur maximale.
+
+39
+00:02:09,695 --> 00:02:14,179
+Comme vous pouvez le voir ici,
+les données ont l'air propres.
+
+40
+00:02:14,179 --> 00:02:16,855
+Toutefois, les données sont fournies
+par pâté de maisons.
+
+41
+00:02:16,855 --> 00:02:21,020
+Nous allons donc devoir trouver la solution
+pour obtenir les données par maison.
+
+42
+00:02:21,020 --> 00:02:27,550
+Je prends le nombre de pièces qui est égal
+au nombre total de pièces du pâté de maisons
+
+43
+00:02:27,550 --> 00:02:30,410
+divisé par le nombre total de foyers
+du même pâté de maisons.
+
+44
+00:02:30,410 --> 00:02:32,970
+J'obtiens ainsi le nombre moyen
+de pièces par maison.
+
+45
+00:02:33,600 --> 00:02:36,980
+Il en va de même pour les chambres.
+Pour le nombre de chambres,
+
+46
+00:02:36,980 --> 00:02:41,875
+je divise le nombre total de chambres
+dans le pâté de maisons par le nombre de foyers
+
+47
+00:02:41,875 --> 00:02:44,980
+du même pâté de maisons
+pour obtenir le nombre moyen des chambres.
+
+48
+00:02:44,980 --> 00:02:50,440
+Pour le nombre de personnes par maison,
+je prends la population du pâté de maisons
+
+49
+00:02:50,440 --> 00:02:53,545
+que je divise par le nombre de foyers
+pour obtenir le nombre moyen
+
+50
+00:02:53,545 --> 00:02:56,780
+d'habitants par maison.
+Si je lance df.describe,
+
+51
+00:02:56,780 --> 00:03:02,395
+nous allons voir mes colonnes d'origine ici,
+mais de nouvelles colonnes sont ajoutées ici.
+
+52
+00:03:02,395 --> 00:03:06,470
+Il s'agit du nombre moyen de pièces par maison,
+du nombre moyen de chambres par maison
+
+53
+00:03:06,470 --> 00:03:09,110
+et du nombre moyen d'habitants par maison.
+
+54
+00:03:09,110 --> 00:03:15,465
+Excellent. Je peux maintenant
+placer ces statistiques de population,
+
+55
+00:03:15,465 --> 00:03:19,125
+ces statistiques au niveau du pâté de maisons,
+telles que le total des pièces,
+
+56
+00:03:19,125 --> 00:03:22,290
+le total des chambres, la population,
+le nombre de foyers.
+
+57
+00:03:22,290 --> 00:03:26,690
+Je vais incorporer toutes ces colonnes
+sans avoir à créer un DataFrame.
+
+58
+00:03:26,690 --> 00:03:31,420
+Je lance df.describe, et je vois alors
+que mes nouvelles caractéristiques sont ici,
+
+59
+00:03:31,420 --> 00:03:34,565
+et que mes anciennes caractéristiques sont là.
+Voici mon étiquette.
+
+60
+00:03:34,565 --> 00:03:37,090
+Les données que j'ai utilisées
+auparavant ont disparu.
+
+61
+00:03:37,090 --> 00:03:39,870
+Les données sont affichées par maison.
+
+62
+00:03:39,870 --> 00:03:43,035
+Nous allons maintenant créer
+un réseau de neurones qui comportera
+
+63
+00:03:43,035 --> 00:03:46,300
+les données des caractéristiques
+au bon format.
+
+64
+00:03:46,300 --> 00:03:48,765
+Nous allons créer
+des colonnes de caractéristiques.
+
+65
+00:03:48,765 --> 00:03:52,195
+Souvenez-vous que ces colonnes
+nous permettent de présenter nos données
+
+66
+00:03:52,195 --> 00:03:55,160
+dans un format
+qui soit utilisable par notre modèle.
+
+67
+00:03:55,160 --> 00:03:59,170
+Si la notation à virgule flottante
+est déjà utilisée, nous devons tout de même
+
+68
+00:03:59,170 --> 00:04:02,910
+décider si elle doit être utilisée
+dans une colonne ou non.
+
+69
+00:04:04,120 --> 00:04:10,575
+C'est ici qu'elle se trouve, et je crée
+une boucle pour toutes les colonnes :
+
+70
+00:04:10,575 --> 00:04:14,080
+âge moyen du logement, revenu moyen,
+nombre de pièces, nombre de chambres
+
+71
+00:04:14,080 --> 00:04:16,142
+et personnes par maison.
+
+72
+00:04:16,402 --> 00:04:19,515
+Après cela, je vais poursuivre
+l'extraction des caractéristiques.
+
+73
+00:04:19,515 --> 00:04:23,360
+Je vais créer une colonne longitude.
+
+74
+00:04:23,360 --> 00:04:28,090
+Il s'agit d'une colonne compartimentée
+pour des valeurs numériques de longitude,
+
+75
+00:04:28,090 --> 00:04:37,050
+Son espacement linéaire est compris
+entre -124,3 et -114,3 avec un pas de 5.
+
+76
+00:04:37,750 --> 00:04:40,810
+Pour créer une colonne latitude,
+je procède de la même manière,
+
+77
+00:04:40,810 --> 00:04:47,045
+mais avec un espacement compris
+entre 32,5 et 42 avec 10 buckets.
+
+78
+00:04:49,780 --> 00:04:53,655
+Je procède ainsi, car la Californie
+est un État plus long que large.
+
+79
+00:04:53,655 --> 00:04:56,840
+La latitude devrait donc comporter
+un plus grand nombre de buckets,
+
+80
+00:04:56,840 --> 00:04:59,605
+10 buckets contre cinq buckets
+pour la longitude.
+
+81
+00:05:00,255 --> 00:05:02,680
+J'affiche les noms
+des colonnes de caractéristiques.
+
+82
+00:05:02,680 --> 00:05:06,145
+Ici, je peux voir revenu moyen,
+personnes par maison, nombre de chambres,
+
+83
+00:05:06,145 --> 00:05:09,645
+âge moyen du logement, longitude,
+nombre de chambres et latitude.
+
+84
+00:05:09,645 --> 00:05:13,545
+C'est parfait, mais nous devons
+nous assurer que nous répartissons cela
+
+85
+00:05:13,545 --> 00:05:16,355
+dans un ensemble de données
+d'apprentissage et d'évaluation,
+
+86
+00:05:16,355 --> 00:05:20,080
+afin que je puisse vérifier la progression
+de mon modèle durant l'entraînement.
+
+87
+00:05:20,080 --> 00:05:23,530
+Pour ce faire, je vais créer
+un masquage aléatoire
+
+88
+00:05:23,530 --> 00:05:25,990
+qui me permet de vérifier
+la longueur du DataFrame.
+
+89
+00:05:25,990 --> 00:05:30,495
+Je vais créer toutes ces valeurs aléatoires
+à partir d'une distribution uniforme.
+
+90
+00:05:30,495 --> 00:05:35,005
+Si la valeur est inférieure à 0,8, je vais 
+l'enregistrer dans ce vecteur de masquage.
+
+91
+00:05:35,005 --> 00:05:38,960
+Ce vecteur de masquage correspond en fait
+à la longueur du DataFrame,
+
+92
+00:05:38,960 --> 00:05:41,450
+mais il s'agit en fait
+de valeurs vraies ou fausses.
+
+93
+00:05:41,450 --> 00:05:46,120
+C'est un masquage de type booléen
+que j'applique à mon DataFrame.
+
+94
+00:05:46,120 --> 00:05:51,810
+Pour toutes les valeurs vraies, ces lignes
+sont placées dans un DataFrame d'apprentissage.
+
+95
+00:05:51,810 --> 00:05:56,705
+Pour toutes les valeurs fausses,
+représentées par le tilde ici,
+
+96
+00:05:56,705 --> 00:05:59,280
+les lignes sont placées
+dans un DataFrame d'évaluation.
+
+97
+00:05:59,280 --> 00:06:03,195
+La répartition s'effectue ainsi à 80 %
+dans le DataFrame d'entraînement,
+
+98
+00:06:03,195 --> 00:06:06,810
+et les 20 % de données restantes
+sont placées dans le DataFrame d'évaluation.
+
+99
+00:06:06,810 --> 00:06:11,185
+Ici, j'ai un facteur de démultiplication,
+comme vous le voyez, il est de 100 000.
+
+100
+00:06:11,185 --> 00:06:13,960
+Je vais m'en servir
+pour mettre à l'échelle mes étiquettes,
+
+101
+00:06:13,960 --> 00:06:19,390
+car leurs valeurs sont trop grandes.
+Elles ont toutes des échelles différentes.
+
+102
+00:06:19,390 --> 00:06:22,625
+On a des centaines de milliers,
+presque des millions,
+
+103
+00:06:22,625 --> 00:06:25,295
+et ces nombres à virgule flottante
+sont bien plus petits,
+
+104
+00:06:25,295 --> 00:06:29,110
+avec un ou deux chiffres.
+Je vais les mettre à l'échelle.
+
+105
+00:06:29,110 --> 00:06:32,150
+Je vais aussi créer ma taille de lot ici
+et la définir sur 100,
+
+106
+00:06:32,150 --> 00:06:35,180
+soit 100 lignes à la fois
+sous chacun de ces DataFrames.
+
+107
+00:06:35,410 --> 00:06:38,940
+Je vais ensuite créer
+ma fonction d'entrée d'apprentissage.
+
+108
+00:06:38,940 --> 00:06:43,920
+Pour cela, je vais utiliser tf.Estimator
+avec la fonction pandas_input_fn,
+
+109
+00:06:43,920 --> 00:06:45,680
+où x représente mes caractéristiques.
+
+110
+00:06:45,680 --> 00:06:48,890
+Je vais créer ainsi
+un dictionnaire de Tensors.
+
+111
+00:06:48,890 --> 00:06:50,810
+Ce sera la sortie obtenue.
+
+112
+00:06:50,810 --> 00:06:55,065
+Cela va transformer mon DataFrame
+d'apprentissage de valeur moyenne du logement
+
+113
+00:06:55,065 --> 00:06:58,810
+dans cette colonne, et je vais obtenir y,
+qui deviendra alors un Tensor
+
+114
+00:06:58,810 --> 00:07:00,570
+pour mes étiquettes.
+
+115
+00:07:00,570 --> 00:07:02,710
+Le nombre d'itérations va être égal à 1.
+
+116
+00:07:02,710 --> 00:07:05,580
+J'ai la taille du lot
+et je vais brasser les données.
+
+117
+00:07:05,580 --> 00:07:09,060
+Là, j'ai ma fonction d'entrée d'évaluation.
+
+118
+00:07:09,060 --> 00:07:12,610
+Une fois de plus, je vais utiliser
+pandas_input_fn.
+
+119
+00:07:12,610 --> 00:07:16,225
+Je vais utiliser presque les mêmes paramètres
+que pour le DataFrame d'entrée.
+
+120
+00:07:16,225 --> 00:07:19,460
+Cependant, je vais avoir shuffle=False,
+car je ne veux pas brasser
+
+121
+00:07:19,460 --> 00:07:22,430
+mon ensemble d'évaluations,
+à des fins de reproductibilité.
+
+122
+00:07:22,850 --> 00:07:26,515
+Je crée aussi une autre fonction, print_rmse,
+qui va afficher la racine carrée
+
+123
+00:07:26,515 --> 00:07:29,040
+de l'erreur quadratique moyenne
+de mon modèle.
+
+124
+00:07:29,040 --> 00:07:32,645
+Elle appelle son nom
+et la fonction d'entrée associée.
+
+125
+00:07:32,645 --> 00:07:36,440
+Pour cela, je vais [inaudible] statistiques.
+Je vais utiliser model.evaluate
+
+126
+00:07:36,440 --> 00:07:39,920
+pour mon Estimator. Souvenez-vous
+que mon Estimator est défini sur modèle.
+
+127
+00:07:39,920 --> 00:07:44,540
+Je vais le faire passer en fonction d'entrée.
+Cette fonction d'entrée va passer à print-rmse
+
+128
+00:07:44,540 --> 00:07:48,720
+et je vais opter pour un pas.
+
+129
+00:07:48,720 --> 00:07:53,640
+Je vais obtenir mes statistiques
+et je devrais avoir un dictionnaire.
+
+130
+00:07:53,640 --> 00:07:56,020
+Il s'agit toujours
+d'un problème de régression.
+
+131
+00:07:56,020 --> 00:07:59,695
+Je vais donc avoir une perte,
+une perte moyenne et un pas global.
+
+132
+00:08:00,765 --> 00:08:03,620
+Je vais ensuite afficher la RMSE
+sur cet ensemble de données.
+
+133
+00:08:03,620 --> 00:08:07,510
+Je vais devoir utiliser la racine carrée,
+car actuellement la perte moyenne
+
+134
+00:08:07,510 --> 00:08:09,045
+est exprimée avec la MSE.
+
+135
+00:08:09,045 --> 00:08:11,405
+Pour obtenir la RMSE,
+je prends la racine carrée.
+
+136
+00:08:11,405 --> 00:08:14,460
+Vous avez peut-être remarqué
+que je multiplie cela par l'échelle.
+
+137
+00:08:14,460 --> 00:08:18,695
+C'est pour revenir aux unités correctes,
+comme le prix, la valeur moyenne du logement.
+
+138
+00:08:18,695 --> 00:08:21,265
+Je vais maintenant créer
+la régression linéaire.
+
+139
+00:08:21,265 --> 00:08:24,390
+Je crée un répertoire de sortie,
+où mes fichiers sont enregistrés
+
+140
+00:08:24,390 --> 00:08:28,640
+durant l'apprentissage, comme mes points
+de contrôle, mes journaux d'événements
+
+141
+00:08:28,640 --> 00:08:30,990
+et les modèles, par exemple.
+
+142
+00:08:30,990 --> 00:08:34,430
+Je vais supprimer cela, pour m'assurer
+que je pars de zéro à chaque fois.
+
+143
+00:08:34,430 --> 00:08:38,665
+Je vais donc supprimer toute l'arborescence,
+afin de disposer d'un dossier vide et propre.
+
+144
+00:08:38,665 --> 00:08:42,610
+Je vais créer un optimiseur personnalisé.
+Comme il s'agit d'une régression linéaire,
+
+145
+00:08:42,610 --> 00:08:47,260
+je vais utiliser FtrlOptimizer,
+ce qui est généralement un bon choix.
+
+146
+00:08:47,260 --> 00:08:50,010
+Je vais appliquer
+un taux d'apprentissage de 0,01.
+
+147
+00:08:50,010 --> 00:08:53,200
+Ensuite, je vais créer mon modèle.
+Ici, je vais créer mon Estimator,
+
+148
+00:08:53,200 --> 00:08:56,910
+à savoir LinearRegressor,
+et je passe mon répertoire de modèle,
+
+149
+00:08:56,910 --> 00:09:00,850
+où se trouvent mes données de sortie.
+Enfin, dans les colonnes de caractéristiques,
+
+150
+00:09:00,850 --> 00:09:03,530
+j'ai les valeurs de mes colonnes.
+Voilà tous les Tensors.
+
+151
+00:09:03,530 --> 00:09:07,120
+Pour l'optimiseur, j'utilise
+mon optimiseur personnalisé, FtrlOptimizer.
+
+152
+00:09:07,120 --> 00:09:11,430
+Pour ce qui est du pas,
+je vais opter pour 100 fois
+
+153
+00:09:11,430 --> 00:09:14,250
+la longueur du DataFrame
+que je divise par la taille du lot.
+
+154
+00:09:14,250 --> 00:09:17,300
+Autrement dit, il s'agit 
+d'un apprentissage avec 100 itérations.
+
+155
+00:09:17,300 --> 00:09:20,180
+J'appelle model.train
+qui va utiliser la fonction d'entrée,
+
+156
+00:09:20,180 --> 00:09:23,410
+plus particulièrement train_input_fn,
+et mon nombre de pas,
+
+157
+00:09:23,410 --> 00:09:26,930
+à savoir celui que j'ai créé ici.
+Cela va me servir à entraîner mon modèle.
+
+158
+00:09:26,930 --> 00:09:30,980
+Et enfin, je vais afficher la racine carrée
+de l'erreur quadratique moyenne du modèle.
+
+159
+00:09:30,980 --> 00:09:35,420
+Je vais appeler ma fonction d'entrée
+d'évaluation, qui s'appliquera à mon ensemble.
+
+160
+00:09:36,420 --> 00:09:39,560
+Comme vous pouvez le voir,
+lorsque j'effectue l'apprentissage,
+
+161
+00:09:39,560 --> 00:09:44,055
+j'ai la configuration par défaut ici.
+Je crée un point de contrôle,
+
+162
+00:09:44,055 --> 00:09:48,250
+puis je lance le processus d'apprentissage.
+Je calcule la perte au niveau du pas 1.
+
+163
+00:09:48,250 --> 00:09:51,160
+Voici le nombre de pas par seconde.
+Au fil de l'apprentissage,
+
+164
+00:09:51,160 --> 00:09:53,350
+la perte va en diminuant
+avec un peu de chance.
+
+165
+00:09:53,350 --> 00:09:59,300
+Nous voyons que la perte moyenne finale
+pour l'évaluation est de 0,93,
+
+166
+00:09:59,300 --> 00:10:04,405
+après 137 pas globaux,
+et que la perte totale est de 3 141.
+
+167
+00:10:04,405 --> 00:10:09,140
+Quant à l'évaluation, en multipliant
+les valeurs par l'échelle appliquée
+
+168
+00:10:09,140 --> 00:10:14,705
+à l'ensemble d'évaluation,
+on obtient une RMSE de 96 583 $.
+
+169
+00:10:14,705 --> 00:10:18,630
+N'oubliez pas que la RMSE est avant tout
+l'écart type des valeurs résiduelles.
+
+170
+00:10:18,630 --> 00:10:22,780
+Les valeurs résiduelles sont la différence
+entre votre prédiction et l'étiquette réelle.
+
+171
+00:10:22,780 --> 00:10:25,780
+Voyons maintenant si nous pouvons
+faire mieux avec DNNRegressor.
+
+172
+00:10:25,780 --> 00:10:29,700
+Tout reste pareil, mais cette fois,
+je vais utiliser AdamOptimizer,
+
+173
+00:10:29,700 --> 00:10:34,025
+car il est généralement plus efficace
+sur DNNRegressor que FtrlOptimizer.
+
+174
+00:10:34,025 --> 00:10:38,730
+Je vais remplacer LinearRegressor
+par DNNRegressor.
+
+175
+00:10:38,730 --> 00:10:41,590
+Je le passe et je procède
+comme auparavant pour le reste.
+
+176
+00:10:41,590 --> 00:10:46,950
+Toutefois, je vais ajouter mes unités cachées
+et je vais avoir 1, 2, 3 couches ici,
+
+177
+00:10:46,950 --> 00:10:49,455
+où la première couche
+compte 100 neurones cachés,
+
+178
+00:10:49,455 --> 00:10:53,165
+la deuxième couche compte 50 neurones cachés
+et la dernière 20 neurones cachés.
+
+179
+00:10:53,165 --> 00:10:56,460
+Je passe les colonnes de caractéristiques,
+l'optimiseur que j'ai créé,
+
+180
+00:10:56,460 --> 00:11:00,865
+qui utilise Adam cette fois.
+J'applique un abandon de 10 %.
+
+181
+00:11:00,865 --> 00:11:03,625
+N'oubliez pas qu'il s'agit
+de la probabilité d'abandon
+
+182
+00:11:03,625 --> 00:11:07,440
+et non de la probabilité "keep"
+comme c'est le cas pour d'autres installations.
+
+183
+00:11:07,440 --> 00:11:10,940
+Je crée le même nombre de pas qu'avant,
+j'effectue le même l'apprentissage
+
+184
+00:11:10,940 --> 00:11:13,510
+et j'affiche la RMSE.
+Voyons si je peux faire mieux.
+
+185
+00:11:13,510 --> 00:11:15,600
+Tout est traité de la même manière,
+
+186
+00:11:15,600 --> 00:11:18,840
+lorsque la configuration par défaut
+sert à effectuer l'apprentissage.
+
+187
+00:11:18,840 --> 00:11:20,610
+Voyons les derniers pas.
+
+188
+00:11:20,610 --> 00:11:24,430
+La perte moyenne d'apprentissage
+est de 0,67, ce qui est déjà bon signe,
+
+189
+00:11:24,430 --> 00:11:27,340
+car elle est inférieure
+au chiffre précédent de 0,93.
+
+190
+00:11:27,340 --> 00:11:32,965
+Quant à la RMSE, elle est de 81 974 $.
+Comme vous le voyez,
+
+191
+00:11:32,965 --> 00:11:37,150
+l'écart type est bien inférieur
+au précédent, ce qui signifie
+
+192
+00:11:37,150 --> 00:11:41,700
+que ce modèle est bien plus performant.
+Vous pouvez opter pour une configuration
+
+193
+00:11:41,700 --> 00:11:44,750
+plus complexe et utiliser
+bien d'autres algorithmes sophistiqués.
+
+194
+00:11:44,750 --> 00:11:47,510
+Cela vous montre bien
+qu'un réseau de neurones peut générer
+
+195
+00:11:47,510 --> 00:11:50,495
+de bien meilleures performances
+que la régression linéaire.
+
+196
+00:11:50,495 --> 00:11:53,210
+Enfin, nous pouvons appeler
+le programme dans TensorBoard,
+
+197
+00:11:53,210 --> 00:11:54,940
+afin de voir sa progression.

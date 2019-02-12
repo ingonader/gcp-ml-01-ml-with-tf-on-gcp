@@ -1,0 +1,342 @@
+1
+00:00:00,870 --> 00:00:06,720
+Den Input-Vektor als one-hot-codiertes
+Feld zu speichern, ist keine gute Idee.
+
+2
+00:00:06,720 --> 00:00:11,325
+Eine dichte Darstellung
+ist äußerst ineffizient
+
+3
+00:00:11,325 --> 00:00:15,620
+und zwar sowohl für die
+Speicherung als auch fürs Computing.
+
+4
+00:00:15,620 --> 00:00:17,537
+Beachten Sie, dass wir alles,
+
+5
+00:00:17,537 --> 00:00:20,915
+worin wir alle Werte für 
+einen Input-Tensor speichern,
+
+6
+00:00:20,915 --> 00:00:22,680
+einen dichten Tensor nennen.
+
+7
+00:00:22,680 --> 00:00:25,860
+Das sagt nichts über die
+eigentlichen Daten im Tensor aus,
+
+8
+00:00:25,860 --> 00:00:28,460
+nur darüber, wie wir sie speichern.
+
+9
+00:00:28,460 --> 00:00:31,205
+Betrachten wir aber
+die Daten in dieser Matrix.
+
+10
+00:00:31,205 --> 00:00:36,650
+Finden Sie, dass die Matrix
+dicht oder dünn besetzt ist?
+
+11
+00:00:36,650 --> 00:00:39,165
+Natürlich extrem dünn.
+
+12
+00:00:39,165 --> 00:00:42,352
+Jedes Beispiel, eine Tabellenzeile,
+
+13
+00:00:42,352 --> 00:00:46,250
+steht für Filme,
+die der Nutzer gesehen hat.
+
+14
+00:00:46,250 --> 00:00:48,400
+Denken Sie an Ihre eigenen Erfahrungen.
+
+15
+00:00:48,400 --> 00:00:52,130
+Wie viele Filme haben Sie bewertet?
+
+16
+00:00:52,130 --> 00:00:55,790
+Wir möchten die Inputs
+also nicht dicht speichern.
+
+17
+00:00:55,790 --> 00:01:01,740
+Wir möchten nicht alle
+Werte für den Tensor speichern.
+
+18
+00:01:01,740 --> 00:01:04,599
+Wir möchten die Inputs
+also nicht dicht speichern.
+
+19
+00:01:04,599 --> 00:01:07,280
+Wir möchten nicht alle
+Werte für den Tensor speichern.
+
+20
+00:01:07,280 --> 00:01:10,070
+Wie sollten wir stattdessen vorgehen?
+
+21
+00:01:10,070 --> 00:01:14,190
+Es wäre gut, die Daten in
+"dünnbesetzter" Form zu speichern,
+
+22
+00:01:14,190 --> 00:01:17,300
+in komprimierter Form im Speicher.
+
+23
+00:01:17,300 --> 00:01:18,195
+Es wäre gut,
+
+24
+00:01:18,195 --> 00:01:22,670
+Berechnungen wie etwa
+Matrixmultiplikationen
+
+25
+00:01:22,670 --> 00:01:25,505
+direkt an den
+dünnbesetzten Tensoren durchzuführen,
+
+26
+00:01:25,505 --> 00:01:30,575
+ohne sie in dichte
+Darstellungen umformen zu müssen.
+
+27
+00:01:30,575 --> 00:01:37,795
+Dazu erstellen wir ein Wörterbuch, das
+jedes Merkmal einer Ganzzahl zuweist.
+
+28
+00:01:37,795 --> 00:01:45,050
+Shrek könnte also die Ganzzahl 0 
+sein und Harry Potter die Ganzzahl 300
+
+29
+00:01:45,050 --> 00:01:48,025
+oder 230, eine beliebige Zahl.
+
+30
+00:01:48,025 --> 00:01:50,930
+Bedenken Sie, dass
+bisher keine Einbettung vorliegt.
+
+31
+00:01:50,930 --> 00:01:57,315
+Bisher ist einfach jeder Film
+einer beliebigen Ganzzahl zugeordnet.
+
+32
+00:01:57,315 --> 00:02:00,290
+Dann, wenn wir
+eine Zeile der Matrix haben,
+
+33
+00:02:00,290 --> 00:02:03,900
+die die Filme darstellt,
+die ein bestimmter Nutzer gesehen hat,
+
+34
+00:02:03,900 --> 00:02:08,985
+speichern wir einfach die Film-IDs
+der Filme, die der Nutzer gesehen hat.
+
+35
+00:02:08,985 --> 00:02:10,470
+In der Beispielzeile
+
+36
+00:02:10,470 --> 00:02:13,135
+hat der Nutzer drei Filme gesehen,
+
+37
+00:02:13,135 --> 00:02:16,235
+sodass der dünnbesetzte
+Tensor drei Einträge besitzt.
+
+38
+00:02:16,235 --> 00:02:19,525
+Jegliche Ganzzahl,
+die nicht in dieser Liste enthalten ist,
+
+39
+00:02:19,525 --> 00:02:20,672
+steht für einen Film,
+
+40
+00:02:20,672 --> 00:02:23,620
+von dem angenommen wird,
+dass er nicht gesehen wurde.
+
+41
+00:02:23,620 --> 00:02:26,480
+Die drei Einträge sind also 1
+
+42
+00:02:26,480 --> 00:02:31,530
+und der Rest ist 0 in der
+entsprechenden dichten Darstellung.
+
+43
+00:02:31,530 --> 00:02:33,540
+Wir haben hier also zwei Schritte.
+
+44
+00:02:33,540 --> 00:02:37,325
+Im Vorbearbeitungsschritt
+wird das Wörterbuch berechnet
+
+45
+00:02:37,325 --> 00:02:45,965
+und im zweiten Schritt erzeugen wir damit
+eine effiziente dünnbesetzte Darstellung.
+
+46
+00:02:45,965 --> 00:02:48,927
+Wenn Ihnen das bekannt vorkommt
+
+47
+00:02:48,927 --> 00:02:53,070
+und Sie an den Vokabularaufbau
+für kategoriale Spalten erinnert,
+
+48
+00:02:53,070 --> 00:02:55,220
+haben Sie ganz recht.
+
+49
+00:02:55,220 --> 00:02:58,705
+Kategoriale Spalten werden von TensorFlow
+
+50
+00:02:58,705 --> 00:03:00,630
+als dünnbesetzte Tensoren dargestellt.
+
+51
+00:03:00,630 --> 00:03:06,330
+Kategoriale Spalten sind also ein Beispiel
+für etwas, das dünnbesetzt - sparse - ist.
+
+52
+00:03:06,330 --> 00:03:09,050
+TensorFlow kann
+mathematische Operationen
+
+53
+00:03:09,050 --> 00:03:14,410
+an dünnbesetzten Tensoren durchführen,
+ohne sie in dichte umwandeln zu müssen.
+
+54
+00:03:14,410 --> 00:03:19,080
+Dadurch wird Speicher
+gespart und das Computing optimiert.
+
+55
+00:03:19,080 --> 00:03:23,830
+Wir wissen, wie man aus kategorialen
+Spalten eine Merkmalsverknüpfung erzeugt.
+
+56
+00:03:23,830 --> 00:03:30,615
+Das war ein Beispiel für Mathematik
+in Form von dünnbesetzten Tensoren.
+
+57
+00:03:30,615 --> 00:03:37,480
+Deshalb gab es, obwohl wir diskretisierte
+Spalten von Länge und Breite überquert
+
+58
+00:03:37,480 --> 00:03:43,005
+und eine Merkmalsverknüpfung z. B. der
+Abhol- und Absetzpunkte vorgenommen haben,
+
+59
+00:03:43,005 --> 00:03:47,845
+kein Problem mit dem Speicher
+oder der Rechengeschwindigkeit.
+
+60
+00:03:47,845 --> 00:03:51,760
+Wir haben gesehen, wie Einbettungsspalten
+aus Merkmalsverknüpfungen erzeugt werden.
+
+61
+00:03:51,760 --> 00:03:56,350
+Derselbe Code funktioniert natürlich
+für eine einzelne kategoriale Spalte
+
+62
+00:03:56,350 --> 00:03:58,200
+und das ist es, was ich hier zeige.
+
+63
+00:03:58,200 --> 00:04:01,260
+Die Fähigkeit, dünnbesetzte
+Tensoren zu behandeln, ist der Grund,
+
+64
+00:04:01,260 --> 00:04:05,830
+weshalb der Code zum Erstellen einer
+Einbettungsspalte aus kategorialen Daten
+
+65
+00:04:05,830 --> 00:04:10,260
+in TensorFlow ohne Speicher- oder
+Geschwindigkeitsprobleme funktioniert.
+
+66
+00:04:10,260 --> 00:04:14,220
+Das ist eines dieser
+magischen Implementierungsdetails.
+
+67
+00:04:14,220 --> 00:04:20,425
+Erinnern Sie sich, dass für Einbettungen
+kein separater Lernprozess benötigt wird.
+
+68
+00:04:20,425 --> 00:04:22,150
+Wir nehmen nur zwei Schritte vor.
+
+69
+00:04:22,150 --> 00:04:25,220
+Erstens nehmen wir den
+Originalinput und stellen diesen dar.
+
+70
+00:04:25,220 --> 00:04:28,315
+Zweitens senden wir
+ihn an eine Einbettungsebene.
+
+71
+00:04:28,315 --> 00:04:34,370
+Beim ersten Schritt stellen wir den
+Input als dünnbesetzten Tensor dar.
+
+72
+00:04:34,370 --> 00:04:38,935
+Beim zweiten Schritt verwenden
+wir den Aufruf zum Einbetten der Spalte.
+
+73
+00:04:38,935 --> 00:04:42,900
+Aber wie funktioniert
+diese Codezeile eigentlich?

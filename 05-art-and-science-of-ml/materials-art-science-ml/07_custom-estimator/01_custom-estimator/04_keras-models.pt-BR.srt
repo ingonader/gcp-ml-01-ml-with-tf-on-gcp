@@ -1,0 +1,350 @@
+1
+00:00:00,000 --> 00:00:05,155
+Analisamos como gravar um Estimator
+personalizado, se o código para ir
+
+2
+00:00:05,155 --> 00:00:09,980
+do tensor de entrada para o tensor de
+saída foi gravado usando o TensorFlow.
+
+3
+00:00:09,980 --> 00:00:14,810
+Encapsulamos o código e a função,
+que retorna um EstimatorSpec,
+
+4
+00:00:14,810 --> 00:00:19,205
+e depois passamos
+essa função ao Estimator da classe base.
+
+5
+00:00:19,205 --> 00:00:21,570
+Como isso funciona com Keras?
+
+6
+00:00:21,570 --> 00:00:24,025
+E o que é Keras?
+
+7
+00:00:24,025 --> 00:00:28,405
+Keras é uma API de redes neurais
+de alto nível.
+
+8
+00:00:28,405 --> 00:00:32,634
+É compatível com redes convolucionais
+e redes neurais recorrentes.
+
+9
+00:00:32,634 --> 00:00:35,530
+No entanto, ao contrário do TensorFlow,
+
+10
+00:00:35,530 --> 00:00:39,890
+Keras não é uma implementação
+de CNNs ou RNNs.
+
+11
+00:00:39,890 --> 00:00:45,395
+Ela é uma API de redes neurais
+de alto nível
+
+12
+00:00:45,395 --> 00:00:50,815
+gravada em Python, mas compatível com
+o TensorFlow como back-end.
+
+13
+00:00:50,815 --> 00:00:55,510
+Em outras palavras, quando você
+chama uma função do Keras, ela chama
+
+14
+00:00:55,510 --> 00:01:00,820
+um conjunto de funções do TensorFlow
+para implementar essa funcionalidade.
+
+15
+00:01:01,430 --> 00:01:05,394
+Além do TensorFlow, o Keras também
+é compatível com a execução
+
+16
+00:01:05,394 --> 00:01:11,310
+em outras implementações de redes neurais,
+como CNTK e theano.
+
+17
+00:01:11,310 --> 00:01:16,060
+Keras foi feito para ser fácil de usar
+e rápido para prototipagem.
+
+18
+00:01:16,060 --> 00:01:21,340
+Este, por exemplo, é um modelo sequencial
+de classificação escrito em Keras,
+
+19
+00:01:21,340 --> 00:01:27,450
+há classes para coisas como
+incorporação, LSDMs, Dropout etc.
+
+20
+00:01:27,450 --> 00:01:31,560
+O Keras permite pensar
+sobre a arquitetura do modelo
+
+21
+00:01:31,560 --> 00:01:34,600
+e não se concentra
+na implementação de baixo nível.
+
+22
+00:01:34,600 --> 00:01:37,740
+Por exemplo, para criar
+uma incorporação no TensorFlow,
+
+23
+00:01:37,740 --> 00:01:39,720
+você criaria uma coluna de incorporação,
+
+24
+00:01:39,720 --> 00:01:40,750
+e, para fazer isso,
+
+25
+00:01:40,750 --> 00:01:44,960
+você precisa pegar os dados de treinamento
+e criar uma coluna categórica primeiro.
+
+26
+00:01:44,960 --> 00:01:49,495
+Você não precisa se preocupar com esses
+detalhes de implementação em Keras.
+
+27
+00:01:49,495 --> 00:01:52,990
+É claro que isso também significa que,
+se você quiser fazer algo
+
+28
+00:01:52,990 --> 00:01:58,030
+diferente sobre como realizar o
+pré-processamento antes das incorporações,
+
+29
+00:01:58,030 --> 00:02:00,955
+terá que se aprofundar
+na documentação do Keras.
+
+30
+00:02:00,955 --> 00:02:03,670
+Não há lançamento fácil, e muitas vezes
+
+31
+00:02:03,670 --> 00:02:07,090
+há uma compensação
+entre simplicidade e expressividade.
+
+32
+00:02:07,090 --> 00:02:10,035
+De qualquer forma, você geralmente vai ver
+
+33
+00:02:10,035 --> 00:02:12,575
+cientistas de dados
+criando modelos com o Keras.
+
+34
+00:02:12,575 --> 00:02:16,070
+No entanto, o Keras é destinado
+a prototipagem rápida
+
+35
+00:02:16,070 --> 00:02:20,645
+e não manipula treinos distribuídos
+ou previsões escalonadas.
+
+36
+00:02:20,645 --> 00:02:23,645
+Para isso, para produção,
+
+37
+00:02:23,645 --> 00:02:26,525
+é melhor usar a API Estimator.
+
+38
+00:02:26,525 --> 00:02:29,575
+Então, muitas vezes você
+terá protótipos de ML
+
+39
+00:02:29,575 --> 00:02:33,475
+gravados em Keras e terá
+que operacionalizá-los.
+
+40
+00:02:33,475 --> 00:02:35,405
+Então o que você precisa fazer?
+
+41
+00:02:35,405 --> 00:02:37,180
+Para ter uma ideia,
+
+42
+00:02:37,180 --> 00:02:39,940
+vamos ver um pouco mais o código.
+
+43
+00:02:39,940 --> 00:02:42,895
+Não nos preocupemos
+com os detalhes do código,
+
+44
+00:02:42,895 --> 00:02:46,120
+mas note que, nas primeiras
+poucas linhas de código,
+
+45
+00:02:46,120 --> 00:02:48,895
+uma arquitetura em camadas é criada.
+
+46
+00:02:48,895 --> 00:02:54,780
+Depois de criado, o modelo é compilado,
+passando a última função,
+
+47
+00:02:54,780 --> 00:02:59,050
+o método de otimização
+e as métricas de avaliação.
+
+48
+00:02:59,050 --> 00:03:00,920
+O que isso lembra você?
+
+49
+00:03:02,170 --> 00:03:03,470
+Correto.
+
+50
+00:03:03,470 --> 00:03:06,480
+A função do modelo
+em um Estimator personalizado.
+
+51
+00:03:06,480 --> 00:03:10,650
+Então, como misturamos
+o Keras e a API Estimator?
+
+52
+00:03:10,650 --> 00:03:16,660
+A resposta é que, depois de ter um modelo
+Keras compilado, você terá um Estimator.
+
+53
+00:03:16,660 --> 00:03:21,930
+O código do Keras mais antigo pode estar
+importando a versão independente do Keras.
+
+54
+00:03:21,930 --> 00:03:26,835
+Altere as instruções de importação,
+se necessário, para importar TF.Keras.
+
+55
+00:03:26,835 --> 00:03:31,410
+Observe que agora tenho
+que importar o Keras do TensorFlow.
+
+56
+00:03:31,410 --> 00:03:33,920
+Keras agora faz parte
+da chamada do TensorFlow,
+
+57
+00:03:33,920 --> 00:03:35,290
+então você pode fazer isso.
+
+58
+00:03:35,290 --> 00:03:40,720
+Em seguida, simplesmente chame
+Keras.estimator.model_to_estimator
+
+59
+00:03:40,720 --> 00:03:46,000
+transmitindo o modelo compilado,
+e isso retorna um Estimator.
+
+60
+00:03:46,000 --> 00:03:50,640
+Descarte o modelo que se encaixa naquele
+que avalia, que está sendo chamado.
+
+61
+00:03:50,640 --> 00:03:52,935
+Então, como você treina esse modelo?
+
+62
+00:03:52,935 --> 00:03:57,424
+Você usará este Estimator da maneira como
+normalmente se usa um Estimator,
+
+63
+00:03:57,424 --> 00:03:59,710
+com uma função de entrada de treinamento,
+
+64
+00:03:59,710 --> 00:04:03,500
+função de entrada de avaliação,
+train_spec, eval_spec,
+
+65
+00:04:03,500 --> 00:04:08,025
+exporter etc.,
+e as transmitirá para treino e avaliação.
+
+66
+00:04:08,025 --> 00:04:12,925
+Esta é a maneira de produzir
+um modelo de Keras.
+
+67
+00:04:12,925 --> 00:04:16,330
+Algo para ter em mente é que a ligação
+
+68
+00:04:16,330 --> 00:04:19,515
+entre a função de entrada
+e o modelo do Keras
+
+69
+00:04:19,515 --> 00:04:22,285
+se dá por meio de uma
+convenção de nomenclatura.
+
+70
+00:04:22,285 --> 00:04:26,425
+Se você tiver uma camada Keras
+chamada XYZ,
+
+71
+00:04:26,425 --> 00:04:31,030
+no dicionário de atributos,
+retornado da função de entrada,
+
+72
+00:04:31,030 --> 00:04:36,415
+é necessário ter um atributo
+chamado XYZ_input.
+
+73
+00:04:36,415 --> 00:04:41,255
+Vamos ver uma demonstração rápida.
+Eu usarei o mesmo bloco de notas de antes,
+
+74
+00:04:41,255 --> 00:04:46,390
+mas usando um exemplo do modelo do Keras
+apenas para fins de demonstração.

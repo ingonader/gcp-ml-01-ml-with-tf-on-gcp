@@ -1,0 +1,71 @@
+Imaginons que vous lisiez
+un rapport de recherche dans lequel il est question d'un modèle permettant de prédire les valeurs
+futures d'une série temporelle. On vous fournit même le code, lequel fait appel à des concepts
+étranges tels que LSTMCell, à des fonctions TensorFlow
+inconnues telles que static_rnn, et même à quelques opérations TensorFlow
+de bas niveau telles que matmul. Ne nous soucions pas de savoir
+quelle en est la signification ni comment cela fonctionne. Nous verrons les modèles de séquence
+dans le neuvième cours de la spécialisation. Pour le moment, nous allons juste traiter
+cette fonction comme une boîte noire. En gros, l'entrée est une série temporelle, un tableau de valeurs
+organisées temporellement. N_INPUTS est une durée
+de cette série temporelle. predictions constitue la sortie du modèle. Il y a N_OUTPUTS nombres
+dans le tableau des sorties. Ils représentent les valeurs futures
+de la série temporelle prédites par ce modèle. Vous disposez donc d'un modèle
+que vous souhaitez entraîner. Remarquez ici que nous avons
+précisément le modèle, les formules mathématiques si vous préférez. Nous devons encore lire les données, effectuer l'entraînement,
+procéder à l'évaluation, etc. Et nous voulons faire cela
+de façon distribuée avec une tolérance aux pannes. Nous voulons ajouter l'ingénierie. Nous voulons naturellement encapsuler cela
+dans le framework de l'Estimator puisque c'est ainsi que l'on obtient
+un entraînement distribué, des prédictions mises à l'échelle, etc. Nous allons donc voir comment faire cela. Il nous faut tout d'abord regarder
+la fonction train_and_evaluate. Remarquez qu'elle a trois paramètres :
+estimator, train_spec, eval_spec. train_spec et eval_spec sont les mêmes
+que dans un Estimator standardisé. Ils contrôlent le mode
+d'alimentation en données d'entrée avec la fonction d'entrée
+et l'ensemble de données. Ils indiquent également
+la durée de l'entraînement, la fréquence de l'évaluation
+et quand procéder à l'exportation. La différence réside ici dans le premier paramètre
+de train_and_evaluate : l'Estimator. Précédemment, nous aurions créé un Estimator
+en créant un régresseur linéaire, un régresseur de réseau de neurones profond,
+un classificateur linéaire, etc. Nous aurions créé
+un Estimator standardisé (ou prédéfini). Maintenant toutefois, nous créons
+un Estimator de classe de base. Remarquez que je ne définis l'Estimator
+qu'avec tf.estimators.Estimator. L'Estimator de classe de base
+a deux paramètres. Le deuxième paramètre, tout comme
+avec les Estimators standardisés, indique où enregistrer
+les points de contrôle (le répertoire de sortie). Le premier paramètre correspond
+à la fonction de modèle. À quoi ressemble
+cette fonction de modèle (myfunc) ? myfunc est un EstimatorSpec. Je veux dire par là que myfunc affiche
+un tf.estimator.EstimatorSpec. Elle a trois paramètres :
+features, targets et mode. Nous connaissons features et targets. C'est ce qui est affiché, par exemple par une fonction
+d'entrée d'entraînement. features est
+un dictionnaire de caractéristiques. Dans ce cas, j'extrais le Tensor
+correspondant à INCOL de ce dictionnaire. targets est simplement l'étiquette, et correspond donc à ce qui est affiché
+par la fonction d'entrée d'entraînement. Trois valeurs permettent de définir le mode (entraînement, évaluation ou prédiction). Nous allons voir dans un instant pourquoi
+vous pouvez souhaiter utiliser ce mode. À partir de ces trois valeurs d'entrée, la tâche de myfunc consiste à créer
+et à afficher un EstimatorSpec. Il y a six éléments dans un EstimatorSpec. Le premier paramètre (mode) peut
+tout simplement n'effectuer aucun traitement. Il ne fait que transmettre ce qu'il reçoit. Le deuxième paramètre (predictions)
+correspond aux sorties du modèle. Ce doit être un dictionnaire, et il doit fournir un nom de clé
+ainsi que le Tensor correspondant. Ici, predictions_dict consiste simplement
+en une clé, que j'appelle "predicted". Quant au Tensor, il s'agit bien sûr de la sortie
+du modèle du rapport de recherche. Nous utilisons les prédictions
+pour créer les sorties exportées. L'idée est que nous pourrions exporter
+autre chose que simplement les prédictions (par exemple, exporter une représentation vectorielle
+continue entraînée depuis le modèle). C'est à ce niveau que vous le feriez, en spécifiant une clé
+et le Tensor correspondant. Regardons d'autres éléments
+constitutifs de l'EstimatorSpec : la perte, l'opération d'entraînement et l'opération
+de calcul des statistiques d'évaluation. L'opération d'entraînement ne doit être
+effectuée que si le mode est TRAIN. Les statistiques d'évaluation ne doivent être
+calculées que si le mode est EVAL. Donc, je définis la perte (loss) comme étant l'erreur quadratique moyenne calculée à partir de targets
+(les étiquettes) et de predictions. L'opération d'entraînement (train_op) consiste en l'optimisation
+de la fonction loss avec, dans ce cas, la descente
+de gradient stochastique (SGD). C'est vraisemblablement
+parce que c'est ce qui était indiqué dans la description du modèle
+figurant dans le rapport de recherche. eval_metric_ops est un dictionnaire contenant toutes les statistiques
+que nous voulons évaluer. Ici, je ne calcule qu'une racine carrée
+de l'erreur quadratique moyenne. Pendant les prédictions, aucune
+de ces opérations ne doit être exécutée. Pourquoi ? Parce que
+nous n'aurons pas d'étiquette. Nous utilisons donc simplement
+"None" pour toutes ces opérations. Donc, en résumé, nous appelons train_and_evaluate
+avec un Estimator de classe de base en transmettant une fonction
+qui retourne un EstimatorSpec. Et c'est tout. Nous avons
+un Estimator personnalisé.

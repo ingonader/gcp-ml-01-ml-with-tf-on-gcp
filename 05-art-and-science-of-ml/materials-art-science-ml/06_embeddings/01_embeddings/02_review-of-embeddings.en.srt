@@ -1,0 +1,247 @@
+1
+00:00:00,000 --> 00:00:07,115
+You learned about embeddings briefly in the previous course along with feature crosses,
+
+2
+00:00:07,115 --> 00:00:11,410
+but embeddings are everywhere in modern machine learning and they are
+
+3
+00:00:11,410 --> 00:00:15,950
+not limited to feature crosses or even to structured data.
+
+4
+00:00:15,950 --> 00:00:22,390
+In fact, you will use them quite a bit in image models and in text models.
+
+5
+00:00:22,390 --> 00:00:27,425
+Let's do a quick recap of embeddings the way we understand them.
+
+6
+00:00:27,425 --> 00:00:30,460
+We said that we might be building a machine learning
+
+7
+00:00:30,460 --> 00:00:34,025
+model to predict something about the traffic,
+
+8
+00:00:34,025 --> 00:00:38,010
+perhaps at a time before the next vehicle arrives at
+
+9
+00:00:38,010 --> 00:00:42,150
+an intersection and we have a number of inputs into our model.
+
+10
+00:00:42,150 --> 00:00:46,185
+We look specifically at categorical inputs,
+
+11
+00:00:46,185 --> 00:00:48,645
+hour of day, and day of week.
+
+12
+00:00:48,645 --> 00:00:52,635
+We said that the machine learning model would be greatly improved
+
+13
+00:00:52,635 --> 00:00:58,775
+if instead of treating the hour of day and day after week as independent inputs,
+
+14
+00:00:58,775 --> 00:01:03,310
+we are essentially concatenated them to create a feature across.
+
+15
+00:01:03,310 --> 00:01:09,145
+We said that if we used a large number of hash buckets when doing this feature cross,
+
+16
+00:01:09,145 --> 00:01:12,570
+we could be relatively confident that each of
+
+17
+00:01:12,570 --> 00:01:17,840
+the buckets contained only one-hour-day combination.
+
+18
+00:01:17,840 --> 00:01:22,800
+This was a point at which we introduced embeddings.
+
+19
+00:01:22,800 --> 00:01:30,620
+We said that if instead of one hot encoding the feature cross and using it as is,
+
+20
+00:01:30,620 --> 00:01:37,715
+we could pass it to a dense layer and then train the model to predict traffic as before.
+
+21
+00:01:37,715 --> 00:01:44,860
+This dense layer, shown by the yellow and green nodes, creates an embedding.
+
+22
+00:01:44,860 --> 00:01:48,965
+The embeddings are real valued numbers
+
+23
+00:01:48,965 --> 00:01:53,210
+because they're a weighted sum of the feature crossed values.
+
+24
+00:01:53,210 --> 00:01:58,820
+The thing to realise is that the weights that go into the embedding layer,
+
+25
+00:01:58,820 --> 00:02:01,300
+the yellow and green nodes, the embedding layer,
+
+26
+00:02:01,300 --> 00:02:05,100
+these weights are learned from the data.
+
+27
+00:02:05,100 --> 00:02:10,165
+The point is, that by training these weights on a dataset,
+
+28
+00:02:10,165 --> 00:02:15,724
+so that you are solving a useful problem, something neat happens.
+
+29
+00:02:15,724 --> 00:02:19,100
+The feature cross of day hour has
+
+30
+00:02:19,100 --> 00:02:23,640
+a hardened 68 unique values but we are forcing it to be
+
+31
+00:02:23,640 --> 00:02:28,535
+represented with just two real value numbers.
+
+32
+00:02:28,535 --> 00:02:36,885
+So, the model learns how to embed the feature cross in lower dimensional space.
+
+33
+00:02:36,885 --> 00:02:41,840
+We suggested that perhaps the green box tends to capture
+
+34
+00:02:41,840 --> 00:02:46,880
+pedestrian traffic while the yellow tends to capture automobile traffic,
+
+35
+00:02:46,880 --> 00:02:51,800
+but it doesn't matter what exactly those two dimensions are capturing.
+
+36
+00:02:51,800 --> 00:02:57,060
+The important thing is that all the information in the hour of day and day
+
+37
+00:02:57,060 --> 00:03:02,150
+of week as it pertains to traffic at city intersections,
+
+38
+00:03:02,150 --> 00:03:06,229
+is shoehorned into just two numbers.
+
+39
+00:03:06,229 --> 00:03:10,785
+If you do this on a large enough and good enough dataset,
+
+40
+00:03:10,785 --> 00:03:20,110
+these numbers have one very useful property times that are similar in terms of traffic,
+
+41
+00:03:20,110 --> 00:03:22,420
+get real value numbers that are close
+
+42
+00:03:22,420 --> 00:03:26,600
+together and times that are different in terms of traffic,
+
+43
+00:03:26,600 --> 00:03:30,195
+get real value numbers that are different.
+
+44
+00:03:30,195 --> 00:03:34,795
+We then looked at how to create an embedding TensorFlow.
+
+45
+00:03:34,795 --> 00:03:36,600
+To create an embedding,
+
+46
+00:03:36,600 --> 00:03:39,800
+use the embedding column method in tf.feature
+
+47
+00:03:39,800 --> 00:03:45,590
+column and pass in the categorical column that you want to embed.
+
+48
+00:03:45,590 --> 00:03:49,095
+This works with any categorical column,
+
+49
+00:03:49,095 --> 00:03:51,620
+not just a feature across.
+
+50
+00:03:51,620 --> 00:03:57,075
+You do an embedding of any categorical column.
+
+51
+00:03:57,075 --> 00:04:03,230
+Finally, we glanced quickly at how you could take the embeddings that you
+
+52
+00:04:03,230 --> 00:04:09,620
+learned on a problem and apply it to another similar machine learning problem.
+
+53
+00:04:09,620 --> 00:04:13,965
+Perhaps you learned how to represent hour of day and day of the week
+
+54
+00:04:13,965 --> 00:04:19,185
+with two real value numbers by training on traffic data in London.
+
+55
+00:04:19,185 --> 00:04:26,140
+As a QuickStart, you can use the same weights to jumpstart your frank for tomorrow.
+
+56
+00:04:26,140 --> 00:04:30,240
+You might even be able to use the embedding that you learned on
+
+57
+00:04:30,240 --> 00:04:34,685
+the traffic problem to predict the viewership of a TV show.
+
+58
+00:04:34,685 --> 00:04:38,630
+The idea being that bought street traffic and
+
+59
+00:04:38,630 --> 00:04:43,505
+TV viewership depend on the same latent factor,
+
+60
+00:04:43,505 --> 00:04:49,815
+namely, are the people in the city on the move or are they at home or at work?
+
+61
+00:04:49,815 --> 00:04:53,039
+Transfer learning might work on seemingly
+
+62
+00:04:53,039 --> 00:05:00,270
+very different problems as long as they share the same latent factors.

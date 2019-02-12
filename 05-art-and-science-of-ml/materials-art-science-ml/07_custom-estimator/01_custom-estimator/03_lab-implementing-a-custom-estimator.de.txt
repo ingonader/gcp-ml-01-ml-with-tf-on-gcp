@@ -1,0 +1,102 @@
+In diesem Lab erstellen wir 
+einen benutzerdefinierten Estimator. Wir haben eine TensorFlow-Funktion, die aus einer Reihe von Eingabetensoren 
+eine Reihe von Ausgabetensoren erstellt. Wir werden diese Funktion 
+mit dem Estimator-Framework verpacken, um die übergeordneten Vorteile 
+dieses Estimators zu erhalten. Funktionierende Modelle, 
+die keine Estimatoren verwenden, nutzen andere Möglichkeiten, 
+Daten zu lesen und Modelle auszugeben. Sie entfernen quasi
+diese Modellteile und behalten nur den mathematischen Kern des Modells, das Eingabetensoren
+in Ausgabetensoren umwandelt. In diesem Lab geht es darum, wie man ein Modell
+mit dem Estimator-Framework verpackt, also eine 
+benutzerdefinierte Modulfunktion. Wie Sie auf den Folien sehen werden, verwenden wir 
+im Grunde ein Zeitachsenmodell. Lassen wir mal außer Acht, 
+wie dieses Modell funktioniert. Wir beschäftigen uns 
+später noch mit Sequenzmodellen, aber jetzt
+sehen wir es als Black Box an. So können wir nachvollziehen,
+wie der umgebende Wrapper funktioniert. In diesem Fall haben wir also... Ich importiere kurz TensorFlow. Wir werden also Datenelemente erstellen bzw. simulieren, die abweichenden Sinuskurven mit verschiedenen Amplituden und Frequenzen entsprechen, 
+die erstellt werden. Hier sehen Sie 
+fünf Beispiele dieser Zeitachse. Wir werden 
+viele solcher Elemente erstellen. Und diese Daten 
+verwenden wir beim Trainieren. Wir trainieren 
+das neuronale Netzwerk mit neun Werten. Also null, eins, zwei, drei. Wir nehmen bis zu acht Werte. Dann nehmen wir neun Werte 
+und lassen es den zehnten vorhersagen. Wir trainieren es 
+mit vielen bestehenden Datenelementen. So lernt es anhand von acht 
+bzw. neun Werten, den zehnten vorherzusagen. Zu diesem Zweck erstellen wir eine CSV-Datei, genauer gesagt zwei, benennen sie und legen die Anzahl der Sequenzen fest. Dann öffnen wir die Datei, schreiben sie 
+und erstellen eine Zeitachse. Wie viele Zeitachsen? N Zeitachsen. Im Beispiel rufe ich "train.csv" auf,
+wobei N der Zahl 1.000 entspricht. Ich erhalte 
+eine Datei mit 1.000 Sequenzen. "Train.csv" enthält 1.000 Sequenzen. "Value.csv" enthält nur 50 Sequenzen. Diese sind 
+durch Kommas voneinander getrennt. Ich führe das hier aus und danach sehe ich mir 
+die ersten fünf Zeilen von "train.csv" an, das sind die ersten fünf Zeilen, und die ersten 5 Zeilen von "value.csv". Wie Sie sehen, ist das im Grunde eine Zeitachse und diese Werte sind 
+die Eingabemerkmale zum Trainieren und das ist unser Label. Diesen Wert soll unser Modell vorhersagen. Wo wird so etwas angewendet? Ich möchte nicht näher 
+auf Zeitachsen eingehen, aber Sie sollten wissen,
+was für eine Situation wir veranschaulichen. Stellen Sie sich folgende Situation vor: Sie betreiben ein Geschäft 
+und haben Tausende von Artikeln. Jeder Artikel weist 
+seine eigene Saisonabhängigkeit auf. Sie wollen sich die vergangen acht 
+oder mehr als neun Zeiträume ansehen und damit den zehnten vorhersagen lassen. Das tun wir auch. Hier verwenden wir die Zeitachse nicht, um die zukünftige Bewertung
+eines Aktienmarkts vorherzusagen. Das ist ein anderer Fall.
+Da gibt es eine extrem lange Zeitachse. Hier haben wir stattdessen
+tausende von kurzen Zeitachsen. Es handelt sich also um ein anderes Problem. Wir bleiben 
+beim Einzelhandel. Sie haben Tausende 
+saisonabhängiger Produkte, deren Saisonabhängigkeit aber je nach Produkt variiert. Sie wollen die Hintergründe 
+der Saisonalität verstehen, um mit der Zeitachse eines Produkts 
+die nächste vorhersagen lassen zu können. Das ist unser Trainings-Dataset, anhand dessen wir das Modell trainieren. So ein Modell nennt man 
+"Recurrent Neural Network (RNN)". Wie erwähnt, kümmern wir uns 
+nicht groß um die Interna des Modells, sondern mehr um die Einrichtung. Wir importieren TensorFlow und lesen dann unsere Daten aus. Die Daten entsprechen
+unserer Sequenzlänge. Die Standardeinstellung ist also 0.0. Das sind Gleitkommazahlen für X 
+im Bereich (0, Sequenzlänge). Wir haben somit zehn Zahlen. Die Batchgröße gibt an, 
+aus wie viel Sequenzen wir den Gradient Descent berechnen. Unsere Batchgröße ist 20. Die Zeitachsenspalte heißt "rawdata". Bei der Sequenz beträgt die Anzahl der Ausgaben "1", eine finale Ausgabe. Die Anzahl der Eingaben entspricht
+einer Sequenzlänge minus der Ausgabenanzahl. Anders ausgedrückt: 
+Die ersten neun Werte sind die Eingaben und der letzte Wert ist die Ausgabe. Das ist der Satz 
+definierbarer Konstanten. Dann erstellen wir
+das Dataset zum Einlesen. Wir gehen 
+wie bei einer Eingabefunktion vor. Hier erhält "decode_csv" eine Zeile. Damit wird die Anweisung ausgedrückt, 
+alle Werte als Gleitkommazahlen zu lesen. Es werden alle Daten eingelesen, genauer gesagt, zehn Zahlen. Es wird jedoch stets 
+nur ein Batch auf einmal gelesen. Das hier entspricht keiner Zeile. Das sind Daten, die üblicherweise 20 Zeilen entsprechen, 
+da sie batchweise gelesen werden. Das sind 20 Zeilen. Davon verwenden wir 
+die ersten neun als Eingaben. Die Werte der letzten Spalte verwenden wir als Labels. Genau darum geht es hier. Wir verwenden 
+die ersten neun Werte als Eingaben und den letzten Wert als Label. Die Länge der Eingaben beträgt 
+"Batchgröße" und die Breite "Neun". Labels hat die Höhe "Batchgröße" 
+und die Breite "Eins" (Anzahl Ausgaben). Wir nehmen all diese separaten Werte und stapeln sie so, dass wir eine Matrix erhalten. Diese Eingabewerte
+stapeln wir zum Erstellen einer Matrix. Wir stapeln diese Werte, 
+um noch eine Matrix zu erhalten. Die 2. Dimension der Matrix ist 1, aber statt der Liste von Listen immer noch nicht in der Matrix. Wir wollen keine 
+Liste von Listen sondern eine Matrix. Dafür sorgt der Stapelprozess. Wir definieren "TIMESERIES_COL" (Rohdaten, den Tensor) als Eingabe. Nun können die "features" 
+und "labels" zurückgegeben werden. "Features" enthält nur eine Funktion, ein Wörterbuch. Diese Funktion ist eine Matrix. Vorhin hatten die Funktionen 
+ein Spaltenformat, hier ist die Funktion eine Matrix. Daher haben Sie 
+den Stapelvorgang ausgeführt. Wie erstellen Sie nun das Dataset zum Einlesen? Für ein einzulesendes Dataset erhalten wir oft 
+einen Dateipfad statt -namen. Wir wenden also "Glob" an, was alle Dateien mit z. B. 
+einem Platzhalter in einer Liste aufführt, lesen diese als Textzeile ein und erhalten
+dank Aufruf von "decode_csv" das Dataset zurück. Falls wir es auch 
+zum Trainieren verwenden wollen, analysieren wir es (Zufallsprinzip). Falls wir es 
+zum Bewerten nutzen möchten, ist das Analysieren nicht nötig. Beim Trainieren 
+wird für unbestimmte Zeit gelesen. Beim Bewerten muss das Dataset 
+nur einmal komplett gelesen werden. Also ist die Anzahl von Epochen 1. Wir wiederholen das Dataset 
+entsprechend der Epochenanzahl. Beim Bewerten wiederholen wir es einmal, beim Trainieren unendlich oft. 
+Wir erstellen gleich große Batches. Hier 20 Zeilen, 20 Sequenzen auf einmal. Dann wird der Iterator zurückgegeben. Damit haben wir das Dataset eingelesen. Wie das Modell an sich funktioniert, ist nicht wichtig. Wichtig ist nur: Es ist 
+ein metrisches einfaches RNN, das unsere Features, 
+Labels und unser Mode verwendet. Es zieht die Sequenz X aus den Features und tut damit etwas, ignorieren wir das mal, bis es die Vorhersagen erreicht. Das ist die Ausgabe
+unseres Zeitachsenmodells. In Bezug auf diese Eingabe haben wir eine Ausgabe. So ist das bei allen Modellfunktionen. Wir müssen nun 
+unsere Verlustfunktion festlegen. Es handelt sich ja 
+um ein Zeitachsenproblem, Der letzte Wert soll vorhergesagt werden. Es soll also ein Wert vorhergesagt werden. Ist das Regression oder Klassifizierung? Es ist eine Regression. Deswegen ist mein Verlust
+der mittlere quadratische Fehler. Ich kann die Wurzel 
+des mittleren quadratischen Fehlers oder den Fehler an sich verwenden. Der Trainingsvorgang besteht darin, den Verlust mit der angegebenen Lernrate und Optimierungsmethode zu minimieren. 
+Die Bewertungsmesswerte sind "rmse", die Wurzeln der mittleren quadratischen Fehler 
+zwischen den Labels und Vorhersagen. Wenn es sich nicht 
+um Training oder Bewertung handelt, haben Verlust, Trainingsvorgang 
+und Bewertungsmesswerte den Wert "None". Ihr Wert ist "None", 
+weil das Label fehlt. Im Vorhersageprozess 
+haben wir kein Label. Also sind keine Bewertung, kein Training, kein Verlust möglich. Also setzen wir 
+die Vorgänge auf "None". Das Vorhersagenwörterbuch, die Vorhersagen, sind die Ausgabe,
+der wir den Namen "predicted" geben. Beim Export nennen wir sie 
+"regression_export_outputs". Wir geben diese Vorhersagen aus. Hier gibt es keine 
+eingebetteten Inhalte zum Ausgeben, also geben wir eine Sache aus. Gäbe es mehrere Werte zum Ausgeben, das ist ja nur das Wörterbuch, könnten wir hier "embedding" eingeben. Angenommen hier oben 
+ist ein Tensor eingebettet. Angenommen wir haben 
+einen Tensor namens "weight" eingebettet. Sie würden hier unten "weight" eingeben. Wenn wir das Modell exportieren, exportieren wir nun zwei Dinge, Regressionsausgabe und Einbettung. Danach kann 
+eine EstimatorSpec ausgegeben werden, um "mode", "predictions_dict", "loss", "train_op", die Bewertungsmesswerte und das zu Exportierende auszugeben. Fertig. Jetzt gehen Sie wie vorhin vor. Sie erstellen die Funktionen
+zum Trainieren, zum Validieren. Diese müssen keine Parameter 
+oder Eingabefunktionen verwenden. Also füge ich 
+"get_train" ein, um "train.csv" und als Mode "TRAIN" zu übergeben. Dann nutzt die Bereitstellungs-
+eingabefunktion "TIMESERIES_COL" und nimmt an, dass das
+Gleitkommazahlen sind. Wir rufen 
+"train_and_evaluate" auf und testen es als eigenständiges Modul. Wir können sie auch 
+über ML Engine trainieren, müssen dann aber den Bucket 
+in einen Qwiklabs-Bucket ändern.

@@ -1,0 +1,1017 @@
+1
+00:00:00,000 --> 00:00:02,260
+Sie wissen jetzt mehr
+über neuronale Netzwerke,
+
+2
+00:00:02,260 --> 00:00:03,480
+wie sie effizient trainiert werden und
+
+3
+00:00:03,480 --> 00:00:05,440
+wie Sie die größte
+Generalisierung erreichen.
+
+4
+00:00:05,440 --> 00:00:07,860
+Nun geht es um
+neuronale Netze mit mehreren Klassen
+
+5
+00:00:07,860 --> 00:00:10,545
+für die Bearbeitung von
+Mehrklassen-Klassifizierungsproblemen.
+
+6
+00:00:10,545 --> 00:00:13,005
+Auch hier ist es die Sigmoidfunktion,
+
+7
+00:00:13,005 --> 00:00:14,895
+die uns kalibrierte
+Wahrscheinlichkeiten liefert.
+
+8
+00:00:14,895 --> 00:00:18,620
+Sie ist nützlich für die logistische
+Regression bei binären Problemen,
+
+9
+00:00:18,620 --> 00:00:21,450
+bei denen ich die Wahrscheinlichkeit
+in der positiven Klasse finde,
+
+10
+00:00:21,450 --> 00:00:22,875
+wo das minus eins
+
+11
+00:00:22,875 --> 00:00:24,690
+wahrscheinlich
+in der negativen Klasse liegt.
+
+12
+00:00:24,690 --> 00:00:27,900
+Was aber, wenn mehr als
+zwei Klassen vorhanden sind?
+
+13
+00:00:27,900 --> 00:00:30,345
+Es gibt viele Mehrklassenprobleme.
+
+14
+00:00:30,345 --> 00:00:33,465
+Als Beispiel dienen
+hier die Ticketarten in der Oper.
+
+15
+00:00:33,465 --> 00:00:36,715
+Das Modell soll vielleicht
+eine bestimmte Platzkategorie empfehlen.
+
+16
+00:00:36,715 --> 00:00:39,045
+Nehmen wir an, es gibt vier Platzkategorien:
+
+17
+00:00:39,045 --> 00:00:40,935
+Parkett, Sperrsitze,
+
+18
+00:00:40,935 --> 00:00:42,855
+Rang oder Loge.
+
+19
+00:00:42,855 --> 00:00:45,780
+Wenn ich die Wahrscheinlichkeit für
+jede der Platzkategorien berechnen möchte,
+
+20
+00:00:45,780 --> 00:00:50,940
+ist eine normale binäre Klassifizierung
+nicht ausreichend. Es gibt zu viele Klassen.
+
+21
+00:00:50,940 --> 00:00:53,070
+Wenn Parkett die positive Klasse ist,
+
+22
+00:00:53,070 --> 00:00:54,915
+was ist dann die negative Klasse?
+
+23
+00:00:54,915 --> 00:00:57,285
+Was mache ich
+mit den restlichen Klassen?
+
+24
+00:00:57,285 --> 00:01:01,170
+Eine Idee ist, das Problem von 
+einer Mehrklassenklassifizierung
+
+25
+00:01:01,170 --> 00:01:03,390
+in viele binäre
+Klassifizierungsprobleme umzuwandeln.
+
+26
+00:01:03,390 --> 00:01:08,510
+Eine Methode dafür ist der
+1-vs-alle- oder der 1-vs-Rest-Ansatz.
+
+27
+00:01:08,510 --> 00:01:11,525
+Bei diesem Ansatz
+wird durch jede Klasse iteriert.
+
+28
+00:01:11,525 --> 00:01:14,555
+Bei jeder Iteration wird
+die Klasse mit der positiven Klasse
+
+29
+00:01:14,555 --> 00:01:18,615
+und alle restlichen Klassen
+in der negativen Klasse zusammengeführt.
+
+30
+00:01:18,615 --> 00:01:23,010
+So kann die Wahrscheinlichkeit
+vorhergesagt werden, in die positive Klasse
+
+31
+00:01:23,010 --> 00:01:27,015
+und umgekehrt die Wahrscheinlichkeit,
+nicht in die anderen Klassen zu gehören.
+
+32
+00:01:27,015 --> 00:01:29,880
+Es ist wichtig, die Wahrscheinlichkeit
+auszugeben
+
+33
+00:01:29,880 --> 00:01:32,175
+und nicht nur das Klassen-Label.
+
+34
+00:01:32,175 --> 00:01:34,410
+So werden keine Mehrdeutigkeiten erzeugt,
+
+35
+00:01:34,410 --> 00:01:36,960
+wenn für ein Sample mehrere
+Klassen vorhergesagt werden.
+
+36
+00:01:36,960 --> 00:01:40,940
+Sobald das für jede Klasse trainierte
+Modell als positive Klasse ausgewählt wurde,
+
+37
+00:01:40,940 --> 00:01:44,340
+machen wir weiter mit dem nützlichsten Teil
+des maschinellen Lernens: den Vorhersagen.
+
+38
+00:01:44,340 --> 00:01:46,680
+Um eine Vorhersage zu erstellen,
+senden Sie Ihr Vorhersage-Sample
+
+39
+00:01:46,680 --> 00:01:49,335
+durch die einzelnen trainierten
+binären Klassifizierungsmodelle.
+
+40
+00:01:49,335 --> 00:01:52,980
+Das Modell, das die höchste Wahrscheinlichkeit
+oder den höchsten Konfidenzwert ausgibt,
+
+41
+00:01:52,980 --> 00:01:55,770
+wird als die allgemeine
+vorhergesagte Klasse ausgewählt.
+
+42
+00:01:55,770 --> 00:01:58,050
+Das scheint
+eine gute Lösung zu sein.
+
+43
+00:01:58,050 --> 00:01:59,775
+Sie wirft aber verschiedene Probleme auf.
+
+44
+00:01:59,775 --> 00:02:02,700
+Zunächst kann die Skala der Konfidenzwerte
+
+45
+00:02:02,700 --> 00:02:05,460
+für jedes binäre 
+Klassifizierungsmodell anders sein,
+
+46
+00:02:05,460 --> 00:02:07,500
+was zu einer Verzerrung der
+Gesamtprognose führt.
+
+47
+00:02:07,500 --> 00:02:10,350
+Und auch wenn das nicht zutrifft,
+
+48
+00:02:10,350 --> 00:02:12,570
+können in jedem der
+binären Klassifizierungsmodelle
+
+49
+00:02:12,570 --> 00:02:16,020
+extrem unausgeglichene Datenverteilungen
+vorkommen, denn für jedes gilt,
+
+50
+00:02:16,020 --> 00:02:19,110
+dass die negative Klasse
+die Summe aller anderen Klassen ist,
+
+51
+00:02:19,110 --> 00:02:23,575
+abgesehen von der Klasse, die
+aktuell als positive Klasse markiert ist.
+
+52
+00:02:23,575 --> 00:02:28,160
+Eine mögliche Lösung für die
+Unausgeglichenheit ist die 1-vs-1-Methode.
+
+53
+00:02:28,160 --> 00:02:31,070
+Hierbei gibt es nicht
+pro Klasse ein Modell,
+
+54
+00:02:31,070 --> 00:02:33,830
+sondern für jede binäre
+Kombination der Klassen ein Modell.
+
+55
+00:02:33,830 --> 00:02:35,320
+Bei n Klassen wäre das also
+
+56
+00:02:35,320 --> 00:02:38,300
+n mal n minus eins
+
+57
+00:02:38,300 --> 00:02:41,620
+über zwei Modelle, das heißt O(n2).
+
+58
+00:02:41,620 --> 00:02:45,665
+In unserem Beispiel wären das
+für vier Klassen bereits sechs Modelle.
+
+59
+00:02:45,665 --> 00:02:47,855
+Bei Tausend Klassen allerdings,
+
+60
+00:02:47,855 --> 00:02:49,805
+etwa beim ImageNet-Wettbewerb,
+
+61
+00:02:49,805 --> 00:02:53,440
+wären es 499.500 Modelle.
+
+62
+00:02:53,440 --> 00:02:57,540
+Wow! Jedes Modell gibt
+ein Votum für das vorhergesagte Label ab,
+
+63
+00:02:57,540 --> 00:03:02,345
+plus eins oder plus null für
+das positive Klassen-Label jedes Modells.
+
+64
+00:03:02,345 --> 00:03:06,640
+Dann werden alle Votes akkumuliert und
+die Klasse mit den meisten Votes gewinnt.
+
+65
+00:03:06,640 --> 00:03:09,950
+Das ist jedoch keine Lösung
+für das Problem der Mehrdeutigkeit,
+
+66
+00:03:09,950 --> 00:03:11,610
+denn je nach der Eingabeverteilung
+
+67
+00:03:11,610 --> 00:03:15,095
+können mehrere Klassen
+dieselbe Anzahl an Votes erhalten.
+
+68
+00:03:15,095 --> 00:03:20,255
+Gibt es also eine Möglichkeit der
+Mehrklassenklassifizierung ohne diese Nachteile?
+
+69
+00:03:20,605 --> 00:03:24,970
+Eine Idee wäre der 1-vs-alle-Ansatz
+mit neuronalen Netzwerken.
+
+70
+00:03:24,970 --> 00:03:27,810
+Anstatt mehrerer Modelle
+pro Klasse gibt es hier
+
+71
+00:03:27,810 --> 00:03:31,750
+ein Modell mit einer eindeutigen
+Ausgabe für jede mögliche Klasse.
+
+72
+00:03:31,750 --> 00:03:35,020
+Wir können das Modell anhand eines Signals
+"meine Klasse" ggü.
+
+73
+00:03:35,020 --> 00:03:38,395
+"alle anderen Klassen"
+für jedes Beispiel trainieren.
+
+74
+00:03:38,395 --> 00:03:41,975
+Daher müssen wir
+beim Entwurf der Labels vorsichtig sein.
+
+75
+00:03:41,975 --> 00:03:44,470
+Es gibt nicht nur die "eins"
+für die richtige Klasse,
+
+76
+00:03:44,470 --> 00:03:47,455
+sondern einen Vektor
+der Länge der Anzahl der Klassen,
+
+77
+00:03:47,455 --> 00:03:50,110
+der "eins" ist, wenn
+die richtigen Klassen übereinstimmen,
+
+78
+00:03:50,110 --> 00:03:51,845
+und "null" bei den restlichen Klassen.
+
+79
+00:03:51,845 --> 00:03:56,400
+So erhält die richtige Klasse dieses
+entsprechende Sigmoid-Neuron.
+
+80
+00:03:56,400 --> 00:03:58,030
+Falls sie zu nahe an eins
+herankommt, werden die
+
+81
+00:03:58,030 --> 00:04:01,240
+die anderen Sigmoid-Neuronen bestraft,
+wenn sie sich ebenfalls eins annähern.
+
+82
+00:04:01,240 --> 00:04:05,845
+Dabei wird der höhere Fehler durch das
+Netz der Gewichtungen zurückpropagiert.
+
+83
+00:04:05,845 --> 00:04:09,740
+Bei Millionen von neuen Klassen
+können jedoch Probleme auftreten,
+
+84
+00:04:09,740 --> 00:04:11,815
+weil es Millionen von
+Ausgabe-Neuronen geben wird.
+
+85
+00:04:11,815 --> 00:04:13,765
+Das heißt, Millionen
+von Verlustberechnungen,
+
+86
+00:04:13,765 --> 00:04:16,839
+gefolgt von Millionen von Fehlern,
+die im Netzwerk zurückgeführt werden.
+
+87
+00:04:16,839 --> 00:04:18,745
+Das ist extrem rechenintensiv.
+
+88
+00:04:18,745 --> 00:04:20,200
+Gibt es eine bessere Möglichkeit?
+
+89
+00:04:20,200 --> 00:04:22,840
+Wenn wir einfach einen
+zusätzlichen Constraint hinzufügen,
+
+90
+00:04:22,840 --> 00:04:25,025
+nämlich, "die Summe der
+Ausgaben entspricht "eins"".
+
+91
+00:04:25,025 --> 00:04:28,945
+Die Ausgabe kann dann als
+Wahrscheinlichkeit interpretiert werden.
+
+92
+00:04:28,945 --> 00:04:32,405
+Diese Normalisierungsfunktion
+wird Softmax genannt.
+
+93
+00:04:32,405 --> 00:04:36,825
+An jedem Knoten finden wir
+die Exponentialfunktion "W mal X,
+
+94
+00:04:36,825 --> 00:04:40,720
+plus b" und dann dividiert
+durch die Summe aller Knoten.
+
+95
+00:04:40,720 --> 00:04:44,000
+Dadurch wird sichergestellt, dass alle
+Knoten zwischen null und eins liegen
+
+96
+00:04:44,000 --> 00:04:47,290
+und die Gesamtwahrscheinlichkeit
+wie gewünscht "eins" entspricht.
+
+97
+00:04:47,290 --> 00:04:49,000
+So erhalten Sie für jedes Beispiel
+
+98
+00:04:49,000 --> 00:04:51,700
+eine normalisierte
+Wahrscheinlichkeit pro Klasse.
+
+99
+00:04:51,700 --> 00:04:54,130
+Mit argmax können Sie dann die Klasse
+
+100
+00:04:54,130 --> 00:04:57,005
+mit der größten Wahrscheinlichkeit
+als vorhergesagtes Label ermitteln.
+
+101
+00:04:57,005 --> 00:04:59,820
+In TensorFlow berechnen wir die Logits
+
+102
+00:04:59,820 --> 00:05:02,730
+im finalen Layer als Mesh
+der Anwendung von W und X,
+
+103
+00:05:02,730 --> 00:05:05,850
+wobei der gewichtete Knoten
+zum Ergebnis addiert wird, falls vorhanden.
+
+104
+00:05:05,850 --> 00:05:09,520
+So erhalten wir einen Tensor "Shape der
+Batchgröße für die Anzahl der Klassen".
+
+105
+00:05:09,520 --> 00:05:12,670
+Unsere Labels sind one-hot-codiert,
+wie ich bereits erklärt habe.
+
+106
+00:05:12,670 --> 00:05:14,380
+Die richtige Klasse erhält eine "eins",
+
+107
+00:05:14,380 --> 00:05:17,215
+die anderen Klassen
+eine "null" für jedes Beispiel.
+
+108
+00:05:17,215 --> 00:05:20,065
+Daher ist auch hier der Shape
+ein Tensor aus
+
+109
+00:05:20,065 --> 00:05:22,820
+Batchgröße nach Anzahl der Klassen.
+
+110
+00:05:22,820 --> 00:05:25,730
+Da wir die TensorFlow-Funktion
+
+111
+00:05:25,730 --> 00:05:28,460
+softmax_cross_entropy_with_logits verwenden,
+
+112
+00:05:28,460 --> 00:05:30,690
+können die Labels "weich" sein.
+
+113
+00:05:30,690 --> 00:05:32,450
+Was meine ich damit?
+
+114
+00:05:32,450 --> 00:05:34,950
+Auch wenn die Klassen
+sich noch gegenseitig ausschließen,
+
+115
+00:05:34,950 --> 00:05:37,035
+muss das auf die
+Wahrscheinlichkeiten nicht zutreffen.
+
+116
+00:05:37,035 --> 00:05:39,660
+Angenommen Sie haben drei Klassen:
+
+117
+00:05:39,660 --> 00:05:43,665
+Die Labels Ihres Minibatches könnten 0,15,
+
+118
+00:05:43,665 --> 00:05:47,415
+0,8 und 0,05 sein.
+
+119
+00:05:47,415 --> 00:05:49,710
+Sie sind nicht one-hot-codiert,
+aber dennoch eine gültige
+
+120
+00:05:49,710 --> 00:05:53,520
+Wahrscheinlichkeitsverteilung,
+da ihre Summe eins ist.
+
+121
+00:05:53,520 --> 00:05:58,800
+Nun vergleichen wir die Logits und Labels
+mit softmax_cross_entropy_with_logits.
+
+122
+00:05:58,800 --> 00:06:01,875
+Das Ergebnis in Tensor
+ist "shape, batch size".
+
+123
+00:06:01,875 --> 00:06:05,220
+In TensorFlow, 1.5+
+wurde eine zweite Version
+
+124
+00:06:05,220 --> 00:06:08,630
+der Funktion entwickelt.
+Die erste Version wurde verworfen.
+
+125
+00:06:08,630 --> 00:06:11,010
+Um den Durchschnittsverlust
+für den Minibatch zu ermitteln,
+
+126
+00:06:11,010 --> 00:06:13,715
+reicht die Anwendung
+von "reduce_mean" auf die Ausgabe.
+
+127
+00:06:13,715 --> 00:06:18,030
+In TensorFlow gibt es noch eine
+andere Funktion, die Sie verwenden können,
+
+128
+00:06:18,030 --> 00:06:22,200
+um Softmax zu berechnen, sparse_softmax_cross_entropy_with_logits.
+
+129
+00:06:22,200 --> 00:06:25,170
+In diesem Fall kommen
+wir ohne die eine hohe Codierung
+
+130
+00:06:25,170 --> 00:06:26,850
+oder weiche Codierung
+unserer Labels aus
+
+131
+00:06:26,850 --> 00:06:29,250
+und geben stattdessen nur den Index der
+
+132
+00:06:29,250 --> 00:06:32,785
+richtigen Klasse zwischen null und
+der Anzahl der Klassen minus eins an.
+
+133
+00:06:32,785 --> 00:06:36,870
+Das bedeutet, dass unsere Labels nun
+ein Tensor von "shape, batch size" sind.
+
+134
+00:06:36,870 --> 00:06:41,550
+Die Ausgabe der Funktion ist dieselbe wie
+vorher - Tensor "shape, batch size".
+
+135
+00:06:41,550 --> 00:06:46,845
+Mit "reduce mean" erhalte ich den
+durchschnittlichen Verlust des Minibatches.
+
+136
+00:06:46,845 --> 00:06:49,365
+Erinnern Sie sich, wir
+verwenden beide Software-Funktionen
+
+137
+00:06:49,365 --> 00:06:52,935
+nur, weil sich unsere
+Klassen gegenseitig ausschließen.
+
+138
+00:06:52,935 --> 00:06:56,700
+Bild eins ist zum Beispiel
+nur ein Bild eines Hundes
+
+139
+00:06:56,700 --> 00:06:58,785
+und Bild zwei nur ein Bild einer Katze.
+
+140
+00:06:58,785 --> 00:07:03,420
+Was, wenn Bild drei das Bild
+eines Hundes und einer Katze wäre?
+
+141
+00:07:03,420 --> 00:07:04,665
+Für mein ML-Problem
+
+142
+00:07:04,665 --> 00:07:06,075
+möchte ich das wissen.
+
+143
+00:07:06,075 --> 00:07:09,105
+Mit Softmax erhalte ich eine
+Wahrscheinlichkeit für jedes Bild,
+
+144
+00:07:09,105 --> 00:07:11,670
+aber ich verwende
+das argmax daraus als Label.
+
+145
+00:07:11,670 --> 00:07:14,295
+Daher kann es je nach dem Bild in meinem
+
+146
+00:07:14,295 --> 00:07:15,780
+Modell entweder das Label Hund oder
+
+147
+00:07:15,780 --> 00:07:17,340
+das Label Katze erhalten.
+
+148
+00:07:17,340 --> 00:07:21,210
+Das ist nicht gut, weil ich wissen möchte,
+ob beide vorhanden sind
+
+149
+00:07:21,210 --> 00:07:23,985
+und ob es auch andere Klassen gibt.
+
+150
+00:07:23,985 --> 00:07:28,570
+Das ist ein Problem der Klassifizierung
+mehrerer Klassen und Labels.
+
+151
+00:07:28,570 --> 00:07:32,390
+In diesem Fall möchte ich die Wahrscheinlichkeit
+aller Klassen von null bis eins wissen.
+
+152
+00:07:32,390 --> 00:07:36,415
+Zum Glück hat TensorFlow eine raffinierte
+Funktion, mit der genau das möglich ist,
+
+153
+00:07:36,415 --> 00:07:39,280
+die Funktion sigmoid_cross_entropy_with_logits.
+
+154
+00:07:39,280 --> 00:07:42,595
+Sie gibt einen Tensor
+"batchsize, num_classes" zurück.
+
+155
+00:07:42,595 --> 00:07:46,325
+Wir müssen jeden
+Ausgabeknoten für jedes Beispiel auswerten.
+
+156
+00:07:46,325 --> 00:07:50,080
+Dazu gehören natürlich auch die
+Gewichtungen, die zum Knoten führen.
+
+157
+00:07:50,080 --> 00:07:53,130
+Daher ist ein einzelner Schritt
+eines Netzwerks mit 100 Ausgabeknoten
+
+158
+00:07:53,130 --> 00:07:55,765
+wie hundert Schritte eines
+einzelnen Ausgabenetzwerks.
+
+159
+00:07:55,765 --> 00:07:59,780
+Extrem ressourcenintensiv und schwer zu
+skalieren bei einer großen Menge an Klassen.
+
+160
+00:07:59,780 --> 00:08:02,340
+Wir brauchen eine Möglichkeit, diese
+Softmax-Funktion zu approximieren, damit
+
+161
+00:08:02,340 --> 00:08:07,575
+sich einige der Kosten für große
+Mehrklassenprobleme reduzieren lassen.
+
+162
+00:08:07,575 --> 00:08:11,460
+Zum Glück gibt es
+Approximationsversionen von Softmax.
+
+163
+00:08:11,460 --> 00:08:14,810
+Candidate Sampling führt
+Berechnungen für alle positiven Labels aus.
+
+164
+00:08:14,810 --> 00:08:18,330
+Die Berechnungen werden aber nicht für
+alle negativen Labels ausgeführt, sondern
+
+165
+00:08:18,330 --> 00:08:20,400
+nur für ein willkürliches
+Sample von negativen Labels.
+
+166
+00:08:20,400 --> 00:08:22,095
+Das sollte die
+Berechnung deutlich reduzieren.
+
+167
+00:08:22,095 --> 00:08:23,920
+Die Anzahl der
+erfassten negativen Labels
+
+168
+00:08:23,920 --> 00:08:27,230
+ist ein wichtiger Hyperparameter
+in einem Candidate Sampling-Modell.
+
+169
+00:08:27,230 --> 00:08:30,695
+Er wird aus naheliegenden
+Gründen immer unterschätzt.
+
+170
+00:08:30,695 --> 00:08:35,049
+In TensorFlow können wir die
+Funktion sampled_softmax_loss verwenden.
+
+171
+00:08:35,049 --> 00:08:37,335
+Eine weitere Möglichkeit zur
+Approximation von Softmax
+
+172
+00:08:37,335 --> 00:08:39,945
+ist die Noise-Contrastive Estimation.
+
+173
+00:08:39,945 --> 00:08:43,750
+Noise-Contrastive Estimation
+approximiert den Nenner von Softmax,
+
+174
+00:08:43,750 --> 00:08:46,435
+der die Summe aller
+Exponentialfunktionen der Logits enthält,
+
+175
+00:08:46,435 --> 00:08:49,000
+durch Modellierung
+der Verteilung der Ausgaben.
+
+176
+00:08:49,000 --> 00:08:52,620
+Das kann eine approximierte,
+weniger rechenintensive Methode sein,
+
+177
+00:08:52,620 --> 00:08:54,290
+um den Softmax-Verlust zu ermitteln.
+
+178
+00:08:54,290 --> 00:08:58,030
+Sie müssen nicht jede
+Klasse in der Summe des Nenners bewerten.
+
+179
+00:08:58,030 --> 00:09:00,190
+Candidate Sampling ist intuitiver
+
+180
+00:09:00,190 --> 00:09:01,950
+und kommt ohne wirklich gutes Modell aus.
+
+181
+00:09:01,950 --> 00:09:04,600
+Noise-Contrastive benötigt ein richtig gutes Modell,
+
+182
+00:09:04,600 --> 00:09:07,505
+da es auf der Modellierung
+der Verteilung der Ausgaben basiert.
+
+183
+00:09:07,505 --> 00:09:11,110
+In der Regel verwenden
+wir diese Funktionen beim Trainieren,
+
+184
+00:09:11,110 --> 00:09:12,820
+aber für die Evaluierung von Interferenz,
+
+185
+00:09:12,820 --> 00:09:15,960
+für größere Genauigkeit, verwenden
+wir in der Regel die ganze Softmax-Funktion.
+
+186
+00:09:15,960 --> 00:09:19,375
+Ändern Sie hierfür
+die Standard-Partitionsstrategie
+
+187
+00:09:19,375 --> 00:09:20,905
+von Modus zu Div,
+
+188
+00:09:20,905 --> 00:09:24,715
+damit die Verluste in Training,
+Auswertung und Vorhersage konsistent sind.
+
+189
+00:09:24,715 --> 00:09:26,935
+Für unsere Klassifizierungsausgabe gilt:
+
+190
+00:09:26,935 --> 00:09:29,880
+Wenn sich die Labels und die
+Wahrscheinlichkeiten gegenseitig ausschließen,
+
+191
+00:09:29,880 --> 00:09:31,490
+sollten wir ___ verwenden.
+
+192
+00:09:31,490 --> 00:09:33,605
+Wenn sich nur die Labels
+gegenseitig ausschließen,
+
+193
+00:09:33,605 --> 00:09:36,890
+die Wahrscheinlichkeiten
+aber nicht, sollten wir ___ verwenden.
+
+194
+00:09:36,890 --> 00:09:39,340
+Wenn sich die Labels
+nicht gegenseitig ausschließen,
+
+195
+00:09:39,340 --> 00:09:41,710
+sollten wir ___ verwenden.
+
+196
+00:09:41,710 --> 00:09:44,855
+Die korrekte Antwort ist A.
+
+197
+00:09:44,855 --> 00:09:46,710
+Für unsere Klassifizierungsausgabe gilt:
+
+198
+00:09:46,710 --> 00:09:50,435
+Wenn sich die Labels und
+die Wahrscheinlichkeiten gegenseitig ausschließen,
+
+199
+00:09:50,435 --> 00:09:53,690
+sollten wir
+softmax_cross_entropy_with_logits, V2 verwenden.
+
+200
+00:09:53,690 --> 00:09:57,260
+Das heißt, für jedes
+Beispiel gibt es nur eine richtige Klasse,
+
+201
+00:09:57,260 --> 00:09:59,480
+die weiche Labels ermöglicht.
+
+202
+00:09:59,480 --> 00:10:02,030
+Sie muss nicht one-hot-codiert sein,
+
+203
+00:10:02,030 --> 00:10:06,380
+sondern kann pro Klasse Werte zwischen null
+und eins in beliebiger Kombination enthalten,
+
+204
+00:10:06,380 --> 00:10:08,335
+solange sie alle in der Summe eins ergeben.
+
+205
+00:10:08,335 --> 00:10:10,760
+Wenn sich nur die Labels
+gegenseitig ausschließen, die
+
+206
+00:10:10,760 --> 00:10:15,820
+Wahrscheinlichkeiten aber nicht, sollten wir
+sparse_softmax_cross_entropy_with_logits verwenden.
+
+207
+00:10:15,820 --> 00:10:17,980
+Damit sind keine weichen Labels möglich,
+
+208
+00:10:17,980 --> 00:10:20,435
+es kann aber die Modelldatengröße
+generiert werden,
+
+209
+00:10:20,435 --> 00:10:24,560
+da Sie die Labels komprimieren können.
+Sie sind nur ein Index der richtigen Klasse
+
+210
+00:10:24,560 --> 00:10:27,710
+und kein Vektor
+der Anzahl der Klassen für jedes Beispiel.
+
+211
+00:10:27,710 --> 00:10:30,330
+Wenn sich Ihre Labels
+nicht gegenseitig ausschließen,
+
+212
+00:10:30,330 --> 00:10:32,925
+sollten Sie
+sigmoid_cross_entropy_with_logits verwenden.
+
+213
+00:10:32,925 --> 00:10:36,470
+So erhalten wir
+eine Wahrscheinlichkeit für jede mögliche Klasse,
+
+214
+00:10:36,470 --> 00:10:38,810
+die uns Konfidenzwerte
+für jede Klasse liefern kann,
+
+215
+00:10:38,810 --> 00:10:42,940
+die in der Ausgabe repräsentiert ist,
+z. B. ein Bild mit mehreren Klassen.
+
+216
+00:10:42,940 --> 00:10:46,070
+Oder wir möchten
+die Existenz der einzelnen Klassen kennen.

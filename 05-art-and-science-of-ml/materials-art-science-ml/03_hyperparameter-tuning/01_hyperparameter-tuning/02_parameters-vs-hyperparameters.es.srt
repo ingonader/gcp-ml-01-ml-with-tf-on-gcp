@@ -1,0 +1,220 @@
+1
+00:00:01,050 --> 00:00:02,470
+Esto debe serle conocido.
+
+2
+00:00:02,750 --> 00:00:06,120
+Debería haberlo visto
+en el segundo curso, Inicio en AA.
+
+3
+00:00:06,745 --> 00:00:09,960
+Dijimos que los modelos de AA
+son funciones matemáticas
+
+4
+00:00:10,010 --> 00:00:11,940
+con parámetros e hiperparámetros.
+
+5
+00:00:12,170 --> 00:00:14,480
+Un parámetro
+es una variable con valor real
+
+6
+00:00:14,480 --> 00:00:16,400
+que cambia mientras se entrena el modelo
+
+7
+00:00:16,850 --> 00:00:20,310
+como las bases y los sesgos
+que ya conocemos.
+
+8
+00:00:21,210 --> 00:00:23,108
+En cambio, un hiperparámetro
+
+9
+00:00:23,108 --> 00:00:25,696
+es una configuración que se establece
+antes del entrenamiento
+
+10
+00:00:25,696 --> 00:00:27,380
+y que no cambia después.
+
+11
+00:00:28,320 --> 00:00:32,289
+Algunos ejemplos son
+las tasas de aprendizaje y regularización
+
+12
+00:00:32,289 --> 00:00:35,435
+el tamaño del lote, la cantidad
+de capas ocultas en la red neuronal
+
+13
+00:00:35,515 --> 00:00:37,495
+y la cantidad de neuronas en cada capa.
+
+14
+00:00:38,665 --> 00:00:42,828
+Ahora que ya aclaramos
+la diferencia entre los dos conceptos
+
+15
+00:00:43,028 --> 00:00:45,490
+enfoquémonos en los hiperparámetros.
+
+16
+00:00:45,740 --> 00:00:49,580
+Dado que el ajuste de los parámetros
+lo hará el algoritmo de entrenamiento
+
+17
+00:00:49,620 --> 00:00:52,090
+nuestro trabajo será
+configurar bien los hiperparámetros.
+
+18
+00:00:52,090 --> 00:00:56,130
+En el módulo anterior, modificamos
+algunos hiperparámetros manualmente.
+
+19
+00:00:56,340 --> 00:01:00,100
+Aprendimos que el tamaño del lote
+y la tasa de aprendizaje son importantes.
+
+20
+00:01:00,420 --> 00:01:03,860
+Aquí se muestran algunos gráficos
+del artículo de Andrej Karpathy
+
+21
+00:01:03,860 --> 00:01:05,970
+que le recomiendo leer cuando guste.
+
+22
+00:01:05,970 --> 00:01:08,090
+Karpathy aprecia el problema claramente.
+
+23
+00:01:08,740 --> 00:01:12,190
+A la izquierda,
+vemos que con una tasa de aprendizaje baja
+
+24
+00:01:12,520 --> 00:01:14,260
+como el gráfico azul
+
+25
+00:01:14,260 --> 00:01:16,000
+la mejora es lineal.
+
+26
+00:01:16,330 --> 00:01:19,330
+Pero a menudo no se obtiene
+el mejor rendimiento posible.
+
+27
+00:01:20,440 --> 00:01:22,290
+Con una tasa de aprendizaje alta
+
+28
+00:01:22,600 --> 00:01:24,300
+como en el gráfico verde
+
+29
+00:01:24,680 --> 00:01:27,126
+tenemos primero una mejora exponencial
+
+30
+00:01:27,326 --> 00:01:30,387
+pero a menudo no se logra
+el mejor rendimiento posible.
+
+31
+00:01:31,625 --> 00:01:33,690
+Con una tasa de aprendizaje muy alta
+
+32
+00:01:34,000 --> 00:01:35,625
+como en el gráfico amarillo
+
+33
+00:01:35,655 --> 00:01:37,545
+la pérdida puede ser demasiado alta.
+
+34
+00:01:38,005 --> 00:01:40,675
+Suele haber una tasa de aprendizaje óptima
+
+35
+00:01:41,345 --> 00:01:42,845
+como en este gráfico rojo.
+
+36
+00:01:42,965 --> 00:01:44,495
+Pero no es fácil encontrarla.
+
+37
+00:01:46,455 --> 00:01:49,835
+Veamos lo que los gráficos
+nos dicen sobre el tamaño del lote.
+
+38
+00:01:50,285 --> 00:01:51,065
+A la derecha
+
+39
+00:01:51,065 --> 00:01:53,485
+tenemos una curva
+de pérdida con mucho ruido.
+
+40
+00:01:53,755 --> 00:01:56,045
+Eso se debe al tamaño pequeño del lote.
+
+41
+00:01:56,165 --> 00:01:57,365
+Por el módulo anterior
+
+42
+00:01:57,395 --> 00:02:00,515
+recuerde que establecer
+un tamaño del lote muy grande
+
+43
+00:02:00,805 --> 00:02:02,885
+puede lentificar mucho el proceso.
+
+44
+00:02:03,575 --> 00:02:06,565
+Estos gráficos se ordenan
+por ciclo de entrenamiento.
+
+45
+00:02:06,565 --> 00:02:09,945
+Por desgracia, TensorFlow
+no entiende mucho sobre estos ciclos.
+
+46
+00:02:10,247 --> 00:02:14,276
+Para reconocer un ciclo de entrenamiento,
+tendrá que calcular cuántos pasos
+
+47
+00:02:14,276 --> 00:02:17,416
+de cierto tamaño de lote
+equivalen a un ciclo.
+
+48
+00:02:18,350 --> 00:02:22,360
+Es decir, debe calcular cuántos pasos
+de un tamaño de lote determinado
+
+49
+00:02:22,500 --> 00:02:25,780
+son necesarios para recorrer
+todo el conjunto de datos una vez.

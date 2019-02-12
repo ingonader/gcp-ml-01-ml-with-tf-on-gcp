@@ -1,0 +1,193 @@
+Da Sie sich nun besser
+mit neuronalen Netzwerken auskennen, können wir uns dem Training, Problemen und Techniken zuwenden,
+mit denen das Training beschleunigt
+und die Generalisierung optimiert wird. In TensorFlow ist die Nutzung
+von Estimator API und DNNRegressor fast identisch mit
+der Nutzung von LinearRegressor. Es müssen nur ein paar
+Codeparameter hinzugefügt werden. Wir nutzen erfolgsabhängige Optimierer
+wie das Standardprogramm Adagrad oder andere wie Adam. Wir müssen
+den Parameter "hidden_units" hinzufügen, der eine Liste ist. Der Anzahl der Listenelemente
+und verborgenen Ebenen ist identisch. Die Werte sind die jeweilige
+Neuronenzahl für eine verborgene Ebene. Sie lernen auch
+den neuen Parameter "dropout" kennen. Darum geht es in einigen Minuten. Doch jetzt aktivieren
+und deaktivieren wir für jedes Beispiel einzelne Neuronen,
+um die Generalisierung zu optimieren. Sehen Sie sich bitte
+die Tentacle-Dokumentation für alle konfigurierbaren Parameter an. Diese könnten allesamt hyperparameterisiert werden, um die Generalisierungsleistung
+Ihres Modells zu optimieren. Rückpropagierung ist ein klassisches Thema
+in Kursen über neuronale ML-Netzwerke. Es kann jedoch so sein, als würde man erklären,
+wie ein Compiler erstellt wird: unverzichtbar für das tiefere Verständnis, aber anfangs nicht unbedingt erforderlich. Wichtig ist, dass es
+einen effizienten Algorithmus für Ableitungen gibt und dass sie von
+TensorFlow automatisch berechnet werden. Wir werden über Problemfälle sprechen, z. B. verschwundene Gradienten, explodierende Gradienten
+und inaktive Ebenen. Beim Training können speziell bei großen
+Netzwerken Gradienten verschwinden. Jede weitere Ebene im Netzwerk kann
+das Signal-Rausch-Verhältnis reduzieren, z. B. wenn auf Ihren verborgenen Ebenen die Aktivierungsfunktionen
+"sigmoid" und "tanh" verwendet werden. Zu Beginn der Sättigung landen Sie in den hohen asymptotischen
+Regionen der Funktion, doch der Abhang kommt immer näher, bis ungefähr 0. Wenn Sie bei der Rückpropagierung
+rückwärts durchs Netz gehen, kann der Gradient kleiner werden, weil Sie diese kleinen Gradienten so lange
+verbinden, bis der Gradient verschwindet. Dann werden Ihre
+Gewichtungen nicht mehr aktualisiert und das Training wird abrupt abgebrochen. Die einfache Lösung: nicht sättigende, nicht lineare Aktivierungsfunktionen
+wie ReLUs oder ELUs verwenden. Beim entgegengesetzten Problem
+können Gradienten explodieren, weil sie so groß werden,
+dass unsere Gewichtungen quasi überlaufen. Selbst wenn man mit
+relativ kleinen Gradienten beginnt, z. B. mit dem Wert  2, können sie sich verbinden
+und über mehrere Ebenen erstrecken. Das gilt besonders für
+Sequenzmodelle mit langen Sequenzen. Es kann auf Lernraten ankommen,
+weil wir bei der Aktualisierung der Gewichtungen den
+Gradienten mit der Lernrate multipliziert und das
+von der Gewichtung abgezogen haben. Selbst wenn der Gradient nicht groß ist, 
+kann er bei einer Lernrate von über 1 zu groß und zum Problem für uns
+und unser Netzwerk werden. Es gibt zahlreiche Wege,
+das Problem zu minimieren: z.  B. Organisation von
+Gewichtungen und kleinere Batches. Grading and Clipping
+ist eine weitere Methode, bei der wir prüfen, ob der
+normale Gradient einen Wert überschreitet, den Sie hyperparametrisieren
+und optimieren können. Dann können Sie die Gradiententeile neu skalieren, damit
+Ihr Maximum nicht überschritten wird. Bei der Batch-Normalisierung wird das Problem der internen
+Kovarianzverschiebung behoben. Sie beschleunigt das Training,
+weil Gradienten besser fließen. Oft können eine höhere Lernrate genutzt
+und manchmal Drop-out verhindert werden. Die Konkurrenz wird wegen geringen Mini-Batch-
+Rauschens bis zu den eigenen Regeln gebremst. Suchen Sie für die Batch-Normalisierung zuerst nach dem Mini-Batch-Mittelwert, und dann nach der Standardabweichung. Normalisieren Sie die Knoteneingaben, skalieren und verschieben Sie
+dann um "Gamma mal X plus Beta", wobei Gamma
+und Beta gelernte Parameter sind. Wenn Gamma gleich Quadratwurzelvarianz
+und Beta gleich Mittelwert von X ist, wird die Originalfunktion
+wiederhergestellt. So können Sie den Bereich der Eingaben
+steuern, damit sie nicht zu groß werden. Am besten liegen
+Ihre Gradienten so nah wie möglich bei 1, insbesondere bei sehr großen Netzen. So werden Verbindungen
+sowie Unter- oder Überlauf vermieden. Ein weiteres Problem des Verfahrens:
+reale Ebenen können inaktiv werden. Mit TensorBoard können
+wir die Zusammenfassungen während und nach dem Training
+der neuronalen Netzwerkmodelle verfolgen. Mit einem Candy und einem Estimator wird
+automatisch für jede verborgene GN-Ebene eine skalare Zusammenfassung erstellt, der Sie die Nullwerte
+der Aktivierungen entnehmen können. ReLUs halten an, wenn sie
+durch die Eingaben in der negativen Domain bleiben.
+Ihre Aktivierung erhält dann den Wert 0. Es ist aber nicht das Ende, weil dann
+der Beitrag für die nächste Ebene 0 ist. Egal, womit sie von den Gewichtungen verknüpft werden: Für die nächsten
+Neuronen sind Aktivierung und Eingabe 0. Mit Nullen bleibt auch das
+nächste Neuron in der negativen Domain. Auch die Aktivierungen
+haben dann den Wert 0 und es kommt zum Lawineneffekt. Die Gradienten bei
+der folgenden Rückpropagierung sind 0. Es fehlen also die Gewichtungen
+und das Training wird daher angehalten. Wir haben über undichte und parametrische
+ReLUs und langsamere ELUs gesprochen. Sie können
+Lernraten senken, um nicht aktivierte oder verschwundene
+ReLU-Ebenen zu verhindern. Ein wegen einer zu hohen Lernrate
+großer Gradient kann Gewichtungen so aktualisieren, dass sie von
+keinem Datenpunkt mehr aktiviert werden. Da der Gradient 0 ist, wird die Gewichtung nicht sinnvoll aktualisiert und das Problem bleibt dauerhaft bestehen. Nun testen wir, was mit dem Modell geschieht, wenn es zwei nützliche
+Signale gibt, beide unabhängig mit dem Label verknüpft,
+aber die Skalierungen sind verschieden. Beispiel: Wir haben einen Prädiktor für Suppen mit Funktionen,
+die für bestimmte Zutaten stehen. Wird die Funktion für
+Hühnerbrühe in Litern gemessen und die Funktion
+für Rinderbrühe in Millilitern, sind die Bewertung des Dufts und
+die Zusammenführung von Werten schwierig, da die besten Lernraten der Dimensionen
+wohl unterschiedlich sind. Wenn Ihre Daten gut organisiert sind
+und im rechenfreundlichen Bereich liegen, wirkt sich dies positiv
+auf das Training Ihrer ML-Modelle aus. Durch kleine und um 0 zentrierte Werte werden das Training beschleunigt
+und numerische Probleme vermieden. Deshalb ist Batch-Normalisierung
+gut gegen explodierende Gradienten. So bewegen sich nicht nur
+die anfänglichen Eingabefunktionen, sondern alle
+Zwischenfunktionen innerhalb eines geeigneten Bereichs, damit keine
+Probleme mit unseren Ebenen entstehen. So wird auch das NaN-Problem
+vermieden, bei dem das Modell scheitert, wenn die Werte den Bereich
+der numerischen Genauigkeit überschreiten. Durch die Skalierung
+von Funktionen und/oder niedrigeren Lernraten
+lässt sich dieses Problem vermeiden. Ausreißerwerte sollten im Sinne
+der Generalisierung vermieden werden. Gelingt es, Anomalien
+schon vor dem Training zu erfassen und aus dem Dataset zu entfernen,
+kann dies eine große Hilfe sein. Es existiert keine spezielle
+Einheitsmethode für alle Daten. Für jeden Ansatz gibt es
+gute und schlechte Beispiele. Man kann mit verschiedenen
+Methoden für kleine Werte sorgen. Bei der linearen Skalierung suchen Sie
+erst nach den kleinsten und größten Daten. Dann ziehen wir für jeden Wert das Minimum ab und teilen das Ergebnis durch die Differenz zwischen
+Maximum und Minimum bzw. Bereich. So liegen alle Werte zwischen 0 und 1, wobei 0 das Minimum und 1 das Maximum ist. Das nennt man Normalisierung. Beim Hard Capping oder Clipping legen Sie Minimum und Maximum fest. Wenn das Minimum z. B. -7 sein darf und mein Maximum 10,
+dann werden alle Werte, die kleiner als -7 sind,
+zu -7. Alle Werte, die größer als 10 sind, werden 10. Bei der Log-Skalierung wenden Sie die
+Logarithmusfunktion auf Eingabedaten an. Dies ist speziell für große
+Datenbereiche sinnvoll, wenn Sie diese kondensieren und die Größe
+des Werts stärker betonen möchten. Die Standardisierung
+ist eine weitere Methode. Hier berechnen Sie den Mittelwert
+Ihrer Daten und die Standardabweichung. Dann ziehen Sie den Mittelwert von jedem Datenpunkt ab und teilen
+das durch die Standardabweichung. So werden Ihre Daten um 0 zentriert, weil der neue Mittelwert 0
+und die neue Standardabweichung 1 ist. Natürlich können Sie Ihre Daten
+auch auf andere Weise skalieren. Welche Option ist richtig, wenn mein
+Modell explodierende Gradienten aufweist? Die korrekte Antwort lautet A, B, C und D. Das Problem tritt
+oft bei zu großen Gewichtungen auf. Dies kann passieren,
+wenn unsere Lernrate zu hoch wird. Weitere Probleme sind möglich: numerische Stabilität,
+Divergenz und inaktive ReLUs. Daher empfiehlt es sich,
+die Lernrate zu senken. Auch die Autorisierung
+von Gewichtungen kann sinnvoll sein, weil hohe
+Gewichtungen bestraft werden. Gradienten explodieren dann seltener. Beim Gradienten-Clipping wird erreicht, dass Gradienten einen
+festgelegten Wert nicht überschreiten So können hohe Lernraten vermieden werden. Ist die Rate jedoch hoch genug, können Gewichtungen
+weiterhin sehr hohe Werte erreichen. Durch Batch-Normalisierung bewegen sich die Zwischeneingaben
+auf jeder Ebene in kleineren Bereichen. Zu große Gewichtungen sind so
+bedeutend unwahrscheinlicher, der zusätzliche Rechenaufwand
+aber nur gering. Explodierende Gradienten
+sind leicht zu behandeln. Ein Arzt ist jedenfalls nicht nötig. Sie können mit den Tools ganz
+leicht testen, was am besten funktioniert. Eine andere Regularisierung
+für das Erstellen generalisierbarer Modelle ist das Hinzufügen von
+Drop-out-Ebenen zu neuronalen Netzwerken. Ich füge mindestens einer Ebene einen
+Wrapper hinzu, um Drop-out zu nutzen. In TensorFlow wird der übergebene
+Parameter als Drop-out bezeichnet. Er gibt die Wahrscheinlichkeit an, mit der ein Neuron im Netzwerk
+vorübergehend deaktiviert wird. Wählen Sie diesen Wert
+mit Bedacht aus, weil andere Drop-out-Funktionen
+Keep-Wahrscheinlichkeit nutzen, das Gegenstück zur Drop-Wahrscheinlichkeit oder der Wahrscheinlichkeit, dass ein
+Neuron aktiviert oder deaktiviert wird. Sie möchten schließlich
+keine Drop-Wahrscheinlichkeit von 10 %, wenn Sie gerade nur 10 %
+zufällig in Ihren Knoten behalten. Das wäre ein unbeabsichtigtes Sparmodell. Wie funktioniert Drop-out? Angenommen, die
+Drop-out-Wahrscheinlichkeit ist 20 %. Ein Zufallsalgorithmus
+ermittelt bei Vorwärtsdurchläufen an das Netzwerk einen Wert für
+Neuronen und Drop-out-Wrapped-Ebene. Ist der Wert größer als 20
+und das Neuron bleibt im Netzwerk aktiv, wird das Neuron deaktiviert und unabhängig von
+den Eingaben der Wert 0 ausgegeben. Es wird weder negativ noch positiv
+zum Netzwerk beigetragen, da sich durch die 0 nichts ändert und simuliert
+wird, das Neuron sei nicht vorhanden. Da jeder Knoten nur eine
+bestimmte Zeit erhalten bleibt, werden die Aktivierungen
+durch "1 mehr als 1 minus Drop-out-Wahrscheinlichkeit"
+skaliert. Mit anderen Worten: "1 mehr als Keep-Wahrscheinlichkeit" während des Trainings, sodass wir
+den Erwartungswert der Aktivierung haben. Ohne Training und die Erfordernis,
+einen Knoten zu ändern, verschwindet der Wrapper
+und die Neuronen in der vorigen Drop-out-Wrapper-Ebene sind immer aktiv und nutzen die vom
+Modell trainierten Gewichtungen. Der große Vorteil ist,
+dass ein Ensemblemodell erstellt wird, weil es für jeden Vorwärtsdurchlauf ein anderes Netzwerk gibt
+und der Mini-Daten-Batch sichtbar ist. Wenn all dies zusammengefügt wird, ist es, als würde ich neuronale
+"Two-to-the-N"-Netzwerke trainieren, wobei "N" die Anzahl
+der Drop-out-Neuronen wäre. Sie würden dann
+im Ensemble so zusammenarbeiten wie Entscheidungsbäume in einem Random Forest. Es gibt außerdem den Zusatzeffekt, dass die Daten des
+gesamten Netzes verteilt werden und nicht nur der Großteil des Signals auf einen
+bestimmten Abschnitt des Netzwerks – wie Wasser, das in einen Fluss mit
+mehreren Armen und Dämmen umgeleitet wird, damit alle Wege Wasser
+führen und keiner austrocknet. So kann das Netzwerk
+mehr Kapazität nutzen, weil das Signal gleichmäßiger
+auf das gesamte Netzwerk übertragen wird. Training
+und Generalisierung werden verbessert, ohne dass sich in beliebten Pfaden
+Abhängigkeiten von Neuronen entwickeln. Typische Drop-out-Werte
+liegen zwischen 20 und 50 %. Sind sie erheblich niedriger, ist der Netzwerkeffekt gering,
+da kaum Knoten deaktiviert werden. Sind sie höher, entfällt das Training, da das Netzwerk nicht die Kapazität hat,
+ohne Verteilung zu lernen. Sie sollten das auch
+in größeren Netzwerken nutzen, weil das Modell mehr Kapazität hat,
+unabhängige Darstellungen zu lernen. Mit anderen Worten:
+Das Netzwerk kann mehr Pfade ausprobieren. Je mehr Sie deaktivieren, desto weniger behalten Sie, desto stärker die Regularisierung. Ist die Drop-out-Wahrscheinlichkeit 1, behalten Sie nichts
+und jedes Neuron in der Wrapped-Drop-out-Ebene
+wird aus dem Neuron entfernt. Es wird eine Nullaktivierung ausgegeben. Bei der Rückpropagierung werden dann keine Gewichtungen aktualisiert
+und diese Ebene lernt nichts. Ist die Wahrscheinlichkeit 0, bleiben alle Neuronen aktiv.
+Es gibt keine Drop-out-Regularisierung. Im Grunde handelt es sich
+um eine aufwendigere Rechenvariante ohne Drop-out-Wrapper, denn es
+müssen weiter Werte ermittelt werden. Sie möchten natürlich
+irgendwo zwischen 0 und 1 landen, mit Drop-out-Wahrscheinlichkeiten
+zwischen 10 und 50 %, wobei eine gute Baseline bei 20 % beginnt,
+um dann mehr hinzuzufügen. Es gibt keinen Einheitswert für Drop-out-Wahrscheinlichkeit
+bei Modellen und Datenverteilung. Drop-out ist eine andere Form der ___. Daten müssen ___ Pfade nutzen, um eine
+ausgeglichenere Verteilung zu erreichen. Außerdem wird ___ Learning simuliert. Drop-out-Aktivierungen müssen mit
+dem inversen Wert für ___ skaliert werden. Während ___ wird Drop-out entfernt. Die korrekte Antwort lautet E.
+Drop-out ist eine andere Form der Regularisierung, um die
+Generalisierung des Modells zu optimieren. Dabei werden Knoten mit
+Drop-out-Wahrscheinlichkeit deaktiviert, um Daten auf mehr Pfade zu leiten und
+eine ausgeglichenere Verteilung zu erhalten. Sonst können verknüpfte Daten und Aktivierungen lernen,
+bevorzugte Pfade einzuschlagen. Dies kann zu wenig
+Training für das Netzwerk bedeuten und zu geringer
+Effektivität neuer Daten führen. Drop-out simuliert auch Ensemble Learning,
+da wegen der zufälligen Deaktivierung von Knoten für Vorwärtsdurchläufe ein Aggregat
+von "Two-to-the-N"-Modellen erstellt wird, "n" ist die Anzahl der Drop-out-Knoten. Jeder Batch sieht ein anderes Netzwerk, damit das Modell nicht überangepasst
+werden kann, siehe Random Forest. Drop-out-Aktivierungen werden mit der
+inversen Keep-Wahrscheinlichkeit skaliert, also mit "1 minus
+Drop-out-Wahrscheinlichkeit". Wir erwarten, dass der Knoten während
+des Trainings korrekt skaliert wird, da er für Inferenzen immer aktiv ist und wir Drop-out
+während Inferenzen entfernen.

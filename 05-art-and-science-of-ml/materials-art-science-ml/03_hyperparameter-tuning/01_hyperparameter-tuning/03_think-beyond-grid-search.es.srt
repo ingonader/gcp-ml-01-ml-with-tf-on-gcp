@@ -1,0 +1,295 @@
+1
+00:00:00,920 --> 00:00:05,580
+Si pensamos en todos los ajustes posibles,
+encontrar una combinación óptima
+
+2
+00:00:05,635 --> 00:00:06,955
+que dependa de los datos
+
+3
+00:00:06,955 --> 00:00:08,665
+puede parecer una tarea abrumadora.
+
+4
+00:00:08,845 --> 00:00:10,465
+Piense en las permutaciones.
+
+5
+00:00:10,465 --> 00:00:13,870
+Puede automatizarlas con algunos
+algoritmos de búsqueda por cuadrícula.
+
+6
+00:00:14,380 --> 00:00:17,790
+La búsqueda de la combinación perfecta
+puede tardar mucho
+
+7
+00:00:17,790 --> 00:00:20,610
+y consumir muchas horas
+de recursos de cómputo.
+
+8
+00:00:20,780 --> 00:00:23,545
+¿No sería mejor tener
+un bucle de entrenamiento
+
+9
+00:00:23,905 --> 00:00:26,650
+que haga un metaentrenamiento
+en todos estos hiperparámetros
+
+10
+00:00:26,650 --> 00:00:28,700
+hasta que encuentre
+la configuración óptima?
+
+11
+00:00:30,910 --> 00:00:33,440
+No tema, Google Vizier está para ayudarlo.
+
+12
+00:00:33,860 --> 00:00:34,890
+En general
+
+13
+00:00:34,890 --> 00:00:37,740
+podrá aprovechar el ajuste automático
+de los hiperparámetros
+
+14
+00:00:37,740 --> 00:00:40,030
+con la tecnología
+del algoritmo de Google Vizier
+
+15
+00:00:40,470 --> 00:00:42,630
+sin tener que conocer los detalles.
+
+16
+00:00:43,100 --> 00:00:46,305
+Si desea saber
+lo que sucede en la caja negra
+
+17
+00:00:46,305 --> 00:00:49,975
+le recomiendo que revise el artículo
+de investigación que aparece en pantalla.
+
+18
+00:00:51,095 --> 00:00:54,925
+Todo lo que debe saber es que
+Cloud ML Engine realiza el trabajo.
+
+19
+00:00:55,275 --> 00:00:59,790
+Solo configure el trabajo
+y ML Engine hará el resto.
+
+20
+00:01:00,640 --> 00:01:01,735
+Veamos qué se necesita
+
+21
+00:01:01,735 --> 00:01:05,305
+para hacer que los hiperparámetros
+se ajusten automáticamente.
+
+22
+00:01:06,065 --> 00:01:09,005
+Hasta el momento,
+debe haber usado Cloud ML Engine
+
+23
+00:01:09,115 --> 00:01:12,570
+la plataforma sin servidor
+para entrenar y alojar modelos de AA.
+
+24
+00:01:13,050 --> 00:01:17,055
+ML Engine abstrae el proceso
+de ajuste de hiperparámetros.
+
+25
+00:01:17,495 --> 00:01:20,925
+Para usar el servicio,
+solo tiene que hacer lo siguiente.
+
+26
+00:01:22,285 --> 00:01:25,960
+Primero, exprese
+los hiperparámetros que deben ajustarse
+
+27
+00:01:25,960 --> 00:01:27,860
+como argumentos de la línea de comandos.
+
+28
+00:01:28,310 --> 00:01:32,705
+Luego, haga que las diferentes iteraciones
+de entrenamiento no interfieran entre sí.
+
+29
+00:01:32,975 --> 00:01:36,580
+Por último, proporcione los hiperparámetros
+
+30
+00:01:36,580 --> 00:01:37,960
+al trabajo de entrenamiento.
+
+31
+00:01:39,050 --> 00:01:42,350
+Antes de ir al lab
+y ajustar hiperparámetros
+
+32
+00:01:42,690 --> 00:01:46,460
+veamos esos tres pasos en el código.
+
+33
+00:01:46,860 --> 00:01:49,790
+El primer paso
+es definir los hiperparámetros
+
+34
+00:01:49,790 --> 00:01:53,100
+que quiera ajustar como
+argumento de la línea de comandos.
+
+35
+00:01:54,200 --> 00:01:57,145
+Por ejemplo, tengo dos hiperparámetros.
+
+36
+00:01:58,265 --> 00:02:02,765
+Son la cantidad de depósitos
+para discretizar latitud y longitud
+
+37
+00:02:03,805 --> 00:02:07,280
+y la cantidad de unidades ocultas
+en mi red neuronal profunda.
+
+38
+00:02:07,570 --> 00:02:11,450
+El segundo paso es asegurarse
+de que los resultados de distintas pruebas
+
+39
+00:02:11,450 --> 00:02:12,905
+no interfieran entre sí.
+
+40
+00:02:13,815 --> 00:02:16,885
+Para ello,
+usamos una buena convención de nombres
+
+41
+00:02:16,885 --> 00:02:18,460
+para las carpetas de salida.
+
+42
+00:02:19,700 --> 00:02:22,865
+Por ejemplo, aquí usé
+un valor de prueba como sufijo
+
+43
+00:02:22,865 --> 00:02:24,840
+de modo que el nombre de salida sea único.
+
+44
+00:02:24,970 --> 00:02:27,840
+El último paso
+es proporcionar hiperparámetros
+
+45
+00:02:27,840 --> 00:02:29,572
+con su trabajo de entrenamiento.
+
+46
+00:02:29,572 --> 00:02:30,605
+Se hace así.
+
+47
+00:02:30,770 --> 00:02:33,955
+Primero, cree el archivo yaml, como este.
+
+48
+00:02:35,215 --> 00:02:39,660
+Luego, coloque la ruta a ese archivo
+con parámetros de línea de comandos
+
+49
+00:02:39,730 --> 00:02:42,165
+mediante el comando gcloud ml-engine.
+
+50
+00:02:42,185 --> 00:02:43,185
+De esta manera.
+
+51
+00:02:44,545 --> 00:02:48,265
+Veamos el contenido del archivo yaml.
+
+52
+00:02:48,545 --> 00:02:49,897
+En este ejemplo
+
+53
+00:02:49,897 --> 00:02:53,520
+queremos minimizar la RMSE
+del conjunto de datos de evaluación.
+
+54
+00:02:53,710 --> 00:02:57,310
+ML Engine deberá encontrar
+el tamaño del lote óptimo
+
+55
+00:02:57,310 --> 00:02:59,910
+entre 64 y 512.
+
+56
+00:03:00,210 --> 00:03:02,145
+Esta no es una búsqueda por cuadrícula.
+
+57
+00:03:02,235 --> 00:03:03,500
+Es mucho más inteligente.
+
+58
+00:03:03,720 --> 00:03:05,890
+Vea la cantidad máxima de pruebas.
+
+59
+00:03:06,180 --> 00:03:10,240
+ML Engine usará un algoritmo
+para buscar en áreas prometedoras.
+
+60
+00:03:10,260 --> 00:03:13,220
+Comenzará una cantidad
+de pruebas paralelas al azar
+
+61
+00:03:13,540 --> 00:03:16,220
+según se especifica en maxParallelTrials
+
+62
+00:03:16,410 --> 00:03:17,900
+y empezará a explorar.
+
+63
+00:03:18,060 --> 00:03:21,720
+Aquí, le pedimos a ML Engine
+que pruebe de forma sistemática
+
+64
+00:03:21,720 --> 00:03:24,100
+diversas arquitecturas de red neuronal.
+
+65
+00:03:24,761 --> 00:03:27,221
+Ya estamos listos
+para realizar una prueba.

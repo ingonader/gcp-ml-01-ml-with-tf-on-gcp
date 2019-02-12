@@ -1,0 +1,63 @@
+Comenzamos diciendo
+que las incorporaciones de los ID de películas
+eran atributos categóricos. Luego, aplicamos el mismo ejemplo a palabras en un anuncio,
+es decir, atributos de texto. ¿Qué tienen en común? Las incorporaciones no solo sirven
+para atributos categóricos o de texto. Se tratan de algo más. Aquí le muestro un problema clásico
+de aprendizaje automático llamado MNIST. La idea es reconocer dígitos
+escritos a mano en imágenes escaneadas. En una imagen,
+cada píxel representa una entrada. A esto me refiero
+cuando digo un bitmap sin procesar. Las imágenes son de 28 x 28 por lo que hay 784 píxeles en ese bitmap. Considere este arreglo de 784 números. La mayor parte del arreglo
+corresponde a píxeles en blanco. En este caso,
+las incorporaciones son útiles. Tomamos los 784 números y los representamos
+como un tensor disperso. Básicamente, solo guardamos los píxeles donde aparece el dígito escrito a mano. Solo guardamos los píxeles
+en los que el dígito es negro y lo pasamos a una incorporación 3D. Luego, podemos tener
+una red neuronal normal de dos capas y podemos pasar otros atributos
+si lo deseamos. Luego, entrenamos el modelo para predecir el número real de la imagen
+según estas etiquetas. ¿Por qué tengo una capa de logit aquí? Estas forman la capa de salida
+de la red neuronal. En un problema de clasificación,
+la salida debe ser un logit. Cuando usamos un clasificador lineal o DNN la capa de salida es un logit. Un solo logit. Pero ocurre solo si tiene una sola salida. En el caso del problema MNIST,
+tenemos un total de 10 clases. Los dígitos cero, uno, dos y hasta nueve. Por eso no tengo un solo logit sino una capa de logits. Tengo un logit
+por cada uno de los dígitos posibles. Cuando tenemos
+una capa de logits en vez de un solo logit no hay garantía de que
+la probabilidad total de todos los dígitos sea igual a uno. Esa es la función del softmax. Normaliza los logits individuales para que la probabilidad total
+sea igual a uno. Perdón por el paréntesis,
+hablábamos de las incorporaciones. Cuando entrenamos un modelo
+para reconocer dígitos escritos a mano cada imagen
+se representará con tres números. A diferencia del caso categórico no se usó codificación one-hot
+para el bitmap sin procesar. Por lo tanto, no obtendremos
+tres números por cada píxel. Esos tres números corresponden
+a todos los píxeles que se activaron para una imagen específica. Puede visualizar
+estas incorporaciones en TensorBoard. El vector 3D que corresponde
+a cada una de las imágenes de 784 píxeles. Aquí, asignamos colores diferentes
+a las etiquetas. Como puede ver, ocurrió algo genial. Todos los cincos
+se agruparon en el espacio 3D al igual que los sietes y los ceros. Es decir, los números 3D
+que representan cada imagen escrita a mano muestran que los elementos similares se agrupan en el espacio 3D. Esto es así en las incorporaciones
+de variables categóricas en texto con lenguaje natural
+y en los bitmaps sin procesar. ¿Qué tienen en común? Todos son dispersos. Si toma una codificación de vector disperso y lo pasa por una columna de incorporación y usa esa columna como entrada en una DNN y luego entrena la DNN las incorporaciones entrenadas
+tendrán esta propiedad de similitud siempre que tenga los datos suficientes y el entrenamiento
+logre una precisión adecuada. Puede aprovechar la propiedad de similitud
+en otras situaciones. Por ejemplo su tarea es encontrar
+una canción similar a esta. Lo que puede hacer es crear una incorporación
+del audio asociado a canciones. Es decir, toma el clip de audio y lo representa
+como un arreglo de valores. Luego, tal como con la imagen MNIST pasa el arreglo
+por una capa de incorporación. Puede usarlo para entrenar un problema
+de aprendizaje automático razonable. Quizá podría usar la señal de audio
+para entrenar un modelo para predecir el género musical o la siguiente nota musical. Sin importar
+para qué predicción entrenó al modelo la incorporación le dará
+una representación dimensional menor del clip de audio. Para encontrar canciones similares solo debe calcular la distancia euclidiana entre dos clips,
+entre sus incorporaciones. Esto se convierte
+en la medida de la similitud entre las dos canciones. También puede usar
+los vectores de incorporación como entradas de un algoritmo
+de agrupación en clústeres. La similitud se puede usar
+para incorporar varios atributos juntos. Por ejemplo,
+texto en dos idiomas diferentes o texto con su audio correspondiente para determinar la similitud entre ellos. En todos los ejemplos usamos tres
+para la cantidad de incorporaciones. Por supuesto, puede usar otras cantidades. Pero ¿cuáles debería usar? La cantidad de incorporaciones
+es un hiperparámetro del modelo del AA. Deberá probar diferentes cantidades
+de dimensiones de incorporación ya que ocurre una compensación. Más incorporaciones dimensionales pueden representar mejor
+la relación entre los valores de entrada. Pero mientras más dimensiones tenga mayor será la posibilidad de sobreajuste. Además, a medida que el modelo crece,
+el entrenamiento se hace más lento. Un buen comienzo es usar la raíz cuarta
+de la cantidad total de valores posibles. Por ejemplo,
+si incorpora los ID de películas y tiene 500,000 películas en su catálogo la cantidad de valores posibles es 500,000. Sería apropiado empezar
+por la raíz cuarta de 500,000. La raíz cuadrada de 500,000
+es alrededor de 700 y la de 700, alrededor de 26. Yo empezaría alrededor de 25. Si realiza el ajuste de hiperparámetros de la cantidad de dimensiones
+de incorporación usaría un espacio de búsqueda de 15 a 35. Esto es solo una regla general.

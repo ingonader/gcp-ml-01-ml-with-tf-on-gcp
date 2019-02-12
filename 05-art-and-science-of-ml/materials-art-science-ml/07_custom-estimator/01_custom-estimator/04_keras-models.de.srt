@@ -1,0 +1,328 @@
+1
+00:00:00,000 --> 00:00:04,265
+Wir erstellten einen 
+benutzerdefinierten Estimator
+
+2
+00:00:04,265 --> 00:00:09,980
+für den der Ein- und Ausgabetensorcode
+mit TensorFlow geschrieben wurde.
+
+3
+00:00:09,980 --> 00:00:14,260
+Der Code und die Funktion, 
+die eine EstimatorSpec zurückgeben,
+
+4
+00:00:14,260 --> 00:00:19,205
+wurden zusammengefasst. Die Funktion 
+wurde an den Basisklassen-Estimator übergeben.
+
+5
+00:00:19,205 --> 00:00:21,570
+Wie funktioniert das mit Keras?
+
+6
+00:00:21,570 --> 00:00:23,855
+Was ist Keras überhaupt?
+
+7
+00:00:23,855 --> 00:00:28,075
+Keras ist eine übergeordnete API
+für neuronale Netze.
+
+8
+00:00:28,075 --> 00:00:32,634
+Sie unterstützt Convolutional Neural Networks 
+(CNN) und Recurrent Neural Networks (RNN).
+
+9
+00:00:32,634 --> 00:00:39,890
+Keras ist im Gegensatz zu TensorFlow 
+keine Implementierung von CNNs oder RNNs.
+
+10
+00:00:39,890 --> 00:00:45,465
+Keras ist eine übergeordnete API 
+für neuronale Netzwerke,
+
+11
+00:00:45,465 --> 00:00:51,075
+die in Python geschrieben wurde, 
+aber TensorFlow als Back-End unterstützt.
+
+12
+00:00:51,075 --> 00:00:55,580
+Wenn Sie 
+eine Keras-Funktion aufrufen, ruft diese
+
+13
+00:00:55,580 --> 00:01:00,980
+eine Reihe von TensorFlow-Funktionen auf, 
+um diese Funktionalität zu implementieren.
+
+14
+00:01:00,980 --> 00:01:05,624
+Keras unterstützt das Ausführen 
+auf Basis von Implementierungen
+
+15
+00:01:05,624 --> 00:01:11,140
+anderer neuronaler Netzwerke 
+wie CNTK und Theano.
+
+16
+00:01:11,560 --> 00:01:16,290
+Keras ist für
+schnelles Prototyping einfach verwendbar.
+
+17
+00:01:16,290 --> 00:01:21,660
+Dieses in Keras geschriebene Modell 
+dient z. B. der Sequenzklassifizierung.
+
+18
+00:01:21,660 --> 00:01:27,250
+Es gibt Klassen 
+für Einbettungen, LSDMs, Dropout usw.
+
+19
+00:01:27,250 --> 00:01:30,850
+Mit Keras können Sie sich 
+statt auf die Modellimplementierung
+
+20
+00:01:30,850 --> 00:01:34,600
+auf untergeordneter Ebene 
+auf die Architektur konzentrieren.
+
+21
+00:01:34,600 --> 00:01:39,900
+Z. B. sind für Einbettungen 
+in TensorFlow Einbettungsspalten erforderlich.
+
+22
+00:01:39,900 --> 00:01:41,130
+Zuerst müssen Sie
+
+23
+00:01:41,130 --> 00:01:44,960
+mit den Trainingsdaten 
+eine kategorische Spalte erstellen.
+
+24
+00:01:44,960 --> 00:01:49,495
+In Keras müssen Sie sich 
+mit solchen Einzelheiten nicht befassen.
+
+25
+00:01:49,495 --> 00:01:53,230
+Wenn Sie aber möchten, 
+dass die Vorverarbeitung
+
+26
+00:01:53,230 --> 00:01:58,030
+anders ausgeführt wird, 
+bevor es an die Einbettungen geht,
+
+27
+00:01:58,030 --> 00:02:01,185
+müssen Sie vieles
+in der Keras-Dokumentation nachlesen.
+
+28
+00:02:01,185 --> 00:02:03,670
+Oft wurde bei Software 
+nämlich ein Kompromiss
+
+29
+00:02:03,670 --> 00:02:07,090
+zwischen Einfachheit 
+und Aussagekraft eingegangen.
+
+30
+00:02:07,090 --> 00:02:12,355
+Data Scientists erstellen
+ihre Modelle oft mit Keras.
+
+31
+00:02:12,355 --> 00:02:16,070
+Keras ist jedoch 
+für schnelles Prototyping gedacht.
+
+32
+00:02:16,070 --> 00:02:20,645
+Verteilertraining oder 
+Vorhersagenskalierung sind nicht möglich.
+
+33
+00:02:20,645 --> 00:02:23,845
+Zu diesem Zweck, zur Produktionalisierung
+
+34
+00:02:23,845 --> 00:02:26,525
+nutzen wir die Estimator API.
+
+35
+00:02:26,525 --> 00:02:29,575
+Oft müssen Sie 
+in Keras geschriebene
+
+36
+00:02:29,575 --> 00:02:33,375
+ML-Prototypen operationalisieren.
+
+37
+00:02:33,655 --> 00:02:35,405
+Wie müssen Sie da vorgehen?
+
+38
+00:02:35,405 --> 00:02:37,180
+Schauen wir uns dazu
+
+39
+00:02:37,180 --> 00:02:39,940
+den Code etwas genauer an.
+
+40
+00:02:39,940 --> 00:02:42,895
+Die Details des Codes sind nicht wichtig,
+
+41
+00:02:42,895 --> 00:02:46,120
+aber sehen Sie, 
+wie in den ersten Codezeilen
+
+42
+00:02:46,120 --> 00:02:49,095
+eine Architektur
+aus mehreren Schichten erstellt wird?
+
+43
+00:02:49,095 --> 00:02:54,780
+Nachdem das Modell erstellt wurde, 
+wird es kompiliert und Verlustfunktion,
+
+44
+00:02:54,780 --> 00:02:59,160
+Optimierungsmethode 
+und Bewertungsmesswerte werden übergeben.
+
+45
+00:02:59,160 --> 00:03:01,100
+Woran erinnert Sie das?
+
+46
+00:03:01,100 --> 00:03:06,560
+Genau, die Modellfunktion 
+eines benutzerdefinierten Estimators.
+
+47
+00:03:06,560 --> 00:03:10,770
+Wie kombinieren wir 
+Keras mit der Estimator API?
+
+48
+00:03:10,770 --> 00:03:16,660
+Sie können einen Estimator einbinden, 
+sobald Ihr Keras-Modell kompiliert wurde.
+
+49
+00:03:16,660 --> 00:03:22,230
+Bei älterem Keras-Code wird ggf. 
+die eigenständige Keras-Version importiert.
+
+50
+00:03:22,230 --> 00:03:26,995
+Ändern Sie ggf. die Anweisungen,
+sodass "TF.Keras" importiert wird.
+
+51
+00:03:26,995 --> 00:03:31,540
+Wie Sie sehen, habe ich jetzt 
+"from tensorflow import keras".
+
+52
+00:03:31,540 --> 00:03:34,160
+Keras ist jetzt 
+Teil des TensorFlow-Aufrufs,
+
+53
+00:03:34,160 --> 00:03:35,610
+damit Sie das tun können.
+
+54
+00:03:35,610 --> 00:03:40,910
+Rufen Sie dann 
+"keras.estimator.model_to_estimator" auf.
+
+55
+00:03:40,910 --> 00:03:46,000
+Das kompilierte Modell wird übergeben 
+und ein Estimator zurückgegeben.
+
+56
+00:03:46,000 --> 00:03:50,850
+Entfernen Sie das "model.fit" 
+oder "model.evaluate", das aufgerufen wird.
+
+57
+00:03:50,850 --> 00:03:53,065
+Wie trainieren wir dieses Modell?
+
+58
+00:03:53,065 --> 00:03:57,534
+Sie verwenden diesen Estimator
+auf die gleiche Art wie sonst auch,
+
+59
+00:03:57,534 --> 00:03:59,530
+also mit Trainingseingabefunktion,
+
+60
+00:03:59,530 --> 00:04:05,110
+Evaluierungseingabefunktion, 
+"train_spec", "eval_spec", Exporter usw.
+
+61
+00:04:05,110 --> 00:04:08,025
+Diese Elemente werden dann
+in "train_and_evaluate" übergeben.
+
+62
+00:04:08,025 --> 00:04:12,155
+Auf diese Art
+produktionalisieren Sie ein Keras-Modell.
+
+63
+00:04:13,635 --> 00:04:17,980
+Beachten Sie, dass die Eingabefunktion
+
+64
+00:04:17,980 --> 00:04:22,285
+und das Keras-Modell 
+über eine Namenskonvention verknüpft sind.
+
+65
+00:04:22,285 --> 00:04:26,425
+Wenn eine Ihrer Keras-Ebenen "XYZ" heißt,
+
+66
+00:04:26,425 --> 00:04:30,420
+sollte das 
+von der Eingabefunktion zurückgegebene
+
+67
+00:04:30,420 --> 00:04:36,355
+Features-Wörterbuch ein Feature 
+mit dem Namen "XYZ_input" enthalten.
+
+68
+00:04:36,355 --> 00:04:39,285
+Auf dem Notebook von vorhin 
+schauen wir dazu eine kurze Demo an.
+
+69
+00:04:39,285 --> 00:04:46,290
+Ich werde zu Demo-Zwecken
+ein Keras-Beispielmodell verwenden.

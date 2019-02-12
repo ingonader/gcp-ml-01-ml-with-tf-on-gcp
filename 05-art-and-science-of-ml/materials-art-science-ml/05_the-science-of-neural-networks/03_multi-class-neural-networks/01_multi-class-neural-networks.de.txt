@@ -1,0 +1,155 @@
+Sie wissen jetzt mehr
+über neuronale Netzwerke, wie sie effizient trainiert werden und wie Sie die größte
+Generalisierung erreichen. Nun geht es um
+neuronale Netze mit mehreren Klassen für die Bearbeitung von
+Mehrklassen-Klassifizierungsproblemen. Auch hier ist es die Sigmoidfunktion, die uns kalibrierte
+Wahrscheinlichkeiten liefert. Sie ist nützlich für die logistische
+Regression bei binären Problemen, bei denen ich die Wahrscheinlichkeit
+in der positiven Klasse finde, wo das minus eins wahrscheinlich
+in der negativen Klasse liegt. Was aber, wenn mehr als
+zwei Klassen vorhanden sind? Es gibt viele Mehrklassenprobleme. Als Beispiel dienen
+hier die Ticketarten in der Oper. Das Modell soll vielleicht
+eine bestimmte Platzkategorie empfehlen. Nehmen wir an, es gibt vier Platzkategorien: Parkett, Sperrsitze, Rang oder Loge. Wenn ich die Wahrscheinlichkeit für
+jede der Platzkategorien berechnen möchte, ist eine normale binäre Klassifizierung
+nicht ausreichend. Es gibt zu viele Klassen. Wenn Parkett die positive Klasse ist, was ist dann die negative Klasse? Was mache ich
+mit den restlichen Klassen? Eine Idee ist, das Problem von 
+einer Mehrklassenklassifizierung in viele binäre
+Klassifizierungsprobleme umzuwandeln. Eine Methode dafür ist der
+1-vs-alle- oder der 1-vs-Rest-Ansatz. Bei diesem Ansatz
+wird durch jede Klasse iteriert. Bei jeder Iteration wird
+die Klasse mit der positiven Klasse und alle restlichen Klassen
+in der negativen Klasse zusammengeführt. So kann die Wahrscheinlichkeit
+vorhergesagt werden, in die positive Klasse und umgekehrt die Wahrscheinlichkeit,
+nicht in die anderen Klassen zu gehören. Es ist wichtig, die Wahrscheinlichkeit
+auszugeben und nicht nur das Klassen-Label. So werden keine Mehrdeutigkeiten erzeugt, wenn für ein Sample mehrere
+Klassen vorhergesagt werden. Sobald das für jede Klasse trainierte
+Modell als positive Klasse ausgewählt wurde, machen wir weiter mit dem nützlichsten Teil
+des maschinellen Lernens: den Vorhersagen. Um eine Vorhersage zu erstellen,
+senden Sie Ihr Vorhersage-Sample durch die einzelnen trainierten
+binären Klassifizierungsmodelle. Das Modell, das die höchste Wahrscheinlichkeit
+oder den höchsten Konfidenzwert ausgibt, wird als die allgemeine
+vorhergesagte Klasse ausgewählt. Das scheint
+eine gute Lösung zu sein. Sie wirft aber verschiedene Probleme auf. Zunächst kann die Skala der Konfidenzwerte für jedes binäre 
+Klassifizierungsmodell anders sein, was zu einer Verzerrung der
+Gesamtprognose führt. Und auch wenn das nicht zutrifft, können in jedem der
+binären Klassifizierungsmodelle extrem unausgeglichene Datenverteilungen
+vorkommen, denn für jedes gilt, dass die negative Klasse
+die Summe aller anderen Klassen ist, abgesehen von der Klasse, die
+aktuell als positive Klasse markiert ist. Eine mögliche Lösung für die
+Unausgeglichenheit ist die 1-vs-1-Methode. Hierbei gibt es nicht
+pro Klasse ein Modell, sondern für jede binäre
+Kombination der Klassen ein Modell. Bei n Klassen wäre das also n mal n minus eins über zwei Modelle, das heißt O(n2). In unserem Beispiel wären das
+für vier Klassen bereits sechs Modelle. Bei Tausend Klassen allerdings, etwa beim ImageNet-Wettbewerb, wären es 499.500 Modelle. Wow! Jedes Modell gibt
+ein Votum für das vorhergesagte Label ab, plus eins oder plus null für
+das positive Klassen-Label jedes Modells. Dann werden alle Votes akkumuliert und
+die Klasse mit den meisten Votes gewinnt. Das ist jedoch keine Lösung
+für das Problem der Mehrdeutigkeit, denn je nach der Eingabeverteilung können mehrere Klassen
+dieselbe Anzahl an Votes erhalten. Gibt es also eine Möglichkeit der
+Mehrklassenklassifizierung ohne diese Nachteile? Eine Idee wäre der 1-vs-alle-Ansatz
+mit neuronalen Netzwerken. Anstatt mehrerer Modelle
+pro Klasse gibt es hier ein Modell mit einer eindeutigen
+Ausgabe für jede mögliche Klasse. Wir können das Modell anhand eines Signals
+"meine Klasse" ggü. "alle anderen Klassen"
+für jedes Beispiel trainieren. Daher müssen wir
+beim Entwurf der Labels vorsichtig sein. Es gibt nicht nur die "eins"
+für die richtige Klasse, sondern einen Vektor
+der Länge der Anzahl der Klassen, der "eins" ist, wenn
+die richtigen Klassen übereinstimmen, und "null" bei den restlichen Klassen. So erhält die richtige Klasse dieses
+entsprechende Sigmoid-Neuron. Falls sie zu nahe an eins
+herankommt, werden die die anderen Sigmoid-Neuronen bestraft,
+wenn sie sich ebenfalls eins annähern. Dabei wird der höhere Fehler durch das
+Netz der Gewichtungen zurückpropagiert. Bei Millionen von neuen Klassen
+können jedoch Probleme auftreten, weil es Millionen von
+Ausgabe-Neuronen geben wird. Das heißt, Millionen
+von Verlustberechnungen, gefolgt von Millionen von Fehlern,
+die im Netzwerk zurückgeführt werden. Das ist extrem rechenintensiv. Gibt es eine bessere Möglichkeit? Wenn wir einfach einen
+zusätzlichen Constraint hinzufügen, nämlich, "die Summe der
+Ausgaben entspricht "eins"". Die Ausgabe kann dann als
+Wahrscheinlichkeit interpretiert werden. Diese Normalisierungsfunktion
+wird Softmax genannt. An jedem Knoten finden wir
+die Exponentialfunktion "W mal X, plus b" und dann dividiert
+durch die Summe aller Knoten. Dadurch wird sichergestellt, dass alle
+Knoten zwischen null und eins liegen und die Gesamtwahrscheinlichkeit
+wie gewünscht "eins" entspricht. So erhalten Sie für jedes Beispiel eine normalisierte
+Wahrscheinlichkeit pro Klasse. Mit argmax können Sie dann die Klasse mit der größten Wahrscheinlichkeit
+als vorhergesagtes Label ermitteln. In TensorFlow berechnen wir die Logits im finalen Layer als Mesh
+der Anwendung von W und X, wobei der gewichtete Knoten
+zum Ergebnis addiert wird, falls vorhanden. So erhalten wir einen Tensor "Shape der
+Batchgröße für die Anzahl der Klassen". Unsere Labels sind one-hot-codiert,
+wie ich bereits erklärt habe. Die richtige Klasse erhält eine "eins", die anderen Klassen
+eine "null" für jedes Beispiel. Daher ist auch hier der Shape
+ein Tensor aus Batchgröße nach Anzahl der Klassen. Da wir die TensorFlow-Funktion softmax_cross_entropy_with_logits verwenden, können die Labels "weich" sein. Was meine ich damit? Auch wenn die Klassen
+sich noch gegenseitig ausschließen, muss das auf die
+Wahrscheinlichkeiten nicht zutreffen. Angenommen Sie haben drei Klassen: Die Labels Ihres Minibatches könnten 0,15, 0,8 und 0,05 sein. Sie sind nicht one-hot-codiert,
+aber dennoch eine gültige Wahrscheinlichkeitsverteilung,
+da ihre Summe eins ist. Nun vergleichen wir die Logits und Labels
+mit softmax_cross_entropy_with_logits. Das Ergebnis in Tensor
+ist "shape, batch size". In TensorFlow, 1.5+
+wurde eine zweite Version der Funktion entwickelt.
+Die erste Version wurde verworfen. Um den Durchschnittsverlust
+für den Minibatch zu ermitteln, reicht die Anwendung
+von "reduce_mean" auf die Ausgabe. In TensorFlow gibt es noch eine
+andere Funktion, die Sie verwenden können, um Softmax zu berechnen, sparse_softmax_cross_entropy_with_logits. In diesem Fall kommen
+wir ohne die eine hohe Codierung oder weiche Codierung
+unserer Labels aus und geben stattdessen nur den Index der richtigen Klasse zwischen null und
+der Anzahl der Klassen minus eins an. Das bedeutet, dass unsere Labels nun
+ein Tensor von "shape, batch size" sind. Die Ausgabe der Funktion ist dieselbe wie
+vorher - Tensor "shape, batch size". Mit "reduce mean" erhalte ich den
+durchschnittlichen Verlust des Minibatches. Erinnern Sie sich, wir
+verwenden beide Software-Funktionen nur, weil sich unsere
+Klassen gegenseitig ausschließen. Bild eins ist zum Beispiel
+nur ein Bild eines Hundes und Bild zwei nur ein Bild einer Katze. Was, wenn Bild drei das Bild
+eines Hundes und einer Katze wäre? Für mein ML-Problem möchte ich das wissen. Mit Softmax erhalte ich eine
+Wahrscheinlichkeit für jedes Bild, aber ich verwende
+das argmax daraus als Label. Daher kann es je nach dem Bild in meinem Modell entweder das Label Hund oder das Label Katze erhalten. Das ist nicht gut, weil ich wissen möchte,
+ob beide vorhanden sind und ob es auch andere Klassen gibt. Das ist ein Problem der Klassifizierung
+mehrerer Klassen und Labels. In diesem Fall möchte ich die Wahrscheinlichkeit
+aller Klassen von null bis eins wissen. Zum Glück hat TensorFlow eine raffinierte
+Funktion, mit der genau das möglich ist, die Funktion sigmoid_cross_entropy_with_logits. Sie gibt einen Tensor
+"batchsize, num_classes" zurück. Wir müssen jeden
+Ausgabeknoten für jedes Beispiel auswerten. Dazu gehören natürlich auch die
+Gewichtungen, die zum Knoten führen. Daher ist ein einzelner Schritt
+eines Netzwerks mit 100 Ausgabeknoten wie hundert Schritte eines
+einzelnen Ausgabenetzwerks. Extrem ressourcenintensiv und schwer zu
+skalieren bei einer großen Menge an Klassen. Wir brauchen eine Möglichkeit, diese
+Softmax-Funktion zu approximieren, damit sich einige der Kosten für große
+Mehrklassenprobleme reduzieren lassen. Zum Glück gibt es
+Approximationsversionen von Softmax. Candidate Sampling führt
+Berechnungen für alle positiven Labels aus. Die Berechnungen werden aber nicht für
+alle negativen Labels ausgeführt, sondern nur für ein willkürliches
+Sample von negativen Labels. Das sollte die
+Berechnung deutlich reduzieren. Die Anzahl der
+erfassten negativen Labels ist ein wichtiger Hyperparameter
+in einem Candidate Sampling-Modell. Er wird aus naheliegenden
+Gründen immer unterschätzt. In TensorFlow können wir die
+Funktion sampled_softmax_loss verwenden. Eine weitere Möglichkeit zur
+Approximation von Softmax ist die Noise-Contrastive Estimation. Noise-Contrastive Estimation
+approximiert den Nenner von Softmax, der die Summe aller
+Exponentialfunktionen der Logits enthält, durch Modellierung
+der Verteilung der Ausgaben. Das kann eine approximierte,
+weniger rechenintensive Methode sein, um den Softmax-Verlust zu ermitteln. Sie müssen nicht jede
+Klasse in der Summe des Nenners bewerten. Candidate Sampling ist intuitiver und kommt ohne wirklich gutes Modell aus. Noise-Contrastive benötigt ein richtig gutes Modell, da es auf der Modellierung
+der Verteilung der Ausgaben basiert. In der Regel verwenden
+wir diese Funktionen beim Trainieren, aber für die Evaluierung von Interferenz, für größere Genauigkeit, verwenden
+wir in der Regel die ganze Softmax-Funktion. Ändern Sie hierfür
+die Standard-Partitionsstrategie von Modus zu Div, damit die Verluste in Training,
+Auswertung und Vorhersage konsistent sind. Für unsere Klassifizierungsausgabe gilt: Wenn sich die Labels und die
+Wahrscheinlichkeiten gegenseitig ausschließen, sollten wir ___ verwenden. Wenn sich nur die Labels
+gegenseitig ausschließen, die Wahrscheinlichkeiten
+aber nicht, sollten wir ___ verwenden. Wenn sich die Labels
+nicht gegenseitig ausschließen, sollten wir ___ verwenden. Die korrekte Antwort ist A. Für unsere Klassifizierungsausgabe gilt: Wenn sich die Labels und
+die Wahrscheinlichkeiten gegenseitig ausschließen, sollten wir
+softmax_cross_entropy_with_logits, V2 verwenden. Das heißt, für jedes
+Beispiel gibt es nur eine richtige Klasse, die weiche Labels ermöglicht. Sie muss nicht one-hot-codiert sein, sondern kann pro Klasse Werte zwischen null
+und eins in beliebiger Kombination enthalten, solange sie alle in der Summe eins ergeben. Wenn sich nur die Labels
+gegenseitig ausschließen, die Wahrscheinlichkeiten aber nicht, sollten wir
+sparse_softmax_cross_entropy_with_logits verwenden. Damit sind keine weichen Labels möglich, es kann aber die Modelldatengröße
+generiert werden, da Sie die Labels komprimieren können.
+Sie sind nur ein Index der richtigen Klasse und kein Vektor
+der Anzahl der Klassen für jedes Beispiel. Wenn sich Ihre Labels
+nicht gegenseitig ausschließen, sollten Sie
+sigmoid_cross_entropy_with_logits verwenden. So erhalten wir
+eine Wahrscheinlichkeit für jede mögliche Klasse, die uns Konfidenzwerte
+für jede Klasse liefern kann, die in der Ausgabe repräsentiert ist,
+z. B. ein Bild mit mehreren Klassen. Oder wir möchten
+die Existenz der einzelnen Klassen kennen.

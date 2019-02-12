@@ -1,0 +1,109 @@
+En este lab, nuestro objetivo es aprender
+a escribir un estimador personalizado. Supondremos que tenemos
+una función de TensorFlow que toma un conjunto de tensores de entrada y crea un conjunto de tensores de salida. Nuestro trabajo será envolver esta función
+en el marco de trabajo del estimador para obtener todos los beneficios
+que nos ofrece el estimador. En realidad cuando tiene un modelo
+funcional que no usa estimadores tendrá una manera de leer datos
+y de producir modelos. Esencialmente,
+eliminaremos esas partes del modelo y conservaremos
+solo la esencia matemática del modelo el modelo que transforma el tensor de entrada
+en el tensor de salida. En este lab
+veremos cómo tomaría un modelo y lo envolvería
+en el marco de trabajo del estimador su propia función personalizada de modelo. Para ilustrar esto como en las imágenes usamos un modelo de serie de tiempo. No se preocupe de cómo funciona
+el modelo de serie de tiempo. Veremos modelos de secuencias
+más adelante en la especialización. Por ahora, lo usaremos
+como una caja negra. Solo lo básico,
+pero veremos superficialmente cómo funciona. En este caso, tenemos... Voy a importar TensorFlow y lo que haremos será crear o simular un montón de datos. Cada uno de estos tiene ondas sinusoidales
+de diferentes amplitudes que básicamente van en frecuencias distintas
+que se están creando. Aquí tenemos cinco ejemplos
+de esta serie de tiempo. Crearemos muchos datos de este tipo y este será el tipo de datos
+que entrenaremos. La idea es que le daremos
+nueve valores a la red neuronal. Cero, uno, dos y tres. ¿Sí? Le daremos hasta ocho. Le daremos nueve valores
+y haremos que prediga el décimo. Le enseñaremos
+con muchos datos existentes y haremos aprenda con nueve valores
+cuál debe ser el décimo valor. Para hacerlo crearemos un archivo CSV to_csv, le damos un nombre al archivo y e decimos cuántas secuencias queremos. Luego lo que haremos
+es abrir el archivo, lo escribimos y creamos una serie de tiempo. ¿Cuántas series de tiempo? N. En este caso,
+digo que n para train.csv es igual a 1,000. Tendré un archivo con 1,000 secuencias. Mi train.csv contendrá 1,000 secuencias y value.csv contendrá 50 secuencias que estarán separadas por comas. Puedo ejecutar esto y, posteriormente puedo ver las primeras
+cinco líneas de train.csv. Esas son las cinco primeras líneas y las cinco primeras líneas de valid.csv. Como puede ver es esencialmente una serie de tiempo y nuestros atributos de entrada
+para el entrenamiento serán estos y esta será nuestra etiqueta. Eso es lo que queremos
+que aprenda nuestro modelo. ¿Dónde entra algo así? Aunque no hablaremos de series de tiempo es bueno pensar en la situación
+que estamos ilustrando. Esta situación es algo como por ejemplo,
+tener una tienda minorista con miles de artículos. Cada uno tiene su estacionalidad. Digamos que le interesa ver
+los últimos ocho períodos o quizá los últimos nueve períodos y usarlos para predecir
+el décimo período. Eso es lo que está haciendo. Este no es el tipo de serie de tiempo en la que intenta predecir
+el valor futuro de las acciones de la bolsa. Eso es diferente:
+esa es una serie de tiempo muy extensa. Aquí, por el contrario,
+tenemos miles de series de tiempo breves. Es un problema diferente. Este problema es el ejemplo de la tienda en la que tenemos miles de productos cada uno con su estacionalidad propia,
+todos la tienen en general. Básicamente,
+desea comprender esa estacionalidad para ver la serie de tiempo de cada producto
+y predecir la siguiente. Ese es nuestro conjunto de datos
+de entrenamiento. A partir de él entrenaremos nuestro modelo. El modelo que entrenaremos
+se llama red neuronal recurrente. No se preocupe
+por el funcionamiento del modelo sino en cómo configurarlo. En este caso,
+importamos de nuevo TensorFlow y, luego, leemos nuestros datos. Nuestros datos
+son la duración de la secuencia. Nuestro valor predeterminado es 0.0 Todos son números de punto flotante para un rango x de cero a SEQ_LEN. En suma, tenemos diez números. El tamaño de nuestro lote. Sobre esto calcularemos
+el descenso del gradiente y nuestro tamaño de lote será 20. La columna de serie de tiempo
+en nuestros datos se llamará rawdata. En nuestra secuencia
+la cantidad de salidas es uno. esa es la salida final y la cantidad de entradas
+es la longitud de la secuencia menos la cantidad de salidas. En otras palabras,
+las primeras nueve son entradas y la última es una salida. Ese es el conjunto
+de constantes que definiremos. Después escribimos
+nuestro conjunto de datos de lectura. Es como crear una función de entrada. Aquí, decode_csv recibe una línea. Aquí dice "lee todo
+como números de puntos flotantes". Ahí están todos los datos que serán 10 números. Pero recordemos que leerá
+un lote a la vez. Así que esto no es una línea sino los datos
+que corresponden generalmente a 20 líneas porque se lee un lote por vez. Aquí hay 20 líneas y de ellas vamos a fragmentar
+las primeras nueve que serán nuestras entradas y fragmentaremos la última columna que serán las etiquetas. Eso es lo que estamos haciendo. Fragmentamos los primeros nueve valores,
+que serán nuestras entradas el último valor es nuestra etiqueta. Las entradas
+tendrán una longitud del tamaño del lote y 9 de ancho. Las etiquetas
+tendrán una altura del tamaño de lote y 1 de ancho,
+que es la cantidad de salidas. Tomamos estas cosas pues son todos valores independientes y los juntamos de manera que obtenemos una matriz. Esas son nuestras entradas.
+Las juntamos para formar una matriz. Juntamos esto para formar una matriz. Aquí está la matriz,
+la segunda dimensión es uno pero aún no está en nuestra matriz,
+sino en la lista de listas. No queremos una lista de listas,
+sino una matriz. Eso hace esta pila. Y luego decimos que TIMESERIES_COL datos sin procesar,
+el tensor son las entradas y podemos ver los atributos
+y las etiquetas. features contiene solo una… Es un diccionario
+que contiene solo un atributo y ese atributo es una matriz. Antes, todos nuestros atributos
+eran columnas únicas pero aquí nuestro atributo
+es una matriz. Por eso estamos armando esta pila. Después de hacer esto ¿cómo leemos el conjunto de datos? Cuando tenemos read_dataset con un nombre de archivo
+tal vez nos den una ruta. Entonces, ejecutaremos Glob hacemos coincidir
+los archivos que tienen un comodín lo que nos dará una lista de archivos y la leemos como una línea de texto. Usamos decode_csv
+para recuperar el conjunto de datos. Si estamos entrenando redistribuimos el conjunto de datos. Si estamos evaluando,
+no es necesario redistribuirlo así que no lo haremos. Si estamos entrenando
+leemos indefinidamente Durante la evaluación hay que leer
+todo el conjunto de datos una vez así que los ciclos de entrenamiento es uno. Repetimos el conjunto de datos
+por la cantidad de ciclos. Para la evaluación, lo hacemos una vez. En entrenamiento lo hacemos para siempre
+y lo agrupamos según el tamaño del lote. 20 filas por vez 20 secuencias por vez y, luego, obtenemos el iterador. Esa es nuestra lectura del conjunto de datos. Respecto al modelo en sí mismo no se preocupe por cómo funciona esto. Lo importante es que tenemos
+un simple_rnn métrico que toma los atributos,
+las etiquetas y el modo y toma la secuencia x de los atributos y hace algo con ellos (no se preocupe por esto) hasta que llega a las predicciones. Esta es la salida de nuestro modelo
+de serie de tiempo. Dada la entrada básicamente tenemos una salida. Esa es cualquier función de un modelo. Luego, debemos decidir
+cuál es nuestra función de pérdida. Recuerde que es un problema
+de serie de tiempo y queremos predecir el último valor. Es decir,
+estamos prediciendo un valor. ¿Es regresión o clasificación? Regresión, ¿cierto? Como es regresión mi pérdida será el error cuadrático medio Podría usar
+el error de la raíz cuadrada de la media o el error cuadrático medio. Mi operación de entrenamiento
+será minimizar la pérdida con una tasa de aprendizaje específica
+y un optimizador específico. Mi métrica de evaluación
+esta vez será el RMSE. El error de la raíz cuadrada de la media,
+dadas las etiquetas y predicciones. Si no es entrenamiento ni evaluación la pérdida, la operación de entrenamiento
+y la métrica de evaluación son "None". Son "None" porque no tenemos una etiqueta. Durante la predicción,
+no tendremos etiqueta. Podemos hacer evaluación pero no podemos hacer entrenamiento
+ni pérdida. Todas esas operaciones
+tienen el valor "None". Nuestros diccionarios de predicciones
+son las predicciones de salida. Los llamaremos "predicted". Cuando los exportemos,
+las llamaremos regression_export_outputs. Tomaremos esas predicciones
+y las escribiremos. No tenemos ninguna
+incorporación que queramos escribir solo escribiremos una cosa. Si tuviéramos que escribir varias cosas esto es solo un diccionario. Podríamos bajar a este punto
+y escribir embedding. Supongamos que en nuestra incorporación
+tuviéramos un tensor. Supongamos que este tensor de peso
+fuera la incorporación. Vamos a este punto
+y declaramos "embedding": weight Y listo. Cuando exportemos el modelo
+estaremos exportando dos cosas. Exportaremos la salida de la regresión
+y una incorporación. Luego de hacer eso podemos escribir
+un EstimatorSpec que pase el modo el diccionario de predicciones la pérdida la operación de entrenamiento,
+las métricas de evaluación y lo que queremos exportar. Eso es todo. El resto queda esencialmente
+igual que antes. Creamos un entrenamiento,
+las funciones de validación. Estas no toman parámetros
+ni funciones de entrada Eso estoy haciendo. Solo defino un get_train que pasa train.csv y TRAIN para el modo luego, la función de entrega de entrada
+toma TIMESERIES_COL y dice que todos son
+números de punto flotante. Llamamos a train_and_evaluate y lo probamos como un módulo independiente. También podemos entrenarlo en ML Engine recordando cambiar el depósito
+para que sea de Qwiklabs.

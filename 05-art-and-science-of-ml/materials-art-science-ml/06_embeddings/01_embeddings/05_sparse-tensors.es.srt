@@ -1,0 +1,364 @@
+1
+00:00:00,860 --> 00:00:02,730
+Almacenar el vector de entrada
+
+2
+00:00:02,920 --> 00:00:04,940
+como un arreglo con codificación one-hot.
+
+3
+00:00:05,160 --> 00:00:06,440
+es una mala idea
+
+4
+00:00:07,080 --> 00:00:10,995
+Una representación densa
+es en extremo ineficiente
+
+5
+00:00:11,585 --> 00:00:14,820
+para el almacenamiento
+y el cálculo.
+
+6
+00:00:15,600 --> 00:00:17,575
+Note que llamamos tensor denso
+
+7
+00:00:17,625 --> 00:00:22,297
+lo que sea que almacene
+todos los valores de un tensor de entrada.
+
+8
+00:00:22,800 --> 00:00:25,540
+No se relaciona
+con los datos reales en el tensor
+
+9
+00:00:25,870 --> 00:00:27,790
+solo con la forma en que se almacenan.
+
+10
+00:00:28,490 --> 00:00:30,645
+Considere los datos en esta matriz.
+
+11
+00:00:31,205 --> 00:00:35,790
+¿Cree que la matriz se llenó
+de forma densa o dispersa?
+
+12
+00:00:36,740 --> 00:00:38,745
+Por supuesto, es muy dispersa.
+
+13
+00:00:39,215 --> 00:00:45,505
+Cada ejemplo, una fila en la matriz,
+representa películas que vio un usuario.
+
+14
+00:00:46,315 --> 00:00:48,142
+Según su propia experiencia
+
+15
+00:00:48,512 --> 00:00:51,190
+¿cuántas películas ha calificado?
+
+16
+00:00:52,240 --> 00:00:55,340
+No queremos
+almacenar las entradas de forma densa
+
+17
+00:00:55,840 --> 00:01:00,120
+ni almacenar
+todos los valores para el tensor.
+
+18
+00:01:01,730 --> 00:01:04,220
+Si no queremos almacenar las entradas
+de manera densa
+
+19
+00:01:04,650 --> 00:01:07,030
+ni almacenar todos los valores para el tensor
+
+20
+00:01:07,470 --> 00:01:08,989
+¿qué debemos hacer?
+
+21
+00:01:10,149 --> 00:01:13,970
+Sería apropiado
+almacenar los datos de forma dispersa
+
+22
+00:01:14,230 --> 00:01:16,620
+y comprimida en la memoria.
+
+23
+00:01:17,310 --> 00:01:20,110
+Sería bueno poder hacer cálculos
+
+24
+00:01:20,440 --> 00:01:25,020
+como la multiplicación de matrices,
+directamente en los tensores dispersos
+
+25
+00:01:25,510 --> 00:01:29,540
+sin tener que convertirlos
+en representaciones densas.
+
+26
+00:01:30,620 --> 00:01:34,395
+Para ello, se debe compilar
+una asignación de diccionario
+
+27
+00:01:34,465 --> 00:01:37,455
+para que cada atributo
+tenga un número entero.
+
+28
+00:01:37,825 --> 00:01:40,585
+Así, Shrek podría ser
+el número entero cero
+
+29
+00:01:40,825 --> 00:01:44,130
+y Harry Potter el número 300
+
+30
+00:01:45,075 --> 00:01:47,485
+o 230 o cualquier número arbitrario.
+
+31
+00:01:47,990 --> 00:01:50,825
+Recuerde que en este punto
+no hay incorporaciones.
+
+32
+00:01:51,065 --> 00:01:56,730
+Cada película tiene
+un número entero arbitrario asociado.
+
+33
+00:01:57,450 --> 00:02:00,175
+Luego, cuando tengamos una fila
+de la matriz
+
+34
+00:02:00,525 --> 00:02:03,650
+que represente las películas
+que vio un usuario específico
+
+35
+00:02:03,990 --> 00:02:08,530
+simplemente almacenamos los ID
+de las películas que el usuario vio.
+
+36
+00:02:08,955 --> 00:02:12,730
+En la fila de ejemplo,
+el usuario vio tres películas
+
+37
+00:02:13,180 --> 00:02:15,975
+por lo que
+el tensor disperso tiene tres entradas.
+
+38
+00:02:16,615 --> 00:02:19,365
+Cualquier número entero
+que no aparezca en la lista
+
+39
+00:02:19,795 --> 00:02:23,255
+quiere decir que no ha visto esa película.
+
+40
+00:02:23,695 --> 00:02:28,150
+Las tres entradas son 1 y el resto 0
+
+41
+00:02:28,230 --> 00:02:31,030
+en la representación densa equivalente.
+
+42
+00:02:31,650 --> 00:02:33,090
+Hay dos pasos en este caso.
+
+43
+00:02:33,570 --> 00:02:37,030
+En el paso de procesamiento previo
+se procesa el diccionario
+
+44
+00:02:37,610 --> 00:02:40,605
+y en el segundo paso
+se usa el diccionario
+
+45
+00:02:40,905 --> 00:02:45,095
+para crear
+una representación dispersa eficiente.
+
+46
+00:02:46,105 --> 00:02:48,570
+Si esto le resulta familiar
+
+47
+00:02:49,110 --> 00:02:52,600
+justo como la compilación de vocabulario
+para columnas categóricas
+
+48
+00:02:53,050 --> 00:02:54,760
+está en lo correcto.
+
+49
+00:02:55,320 --> 00:02:58,590
+TensorFlow representa
+las columnas categóricas
+
+50
+00:02:58,820 --> 00:03:00,280
+como tensores dispersos.
+
+51
+00:03:00,590 --> 00:03:05,180
+Las columnas categóricas
+son un ejemplo de elementos dispersos.
+
+52
+00:03:06,330 --> 00:03:09,220
+TensorFlow puede realizar
+operaciones matemáticas
+
+53
+00:03:09,220 --> 00:03:14,070
+en tensores dispersos
+sin convertirlos en densos.
+
+54
+00:03:14,590 --> 00:03:17,950
+Esto permite ahorrar memoria
+y optimiza el cálculo.
+
+55
+00:03:19,170 --> 00:03:21,480
+Vimos cómo crear
+combinaciones de atributos
+
+56
+00:03:21,610 --> 00:03:23,355
+a partir de columnas categóricas.
+
+57
+00:03:23,925 --> 00:03:30,080
+Ese fue un ejemplo de matemáticas
+que se realizaron con tensores dispersos.
+
+58
+00:03:30,690 --> 00:03:31,645
+Es por eso que
+
+59
+00:03:31,985 --> 00:03:37,310
+a pesar de que combinamos columnas
+discretizadas de latitud y longitud
+
+60
+00:03:37,590 --> 00:03:42,560
+y después combinamos los atributos
+de los puntos de partida y destino de un taxi
+
+61
+00:03:43,100 --> 00:03:46,730
+no hubo problemas con la memoria
+o la velocidad de la computación.
+
+62
+00:03:47,920 --> 00:03:50,170
+Vimos cómo crear
+una columna de incorporación
+
+63
+00:03:50,170 --> 00:03:51,540
+a partir de combinar atributos.
+
+64
+00:03:51,840 --> 00:03:56,000
+El mismo código funciona
+para una sola columna categórica.
+
+65
+00:03:56,480 --> 00:03:57,905
+Es lo que le muestro aquí.
+
+66
+00:03:58,225 --> 00:04:01,030
+La capacidad
+de trabajar con tensores dispersos
+
+67
+00:04:01,210 --> 00:04:04,440
+es la razón por la que el código
+para crear una columna de incorporación
+
+68
+00:04:04,440 --> 00:04:06,605
+a partir de datos categóricos
+en TensorFlow
+
+69
+00:04:06,925 --> 00:04:09,800
+funciona sin causar
+problemas de memoria o velocidad.
+
+70
+00:04:10,290 --> 00:04:13,225
+Es uno de esos
+detalles de implementación mágicos.
+
+71
+00:04:14,435 --> 00:04:18,340
+Recuerde que no necesita
+un proceso de entrenamiento separado
+
+72
+00:04:18,340 --> 00:04:20,070
+para realizar incorporaciones.
+
+73
+00:04:20,420 --> 00:04:21,730
+Solo son dos pasos.
+
+74
+00:04:22,056 --> 00:04:25,036
+Primero, tomar
+la entrada original y representarla.
+
+75
+00:04:25,226 --> 00:04:27,876
+Segundo, enviarla
+por una capa de incorporación.
+
+76
+00:04:28,306 --> 00:04:31,486
+El primer paso se realiza
+al tomar la entrada
+
+77
+00:04:31,646 --> 00:04:34,064
+y representarla como un tensor disperso.
+
+78
+00:04:34,334 --> 00:04:38,492
+El segundo paso se realiza
+al llamar a la columna de incorporación.
+
+79
+00:04:38,961 --> 00:04:41,971
+Pero ¿cómo funciona esa línea de código?

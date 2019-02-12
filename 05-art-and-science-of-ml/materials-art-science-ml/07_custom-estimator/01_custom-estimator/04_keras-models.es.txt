@@ -1,0 +1,47 @@
+Vimos cómo escribir
+un estimador personalizado si el código para ir de tensor de entrada
+a tensor de salida se escribió en TensorFlow. Envolvemos el código y la función que nos entrega un EstimatorSpec y luego pasamos esa función
+al estimador de clase base. ¿Cómo funciona esto con Keras? De hecho, ¿qué es Keras? Keras es una API
+de redes neuronales de alto nivel. Es compatible con redes neuronales
+convolucionales y recurrentes. Al contrario de TensorFlow Keras no es una implementación de CNN o RNN. Keras es una API
+de redes neuronales de alto nivel escrita en Python pero que es compatible
+con TensorFlow como backend. En otras palabras cuando llama a una función de Keras esta llama
+a un conjunto de funciones de TensorFlow para implementar la funcionalidad. Aparte de TensorFlow Keras también puede ejecutarse sobre otras implementaciones
+de redes neuronales como CNTK y theano. Keras es muy fácil de usar
+y rápido para hacer prototipos. Por ejemplo, este es un modelo
+de clasificación de secuencias escrito en Keras. Hay clases para tareas
+como incorporaciones, LSDM, Dropout, etc. Keras le permite pensar
+en la arquitectura del modelo sin enfocarse
+en la implementación de bajo nivel. Por ejemplo,
+para crear una incorporación en TensorFlow crea una columna de incorporación. Para hacer eso antes hay que crear una columna categórica
+con los datos de entrenamiento. En Keras, no es necesario preocuparse
+de esos detalles de la implementación. Eso también significa
+que si quiere hacer algo diferente en cuanto al procesamiento previo
+antes de llegar a las incorporaciones debe explorar en profundidad
+la documentación de Keras. No hay una vía fácil y generalmente hay una compensación
+entre la simplicidad y la expresividad. Es común que los científicos de datos
+creen sus modelos con Keras. Pero Keras está diseñado
+para prototipado rápido. No maneja entrenamiento distribuido
+ni predicciones a escala. Para eso, para la etapa de producción usaremos la API de Estimator. Muchas veces, tomará prototipos de AA
+que están escritos en Keras y deberá hacerlos operativos. ¿Qué debe hacer? Para obtener una pista revisemos el código un poco más. No se preocupe
+de los detalles del código pero note
+que en las primeras líneas de código se crea una arquitectura en capas. Una vez que se crea el modelo,
+se compila y pasa la función de pérdida el método de optimización
+y las métricas de evaluación. ¿A qué le recuerda? Correcto: a la función del modelo
+en un estimador personalizado. ¿Cómo combinamos Keras
+y la API de Estimator? Después de que tenga
+un modelo de Keras compilado puede obtener un estimador. Puede que un código más antiguo de Keras
+importe la versión independiente de Keras. Cambie las declaraciones de importación,
+si es necesario, para importar tf.keras. Note que ahora importo Keras
+desde TensorFlow. Ahora, Keras es parte
+de la llamada de TensorFlow para poder hacer esto. Luego, simplemente llame a
+keras.estimator.model_to_estimator pase el modelo compilado y, como resultado,
+obtiene un estimador. Deseche model.fit y model.evaluate
+que está llamando. ¿Cómo entrena este modelo? Usará este estimador
+como lo haría normalmente con una función de entrada de entrenamiento una función de entrada de evaluación
+train_spec, eval_spec exporter, etc. y los pasa a train_and_evaluate. Así lleva a producción un modelo en Keras. Es importante tomar en cuenta
+que el vínculo entre la función de entrada y el modelo de Keras
+es por medio de una convención de nombres. Si tenemos una capa en Keras llamada XYZ en el diccionario de atributos
+que produce la función de entrada debería tener un atributo
+llamado XYZ_input. Veamos una demostración rápida. Usaré el mismo notebook de antes pero con un modelo de ejemplo en Keras,
+solo para demostración.

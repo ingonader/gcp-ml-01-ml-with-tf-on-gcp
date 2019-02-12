@@ -1,0 +1,371 @@
+1
+00:00:00,000 --> 00:00:02,550
+First, let's talk about how we can use
+
+2
+00:00:02,550 --> 00:00:06,150
+regularization to create sparser more simpler models.
+
+3
+00:00:06,150 --> 00:00:09,365
+Early in the course, we learned about L2 regularization,
+
+4
+00:00:09,365 --> 00:00:13,790
+which is added to sum of the squared parameter weights terms to the last function.
+
+5
+00:00:13,790 --> 00:00:16,105
+This was great at keeping weights small,
+
+6
+00:00:16,105 --> 00:00:18,485
+having instability and a unique solution,
+
+7
+00:00:18,485 --> 00:00:21,665
+but it can leave the model unnecessarily large and complex,
+
+8
+00:00:21,665 --> 00:00:25,880
+since all of the features may still remain a little bit small weights.
+
+9
+00:00:25,880 --> 00:00:29,805
+Using something instead called L1 regularization,
+
+10
+00:00:29,805 --> 00:00:33,965
+adds the sum of the absolute value the parameter weights to the last function,
+
+11
+00:00:33,965 --> 00:00:37,990
+which tends to force the weights of not very protective features to zero.
+
+12
+00:00:37,990 --> 00:00:41,100
+This acts as a built-in feature selector by killing
+
+13
+00:00:41,100 --> 00:00:44,495
+all bad features and leaving only the strongest in the model.
+
+14
+00:00:44,495 --> 00:00:47,585
+This sparse model has many benefits.
+
+15
+00:00:47,585 --> 00:00:50,760
+First, with fewer coefficients to store and load,
+
+16
+00:00:50,760 --> 00:00:54,925
+there is a reduction in storage and memory needed with a much smaller model size,
+
+17
+00:00:54,925 --> 00:00:57,730
+which is especially important for embedded models.
+
+18
+00:00:57,730 --> 00:00:59,830
+Also, with fewer features,
+
+19
+00:00:59,830 --> 00:01:03,755
+there are a lot fewer mult ads which not only leads to increased training speed,
+
+20
+00:01:03,755 --> 00:01:06,640
+but more importantly increase prediction speed.
+
+21
+00:01:06,640 --> 00:01:10,430
+Many machine learning models already have enough features as it is.
+
+22
+00:01:10,430 --> 00:01:12,410
+For instance, let's say that I have data that
+
+23
+00:01:12,410 --> 00:01:14,985
+contains the date time of orders being placed.
+
+24
+00:01:14,985 --> 00:01:16,400
+Our first order model,
+
+25
+00:01:16,400 --> 00:01:18,540
+would probably include seven features for the days of
+
+26
+00:01:18,540 --> 00:01:21,200
+the week and 24 features for hours of the day,
+
+27
+00:01:21,200 --> 00:01:23,340
+plus possibly many other features.
+
+28
+00:01:23,340 --> 00:01:29,535
+Therefore, the day of the week plus hour of the day is already 31 inputs with just that.
+
+29
+00:01:29,535 --> 00:01:31,970
+Now, what if we want to look at
+
+30
+00:01:31,970 --> 00:01:35,670
+the second order effects of the day of the week cross with the hour of the day.
+
+31
+00:01:35,670 --> 00:01:39,070
+There is another 168 inputs in addition to
+
+32
+00:01:39,070 --> 00:01:43,210
+our 31 plus others for a grand total now of almost 200 features,
+
+33
+00:01:43,210 --> 00:01:47,590
+just for that one date time field plus what other features we are using.
+
+34
+00:01:47,590 --> 00:01:51,600
+If we cross this with one HUD encoding for US state for example,
+
+35
+00:01:51,600 --> 00:01:53,840
+the triple Cartesian product is already at
+
+36
+00:01:53,840 --> 00:01:59,355
+8400 features with many of them probably being very sparse full of zeros.
+
+37
+00:01:59,355 --> 00:02:02,380
+Hopefully this makes clear why built-in feature selection
+
+38
+00:02:02,380 --> 00:02:05,670
+through L1 regularization can be a very good thing.
+
+39
+00:02:05,670 --> 00:02:08,899
+What strategies can we use to remove feature coefficients
+
+40
+00:02:08,899 --> 00:02:12,715
+that aren't useful besides L1 regulirization perhaps?
+
+41
+00:02:12,715 --> 00:02:18,600
+We could include using simple counts of which features occur with non-zero values.
+
+42
+00:02:18,600 --> 00:02:22,760
+The L0 norm is simply the count of the non-zero weights,
+
+43
+00:02:22,760 --> 00:02:27,770
+and optimizing for this norm is an NP hard non convex optimization problem.
+
+44
+00:02:27,770 --> 00:02:32,735
+This diagram illustrates what a non-convex optimization error surface might look like.
+
+45
+00:02:32,735 --> 00:02:35,870
+As you can see, there are many local peaks and valleys,
+
+46
+00:02:35,870 --> 00:02:38,500
+and this is just a simple one dimensional example.
+
+47
+00:02:38,500 --> 00:02:41,630
+You pretty much had to explore lots and lots of starting points with
+
+48
+00:02:41,630 --> 00:02:45,715
+gridding descent making this an NP-hard problem to solve completely.
+
+49
+00:02:45,715 --> 00:02:50,805
+Thankfully, the L1 norm just like the L2 norm is convex,
+
+50
+00:02:50,805 --> 00:02:53,500
+but it also encourages sparsity in the model.
+
+51
+00:02:53,500 --> 00:02:58,560
+In this figure, the probability distributions of the L1 and L2 norms are plotted.
+
+52
+00:02:58,560 --> 00:03:02,775
+Notice how the L2 Norm has a much smoother peak at zero,
+
+53
+00:03:02,775 --> 00:03:05,595
+which results in magnitudes of the weights being closer to zero.
+
+54
+00:03:05,595 --> 00:03:10,060
+However, you'll notice the L1 norm is more of a cusp centered at zero.
+
+55
+00:03:10,060 --> 00:03:15,330
+Therefore, much more the probability is exactly at zero than the L2 norm.
+
+56
+00:03:15,330 --> 00:03:19,355
+There are an infinite number of norms which are generalized by the P-norm.
+
+57
+00:03:19,355 --> 00:03:22,260
+Some other norms or the L0 norm that we already covered
+
+58
+00:03:22,260 --> 00:03:25,125
+which is the count of the non-zero values in a vector,
+
+59
+00:03:25,125 --> 00:03:30,135
+and the L infinity norm which is the maximum absolute value of any value in a vector.
+
+60
+00:03:30,135 --> 00:03:32,740
+In practice though, usually the L2-norm
+
+61
+00:03:32,740 --> 00:03:35,905
+provides more generalizable models and the L1 norm.
+
+62
+00:03:35,905 --> 00:03:41,590
+However, we will end up with much more complex heavy models if we use L2 instead of L1.
+
+63
+00:03:41,590 --> 00:03:45,710
+This happens because often features have high correlation with each other,
+
+64
+00:03:45,710 --> 00:03:51,095
+and L1 regularization which use one of them and throw the other away,
+
+65
+00:03:51,095 --> 00:03:56,320
+whereas L2 regularization will keep both features and keep their weight magnitudes small.
+
+66
+00:03:56,320 --> 00:04:01,120
+So with L1, you can end up with a smaller model but it may be less predictive.
+
+67
+00:04:01,120 --> 00:04:04,015
+Is there any way to get the best of both worlds?
+
+68
+00:04:04,015 --> 00:04:09,870
+The elastic net is just a linear combination of the L1 and L2 regularizing penalties.
+
+69
+00:04:09,870 --> 00:04:14,460
+This way, you get the benefits of sparsity for really poor predictive features while
+
+70
+00:04:14,460 --> 00:04:16,580
+also keeping decent and great features
+
+71
+00:04:16,580 --> 00:04:19,145
+with smaller weights to provide a good generalization.
+
+72
+00:04:19,145 --> 00:04:21,155
+The only trade off now is there are
+
+73
+00:04:21,155 --> 00:04:23,360
+two instead of one hyper parameters a
+
+74
+00:04:23,360 --> 00:04:27,430
+tune with the two different Lambda regularization parameters.
+
+75
+00:04:27,430 --> 00:04:30,630
+What does L1 regularization tend to do
+
+76
+00:04:30,630 --> 00:04:34,270
+to a model's low predictive features parameters weights?
+
+77
+00:04:34,270 --> 00:04:37,850
+The correct answer is have zero values.
+
+78
+00:04:37,850 --> 00:04:39,950
+Whenever we are doing regularization techniques,
+
+79
+00:04:39,950 --> 00:04:44,495
+we are adding a penalty term to the last function or in general the objective function,
+
+80
+00:04:44,495 --> 00:04:48,310
+so that it doesn't over optimize our decision variables or parameter weights.
+
+81
+00:04:48,310 --> 00:04:51,050
+We choose the penalty terms based on prior knowledge,
+
+82
+00:04:51,050 --> 00:04:53,000
+function, shape et cetera.
+
+83
+00:04:53,000 --> 00:04:55,740
+L1 regularization has been shown to induce
+
+84
+00:04:55,740 --> 00:04:58,460
+sparsity to the model and do to its probably distribution,
+
+85
+00:04:58,460 --> 00:04:59,925
+having a high peak at zero,
+
+86
+00:04:59,925 --> 00:05:02,350
+most weights except for the highly predictive ones will
+
+87
+00:05:02,350 --> 00:05:05,340
+be shifted from there non-regularized values to zero.
+
+88
+00:05:05,340 --> 00:05:09,659
+L2 regularization, will be used for having small magnitudes,
+
+89
+00:05:09,659 --> 00:05:14,555
+and its negative would be used for having large magnitudes which are both incorrect.
+
+90
+00:05:14,555 --> 00:05:17,055
+Having all positive values would be like
+
+91
+00:05:17,055 --> 00:05:19,810
+adding many additional constraints to the optimization problem,
+
+92
+00:05:19,810 --> 00:05:21,950
+bounding all decision variables to be greater than
+
+93
+00:05:21,950 --> 00:05:26,050
+zero which is also not L1 regularization.

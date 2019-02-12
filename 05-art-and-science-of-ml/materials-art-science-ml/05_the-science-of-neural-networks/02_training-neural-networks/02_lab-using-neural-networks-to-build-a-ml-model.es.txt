@@ -1,0 +1,165 @@
+Pongamos nuestros
+conocimientos en práctica y usemos las redes neuronales
+en TensorFlow para crear un modelo de AA. En este lab, usaremos las redes
+neuronales para crear un modelo de AA. En este lab, usará
+un estimador prediseñado de clase DNNRegressor
+en TensorFlow para predecir el precio promedio
+de viviendas según diferentes atributos. Los datos están basados
+en el censo de 1990 de California. Los datos son
+del nivel de la manzana urbana así que los atributos reflejan el total
+de habitaciones en esa manzana o la cantidad total de personas que viven
+en esa manzana, respectivamente. Bienvenidos. Vamos a examinar nuestro código
+para ver cómo podemos hacer una red neuronal con el regresor
+de clase DNN en TensorFlow. Vamos a aprender a usar
+una red neuronal. Vamos a usar estos datos de viviendas
+del censo de 1990 de California. Los datos están en el nivel
+de la manzana urbana. Los atributos reflejarán el total de habitaciones
+en esa manzana y el total de personas que viven
+en esa manzana respectivamente. Usemos un conjunto de atributos
+para clasificar el valor de las casas. Primero, haré la configuración. En la primera celda, disminuiremos
+las bibliotecas innecesarias. Importaremos la matemática shutil, numpy, pandas y tensorflow. "verbosity" debe estar configurada como
+"info" para obtener muchos resultados. Asegúrese de que esté configurado
+"float_format" para Panda. Ahora, vamos a cargar el conjunto
+de datos desde esta URL "california_housing_train" en
+un marco de datos de Panda. Examinaremos los datos. Es una buena idea evaluar un poco
+los datos antes de trabajar con ellos. Imprimiremos un resumen
+de estadísticas útiles de cada columna. Incluirá el promedio la desviación estándar, el máximo,
+el mínimo y diversos cuantiles. Lo primero que haremos es imprimir
+el encabezado del conjunto de datos. Es decir, imprime un ejemplo de las
+primeras 5 filas del conjunto de datos. longitud, latitud, antigüedad promedio total de habitaciones, total de
+dormitorios, habitantes, viviendas ingresos medios
+y valor medio de la vivienda que, en este caso, es mi etiqueta. Es lo que quiero predecir
+con estos otros atributos. Veamos cuáles son las estadísticas. Para ello, puedo usar "df.describe". Me mostrará el recuento los promedios,
+desviación estándar el mínimo, el percentil 25 el percentil 50, el percentil 75
+y el máximo. Todo parece bastante claro. Sin embargo, sigue estando
+en el nivel de la manzana urbana. Debemos ver cómo hacerlo
+en un nivel por vivienda. Tomo la cantidad de habitaciones,
+si quiero averiguar eso. Tomo el total de habitaciones
+en toda la manzana urbana y la divido por el total
+de viviendas en esa manzana. Eso me dará la cantidad promedio
+de habitaciones por vivienda. Hago lo mismo
+con los dormitorios. Tomo la cantidad total
+de dormitorios todos los dormitorios
+de la manzana y la divido por la cantidad
+de viviendas en esa manzana para obtener
+el promedio de dormitorios Para la cantidad
+de personas por vivienda tomo el total de habitantes de la manzana y lo divido
+por la cantidad de viviendas y obtendré el promedio
+de personas por vivienda. Ahora, si uso "df.describe" veré mis columnas originales. Pero tendré columnas
+nuevas agregadas aquí. Son el promedio
+de habitaciones por vivienda el promedio
+de dormitorios por vivienda y el promedio
+de personas por vivienda. Excelente. Ahora puedo usar "df.drop" para retirar
+esas estadísticas de población las estadísticas al nivel de la manzana como el total de habitaciones,
+el total de dormitorios habitantes, viviendas
+y retiraré todas esas columnas con la opción "inplace" para
+no crear un marco nuevo de datos. Uso "df.describe" y ahora tengo los atributos nuevos aquí y los atributos antiguos aquí. Aquí está mi etiqueta, pero
+ya no está todo lo que usé antes. Ahora hay una vista
+en el nivel de las viviendas. Ahora, creemos el modelo de red neuronal que tendrá los datos
+de los atributos en el formato correcto. Lo que vamos a hacer es
+crear las columnas de atributos. Las columnas de atributos les darán a los datos las representaciones
+correctas para que los use el modelo. Aunque es una notación de punto flotante debemos determinar si será una columna
+numérica de punto flotante o no. Está aquí y estoy repitiendo todas las columnas,
+como antigüedad promedio ingresos medios,
+cantidad de habitaciones cantidad de dormitorios
+y personas por vivienda. Después de eso, quiero aplicar
+más ingeniería de atributos. Crearé una columna nueva
+llamada Longitud. Será una columna agrupada
+de la longitud numérica con un espacio lineal de -124.3 a -114.3
+en cinco pasos. En la columna de atributos
+de latitud haré lo mismo excepto que las latitudes serán
+de 32.5 a 42 con 10 depósitos. El motivo por el que hago esto
+es que California es más larga que ancha. Por lo tanto, la latitud debería tener
+una mayor cantidad de depósitos 10 depósitos, en lugar de los 5 depósitos
+de la longitud. Imprimo los nombres de
+las columnas de atributos. Ahora tengo ingresos medios,
+personas por vivienda cantidad de habitaciones,
+antigüedad promedio longitud, cantidad
+de dormitorios y latitud. Excelente. Primero, debemos asegurarnos
+de dividir esto en conjuntos de datos de entrenamiento
+y evaluación para poder ver cómo progresa
+el modelo durante el entrenamiento. Para ello, crearé
+una máscara aleatoria verificaré la longitud
+del marco de datos y crearé esa cantidad
+de valores aleatorios desde una distribución uniforme y si son menores que 0.8 lo guardaré
+en este vector de máscara. Este vector de máscara
+es la longitud del marco de datos pero son todos valores
+verdaderos y falsos se conoce como máscara booleana. Aplico esta máscara
+al marco de datos en todos los casos de valores
+verdaderos para la máscara esas filas se colocarán en el marco
+de datos de entrenamiento. Y los valores
+que no son verdaderos lo que indica esta virgulilla se colocarán en el marco
+de datos de evaluación. Con esto, obtendré una porción del 80%
+en mi marco de datos de entrenamiento y el 20% restante de los datos
+irá al marco de datos de evaluación Aquí tengo un factor de ajuste que está en 100,000. Esto es para ajustar mis etiquetas dado que son demasiado grandes. Como verá, son escalas
+totalmente distintas. Estas están en el rango
+de casi 100,000 millones y estas son mucho más pequeñas
+como uno o dos dígitos. Haré eso. También crearé
+el tamaño del lote. lo configuraré en 100 que son 100 filas por ves
+para cada uno de estos marcos de datos. Ahora tengo que crear
+la función de entrada de entrenamiento. Para ello, usaré
+" tf.estimator.inputs.pandas_input_fn" con el que X es igual a mis atributos. Esto creará un diccionario de tensores ese será el resultado de esto. Esto convertirá mi marco de datos
+de entrenamiento de la columna valores medios de vivienda con el valor Y, que se convertirá
+en un tensor para mis etiquetas. La cantidad de ciclos será igual a uno está el tamaño del lote
+y voy a redistribuir. Aquí está la función de entrada de evaluación. También usará la función
+" tf.estimator.inputs.pandas_input_fn" y usaremos los mismos parámetros
+para el marco de datos de entrada. Sin embargo, configuraré
+la "shuffle" como "false" porque no quiero redistribuir mi conjunto de evaluaciones
+ya que quiero repetitividad. También creo una función
+llamada "print_rmse" que imprimirá el RMSE
+de mi modelo. Llamará su nombre y
+la función de entrada asociada. En este caso, en las métricas usaré model.evaluate en el estimador. Recuerde que mi estimador
+está configurado como modelo. lo pasaré por la función de entrada que será la función de entrada
+que pasa por print_rmse y usaré un paso. La novedad aquí es que usaré esta métrica que debería ser un diccionario Es un problema de regresión. Va a generar una pérdida una pérdida promedio y un paso global. Luego, imprimiré el RMSE en este conjunto
+de datos y la respuesta será… Tendré que calcular la raíz cuadrada porque la pérdida promedio
+actual es solo el RMSE. Saco la raíz cuadrada del RSME. Como se puede ver, también
+estoy multiplicando por el ajuste para obtener las unidades
+de precio correctas, el valor promedio de las viviendas. Ahora configuraré
+el regresor lineal. Creé un directorio de salida que es donde se guardarán
+todos los archivos del entrenamiento como los puntos de control,
+los registros de eventos los modelos guardados, etc. Quiero borrar esto, para asegurarme
+de comenzar de cero todas las veces. Vamos a quitar todo
+lo que hay en ese árbol no aseguramos de que sea
+una carpeta vacía. Crearé un optimizador personalizado. Esta es una regresión lineal así que usaré un optimizador FTRL que es una buena opción para eso. Configuraré la tasa
+de aprendizaje en 0.01 y, luego, crearé mi modelo. Ahora estoy creando el estimador. Será un regresor lineal y paso mi directorio de modelo que alojará los resultados y en las columnas de atributos,
+pasaré los valores de las columnas estos son los tensores
+para eso. Y mi optimizador será
+el optimizador FTRL personalizado. Entrenaré una cantidad de pasos. Entrenaré cien pasos por mi marco de datos
+sobre el tamaño de mi lote. Es decir, que puedo entrenar 100 ciclos. Luego, llamo model.train paso mi función de entradas la función de entradas
+de entrenamiento y la cantidad de pasos
+puede ser este número que creé aquí.
+Esto entrenará mi modelo. Por último, imprimiré
+el RMSE de ese modelo. Llamaré a la función
+de entradas de evaluación así estará en el conjunto de funciones
+de entradas de evaluación. Como se puede ver,
+cuando realizo el entrenamiento tengo la configuración
+predeterminada no cambié nada allí,
+creé un punto de control e inicié el proceso
+de entrenamiento Proceso la pérdida
+en el paso uno. Esta es la cantidad
+de pasos por segundo y a medida
+que avanza el entrenamiento la pérdida debería disminuir. Podemos ver que la pérdida promedio
+final de la evaluación es de 0.93 con 137 pasos globales y la pérdida total es de 3,141. Y, en la evaluación, con la multiplicación
+por la escala en el conjunto de evaluación el RMSE es de USD 96,583. El RMSE es la desviación
+estándar de los remanentes. Y los remanentes son la diferencia entre su predicción y la etiqueta real. Ahora veamos si obtenemos
+mejores resultados con DNNRegressor Todo está igual que antes excepto que esta vez uso
+el optimizador de Adam porque generalmente funciona mejor
+con los regresores DNN que un FTRL. Voy a cambiar "LinearRegressor"
+por "DNNRegressor". El resto queda como antes pero voy a agregar
+las unidades ocultas tendré tres capas en total. La primera capa tiene
+100 neuronas ocultas. La segunda capa tiene
+50 neuronas ocultas y la última capa tiene
+20 neuronas ocultas. También usaré
+las columnas de atributos el optimizador que creé que esta vez es Adam y un "dropout" del 10%. Esta es la probabilidad de retirada no la probabilidad de conservación,
+como en otras instalaciones. También creo la misma cantidad
+de pasos que antes hago el entrenamiento como antes
+e imprimo el RMSE. Veamos si obtengo mejores resultados. Hace todo igual que antes mi configuración predeterminada
+está en entrenamiento. Veamos los últimos pasos. La pérdida promedio
+de entrenamiento es de 0.67. Esta es una buena señal
+porque es menor que 0.93. Pero el RMSE esta vez
+es de USD 81,974. Tengo una desviación estándar
+mucho menor que antes lo que significa que
+este modelo funciona mejor. Claro que puede hacer esto
+más complejo y usar algoritmos más sofisticados lo que demuestra que una red neuronal puede brindar un mejor rendimiento
+que una regresión lineal. Por último, podemos
+llamar esto en TensorBoard y observar el procesamiento.

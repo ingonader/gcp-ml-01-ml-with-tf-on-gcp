@@ -1,0 +1,46 @@
+Prendre en compte tous les facteurs et trouver la bonne combinaison
+selon les données est une tâche fastidieuse. Prenez les permutations. Vous pouvez les automatiser avec
+des algorithmes de recherche sur grille. Mais, la recherche de la bonne combinaison
+prend beaucoup de temps, et utilise les ressources informatiques
+pendant des heures. La boucle d'entraînement ne pourrait-elle pas
+effectuer le méta-apprentissage des hyperparamètres
+et trouver le bon réglage ? Ne vous inquiétez pas,
+Google Vizier est là pour vous aider. Globalement, vous profiterez du réglage
+automatique des hyperparamètres grâce à l'algorithme Google Vizier, sans avoir besoin
+de connaître les détails. Si vous voulez en savoir plus
+sur la boîte noire, consultez l'étude accessible
+via le lien affiché à l'écran. Le point à retenir est que
+Cloud ML Engine vous simplifie la vie. Vous devez juste configurer votre tâche
+et ML Engine s'occupe du reste. Comment profiter du réglage
+automatique des hyperparamètres ? Vous devez déjà avoir
+utilisé Cloud ML Engine, la plate-forme sans serveur d'entraînement
+et d'hébergement de modèles de ML. ML Engine élimine le processus
+de réglage des hyperparamètres. Pour utiliser ce service,
+il vous suffit de procéder comme suit. Commencez par saisir
+les hyperparamètres à régler sous forme d'argument
+de ligne de commande. Vérifiez ensuite que les itérations
+d'entraînement n'entrent pas en conflit. Enfin, vous devez fournir ces
+hyperparamètres à la tâche d'entraînement. Avant de passer à l'atelier
+pour régler certains hyperparamètres, voyons à quoi ressemble
+ces trois étapes dans le code. La première étape consiste
+à définir les hyperparamètres que vous souhaitez régler en tant
+qu'argument de ligne de commande. Par exemple, j'ai ici
+deux hyperparamètres : le nombre de buckets pour différencier
+la latitude de la longitude, et le nombre d'unités cachées dans
+mon réseau neuronal profond. À l'étape deux, vérifiez que les résultats
+des tests n'entrent pas en conflit. La convention de dénomination des dossiers
+des résultats doit pour cela être adaptée. La valeur d'essai utilisée ici comme suffixe
+permet de rendre unique le nom du résultat. La dernière étape consiste
+à fournir les hyperparamètres lors de l'envoi de la tâche d'entraînement. Voici comment procéder. D'abord, créez un fichier YAML
+comme celui-ci. Ensuite, fournissez le chemin
+d'accès au fichier YAML via des paramètres de ligne de commande
+à la commande Cloud ML Engine. Détaillons maintenant
+le contenu du fichier YAML. Dans cet exemple, on veut réduire la RMSE
+sur l'ensemble de données d'évaluation. On exécute ML Engine pour trouver
+la taille de lots idéale, entre 64 et 512. Il s'agit d'une méthode bien plus efficace
+que la recherche sur grille. Notez le nombre maximum d'essais. ML Engine recherche avec un algorithme
+les catégories prometteuses. Il lance de façon aléatoire
+des essais parallèles, dont le nombre est spécifié
+dans "maxParallelTrials", puis explore les données. ML Engine doit ici systématiquement tester
+des architectures de réseaux de neurones. Mettons maintenant
+cette procédure en pratique.

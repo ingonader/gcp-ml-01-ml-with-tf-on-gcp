@@ -1,0 +1,52 @@
+Den Input-Vektor als one-hot-codiertes
+Feld zu speichern, ist keine gute Idee. Eine dichte Darstellung
+ist äußerst ineffizient und zwar sowohl für die
+Speicherung als auch fürs Computing. Beachten Sie, dass wir alles, worin wir alle Werte für 
+einen Input-Tensor speichern, einen dichten Tensor nennen. Das sagt nichts über die
+eigentlichen Daten im Tensor aus, nur darüber, wie wir sie speichern. Betrachten wir aber
+die Daten in dieser Matrix. Finden Sie, dass die Matrix
+dicht oder dünn besetzt ist? Natürlich extrem dünn. Jedes Beispiel, eine Tabellenzeile, steht für Filme,
+die der Nutzer gesehen hat. Denken Sie an Ihre eigenen Erfahrungen. Wie viele Filme haben Sie bewertet? Wir möchten die Inputs
+also nicht dicht speichern. Wir möchten nicht alle
+Werte für den Tensor speichern. Wir möchten die Inputs
+also nicht dicht speichern. Wir möchten nicht alle
+Werte für den Tensor speichern. Wie sollten wir stattdessen vorgehen? Es wäre gut, die Daten in
+"dünnbesetzter" Form zu speichern, in komprimierter Form im Speicher. Es wäre gut, Berechnungen wie etwa
+Matrixmultiplikationen direkt an den
+dünnbesetzten Tensoren durchzuführen, ohne sie in dichte
+Darstellungen umformen zu müssen. Dazu erstellen wir ein Wörterbuch, das
+jedes Merkmal einer Ganzzahl zuweist. Shrek könnte also die Ganzzahl 0 
+sein und Harry Potter die Ganzzahl 300 oder 230, eine beliebige Zahl. Bedenken Sie, dass
+bisher keine Einbettung vorliegt. Bisher ist einfach jeder Film
+einer beliebigen Ganzzahl zugeordnet. Dann, wenn wir
+eine Zeile der Matrix haben, die die Filme darstellt,
+die ein bestimmter Nutzer gesehen hat, speichern wir einfach die Film-IDs
+der Filme, die der Nutzer gesehen hat. In der Beispielzeile hat der Nutzer drei Filme gesehen, sodass der dünnbesetzte
+Tensor drei Einträge besitzt. Jegliche Ganzzahl,
+die nicht in dieser Liste enthalten ist, steht für einen Film, von dem angenommen wird,
+dass er nicht gesehen wurde. Die drei Einträge sind also 1 und der Rest ist 0 in der
+entsprechenden dichten Darstellung. Wir haben hier also zwei Schritte. Im Vorbearbeitungsschritt
+wird das Wörterbuch berechnet und im zweiten Schritt erzeugen wir damit
+eine effiziente dünnbesetzte Darstellung. Wenn Ihnen das bekannt vorkommt und Sie an den Vokabularaufbau
+für kategoriale Spalten erinnert, haben Sie ganz recht. Kategoriale Spalten werden von TensorFlow als dünnbesetzte Tensoren dargestellt. Kategoriale Spalten sind also ein Beispiel
+für etwas, das dünnbesetzt - sparse - ist. TensorFlow kann
+mathematische Operationen an dünnbesetzten Tensoren durchführen,
+ohne sie in dichte umwandeln zu müssen. Dadurch wird Speicher
+gespart und das Computing optimiert. Wir wissen, wie man aus kategorialen
+Spalten eine Merkmalsverknüpfung erzeugt. Das war ein Beispiel für Mathematik
+in Form von dünnbesetzten Tensoren. Deshalb gab es, obwohl wir diskretisierte
+Spalten von Länge und Breite überquert und eine Merkmalsverknüpfung z. B. der
+Abhol- und Absetzpunkte vorgenommen haben, kein Problem mit dem Speicher
+oder der Rechengeschwindigkeit. Wir haben gesehen, wie Einbettungsspalten
+aus Merkmalsverknüpfungen erzeugt werden. Derselbe Code funktioniert natürlich
+für eine einzelne kategoriale Spalte und das ist es, was ich hier zeige. Die Fähigkeit, dünnbesetzte
+Tensoren zu behandeln, ist der Grund, weshalb der Code zum Erstellen einer
+Einbettungsspalte aus kategorialen Daten in TensorFlow ohne Speicher- oder
+Geschwindigkeitsprobleme funktioniert. Das ist eines dieser
+magischen Implementierungsdetails. Erinnern Sie sich, dass für Einbettungen
+kein separater Lernprozess benötigt wird. Wir nehmen nur zwei Schritte vor. Erstens nehmen wir den
+Originalinput und stellen diesen dar. Zweitens senden wir
+ihn an eine Einbettungsebene. Beim ersten Schritt stellen wir den
+Input als dünnbesetzten Tensor dar. Beim zweiten Schritt verwenden
+wir den Aufruf zum Einbetten der Spalte. Aber wie funktioniert
+diese Codezeile eigentlich?

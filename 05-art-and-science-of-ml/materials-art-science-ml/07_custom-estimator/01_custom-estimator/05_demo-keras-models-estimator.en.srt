@@ -1,0 +1,213 @@
+1
+00:00:00,430 --> 00:00:04,220
+All right, so we wanted to show
+you how a keras estimator works.
+
+2
+00:00:04,220 --> 00:00:07,720
+So now we have a method
+called make_keras_estimator,
+
+3
+00:00:07,720 --> 00:00:09,220
+where you given an output_dir.
+
+4
+00:00:09,220 --> 00:00:13,565
+And what it does is that it does
+from tensorflow import keras,
+
+5
+00:00:13,565 --> 00:00:15,825
+this is still the same time
+series model as before.
+
+6
+00:00:15,825 --> 00:00:20,595
+But this time, I'm just going to treat it
+as a plain old nine input neural network.
+
+7
+00:00:20,595 --> 00:00:24,945
+So I'm taking this,
+I'm creating a keras sequential model and
+
+8
+00:00:24,945 --> 00:00:29,435
+saying that I want to create a dense
+network with 32 input nodes.
+
+9
+00:00:29,435 --> 00:00:31,545
+You do a relu activation.
+
+10
+00:00:31,545 --> 00:00:34,287
+And then one output, that's a Dense(1).
+
+11
+00:00:34,287 --> 00:00:37,612
+And my loss is going to
+be mean_squared_error.
+
+12
+00:00:37,612 --> 00:00:39,631
+My optimizer is going to be adam.
+
+13
+00:00:39,631 --> 00:00:42,940
+And my evaluation matrix is
+going to be mean_absolute_error and
+
+14
+00:00:42,940 --> 00:00:45,470
+mean_absolute_percentage error.
+
+15
+00:00:45,470 --> 00:00:50,010
+And then, I can take
+keras.estimator.model to estimate
+
+16
+00:00:50,010 --> 00:00:53,580
+passing in this keras compiled model.
+
+17
+00:00:53,580 --> 00:00:56,910
+So remember, create the keras model,
+compile it, and
+
+18
+00:00:56,910 --> 00:00:59,290
+pass it into model_to_estimator.
+
+19
+00:00:59,290 --> 00:01:03,410
+Now this code is already part of
+
+20
+00:01:03,410 --> 00:01:06,790
+this simplernn package,
+so let me show you that.
+
+21
+00:01:06,790 --> 00:01:09,520
+So here we are in simplernn.
+
+22
+00:01:09,520 --> 00:01:15,160
+And in the simplernn,
+there is a trainer, there is a model.py.
+
+23
+00:01:15,160 --> 00:01:20,468
+And in the model.py, there was
+the original simple_rnn function that
+
+24
+00:01:20,468 --> 00:01:26,745
+took the features, labels, and mode, and
+did all of the custom_estimator stuff.
+
+25
+00:01:26,745 --> 00:01:31,590
+There's also a make_keras_estimator.
+
+26
+00:01:31,590 --> 00:01:33,580
+So here is the make_keras_estimator.
+
+27
+00:01:33,580 --> 00:01:36,740
+So make_keras_estimator has
+the code that I just showed you.
+
+28
+00:01:36,740 --> 00:01:39,662
+Creates a sequential model,
+creates a dense layer.
+
+29
+00:01:39,662 --> 00:01:43,840
+And it does an activation of it with
+reload, creates another dense layer, and
+
+30
+00:01:43,840 --> 00:01:46,190
+does the last metrics, etc.
+
+31
+00:01:46,190 --> 00:01:51,913
+So when we do the train and evaluate,
+I basically have a use_keras option.
+
+32
+00:01:51,913 --> 00:01:55,950
+And if someone says use_keras,
+I call them make_keras_estimator.
+
+33
+00:01:55,950 --> 00:02:01,156
+Otherwise, I call the base class esitmator
+passing in the function simple_rnn.
+
+34
+00:02:01,156 --> 00:02:07,307
+So its essentially the same code
+with this one parameter use_keras.
+
+35
+00:02:07,307 --> 00:02:13,521
+And that parameter gets passed in
+from the command line using task.py.
+
+36
+00:02:13,521 --> 00:02:19,088
+So in task.py,
+there is a new argument called --keras.
+
+37
+00:02:19,088 --> 00:02:22,316
+And if that, so
+depends on whether that is set,
+
+38
+00:02:22,316 --> 00:02:27,499
+we basically pass in arguments of
+keras to model_train_and_evaluate.
+
+39
+00:02:27,499 --> 00:02:30,090
+So this is going to be either true or
+false.
+
+40
+00:02:30,090 --> 00:02:32,400
+So now, if we go back to our notebook,
+
+41
+00:02:32,400 --> 00:02:35,760
+you can see what the effect of
+--keras is going to be here.
+
+42
+00:02:35,760 --> 00:02:37,933
+Because the pass of --keras,
+
+43
+00:02:37,933 --> 00:02:41,399
+this is essentially going to
+run the simple rnn code.
+
+44
+00:02:41,399 --> 00:02:45,199
+It's going to run it on train.csv and
+value.csv, but
+
+45
+00:02:45,199 --> 00:02:47,489
+it's going to use keras instead.
+
+46
+00:02:47,489 --> 00:02:49,190
+And this would also just work.

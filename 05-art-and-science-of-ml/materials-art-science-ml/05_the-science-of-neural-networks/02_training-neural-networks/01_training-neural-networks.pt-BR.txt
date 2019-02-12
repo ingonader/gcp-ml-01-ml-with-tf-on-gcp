@@ -1,0 +1,227 @@
+Agora que você sabe um pouco
+mais nas redes neurais, vamos ver
+como podemos treiná-las, algumas armadilhas comuns
+e técnicas para ajudar a acelerar o treino
+e fornecer uma generalização melhor. No TensorFlow, usar a API Estimator
+e um DNNRegressor é muito semelhante a usar
+um LinearRegressor, com apenas alguns parâmetros para
+o código que precisam ser adicionados. Podemos usar otimizadores baseados
+no momento, como o AdaGrad padrão, ou podemos tentar outros, como o Adam. Também temos que adicionar um parâmetro
+chamado hidden_units, que é uma lista. O número de itens nessa lista
+é o número de camadas ocultas, e os valores de cada item são o número de
+neurônios para essa camada oculta. Você também verá que há um novo
+parâmetro chamado dropout. Vamos abordar isso em alguns minutos. Mas, por enquanto, isso é usado para
+ligar e desligar os neurônios individuais em cada exemplo, para ter um
+desempenho melhor de generalização. Veja a documentação
+do TensorFlow para o conjunto completo de parâmetros
+que você pode configurar. Isso tudo pode ser hiperparametizado para você ajustar seu modelo e conseguir o melhor
+desempenho de generalização. A retropropagação é um tópico tradicional
+no curso de redes neurais de ML. Mas, às vezes, é como ensinar as pessoas
+a criar um compilador. É essencial para uma compreensão
+mais profunda, mas não é necessária para
+o entendimento inicial. O principal é que há
+um algoritmo eficiente para calcular derivativos, e o TensorFlow
+fará isso automaticamente. Há alguns casos de falha interessantes
+para discutirmos, como gradientes desaparecidos, gradientes em explosão
+e camadas inoperantes. Durante o treino, especialmente em redes
+profundas, gradientes podem desaparecer, cada camada adicional na rede pode reduzir
+sucessivamente o sinal contra o ruído. Um exemplo disso é usar
+funções de ativação sigmoide ou tanh em todas
+as camadas ocultas. Quando você começa a saturar, acaba nas regiões assintóticas da função
+que começam a se estabilizar, a inclinação está chegando
+cada vez mais perto de 0. Quando você retrocede pela
+rede durante a retropropagação, seu gradiente pode diminuir
+porque você está compondo todos esses pequenos gradientes até
+que o gradiente desapareça completamente. Quando isso acontece, suas ponderações
+não são mais atualizadas e, portanto, o treinamento é interrompido. Uma maneira de corrigir isso é usar
+funções de ativação não lineares e não saturadas, como ReLUs, ELUs etc. Também podemos ter o problema contrário,
+quando os gradientes explodem, crescendo até que as ponderações
+ficam tão grandes que transbordam. Mesmo começando com gradientes pequenos, como um valor de 2, ele pode compor e se tornar grande
+por muitas camadas. Isso serve para modelos sequenciais com
+longos comprimentos de sequência. Taxas de aprendizado podem ser um fator,
+porque nas atualizações de ponderação, lembre-se, multiplicamos o gradiente com a taxa de aprendizado e então
+subtraímos isso da atual ponderação. Mesmo que o gradiente não seja tão grande,
+com uma taxa de aprendizado maior que 1, ele agora pode se tornar muito grande
+e causar problemas a você e à rede. Há muitas técnicas para tentar
+minimizar isso. Tal como organização de ponderação
+e tamanhos de lote menores. Outra técnica é
+truncamento de gradiente, quando verificamos se o gradiente normal
+excede algum limite, o que você pode ajustar
+e, em caso afirmativo, pode redefinir os componentes do gradiente
+para se ajustarem abaixo do máximo. Outra técnica útil é
+a normalização de lotes, que resolve o problema chamado
+deslocamento de covariância interna. É parte do treino porque
+os gradientes fluem melhor. É possível usar uma taxa de aprendizado
+maior e se livrar do dropout, o que retarda a competição
+até o próprio tipo de regularização, devido ao ruído do minilote. Para realizar a normalização em lote, primeiro, encontre a média do minilote, depois o desvio padrão do minilote, normalize as entradas para esse nó, então escalone e alterne
+para gama vezes X mais beta, em que gama e beta são
+parâmetros aprendidos. Se gama é igual à variação de raiz
+quadrada de X e beta é igual à média de X, a função de ativação original
+é restaurada. Dessa forma, você controla o intervalo das
+entradas, para não ficarem muito grandes. O ideal é manter seus gradientes o mais próximo possível de 1,
+especialmente para redes profundas. Então você não compõe e acaba
+tendo subfluxo ou sobrefluxo. Outra falha do gradiente descendente
+é que as camadas reais podem morrer. Felizmente, usando o TensorBoard, podemos monitorar os raios da soma durante e após
+o treino de nossos modelos de rede reural. Se você usa um doce e um Estimator, há
+automaticamente um resumo escalar para cada camada oculta GN,
+mostrando a fração de valores zerados
+das ativações para aquela camada. ReLUs param de funcionar quando as
+entradas as mantêm no domínio negativo, dando à ativação
+um valor nulo. Não termina aí porque então a contribuição
+delas na próxima camada é zero. Isso porque, apesar do que as ponderações
+estão conectando aos próximos neurônios, a ativação é zero, portanto,
+a entrada se torna nula. Um grupo de zeros que entram no próximo
+neurônio não ajuda a entrar no domínio positivo, e então
+essas ativações de neurônios também se tornam nulas
+e o problema continua. Aí executamos a retropropagação
+e os gradientes são zero, então, não temos as ponderações e, assim,
+o treino é interrompido. Não é bom. Conversamos sobre o uso de Leaky ReLUs
+ou paramétricas ou as ELUs mais lentas, mas você pode diminuir as taxas
+de aprendizado para ajudar a impedir que as camadas ReLU não sejam
+ativadas e não permaneçam. Um gradiente grande, devido a uma alta
+taxa de aprendizado, pode atualizar as ponderações de modo que nenhum
+ponto de dados o ative novamente. Como o gradiente é zero, não atualizamos a ponderação
+para algo mais razoável, então o problema persistirá
+indefinidamente. Vamos fazer uma rápida
+verificação de intuição. O que acontecerá com o modelo se tivermos dois sinais úteis, ambos
+correlacionados com o rótulo de maneira independente,
+mas em escalas diferentes? Por exemplo, podemos ter
+um preditor de sabor de sopa em que os atributos representam
+as qualidades dos ingredientes. Se o atributo para o caldo
+de galinha for medido em litros, mas caldo de carne
+for medido em mililitros, então o gradiente descendente estocástico
+pode ter dificuldade em convergir bem, já que a taxa de aprendizado ideal para
+essas dimensões é provavelmente diferente. Limpar os dados e colocá-los em um
+intervalo útil para computação tem muitos benefícios durante o treino
+dos modelos de aprendizado de máquina. Ter um valor de atributo pequeno
+e especificamente centrado em zero ajuda a acelerar o treino
+e evita problemas numéricos. É por isso que a normalização em lote
+foi útil com os gradientes em explosão, pois manteve não apenas os atributos
+iniciais de entrada, mas todos os atributos intermediários em um intervalo saudável, para não
+causar problemas em nossas camadas. Isso também nos ajuda a evitar a armadilha
+do NaN, em que o modelo pode explodir se os valores excedem
+o intervalo de precisão numérica. Uma combinação de
+escalonamento de atributos e/ou menor taxa de aprendizado pode
+ajudar a evitar essa armadilha. Além disso, evitar valores atípicos
+ajuda na generalização. Portanto, detectar isso,
+talvez a detecção de anomalias, e pré-processá-las fora do conjunto de
+dados antes do treino pode ser útil. Lembre-se de que não há um método
+único para todos os dados. É possível pensar em casos bons e ruins
+para cada uma dessas abordagens. Há muitos métodos para fazer o valor de
+atributos escalonar em pequenos números. Há o escalonamento linear onde você acha,
+primeiro, o mínimo e o máximo dos dados. Então, para cada valor, subtraímos o mínimo e depois dividimos pela diferença entre o máximo
+e o mínimo ou o intervalo. Isso deixará todos os valores
+entre 0 e 1, em que 0 será o mínimo
+e 1 será o máximo. Isso também é chamado de normalização. Há também o limite forçado ou truncamento, em que você define um
+valor mínimo e um valor máximo. Por exemplo, se meu valor
+mínimo for permitido como -7 e meu valor máximo for 10, todos os valores inferiores a -7
+serão -7 e todos os valores
+maiores que 10 serão 10. No escalonamento de registros, aplica-se a
+função de logaritmo aos dados de entrada. Isso é ótimo quando seus dados têm
+um intervalo grande e você quer condensá-los para serem mais que
+apenas a magnitude do valor. Outro método, que acabamos de falar, com a
+normalização em lote é a padronização. Aqui, você calcula a média dos dados
+e o desvio padrão. Depois de ter esses dois valores, você subtrai a média dos pontos
+de dados e os divide com o desvio padrão. Dessa maneira, seus dados
+se tornam centralizados em zero, porque a média nova se torna 0
+e o desvio padrão novo se torna 1. Claro, há muitas outras maneiras
+de escalonar seus dados. Qual destes é um bom conselho se meu
+modelo estiver com gradientes em explosão? A resposta correta é A, B, C e D. O problema geralmente ocorre quando
+as ponderações ficam muito grandes, o que acontece quando a taxa
+de aprendizado fica muito alta. Isso pode levar a um monte
+de outras questões como estabilidade numérica,
+divergência e ReLUs inativas. Portanto, reduzir essa taxa para encontrar
+uma boa zona é uma ótima ideia. A organização de ponderação
+também pode ajudar nesse aspecto, pois haverá uma penalidade
+para ponderações muito grandes, o que dificultará
+a explosão dos gradientes. Além disso, aplicar o truncamento
+de gradiente pode garantir que os gradientes nunca ultrapassem
+um determinado limite definido. Isso pode ajudar a reduzir
+um pouco a taxa de aprendizado. No entanto, uma taxa
+alta o suficiente ainda pode levar as ponderações
+a valores altos. A normalização em lote pode ajudar as entradas intermediárias em cada camada
+a ficar em um intervalo estreito. Portanto, haverá uma chance menor
+de as ponderações crescerem fora do intervalo por um pequeno
+custo computacional extra. Há muitos métodos para tratar
+gradientes em explosão, então você não precisa
+de um médico para ajudar. Tudo a fazer é testar essas ferramentas
+e ver qual é a melhor. Outra forma de regularização
+que ajuda a criar modelos mais generalizáveis ​​é adicionar
+camadas de descarte às redes neurais. Para usar o descarte, adiciono um wrapper
+a uma ou mais das minhas camadas. No TensorFlow, o parâmetro que você
+passa é chamado de dropout, que é a probabilidade
+de deixar um neurônio temporariamente fora da rede,
+em vez de mantê-lo ligado. Tenha cuidado ao configurar
+esse número porque, para algumas funções que têm
+um mecanismo de dropout, elas usam a probabilidade
+de manutenção, que é um complemento para
+a probabilidade de descarte ou a probabilidade de manter
+um neurônio ligado ou não. Você não quer ter uma probabilidade
+de apenas 10% de descarte, mas na verdade mantém apenas
+10% nos nós aleatoriamente, esse é um modelo esparso
+muito não intencional. Então, como o dropout funciona? Vamos dizer que definimos uma
+probabilidade de descarte de 20%. Para cada avanço passado para a rede,
+o algoritmo rolará os dados para cada neurônio e para
+a camada de dropout com wrapper. Se a rolagem de dados for maior que 20
+e o neurônio permanecer ativo na rede, a rolagem [inaudível] será descartada e a saída será um valor zero,
+independentemente das entradas. Efetivamente, não será adicionada
+de modo negativo ou positivo à rede, já que a adição de zero nada muda e simula
+que o neurônio não existe. Para compensar o fato de cada nó ser
+mantido apenas uma porcentagem do tempo, as ativações são escalonadas em
+um por um menos a probabilidade de descarte
+ou, em outras palavras, um sobre a probabilidade de manutenção, durante o treino, para que seja o valor
+esperado da ativação. Quando não está em treinamento,
+sem ter que alterar nenhum código, o wrapper desaparece e os neurônios na camada de dropout com wrapper
+estão sempre ativos e usam quaisquer ponderações
+treinadas pelo modelo. Algo positivo do dropout é que ele está
+basicamente criando um modelo em conjunto, porque, para cada passagem
+avançada, há efetivamente uma rede diferente
+em que o minilote de dados é visto. Quando tudo isso é somado em expectativa, é como se eu fosse treinar dois
+para as n redes neurais, em que n é o número
+de neurônios descartados. E fazê-los trabalhar
+em um conjunto semelhante a um grupo de árvores de decisão
+em uma Random Forest. Há também o efeito adicional de espalhar a distribuição de dados de toda a rede, em vez de ter a maioria do sinal favorecendo
+uma ramificação da rede. Costumo imaginar isso como a água
+em um rio com vários desvios ou barragens para garantir que todas as
+hidrovias recebam água e não sequem. Dessa forma, sua rede usa
+mais capacidade, já que o sinal flui mais uniformemente
+pela rede inteira e, portanto, você terá melhor treino e generalização sem grandes dependências de neurônios
+desenvolvidas em caminhos conhecidos. Valores típicos para descarte
+são entre 20% e 50%. Se for muito menor que isso, não há muito efeito da rede, já que você
+raramente descarta algum nó. Se for mais alto, o treino também não acontecerá,
+já que a rede se torna muito esparsa para ter a capacidade
+de aprender a distribuição de dados. Você também quer usar isso
+em redes maiores porque há mais capacidade para o modelo
+aprender representações independentes. Em outras palavras, há mais
+passes possíveis para a rede tentar. Quanto mais você descartar, portanto, quanto menos manter, mais forte será a regularização. Se você define sua probabilidade
+de descarte como 1, não mantém nada
+e todos os neurônios na camada de descarte com wrapper
+serão removidos do neurônio. Isso gera uma ativação nula. Durante a retropropagação, isso significa que as ponderações não serão atualizadas
+e a camada não aprenderá nada. Se você define a probabilidade para 0, todos os neurônios são mantidos ativos
+e não há regularização de descarte. É praticamente uma maneira mais cara de não ter um dropout com wrapper, pois
+você ainda precisa rolar os dados. Claro, queremos estar
+em algum lugar entre 0 e 1. Especificamente, com probabilidades de
+descarte entre 10% e 50%, em que uma boa linha de base começa
+em 20% e é necessário adicionar mais. Não há uma probabilidade de descarte que se ajuste a todos os modelos
+e a todas distribuições de dados. O dropout age como outra forma
+de quê? Ele força os dados a fluírem por quais
+caminhos, para uma distribuição uniforme? Ele também simula o aprendizado
+de quê? Não esqueça de escalonar as ativações de
+descarte pelo oposto de quê? Removemos o dropout durante
+o quê? A resposta correta é E.
+O dropout atua como outra forma de regularização para que o modelo
+possa generalizar melhor. Ele faz isso desativando nós
+com uma probabilidade de descarte, o que força os dados a fluírem por vários
+caminhos, para uma distribuição uniforme. Caso contrário, os dados
+e as ativações associadas a eles podem aprender a seguir
+caminhos preferenciais, o que pode levar ao treino
+insuficiente da rede como um todo e fornecer
+um desempenho ruim nos dados. Dropout também simula o aprendizado
+em conjunto, criando um agregado de dois para os n modelos, devido ao
+desligamento aleatório dos nós para cada avanço, onde n é o número de nós descartados. Cada lote vê uma rede diferente, então o modelo não pode se sobrepor em
+todo o conjunto de treino, como uma Random Forest. Escalone as ativações de dropout, pelo inverso da probabilidade
+de manutenção, que é um menos
+a probabilidade de descarte. Fazemos isso esperando que o nó seja
+escalonado corretamente durante o treino, pois, para inferência,
+ele estará sempre ligado, já que removemos o descarte
+durante a inferência.

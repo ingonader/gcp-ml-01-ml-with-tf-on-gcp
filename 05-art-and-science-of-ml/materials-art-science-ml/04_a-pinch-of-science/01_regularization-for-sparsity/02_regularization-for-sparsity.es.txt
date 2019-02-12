@@ -1,0 +1,78 @@
+Primero, veamos cómo podemos usar la regularización para crear modelos
+más dispersos y simples. Anteriormente, vimos la regularización L2 que es la suma de los cuadrados
+de los pesos de los parámetros a la función de pérdida. Esto es útil
+para que los pesos sean pequeños para tener estabilidad
+y una solución única pero el modelo puede volverse
+demasiado grande y complejo ya que todos los atributos pueden
+tener pesos muy bajos. Si usamos la regularización L1 suma el valor absoluto
+de los pesos de los parámetros a la función de pérdida lo que tiende a llevar los pesos
+de los atributos más débiles a cero. Es una especie de selector de atributos
+que elimina todos los atributos malos y deja solo los más fuertes en el modelo. Este modelo disperso
+tiene muchos beneficios. Primero, con menos coeficientes
+que almacenar y cargar se reduce el almacenamiento y la memoria
+que se necesita, con un tamaño más pequeño lo que es muy importante
+para modelos incorporados. Además, con menos atributos hay menos multiplicaciones y sumas,
+lo que aumenta la velocidad del entrenamiento y, más importante,
+la velocidad de las predicciones. Muchos modelos de AA
+ya tienen suficientes atributos. Por ejemplo, digamos
+que tengo datos que contienen la fecha
+y la hora de pedidos hechos. Nuestro modelo de primer orden probablemente tendría
+7 atributos para los días de la semana y 24 para las horas del día y posiblemente, otros atributos más. Por ende, los días de la semana más
+las horas del día ya son 31 entradas. Y si queremos ver
+el efecto del segundo orden del día de la semana combinado
+con la hora del día. Ahí tenemos otras 168 entradas,
+además de nuestras 31 más muchas otras,
+para un total de casi 200 atributos. Solo por un campo con fecha y hora
+más otros atributos que usemos. Si combinamos esto con codificación one-hot
+para estados de EE.UU. el producto cartesiano triple
+ya alcanza un total de 8400 atributos y muchos de ellos probablemente sean
+muy dispersos y llenos de ceros. Esto aclara por qué
+la selección integrada de atributos mediante una regularización L1
+puede ser muy útil. ¿Con qué estrategias podemos eliminar
+coeficientes de atributos que no se usan,
+además de la regularización L1? Podríamos incluir conteos simples de los atributos con valores
+diferentes de cero. La norma L0 es simplemente
+un conteo de los pesos que no son cero. Optimizar para esta norma es un problema
+NP-complejo de optimización no convexa. Este diagrama ilustra una superficie
+de error de optimización no convexa. Podemos ver que hay muchos picos
+y valles locales y este es solo un ejemplo
+sencillo y unidimensional. Tendría que explorar muchos
+puntos iniciales con descenso de gradiente por lo que debe resolver por completo
+un problema NP-complejo. Afortunadamente, la norma L1,
+tal como la norma L2, es convexa pero también fomenta la dispersión
+en el modelo. En esta imagen se trazan las distribuciones
+de probabilidad de las normas L1 y L2. Note que la norma L2
+tiene un pico mucho más suave en cero por lo que las magnitudes de los pesos
+se acercan más a cero. Sin embargo, la norma L1 es como una cima
+centrada en cero. Por ende, es más claro que la probabilidad
+está exactamente en cero que la norma L2. Existe una cantidad infinita de normas
+generalizadas por la norma P. Otras normas, como la norma L0
+de la que ya hablamos que es el conteo de los valores de un vector
+que no son cero y la norma L infinito que es el valor absoluto máximo
+de cualquier valor en un vector. En la práctica, generalmente la norma L2 nos ofrece modelos más generalizables
+que la norma L1. Sin embargo tendremos modelos más complejos y pesados
+si usamos L2 en lugar de L1. Esto sucede porque los atributos
+suelen estar fuertemente correlacionados y la regularización L1 elige uno de ellos
+y descarta los otros mientras que la regularización L2 conserva
+ambos atributos con magnitudes de peso bajas. Con L1
+tendremos un modelo más pequeño pero menos predictivo. ¿Hay alguna manera de aprovechar ambas? La red elástica es una combinación lineal
+de las penalizaciones de L1 y L2. Así, se aprovecha la dispersión
+para los atributos poco predictivos y se conservan los atributos
+decentes y buenos con pesos más bajos,
+para una buena generalización. La única compensación es que hay dos hiperparámetros
+en vez de uno que ajustar junto con dos parámetros Lambda
+de regularización diferentes. ¿Qué tiende a hacer la regularización L1
+con los pesos de los parámetros de los atributos poco predictivos
+de un modelo? La respuesta correcta es:
+C. Tener valores de cero. Cuando usamos técnicas de regularización agregamos una penalización a la función
+de pérdida o a la función objetivo. Así, no sobreoptimiza
+las variables de decisión o pesos de parámetros. Escogemos la penalización
+por conocimiento previo la función, la forma, etc. Hemos visto que la regularización L1
+induce dispersión en el modelo. Dada su distribución de probabilidades
+con un pico alto en cero la mayoría de los pesos,
+salvo los muy predictivos cambiarán de sus valores
+no regularizados a cero. La regularización L2 se usará
+para tener magnitudes bajas y se usará su negativo
+para tener magnitudes altas. Ambas son incorrectas. Tener todos los valores positivos agregaría muchas limitaciones adicionales
+al problema de optimización. Todas las variables de decisión
+serían mayores que cero algo que tampoco es regularización L1.

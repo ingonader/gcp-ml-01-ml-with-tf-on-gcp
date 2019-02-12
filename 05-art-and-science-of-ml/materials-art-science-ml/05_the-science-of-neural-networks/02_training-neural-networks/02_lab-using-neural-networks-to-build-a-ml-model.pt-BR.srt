@@ -1,0 +1,1175 @@
+1
+00:00:00,000 --> 00:00:02,960
+Agora, vamos colocar nosso
+conhecimento em prática
+
+2
+00:00:02,960 --> 00:00:06,035
+e usar redes neurais no TensorFlow
+para criar um modelo ML.
+
+3
+00:00:06,035 --> 00:00:10,380
+É hora de mais um laboratório com uso de
+redes neurais para criar o modelo ML.
+
+4
+00:00:10,380 --> 00:00:12,840
+Aqui, você usará o Estimator automático,
+
+5
+00:00:12,840 --> 00:00:15,700
+a classe DNNRegressor no TensorFlow,
+
+6
+00:00:15,700 --> 00:00:19,205
+para prever o preço médio de imóveis
+com base em atributos diferentes.
+
+7
+00:00:19,205 --> 00:00:22,500
+Os dados são baseados no
+censo de 1990 da Califórnia.
+
+8
+00:00:22,500 --> 00:00:24,920
+Eles estão em nível
+de quarteirão,
+
+9
+00:00:24,920 --> 00:00:28,425
+portanto, esses atributos refletem o
+número total de cômodos no quarteirão
+
+10
+00:00:28,425 --> 00:00:31,685
+ou o número total de pessoas
+que vivem ali, respectivamente.
+
+11
+00:00:31,685 --> 00:00:32,685
+Bem-vindo de volta.
+
+12
+00:00:32,685 --> 00:00:36,000
+Vamos passar por alguns dos nossos códigos
+para ver como podemos fazer
+
+13
+00:00:36,000 --> 00:00:39,195
+uma rede neural usando o regressor
+da classe DNN no TensorFlow.
+
+14
+00:00:39,195 --> 00:00:43,490
+Então, aqui estamos, vamos aprender
+como usar uma rede neural.
+
+15
+00:00:43,490 --> 00:00:48,350
+Vamos usar esses dados de imóveis
+com base no censo de 1990 da Califórnia.
+
+16
+00:00:48,350 --> 00:00:50,230
+Eles estão em nível
+de quarteirão.
+
+17
+00:00:50,230 --> 00:00:51,735
+Isso vai refletir os atributos,
+
+18
+00:00:51,735 --> 00:00:53,660
+o número total de cômodos no quarteirão,
+
+19
+00:00:53,660 --> 00:00:56,500
+o número total de pessoas que
+vivem ali, respectivamente.
+
+20
+00:00:56,500 --> 00:00:59,855
+Vamos usar um conjunto de atributos
+para avaliar o valor do imóvel.
+
+21
+00:00:59,855 --> 00:01:01,140
+Primeiro, configure.
+
+22
+00:01:01,140 --> 00:01:04,205
+Na primeira célula, vamos diminuir
+as bibliotecas desnecessárias.
+
+23
+00:01:04,205 --> 00:01:06,185
+Importamos a matemática,
+
+24
+00:01:06,185 --> 00:01:09,260
+shutil, numpy, pandas, TensorFlow.
+
+25
+00:01:09,260 --> 00:01:13,145
+Verifique se a proposta está definida como
+informação, para ter muitos resultados.
+
+26
+00:01:13,145 --> 00:01:16,135
+Garanta que uma reformatação
+para pandas esteja definida.
+
+27
+00:01:16,135 --> 00:01:20,085
+Agora vamos carregar nosso conjunto
+de dados deste URL aqui
+
+28
+00:01:20,085 --> 00:01:23,940
+ou o ML de dados do treino de imóveis da
+Califórnia no frame de dados do pandas.
+
+29
+00:01:23,940 --> 00:01:26,125
+Em seguida, examinamos os dados.
+
+30
+00:01:26,125 --> 00:01:29,275
+Portanto, é bom conhecer um pouco
+mais sobre eles antes de começar.
+
+31
+00:01:29,275 --> 00:01:32,220
+Imprimimos um resumo
+das estatísticas úteis em cada coluna.
+
+32
+00:01:32,220 --> 00:01:33,820
+Isso incluirá coisas como média,
+
+33
+00:01:33,820 --> 00:01:36,720
+desvio padrão, máximo,
+mínimo e vários quantis.
+
+34
+00:01:36,720 --> 00:01:40,130
+Primeiro, vamos imprimir
+o cabeçalho do frame de dados,
+
+35
+00:01:40,130 --> 00:01:44,200
+que é simplesmente um exemplo das cinco
+primeiras linhas do conjunto de dados:
+
+36
+00:01:44,200 --> 00:01:47,050
+longitude, latitude, idade
+média do imóvel,
+
+37
+00:01:47,050 --> 00:01:50,020
+total de cômodos, total de quartos,
+população, casas,
+
+38
+00:01:50,020 --> 00:01:52,535
+renda média e valor médio do imóvel,
+
+39
+00:01:52,535 --> 00:01:54,140
+que é o meu rótulo neste caso.
+
+40
+00:01:54,140 --> 00:01:56,725
+É o que quero prever,
+usando esses outros atributos.
+
+41
+00:01:56,725 --> 00:01:59,190
+Isso, na verdade, vê o que são
+as estatísticas.
+
+42
+00:01:59,190 --> 00:02:01,115
+Para isso, faço df.describe,
+
+43
+00:02:01,115 --> 00:02:02,630
+que mostrará a contagem,
+
+44
+00:02:02,630 --> 00:02:04,130
+os meios, o desvio padrão,
+
+45
+00:02:04,130 --> 00:02:06,540
+o mínimo, o 25º percentil,
+
+46
+00:02:06,540 --> 00:02:09,699
+o 50º percentil, o 75º percentil
+e o máximo.
+
+47
+00:02:09,699 --> 00:02:13,865
+Como você pode ver,
+tudo parece bem limpo aqui.
+
+48
+00:02:13,865 --> 00:02:16,530
+No entanto, ainda está em nível
+de quarteirão.
+
+49
+00:02:16,530 --> 00:02:20,830
+Vamos ter que descobrir como fazer isso
+em nível de imóvel.
+
+50
+00:02:20,830 --> 00:02:24,480
+Para isso, pego o número de cômodos,
+se eu quero achar isso,
+
+51
+00:02:24,480 --> 00:02:27,260
+pego o total de cômodos
+para todo o quarteirão,
+
+52
+00:02:27,260 --> 00:02:30,120
+e divido pelo número total
+de domicílios nesse quarteirão.
+
+53
+00:02:30,120 --> 00:02:33,215
+Isso dará o número
+médio de cômodos por casa.
+
+54
+00:02:33,215 --> 00:02:34,870
+O mesmo vale para os quartos.
+
+55
+00:02:34,870 --> 00:02:36,695
+Pego o número de quartos,
+
+56
+00:02:36,695 --> 00:02:41,110
+vou usar o número total de quartos
+em todo o quarteirão,
+
+57
+00:02:41,110 --> 00:02:44,415
+divido pelo número de casas no quarteirão
+para ter a média de quartos.
+
+58
+00:02:44,415 --> 00:02:47,505
+Agora, para pessoas por casa,
+
+59
+00:02:47,505 --> 00:02:50,250
+vou pegar a população total do quarteirão
+
+60
+00:02:50,250 --> 00:02:51,775
+e dividir pelo número de casas.
+
+61
+00:02:51,775 --> 00:02:54,190
+O mesmo com a média
+de pessoas naquela casa.
+
+62
+00:02:54,190 --> 00:02:56,785
+Agora, se eu fizer df.describe,
+
+63
+00:02:56,785 --> 00:02:58,755
+veremos minhas colunas originais aqui.
+
+64
+00:02:58,755 --> 00:03:02,050
+No entanto, tenho colunas novas
+adicionadas aqui.
+
+65
+00:03:02,050 --> 00:03:04,560
+Este é o meu número médio
+de cômodos por casa,
+
+66
+00:03:04,560 --> 00:03:06,330
+o número médio
+de quartos por casa
+
+67
+00:03:06,330 --> 00:03:08,655
+e o número médio
+de pessoas por casa.
+
+68
+00:03:09,295 --> 00:03:10,105
+Excelente.
+
+69
+00:03:10,775 --> 00:03:15,005
+Agora, posso descartar
+as estatísticas de população,
+
+70
+00:03:15,005 --> 00:03:17,890
+estatísticas em nível de quarteirão
+
+71
+00:03:17,890 --> 00:03:19,630
+como cômodos totais, quartos totais,
+
+72
+00:03:19,630 --> 00:03:24,610
+população, casas, e vou deixar
+todas essas colunas no lugar.
+
+73
+00:03:24,610 --> 00:03:26,425
+Então, não crio
+um novo frame de dados.
+
+74
+00:03:26,425 --> 00:03:28,030
+E agora, se eu fizer df.describe,
+
+75
+00:03:28,030 --> 00:03:30,825
+você verá que eu tenho
+meus atributos novos aqui,
+
+76
+00:03:30,825 --> 00:03:32,440
+meus atributos antigos lá,
+
+77
+00:03:32,440 --> 00:03:36,260
+aqui está o rótulo e o que usei antes,
+não está mais ali.
+
+78
+00:03:36,260 --> 00:03:39,025
+Isto agora é uma visão em nível de casa.
+
+79
+00:03:39,025 --> 00:03:42,380
+Agora, vamos criar
+nosso modelo de rede neural,
+
+80
+00:03:42,380 --> 00:03:45,295
+pois temos nossos dados de atributos
+no formato correto.
+
+81
+00:03:45,295 --> 00:03:48,565
+O que vamos fazer é criar
+nossas colunas de atributos.
+
+82
+00:03:48,565 --> 00:03:51,070
+Lembre-se, as colunas de atributos
+basicamente
+
+83
+00:03:51,070 --> 00:03:54,360
+colocam nossos dados na representação
+certa para o modelo usar.
+
+84
+00:03:54,360 --> 00:03:58,030
+Mesmo que já esteja na notação
+de ponto flutuante,
+
+85
+00:03:58,030 --> 00:04:03,745
+ainda precisamos decidir se será
+um ponto flutuante em uma coluna ou não.
+
+86
+00:04:03,745 --> 00:04:05,950
+Isso é colocado aqui
+
+87
+00:04:05,950 --> 00:04:08,555
+e eu estou fazendo um loop,
+como você pode ver aqui,
+
+88
+00:04:08,555 --> 00:04:11,570
+em todas as colunas e médias
+de idade da casa,
+
+89
+00:04:11,570 --> 00:04:13,310
+a renda média, o número de cômodos,
+
+90
+00:04:13,310 --> 00:04:15,780
+o número de quartos
+e de pessoas por casa.
+
+91
+00:04:15,780 --> 00:04:19,325
+Depois disso, quero fazer um pouco mais
+de engenharia de atributos.
+
+92
+00:04:19,325 --> 00:04:23,299
+Vou criar uma nova coluna de atributo
+chamada Longitude.
+
+93
+00:04:23,299 --> 00:04:27,665
+Ela será uma coluna intervalada
+da coluna da longitude numérica,
+
+94
+00:04:27,665 --> 00:04:31,320
+com o espaçamento do espaço linear
+
+95
+00:04:31,320 --> 00:04:37,275
+de -124,3 para -114,3
+em etapas de cinco.
+
+96
+00:04:37,275 --> 00:04:39,150
+Para a latitude da coluna de atributos,
+
+97
+00:04:39,150 --> 00:04:40,775
+eu vou ter o mesmo,
+
+98
+00:04:40,775 --> 00:04:46,890
+exceto que agora vai ser das latitudes
+32,5 a 42 com 10 intervalos neste.
+
+99
+00:04:49,630 --> 00:04:53,555
+A razão pela qual faço isso é porque a
+Califórnia é mais longa do que larga.
+
+100
+00:04:53,555 --> 00:04:56,600
+Portanto, nossa latitude deve ter
+um maior número de intervalos,
+
+101
+00:04:56,600 --> 00:04:59,215
+10 intervalos contra 5 de longitude.
+
+102
+00:04:59,215 --> 00:05:02,215
+Agora imprimo meus nomes
+de colunas de atributos.
+
+103
+00:05:02,215 --> 00:05:04,900
+Aqui, vejo que tenho renda média,
+pessoas por casa,
+
+104
+00:05:04,900 --> 00:05:06,810
+número de cômodos,
+idade média do imóvel,
+
+105
+00:05:06,810 --> 00:05:09,315
+longitude, número de quartos e latitude.
+
+106
+00:05:09,315 --> 00:05:12,740
+Isso é ótimo, mas primeiro
+precisamos nos certificar
+
+107
+00:05:12,740 --> 00:05:15,660
+de dividir isso em um conjunto de dados
+de treino e avaliação.
+
+108
+00:05:15,660 --> 00:05:19,810
+Assim posso ver como meu modelo progride,
+enquanto estou treinando.
+
+109
+00:05:19,810 --> 00:05:23,120
+Para fazer isso, crio
+uma máscara aleatória,
+
+110
+00:05:23,120 --> 00:05:25,535
+em que verifico o comprimento
+do frame de dados,
+
+111
+00:05:25,535 --> 00:05:28,885
+vou criar esses vários números
+de valores aleatórios,
+
+112
+00:05:28,885 --> 00:05:30,835
+oriundos de uma distribuição uniforme,
+
+113
+00:05:30,835 --> 00:05:32,390
+e se forem menor de 0,8,
+
+114
+00:05:32,390 --> 00:05:34,460
+vou salvá-los neste vetor de máscara.
+
+115
+00:05:34,460 --> 00:05:38,770
+O que acontece é que este vetor de máscara
+é o comprimento do frame de dados,
+
+116
+00:05:38,770 --> 00:05:40,860
+mas eles são todos
+verdadeiros e falsos.
+
+117
+00:05:40,860 --> 00:05:43,085
+Isso é chamado de máscara booleana,
+
+118
+00:05:43,085 --> 00:05:45,555
+quando a aplico
+no frame de dados.
+
+119
+00:05:45,555 --> 00:05:49,075
+Portanto, para tudo em que
+a máscara era verdadeira,
+
+120
+00:05:49,075 --> 00:05:51,840
+essas linhas serão colocadas
+em um frame de dados treinado.
+
+121
+00:05:51,840 --> 00:05:54,805
+E para todos os valores
+que não são verdadeiros,
+
+122
+00:05:54,805 --> 00:05:56,700
+é o que significa o til aqui,
+
+123
+00:05:56,700 --> 00:05:58,955
+serão colocados no frame
+de dados de avaliação.
+
+124
+00:05:58,955 --> 00:06:03,110
+Isso me dará uma divisão de 80% no
+frame de dados de treino,
+
+125
+00:06:03,110 --> 00:06:06,575
+e os 20% restantes dos meus dados
+vão para o frame de dados de avaliação.
+
+126
+00:06:06,575 --> 00:06:08,440
+Aqui, também tenho
+um fator de escala,
+
+127
+00:06:08,440 --> 00:06:10,885
+como você pode ver, tenho 100 mil.
+
+128
+00:06:10,885 --> 00:06:14,510
+A razão disso é porque quero
+escalonar meus rótulos aqui.
+
+129
+00:06:14,510 --> 00:06:16,460
+Porque eles são muito grandes.
+
+130
+00:06:16,460 --> 00:06:18,885
+Como você vê, há escalas
+totalmente diferentes.
+
+131
+00:06:18,885 --> 00:06:22,395
+Estes estão na faixa
+dos 100 mil e dos milhões,
+
+132
+00:06:22,395 --> 00:06:26,740
+e são muito menores, como flutuadores
+simples de um ou dois dígitos.
+
+133
+00:06:27,250 --> 00:06:28,560
+Vou fazer isso.
+
+134
+00:06:28,560 --> 00:06:30,540
+Também vou criar
+meu tamanho do lote aqui
+
+135
+00:06:30,540 --> 00:06:31,670
+e definir como 100.
+
+136
+00:06:31,670 --> 00:06:35,080
+Defino-o como 100 linhas por vez
+em cada um desses frames de dados.
+
+137
+00:06:35,080 --> 00:06:38,640
+Eu tive que criar minha função
+de entrada de treinamento.
+
+138
+00:06:38,640 --> 00:06:43,350
+Para isso, vou usar a função de entrada
+pandas Estimator aqui,
+
+139
+00:06:43,350 --> 00:06:45,300
+em que X é igual aos meus atributos.
+
+140
+00:06:45,300 --> 00:06:48,900
+Isso vai criar um dicionário de tensores
+
+141
+00:06:48,900 --> 00:06:50,430
+e será a saída disso.
+
+142
+00:06:50,430 --> 00:06:55,585
+Isso transforma o frame de dados de treino
+dos valores médios para essa coluna.
+
+143
+00:06:55,585 --> 00:07:00,140
+Ele lerá isso em Y, que então se tornará
+um tensor para meus rótulos.
+
+144
+00:07:00,140 --> 00:07:02,570
+O número de períodos será
+igual a um neste caso,
+
+145
+00:07:02,570 --> 00:07:04,670
+de um tamanho de lote e eu vou embaralhar.
+
+146
+00:07:04,670 --> 00:07:06,730
+Certo, por aqui
+
+147
+00:07:06,730 --> 00:07:08,800
+tenho minha função
+de entrada de avaliação.
+
+148
+00:07:08,800 --> 00:07:12,195
+Mais uma vez, usará a função de entrada
+do pandas para fazer o trabalho.
+
+149
+00:07:12,195 --> 00:07:15,630
+E usaremos todo o perímetro [inaudível]
+para o frame de dados de entrada.
+
+150
+00:07:15,630 --> 00:07:16,990
+Porém, terei
+o embaralhamento
+
+151
+00:07:16,990 --> 00:07:18,985
+igual a falso,
+porque não quero embaralhar
+
+152
+00:07:18,985 --> 00:07:22,360
+o conjunto de avaliações,
+já que quero repetibilidade.
+
+153
+00:07:22,360 --> 00:07:25,305
+Também crio outra função aqui
+chamada print_rmse,
+
+154
+00:07:25,305 --> 00:07:27,930
+que imprime o RMSE do meu modelo,
+
+155
+00:07:27,930 --> 00:07:31,905
+chamando o nome dele
+e a função de entrada associada.
+
+156
+00:07:31,905 --> 00:07:34,595
+Para isso, vou criar as métricas.
+
+157
+00:07:34,595 --> 00:07:37,090
+Vou fazer model.evaluate
+do meu Estimator.
+
+158
+00:07:37,090 --> 00:07:39,530
+Lembre-se, meu Estimator
+está definido como modelo.
+
+159
+00:07:39,530 --> 00:07:41,400
+E vou passá-lo como
+função de entrada,
+
+160
+00:07:41,400 --> 00:07:44,530
+em que será a função de entrada que é
+passada para o print_rmse,
+
+161
+00:07:44,530 --> 00:07:46,600
+e vou fazer uma etapa.
+
+162
+00:07:48,520 --> 00:07:49,615
+O certo sobre isso
+
+163
+00:07:49,615 --> 00:07:52,170
+é que essa métrica está fora,
+
+164
+00:07:52,170 --> 00:07:53,480
+deveria ser dicionário.
+
+165
+00:07:53,480 --> 00:07:54,845
+É um problema de regressão.
+
+166
+00:07:54,845 --> 00:07:57,100
+Vou acabar com perda,
+
+167
+00:07:57,100 --> 00:07:59,850
+perda média e uma etapa global.
+
+168
+00:07:59,850 --> 00:08:04,120
+Vou imprimir o RMSE neste conjunto
+de dados, e a resposta será que
+
+169
+00:08:04,120 --> 00:08:05,950
+vou ter que acertar a raiz quadrada,
+
+170
+00:08:05,950 --> 00:08:08,615
+porque atualmente
+a perda média é apenas o MSE.
+
+171
+00:08:08,615 --> 00:08:10,770
+Do RMSE, verifiquei a raiz quadrada.
+
+172
+00:08:10,770 --> 00:08:13,965
+Além disso, você percebe que estou
+multiplicando pela escala aqui.
+
+173
+00:08:13,965 --> 00:08:18,635
+Então, posso voltar às unidades corretas
+de preço, o valor médio da casa.
+
+174
+00:08:18,635 --> 00:08:20,760
+Agora, vou equipar meu LinearReggressor.
+
+175
+00:08:20,760 --> 00:08:22,160
+Criei um diretório de saída,
+
+176
+00:08:22,160 --> 00:08:24,960
+é onde todos os meus arquivos
+serão salvos do treinamento,
+
+177
+00:08:24,960 --> 00:08:27,765
+como meus pontos de verificação,
+meus registros de eventos,
+
+178
+00:08:27,765 --> 00:08:30,370
+qualquer modelo salvo, por exemplo.
+
+179
+00:08:30,370 --> 00:08:33,429
+Quero remover para garantir
+um começo novo a cada vez.
+
+180
+00:08:33,429 --> 00:08:35,294
+Vamos remover tudo nessa árvore,
+
+181
+00:08:35,294 --> 00:08:37,620
+certifique-se de que é
+uma pasta limpa e recente.
+
+182
+00:08:37,620 --> 00:08:39,985
+Vou criar meu otimizador personalizado.
+
+183
+00:08:39,985 --> 00:08:41,850
+Esta é a LinearRegression.
+
+184
+00:08:41,850 --> 00:08:44,250
+Vou usar o otimizador líder regularizado,
+
+185
+00:08:44,250 --> 00:08:46,530
+já que normalmente é
+uma boa escolha para isso.
+
+186
+00:08:46,530 --> 00:08:49,280
+Vou ter uma taxa de aprendizado de 0,01,
+
+187
+00:08:49,280 --> 00:08:51,000
+e vou criar meu modelo.
+
+188
+00:08:51,000 --> 00:08:52,590
+Aqui estou criando meu Estimator,
+
+189
+00:08:52,590 --> 00:08:54,040
+será um LinearRegressor,
+
+190
+00:08:54,040 --> 00:08:56,730
+e estou passando o diretório de modelo.
+
+191
+00:08:56,730 --> 00:08:58,100
+Vou colocar meus itens
+
+192
+00:08:58,100 --> 00:09:01,450
+e aí a coluna de atributos, passo os
+valores das colunas de atributos.
+
+193
+00:09:01,450 --> 00:09:03,080
+Esses são os tensores para isso.
+
+194
+00:09:03,080 --> 00:09:07,050
+E meu otimizador será meu otimizador
+personalizado aqui [inaudível] líder.
+
+195
+00:09:07,050 --> 00:09:09,060
+Vou treinar por várias etapas.
+
+196
+00:09:09,060 --> 00:09:11,000
+Para isso, vou treinar centenas de vezes
+
+197
+00:09:11,000 --> 00:09:13,490
+ao contrário do frame de dados
+ou do tamanho do lote.
+
+198
+00:09:13,490 --> 00:09:16,140
+Isso significa que posso
+treinar por 100 períodos.
+
+199
+00:09:16,760 --> 00:09:18,565
+Em seguida, chamo model.train,
+
+200
+00:09:18,565 --> 00:09:20,140
+passando minha função de entrada,
+
+201
+00:09:20,140 --> 00:09:22,490
+especificamente minha função
+de entrada de treino,
+
+202
+00:09:22,490 --> 00:09:25,020
+e o número de etapas pode ser
+o número que criei aqui.
+
+203
+00:09:25,020 --> 00:09:26,150
+Isso treinará o modelo.
+
+204
+00:09:26,150 --> 00:09:29,300
+No final, vou imprimir
+o RMSE desse modelo.
+
+205
+00:09:29,300 --> 00:09:33,100
+Vou chamar minha
+função de entrada de avaliação,
+
+206
+00:09:33,100 --> 00:09:36,285
+assim, minhas funções de entrada
+de avaliação estarão definidas.
+
+207
+00:09:36,285 --> 00:09:38,600
+Como você pode ver,
+quando eu faço o treinamento,
+
+208
+00:09:38,600 --> 00:09:41,210
+tenho a configuração padrão,
+
+209
+00:09:41,210 --> 00:09:45,325
+e mudando isso, crio um ponto de
+verificação e começo o processo de treino.
+
+210
+00:09:45,325 --> 00:09:46,800
+Calculo a perda na etapa 1.
+
+211
+00:09:46,800 --> 00:09:49,540
+Parece que, isso é quantas etapas
+por segundo eu fiz,
+
+212
+00:09:49,540 --> 00:09:51,270
+e conforme o treino continua,
+
+213
+00:09:51,270 --> 00:09:53,140
+a perda está baixando.
+
+214
+00:09:53,140 --> 00:09:59,175
+Podemos ver que a minha perda média
+final de avaliação é de 0,93,
+
+215
+00:09:59,175 --> 00:10:01,590
+após 137 etapas globais,
+
+216
+00:10:01,590 --> 00:10:04,345
+e minha perda total é de 3.141.
+
+217
+00:10:04,345 --> 00:10:10,000
+E minha avaliação, multiplicando pela
+escala no meu conjunto de avaliações,
+
+218
+00:10:10,000 --> 00:10:14,315
+o RMSE é de US$ 96.583.
+
+219
+00:10:14,315 --> 00:10:17,855
+Lembre-se, RMSE é basicamente
+o desvio padrão dos seus resíduos.
+
+220
+00:10:17,855 --> 00:10:19,890
+Lembre-se, nos resíduos, está a diferença
+
+221
+00:10:19,890 --> 00:10:22,190
+entre sua previsão e o rótulo real.
+
+222
+00:10:22,190 --> 00:10:25,370
+Vamos ver se podemos
+fazer melhor com o DNNRegressor.
+
+223
+00:10:25,370 --> 00:10:27,095
+Tudo é o mesmo de antes,
+
+224
+00:10:27,095 --> 00:10:29,580
+exceto que desta vez
+estou usando o AdamOptimizer,
+
+225
+00:10:29,580 --> 00:10:31,920
+porque geralmente é ótimo usar no
+DNNReggressor
+
+226
+00:10:31,920 --> 00:10:33,850
+em vez do otimizador líder regularizado.
+
+227
+00:10:33,850 --> 00:10:38,100
+Também vou mudar do LinearRegressor
+para o DNNRegressor,
+
+228
+00:10:38,100 --> 00:10:41,250
+em que eu passo tudo como antes.
+
+229
+00:10:41,250 --> 00:10:45,310
+No entanto, vou adicionar minhas
+unidades ocultas e terei uma,
+
+230
+00:10:45,310 --> 00:10:46,865
+duas, três camadas aqui,
+
+231
+00:10:46,865 --> 00:10:49,250
+em que a primeira camada
+tem 100 neurônios ocultos.
+
+232
+00:10:49,250 --> 00:10:50,975
+A segunda camada tem 50,
+
+233
+00:10:50,975 --> 00:10:52,590
+e a última camada tem 20.
+
+234
+00:10:52,590 --> 00:10:54,755
+Também estou passando
+as colunas de atributos,
+
+235
+00:10:54,755 --> 00:10:56,370
+o otimizador que criei,
+
+236
+00:10:56,370 --> 00:10:58,215
+que está usando Adam dessa vez,
+
+237
+00:10:58,215 --> 00:11:01,035
+e, em seguida, um descarte de 10%.
+
+238
+00:11:01,035 --> 00:11:03,240
+Lembre-se, esta é a
+probabilidade de descarte
+
+239
+00:11:03,240 --> 00:11:06,420
+e não a probabilidade de manutenção,
+como é em outros isolamentos.
+
+240
+00:11:06,420 --> 00:11:09,500
+Também estou criando o número de etapas
+da mesma forma que antes,
+
+241
+00:11:09,500 --> 00:11:11,760
+estou treinando como antes
+e imprimi meu RMSE.
+
+242
+00:11:11,760 --> 00:11:13,730
+Vamos ver se isso pode melhorar.
+
+243
+00:11:13,730 --> 00:11:15,380
+Então, faz tudo como antes,
+
+244
+00:11:15,380 --> 00:11:18,100
+quando minha configuração
+padrão estava treinando.
+
+245
+00:11:18,100 --> 00:11:19,890
+Vamos ver quais são as etapas finais.
+
+246
+00:11:19,890 --> 00:11:22,830
+Então, a perda média
+do meu treinamento é 0,67.
+
+247
+00:11:22,830 --> 00:11:27,175
+Isso já é um bom sinal porque
+é mais baixa do que antes, 0,93.
+
+248
+00:11:27,175 --> 00:11:32,280
+Mas meu RMSE sobre isso é US$ 81.974.
+
+249
+00:11:32,280 --> 00:11:36,490
+Como você vê, eu tenho um desvio padrão
+muito menor comparado ao último,
+
+250
+00:11:36,490 --> 00:11:39,060
+o que significa que esse modelo
+está indo muito melhor.
+
+251
+00:11:39,060 --> 00:11:41,450
+É claro, você pode tornar isso
+mais complicado
+
+252
+00:11:41,450 --> 00:11:43,305
+usando algoritmos mais sofisticados,
+
+253
+00:11:43,305 --> 00:11:45,590
+o que serve para mostrar
+que uma rede neural pode
+
+254
+00:11:45,590 --> 00:11:49,050
+facilmente ter um desempenho muito melhor
+do que um LinearRegressor.
+
+255
+00:11:49,120 --> 00:11:52,090
+Por fim, o que podemos fazer é
+chamar isso no TensorBoard
+
+256
+00:11:52,077 --> 00:11:54,877
+e podemos ver como ele está progredindo.

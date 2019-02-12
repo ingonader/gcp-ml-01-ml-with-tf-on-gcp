@@ -1,0 +1,455 @@
+1
+00:00:00,410 --> 00:00:03,870
+Commençons par la première partie
+de ce module : la régularisation.
+
+2
+00:00:03,870 --> 00:00:06,390
+Souvenez-vous que le but
+de l'entraînement d'un modèle
+
+3
+00:00:06,390 --> 00:00:08,120
+est de minimiser la valeur de perte.
+
+4
+00:00:08,120 --> 00:00:09,975
+Si vous tracez une courbe de perte
+
+5
+00:00:09,975 --> 00:00:12,180
+sur les données d'entraînement et de test,
+
+6
+00:00:12,180 --> 00:00:14,115
+cela devrait ressembler à ceci.
+
+7
+00:00:14,115 --> 00:00:19,875
+Ce graphique représente la perte (axe Y)
+en fonction du temps (axe X).
+
+8
+00:00:19,875 --> 00:00:21,855
+Vous ne remarquez rien d'anormal ?
+
+9
+00:00:21,855 --> 00:00:25,735
+Oui, la valeur de la perte décroit dans
+le temps pour les données d'entraînement,
+
+10
+00:00:25,735 --> 00:00:29,650
+alors qu'à un certain point, elle repart
+à la hausse pour les données de test.
+
+11
+00:00:29,650 --> 00:00:31,050
+Ce n'est pas bon signe.
+
+12
+00:00:31,530 --> 00:00:34,575
+Nous avons clairement
+un problème de surapprentissage ici,
+
+13
+00:00:35,015 --> 00:00:38,490
+vraisemblablement imputable
+au nombre d'itérations d'entraînement.
+
+14
+00:00:38,490 --> 00:00:39,875
+Comment régler ce problème ?
+
+15
+00:00:40,135 --> 00:00:43,680
+Réduire le nombre d'itérations
+d'entraînement et arrêter plus tôt ?
+
+16
+00:00:43,680 --> 00:00:45,800
+L'arrêt prématuré est une possibilité,
+
+17
+00:00:45,800 --> 00:00:47,820
+mais il doit en exister de meilleures.
+
+18
+00:00:48,330 --> 00:00:51,135
+C'est ici que
+la régularisation entre en jeu.
+
+19
+00:00:51,435 --> 00:00:55,115
+Laissons notre intuition nous guider
+et servons-nous de TensorFlow Playground.
+
+20
+00:00:55,115 --> 00:00:59,050
+Normalement, vous avez vu et utilisé ce
+"terrain de jeu" dans les cours précédents.
+
+21
+00:00:59,050 --> 00:01:00,870
+Pour rappel,
+
+22
+00:01:00,870 --> 00:01:03,655
+Tensorflow Playground est
+un petit outil pratique
+
+23
+00:01:03,655 --> 00:01:06,835
+pour visualiser la manière
+dont les réseaux de neurones apprennent.
+
+24
+00:01:06,835 --> 00:01:10,005
+Nous l'utilisons intensivement
+tout au long de cette spécialisation
+
+25
+00:01:10,005 --> 00:01:12,675
+pour vous aider
+à saisir les concepts de façon intuitive.
+
+26
+00:01:12,675 --> 00:01:15,645
+Permettez-moi d'attirer
+votre attention sur l'écran.
+
+27
+00:01:15,645 --> 00:01:18,030
+Il se passe quelque chose d'étrange ici.
+
+28
+00:01:18,680 --> 00:01:22,680
+Vous avez remarqué la région
+en bas à gauche qui tire vers le bleu ?
+
+29
+00:01:22,680 --> 00:01:25,170
+Rien dans les données
+ne fait référence au bleu.
+
+30
+00:01:25,170 --> 00:01:28,860
+Le choix du modèle est un peu fou.
+
+31
+00:01:29,610 --> 00:01:31,140
+Pourquoi cela, à votre avis ?
+
+32
+00:01:31,520 --> 00:01:36,310
+Observez l'épaisseur des cinq lignes
+allant de l'entrée à la sortie.
+
+33
+00:01:36,310 --> 00:01:40,050
+Ces lignes indiquent le poids relatif
+de chacune des cinq caractéristiques.
+
+34
+00:01:40,050 --> 00:01:44,645
+Les lignes émanant de X1 et X2
+sont bien plus épaisses
+
+35
+00:01:44,645 --> 00:01:47,330
+que celles provenant
+des croisements de caractéristiques.
+
+36
+00:01:47,330 --> 00:01:51,050
+Ces croisements de caractéristiques
+contribuent donc beaucoup moins au modèle
+
+37
+00:01:51,050 --> 00:01:53,410
+que les caractéristiques
+normales non croisées.
+
+38
+00:01:53,410 --> 00:01:55,930
+La suppression de toutes
+les caractéristiques croisées
+
+39
+00:01:55,930 --> 00:01:57,170
+donne un modèle plus sain.
+
+40
+00:01:57,170 --> 00:01:58,925
+Essayez cela par vous-même.
+
+41
+00:01:58,925 --> 00:02:02,730
+Vous pourrez voir que la limite de courbe
+suggérant un surapprentissage disparaît
+
+42
+00:02:02,730 --> 00:02:05,680
+et que la valeur de la perte converge
+pour les données de test.
+
+43
+00:02:05,680 --> 00:02:10,555
+Après 1 000 itérations, cette valeur
+devrait être légèrement inférieure
+
+44
+00:02:10,555 --> 00:02:13,645
+à celle obtenue en conservant
+les croisements de caractéristiques.
+
+45
+00:02:14,055 --> 00:02:16,810
+Notez toutefois que,
+selon l'ensemble de données concerné,
+
+46
+00:02:16,810 --> 00:02:18,620
+les résultats peuvent un peu varier.
+
+47
+00:02:18,620 --> 00:02:22,830
+Dans cet exercice, nous avons surtout
+des données linéaires et du "bruit".
+
+48
+00:02:23,520 --> 00:02:25,870
+Si votre modèle est trop compliqué,
+
+49
+00:02:25,870 --> 00:02:27,960
+notamment s'il comporte
+trop de croisements,
+
+50
+00:02:27,960 --> 00:02:31,870
+vous avez la possibilité de l'adapter
+au bruit pour les données d'entraînement.
+
+51
+00:02:31,870 --> 00:02:35,910
+Mais souvent, cela implique que le modèle
+sera peu efficace sur les données de test.
+
+52
+00:02:35,910 --> 00:02:38,950
+L'arrêt prématuré ne sera
+d'aucune aide dans un tel cas,
+
+53
+00:02:38,950 --> 00:02:42,750
+nous devons avant tout maîtriser
+la complexité du modèle.
+
+54
+00:02:42,750 --> 00:02:46,145
+Mais comment pouvons-nous mesurer
+la complexité du modèle et y pallier ?
+
+55
+00:02:46,145 --> 00:02:49,770
+Nous avons constaté que les modèles plus
+simples sont généralement meilleurs.
+
+56
+00:02:49,770 --> 00:02:53,340
+Il n'est pas nécessaire d'utiliser tous
+les ingrédients à votre disposition.
+
+57
+00:02:53,340 --> 00:02:57,540
+Il existe tout un champ autour de cette
+théorie de la généralisation, ou G Theory,
+
+58
+00:02:57,540 --> 00:03:01,440
+qui a pour objet
+de définir le cadre statistique.
+
+59
+00:03:01,440 --> 00:03:05,319
+La façon la plus simple de considérer
+cela est de faire appel à l'intuition,
+
+60
+00:03:05,319 --> 00:03:09,270
+selon les principes énoncés
+au XIVe siècle par William Ockham.
+
+61
+00:03:09,270 --> 00:03:11,130
+Lorsque nous entraînerons notre modèle,
+
+62
+00:03:11,130 --> 00:03:14,470
+nous utiliserons le principe du rasoir
+d'Ockham comme guide heuristique
+
+63
+00:03:14,470 --> 00:03:16,450
+pour privilégier des modèles plus simples
+
+64
+00:03:16,450 --> 00:03:19,020
+avec moins d'hypothèses
+sur les données d'entraînement.
+
+65
+00:03:19,020 --> 00:03:22,470
+Parlons de certaines des techniques
+de régularisation les plus courantes,
+
+66
+00:03:22,470 --> 00:03:24,630
+qui nous aideront à appliquer ce principe.
+
+67
+00:03:24,630 --> 00:03:27,745
+L'idée est de pénaliser
+la complexité du modèle.
+
+68
+00:03:28,055 --> 00:03:30,930
+Jusqu'à présent,
+dans notre processus d'entraînement,
+
+69
+00:03:30,930 --> 00:03:34,310
+nous avons tenté de minimiser la perte
+des données fournies au modèle.
+
+70
+00:03:34,310 --> 00:03:37,815
+Nous devons trouver un équilibre
+entre cela et la complexité du modèle.
+
+71
+00:03:37,995 --> 00:03:41,040
+Avant de parler de la façon
+de mesurer la complexité d'un modèle,
+
+72
+00:03:41,040 --> 00:03:45,570
+attachons-nous à comprendre pourquoi
+équilibrer la complexité et la perte.
+
+73
+00:03:45,570 --> 00:03:50,625
+À vrai dire, les modèles trop simplifiés
+sont parfaitement inutiles.
+
+74
+00:03:50,625 --> 00:03:52,800
+Si vous poussez
+la simplification à l’extrême,
+
+75
+00:03:52,800 --> 00:03:54,455
+vous vous retrouverez sans modèle.
+
+76
+00:03:54,455 --> 00:03:56,610
+Vous devez trouver le juste équilibre
+
+77
+00:03:56,610 --> 00:04:00,110
+entre simplicité et précision de
+l'ajustement des données d'entraînement.
+
+78
+00:04:00,110 --> 00:04:01,920
+J'espère que vous comprenez maintenant
+
+79
+00:04:01,920 --> 00:04:05,740
+pourquoi cette approche repose davantage
+sur des principes que l'arrêt prématuré.
+
+80
+00:04:05,740 --> 00:04:08,705
+La régularisation est l'un
+des principaux domaines de recherche
+
+81
+00:04:08,705 --> 00:04:10,185
+en matière de machine learning.
+
+82
+00:04:10,185 --> 00:04:13,271
+De nombreuses techniques existent déjà,
+et d'autres sont à venir.
+
+83
+00:04:13,271 --> 00:04:15,390
+Nous avons déjà mentionné
+l'arrêt prématuré.
+
+84
+00:04:15,390 --> 00:04:18,634
+Nous avons également commencé
+à explorer le groupe de méthodes appelé
+
+85
+00:04:18,634 --> 00:04:20,914
+"sanctions normatives
+liées aux paramètres".
+
+86
+00:04:20,914 --> 00:04:24,335
+Il existe également des méthodes
+d'augmentation des ensembles de données,
+
+87
+00:04:24,335 --> 00:04:26,740
+de résistance au bruit,
+de représentation éparse,
+
+88
+00:04:26,740 --> 00:04:27,900
+et bien d'autres encore.
+
+89
+00:04:29,040 --> 00:04:33,420
+Dans ce module, nous examinerons en détail
+les méthodes de régularisation L1 et L2
+
+90
+00:04:33,420 --> 00:04:36,765
+du groupe de techniques de "sanctions
+normatives liées aux paramètres".
+
+91
+00:04:36,765 --> 00:04:38,520
+Mais avant cela,
+
+92
+00:04:38,520 --> 00:04:41,420
+je tiens à vous rappeler
+quels types de problèmes
+
+93
+00:04:41,420 --> 00:04:43,160
+la régularisation peut résoudre.
+
+94
+00:04:43,160 --> 00:04:45,320
+Le terme "régularisation" fait référence
+
+95
+00:04:45,320 --> 00:04:47,990
+à toute technique pouvant aider
+à généraliser un modèle.
+
+96
+00:04:47,990 --> 00:04:51,720
+Un modèle généralisé est efficace
+aussi bien sur les données d'entraînement
+
+97
+00:04:51,720 --> 00:04:53,830
+que sur les données de test inconnues.

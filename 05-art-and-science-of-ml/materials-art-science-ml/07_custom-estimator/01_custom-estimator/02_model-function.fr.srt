@@ -1,0 +1,477 @@
+1
+00:00:00,000 --> 00:00:03,350
+Imaginons que vous lisiez
+un rapport de recherche
+
+2
+00:00:03,350 --> 00:00:05,270
+dans lequel il est question d'un modèle
+
+3
+00:00:05,270 --> 00:00:08,975
+permettant de prédire les valeurs
+futures d'une série temporelle.
+
+4
+00:00:08,975 --> 00:00:10,855
+On vous fournit même le code,
+
+5
+00:00:10,855 --> 00:00:14,485
+lequel fait appel à des concepts
+étranges tels que LSTMCell,
+
+6
+00:00:14,485 --> 00:00:18,285
+à des fonctions TensorFlow
+inconnues telles que static_rnn,
+
+7
+00:00:18,285 --> 00:00:23,155
+et même à quelques opérations TensorFlow
+de bas niveau telles que matmul.
+
+8
+00:00:23,155 --> 00:00:26,010
+Ne nous soucions pas de savoir
+quelle en est la signification
+
+9
+00:00:26,010 --> 00:00:27,305
+ni comment cela fonctionne.
+
+10
+00:00:27,305 --> 00:00:31,770
+Nous verrons les modèles de séquence
+dans le neuvième cours de la spécialisation.
+
+11
+00:00:31,770 --> 00:00:36,520
+Pour le moment, nous allons juste traiter
+cette fonction comme une boîte noire.
+
+12
+00:00:36,520 --> 00:00:39,755
+En gros, l'entrée est une série temporelle,
+
+13
+00:00:39,755 --> 00:00:42,715
+un tableau de valeurs
+organisées temporellement.
+
+14
+00:00:43,505 --> 00:00:47,630
+N_INPUTS est une durée
+de cette série temporelle.
+
+15
+00:00:47,630 --> 00:00:50,720
+predictions constitue la sortie du modèle.
+
+16
+00:00:50,720 --> 00:00:54,235
+Il y a N_OUTPUTS nombres
+dans le tableau des sorties.
+
+17
+00:00:54,235 --> 00:00:57,742
+Ils représentent les valeurs futures
+de la série temporelle
+
+18
+00:00:57,742 --> 00:01:00,280
+prédites par ce modèle.
+
+19
+00:01:00,280 --> 00:01:04,025
+Vous disposez donc d'un modèle
+que vous souhaitez entraîner.
+
+20
+00:01:04,025 --> 00:01:08,315
+Remarquez ici que nous avons
+précisément le modèle,
+
+21
+00:01:08,315 --> 00:01:10,410
+les formules mathématiques si vous préférez.
+
+22
+00:01:10,410 --> 00:01:12,240
+Nous devons encore lire les données,
+
+23
+00:01:12,240 --> 00:01:15,480
+effectuer l'entraînement,
+procéder à l'évaluation, etc.
+
+24
+00:01:15,480 --> 00:01:17,722
+Et nous voulons faire cela
+de façon distribuée
+
+25
+00:01:17,722 --> 00:01:19,455
+avec une tolérance aux pannes.
+
+26
+00:01:19,455 --> 00:01:22,375
+Nous voulons ajouter l'ingénierie.
+
+27
+00:01:22,375 --> 00:01:25,895
+Nous voulons naturellement encapsuler cela
+dans le framework de l'Estimator
+
+28
+00:01:25,895 --> 00:01:28,850
+puisque c'est ainsi que l'on obtient
+un entraînement distribué,
+
+29
+00:01:28,850 --> 00:01:31,095
+des prédictions mises à l'échelle, etc.
+
+30
+00:01:31,095 --> 00:01:33,875
+Nous allons donc voir comment faire cela.
+
+31
+00:01:33,875 --> 00:01:38,745
+Il nous faut tout d'abord regarder
+la fonction train_and_evaluate.
+
+32
+00:01:38,745 --> 00:01:45,830
+Remarquez qu'elle a trois paramètres :
+estimator, train_spec, eval_spec.
+
+33
+00:01:45,830 --> 00:01:50,780
+train_spec et eval_spec sont les mêmes
+que dans un Estimator standardisé.
+
+34
+00:01:50,780 --> 00:01:53,992
+Ils contrôlent le mode
+d'alimentation en données d'entrée
+
+35
+00:01:53,992 --> 00:01:56,375
+avec la fonction d'entrée
+et l'ensemble de données.
+
+36
+00:01:56,375 --> 00:01:59,320
+Ils indiquent également
+la durée de l'entraînement,
+
+37
+00:01:59,320 --> 00:02:02,910
+la fréquence de l'évaluation
+et quand procéder à l'exportation.
+
+38
+00:02:02,910 --> 00:02:04,600
+La différence réside ici
+
+39
+00:02:04,600 --> 00:02:09,380
+dans le premier paramètre
+de train_and_evaluate : l'Estimator.
+
+40
+00:02:09,380 --> 00:02:13,600
+Précédemment, nous aurions créé un Estimator
+en créant un régresseur linéaire,
+
+41
+00:02:13,600 --> 00:02:18,030
+un régresseur de réseau de neurones profond,
+un classificateur linéaire, etc.
+
+42
+00:02:18,030 --> 00:02:21,855
+Nous aurions créé
+un Estimator standardisé (ou prédéfini).
+
+43
+00:02:21,855 --> 00:02:26,300
+Maintenant toutefois, nous créons
+un Estimator de classe de base.
+
+44
+00:02:26,300 --> 00:02:32,640
+Remarquez que je ne définis l'Estimator
+qu'avec tf.estimators.Estimator.
+
+45
+00:02:32,640 --> 00:02:36,815
+L'Estimator de classe de base
+a deux paramètres.
+
+46
+00:02:36,815 --> 00:02:40,180
+Le deuxième paramètre, tout comme
+avec les Estimators standardisés,
+
+47
+00:02:40,180 --> 00:02:42,357
+indique où enregistrer
+les points de contrôle
+
+48
+00:02:42,357 --> 00:02:44,275
+(le répertoire de sortie).
+
+49
+00:02:44,275 --> 00:02:48,560
+Le premier paramètre correspond
+à la fonction de modèle.
+
+50
+00:02:48,560 --> 00:02:53,740
+À quoi ressemble
+cette fonction de modèle (myfunc) ?
+
+51
+00:02:53,740 --> 00:02:57,510
+myfunc est un EstimatorSpec.
+
+52
+00:02:58,890 --> 00:03:06,705
+Je veux dire par là que myfunc affiche
+un tf.estimator.EstimatorSpec.
+
+53
+00:03:06,705 --> 00:03:11,410
+Elle a trois paramètres :
+features, targets et mode.
+
+54
+00:03:11,410 --> 00:03:14,380
+Nous connaissons features et targets.
+
+55
+00:03:14,380 --> 00:03:15,620
+C'est ce qui est affiché,
+
+56
+00:03:15,620 --> 00:03:18,955
+par exemple par une fonction
+d'entrée d'entraînement.
+
+57
+00:03:18,955 --> 00:03:21,600
+features est
+un dictionnaire de caractéristiques.
+
+58
+00:03:21,600 --> 00:03:28,700
+Dans ce cas, j'extrais le Tensor
+correspondant à INCOL de ce dictionnaire.
+
+59
+00:03:28,700 --> 00:03:31,080
+targets est simplement l'étiquette,
+
+60
+00:03:31,080 --> 00:03:35,780
+et correspond donc à ce qui est affiché
+par la fonction d'entrée d'entraînement.
+
+61
+00:03:35,780 --> 00:03:39,040
+Trois valeurs permettent de définir le mode
+
+62
+00:03:39,040 --> 00:03:41,215
+(entraînement, évaluation ou prédiction).
+
+63
+00:03:41,215 --> 00:03:45,325
+Nous allons voir dans un instant pourquoi
+vous pouvez souhaiter utiliser ce mode.
+
+64
+00:03:45,325 --> 00:03:48,010
+À partir de ces trois valeurs d'entrée,
+
+65
+00:03:48,010 --> 00:03:54,690
+la tâche de myfunc consiste à créer
+et à afficher un EstimatorSpec.
+
+66
+00:03:54,690 --> 00:03:57,900
+Il y a six éléments dans un EstimatorSpec.
+
+67
+00:03:57,900 --> 00:04:02,025
+Le premier paramètre (mode) peut
+tout simplement n'effectuer aucun traitement.
+
+68
+00:04:02,025 --> 00:04:04,990
+Il ne fait que transmettre ce qu'il reçoit.
+
+69
+00:04:04,990 --> 00:04:10,390
+Le deuxième paramètre (predictions)
+correspond aux sorties du modèle.
+
+70
+00:04:10,390 --> 00:04:13,770
+Ce doit être un dictionnaire,
+
+71
+00:04:13,770 --> 00:04:17,579
+et il doit fournir un nom de clé
+ainsi que le Tensor correspondant.
+
+72
+00:04:17,579 --> 00:04:24,765
+Ici, predictions_dict consiste simplement
+en une clé, que j'appelle "predicted".
+
+73
+00:04:24,765 --> 00:04:25,760
+Quant au Tensor,
+
+74
+00:04:25,760 --> 00:04:31,360
+il s'agit bien sûr de la sortie
+du modèle du rapport de recherche.
+
+75
+00:04:31,360 --> 00:04:35,775
+Nous utilisons les prédictions
+pour créer les sorties exportées.
+
+76
+00:04:35,775 --> 00:04:41,215
+L'idée est que nous pourrions exporter
+autre chose que simplement les prédictions
+
+77
+00:04:41,215 --> 00:04:41,916
+(par exemple,
+
+78
+00:04:41,916 --> 00:04:45,648
+exporter une représentation vectorielle
+continue entraînée depuis le modèle).
+
+79
+00:04:45,648 --> 00:04:47,410
+C'est à ce niveau que vous le feriez,
+
+80
+00:04:47,410 --> 00:04:51,485
+en spécifiant une clé
+et le Tensor correspondant.
+
+81
+00:04:51,485 --> 00:04:55,875
+Regardons d'autres éléments
+constitutifs de l'EstimatorSpec : la perte,
+
+82
+00:04:55,875 --> 00:05:00,230
+l'opération d'entraînement et l'opération
+de calcul des statistiques d'évaluation.
+
+83
+00:05:00,230 --> 00:05:06,200
+L'opération d'entraînement ne doit être
+effectuée que si le mode est TRAIN.
+
+84
+00:05:06,200 --> 00:05:12,085
+Les statistiques d'évaluation ne doivent être
+calculées que si le mode est EVAL.
+
+85
+00:05:12,085 --> 00:05:13,610
+Donc, je définis la perte (loss)
+
+86
+00:05:13,610 --> 00:05:15,520
+comme étant l'erreur quadratique moyenne
+
+87
+00:05:15,520 --> 00:05:19,470
+calculée à partir de targets
+(les étiquettes) et de predictions.
+
+88
+00:05:19,470 --> 00:05:21,230
+L'opération d'entraînement (train_op)
+
+89
+00:05:21,230 --> 00:05:23,840
+consiste en l'optimisation
+de la fonction loss
+
+90
+00:05:23,840 --> 00:05:27,670
+avec, dans ce cas, la descente
+de gradient stochastique (SGD).
+
+91
+00:05:27,670 --> 00:05:30,482
+C'est vraisemblablement
+parce que c'est ce qui était indiqué
+
+92
+00:05:30,482 --> 00:05:33,685
+dans la description du modèle
+figurant dans le rapport de recherche.
+
+93
+00:05:33,685 --> 00:05:36,255
+eval_metric_ops est un dictionnaire
+
+94
+00:05:36,255 --> 00:05:39,740
+contenant toutes les statistiques
+que nous voulons évaluer.
+
+95
+00:05:39,740 --> 00:05:43,820
+Ici, je ne calcule qu'une racine carrée
+de l'erreur quadratique moyenne.
+
+96
+00:05:43,820 --> 00:05:48,810
+Pendant les prédictions, aucune
+de ces opérations ne doit être exécutée.
+
+97
+00:05:48,810 --> 00:05:52,830
+Pourquoi ? Parce que
+nous n'aurons pas d'étiquette.
+
+98
+00:05:52,830 --> 00:05:57,850
+Nous utilisons donc simplement
+"None" pour toutes ces opérations.
+
+99
+00:05:57,850 --> 00:05:59,430
+Donc, en résumé,
+
+100
+00:05:59,430 --> 00:06:03,420
+nous appelons train_and_evaluate
+avec un Estimator de classe de base
+
+101
+00:06:03,420 --> 00:06:07,145
+en transmettant une fonction
+qui retourne un EstimatorSpec.
+
+102
+00:06:07,145 --> 00:06:10,671
+Et c'est tout. Nous avons
+un Estimator personnalisé.

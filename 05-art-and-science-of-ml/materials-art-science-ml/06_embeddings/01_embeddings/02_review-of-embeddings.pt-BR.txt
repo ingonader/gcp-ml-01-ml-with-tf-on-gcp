@@ -1,0 +1,63 @@
+Você viu as incorporações
+brevemente no último curso junto com os cruzamentos
+de recursos, mas elas estão em todo lugar
+no aprendizado de máquina de hoje e não se limitam a cruzamentos de
+recursos ou a dados estruturados. Você as usará em modelos
+de imagem e texto. Vamos recapitular como
+entendemos as incorporações. Podemos criar um modelo
+de aprendizado de máquina para prever algo
+sobre o tráfego, talvez o tempo até
+um veículo chegar a um cruzamento, e temos
+várias entradas no nosso modelo. Olhamos especificamente
+entradas categóricas: hora do dia e dia da semana. Dissemos que um
+modelo seria melhorado se, em vez de tratar o dia e a hora
+como entradas independentes, nós as concatenássemos para criar
+um cruzamento de recursos. Dissemos que, se usarmos um
+número grande de intervalos de hash, podemos ter a confiança
+de que cada intervalo contém uma
+combinação hora/dia. Foi aí que apresentamos
+as incorporações. Dissemos que se, em vez de
+codificar o cruzamento e deixar, pudéssemos transferir
+para uma camada densa e treinar o modelo
+para prever o tráfego, essa camada densa, mostrada pelos nós
+amarelo e verde, cria uma incorporação. As incorporações
+são valores reais, porque são uma soma
+dos valores de cruzamentos. É preciso ver que os pesos
+da camada de incorporação, formada pelos nós
+amarelo e verde, são aprendidos nos dados. O ponto é que, ao treinar esses
+pesos em um conjunto de dados para resolver um problema útil,
+algo interessante ocorre. O cruzamento de hora do dia tem 68 valores únicos,
+mas nós forçamos o valor a ser representado
+por dois números reais. Então, o modelo aprende
+como incorporar o cruzamento em um espaço
+dimensional menor. Sugerimos que talvez a
+caixa verde tenda a capturar o tráfego de pedestres,
+e a amarela o tráfego de veículos, mas não importa o que
+essas dimensões capturam. O importante é que as
+informações da hora do dia e do dia da semana dos
+cruzamentos de tráfego na cidade são unidos em
+apenas dois números. Se você fizer isso em um conjunto
+de dados grande e bom o bastante, esses números têm
+uma propriedade útil: tempos semelhantes
+em termos de tráfego recebem valores
+reais próximos, e tempos diferentes
+em termos de tráfego recebem valores
+reais diferentes. Depois, vimos como criar
+uma incorporação no TensorFlow. Para criar, usamos o método embedding_column
+em tf.feature_column e transferimos a coluna categórica
+que você quer incorporar. Isso funciona com qualquer
+coluna categórica, não apenas um
+cruzamento de recursos. Você pode incorporar
+qualquer coluna categórica. Finalmente, vimos como é
+rápido usar as incorporações aprendidas em um problema e
+aplicá-las em um problema semelhante. Talvez você tenha visto como
+representar a hora e o dia com dois valores reais ao treinar
+com os dados de tráfego de Londres. Como um início rápido,
+você pode usar os mesmos pesos para começar o
+modelo de Frankfurt. Você pode ainda usar
+a incorporação aprendida no problema de tráfego para prever
+a audiência de um programa de TV. A ideia é que o tráfego e a audiência dependem
+do mesmo fator latente: as pessoas estão na rua
+ou em casa ou no trabalho? Transferir o aprendizado
+pode funcionar em problemas que parecem diferentes, contanto que eles
+compartilhem os mesmos fatores latentes.

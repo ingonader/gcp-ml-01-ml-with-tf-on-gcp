@@ -1,0 +1,224 @@
+1
+00:00:00,000 --> 00:00:01,710
+Dans la leçon précédente,
+
+2
+00:00:01,710 --> 00:00:06,460
+nous avons vu comment créer des RVC
+manuellement à l'aide de règles.
+
+3
+00:00:06,460 --> 00:00:07,990
+Nous avons utilisé des attributs
+
+4
+00:00:07,990 --> 00:00:12,180
+tels que l'âge moyen du spectateur
+et le nombre total de places vendues
+
+5
+00:00:12,180 --> 00:00:13,860
+pour faire passer nos films
+
+6
+00:00:13,860 --> 00:00:21,260
+de ce qui aurait été un espace à 500 000
+dimensions à un espace bidimensionnel.
+
+7
+00:00:21,260 --> 00:00:23,670
+Dans le cas de notre RVC bidimensionnelle,
+
+8
+00:00:23,670 --> 00:00:25,642
+nous avons opté pour des axes
+
+9
+00:00:25,642 --> 00:00:28,545
+que nous pourrions nommer "Âge"
+et "Nombre de places vendues",
+
+10
+00:00:28,545 --> 00:00:33,560
+avec les extrémités "Enfant" et "Adulte",
+ainsi que "Art et essai" et "Blockbuster".
+
+11
+00:00:33,560 --> 00:00:38,050
+Il n'est toutefois pas essentiel
+que ces axes aient des noms.
+
+12
+00:00:38,050 --> 00:00:43,085
+Ce qui est important, c'est que
+nous soyons passés de 500 000 à 2.
+
+13
+00:00:43,085 --> 00:00:48,350
+Notez que nous l'avons fait en regardant
+les attributs des films manuellement.
+
+14
+00:00:48,350 --> 00:00:54,735
+Quel est l'impact de la réduction
+des dimensions de 500 000 à 2 ?
+
+15
+00:00:54,735 --> 00:00:58,327
+La représentation vectorielle continue 2D
+que nous avons pour chaque film
+
+16
+00:00:58,327 --> 00:01:01,360
+est associée à deux valeurs réelles,
+
+17
+00:01:01,360 --> 00:01:06,465
+de sorte que chaque film peut être représenté
+par un point dans un espace 2D.
+
+18
+00:01:06,465 --> 00:01:08,965
+Pourquoi devons-nous créer cette RVC ?
+
+19
+00:01:08,965 --> 00:01:11,770
+C'est notamment requis
+pour la raison essentielle suivante :
+
+20
+00:01:11,770 --> 00:01:13,705
+imaginons que nous entraînons un modèle
+
+21
+00:01:13,705 --> 00:01:17,585
+pour prédire
+si un utilisateur va aimer un film.
+
+22
+00:01:17,585 --> 00:01:25,134
+Il est plus facile d'entraîner un modèle
+ayant d entrées qu'un modèle qui en a N.
+
+23
+00:01:25,134 --> 00:01:30,060
+Souvenez-vous que N est très supérieur à d.
+
+24
+00:01:30,060 --> 00:01:35,955
+Moins il y a de nœuds d'entrée,
+moins il y a de pondérations à optimiser.
+
+25
+00:01:35,955 --> 00:01:39,320
+Cela signifie
+que le modèle s'entraîne plus rapidement,
+
+26
+00:01:39,320 --> 00:01:42,685
+et que le risque de surapprentissage
+est moins important.
+
+27
+00:01:42,685 --> 00:01:46,890
+Le recours à une RVC est
+une façon de simplifier le problème.
+
+28
+00:01:46,890 --> 00:01:50,310
+Toutefois, nous devons procéder
+à cette réduction des dimensions
+
+29
+00:01:50,310 --> 00:01:53,840
+de façon à ne pas perdre d'informations.
+
+30
+00:01:53,840 --> 00:01:59,030
+Comment pouvons-nous
+trouver une RVC appropriée ?
+
+31
+00:01:59,030 --> 00:02:01,672
+Elle peut être apprise à partir des données
+
+32
+00:02:01,672 --> 00:02:04,625
+dans le cadre du processus
+d'entraînement normal.
+
+33
+00:02:04,625 --> 00:02:07,770
+Il n'est pas nécessaire
+d'avoir recours à un processus distinct.
+
+34
+00:02:07,770 --> 00:02:14,630
+Nous représentons l'entrée d'origine
+sous la forme d'un tableau encodé en one-hot,
+
+35
+00:02:14,630 --> 00:02:18,390
+puis nous l'envoyons via une couche
+de représentation vectorielle continue.
+
+36
+00:02:18,390 --> 00:02:19,627
+Avec cette approche,
+
+37
+00:02:19,627 --> 00:02:26,111
+la couche de RVC est simplement une couche
+cachée ayant une unité par dimension.
+
+38
+00:02:26,111 --> 00:02:29,060
+Étant donné que nous entraînons
+un modèle avec des étiquettes,
+
+39
+00:02:29,060 --> 00:02:33,755
+la représentation vectorielle continue
+est modifiée en fonction de ces étiquettes.
+
+40
+00:02:33,755 --> 00:02:35,142
+Intuitivement,
+
+41
+00:02:35,142 --> 00:02:38,956
+les unités cachées découvrent
+comment organiser les éléments
+
+42
+00:02:38,956 --> 00:02:41,060
+dans l'espace à d dimensions
+
+43
+00:02:41,060 --> 00:02:46,250
+de façon que l'objectif final
+puisse être optimisé au mieux.
+
+44
+00:02:46,250 --> 00:02:48,555
+Il y a toutefois un petit problème.
+
+45
+00:02:48,555 --> 00:02:53,040
+Quelle est la quantité de mémoire
+requise pour le stockage des entrées ?
+
+46
+00:02:53,040 --> 00:02:58,670
+Nous avons une variable d'entrée
+catégorielle, mais 500 000 valeurs possibles.
+
+47
+00:02:58,670 --> 00:03:03,520
+Nous devons donc
+créer 500 000 nœuds d'entrée
+
+48
+00:03:03,520 --> 00:03:10,020
+et avoir recours aux mathématiques
+des matrices pour d'énormes matrices.

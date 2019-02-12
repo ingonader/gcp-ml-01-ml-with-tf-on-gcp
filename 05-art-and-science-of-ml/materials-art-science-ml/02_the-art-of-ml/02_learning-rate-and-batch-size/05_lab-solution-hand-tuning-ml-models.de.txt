@@ -1,0 +1,57 @@
+In diesem Lab haben wir
+Hyperparameter manuell optimiert. Sehen wir uns die Ergebnisse an. Wir setzen
+eine einfache lineare Regression ein, um Wohnungspreise
+auf Basis der Zimmeranzahl vorherzusagen. Wir bewerten
+die Modellgenauigkeit mithilfe des RMSE und passen zur Verbesserung des RMSE
+die Lernrate und die Batchgröße an. Die Daten für dieses Lab stammen aus
+einer Erhebung von 1990 in Kalifornien. Sehen Sie sich nun
+das Python-Notebook hier an. Am Anfang lade ich nur 
+einige Bibliotheken. Hier erhalte ich eine Warnung, 
+die ignoriert werden kann. Je nach verwendeter Version
+erhalten Sie diese möglicherweise nicht. Dann lade ich von dieser öffentlichen URL
+mein Dataset in ein Pandas-DataFrame. Danach untersuchen wir die Daten und sehen uns
+einige Datensätze und Statistiken an. Ein Problem dieses Datasets
+besteht in der Granularität. Sie geht auf die Ebene der Häuserblocks
+anstelle der Haushalte hinunter. Das müssen wir vor der Verwendung beheben. Dazu erstellen wir eine neue Datenspalte
+auf Basis der Gesamtanzahl der Zimmer, die auf Blockebene vorliegt,
+geteilt durch die Haushalte in den Blocks. So erhalten wir
+die ungefähre Zimmeranzahl pro Haushalt. Mit "describe" 
+erhalte ich diese Statistik. Bevor wir das Modell trainieren, sehen wir uns das Dataset an und überlegen, was wir machen. Diese Spalte mit der Zimmeranzahl
+haben wir gerade erstellt, indem wir
+zwei vorhandene Spalten dividiert haben. Dies ist unser Merkmal,
+im Grunde unsere Modelleingabe. Mit unserem Modell sagen wir
+das mittlere Alter von Haushalten vorher. Über diese Spalte erhalten wir das Label. In dieser Zelle definiere ich
+die Voraussetzung für den Trainingsstart. Die Trainingsfunktion, die Eingabefunktion,
+liest aus dem DataFrame. Die Zimmeranzahl ist das Merkmal und der mittlere Wohnungswert das Label. Hier definiere ich das Ausgabeverzeichnis. Ich sorge dafür, dass
+der Inhalt dieses Ausgabeverzeichnisses bei jedem Start entfernt wird. Wir möchten
+eine lineare Regression verwenden, was hier passiert. Ich verwende "LinearRegressor"
+aus der TensorFlow-Bibliothek. Ich übergebe das Merkmal und
+das Ausgabeverzeichnis an den Estimator und starte hier das Training. Ich beurteile anhand des RMSE
+die Leistung unseres Modells. Das passiert hier. Wenn ich die Zelle ausführe, wird für den RMSE
+eine sehr große Zahl ausgegeben. Das ist seltsam, da der RMSE
+nur einige Hundert betragen sollte und nicht so viel wie hier. Hier findet eine Skalierung statt. Die Werte sind auf 100.000 skaliert, was wir übernehmen müssen, damit der RMSE 
+entsprechend berechnet wird. Das mache ich in der nächste Zelle. Ich teile einfach
+den Y-Wert durch die Skalierung, der Rest bleibt unverändert. Wenn ich dies ausführe, erhalte ich 
+eine Fehlerrate von 7,4 Prozent, was für den Anfang gut ist. Wir können sie aber noch verbessern. Das tun wir in der nächsten Zelle. Ich ändere die Lernrate und die Batchgröße und sehe mir
+die Auswirkungen auf die Fehlerrate an. Die Skalierung bleibt. Ich definiere die Batchgröße hier mit einer Größe von 10. Wir beginnen wieder von vorne, da wir jedes Mal
+das Ausgabeverzeichnis entfernen. Wir verwenden hier eine Lernrate von 0,01 und wieder die lineare Regression. Der Rest des Codes bleibt unverändert. Der einzige Unterschied
+ist die kleinere Batchgröße, daher müssen wir mehr Schritte angeben. Das geschieht hier. Dann geben wir den RMSE aus. Zur Erinnerung:
+Vor Einführung der Lernrate und Batchgröße waren wir bei 7,4. Mit dieser kleinen Änderung geht der Wert hinunter auf 3,6. Experimentieren Sie
+mit diesen Hyperparametern, um die bestmögliche Leistung zu erhalten. Bei meinem letzten Versuch
+bin ich bis auf 0,528 gekommen. Das war der Stoff,
+den ich in diesem Lab behandeln wollte. Eine häufige Frage ist, ob es eine Standardmethode
+zum Optimieren dieser Parameter gibt. Um es kurz zu machen: Die Auswirkungen der Hyperparameter
+hängen von den Daten ab. Es gibt hier keine festen Regeln. Sie müssen
+mit Ihren Daten Tests durchführen. Es gibt einige grobe Regeln,
+die Ihnen die Richtung weisen können. Wenn Sie Ihren Trainingsfehler überwachen, sollte dieser beständig abnehmen, zu Beginn drastisch. Gegen Ende, wenn das Training konvergiert,
+sollte er sich einem Wert annähern. Wenn das Training nicht konvergiert, setzen Sie es fort. Wenn der Trainingsfehler zu langsam sinkt, kann eine Erhöhung der Lernrate helfen. Wenn die Lernrate zu hoch ist,
+kann aber auch das Gegenteil eintreten. Wenn der Trainingsfehler
+in einen großen Bereich springt, verringern Sie die Lernrate. Das Senken der Lernrate plus
+eine höhere Schrittanzahl oder Batchgröße ist oft eine gute Kombination. Sehr kleine Batchgrößen
+können auch zu Instabilität führen. Probieren Sie zuerst größere Werte
+im Hunderter- oder Tausenderbereich aus und verringern Sie sie,
+bis Sie eine Verschlechterung erkennen. Folgen Sie diesen Regeln nicht zu streng,
+da die Auswirkung von den Daten abhängt. Experimentieren Sie
+und überprüfen Sie die Ergebnisse. Als Bonus zu diesem Lab sollten Sie weitere Merkmale hinzufügen
+und sich die Ergebnisse ansehen. Das sollte nicht allzu lange dauern. In fünf bis zehn Minuten sollten Sie einige Merkmale hinzufügen
+und Ihre Modellleistung beurteilen können.

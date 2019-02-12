@@ -1,0 +1,236 @@
+Ahora que conoce mejor
+las redes neuronales veamos cómo las puede entrenar las dificultades comunes
+y algunas técnicas que pueden mejorar
+el entrenamiento y la generalización. En TensorFlow, con la API de Estimator,
+usar un "DNNRegressor" es muy parecido
+a usar un "LinearRegressor" solo se deben agregar
+unos pocos parámetros en el código. Podemos usar optimizadores
+basados en el momento como el predeterminado,
+AdaGrad. O podemos probar otros,
+como Adam. También debemos agregar un parámetros
+llamado "hidden_units" que es una lista. La cantidad de elementos de la lista
+es la cantidad de capas ocultas y los valores de cada elementos de
+la lista es la cantidad de neuronas de esa capa oculta en particular. También hay un parámetro
+llamado "dropout". Lo examinaremos
+en unos minutos. Pero, en breve, se usa para
+activar y desactivar neuronas individuales para cada ejemplo
+para mejorar la generalización. Observe la documentación técnica para conocer el conjunto completo
+de parámetros que puede configurar. Todos estos elementos se pueden hiperparametrizar
+para poder ajustar su modelo a fin de obtener
+la mejor generalización. La propagación inversa es un tema clásico
+del curso de redes neuronales de AA. Pero, en cierto modo es como enseñarles a las personas
+a crear un compilador. Es esencial para
+una comprensión profunda pero no es necesario
+para la comprensión inicial. Lo más importante es saber
+que hay un algoritmo eficiente para calcular los derivados y que
+TensorFlow lo hará automáticamente. Hay algunos casos de errores
+interesantes para evaluar como el desvanecimiento
+de gradientes el crecimiento excesivo de gradientes
+y la pérdida de capas. Durante el proceso de entrenamiento,
+en especial en las redes profundas los gradientes pueden desvanecerse cada capa adicional de su red puede
+reducir la señal y la contaminación. Por ejemplo,
+cuando se usan las funciones de activación sigmoide
+o de tangente hiperbólica en todas las capas ocultas. Cuando comienza a saturar
+termina en regiones asintóticas de la función, que comienzan a
+ser una meseta y la pendiente se acerca
+cada vez más al cero. Cuando va hacia atrás en la red
+durante la propagación inversa su gradiente se vuelve más pequeño
+debido a que está combinando todos estos gradientes pequeños
+hasta que el gradiente se desvanece por completo. Cuando sucede esto,
+los pesos no se actualizan y el entrenamiento
+se detiene. Una forma simple de solucionarlo
+es usar funciones de activación no lineales, que no saturen,
+como las ReLu, Elu, etc. También podemos tener el problema de un
+crecimiento excesivo de los gradientes a tal punto que los pesos son tan grandes
+que causan desbordamientos. Incluso si comenzamos con
+gradientes relativamente pequeños como con un valor de dos se pueden combinar y agrandarse
+con muchas capas. Eso sucede en especial
+en los modelos de secuencias largas. La tasa de aprendizaje puede ser un factor
+porque cuando se actualizan los pesos multiplicamos el gradiente con la tasa de aprendizaje y 
+restamos eso del peso actual. Incluso si el gradiente no es tan grande
+con una tasa de aprendizaje de más de uno puede agrandarse mucho y causar
+problemas en nuestras redes. Hay muchas técnicas para minimizar esto como la organización del peso
+y los tamaños de lotes más pequeños. Otra técnica es el recorte de gradiente con lo que verificamos si
+el gradiente normal excede un umbral que se puede hiperparametrizar
+o ajustar, y de ser así se pueden volver a escalar
+los componentes del gradiente para que se queden
+por debajo del máximo. Otra técnica útil
+es la normalización de los lotes que resuelve el problema del
+cambio de covariables internas. Es entrenamiento
+porque los gradientes fluyen mejor. También puede usar
+una tasa de aprendizaje más alta y podría deshacerse
+del retirado lo que disminuye la competencia
+a su propio de tipo de regularización debido a la contaminación
+del minilote. Para realizar
+la normalización de lotes busque la media del minilote su desviación estándar normalice las entradas en ese nodo y, luego, ajuste y cambie así:
+gamma por x más beta donde gamma y beta
+son los parámetros de aprendizaje. Si gamma es igual a la variación
+de la raíz cuadrada de X y beta es igual a la media de X, se restablece la función
+de activación original. Así, puede controlar el rango de entradas
+para que no se agranden demasiado. Idealmente, los gradientes deberían
+mantenerse lo más cerca posible de uno, especialmente
+para las redes muy profundas. Así, no se combinan y no hay
+desbordamiento ni subdesbordamiento. Otro modo de error común de
+descenso de gradientes es que se pueden
+perder las capas de ReLu. Por suerte, con TensorBoard
+podemos supervisar los resúmenes durante
+y después del entrenamiento de nuestros modelos
+de red neuronal. Si se usa un estimador DNN prediseñado
+hay un escalar automático resumido en cada capa oculta
+con la fracción con valores cero en las activaciones de esa capa. Las ReLu dejan de funcionar
+cuando sus entradas las mantienen en el dominio negativo
+y su activación tiene un valor de cero. No termina allí, porque su contribución
+en la próxima capa es de cero ya que a pesar de los pesos
+que las conecten a las próximas neuronas su activación es de cero,
+por lo que la entrada será de cero. Los ceros que ingresan
+en la próxima neurona no ayudan a que ingrese al dominio positivo
+y esas activaciones de neuronas también serán de cero y el problema
+se propaga en cascada. Luego, realizamos la propagación inversa
+y sus gradientes son de cero por lo que no tenemos los pesos y
+el entrenamiento se detiene. Eso es un problema. Ya hablamos de usar "Leaky ReLu"
+o ReLu paramétricas o las Elu que son más lentas, pero también
+puede disminuir las tasas de aprendizaje para impedir que las capas de ReLu
+no se activen o se pierdan. Un gradiente grande por una tasa
+de aprendizaje muy alta puede actualizar los pesos de tal forma que no se activará
+ningún punto de datos de nuevo. Como el gradiente es cero no actualizamos los pesos
+a una cantidad más razonable por lo que el problema
+persistirá indefinidamente. Verifiquemos nuestra intuición ¿Qué le pasará al modelo si tenemos dos señales útiles
+relacionadas de forma independiente con la etiqueta,
+pero con escalas distintas? Por ejemplo, puedo tener un predictor del sabor de una sopa cuyos atributos
+representen "calidad de los ingredientes". Si el atributo de caldo de gallina
+se mide en litros pero el caldo de carne
+se mide en mililitros puede ser difícil para el descenso
+de gradientes estocástico hacer la convergencia ya que la tasa de aprendizaje óptima para
+estas dos dimensiones puede ser distinta. Tener los datos limpios y
+en un rango de computación útil tiene muchos beneficios durante
+el entrenamiento de sus modelos de AA. Que los valores de atributos sean pequeños
+y específicamente centrados en cero ayuda a acelerar el entrenamiento
+y a evitar problemas numéricos. Por eso la normalización de lotes
+es útil para el exceso de gradientes porque garantiza que se conservan
+no solo los atributos de entrada iniciales sino también los atributos intermedios en un rango útil, de modo
+que no causen problemas en las capas. También nos permite
+evitar la trampa de N/A con la que el modelo puede
+crecer mucho si los valores exceden un rango de precisión numérico. Una combinación
+de la escala de los atributos y una tasa de aprendizaje más baja
+puede ayudar a evitar este problema. Además, evitar los valores atípicos
+ayuda con la generalización. Descubrirlos con la detección
+de anomalías y quitarlos previamente del conjunto de datos antes
+del entrenamiento puede ser de gran ayuda. Recuerde que no hay un método
+que funcione con todos los datos. Hay casos buenos y deficientes
+para cada uno de estos enfoques. Hay muchos métodos para escalar
+los valores de función a números pequeños. Primero, está el ajuste lineal con
+el que busca el mínimo y máximo de datos. Luego, para cada valor restamos el mínimo y lo dividimos por la diferencia
+del mínimo y máximo o el rango. Así, todos los valores
+serán de entre cero y uno. Cero será el mínimo y uno el máximo. Esto también se llama normalización. También está el recorte de gradiente
+o límite duro con el que configura
+un valor mínimo y uno máximo. Por ejemplo, si el valor mínimo puede ser -7 y el máximo es 10 todos los valores menores que -7
+se convertirán en -7 y todos los valores mayores que 10
+se convertirán en 10. Otro método es la escala logarítmica
+con el que aplica la función logarítmica a sus datos de entrada. Es ideal cuando sus datos tienen
+rangos enormes y desea condensarlos para que se acerquen
+a la magnitud del valor. Otro método es la estandarización. Con este, se calcula la media
+de sus datos y la desviación estándar. Una vez que tiene estos valores resta la media de cada punto de datos
+y la divide por la desviación estándar. Así, los datos se centrarán en cero porque la media nueva será cero y
+la desviación estándar será uno. Hay muchas otras formas
+de ajustar los datos. ¿Cuál es ideal si mi modelo tiene
+un crecimiento excesivo de gradientes? La respuesta correcta es A, B, C y D. El problema generalmente se produce
+cuando los pesos se agrandan demasiado lo que puede suceder cuando la tasa
+de aprendizaje es muy alta. Esto genera otros problemas como la estabilidad numérica,
+la divergencia y la pérdida de ReLu. Por lo tanto, es una buena idea
+disminuir la tasa de aprendizaje hasta encontrar
+la zona de habitabilidad. La regularización de pesos
+también puede ayudar porque penalizará a los pesos muy grandes lo que dificulta
+el exceso de gradientes. Además, aplicar un recorte
+de gradiente puede garantizar que los gradientes no excedan
+un umbral determinado. Puede ayudar a mitigar
+una tasa de aprendizaje más alta. Sin embargo, con una tasa
+lo suficientemente alta aún puede aumentar los pesos
+a valores muy altos. La normalización de lotes puede ayudar a conservar a las entradas intermedias
+de cada capa en un rango delimitado lo que reduce la posibilidad
+de que los pesos aumenten fuera de rango con un pequeño costo
+de computación adicional. Hay muchos métodos para solucionar
+el crecimiento excesivo de los gradientes no es necesario
+que vea a un doctor. Experimente con estas herramientas
+y descubra qué funciona mejor. Otra forma de regularización
+que ayuda a crear modelos más generalizados es agregar
+capas de retirados a las redes neuronales. Para usar los retirados, agrego
+una unión a una o más capas. En TensorFlow, el parámetro que pasa
+se llama retirado o dropout que es la probabilidad
+de retirar una neurona de forma temporal de la red
+en lugar de que permanezca activa. Debe ser cuidadoso
+cuando configura este número ya que otras funciones que tienen
+mecanismos de retirada usan la probabilidad de conservación complementaria
+a la probabilidad de retirada o la probabilidad de conservar
+una neurona activada o desactivada. No debería configurar solo un 10%
+de probabilidad de retirada ya que ahora solo conserva el 10%
+de sus nodos de forma aleatoria eso sería un modelo
+muy disperso involuntario. ¿Cuál es el funcionamiento
+interno de los retirados? Supongamos que configuramos
+una probabilidad de retirada del 20%. Esto significa que para cada
+propagación hacia adelante en la red el algoritmo se arriesgará en cada neurona
+y en la capa de unión de retirados. Si el resultado es mayor que 20
+y la neurona seguirá activa en la red con otros valores 
+la neurona se retirará y el resultado será un valor
+de cero sin importar sus entradas y no habrá adición negativa
+ni positiva en la red ya que agregar un valor de cero no cambia
+nada y no hay simulación de la neurona. Para compensar que cada nodo se conserva
+durante solo un porcentaje del tiempo las activaciones se ajustan en 1 sobre -1
+de la probabilidad de retirada o, en otras palabras,
+1 sobre la probabilidad de conservación. Durante el entrenamiento, para que sea
+el valor esperado de la activación. Cuando no se está entrenando,
+sin necesidad de cambiar el código la unión desaparece y las neuronas en la antigua capa de unión de retirados están siempre activas y usan los pesos
+que entrenó el modelo. La idea de los retirados es que
+crean un modelo de ensamble porque para cada
+propagación hacia adelante hay una red distinta y
+se observa el minilote de datos. Cuando se junta en la expectativa es como si hubiese entrenado
+2 redes neuronales elevadas a la n. n es el número de neuronas retiradas y hacer que ellas trabajen en un ensamble similar a un grupo de árboles de decisión
+en un bosque aleatorio. También tiene el efecto de extender la distribución
+de los datos en toda la red en lugar de que
+la mayor parte de la señal favorezca a una rama de la red. Me lo imagino como desviar agua de un río
+o arrollo con varias derivaciones o diques para garantizar que todos
+los causes tengan agua y no se sequen. Así, la red usa más de su capacidad ya que la señal fluye
+más uniformemente en toda la red y logrará un mejor
+entrenamiento y generalización sin el desarrollo de grandes dependencias
+de neuronas en las rutas populares. Los valores típicos de retirados
+son de entre 20% y 50%. Si fueran menores no causarían mucho efecto en la red,
+ya que rara vez se retirará un nodo. Si fueran mayores no se realizaría bien el entrenamiento
+ya que la red será muy dispersa para tener la capacidad
+de aprender sin distribución. También puede usarlo en redes grandes porque brinda más capacidad al modelo para
+aprender representaciones independientes. Es decir, hay más pases posibles
+para que pruebe la red. Cuanto más retire menos conserva y la regularización será más potente. Si configura
+la probabilidad de retirada a 1 no conserva nada y cada neurona en la capa de unión de retirados
+se elimina de la neurona y el resultado es una activación de cero. En la propagación inversa, esto significa que los pesos no se actualizarán
+y esta capa no aprenderá nada. Si configura la probabilidad en cero todas las neuronas permanecen activas
+y no se regularizan los retirados. Es un método
+más costoso en computación sin contar con una capa de unión
+de retirados porque aún debe arriesgar. Lo ideal es tener valores
+entre cero y uno. Con probabilidades de retirada
+de entre 10% y 50% un buen punto de partida es 20%
+y agregará más de ser necesario. No hay una probabilidad de retirada que funcione para todos los modelos
+y distribuciones de datos. Los retirados actúan como
+otra forma de [espacio]. Obliga a los datos a fluir por
+[espacio] rutas para que la distribución
+sea más uniforme. También simula
+el aprendizaje [espacio]. No olvide ajustar las activaciones
+de retirados a la inversa de [espacio]. Eliminamos los retirados
+durante [espacio]. La respuesta correcta es la E.
+Los retirados actúan como otra forma de regularización para que
+el modelo pueda generalizar mejor. Para ello, desactiva los nodos
+con una probabilidad de retirada que obliga a los datos a fluir
+por diversas rutas para que la distribución
+sea más uniforme. De lo contrario, los datos y activaciones
+asociados pueden aprender a tomar rutas preferenciales que puede generar un
+entrenamiento deficiente de la red y un rendimiento ineficiente
+de los datos nuevos. Los retirados también simulan
+el aprendizaje de ensamble ya que crean una agregación de 2 modelos elevados a n, debido
+a la desactivación aleatoria de los nodos en cada
+propagación hacia adelante. La n corresponde al número
+de nodos retirados. Cada lote ve
+una red distinta por lo que no se puede sobreajustar
+en todo el conjunto de entrenamiento como un bosque aleatorio. No olvide ajustar las activaciones
+de retirados a la inversa de la probabilidad
+de conservación que es 1 menos
+la probabilidad de retirada. Hacemos esto para que
+el nodo se ajuste correctamente durante el entrenamiento
+ya que la inferencia estará siempre activa pues quitamos el retirado
+durante la inferencia.

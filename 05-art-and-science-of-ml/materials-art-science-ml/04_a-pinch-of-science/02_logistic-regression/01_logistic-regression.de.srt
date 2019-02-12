@@ -1,0 +1,1772 @@
+1
+00:00:00,000 --> 00:00:02,265
+Jetzt, da wir L1-Regularisierung kennen,
+
+2
+00:00:02,265 --> 00:00:04,575
+gehen wir zur logistischen Regression über
+
+3
+00:00:04,575 --> 00:00:08,195
+und erfahren, warum sie
+für Regularisierung wichtig ist.
+
+4
+00:00:08,195 --> 00:00:11,195
+Angenommen, wir möchten das
+Ergebnis von Münzwürfen voraussagen.
+
+5
+00:00:11,195 --> 00:00:13,050
+Wir wissen, dass bei einer fairen Münze
+
+6
+00:00:13,050 --> 00:00:16,525
+der erwartete Wert 50 Prozent
+Kopf und 50 Prozent Zahl beträgt.
+
+7
+00:00:16,525 --> 00:00:19,785
+Was, wenn wir stattdessen
+eine unfaire Münze hätten,
+
+8
+00:00:19,785 --> 00:00:21,180
+die gebogen ist?
+
+9
+00:00:21,180 --> 00:00:25,080
+Sagen wir, wir möchten die Vorhersagen
+für alle Münzwürfe verallgemeinern,
+
+10
+00:00:25,080 --> 00:00:27,960
+fair und unfair, groß und klein,
+
+11
+00:00:27,960 --> 00:00:30,385
+schwer und leicht, et cetera.
+
+12
+00:00:30,385 --> 00:00:32,340
+Welche Eigenschaften könnten vorhersagen,
+
+13
+00:00:32,340 --> 00:00:35,845
+ob ein Wurf Kopf oder Zahl ergibt?
+
+14
+00:00:35,845 --> 00:00:37,987
+Vielleicht könnten wir
+den Biegewinkel nutzen,
+
+15
+00:00:37,987 --> 00:00:40,700
+weil er X Prozent Masse in
+die andere Dimension verteilt
+
+16
+00:00:40,700 --> 00:00:43,520
+und/oder die Rotation durch Luftwiderstand
+
+17
+00:00:43,520 --> 00:00:44,825
+oder Schwerpunkt verändert.
+
+18
+00:00:44,825 --> 00:00:47,655
+Die Masse der Münze wäre
+auch eine wissenswerte Eigenschaft,
+
+19
+00:00:47,655 --> 00:00:51,690
+sowie die Größe, also
+der Durchmesser, die Dicke, et cetera.
+
+20
+00:00:51,690 --> 00:00:55,320
+Durch Feature Engineering 
+könnten wir das Volumen der Münze
+
+21
+00:00:55,320 --> 00:00:56,610
+und ihre Dichte erhalten.
+
+22
+00:00:56,610 --> 00:00:58,290
+Vielleicht wären die Materialart
+
+23
+00:00:58,290 --> 00:01:01,620
+oder -arten der Münze
+nützliche Informationen.
+
+24
+00:01:01,620 --> 00:01:03,915
+Diese Eigenschaften
+wären einfach zu messen.
+
+25
+00:01:03,915 --> 00:01:07,485
+Doch sie sind nur eine Seite
+der Medaille, Anspielung beabsichtigt.
+
+26
+00:01:07,485 --> 00:01:10,440
+Der Rest kommt auf
+die Handlung des Wurfes selbst an,
+
+27
+00:01:10,440 --> 00:01:13,565
+wie viel lineare oder schräge
+Geschwindigkeit eingesetzt wurde,
+
+28
+00:01:13,565 --> 00:01:14,920
+der Winkel des Wurfes,
+
+29
+00:01:14,920 --> 00:01:16,785
+der Winkel dessen, worauf sie landet,
+
+30
+00:01:16,785 --> 00:01:18,345
+Windgeschwindigkeit, et cetera.
+
+31
+00:01:18,345 --> 00:01:21,045
+Diese Dinge könnten
+schwerer zu messen sein.
+
+32
+00:01:21,045 --> 00:01:23,140
+Jetzt, da wir alle
+diese Eigenschaften haben,
+
+33
+00:01:23,140 --> 00:01:26,810
+was ist das einfachste Modell, mit dem
+wir Kopf oder Zahl vorhersagen könnten?
+
+34
+00:01:26,810 --> 00:01:28,805
+Lineare Regression natürlich.
+
+35
+00:01:28,805 --> 00:01:31,055
+Was könnte mit
+dieser Wahl aber schiefgehen?
+
+36
+00:01:31,055 --> 00:01:33,895
+Unsere Labels sind Kopf oder Zahl,
+
+37
+00:01:33,895 --> 00:01:35,295
+oder anders gedacht,
+
+38
+00:01:35,295 --> 00:01:36,915
+Kopf oder nicht Kopf.
+
+39
+00:01:36,915 --> 00:01:42,040
+Die One-Hot-Kodierung davon könnte eins
+für Kopf und null für nicht Kopf sein.
+
+40
+00:01:42,040 --> 00:01:44,250
+Doch lineare Regression
+einer Standardfunktion
+
+41
+00:01:44,250 --> 00:01:46,130
+der mittleren quadratischen Abweichung
+
+42
+00:01:46,130 --> 00:01:49,190
+könnte die Vorhersagen aus
+den Bereich von eins und null bringen.
+
+43
+00:01:49,190 --> 00:01:52,955
+Was würde eine Vorhersage von 2,75
+für den Status des Münzwurfs bedeuten?
+
+44
+00:01:52,955 --> 00:01:54,665
+Das macht keinen Sinn.
+
+45
+00:01:54,665 --> 00:01:57,050
+Ein Modell, das
+quadratische Abweichung minimiert,
+
+46
+00:01:57,050 --> 00:02:00,320
+muss nicht N(0,1)
+als Wahrscheinlichkeit setzen,
+
+47
+00:02:00,320 --> 00:02:01,955
+aber genau das brauchen wir hier.
+
+48
+00:02:01,955 --> 00:02:04,240
+Man kann sich
+insbesondere ein Modell vorstellen,
+
+49
+00:02:04,240 --> 00:02:06,700
+das Werte kleiner als
+null oder größer als eins
+
+50
+00:02:06,700 --> 00:02:08,460
+für einige neue Beispiele vorhersagt.
+
+51
+00:02:08,460 --> 00:02:11,790
+Daher könnten wir dieses Modell
+nicht als Wahrscheinlichkeit verwenden.
+
+52
+00:02:11,790 --> 00:02:14,890
+Einfache Tricks wie das Deckeln
+der Vorhersagen bei null und eins
+
+53
+00:02:14,890 --> 00:02:16,430
+würde Verzerrung hereinbringen.
+
+54
+00:02:16,430 --> 00:02:17,990
+Wir brauchen also etwas anderes,
+
+55
+00:02:17,990 --> 00:02:20,590
+insbesondere eine neue Verlustfunktion.
+
+56
+00:02:20,590 --> 00:02:23,220
+Diese lineare in eine
+logistische Regression umzuwandeln
+
+57
+00:02:23,220 --> 00:02:24,820
+kann das Dilemma auflösen.
+
+58
+00:02:24,820 --> 00:02:27,650
+Einer unserer früheren Kurse
+hat in die Geschichte von ML
+
+59
+00:02:27,650 --> 00:02:29,967
+und die sigmoide
+Aktivierungsfunktion eingeführt.
+
+60
+00:02:29,967 --> 00:02:32,590
+Schauen wir uns das jetzt genauer an.
+
+61
+00:02:32,590 --> 00:02:34,170
+Die sigmoide Aktivierungsfunktion
+
+62
+00:02:34,170 --> 00:02:37,540
+nimmt im Grunde die
+gewichtete Summe w transponiert x
+
+63
+00:02:37,540 --> 00:02:41,115
+plus b von einer linearen Regression
+und statt einfach das auszugeben
+
+64
+00:02:41,115 --> 00:02:43,650
+und die mittlere quadratische
+Abweichung zu berechnen,
+
+65
+00:02:43,650 --> 00:02:47,090
+ändern wir die Aktivierungs-
+funktion von linear zu sigmoid
+
+66
+00:02:47,090 --> 00:02:52,370
+und mit diesem Argument wird alles
+sanft zwischen null und eins gehalten.
+
+67
+00:02:52,370 --> 00:02:53,865
+Die Eingabe in den Sigmoid,
+
+68
+00:02:53,865 --> 00:02:57,380
+normalerweise die Ausgabe der
+linearen Regression, heißt der Logit.
+
+69
+00:02:57,380 --> 00:03:00,170
+Wir führen also
+eine nichtlineare Transformation
+
+70
+00:03:00,170 --> 00:03:02,050
+auf unserem linearen Modell aus.
+
+71
+00:03:02,050 --> 00:03:04,860
+Beachten Sie, wie die
+Wahrscheinlichkeit gegen null strebt,
+
+72
+00:03:04,860 --> 00:03:08,000
+wenn die Logits in die negative
+Unendlichkeit laufen und gegen eins
+
+73
+00:03:08,000 --> 00:03:09,730
+bei positiver Unendlichkeit.
+
+74
+00:03:09,730 --> 00:03:11,640
+Was bedeutet dies für das Training?
+
+75
+00:03:11,640 --> 00:03:13,650
+Anders als
+mittlere quadratische Abweichung
+
+76
+00:03:13,650 --> 00:03:18,495
+schätzt der Sigmoid
+nie 1,0 oder 0,0 Wahrscheinlichkeit.
+
+77
+00:03:18,495 --> 00:03:21,410
+So werden durch den
+steten Drang des Gradientenverfahrens,
+
+78
+00:03:21,410 --> 00:03:23,780
+den Verlust immer
+näher gegen null zu bringen,
+
+79
+00:03:23,780 --> 00:03:27,410
+die Gewichte immer näher gegen positive
+oder negative Unendlichkeit gedrängt,
+
+80
+00:03:27,410 --> 00:03:29,510
+wenn keine Regularisierung stattfindet,
+
+81
+00:03:29,510 --> 00:03:31,290
+was zu Problemen führen kann
+
+82
+00:03:31,290 --> 00:03:34,680
+Zunächst aber, wie können wir
+die Ausgabe eines Sigmoids interpretieren?
+
+83
+00:03:34,680 --> 00:03:38,970
+Ist es einfach eine unter vielen 
+Funktionen mit Bereichen von null bis eins
+
+84
+00:03:38,970 --> 00:03:40,725
+oder ist er noch mehr?
+
+85
+00:03:40,725 --> 00:03:42,990
+Die gute Nachricht ist, er ist mehr;
+
+86
+00:03:42,990 --> 00:03:45,470
+er ist eine kalibrierte
+Wahrscheinlichkeitsschätzung.
+
+87
+00:03:45,470 --> 00:03:46,810
+Jenseits des Bereichs allein
+
+88
+00:03:46,810 --> 00:03:49,555
+ist die Sigmoidfunktion
+die kumulative Verteilungsfunktion
+
+89
+00:03:49,555 --> 00:03:51,760
+der logistischen
+Wahrscheinlichkeitsverteilung,
+
+90
+00:03:51,760 --> 00:03:56,265
+deren Quantilfunktion der Kehrwert
+des Logits ist, der die Log-odds abbildet.
+
+91
+00:03:56,265 --> 00:03:59,320
+Daher kann man
+mathematisch das Gegenteil eines Sigmoids
+
+92
+00:03:59,320 --> 00:04:01,600
+als Wahrscheinlichkeiten verstehen.
+
+93
+00:04:01,600 --> 00:04:04,470
+Somit können wir
+Kalibrierung als den Fakt betrachten,
+
+94
+00:04:04,470 --> 00:04:07,730
+dass Ausgaben reale Werte
+wie Wahrscheinlichkeiten sind.
+
+95
+00:04:07,730 --> 00:04:10,360
+Dies steht im Gegensatz
+zu unkalibrierten Ausgaben
+
+96
+00:04:10,360 --> 00:04:11,850
+wie einem eingebetteten Vektor,
+
+97
+00:04:11,850 --> 00:04:15,605
+der intern informativ ist, aber
+die Werte haben keine reale Korrelation.
+
+98
+00:04:15,605 --> 00:04:17,519
+Viele Ausgabe-Aktivierungsfunktionen,
+
+99
+00:04:17,519 --> 00:04:19,189
+tatsächlich eine unendliche Anzahl,
+
+100
+00:04:19,189 --> 00:04:22,990
+könnten Ihnen eine Zahl zwischen null
+und eins geben, doch nur dieses Sigmoid
+
+101
+00:04:22,990 --> 00:04:25,140
+ist erwiesenermaßen
+eine kalibrierte Schätzung
+
+102
+00:04:25,140 --> 00:04:28,200
+der Auftrittswahrscheinlichkeit
+des Trainings-Datasets.
+
+103
+00:04:28,200 --> 00:04:31,110
+Mittels dieser Tatsache
+über die sigmoide Aktivierungsfunktion
+
+104
+00:04:31,110 --> 00:04:35,240
+können wir binäre Klassifizierungsprobleme
+in probabilistische Probleme umwandeln.
+
+105
+00:04:35,240 --> 00:04:39,145
+Zum Beispiel, statt eines Modells,
+das einfach Ja oder Nein vorhersagt,
+
+106
+00:04:39,145 --> 00:04:41,410
+etwa ob ein Kunde
+einen Artikel kaufen wird,
+
+107
+00:04:41,410 --> 00:04:43,980
+kann es jetzt 
+die Wahrscheinlichkeit vorhersagen.
+
+108
+00:04:43,980 --> 00:04:45,890
+Dies, gekoppelt mit einem Schwellenwert,
+
+109
+00:04:45,890 --> 00:04:49,655
+kann viel mehr Vorhersagepotenzial
+bieten als eine einfache binäre Antwort.
+
+110
+00:04:49,655 --> 00:04:53,060
+Da wir nun die Ausgabe der
+logistischen Regression berechnet haben,
+
+111
+00:04:53,060 --> 00:04:56,135
+zu einer kalibrierten
+Wahrscheinlichkeit zwischen null und eins,
+
+112
+00:04:56,135 --> 00:04:58,415
+wie können wir
+unseren Fehler finden und nutzen,
+
+113
+00:04:58,415 --> 00:05:01,265
+um unsere Gewichte
+durch Rückpropagierung anzupassen?
+
+114
+00:05:01,265 --> 00:05:03,855
+Wir benutzen eine
+Verlustfunktion namens Kreuzentropie,
+
+115
+00:05:03,855 --> 00:05:05,890
+die auch der logarithmische Verlust ist.
+
+116
+00:05:05,890 --> 00:05:07,900
+Anders als mittlere
+quadratische Abweichung
+
+117
+00:05:07,900 --> 00:05:11,560
+betont sie weniger die Fehler, bei denen
+die Ausgabe relativ nah am Label ist,
+
+118
+00:05:11,560 --> 00:05:13,880
+wo sie fast linear
+gegenüber quadratisch ist.
+
+119
+00:05:13,880 --> 00:05:16,820
+Aber, auch im Gegensatz
+zu mittlerer quadratischer Abweichung,
+
+120
+00:05:16,820 --> 00:05:21,830
+wächst Kreuzentropie exponentiell, wenn
+die Vorhersage dem Label gegenübersteht.
+
+121
+00:05:21,830 --> 00:05:24,270
+Anders gesagt gibt es eine hohe Strafe,
+
+122
+00:05:24,270 --> 00:05:28,860
+wenn das Modell nicht nur falsch liegt,
+sondern es mit großer Konfidenz tut.
+
+123
+00:05:28,860 --> 00:05:31,760
+Auch kann die Ableitung der
+mittleren quadratischen Abweichung
+
+124
+00:05:31,760 --> 00:05:33,440
+Probleme beim Training verursachen.
+
+125
+00:05:33,440 --> 00:05:36,440
+Da wir die Ausgabe immer
+weiter Richtung null oder eins drücken,
+
+126
+00:05:36,440 --> 00:05:37,532
+wird der Gradient,
+
+127
+00:05:37,532 --> 00:05:40,245
+der Ausgabe mal eins
+minus der Ausgabe entspricht,
+
+128
+00:05:40,245 --> 00:05:44,025
+immer kleiner und
+ändert die Gewichte immer weniger.
+
+129
+00:05:44,025 --> 00:05:46,310
+Das Training könnte
+völlig zum Stillstand kommen.
+
+130
+00:05:46,310 --> 00:05:49,000
+Jedoch ist der
+Gradient über der Entropie
+
+131
+00:05:49,000 --> 00:05:52,240
+eine logistische Funktion
+mal eins minus die logistische Funktion,
+
+132
+00:05:52,240 --> 00:05:54,875
+die sich praktischerweise
+durch Rückpropagierung aufhebt
+
+133
+00:05:54,875 --> 00:05:56,595
+und dieses Problem somit nicht hat.
+
+134
+00:05:56,595 --> 00:05:59,655
+Dennoch ist Regularisierung
+in logistischer Regression wichtig,
+
+135
+00:05:59,655 --> 00:06:03,390
+denn den Verlust gegen null
+zu drängen ist schwierig und gefährlich.
+
+136
+00:06:03,390 --> 00:06:05,390
+Erstens strebt das Gradientenverfahren an,
+
+137
+00:06:05,390 --> 00:06:06,680
+Kreuzentropie zu minimieren
+
+138
+00:06:06,680 --> 00:06:08,330
+und drängt daher die Ausgabewerte
+
+139
+00:06:08,330 --> 00:06:12,090
+näher gegen eins bei positiven Labels
+und näher gegen null bei negativen Labels.
+
+140
+00:06:12,090 --> 00:06:13,740
+Durch die Gleichung des Sigmoids
+
+141
+00:06:13,740 --> 00:06:16,980
+strebt die Funktion gegen null,
+wenn die Logik negativ unendlich ist,
+
+142
+00:06:16,980 --> 00:06:19,490
+und eins, wenn
+die Logik positiv unendlich ist.
+
+143
+00:06:19,490 --> 00:06:22,185
+Für Logits in negativer
+oder positiver Unendlichkeit
+
+144
+00:06:22,185 --> 00:06:24,505
+wird der Betrag der
+Gewichte beständig angehoben,
+
+145
+00:06:24,505 --> 00:06:28,305
+was zu numerischen Stabilitätsproblemen,
+Überläufen und Unterläufen führt.
+
+146
+00:06:28,305 --> 00:06:31,275
+Das ist gefährlich und
+kann unser Taining zunichte machen.
+
+147
+00:06:31,275 --> 00:06:33,420
+Nahe an den Asymptoten,
+
+148
+00:06:33,420 --> 00:06:34,825
+wie Sie am Graph sehen,
+
+149
+00:06:34,825 --> 00:06:37,200
+wird die sigmoide
+Funktion zudem immer flacher.
+
+150
+00:06:37,200 --> 00:06:40,625
+Das heißt, dass die Ableitung
+sich immer weiter zu null bewegt.
+
+151
+00:06:40,625 --> 00:06:43,970
+Da wir mittels Ableitung und
+Rückpropagierung unsere Gewichte anpassen,
+
+152
+00:06:43,970 --> 00:06:46,995
+ist es wichtig, dass
+der Gradient nicht auf null fällt,
+
+153
+00:06:46,995 --> 00:06:48,960
+sonst steht das Training still.
+
+154
+00:06:48,960 --> 00:06:50,715
+Man spricht von Sättigung,
+
+155
+00:06:50,715 --> 00:06:53,490
+wenn alle Aktivierungen
+in diesen Plateaus enden,
+
+156
+00:06:53,490 --> 00:06:55,747
+was zum Problem
+verschwindender Gradienten führt
+
+157
+00:06:55,747 --> 00:06:57,930
+und das Training erschwert.
+
+158
+00:06:57,930 --> 00:07:00,640
+Diese Erkenntnis ist
+möglicherweise auch nützlich hierfür.
+
+159
+00:07:00,640 --> 00:07:03,265
+Angenommen, Sie geben
+jedem Beispiel eine eindeutige ID
+
+160
+00:07:03,265 --> 00:07:05,695
+und bilden jede ID
+auf ihr eigenes Merkmal ab.
+
+161
+00:07:05,695 --> 00:07:08,150
+Mit unregularisierter
+logistischer Regression
+
+162
+00:07:08,150 --> 00:07:10,680
+erhalten Sie absolute Überanpassung.
+
+163
+00:07:10,680 --> 00:07:15,330
+Das Modell versucht vergeblich, Verluste
+in allen Beispielen gegen null zu drängen
+
+164
+00:07:15,330 --> 00:07:17,140
+und die Gewichte aller Bezugsmerkmale
+
+165
+00:07:17,140 --> 00:07:19,925
+werden gegen positive oder
+negative Unendlichkeit gedrängt.
+
+166
+00:07:19,925 --> 00:07:21,495
+Das kann in der Praxis passieren,
+
+167
+00:07:21,495 --> 00:07:23,975
+bei hochdimensionalen
+Daten mit gekreuzten Merkmalen.
+
+168
+00:07:23,975 --> 00:07:26,305
+Oft gibt es eine große
+Masse seltener Kreuzungen,
+
+169
+00:07:26,305 --> 00:07:28,915
+die nur bei jeweils
+einem Beispiel auftreten.
+
+170
+00:07:28,915 --> 00:07:32,465
+Wie können wir uns also
+vor Überanpassung schützen?
+
+171
+00:07:32,465 --> 00:07:36,510
+Welche dieser Dinge sind wichtig für
+das Ausführen von logistischer Regression?
+
+172
+00:07:36,510 --> 00:07:38,940
+Die richtige Antwort
+ist sowohl A als auch B.
+
+173
+00:07:38,940 --> 00:07:41,670
+Regularisierung bei
+logistischer Regression hilft dabei,
+
+174
+00:07:41,670 --> 00:07:44,680
+das Modell durch kleinere
+Parametergewichte einfacher zu halten.
+
+175
+00:07:44,680 --> 00:07:47,680
+Diesen Strafterm der Verlustfunktion
+hinzuzufügen stellt sicher,
+
+176
+00:07:47,680 --> 00:07:49,780
+dass die Kreuzentropie
+im Gradientenverfahren
+
+177
+00:07:49,780 --> 00:07:54,400
+nicht die Gewichte immer näher
+gegen plus oder minus unendlich drängt
+
+178
+00:07:54,400 --> 00:07:56,495
+und numerische Probleme schafft.
+
+179
+00:07:56,495 --> 00:07:57,200
+Hinzu kommt,
+
+180
+00:07:57,200 --> 00:08:00,580
+wir können mit jetzt kleineren Logits
+in den weniger flachen Abschnitten
+
+181
+00:08:00,580 --> 00:08:03,960
+der Sigmoidfunktion bleiben, wo
+die Gradienten weniger nah bei null sind
+
+182
+00:08:03,960 --> 00:08:07,505
+und so Gewicht angepasst und
+das Training fortgeführt werden kann.
+
+183
+00:08:07,505 --> 00:08:09,085
+C ist deshalb falsch,
+
+184
+00:08:09,085 --> 00:08:11,680
+genauso E, weil Regularisierung
+
+185
+00:08:11,680 --> 00:08:15,330
+nicht die Ausgaben einer kalibrierten
+Wahrscheinlichkeitsschätzung umwandelt.
+
+186
+00:08:15,330 --> 00:08:17,310
+Das Gute an
+logistischer Regression ist,
+
+187
+00:08:17,310 --> 00:08:20,610
+dass die bereits die kalibrierte
+Wahrscheinlichkeitsschätzung ausgibt,
+
+188
+00:08:20,610 --> 00:08:23,040
+weil der Sigmoid
+eine kumulative Verteilungsfunktion
+
+189
+00:08:23,040 --> 00:08:25,465
+der logistischen
+Wahrscheinlichkeitsverteilung ist.
+
+190
+00:08:25,465 --> 00:08:27,940
+So werden wirklich
+Wahrscheinlichkeiten vorhergesagt,
+
+191
+00:08:27,940 --> 00:08:30,900
+statt nur binäre Antworten,
+wie ja oder nein, wahr oder falsch,
+
+192
+00:08:30,900 --> 00:08:32,575
+kaufen oder verkaufen, et cetera.
+
+193
+00:08:32,575 --> 00:08:35,844
+Gegen Überanpassung
+verwenden wir oft sowohl Regularisierung
+
+194
+00:08:35,844 --> 00:08:37,654
+als auch Vorzeitiges Beenden.
+
+195
+00:08:37,654 --> 00:08:41,094
+Bei der Regularisierung wächst
+die Modellkomplexität durch große Gewichte
+
+196
+00:08:41,094 --> 00:08:42,395
+und wenn wir dann abstimmen
+
+197
+00:08:42,395 --> 00:08:45,495
+und immer größere Gewichte
+für immer seltenere Szenarios bekommen,
+
+198
+00:08:45,495 --> 00:08:47,990
+erhöhen wir am Ende
+den Verlust, also halten wir an.
+
+199
+00:08:47,990 --> 00:08:51,230
+L2-Regularisierung hält
+die gewichteten Werte kleiner
+
+200
+00:08:51,230 --> 00:08:53,765
+und L1-Regularisierung hält
+das Modell dünner besetzt,
+
+201
+00:08:53,765 --> 00:08:55,485
+indem es schwache Merkmale weglässt.
+
+202
+00:08:55,485 --> 00:08:59,895
+Für die Wahl der optimalen L1- und
+L2-Hyperparameter während der Abstimmung
+
+203
+00:08:59,895 --> 00:09:02,850
+suchen Sie nach der Stelle
+in der Validierungs-Verlustfunktion,
+
+204
+00:09:02,850 --> 00:09:04,675
+wo Sie den niedrigsten Wert erhalten.
+
+205
+00:09:04,675 --> 00:09:08,320
+Ab diesem Punkt wird weniger
+Regularisierung ihre Varianz erhöhen,
+
+206
+00:09:08,320 --> 00:09:11,020
+Überanpassung einleiten
+und die Verallgemeinerung stören,
+
+207
+00:09:11,020 --> 00:09:13,840
+und mehr Regularisierung
+wird Ihre Verzerrung erhöhen,
+
+208
+00:09:13,840 --> 00:09:17,845
+Unteranpassung einleiten
+und Ihre Verallgemeinerung stören.
+
+209
+00:09:17,845 --> 00:09:19,852
+Vorzeitiges Beenden hält das Training an,
+
+210
+00:09:19,852 --> 00:09:21,370
+wenn die Überanpassung beginnt.
+
+211
+00:09:21,370 --> 00:09:22,760
+Während Ihr Modell trainiert,
+
+212
+00:09:22,760 --> 00:09:25,375
+sollten Sie es im
+Validierungs-Dataset auswerten,
+
+213
+00:09:25,375 --> 00:09:28,705
+anhand jeder Menge Schritte,
+Epochen, Minuten, et cetera.
+
+214
+00:09:28,705 --> 00:09:31,165
+Während des Trainings
+sollten sowohl Trainingsfehler
+
+215
+00:09:31,165 --> 00:09:33,475
+als auch Validierungsfehler abnehmen,
+
+216
+00:09:33,475 --> 00:09:37,560
+aber an einer bestimmten Stelle kann der
+Validierungsfehler beginnen anzusteigen.
+
+217
+00:09:37,560 --> 00:09:41,130
+An dieser Stelle beginnt das Modell,
+sich das Trainings-Dataset zu merken
+
+218
+00:09:41,130 --> 00:09:43,370
+und verliert die Fähigkeit
+zur Verallgemeinerung
+
+219
+00:09:43,370 --> 00:09:46,865
+auf Basis des Validierungs-Datasets
+und besonders der neuen Daten,
+
+220
+00:09:46,865 --> 00:09:49,855
+für die wir dieses Modell
+einmal einsetzen möchten.
+
+221
+00:09:49,855 --> 00:09:53,660
+Vorzeitiges Beenden hält
+das Modell hier an und geht zurück,
+
+222
+00:09:53,660 --> 00:09:55,950
+um die Gewichte vom
+letzten Schritt zu verwenden,
+
+223
+00:09:55,950 --> 00:09:58,235
+vor dem Validierungsfehler
+und Funktionspunkt.
+
+224
+00:09:58,235 --> 00:10:01,005
+Hier ist der Verlust nur L(w,D),
+
+225
+00:10:01,005 --> 00:10:03,265
+also kein Regularisierungsterm.
+
+226
+00:10:03,265 --> 00:10:05,640
+Interessanterweise ist Vorzeitiges Beenden
+
+227
+00:10:05,640 --> 00:10:08,340
+ein ungefähres Äquivalent
+zur L2-Regularisierung
+
+228
+00:10:08,340 --> 00:10:12,300
+und wird oft an ihrer statt verwendet,
+weil sein Rechenaufwand geringer ist.
+
+229
+00:10:12,300 --> 00:10:14,330
+Zum Glück benutzen wir in der Praxis
+
+230
+00:10:14,330 --> 00:10:18,105
+immer sowohl explizite
+Regularisierung, L1 und L2,
+
+231
+00:10:18,105 --> 00:10:21,515
+als auch ein gewisses Maß an
+Regularisierung durch Vorzeitiges Beenden.
+
+232
+00:10:21,515 --> 00:10:25,440
+Obwohl L2-Regularisierung und
+Vorzeitiges Beenden redundant erscheinen
+
+233
+00:10:25,440 --> 00:10:29,540
+können Sie in realen Systemen nicht
+immer die optimalen Hyperparameter wählen
+
+234
+00:10:29,540 --> 00:10:32,980
+und Vorzeitiges Beenden
+kann diese Wahl für Sie korrigieren.
+
+235
+00:10:32,980 --> 00:10:36,695
+Großartig, dass die logistische Regression
+uns eine Wahrscheinlichkeit ausgibt.
+
+236
+00:10:36,695 --> 00:10:39,845
+Trotzdem wollen Nutzer
+am Ende des Tages manchmal einfach,
+
+237
+00:10:39,845 --> 00:10:43,150
+dass eine simple Entscheidung
+für ihre realen Probleme getroffen wird.
+
+238
+00:10:43,150 --> 00:10:46,230
+Soll die E-Mail an den
+Spamordner gesendet werden oder nicht,
+
+239
+00:10:46,230 --> 00:10:48,560
+soll das Darlehen
+genehmigt werden oder nicht,
+
+240
+00:10:48,560 --> 00:10:51,425
+über welche Straße
+sollen wir den User lotsen?
+
+241
+00:10:51,425 --> 00:10:53,860
+Wie kann unsere
+Wahrscheinlichkeitsschätzung helfen,
+
+242
+00:10:53,860 --> 00:10:57,440
+damit ein Tool mit unserem
+Modell eine Entscheidung treffen kann?
+
+243
+00:10:57,440 --> 00:10:59,175
+Wir wählen einen Schwellenwert.
+
+244
+00:10:59,175 --> 00:11:01,950
+Ein einfacher Schwellenwert
+binärer Klassifikationsprobleme
+
+245
+00:11:01,950 --> 00:11:06,030
+gäbe allen Wahrscheinlichkeiten
+kleiner gleich 50 Prozent ein Nein
+
+246
+00:11:06,030 --> 00:11:09,030
+und allen Wahrscheinlichkeiten
+größer als 50 Prozent ein Ja.
+
+247
+00:11:09,030 --> 00:11:12,915
+Bei einigen realen Problemen
+wird allerdings anders gewichtet
+
+248
+00:11:12,915 --> 00:11:15,925
+etwa 60-40, 20-80, 99-1,
+
+249
+00:11:15,925 --> 00:11:20,940
+et cetera, je nachdem wie die Balance
+unserer Typ1- und Typ2-Fehler sein soll,
+
+250
+00:11:20,940 --> 00:11:25,255
+anders gesagt, die Balance von
+falschen Positiven und falschen Negativen.
+
+251
+00:11:25,255 --> 00:11:29,190
+Für binäre Klassifikationen
+haben wir vier mögliche Ergebnisse;
+
+252
+00:11:29,190 --> 00:11:31,525
+echt Positive, echt Negative,
+
+253
+00:11:31,525 --> 00:11:33,665
+falsch Positive und falsch Negative.
+
+254
+00:11:33,665 --> 00:11:37,000
+Kombinationen dieser Werte können
+können zu Bewertungsmesswerten führen
+
+255
+00:11:37,000 --> 00:11:39,380
+wie Genauigkeit,
+also die Anzahl der echt Positiven
+
+256
+00:11:39,380 --> 00:11:41,000
+geteilt durch alle Positiven,
+
+257
+00:11:41,000 --> 00:11:43,460
+und Trefferquote, also
+die Anzahl der echt Positiven
+
+258
+00:11:43,460 --> 00:11:46,495
+geteilt durch die Summe
+echt Positiver und falsch Negativer,
+
+259
+00:11:46,495 --> 00:11:49,675
+was die Sensitivität
+oder Richtig-positiv-Rate ergibt.
+
+260
+00:11:49,675 --> 00:11:53,640
+Der Schwellenwert lässt sich abstimmen,
+um den Messwert Ihrer Wahl zu optimieren.
+
+261
+00:11:53,640 --> 00:11:55,270
+Gibt es einen einfachen Weg,
+
+262
+00:11:55,270 --> 00:11:56,540
+der uns dabei hilft?
+
+263
+00:11:56,540 --> 00:11:58,860
+Eine Grenzwertoptimierungskurve
+
+264
+00:11:58,860 --> 00:12:02,535
+oder kurz ROC-Kurve, zeigt, wie
+die Vorhersagen eines gegebenen Modells
+
+265
+00:12:02,535 --> 00:12:05,640
+unterschiedliche echt positive vs.
+falsch positive Raten erzeugen,
+
+266
+00:12:05,640 --> 00:12:08,460
+wenn man unterschiedliche
+Entscheidungsschwellenwerte nutzt.
+
+267
+00:12:08,460 --> 00:12:12,350
+Senken wir den Schwellenwert, bekommen
+wir wahrscheinlich mehr falsch Positive,
+
+268
+00:12:12,350 --> 00:12:15,465
+finden aber auch eine 
+höhere Anzahl echt Positiver vor.
+
+269
+00:12:15,465 --> 00:12:17,430
+Idealerweise hätte ein perfektes Modell
+
+270
+00:12:17,430 --> 00:12:20,020
+null falsch Positive
+und null falsch Negative.
+
+271
+00:12:20,020 --> 00:12:22,985
+In der Gleichung ergäbe das
+eine Rate echt Positiver von eins
+
+272
+00:12:22,985 --> 00:12:25,295
+und eine Rate falsch Positiver von null.
+
+273
+00:12:25,295 --> 00:12:26,627
+Um eine Kurve zu erstellen,
+
+274
+00:12:26,627 --> 00:12:30,530
+würden wir jeden möglichen Entscheidungs-
+schwellenwert aussuchen und neu bewerten.
+
+275
+00:12:30,530 --> 00:12:33,320
+Jeder Schwellenwert
+erzeugt einen einzelnen Punkt,
+
+276
+00:12:33,320 --> 00:12:37,127
+aber indem viele Schwellenwerte bewertet
+werden, entsteht schließlich eine Kurve.
+
+277
+00:12:37,127 --> 00:12:40,705
+Zum Glück gibt es dafür einen
+effizienten Sortier-Algorithmus.
+
+278
+00:12:40,705 --> 00:12:43,395
+Jedes Modell würde eine
+andere ROC-Kurve erzeugen.
+
+279
+00:12:43,395 --> 00:12:45,072
+Wie können wir diese Kurven nutzen,
+
+280
+00:12:45,072 --> 00:12:47,740
+um die relative Leistung
+unserer Modelle zu vergleichen,
+
+281
+00:12:47,740 --> 00:12:51,700
+wenn wir unseren genauen
+Entscheidungsschwellenwert nicht kennen?
+
+282
+00:12:51,700 --> 00:12:55,110
+Wir nutzen die Fläche unter der Kurve
+als aggregierte Leistungsmessung
+
+283
+00:12:55,110 --> 00:12:57,970
+über alle möglichen 
+Klassifikationsschwellenwerte hinweg.
+
+284
+00:12:57,970 --> 00:13:00,880
+AUC hilft Ihnen,
+zwischen Modellen zu wählen,
+
+285
+00:13:00,880 --> 00:13:04,170
+wenn Sie den endgültigen
+Entscheidungsschwellenwert nicht kennen.
+
+286
+00:13:04,170 --> 00:13:08,210
+Es ist, als fragten wir: Wenn wir je ein
+zufälliges Positives und Negatives wählen,
+
+287
+00:13:08,210 --> 00:13:09,460
+wie wahrscheinlich ist es,
+
+288
+00:13:09,460 --> 00:13:13,120
+dass mein Modell sie in der
+richtigen relativen Reihenfolge wertet?
+
+289
+00:13:13,120 --> 00:13:16,170
+Das Gute an AUC ist, dass
+sie invariant gegenüber der Skalierung
+
+290
+00:13:16,170 --> 00:13:18,460
+und dem Klassifikationsschwellenwert ist.
+
+291
+00:13:18,460 --> 00:13:20,645
+Aus diesen Gründen wird sie gerne genutzt.
+
+292
+00:13:20,645 --> 00:13:24,220
+Manchmal wird AUC auch für die
+Genauigkeits-/Trefferquotenkurve genutzt
+
+293
+00:13:24,220 --> 00:13:26,990
+oder jüngst für
+deren Wachstumskurven,
+
+294
+00:13:26,990 --> 00:13:28,680
+die bloß verschiedene Kombinationen
+
+295
+00:13:28,680 --> 00:13:31,665
+der vier Ergebnisse als
+Messwerte entlang der Achsen verwenden.
+
+296
+00:13:31,665 --> 00:13:34,940
+Dies aber nur als
+aggregierte Messung zu behandeln,
+
+297
+00:13:34,940 --> 00:13:36,520
+kann einige Effekte kaschieren.
+
+298
+00:13:36,520 --> 00:13:39,515
+So ist eine kleine Verbesserung in AUC
+
+299
+00:13:39,515 --> 00:13:43,725
+eher in der Lage, sehr
+unwahrscheinliche Negative einzustufen
+
+300
+00:13:43,725 --> 00:13:46,765
+als nochmals viel unwahrscheinlichere.
+
+301
+00:13:46,765 --> 00:13:50,405
+Das ist in Ordnung, aber
+eventuell nicht wesentlich nutzbringend.
+
+302
+00:13:50,405 --> 00:13:52,880
+Beim Bewerten unserer
+logistischen Regressionsmodelle
+
+303
+00:13:52,880 --> 00:13:55,600
+müssen wir sichergehen,
+dass Vorhersagen unverzerrt sind.
+
+304
+00:13:55,600 --> 00:13:57,965
+In diesem Zusammenhang
+sprechen wir von Verzerrung
+
+305
+00:13:57,965 --> 00:14:01,165
+nicht als dem Verzerrungsterm in
+der linearen Gleichung des Modells.
+
+306
+00:14:01,165 --> 00:14:02,390
+Vielmehr meinen wir,
+
+307
+00:14:02,390 --> 00:14:06,350
+sollte eine generelle Verschiebung in
+positive oder negative Richtung auftreten.
+
+308
+00:14:06,350 --> 00:14:08,270
+Eine einfache Überprüfung der Verzerrung
+
+309
+00:14:08,270 --> 00:14:11,060
+ist der Vergleich der mittleren
+Wertvorhersagen des Modells
+
+310
+00:14:11,060 --> 00:14:14,740
+anhand eines Datasets mit dem
+mittleren Wert der Labels in dem Dataset.
+
+311
+00:14:14,740 --> 00:14:16,570
+Wenn sie nicht nah beieinander liegen,
+
+312
+00:14:16,570 --> 00:14:18,040
+könnten Sie ein Problem haben.
+
+313
+00:14:18,040 --> 00:14:20,325
+Verzerrung ist wie ein
+Kanarienvogel in der Mine,
+
+314
+00:14:20,325 --> 00:14:23,100
+wo wir ihn als Indikator
+für einen Irrtum nutzen können.
+
+315
+00:14:23,100 --> 00:14:24,425
+Wenn Sie Verzerrung haben,
+
+316
+00:14:24,425 --> 00:14:25,950
+haben Sie definitiv ein Problem.
+
+317
+00:14:25,950 --> 00:14:28,030
+Wenn auch null Verzerrung für sich
+
+318
+00:14:28,030 --> 00:14:30,460
+nicht heißt, dass
+alles in Ihrem System perfekt ist,
+
+319
+00:14:30,460 --> 00:14:32,565
+ist sie doch eine
+gute Plausibilitätsprüfung.
+
+320
+00:14:32,565 --> 00:14:34,005
+Wenn Sie Verzerrung haben,
+
+321
+00:14:34,005 --> 00:14:35,865
+könnten es
+unvollständige Merkmale sein,
+
+322
+00:14:35,865 --> 00:14:39,575
+eine fehlerhafte Pipeline, eine
+verzerrte Trainingsprobe, et cetera.
+
+323
+00:14:39,575 --> 00:14:42,000
+Sie können in Datensegmenten
+nach Verzerrung suchen,
+
+324
+00:14:42,000 --> 00:14:45,650
+wodurch das Entfernen von Verzerrung
+aus Ihrem Modell verbessert werden kann.
+
+325
+00:14:45,650 --> 00:14:48,720
+Sehen wir uns ein Beispiel an,
+wie Sie das tun können.
+
+326
+00:14:48,720 --> 00:14:51,675
+Hier ist eine Kalibrierkurve
+eines einfachen Versuchsbrowers.
+
+327
+00:14:51,675 --> 00:14:54,135
+Sie sehen die
+doppeltlogarithmische Skala,
+
+328
+00:14:54,135 --> 00:14:56,240
+da wir die vorhergesagten
+Log-odds in Buckets
+
+329
+00:14:56,240 --> 00:14:58,720
+mit den beobachteten
+Log-odds in Buckets vergleichen.
+
+330
+00:14:58,720 --> 00:15:02,130
+Sie sehen, dass im moderaten
+Bereich alles recht gut kalibriert ist,
+
+331
+00:15:02,130 --> 00:15:04,520
+doch im niedrigsten
+Bereich ziemlich schlecht.
+
+332
+00:15:04,520 --> 00:15:05,350
+Das kommt vor,
+
+333
+00:15:05,350 --> 00:15:07,930
+wenn Teile der Daten-Basis
+schlecht repräsentiert sind,
+
+334
+00:15:07,930 --> 00:15:11,400
+aufgrund von Rauschen
+oder übermäßig starker Regularisierung.
+
+335
+00:15:11,400 --> 00:15:14,080
+Das Aufteilen in Buckets
+kann auf einige Arten passieren;
+
+336
+00:15:14,080 --> 00:15:16,660
+durch das wirkliche
+Aufbrechen der Zielvorhersagen
+
+337
+00:15:16,660 --> 00:15:18,905
+oder indem wir in Quantile aufteilen.
+
+338
+00:15:18,905 --> 00:15:21,740
+Warum müssen wir
+die Vorhersage in Buckets aufteilen,
+
+339
+00:15:21,740 --> 00:15:25,080
+um Kalibrierkurven zu erhalten
+und Wahrscheinlichkeiten vorherzusagen?
+
+340
+00:15:25,080 --> 00:15:28,970
+Für jedes gegebene Ereignis ist
+das echte Label entweder null oder eins,
+
+341
+00:15:28,970 --> 00:15:31,425
+zum Beispiel nicht geklickt oder geklickt.
+
+342
+00:15:31,425 --> 00:15:34,580
+Doch unsere Vorhersagewerte
+sind immer probabilistische Schätzungen
+
+343
+00:15:34,580 --> 00:15:38,085
+irgendwo in der Mitte, wie 0,1 oder 0,33.
+
+344
+00:15:38,085 --> 00:15:41,295
+Bei jedem einzelnen Beispiel
+für sich liegen wir immer daneben.
+
+345
+00:15:41,295 --> 00:15:43,675
+Doch wenn man
+genügend Beispiele gruppiert,
+
+346
+00:15:43,675 --> 00:15:47,140
+möchten wir, dass im Durchschnitt
+die Summe der echten Nullen und Einsen
+
+347
+00:15:47,140 --> 00:15:50,570
+ungefähr unserer vorhergesagten 
+mittleren Wahrscheinlichkeit entspricht.
+
+348
+00:15:50,570 --> 00:15:55,335
+Was hiervon ist wichtig für die
+Ausführung von logistischer Regression?
+
+349
+00:15:55,335 --> 00:15:57,860
+Die richtige Antwort lautet: 
+Alle vorgenannten.
+
+350
+00:15:57,860 --> 00:16:00,965
+Es ist sehr wichtig, dass unser
+Modell sich verallgemeinern lässt,
+
+351
+00:16:00,965 --> 00:16:02,965
+für die besten
+Vorhersagen zu neuen Daten,
+
+352
+00:16:02,965 --> 00:16:05,540
+was der Grund ist,
+für den wir sie überhaupt erstellen.
+
+353
+00:16:05,540 --> 00:16:09,200
+Um das zu erreichen, ist es wichtig,
+unsere Daten nicht überanzupassen.
+
+354
+00:16:09,200 --> 00:16:12,165
+Das Hinzufügen von Straftermen
+an die Zielfunktion kann helfen,
+
+355
+00:16:12,165 --> 00:16:14,240
+wie durch
+L1-Regularisierung für Datendichte
+
+356
+00:16:14,240 --> 00:16:17,170
+und L2-Regularisierung,
+um das Modellgewicht klein zu halten,
+
+357
+00:16:17,170 --> 00:16:20,155
+sowie durch den
+Einsatz von Vorzeitigem Beenden.
+
+358
+00:16:20,155 --> 00:16:23,150
+Es ist auch wichtig, einen
+abgestimmten Schwellenwert zu wählen,
+
+359
+00:16:23,150 --> 00:16:24,830
+für die richtigen Entscheidungen
+
+360
+00:16:24,830 --> 00:16:27,040
+zur Ausgabe Ihrer
+Wahrscheinlichkeitsschätzung,
+
+361
+00:16:27,040 --> 00:16:30,630
+die Geschäftsmesswerte zu minimieren
+oder maximieren, wie Sie es wünschen.
+
+362
+00:16:30,630 --> 00:16:32,295
+Wenn dies nicht klar definiert ist,
+
+363
+00:16:32,295 --> 00:16:34,272
+können wir statistischere Mittel nutzen,
+
+364
+00:16:34,272 --> 00:16:37,410
+wie die Berechnung der echt
+und falsch Positiven und Negativen
+
+365
+00:16:37,410 --> 00:16:39,700
+und ihre Kombination
+in verschiedenen Messwerten,
+
+366
+00:16:39,700 --> 00:16:41,760
+zum Beispiel echt
+und falsch positive Raten.
+
+367
+00:16:41,760 --> 00:16:44,730
+Wir können diesen Prozess für
+viele Schwellenwerte wiederholen
+
+368
+00:16:44,730 --> 00:16:47,785
+und die Fläche unter der 
+Kurve oder AUC darstellen,
+
+369
+00:16:47,785 --> 00:16:51,290
+um eine relativ aggregierte
+Messung der Modellleistung zu erhalten.
+
+370
+00:16:51,290 --> 00:16:54,785
+Zu guter Letzt ist es wichtig, 
+dass unsere Vorhersagen unverzerrt sind,
+
+371
+00:16:54,785 --> 00:16:57,830
+und selbst ohne Verzerrung
+sollten wir sorgfältig darauf achten,
+
+372
+00:16:57,830 --> 00:17:00,170
+dass unser Modell
+eine gute Leistung zeigt.
+
+373
+00:17:00,170 --> 00:17:03,320
+Zunächst suchen wir nach
+Verzerrung, indem wir sichergehen,
+
+374
+00:17:03,320 --> 00:17:07,035
+dass die mittleren Vorhersagen sehr nah
+bei den mittleren Beobachtungen liegen.
+
+375
+00:17:07,035 --> 00:17:09,390
+Ein hilfreicher Weg, Verzerrung zu finden,
+
+376
+00:17:09,390 --> 00:17:13,189
+ist das Betrachten von Datensegmenten
+und der Einsatz etwa einer Kalibrierkurve,
+
+377
+00:17:13,189 --> 00:17:16,400
+um die Problembereiche
+noch weiter einzugrenzen.

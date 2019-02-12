@@ -1,0 +1,222 @@
+1
+00:00:00,220 --> 00:00:01,710
+In der letzten Lektion
+
+2
+00:00:01,710 --> 00:00:06,340
+haben wir über die manuelle Erstellung
+von Einbettungen mit Regeln gesprochen.
+
+3
+00:00:06,340 --> 00:00:10,170
+Wir haben Attribute wie das
+Durchschnittsalter von Zuschauern
+
+4
+00:00:10,170 --> 00:00:13,770
+und die Gesamtticketverkäufe
+verwendet, um unsere Filme,
+
+5
+00:00:13,770 --> 00:00:17,310
+die sich sonst in einem Raum
+von 500.000 Dimensionen befinden würden,
+
+6
+00:00:17,310 --> 00:00:20,950
+in einen
+zweidimensionalen Raum zu projizieren.
+
+7
+00:00:20,950 --> 00:00:23,670
+Im Fall unserer
+zweidimensionalen Einbettung
+
+8
+00:00:23,670 --> 00:00:25,665
+haben wir unseren Achsen Bezeichnungen
+
+9
+00:00:25,665 --> 00:00:28,477
+wie Alter und verkaufte Tickets,
+
+10
+00:00:28,477 --> 00:00:30,660
+Kinder und Erwachsene,
+
+11
+00:00:30,660 --> 00:00:33,495
+Kunstfilme und Kassenschlager gegeben.
+
+12
+00:00:33,495 --> 00:00:38,030
+Diese Achsen müssen aber
+nicht unbedingt Bezeichnungen haben.
+
+13
+00:00:38,030 --> 00:00:43,045
+Wichtig ist, dass wir uns
+von 500.000 auf zwei reduziert haben.
+
+14
+00:00:43,045 --> 00:00:44,092
+Das haben wir erzielt,
+
+15
+00:00:44,092 --> 00:00:48,140
+indem wir Attribute
+der Filme manuell untersucht haben.
+
+16
+00:00:48,140 --> 00:00:54,565
+Welche Auswirkung hat die Reduktion
+der Dimensionalität von 500.000 auf zwei?
+
+17
+00:00:54,565 --> 00:01:01,280
+Die 2D-Einbettung, die wir für jeden Film
+haben, ist mit zwei Realwerten verknüpft.
+
+18
+00:01:01,280 --> 00:01:06,235
+sodass Sie jeden Film durch
+einen Punkt im 2D-Raum darstellen können.
+
+19
+00:01:06,235 --> 00:01:08,895
+Warum sollten wir
+diese Einbettung vornehmen?
+
+20
+00:01:08,895 --> 00:01:11,620
+Ein wichtiger Grund ist dieser:
+
+21
+00:01:11,620 --> 00:01:17,525
+Sagen wir, wir trainieren ein Modell zur
+Vorhersage, ob ein Nutzer einen Film mag.
+
+22
+00:01:17,525 --> 00:01:21,154
+Es ist einfacher,
+ein Modell mit D Inputs anzulernen,
+
+23
+00:01:21,154 --> 00:01:25,030
+als ein Modell mit N Inputs.
+
+24
+00:01:25,030 --> 00:01:32,540
+Denken Sie dran, dass N viel größer
+ist als D. Je weniger Eingabeknoten,
+
+25
+00:01:32,540 --> 00:01:35,875
+desto weniger Gewichte
+müssen wir optimieren.
+
+26
+00:01:35,875 --> 00:01:39,240
+Das heißt, dass die
+Trainingsphase kürzer ist
+
+27
+00:01:39,240 --> 00:01:42,675
+und die Gefahr der Überanpassung geringer.
+
+28
+00:01:42,675 --> 00:01:47,015
+Die Einbettung ist eine Methode,
+um das Problem zu vereinfachen.
+
+29
+00:01:47,015 --> 00:01:51,820
+Aber wir müssen diese
+Dimensionalitätsreduktion so vornehmen,
+
+30
+00:01:51,820 --> 00:01:53,820
+dass wir keine Informationen verlieren.
+
+31
+00:01:53,820 --> 00:01:58,960
+Wie ermitteln wir
+eine geeignete Einbettung?
+
+32
+00:01:58,960 --> 00:02:04,635
+Sie können Einbettung als Teil
+des Trainings von den Daten lernen.
+
+33
+00:02:04,635 --> 00:02:07,660
+Es ist keine separate Anlernphase nötig.
+
+34
+00:02:07,660 --> 00:02:10,240
+Nehmen Sie zuerst das ursprüngliche Input
+
+35
+00:02:10,240 --> 00:02:14,550
+und stellen Sie es als
+one-hot-codiertes Feld dar.
+
+36
+00:02:14,550 --> 00:02:18,320
+Senden Sie es dann
+durch eine Einbettungsebene.
+
+37
+00:02:18,320 --> 00:02:26,095
+Hierbei ist die Einbettungsebene nur eine
+verborgene Ebene mit 1 Einheit/Dimension.
+
+38
+00:02:26,095 --> 00:02:29,020
+Da wir ein Modell mit Labels trainieren,
+
+39
+00:02:29,020 --> 00:02:33,735
+ändert sich die Einbettung
+auf der Grundlage dieser Labels.
+
+40
+00:02:33,735 --> 00:02:37,150
+Die verborgenen
+Einheiten entdecken intuitiv,
+
+41
+00:02:37,150 --> 00:02:42,130
+wie die Elemente im D-dimensionalen
+Raum so organisiert werden können,
+
+42
+00:02:42,130 --> 00:02:46,220
+dass das Endziel am besten optimiert wird.
+
+43
+00:02:46,220 --> 00:02:48,555
+Es gibt aber ein kleines Problem.
+
+44
+00:02:48,555 --> 00:02:52,970
+Wie viel Speicher ist nötig,
+um die Eingaben zu speichern?
+
+45
+00:02:52,970 --> 00:02:55,380
+Sie haben eine kategoriale Inputvariable,
+
+46
+00:02:55,380 --> 00:02:58,695
+aber 500.000 mögliche Werte.
+
+47
+00:02:58,695 --> 00:03:03,320
+Sie müssen also
+500.000 Inputknoten erstellen
+
+48
+00:03:03,320 --> 00:03:09,910
+und Matrix-Mathematik
+an riesigen Matrizen vornehmen.

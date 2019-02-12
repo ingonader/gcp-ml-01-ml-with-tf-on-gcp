@@ -1,0 +1,268 @@
+Maintenant que vous savez
+ce qu'est la régularisation L1, approfondissons
+le concept de régression logistique et voyons pourquoi il est important
+d'utiliser la régularisation. Supposons que vous voulez prédire
+les résultats du "pile ou face". Nous le savons tous,
+pour une pièce de monnaie normale, la valeur escomptée est de 50 %
+de "face" et 50 % de "pile". Et si, au lieu d'une pièce normale,
+nous utilisions une pièce tordue ? Disons que nous souhaitons
+généraliser les prédictions pour tous les types de pièces,
+les normales, les anormales, les grandes, les petites,
+les lourdes, les légères, etc. Quelles caractéristiques
+pourrions-nous utiliser pour prédire si le résultat sera "pile" ou "face" ? Nous pourrions utiliser
+l'angle de courbure de la pièce, qui transfère une partie de la masse
+dans l'autre dimension et/ou modifie sa rotation
+en raison des frottements dans l'air ou du centre de la masse. La masse de la pièce peut aussi être
+une caractéristique déterminante, tout comme sa taille, son diamètre,
+son épaisseur, etc. Par l'extraction de caractéristiques,
+nous pourrions définir le volume de la pièce,
+ou encore sa densité. Autre information
+qui pourrait nous être utile, le ou les matériaux
+dont la pièce est composée. Il serait assez simple
+de mesurer ces caractéristiques. Mais ce n'est qu'une face de la médaille,
+sans mauvais jeu de mots. Le lancer de la pièce est également
+à prendre en compte, notamment la vitesse linéaire
+et la vitesse de rotation, l'angle de lancement, l'angle de la surface où elle retombe, la vitesse du vent, etc. Ces éléments sont un peu
+plus délicats à mesurer. Une fois ces caractéristiques identifiées, quel modèle simple pouvons-nous utiliser
+pour prédire le résultat du pile ou face ? La régression linéaire, bien sûr. Mais quel pourrait être
+le problème avec ce choix ? Nos libellés sont "pile" et "face",
+autrement dit "face" et "pas face", qu'on peut coder avec 1
+pour "face" et 0 pour "pas face". Si nous utilisons la régression linéaire avec une fonction de perte standard
+d'erreur quadratique moyenne (EQM), nos prédictions pourraient
+sortir de la plage "0-1". Que signifierait une prédiction de 2,75
+dans le cas de notre pile ou face ? Cela n'aurait aucun sens. Un modèle minimisant l'erreur quadratique
+n'est pas contraint de fixer la plage de probabilité entre 0 et 1. C'est pourtant
+ce dont nous avons besoin ici. Vous pouvez bien sûr imaginer un modèle qui prédit des valeurs inférieures à 0
+ou supérieures à 1 pour d'autres cas. Mais vous ne pourrez pas
+utiliser ce modèle de probabilité ici. Les astuces simples, comme plafonner les
+prédictions à 0 ou 1, créeraient un biais. Nous avons donc besoin d'autre chose, plus précisément,
+d'une nouvelle fonction de perte. Convertir cette progression linéaire
+en régression logistique, par exemple. Dans un précédent cours, nous avons retracé l'histoire du ML
+et utilisé la fonction d'activation sigmoïde. Examinons cette fonction de plus près. La fonction d'activation sigmoïde utilise
+la somme pondérée (W^T x+b) d'une régression linéaire. Et au lieu de générer la sortie,
+puis de calculer la perte de l'EQM, nous passons la fonction d'activation
+de linéaire à sigmoïde, qui prend cette valeur comme argument et l'encadre en douceur
+pour la ramener entre 0 et 1. L'entrée de la fonction sigmoïde (en principe la sortie
+de la régression linéaire) est appelée "Logit". Nous effectuons donc une transformation
+non linéaire sur notre modèle linéaire. Remarquez que la probabilité
+tend vers 0 quand le logit tend vers -∞, et vers 1
+quand le logit tend vers +∞. Qu'est-ce que cela implique
+pour l'entraînement ? Contrairement à l'erreur
+quadratique moyenne, la sigmoïde ne devine jamais
+une probabilité de 0.0 ou 1.0. Cela signifie que,
+en l'absence de régularisation, les poids sont rapprochés de +∞ ou -∞ lorsque vous utilisez de façon constante
+un algorithme de descente de gradient pour rapprocher le taux de perte de 0, ce qui peut générer des problèmes. Mais tout d'abord, comment interpréter
+le résultat d'une sigmoïde ? Est-ce juste une fonction pour figer
+la plage de probabilité entre 0 et 1, pour définir plusieurs plages,
+ou est-ce plus que cela ? Bonne nouvelle, c'est bien plus que cela. Cette fonction permet d'étalonner
+l'estimation de probabilités. En plus de figer la plage, la fonction sigmoïde fait office
+de fonction de distribution cumulative pour la distribution logistique
+de probabilités. Sa fonction quantile est l'inverse du logit,
+qui modélise la cote logarithmique. En mathématiques, l'inverse d'une sigmoïde
+peut être considéré comme une probabilité. Nous pouvons ainsi voir l'étalonnage comme
+un moyen de produire des valeurs réelles, telles que des probabilités. Voici la différence
+avec les résultats non étalonnés, tels que les vecteurs d'inclusion,
+informatifs sur le plan interne, mais n'offrant pas
+de corrélation entre les valeurs. La plupart des fonctions d'activation
+de sortie peuvent fournir un chiffre compris entre 0 et 1, mais seule cette fonction sigmoïde
+peut fournir une estimation étalonnée de la probabilité d'occurrence sur un
+ensemble de données d'entraînement. Cette caractéristique de la fonction
+d'activation sigmoïde nous permet de transformer des problèmes
+de classification binaire en problèmes probabilistes. Par exemple, au lieu d'un modèle juste
+capable de dire si oui ou non un client va acheter un article, vous pouvez utiliser un modèle capable
+de prédire la probabilité de cet achat. L'association de cette capacité
+à un seuil offre un "pouvoir prédictif" bien plus important
+qu'une simple réponse binaire. Bien, nous avons calculé
+des résultats de régression logistique et obtenu des probabilités étalonnées
+entre 0 et 1. Comment alors identifier l'erreur et l'utiliser pour actualiser
+les pondérations via une rétropropagation ? Nous utilisons une fonction de perte
+appelée "entropie croisée", qui correspond
+à la perte logarithmique (Log Loss). Contrairement à
+l'erreur quadratique moyenne, l'accent est ici moins mis sur les erreurs quand le résultat est relativement
+proche du libellé, presque linéaire. Cependant, toujours par rapport à l'EQM, quand la prédiction s'approche
+de l'opposé du libellé, elle augmente de façon exponentielle. Autrement dit, la pénalité est très forte
+quand non seulement le modèle commet une erreur, mais qu'en plus 
+son taux de confiance est élevé. La dérivée de l'EQM pourrait aussi causer
+des problèmes avec l'entraînement. Lorsque nous poussons la sortie
+de plus en plus près de 0 ou 1, le gradient (sortie * 1 - sortie)
+devient de plus en plus petit, et modifie de moins en moins les poids. Cela pourrait complètement
+paralyser l'entraînement. Heureusement, le gradient dans l'entropie (fonction logique * 1 - fonction logique) s'annule pendant la rétropropagation. Par conséquent,
+cela ne pose pas problème. Toutefois, la régularisation est
+importante en régression logistique, car réduire la perte à zéro
+est difficile et dangereux. La descente de gradient ayant pour but
+de minimiser l'entropie croisée, elle pousse les valeurs de sortie
+vers 1 pour les libellés positifs, et vers 0 pour
+les libellés négatifs. Du fait de l'équation de la sigmoïde, la fonction tend vers 0
+si le logit est l'infini négatif (-∞) et vers 1 si le logit est
+l'infini positif (+∞). Si vous définissez
+les logits sur -∞ ou +∞, cela entraîne une augmentation
+continue des pondérations et des problèmes d'instabilité numérique,
+des débordements et des soupassements. C'est dangereux !
+Cela peut ruiner votre entraînement. Comme on peut le voir ici,
+à proximité des asymptotes, la courbe de la fonction sigmoïde
+devient de plus en plus plate. Cela signifie que la dérivée
+tend à se rapprocher de 0. Nous utilisons cette dérivée
+et la rétropropagation pour actualiser les pondérations, il est donc important
+que le gradient n'atteigne pas 0, sinon l'entraînement s'arrêtera. Ce phénomène est appelé saturation, quand toutes les activations
+atteignent ces paliers, ce qui entraîne un problème
+de disparition de gradient. L'entraînement est alors très difficile. Voici une autre information
+qui pourrait vous être utile. Imaginons que vous attribuez un ID unique
+à chaque exemple et associez chaque ID à une caractéristique. Si vous utilisez
+une régression logistique non régularisée, cela entraînera un surapprentissage absolu. Comme le modèle tente de ramener
+la perte à zéro sur tous les exemples, sans y parvenir, toutes ces caractéristiques verront
+leurs pondérations tendre vers +∞ ou -∞. En pratique, cela peut se produire pour des données multidimensionnelles
+avec des caractéristiques croisées. Il y a de nombreux croisements rares,
+ne se produisant dans un seul exemple. Alors, comment nous protéger
+du surapprentissage ? Parmi ces éléments, lesquels sont importants
+pour exécuter des régressions logistiques ? Les bonnes réponses sont A et B. L'ajout de la régularisation
+à une régression logistique garantit la simplicité de votre modèle, car les paramètres ont
+une pondération moindre. L'ajout de ce critère de pénalité
+à la fonction de perte permet de s'assurer que l'entropie
+croisée via la descente de gradient ne poussera pas les pondérations
+toujours plus près de +∞ ou -∞ et ne provoquera pas
+de problèmes numériques. De plus, les logits étant plus petits, nous pouvons rester
+dans les portions moins plates de la fonction sigmoïde
+et éloigner nos gradients de 0, pour continuer à actualiser les pondérations
+et de poursuivre l'entraînement. La réponse C est fausse, et donc la réponse E également, car la régularisation ne transforme pas
+les sorties en "probabilités étalonnées". L'avantage de la régression
+logistique est qu'elle génère déjà l'estimation des probabilités étalonnées, la sigmoïde étant une fonction
+de distribution cumulative de la distribution logistique
+des probabilités. Nous pouvons prédire des probabilités au lieu d'exploiter des réponses
+binaires du type "oui ou non", "vrai ou faux", "acheter ou vendre", etc. Nous utilisons la régularisation et l'arrêt
+précoce pour contrer le surapprentissage. La complexité du modèle augmente
+avec les pondérations importantes. En réglant les hyperparamètres
+pour que la pondération augmente selon la rareté du scénario, nous observons une augmentation
+de la perte, donc nous arrêtons. La régularisation L2 garantit
+des valeurs pondérales plus basses, la régularisation L1 un modèle plus épars
+en éliminant les caractéristiques inutiles Pour trouver les hyperparamètres L1 et L2
+idéaux lors du réglage des hyperparamètres, vous devez chercher
+dans la fonction de perte de validation le point où vous obtenez
+la plus basse valeur. À ce stade, une régularisation moins
+importante augmente la variance, provoque un surapprentissage
+et nuit à la généralisation, et une régularisation plus
+importante augmente le biais, provoque un sous-apprentissage
+et nuit aussi à la généralisation. L'arrêt précoce stoppe l'entraînement
+lorsque le surapprentissage démarre. Quand vous entraînez votre modèle, vous devriez l'évaluer sur votre ensemble
+de données d'évaluation, toutes les X étapes,
+X itérations, X minutes, etc. Au fur et à mesure, les erreurs d'entraînement
+et de validation devraient diminuer. Mais à un certain point, les erreurs
+de validation devraient en fait augmenter. C'est à ce point que le modèle commence
+à mémoriser les données d'entraînement, et qu'il perd sa capacité à généraliser,
+pour l'ensemble de données de validation, mais surtout pour les nouvelles données
+que nous voudrons traiter avec ce modèle. L'utilisation de l'arrêt précoce permet
+de "figer" le modèle sur ce point, puis de revenir en arrière
+pour utiliser les pondérations des étapes précédant
+l'arrivée sur ce point. Ici, la perte est uniquement L (w,D), ce qui signifie
+"aucun critère de régularisation". Point intéressant, l'arrêt précoce offre
+presque les mêmes possibilités que la régularisation L2, et il est souvent utilisé à sa place
+en raison de son moindre coût. Dans la pratique, nous utilisons toujours
+les types de régularisation L1 et L2, ainsi qu'un peu de régularisation
+par arrêt précoce. Même si la régularisation L2
+et l'arrêt précoce semblent redondants, pour des systèmes réels,
+vous ne parviendrez peut-être pas à identifier les hyperparamètres idéaux.
+L'arrêt précoce peut alors vous aider. Obtenir des probabilités avec notre modèle
+de régression logistique est super. Mais, parfois, les utilisateurs
+souhaitent simplement qu'une décision simple
+soit prise pour eux pour leurs problèmes quotidiens. Cet e-mail doit-il être envoyé dans
+le dossier "Courriers indésirables" ? Ce prêt doit-il être accordé ou non ? Quel itinéraire conseiller à l'utilisateur ? Comment utiliser notre estimation
+des probabilités pour aider les outils qui s'appuient sur notre modèle
+à prendre une décision ? Nous devons choisir un seuil. Pour un problème de classification binaire, cela pourrait être : toutes les probabilités inférieures
+ou égales à 50 % correspondent à "Non", et toutes les probabilités supérieures
+à 50 % correspondent à "Oui". Pour des problèmes réels plus complexes,
+le découpage peut être différent, par exemple 60-40, 20-80, 99-1 ou autres, selon l'équilibre que nous souhaitons
+définir entre les erreurs de type 1 et 2, en d'autres termes, l'équilibre entre
+faux positifs et faux négatifs. Pour la classification binaire,
+quatre résultats sont possibles : vrai positif, vrai négatif, faux positif et faux négatif. L'association de ces valeurs génère
+des métriques d'évaluation comme la précision (nombre de vrais positifs divisé
+par le nombre total de positifs) et le rappel
+(nombre de vrais positifs divisé par la somme de vrais positifs
+et de faux négatifs), ce qui nous donne la sensibilité,
+ou taux de vrais positifs. Vous pouvez régler le seuil choisi
+pour optimiser la métrique de votre choix. Avons-nous un moyen simple d'y arriver ? Une fonction d'efficacité du récepteur,
+ou courbe ROC pour faire court, montre comment des prédictions
+de malus créent différents taux de vrais positifs contre faux positifs
+pour différents seuils de décision utilisés. En abaissant le seuil, la probabilité
+d'avoir de faux positifs augmente, mais également celle
+d'avoir de vrais positifs. Dans l'idéal, un modèle devrait n'avoir
+aucun faux positif ou faux négatif. En intégrant cela aux équations,
+nous obtiendrions un taux de vrais positifs de 1
+et un taux de faux positifs de 0. Pour créer une courbe, nous sélectionnons
+chaque seuil de décision pour réévaluation. Chaque valeur de seuil crée un seul point. Cependant, en évaluant
+de nombreux seuils, une courbe se crée. Il existe heureusement un algorithme
+de tri efficace pour cette opération. Chaque mile créera
+une courbe ROC différente. Comment utiliser ces courbes pour comparer
+la performance relative de nos modèles si nous ne savons pas exactement
+quel seuil de décision utiliser ? L'aire sous la courbe (AUC) peut être
+utilisée comme mesurée agrégée de performance pour tous les seuils possibles
+de classification. L'AUC vous aide à choisir
+un modèle si vous ne savez pas quel seuil de votre système
+va être utilisé au final. C'est comme poser la question "en prenant
+un positif et un négatif aléatoires, quelle est la probabilité que mon modèle
+les intègre dans le bon ordre relatif ?". L'avantage de l'AUC est
+son échelle et sa variante, ainsi que son seuil
+de classification et sa variante. Elle est appréciée
+des utilisateurs pour cela. Ceux-ci utilisent parfois l'AUC
+pour la courbe de précision/rappel, ou plus récemment
+pour les courbes de gain précision/rappel, qui utilisent différentes associations des quatre résultats de production
+comme métriques le long des axes. Traiter cela juste comme mesure agrégée
+peut toutefois cacher certains effets. Une petite amélioration de l'AUC peut,
+par exemple, la rendre plus efficace dans le classement des négatifs peu probables
+et les rendre encore moins probables. C'est bien, mais c'est potentiellement
+désavantageux au niveau matériel. Pour évaluer les modèles
+de régression logistiques, il faut être sûr
+que les prédictions soient non biaisées. Dans ce contexte,
+lorsque nous parlons de biais, nous ne l'entendons pas
+au sens de l'équation linéaire des modèles, mais plutôt qu'il faudrait
+une réorientation générale vers les positifs ou les négatifs. Vous pouvez facilement vérifier cela en comparant les prédictions
+de valeur moyenne du modèle sur un ensemble de données, à la valeur
+moyenne des libellés dans cet ensemble. Si les deux ne sont pas assez proches,
+il y a sûrement un problème. Le biais est un canari dans la mine. Nous pouvons l'utiliser pour indiquer
+que quelque chose ne va pas. Si un biais apparaît,
+vous avez sûrement un problème. Pourtant,
+l'absence de biais ne signifie pas que tout votre système est parfait,
+mais elle reste un bon indicateur d'intégrité. Si un biais apparaît, la cause peut
+être une caractéristique incomplète, un pipeline buggé,
+un échantillon biaisé d'entraînement, etc. Vous pouvez rechercher les biais
+dans des tranches de données, pour vous aider à améliorer
+votre modèle en supprimant ces biais. Regardons un exemple de ce processus. Voici un repère d'étalonnage
+pour le navigateur de test simple. Remarquez qu'il s'agit
+d'une échelle log-log, car nous comparons les probabilités log
+compartimentées prévues et observées. Vous voyez que la calibration est
+plutôt bonne dans la plage modérée, mais elle est assez mauvaise
+pour l'extrémité basse. Cela arrive dans les parties où la base
+de données n'est pas bien représentée, à cause de bruit
+ou d'une réservation trop forte. Le binning peut être réalisé
+de plusieurs façons : en cassant littéralement
+les prédictions cibles, ou en utilisant les quantiles. Pourquoi devoir placer
+les prédictions dans un bucket pour créer des repères d'étalonnage
+en prédisant les probabilités ? Pour chaque événement,
+le vrai libellé est soit 0, soit 1, (par exemple, "non cliqué" ou "cliqué"), mais nos valeurs de prédictions resteront
+une supposition probabiliste quelque part au milieu,
+comme 0,1 ou 0,33. Pour chaque exemple seul,
+nous tombons toujours à côté. Toutefois,
+en rassemblant assez d'exemples, nous aimerions voir que,
+en moyenne, la somme des vrais 0 et 1 est semblable à une probabilité
+moyenne que nous prédisons. Parmi ces éléments, lesquels sont
+importants pour la régression logistique ? La bonne réponse est la D,
+soit toutes ces réponses. Il est crucial que notre modèle généralise
+pour obtenir les meilleures prédictions sur les nouvelles données, car c'est la raison
+pour laquelle nous les avons créées. Pour ce faire, nous ne devons
+en aucun cas suralimenter nos données. Ajouter des conditions de pénalité
+à la fonction d'objectif (comme avec la régularisation L1 pour la parcimonie et
+la régularisation L2 pour une petite largeur de modèle) et un arrêt précoce
+peuvent donc vous aider. Choisir un seuil réglé est également
+important pour savoir quelles décisions prendre quand votre estimation
+de probabilité génère un résultat. Il est aussi important de maximiser
+ou minimiser la métrique commerciale. Si elle n'est pas bien définie,
+nous pouvons utiliser plus de moyennes statistiques, le calcul du nombre de vrais
+et faux positifs ou négatifs, et les associer dans diverses métriques, comme les taux de vrais et faux positifs. Nous pouvons répéter ce processus
+pour plusieurs seuils différents, puis tracer l'aire sous la courbe (AUC) pour obtenir une mesure agrégée relative
+du modèle de performance. Pour finir, il est crucial
+que nos prédictions soient non biaisées. Même si c'est le cas,
+nous devons toujours être minutieux et vérifier
+que notre modèle s'exécute bien. Nous commençons
+à rechercher les biais en vérifiant que la moyenne des prédictions est
+très proche des observations d'erreurs. Pour vous aider à trouver
+où se cachent les biais, observer des tranches de données et utiliser, par exemple,
+un traçage d'étalonnage pour isoler les zones problématiques
+afin de les améliorer.

@@ -1,0 +1,31 @@
+All right, so we wanted to show
+you how a keras estimator works. So now we have a method
+called make_keras_estimator, where you given an output_dir. And what it does is that it does
+from tensorflow import keras, this is still the same time
+series model as before. But this time, I'm just going to treat it
+as a plain old nine input neural network. So I'm taking this,
+I'm creating a keras sequential model and saying that I want to create a dense
+network with 32 input nodes. You do a relu activation. And then one output, that's a Dense(1). And my loss is going to
+be mean_squared_error. My optimizer is going to be adam. And my evaluation matrix is
+going to be mean_absolute_error and mean_absolute_percentage error. And then, I can take
+keras.estimator.model to estimate passing in this keras compiled model. So remember, create the keras model,
+compile it, and pass it into model_to_estimator. Now this code is already part of this simplernn package,
+so let me show you that. So here we are in simplernn. And in the simplernn,
+there is a trainer, there is a model.py. And in the model.py, there was
+the original simple_rnn function that took the features, labels, and mode, and
+did all of the custom_estimator stuff. There's also a make_keras_estimator. So here is the make_keras_estimator. So make_keras_estimator has
+the code that I just showed you. Creates a sequential model,
+creates a dense layer. And it does an activation of it with
+reload, creates another dense layer, and does the last metrics, etc. So when we do the train and evaluate,
+I basically have a use_keras option. And if someone says use_keras,
+I call them make_keras_estimator. Otherwise, I call the base class esitmator
+passing in the function simple_rnn. So its essentially the same code
+with this one parameter use_keras. And that parameter gets passed in
+from the command line using task.py. So in task.py,
+there is a new argument called --keras. And if that, so
+depends on whether that is set, we basically pass in arguments of
+keras to model_train_and_evaluate. So this is going to be either true or
+false. So now, if we go back to our notebook, you can see what the effect of
+--keras is going to be here. Because the pass of --keras, this is essentially going to
+run the simple rnn code. It's going to run it on train.csv and
+value.csv, but it's going to use keras instead. And this would also just work.

@@ -1,0 +1,153 @@
+Agora, vamos colocar nosso
+conhecimento em prática e usar redes neurais no TensorFlow
+para criar um modelo ML. É hora de mais um laboratório com uso de
+redes neurais para criar o modelo ML. Aqui, você usará o Estimator automático, a classe DNNRegressor no TensorFlow, para prever o preço médio de imóveis
+com base em atributos diferentes. Os dados são baseados no
+censo de 1990 da Califórnia. Eles estão em nível
+de quarteirão, portanto, esses atributos refletem o
+número total de cômodos no quarteirão ou o número total de pessoas
+que vivem ali, respectivamente. Bem-vindo de volta. Vamos passar por alguns dos nossos códigos
+para ver como podemos fazer uma rede neural usando o regressor
+da classe DNN no TensorFlow. Então, aqui estamos, vamos aprender
+como usar uma rede neural. Vamos usar esses dados de imóveis
+com base no censo de 1990 da Califórnia. Eles estão em nível
+de quarteirão. Isso vai refletir os atributos, o número total de cômodos no quarteirão, o número total de pessoas que
+vivem ali, respectivamente. Vamos usar um conjunto de atributos
+para avaliar o valor do imóvel. Primeiro, configure. Na primeira célula, vamos diminuir
+as bibliotecas desnecessárias. Importamos a matemática, shutil, numpy, pandas, TensorFlow. Verifique se a proposta está definida como
+informação, para ter muitos resultados. Garanta que uma reformatação
+para pandas esteja definida. Agora vamos carregar nosso conjunto
+de dados deste URL aqui ou o ML de dados do treino de imóveis da
+Califórnia no frame de dados do pandas. Em seguida, examinamos os dados. Portanto, é bom conhecer um pouco
+mais sobre eles antes de começar. Imprimimos um resumo
+das estatísticas úteis em cada coluna. Isso incluirá coisas como média, desvio padrão, máximo,
+mínimo e vários quantis. Primeiro, vamos imprimir
+o cabeçalho do frame de dados, que é simplesmente um exemplo das cinco
+primeiras linhas do conjunto de dados: longitude, latitude, idade
+média do imóvel, total de cômodos, total de quartos,
+população, casas, renda média e valor médio do imóvel, que é o meu rótulo neste caso. É o que quero prever,
+usando esses outros atributos. Isso, na verdade, vê o que são
+as estatísticas. Para isso, faço df.describe, que mostrará a contagem, os meios, o desvio padrão, o mínimo, o 25º percentil, o 50º percentil, o 75º percentil
+e o máximo. Como você pode ver,
+tudo parece bem limpo aqui. No entanto, ainda está em nível
+de quarteirão. Vamos ter que descobrir como fazer isso
+em nível de imóvel. Para isso, pego o número de cômodos,
+se eu quero achar isso, pego o total de cômodos
+para todo o quarteirão, e divido pelo número total
+de domicílios nesse quarteirão. Isso dará o número
+médio de cômodos por casa. O mesmo vale para os quartos. Pego o número de quartos, vou usar o número total de quartos
+em todo o quarteirão, divido pelo número de casas no quarteirão
+para ter a média de quartos. Agora, para pessoas por casa, vou pegar a população total do quarteirão e dividir pelo número de casas. O mesmo com a média
+de pessoas naquela casa. Agora, se eu fizer df.describe, veremos minhas colunas originais aqui. No entanto, tenho colunas novas
+adicionadas aqui. Este é o meu número médio
+de cômodos por casa, o número médio
+de quartos por casa e o número médio
+de pessoas por casa. Excelente. Agora, posso descartar
+as estatísticas de população, estatísticas em nível de quarteirão como cômodos totais, quartos totais, população, casas, e vou deixar
+todas essas colunas no lugar. Então, não crio
+um novo frame de dados. E agora, se eu fizer df.describe, você verá que eu tenho
+meus atributos novos aqui, meus atributos antigos lá, aqui está o rótulo e o que usei antes,
+não está mais ali. Isto agora é uma visão em nível de casa. Agora, vamos criar
+nosso modelo de rede neural, pois temos nossos dados de atributos
+no formato correto. O que vamos fazer é criar
+nossas colunas de atributos. Lembre-se, as colunas de atributos
+basicamente colocam nossos dados na representação
+certa para o modelo usar. Mesmo que já esteja na notação
+de ponto flutuante, ainda precisamos decidir se será
+um ponto flutuante em uma coluna ou não. Isso é colocado aqui e eu estou fazendo um loop,
+como você pode ver aqui, em todas as colunas e médias
+de idade da casa, a renda média, o número de cômodos, o número de quartos
+e de pessoas por casa. Depois disso, quero fazer um pouco mais
+de engenharia de atributos. Vou criar uma nova coluna de atributo
+chamada Longitude. Ela será uma coluna intervalada
+da coluna da longitude numérica, com o espaçamento do espaço linear de -124,3 para -114,3
+em etapas de cinco. Para a latitude da coluna de atributos, eu vou ter o mesmo, exceto que agora vai ser das latitudes
+32,5 a 42 com 10 intervalos neste. A razão pela qual faço isso é porque a
+Califórnia é mais longa do que larga. Portanto, nossa latitude deve ter
+um maior número de intervalos, 10 intervalos contra 5 de longitude. Agora imprimo meus nomes
+de colunas de atributos. Aqui, vejo que tenho renda média,
+pessoas por casa, número de cômodos,
+idade média do imóvel, longitude, número de quartos e latitude. Isso é ótimo, mas primeiro
+precisamos nos certificar de dividir isso em um conjunto de dados
+de treino e avaliação. Assim posso ver como meu modelo progride,
+enquanto estou treinando. Para fazer isso, crio
+uma máscara aleatória, em que verifico o comprimento
+do frame de dados, vou criar esses vários números
+de valores aleatórios, oriundos de uma distribuição uniforme, e se forem menor de 0,8, vou salvá-los neste vetor de máscara. O que acontece é que este vetor de máscara
+é o comprimento do frame de dados, mas eles são todos
+verdadeiros e falsos. Isso é chamado de máscara booleana, quando a aplico
+no frame de dados. Portanto, para tudo em que
+a máscara era verdadeira, essas linhas serão colocadas
+em um frame de dados treinado. E para todos os valores
+que não são verdadeiros, é o que significa o til aqui, serão colocados no frame
+de dados de avaliação. Isso me dará uma divisão de 80% no
+frame de dados de treino, e os 20% restantes dos meus dados
+vão para o frame de dados de avaliação. Aqui, também tenho
+um fator de escala, como você pode ver, tenho 100 mil. A razão disso é porque quero
+escalonar meus rótulos aqui. Porque eles são muito grandes. Como você vê, há escalas
+totalmente diferentes. Estes estão na faixa
+dos 100 mil e dos milhões, e são muito menores, como flutuadores
+simples de um ou dois dígitos. Vou fazer isso. Também vou criar
+meu tamanho do lote aqui e definir como 100. Defino-o como 100 linhas por vez
+em cada um desses frames de dados. Eu tive que criar minha função
+de entrada de treinamento. Para isso, vou usar a função de entrada
+pandas Estimator aqui, em que X é igual aos meus atributos. Isso vai criar um dicionário de tensores e será a saída disso. Isso transforma o frame de dados de treino
+dos valores médios para essa coluna. Ele lerá isso em Y, que então se tornará
+um tensor para meus rótulos. O número de períodos será
+igual a um neste caso, de um tamanho de lote e eu vou embaralhar. Certo, por aqui tenho minha função
+de entrada de avaliação. Mais uma vez, usará a função de entrada
+do pandas para fazer o trabalho. E usaremos todo o perímetro [inaudível]
+para o frame de dados de entrada. Porém, terei
+o embaralhamento igual a falso,
+porque não quero embaralhar o conjunto de avaliações,
+já que quero repetibilidade. Também crio outra função aqui
+chamada print_rmse, que imprime o RMSE do meu modelo, chamando o nome dele
+e a função de entrada associada. Para isso, vou criar as métricas. Vou fazer model.evaluate
+do meu Estimator. Lembre-se, meu Estimator
+está definido como modelo. E vou passá-lo como
+função de entrada, em que será a função de entrada que é
+passada para o print_rmse, e vou fazer uma etapa. O certo sobre isso é que essa métrica está fora, deveria ser dicionário. É um problema de regressão. Vou acabar com perda, perda média e uma etapa global. Vou imprimir o RMSE neste conjunto
+de dados, e a resposta será que vou ter que acertar a raiz quadrada, porque atualmente
+a perda média é apenas o MSE. Do RMSE, verifiquei a raiz quadrada. Além disso, você percebe que estou
+multiplicando pela escala aqui. Então, posso voltar às unidades corretas
+de preço, o valor médio da casa. Agora, vou equipar meu LinearReggressor. Criei um diretório de saída, é onde todos os meus arquivos
+serão salvos do treinamento, como meus pontos de verificação,
+meus registros de eventos, qualquer modelo salvo, por exemplo. Quero remover para garantir
+um começo novo a cada vez. Vamos remover tudo nessa árvore, certifique-se de que é
+uma pasta limpa e recente. Vou criar meu otimizador personalizado. Esta é a LinearRegression. Vou usar o otimizador líder regularizado, já que normalmente é
+uma boa escolha para isso. Vou ter uma taxa de aprendizado de 0,01, e vou criar meu modelo. Aqui estou criando meu Estimator, será um LinearRegressor, e estou passando o diretório de modelo. Vou colocar meus itens e aí a coluna de atributos, passo os
+valores das colunas de atributos. Esses são os tensores para isso. E meu otimizador será meu otimizador
+personalizado aqui [inaudível] líder. Vou treinar por várias etapas. Para isso, vou treinar centenas de vezes ao contrário do frame de dados
+ou do tamanho do lote. Isso significa que posso
+treinar por 100 períodos. Em seguida, chamo model.train, passando minha função de entrada, especificamente minha função
+de entrada de treino, e o número de etapas pode ser
+o número que criei aqui. Isso treinará o modelo. No final, vou imprimir
+o RMSE desse modelo. Vou chamar minha
+função de entrada de avaliação, assim, minhas funções de entrada
+de avaliação estarão definidas. Como você pode ver,
+quando eu faço o treinamento, tenho a configuração padrão, e mudando isso, crio um ponto de
+verificação e começo o processo de treino. Calculo a perda na etapa 1. Parece que, isso é quantas etapas
+por segundo eu fiz, e conforme o treino continua, a perda está baixando. Podemos ver que a minha perda média
+final de avaliação é de 0,93, após 137 etapas globais, e minha perda total é de 3.141. E minha avaliação, multiplicando pela
+escala no meu conjunto de avaliações, o RMSE é de US$ 96.583. Lembre-se, RMSE é basicamente
+o desvio padrão dos seus resíduos. Lembre-se, nos resíduos, está a diferença entre sua previsão e o rótulo real. Vamos ver se podemos
+fazer melhor com o DNNRegressor. Tudo é o mesmo de antes, exceto que desta vez
+estou usando o AdamOptimizer, porque geralmente é ótimo usar no
+DNNReggressor em vez do otimizador líder regularizado. Também vou mudar do LinearRegressor
+para o DNNRegressor, em que eu passo tudo como antes. No entanto, vou adicionar minhas
+unidades ocultas e terei uma, duas, três camadas aqui, em que a primeira camada
+tem 100 neurônios ocultos. A segunda camada tem 50, e a última camada tem 20. Também estou passando
+as colunas de atributos, o otimizador que criei, que está usando Adam dessa vez, e, em seguida, um descarte de 10%. Lembre-se, esta é a
+probabilidade de descarte e não a probabilidade de manutenção,
+como é em outros isolamentos. Também estou criando o número de etapas
+da mesma forma que antes, estou treinando como antes
+e imprimi meu RMSE. Vamos ver se isso pode melhorar. Então, faz tudo como antes, quando minha configuração
+padrão estava treinando. Vamos ver quais são as etapas finais. Então, a perda média
+do meu treinamento é 0,67. Isso já é um bom sinal porque
+é mais baixa do que antes, 0,93. Mas meu RMSE sobre isso é US$ 81.974. Como você vê, eu tenho um desvio padrão
+muito menor comparado ao último, o que significa que esse modelo
+está indo muito melhor. É claro, você pode tornar isso
+mais complicado usando algoritmos mais sofisticados, o que serve para mostrar
+que uma rede neural pode facilmente ter um desempenho muito melhor
+do que um LinearRegressor. Por fim, o que podemos fazer é
+chamar isso no TensorBoard e podemos ver como ele está progredindo.

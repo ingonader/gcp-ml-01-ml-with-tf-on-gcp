@@ -1,0 +1,222 @@
+Después de ver la regularización L1 hablemos de la regresión logística y veamos por qué
+es importante usar la regularización. Supongamos que quiere predecir
+el resultado de lanzar una moneda. Sabemos que para una moneda justa el valor esperado
+es un 50% para cara y un 50% para sello. ¿Y si tuviéramos una moneda injusta que tiene un lado doblado? ¿Y si queremos generalizar
+la predicción a todas las monedas? Sea justa o injusta, grande o chica pesada o liviana, etc. ¿Qué atributos podríamos usar
+para predecir cara o sello? Tal vez podríamos usar el ángulo del doblez pues distribuye un x% de masa
+en la otra dimensión o crea una diferencia en la rotación por la resistencia del aire
+o el centro de masa. También puede ser bueno
+conocer la masa de la moneda así como tamaño, y algunas propiedades,
+como diámetro, grosor, etc. Podemos usar ingeniería de atributos para obtener el volumen de la moneda
+así como su densidad. Tal vez, el tipo de material o materiales de la moneda
+también serían útiles. Estos atributos serían
+muy fáciles de medir. Sin embargo, serían solo
+un lado de la moneda. El resto tiene que ver
+con la acción de lanzarla al aire como la velocidad lineal y angular
+que recibió la moneda el ángulo del lanzamiento el ángulo en el que aterriza la velocidad del viento, etc. Eso sería más difícil de medir. Con todos estos atributos ¿cuál es el modelo más simple
+con el que podríamos predecir cara o sello? Regresión lineal, por supuesto. ¿Qué podría salir mal con esta opción? Nuestras etiquetas son cara o sello o por decirlo de otra manera,
+cara o no cara que podemos representar
+con codificación one-hot de 1 para cara y 0 para no cara. Pero si usamos regresión lineal con función de pérdida del ECM estándar nuestras predicciones caer
+fuera del rango entre cero y uno. ¿Qué significa si predecimos
+que el estado del lanzamiento es 2.75? No tiene sentido. Un modelo que minimiza el error cuadrático no está limitado a elegir entre cero y uno pero es lo que necesitamos. En particular, puede imaginar
+un modelo que predice valores menores que cero o mayores que uno
+con algunos ejemplos nuevos. Esto significa que no podemos usar
+el modelo como probabilidad. Algunos trucos simples,
+como limitar los valores a cero o uno introducirían un sesgo. Necesitamos otra cosa en particular,
+una nueva función de pérdida. Convertir la progresión lineal
+a regresión logística puede resolver el dilema. En un curso anterior revisamos la historia del AA
+y usamos la función de activación sigmoidea. Veamos esto en más profundidad. La función de activación sigmoidea
+toma la suma ponderada w transpuesta de x más b de una regresión lineal
+y en vez de obtener eso como salida y, luego, calcular la pérdida del ECM cambiamos la función de activación
+de lineal a sigmoidea que lo toma como argumento
+y lo ubica entre cero y uno. La entrada al sigmoide que suele ser la salida
+de la regresión lineal, se llama logit. Estamos realizando una transformación
+no lineal en nuestro modelo lineal. Note que la probabilidad tiende a cero cuando los logits
+tienden a infinito negativo y a uno cuando tienden
+a infinito positivo. ¿Qué implica esto en el entrenamiento? A diferencia del ECM la función sigmoidea nunca adivina
+una probabilidad de 1.0 o 0.0. Es decir, la tendencia
+constante del descenso de gradientes de acercar la pérdida a cero acercará los pesos a infinito
+positivo o negativo si no hay regularización lo que puede causar problemas. Antes que nada, ¿cómo interpretamos
+la salida de un sigmoide? ¿Es solo una función
+con rango de cero a uno (de las cuales hay muchas) o hay algo más? La buena noticia
+es que hay algo más. Es una estimación
+de probabilidad calibrada. Más allá del rango la función sigmoidea
+es la función de distribución acumulativa de la distribución
+de probabilidad logística cuya función cuantil es inversa del logit
+que modela las probabilidades del log. Matemáticamente, el opuesto de un
+sigmoide son las probabilidades. Así, podemos considerar que la calibración es el hecho de que los resultados
+son valores reales, como probabilidades. Esto difiere de las salidas sin calibrar como un vector de incorporación que internamente es informativo
+pero cuyos valores no tienen correlación. Muchas funciones de activación de salidas de hecho, un número infinito podrían dar un número entre cero y uno pero solo este sigmoide
+ha demostrado ser un estimado calibrado de la probabilidad de ocurrencia
+del conjunto de datos. Si usamos este hecho de la función
+de activación sigmoidea los problemas de clasificación binaria
+pasan a ser probabilísticos. Por ejemplo, en vez de tener un modelo
+que prediga sí o no si un cliente comprará un artículo ahora puede predecir la probabilidad
+de que lo compre. Esto, junto con un umbral tiene mucho más poder predictivo
+que solo una respuesta binaria simple. Ahora que calculamos la salida
+de las regresiones logísticas para una probabilidad calibrada
+entre cero y uno ¿cómo podemos encontrar nuestro error y usarlo para actualizar los pesos
+por propagación inversa? Usamos una función de pérdida
+llamada entropía cruzada que también es LogLoss. A diferencia del ECM se hace menos énfasis en los errores
+en los que la salida está relativamente cerca de la etiqueta en
+la que está casi lineal. Sin embargo, a diferencia
+del error cuadrático medio la entropía cruzada crece exponencialmente cuando la predicción
+se acerca al opuesto de la etiqueta. En otras palabras,
+hay una penalidad muy alta cuando el modelo no solo se equivoca sino que lo hace
+con una confianza muy alta. Además, la derivada del ECM
+podría causar problemas al entrenar. A medida que acercamos la salida
+a cero o uno cada vez más el gradiente
+(que es la salida por 1 menos la salida) se hace más pequeño
+y cambia cada vez menos los pesos. El entrenamiento se detendría
+por completo. Sin embargo, el gradiente en la entropía es una función logística por 1
+menos la función logística que se cancela
+durante la propagación inversa y, por ende, no genera ese problema. Sin embargo, la regularización
+es importante en la regresión logística ya que llevar la pérdida a cero
+es difícil y peligroso. Primero, como el descenso de gradientes
+busca minimizar la entropía cruzada acerca los valores de salida
+a uno para etiquetas positivas y los acerca a cero para las negativas. Debido a la ecuación del sigmoide la función tiende a cero
+cuando el logit es infinito negativo y a uno cuando el logit es infinito positivo. Para llevar los logits
+a infinito negativo o positivo imaginemos que los pesos aumentan lo que causa
+problemas de estabilidad numérica exceso y falta de flujo. Esto es peligroso
+y puede arruinar nuestro entrenamiento. Además, cerca de las asíntotas como se ve en el gráfico la función sigmoidea se hace
+cada vez más plana. Esto significa que la derivada
+se acerca cada vez más a cero. Ya que usamos la derivada
+y propagación inversa para actualizar los pesos es importante
+que el gradiente no llegue a cero o el entrenamiento se detendrá. Esto se llama saturación cuando todas las activaciones
+llegan a estas mesetas que llevan a un problema de gradiente
+que dificulta el entrenamiento. Esta información puede ser muy valiosa. Imagine que asigna un ID único
+para cada ejemplo y asigna el ID a su propio atributo. Si usa regresión logística no regularizada terminaremos con un sobreajuste absoluto. A medida que el modelo
+lleva la pérdida a cero en los ejemplos pero nunca lo alcanza los pesos de cada atributo del indicador
+tenderán hacia infinito positivo o negativo. Esto puede pasar en la práctica en datos multidimensionales
+con combinaciones de atributos. A menudo hay muchas combinaciones raras
+que suceden en un solo ejemplo. ¿Cómo podemos evitar que haya sobreajuste? ¿Cuál de estos importa
+en una regresión logística? Las respuesta correcta es A y B. Agregar regularización
+a una regresión logística simplifica el modelo gracias a pesos de parámetros
+más bajos. Esta penalización agregada
+a la función de pérdida garantiza que la entropía cruzada
+en el descenso de gradientes no siga acercando los pesos a infinito positivo o negativo
+ni cause problemas numéricos. Además, con logits más inteligentes podemos alejarnos de las partes planas
+de la función sigmoidea lo que aleja a nuestros gradientes de cero y permite actualizar los pesos
+y que continúe el entrenamiento. Por lo tanto, C es incorrecta por lo tanto, también E porque la regularización
+no transforma los resultados en una estimación calibrada
+de probabilidades. Lo genial de la regresión logística es que ya nos muestra
+un estimado de la probabilidad calibrada ya que la función sigmoidea es una función de distribución acumulativa
+de la de probabilidad logística. Esto nos permite predecir probabilidades en vez de respuestas binarias como sí o no verdadero o falso, vender o comprar, etc. Para contrarrestar el sobreajuste hacemos una regularización
+y una interrupción anticipada. En la regularización la complejidad del modelo
+aumenta con pesos grandes por lo que al ajustar y obtener pesos más grandes
+para casos más inusuales aumentamos la pérdida,
+por lo que mejor nos detenemos. La regularización de L2 mantendrá
+los valores en un tamaño pequeño y la regularización L1 mantendrá
+el modelo disperso al eliminar atributos. Para encontrar los hiperparámetros óptimos
+para L1 y L2 durante el ajuste buscamos el punto
+en la función de pérdida de validación en el que se obtiene el menor valor. En ese punto, una regularización menor
+aumenta la varianza comienza un sobreajuste y
+perjudica la generalización y si hay más regularización,
+aumenta el sesgo comienza el subajuste
+y perjudica la generalización. La interrupción anticipada
+detiene el entrenamiento cuando comienza el sobreajuste. Cuando entrena el modelo debe evaluarlo
+con el conjunto de datos de validación cada cierta cantidad de pasos,
+ciclos, minutos, etc. Con el entrenamiento debieran reducirse los errores
+de entrenamiento y validación pero en algún punto el error de validación
+podría comenzar a aumentar. En este punto el modelo comienza a memorizar
+los datos de entrenamiento y pierde la capacidad de generalizar
+con el conjunto de datos de validación y con los nuevos datos,
+que es precisamente lo que queremos hacer. Con la interrupción anticipada,
+el modelo se detiene en este punto y podemos regresar
+para usar los pesos del paso anterior antes del error de validación
+y punto de función. Aquí, la pérdida solo es L(w,D) es decir, sin término de regularización. Cabe notar que la interrupción anticipada
+es casi equivalente a la regularización L2 y se suele usar en su lugar
+porque es más barato. Afortunadamente, en la práctica,
+siempre usamos ambas la regularización L1 y L2 y también algunas interrupciones anticipadas. Aunque la regularización L2
+y la interrupción anticipada parecen redundantes para los sistemas liberales es posible que no elija
+los hiperparámetros óptimos y las interrupciones lo pueden ayudar. Es genial obtener una probabilidad
+de nuestro modelo de regresión logística. Sin embargo, a veces los usuarios simplemente quieren
+que tomemos una decisión simple por ellos para sus problemas cotidianos. Si el correo va
+a la carpeta de spam o no si debemos aprobar el préstamo qué ruta debemos indicarle al usuario. ¿Cómo podemos usar
+nuestro estimado de probabilidad para ayudar a la herramienta
+que usa nuestro modelo a decidir algo? Seleccionamos un umbral. Un umbral sencillo
+de un problema de clasificación binaria en el que todas las probabilidades
+menores o iguales al 50% deben ser "no" y todas las mayores al 50% deben ser "sí". Sin embargo, para ciertos problemas
+del mundo real las proporciones serán distintas como 60-40, 20-80 o 19-81. Dependerá del equilibrio que busquemos
+de los errores de tipo 1 y tipo 2. En otras palabras el equilibrio
+entre falsos positivos y falsos negativos. Para una clasificación binaria,
+tenemos cuatro resultados posibles. Verdaderos positivos, verdaderos negativos falsos positivos y falsos negativos. La combinación de estos valores
+puede dar métricas de evaluación como precisión que es la cantidad de verdaderos positivos
+dividida por los positivos y exhaustividad que es verdaderos positivos dividido por la suma de verdaderos positivos
+y falsos negativos lo que nos da la sensibilidad
+o tasa de verdaderos positivos. Puede ajustar el umbral
+para optimizar la métrica que elija. ¿Hay algo que nos ayude a hacer esto? Una curva de característica
+operativa del receptor (o curva ROC) muestra que la predicción de un modelo crea tasas de verdaderos positivos
+y falsos positivos distintas cuando se usan
+umbrales de decisión distintos. Si bajamos el umbral es más probable
+que obtengamos falsos positivos pero también aumentarán
+los verdaderos positivos. Idealmente, un modelo perfecto
+tendría cero falsos positivos y negativos. Si llevamos esto a una ecuación da una tasa de verdaderos positivos de uno
+y de falsos positivos de cero. Para crear una curva seleccionamos todos los umbrales posibles
+y reevaluamos. Cada valor del umbral crea un punto y si evaluamos muchos umbrales,
+se forma una curva. Por fortuna hay un algoritmo de ordenamiento
+para hacer esto. Cada milla crea otra curva ROC. ¿Cómo podemos usar estas curvas para comparar
+el rendimiento relativo del modelo cuando no sabemos
+qué umbral de decisión usar? Podemos usar el área bajo la curva (AUC) como un indicador de rendimiento de todos los umbrales
+de clasificación posibles. AUC ayuda a seleccionar un modelo si no sabe qué umbral de decisión se usará. Es como preguntar, si elegimos un positivo
+y un negativo al azar ¿cuál es la probabilidad de que mi modelo
+los ubique en su orden relativo correcto? Lo bueno de AUC
+es que es invariante de escala e invariante de umbral de clasificación. Por eso a la gente le gusta. A veces, usamos AUC
+por la curva de precisión y exhaustividad o por las curvas
+de precisión, exhaustividad y ganancia que usan combinaciones
+de los cuatro resultados de producción como métricas en los ejes. Sin embargo, usarlo solo como medida global
+podría ocultar algunos efectos. Por ejemplo una leve mejora de AUC
+podría hacer una mejor clasificación de algunos negativos muy improbables
+como incluso más improbables. Eso está bien, pero tal vez
+no sea muy beneficioso materialmente. Cuando evaluamos
+modelos de regresión logística debemos asegurarnos
+de que las predicciones no tengan sesgos. Cuando hablamos de sesgo en este sentido no es lo mismo
+que en la ecuación lineal del modelo. Nos referimos a que debe haber
+un cambio general en la dirección,
+ya sea positiva o negativa. Una forma de revisar
+el sesgo de predicción es comparar el valor promedio
+de las predicciones del modelo en un conjunto de datos con los valores promedio
+de las etiquetas del conjunto. Si no se acercan relativamente tal vez haya un problema. El sesgo es como un canario en una mina lo podemos usar como un indicador
+de que algo está mal. Si tiene un sesgo,
+definitivamente tiene un problema. Aunque el sesgo sea cero
+no quiere decir que el sistema sea perfecto pero es una buena revisión preliminar. Si tiene un sesgo, podría tener
+un conjunto de atributos incompleto errores de canalización una muestra de entrenamiento sesgada, etc. Puede buscar sesgos
+en partes de los datos lo que puede producir mejoras
+para eliminar el sesgo del modelo. Veamos un ejemplo de cómo podemos
+hacerlo. Esto es una calibración
+de un navegador de experimentos simples. Verá que no se trata
+de una escala logarítmica. Si comparamos
+las probabilidades logarítmicas predichas con las observadas verá que la calibración
+del rango moderado está bastante bien pero el extremo inferior es bastante malo. Esto sucede si partes de los datos
+no están bien representadas o debido al ruido
+o una regularización demasiado estricta. Puede hacer el agrupamiento
+de un par de maneras. puede desglosar las predicciones objetivo o puede agrupar por cuantiles. ¿Por qué debemos agrupar las predicciones para graficar calibraciones
+al predecir probabilidades? Para cada evento,
+la etiqueta verdadera es cero o uno. Por ejemplo, no hizo clic
+o sí hizo clic. Nuestros valores de predicción
+siempre son suposición probabilística en un punto intermedio,
+como 0.1 o 0.33. Para cada ejemplo individual,
+nunca damos justo en el blanco. Pero si agrupamos suficientes ejemplos nos gustaría ver que, en promedio,
+la suma de los ceros y unos verdaderos se acerca a la probabilidad media
+que estamos prediciendo. ¿Cuál opción es importante
+al realizar una regresión logística? La respuesta es "todas las anteriores". Es muy importante
+que nuestro modelo generalice para obtener las mejores predicciones
+con datos nuevos que es precisamente
+el motivo por el que lo creamos. Para ayudarnos,
+es importante no sobreajustar nuestros datos. Por lo tanto,
+agregar penalizaciones a la función objetiva como en regularización L1 para dispersión
+y L2 para que no sea muy amplio y agregar interrupción anticipada
+puede ayudarnos. También es importante seleccionar
+un umbral ajustado para decidir qué hacer
+con los estimados de las probabilidades a fin de minimizar o maximizar
+la métrica comercial que le interesa. Si no está bien definida puede usar más medias estadísticas como calcular la cantidad
+de verdaderos y falsos positivos y negativos y combinarlas para obtener otras métricas como la tasa
+de verdaderos y falsos positivos. Luego, podemos repetir este proceso
+para otros umbrales y trazar un área bajo la curva o AUC para obtener una medición
+global relativa del rendimiento. Finalmente es importante que nuestras predicciones
+no tengan sesgos y aunque no lo tuvieran debemos seguir verificando
+que nuestro modelo funciona correctamente. Para revisar si tenemos sesgos nos aseguramos de que el promedio
+de las predicciones se acerque a las observaciones de errores. Una forma para encontrar lugares
+donde puede haber sesgos es ver segmentos de datos
+y usar algo como una gráfica de calibración para aislar las áreas problemáticas
+y refinarlas más adelante.

@@ -1,0 +1,433 @@
+1
+00:00:00,960 --> 00:00:04,180
+Digamos que você leu uma pesquisa
+acadêmica que fala sobre
+
+2
+00:00:04,180 --> 00:00:08,695
+um modelo legal para prever os valores
+futuros de uma série temporal.
+
+3
+00:00:08,695 --> 00:00:10,545
+Eles até lhe dão o código,
+
+4
+00:00:10,545 --> 00:00:14,245
+que usa conceitos estranhos
+como o LSTMCell,
+
+5
+00:00:14,245 --> 00:00:18,045
+funções não familiares do TensorFlow
+como o static_rnn
+
+6
+00:00:18,045 --> 00:00:22,785
+e até faz algumas operações de baixo
+nível do TensorFlow como o matmul.
+
+7
+00:00:22,785 --> 00:00:26,915
+Por enquanto, não vamos nos preocupar
+com o que isso significa ou como funciona.
+
+8
+00:00:26,915 --> 00:00:31,360
+Vamos olhar modelos sequenciais no nono
+curso da especialização.
+
+9
+00:00:31,360 --> 00:00:35,970
+Por enquanto, vamos tratar esta função
+como um Blackbox.
+
+10
+00:00:35,970 --> 00:00:39,585
+Basicamente, a entrada
+é uma série temporal,
+
+11
+00:00:39,585 --> 00:00:42,935
+uma matriz de valores
+organizada por tempo.
+
+12
+00:00:42,935 --> 00:00:46,840
+N_INPUTS é uma duração
+dessa série temporal.
+
+13
+00:00:47,390 --> 00:00:50,390
+As previsões são a saída do modelo.
+
+14
+00:00:50,390 --> 00:00:56,180
+Há números N_OUTPUTS na matriz da saída,
+que representam os valores futuros
+
+15
+00:00:56,180 --> 00:00:59,140
+da série temporal, conforme
+previsto pelo modelo.
+
+16
+00:01:00,280 --> 00:01:03,445
+Então, você tem um modelo
+e gostaria de treiná-lo.
+
+17
+00:01:04,115 --> 00:01:07,995
+Observe algo aqui: este é apenas o modelo,
+
+18
+00:01:07,995 --> 00:01:09,870
+apenas a matemática, se preferir.
+
+19
+00:01:09,870 --> 00:01:12,120
+Ainda precisamos ler os dados,
+
+20
+00:01:12,120 --> 00:01:14,990
+ainda precisamos treinar, avaliar etc.,
+
+21
+00:01:14,990 --> 00:01:19,165
+e queremos fazer isso de uma maneira
+distribuída e tolerante a falhas.
+
+22
+00:01:19,165 --> 00:01:21,885
+Queremos adicionar a engenharia.
+
+23
+00:01:21,885 --> 00:01:26,275
+Naturalmente, queremos envolvê-la
+na biblioteca do Estimator,
+
+24
+00:01:26,275 --> 00:01:30,685
+porque é a maneira de conseguir treino
+distribuído, previsão escalonada etc.
+
+25
+00:01:30,685 --> 00:01:33,135
+Então, vamos ver como fazer isso.
+
+26
+00:01:33,135 --> 00:01:38,215
+O primeiro passo é observar
+a função train_and_evaluate.
+
+27
+00:01:38,215 --> 00:01:45,370
+São necessários três parâmetros:
+estimator, train_spec, eval_spec.
+
+28
+00:01:45,370 --> 00:01:50,450
+train_spec e eval_spec são os mesmos
+que em um Estimator automático.
+
+29
+00:01:50,450 --> 00:01:53,665
+Eles controlam como alimentar
+os dados de entrada,
+
+30
+00:01:53,665 --> 00:01:56,035
+usando a função de entrada
+e o conjunto de dados.
+
+31
+00:01:56,035 --> 00:01:59,200
+Eles também controlam
+quanto tempo treinar,
+
+32
+00:01:59,200 --> 00:02:02,440
+com que frequência avaliar
+e quando exportar.
+
+33
+00:02:02,440 --> 00:02:08,880
+A diferença aqui é o primeiro parâmetro
+para treinar e avaliar, o Estimator.
+
+34
+00:02:08,880 --> 00:02:12,580
+Antes, criaríamos um Estimator por meio
+
+35
+00:02:12,580 --> 00:02:17,570
+de um regressor linear ou um regressor DNN
+ou um classificador linear etc.
+
+36
+00:02:17,570 --> 00:02:21,405
+Criaríamos um Estimator automático
+ou pré-criado.
+
+37
+00:02:21,405 --> 00:02:25,790
+Agora, porém, criamos
+um Estimator de classe base.
+
+38
+00:02:25,790 --> 00:02:31,810
+Observe que estou configurando-o para
+apenas tf.estimators.Estimator.
+
+39
+00:02:31,810 --> 00:02:36,395
+O Estimator da classe base
+toma dois parâmetros.
+
+40
+00:02:36,395 --> 00:02:40,100
+O segundo parâmetro, apenas
+Estimators automáticos [inaudível],
+
+41
+00:02:40,100 --> 00:02:43,905
+é onde salvar os pontos de verificação,
+o diretório de saída.
+
+42
+00:02:43,905 --> 00:02:47,950
+O primeiro parâmetro é a função do modelo.
+
+43
+00:02:47,950 --> 00:02:53,190
+O que esta função de modelo,
+myfunc, parece?
+
+44
+00:02:53,190 --> 00:02:58,080
+Myfunc é um estimator_spec.
+
+45
+00:02:58,080 --> 00:03:06,285
+O que quero dizer é que myfunc
+retorna um tf.estimator.EstimatorSpec.
+
+46
+00:03:06,285 --> 00:03:10,940
+São necessários três parâmetros:
+atributos, destinos e modo.
+
+47
+00:03:10,940 --> 00:03:14,190
+atributos e destinos
+precisam ser familiares.
+
+48
+00:03:14,190 --> 00:03:16,190
+Isso é o que é retornado, por exemplo,
+
+49
+00:03:16,190 --> 00:03:18,525
+de uma função de entrada de treinamento.
+
+50
+00:03:18,525 --> 00:03:21,400
+Atributos são um dicionário de atributos,
+
+51
+00:03:21,400 --> 00:03:28,080
+então, neste caso, pego esse dicionário e
+extraio o tensor correspondente ao NCOL.
+
+52
+00:03:28,080 --> 00:03:30,950
+Destinos são simplesmente o rótulo.
+
+53
+00:03:30,950 --> 00:03:35,280
+Mais uma vez, o que é retornado
+da função de entrada de treinamento.
+
+54
+00:03:35,280 --> 00:03:40,765
+O modo é um dos três valores:
+treino, avaliação ou previsão.
+
+55
+00:03:40,765 --> 00:03:44,815
+Veremos em breve
+por que você pode querer este modo.
+
+56
+00:03:44,815 --> 00:03:47,840
+Destes três valores de entrada,
+
+57
+00:03:47,840 --> 00:03:54,150
+a tarefa do myfunc é criar
+e retornar um estimator_spec.
+
+58
+00:03:54,150 --> 00:03:57,620
+Há seis coisas em um estimator_spec.
+
+59
+00:03:57,620 --> 00:04:01,875
+O primeiro modo de parâmetro
+pode simplesmente ser passado.
+
+60
+00:04:01,875 --> 00:04:04,470
+O que você consegue nele,
+apenas repasse.
+
+61
+00:04:04,470 --> 00:04:07,970
+O segundo parâmetro
+são as previsões,
+
+62
+00:04:07,970 --> 00:04:10,000
+as saídas do modelo.
+
+63
+00:04:10,000 --> 00:04:13,510
+As previsões precisam ser um dicionário,
+
+64
+00:04:13,510 --> 00:04:17,269
+fornecer um nome da chave
+e o tensor correspondente.
+
+65
+00:04:17,269 --> 00:04:22,305
+Então, aqui, meu predictions_dict consiste
+em apenas uma chave,
+
+66
+00:04:22,305 --> 00:04:26,550
+que eu estou chamando de predicted.
+E o tensor, é claro,
+
+67
+00:04:26,550 --> 00:04:30,330
+é a saída do modelo
+da pesquisa acadêmica.
+
+68
+00:04:31,400 --> 00:04:35,615
+Usamos as previsões para criar
+as saídas exportadas.
+
+69
+00:04:35,615 --> 00:04:40,875
+A ideia é que poderíamos exportar
+outras coisas além das previsões.
+
+70
+00:04:40,875 --> 00:04:45,420
+Por exemplo, você pode querer exportar
+uma incorporação treinada do modelo,
+
+71
+00:04:45,420 --> 00:04:47,100
+é aqui que você faria isso.
+
+72
+00:04:47,100 --> 00:04:50,755
+Especifique uma chave
+e o tensor correspondente.
+
+73
+00:04:50,755 --> 00:04:54,635
+Vamos ver outras coisas
+que formam o estimator_spec:
+
+74
+00:04:54,635 --> 00:04:59,510
+a perda, a operação de treinamento
+e a operação métrica de avaliação.
+
+75
+00:05:00,150 --> 00:05:05,730
+A operação de treinamento precisa ser
+executada somente se o modo for TRAIN.
+
+76
+00:05:06,320 --> 00:05:11,535
+A métrica de avaliação precisa ser
+calculada apenas se o modo for EVAL.
+
+77
+00:05:11,535 --> 00:05:16,470
+Então, defino a perda como o erro médio
+quadrático entre os destinos,
+
+78
+00:05:16,470 --> 00:05:18,610
+os rótulos e as previsões.
+
+79
+00:05:19,170 --> 00:05:24,530
+A operação de treino consiste em otimizar
+a função de perda usando,
+
+80
+00:05:24,530 --> 00:05:27,410
+neste caso, o gradiente
+descendente estocástico.
+
+81
+00:05:27,410 --> 00:05:33,175
+Talvez porque isso foi usado na pesquisa
+acadêmica que descreve esse modelo.
+
+82
+00:05:33,595 --> 00:05:36,000
+A métrica de avaliação é um dicionário
+
+83
+00:05:36,000 --> 00:05:39,570
+que consiste em todas
+as métricas que queremos avaliar.
+
+84
+00:05:39,570 --> 00:05:43,290
+Aqui, estou computando apenas
+um erro quadrático médio raiz.
+
+85
+00:05:43,290 --> 00:05:48,310
+Durante as previsões, nenhuma
+dessas operações precisa ser executada.
+
+86
+00:05:48,310 --> 00:05:49,760
+Por quê?
+
+87
+00:05:50,670 --> 00:05:52,450
+Porque não teremos um rótulo.
+
+88
+00:05:52,450 --> 00:05:57,560
+Então, nós definimos todas essas
+operações como nenhuma, e é isso.
+
+89
+00:05:57,560 --> 00:06:03,100
+Em resumo, chamamos train_and_evaluate
+com um Estimator de classe base,
+
+90
+00:06:03,100 --> 00:06:06,921
+passamos isso em uma função
+que retorna um estimator_spec,
+
+91
+00:06:06,921 --> 00:06:08,051
+e é isso.
+
+92
+00:06:08,051 --> 00:06:09,871
+Temos um Estimator personalizado.

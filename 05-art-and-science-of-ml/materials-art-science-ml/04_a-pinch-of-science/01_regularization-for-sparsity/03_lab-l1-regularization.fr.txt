@@ -1,0 +1,40 @@
+Voyons à présent
+l'importance de la régularisation L1 dans les modèles épars et concis. Dans cet atelier sur la régularisation L1, j'ai ajouté de fausses caractéristiques,
+créant ainsi un modèle très complexe. Nous allons d'abord entraîner
+le modèle sans régularisation L1, puis nous verrons si la régularisation L1
+aide à rendre le modèle plus épars et concis, et peut-être plus généralisable. Bonjour et bon retour
+dans TensorFlow Playground. Dans cet atelier, nous verrons
+si la régularisation L1 aide à rendre
+nos modèles plus épars et concis. Vous pouvez voir ici
+un problème de classification, où nous allons essayer
+de classer ces deux formes. Nous avons ici deux cercles concentriques, le cercle bleu au milieu,
+et le cercle orange à l'extérieur. Bonne nouvelle :
+il n'y a aucun ensemble de bruit. L'entraînement devrait
+donc être facile à réaliser. Il y a aussi des caractéristiques. Nous les avons toutes activées. Ce modèle sera donc assez difficile. Nous savons intuitivement
+qu'il s'agit d'une équation de type X² multiplié par un Y², ou
+X1² par X2², car il y a des cercles. Nous avons toutefois un bon nombre
+de caractéristiques supplémentaires. Nous avons aussi des couches
+supplémentaires avec six neurones chacune. C'est donc un modèle hautement complexe. Observons son entraînement
+sans régularisation L1, définie sur "None" (Aucune) dans ce cas. C'était plutôt rapide. Vous pouvez voir que la régularisation L1
+a trouvé la distribution de nos données. Vous voyez pourtant ici
+qu'il y a quelques incohérences, avec des creux ici et des bosses là.
+Ce n'est pas tout à fait un cercle. Le surapprentissage peut en être la cause. Nous avons donc trop de caractéristiques
+et trop de couches cachées, qui ont mené à une fonction complexe
+en surapprentissage pour ces données. Pouvons-nous trouver
+un modèle bien plus simple ? Sans en extraire nous-mêmes
+les caractéristiques, nous pouvons utiliser
+la régularisation L1 pour cela. Voyons si cela fonctionne. Je vais définir la régularisation
+ici sur "L1". Parfait. Je vais lancer une nouvelle initialisation
+et observer le résultat. Regardez ça. C'est beaucoup mieux. Examinons cela de plus près. Vous voyez ici qu'il a appris
+avec un cercle mieux défini. Cela correspond bien
+à ce que nous voyons intuitivement. Souvenez-vous par contre que, en pratique, nous n'observons pas une telle distribution. Nous aurions alors besoin d'utiliser cela
+pour de nombreux autres processus. Dans nos caractéristiques ici, vous pouvez voir X1² et X2²,
+ainsi que leurs pondérations. Ces pondérations sont les seules
+à encore afficher une grandeur. Toutes les autres pondérations
+sont grisées avec une valeur de zéro. Cet élément va
+dans les couches intermédiaires ici, où vous pouvez voir que X1² et X2²
+sont presque les seuls à se propager. Ils convergent tous
+vers ce neurone de la dernière couche, puis enfin vers la sortie. Cela revient à dire
+que nous n'utilisons que X1² et X2², car elles sont bien plus
+prédictives dans notre modèle que les autres caractéristiques. Grâce à la nature de L1
+et à la distribution de probabilité, il est possible de le réduire.

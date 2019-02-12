@@ -1,0 +1,250 @@
+1
+00:00:00,370 --> 00:00:01,580
+En la lección anterior
+
+2
+00:00:01,730 --> 00:00:03,940
+hablamos sobre crear incorporaciones
+
+3
+00:00:04,020 --> 00:00:05,940
+de forma manual mediante reglas.
+
+4
+00:00:06,560 --> 00:00:07,775
+Usamos atributos
+
+5
+00:00:07,775 --> 00:00:11,910
+como la edad promedio del espectador
+y la venta total de boletos
+
+6
+00:00:12,090 --> 00:00:13,430
+para seleccionar películas
+
+7
+00:00:13,870 --> 00:00:17,010
+que se encontraban
+en un espacio dimensional de 500,000
+
+8
+00:00:17,320 --> 00:00:20,280
+y proyectarlas
+en un espacio de dos dimensiones.
+
+9
+00:00:21,130 --> 00:00:23,545
+En el caso
+de la incorporación en dos dimensiones
+
+10
+00:00:23,685 --> 00:00:28,235
+pusimos nombres a los ejes,
+como edad y boletos vendidos.
+
+11
+00:00:28,495 --> 00:00:30,312
+Niños frente a adultos
+
+12
+00:00:30,602 --> 00:00:33,010
+cine de autor o película taquillera.
+
+13
+00:00:33,520 --> 00:00:37,545
+Sin embargo, no es esencial
+que estos ejes tengan nombre.
+
+14
+00:00:37,995 --> 00:00:42,470
+Lo que importa es que
+pasamos de 500,000 a 2.
+
+15
+00:00:43,055 --> 00:00:47,020
+No que lo hicimos analizando
+manualmente los atributos de las películas.
+
+16
+00:00:48,190 --> 00:00:51,325
+¿Cuál es el impacto de realizar
+la reducción de dimensionalidad
+
+17
+00:00:51,655 --> 00:00:53,785
+de 500,000 a 2?
+
+18
+00:00:54,735 --> 00:00:58,370
+La incorporación 2D
+que tenemos de cada película
+
+19
+00:00:58,370 --> 00:01:00,942
+se asocia a dos valores reales
+
+20
+00:01:01,432 --> 00:01:05,365
+de modo que puede representar cada película
+mediante un punto en el espacio 2D.
+
+21
+00:01:06,394 --> 00:01:08,380
+¿Por qué deberíamos
+hacer esta incorporación?
+
+22
+00:01:09,030 --> 00:01:10,940
+Una razón clave es la siguiente.
+
+23
+00:01:11,610 --> 00:01:13,515
+Digamos que entrenamos un modelo
+
+24
+00:01:13,515 --> 00:01:16,910
+para predecir si a un espectador
+le gustará una película.
+
+25
+00:01:17,520 --> 00:01:20,855
+Es más fácil entrenar modelos
+con d entradas
+
+26
+00:01:21,385 --> 00:01:24,605
+que entrenar un modelo con N entradas.
+
+27
+00:01:25,075 --> 00:01:29,210
+Recuerde que N es mucho más grande que d.
+
+28
+00:01:30,020 --> 00:01:32,410
+Mientras menor
+sea la cantidad de nodos de entrada
+
+29
+00:01:32,750 --> 00:01:35,440
+menos serán los pesos
+que se deberán optimizar.
+
+30
+00:01:35,870 --> 00:01:39,175
+Esto significa que el modelo
+se entrena más rápido
+
+31
+00:01:39,395 --> 00:01:41,885
+y hay menos probabilidades de sobreajuste.
+
+32
+00:01:42,735 --> 00:01:46,280
+Las incorporaciones
+son una forma de simplificar el problema.
+
+33
+00:01:47,000 --> 00:01:50,340
+Sin embargo, debemos hacer
+la reducción de dimensionalidad
+
+34
+00:01:50,340 --> 00:01:52,910
+de forma que no perdamos información.
+
+35
+00:01:53,780 --> 00:01:58,030
+¿Cómo encontramos
+la incorporación adecuada?
+
+36
+00:01:58,990 --> 00:02:01,515
+Puede aprender incorporaciones
+a partir de los datos
+
+37
+00:02:01,685 --> 00:02:04,190
+como parte
+del proceso normal de entrenamiento.
+
+38
+00:02:04,770 --> 00:02:07,395
+No es necesario
+un proceso de entrenamiento separado.
+
+39
+00:02:07,725 --> 00:02:10,280
+Primero, use la entrada original
+
+40
+00:02:10,440 --> 00:02:14,210
+y represéntela como un arreglo
+con codificación one-hot.
+
+41
+00:02:14,700 --> 00:02:17,522
+Luego, envíela por una capa de incorporación.
+
+42
+00:02:18,392 --> 00:02:20,930
+En este enfoque,
+la capa de incorporación
+
+43
+00:02:21,140 --> 00:02:25,300
+es una capa oculta
+con una unidad por dimensión.
+
+44
+00:02:26,150 --> 00:02:28,745
+Dado que entrenamos un modelo
+con etiquetas
+
+45
+00:02:29,065 --> 00:02:32,635
+las incorporaciones cambian
+de acuerdo con ellas.
+
+46
+00:02:33,825 --> 00:02:35,005
+De forma intuitiva
+
+47
+00:02:35,125 --> 00:02:40,690
+las unidades ocultas descubren cómo organizar
+los elementos en el espacio dimensional d
+
+48
+00:02:41,020 --> 00:02:45,240
+para optimizar mejor el objetivo final.
+
+49
+00:02:46,187 --> 00:02:47,767
+Pero hay un pequeño problema.
+
+50
+00:02:48,446 --> 00:02:51,946
+¿Cuánta memoria se necesita
+para almacenar las entradas?
+
+51
+00:02:53,044 --> 00:02:55,450
+Tiene una variable de entrada categórica
+
+52
+00:02:55,450 --> 00:02:57,990
+pero 500,000 valores posibles.
+
+53
+00:02:58,628 --> 00:03:03,018
+Por lo que debe crear
+500,000 nodos de entrada
+
+54
+00:03:03,523 --> 00:03:05,743
+y realizar operaciones matemáticas
+
+55
+00:03:06,173 --> 00:03:08,783
+en matrices enormes.

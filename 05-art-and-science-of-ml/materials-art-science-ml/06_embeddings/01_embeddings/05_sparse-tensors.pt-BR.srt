@@ -1,0 +1,338 @@
+1
+00:00:00,740 --> 00:00:06,720
+Armazenar o vetor de entrada como
+uma matriz codificada é má ideia.
+
+2
+00:00:06,720 --> 00:00:11,325
+Uma representação densa
+é muito ineficiente
+
+3
+00:00:11,325 --> 00:00:15,120
+para o armazenamento
+e a computação.
+
+4
+00:00:15,120 --> 00:00:18,315
+Chamamos qualquer
+elemento armazenado,
+
+5
+00:00:18,315 --> 00:00:22,290
+todos os valores de um tensor
+de entrada, de um tensor denso.
+
+6
+00:00:22,620 --> 00:00:25,860
+Isso não tem a ver
+com os dados no tensor,
+
+7
+00:00:25,860 --> 00:00:28,080
+mas com o armazenamento.
+
+8
+00:00:28,510 --> 00:00:30,885
+Considere os dados
+nesta matriz.
+
+9
+00:00:31,175 --> 00:00:36,210
+Você acha que a matriz
+é densa ou esparsa?
+
+10
+00:00:36,620 --> 00:00:38,945
+Ela é extremamente
+esparsa, claro.
+
+11
+00:00:39,245 --> 00:00:45,645
+Cada exemplo nesta matriz representa
+filmes assistidos pelo usuário.
+
+12
+00:00:46,285 --> 00:00:48,260
+Pense na sua experiência,
+
+13
+00:00:48,260 --> 00:00:51,300
+quantos filmes
+você classificou?
+
+14
+00:00:52,110 --> 00:00:55,500
+Não queremos gravar as entradas
+em um formato denso.
+
+15
+00:00:55,500 --> 00:01:00,220
+Não queremos armazenar
+todos os valores do tensor.
+
+16
+00:01:01,490 --> 00:01:04,559
+Não queremos armazenar as
+entradas em um formato denso,
+
+17
+00:01:04,559 --> 00:01:07,280
+nem armazenar todos
+os valores do tensor,
+
+18
+00:01:07,280 --> 00:01:09,140
+então o que faremos?
+
+19
+00:01:09,990 --> 00:01:14,190
+Seria bom armazenar os
+dados de maneira esparsa
+
+20
+00:01:14,190 --> 00:01:16,550
+e compactada na memória.
+
+21
+00:01:17,210 --> 00:01:20,950
+Sera bom poder fazer
+computações como
+
+22
+00:01:20,950 --> 00:01:25,285
+multiplicação de matrizes
+diretamente nos tensores esparsos,
+
+23
+00:01:25,285 --> 00:01:30,055
+sem precisar convertê-los
+em representações densas.
+
+24
+00:01:30,435 --> 00:01:34,425
+Para isso, criamos um
+mapeamento de dicionário
+
+25
+00:01:34,425 --> 00:01:37,825
+de cada recurso
+para um inteiro.
+
+26
+00:01:37,825 --> 00:01:42,480
+Shrek pode ser o inteiro 0
+e Harry Potter pode ser
+
+27
+00:01:42,480 --> 00:01:47,595
+o inteiro 300 ou 230,
+algum número arbitrário.
+
+28
+00:01:47,975 --> 00:01:50,930
+Não há incorporação aqui.
+
+29
+00:01:50,930 --> 00:01:57,005
+Agora, cada filme tem um
+inteiro arbitrário associado a ele.
+
+30
+00:01:57,275 --> 00:02:00,290
+Depois, você tem
+uma fila na matriz
+
+31
+00:02:00,290 --> 00:02:03,620
+que representa os filmes
+que um usuário já viu.
+
+32
+00:02:03,620 --> 00:02:08,675
+Basta armazenar o código
+dos filmes que o usuário viu.
+
+33
+00:02:08,675 --> 00:02:10,470
+Na fila de exemplo,
+
+34
+00:02:10,470 --> 00:02:12,955
+o usuário viu três filmes,
+
+35
+00:02:12,955 --> 00:02:16,235
+então o tensor esparso
+tem três entradas.
+
+36
+00:02:16,595 --> 00:02:19,525
+Para qualquer inteiro
+que não esteja na lista,
+
+37
+00:02:19,525 --> 00:02:23,420
+assumimos que o usuário
+não assistiu o filmes.
+
+38
+00:02:23,690 --> 00:02:26,480
+Assim, as três entradas
+são uma só,
+
+39
+00:02:26,480 --> 00:02:31,260
+e o restante são zeros na
+representação densa equivalente.
+
+40
+00:02:31,590 --> 00:02:33,170
+Há duas etapas aqui.
+
+41
+00:02:33,170 --> 00:02:37,325
+A etapa de pré-processamento
+computa o dicionário,
+
+42
+00:02:37,325 --> 00:02:45,485
+e a segunda usa o dicionário para 
+criar uma representação esparsa eficiente.
+
+43
+00:02:45,945 --> 00:02:49,890
+Se você pensa que
+isso é familiar e é como
+
+44
+00:02:49,890 --> 00:02:55,010
+criar o vocabulário para
+colunas categóricas, está certo.
+
+45
+00:02:55,010 --> 00:03:00,470
+As colunas categóricas são representadas
+pelo TensorFlow como tensores esparsos.
+
+46
+00:03:00,470 --> 00:03:06,330
+Então, as colunas categóricas são
+um exemplo de elemento esparso.
+
+47
+00:03:06,330 --> 00:03:09,450
+O TensorFlow pode fazer
+operações matemáticas em
+
+48
+00:03:09,450 --> 00:03:14,310
+tensores esparsos sem
+convertê-los em densos.
+
+49
+00:03:14,310 --> 00:03:18,490
+Isso economiza memória
+e otimiza a computação.
+
+50
+00:03:19,230 --> 00:03:23,580
+Vimos como criar um cruzamento de
+recursos a partir de colunas categóricas.
+
+51
+00:03:23,580 --> 00:03:30,365
+Esse foi um exemplo de matemática
+realizado em termos de tensores esparsos.
+
+52
+00:03:30,365 --> 00:03:37,480
+Por isso, mesmo que cruzamos colunas
+discretizadas de latitude e longitude
+
+53
+00:03:37,480 --> 00:03:42,885
+e cruzamos os pontos de início e fim
+da corrida de táxi, por exemplo,
+
+54
+00:03:42,885 --> 00:03:46,995
+não houve problema com a memória
+ou com a velocidade de computação.
+
+55
+00:03:47,795 --> 00:03:50,100
+Vimos como criar uma
+coluna de incorporação
+
+56
+00:03:50,100 --> 00:03:51,870
+a partir de um
+cruzamento de recursos.
+
+57
+00:03:51,870 --> 00:03:56,430
+O mesmo código funciona
+para uma única coluna categórica,
+
+58
+00:03:56,430 --> 00:03:57,960
+e é isso que estou mostrando.
+
+59
+00:03:57,960 --> 00:04:02,400
+A capacidade de lidar com tensores
+esparsos é o motivo para o código
+
+60
+00:04:02,400 --> 00:04:05,830
+de criação de uma coluna de incorporação
+a partir de dados categóricos
+
+61
+00:04:05,830 --> 00:04:09,990
+no TensorFlow funciona sem
+problemas de memória ou velocidade.
+
+62
+00:04:09,990 --> 00:04:13,770
+É um detalhe de
+implementação mágico.
+
+63
+00:04:14,270 --> 00:04:16,265
+Lembra que falamos
+que não é preciso
+
+64
+00:04:16,265 --> 00:04:20,195
+um processo de treinamento
+separado para as incorporações?
+
+65
+00:04:20,195 --> 00:04:21,860
+São apenas duas etapas.
+
+66
+00:04:21,860 --> 00:04:25,100
+Primeiro, represente a entrada
+a partir dos dados originais.
+
+67
+00:04:25,100 --> 00:04:28,055
+Depois, envie por uma
+camada de incorporação.
+
+68
+00:04:28,055 --> 00:04:34,370
+Na primeira etapa, represente a
+entrada como um tensor esparso.
+
+69
+00:04:34,370 --> 00:04:38,615
+Na segunda, basta chamar
+a coluna de incorporação.
+
+70
+00:04:38,615 --> 00:04:42,170
+Mas como esse código funciona?

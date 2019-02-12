@@ -1,0 +1,583 @@
+1
+00:00:00,000 --> 00:00:04,564
+J'ai commencé à parler
+des RVC pour les ID de film.
+
+2
+00:00:04,564 --> 00:00:06,800
+Il s'agissait
+de caractéristiques catégorielles.
+
+3
+00:00:06,800 --> 00:00:10,570
+Puis nous avons appliqué
+le même exemple aux mots d'une annonce.
+
+4
+00:00:10,570 --> 00:00:13,120
+Il s'agissait alors
+de caractéristiques textuelles.
+
+5
+00:00:13,120 --> 00:00:15,195
+Qu'y a-t-il de commun entre elles ?
+
+6
+00:00:16,315 --> 00:00:18,605
+Le domaine d'application
+des RVC ne se limite pas
+
+7
+00:00:18,605 --> 00:00:21,505
+aux caractéristiques
+catégorielles ou textuelles.
+
+8
+00:00:21,505 --> 00:00:25,122
+Je vous montre ici un problème
+de machine learning classique
+
+9
+00:00:25,122 --> 00:00:26,585
+appelé "MNIST".
+
+10
+00:00:26,585 --> 00:00:30,477
+L'idée consiste à reconnaître
+des chiffres manuscrits
+
+11
+00:00:30,477 --> 00:00:32,480
+se trouvant dans des images numérisées.
+
+12
+00:00:32,480 --> 00:00:34,170
+Nous prenons donc chaque image,
+
+13
+00:00:34,170 --> 00:00:38,155
+et chacun des pixels
+de l'image est une entrée.
+
+14
+00:00:38,155 --> 00:00:41,420
+Nous pouvons donc parler
+d'image bitmap brute.
+
+15
+00:00:41,420 --> 00:00:44,570
+Chaque image est
+un carré de 28 pixels de côté.
+
+16
+00:00:44,570 --> 00:00:49,190
+Cette image bitmap est donc
+constituée de 784 pixels.
+
+17
+00:00:49,790 --> 00:00:54,380
+Si nous considérons
+ce tableau de 784 nombres,
+
+18
+00:00:54,380 --> 00:00:58,885
+nous constatons qu'il est pour l'essentiel
+constitué de pixels blancs.
+
+19
+00:00:58,885 --> 00:01:02,500
+Les représentations vectorielles continues
+sont également utiles dans ce cas.
+
+20
+00:01:02,500 --> 00:01:05,260
+Nous prenons ces 784 nombres,
+
+21
+00:01:05,260 --> 00:01:08,850
+et nous les représentons
+sous la forme d'un Tensor creux.
+
+22
+00:01:08,850 --> 00:01:14,395
+Nous n'enregistrons les pixels
+que là où le chiffre manuscrit est visible,
+
+23
+00:01:14,395 --> 00:01:19,510
+c'est-à-dire uniquement là où ils sont noirs.
+
+24
+00:01:19,510 --> 00:01:23,630
+Nous transmettons ensuite cela via
+une représentation vectorielle continue 3D.
+
+25
+00:01:23,630 --> 00:01:27,215
+Nous pouvons alors avoir un réseau
+de neurones à deux couches normal,
+
+26
+00:01:27,215 --> 00:01:30,385
+et nous pourrions aussi transmettre
+d'autres caractéristiques.
+
+27
+00:01:30,385 --> 00:01:32,435
+Nous entraînons ensuite le modèle
+
+28
+00:01:32,435 --> 00:01:38,450
+pour prédire le nombre de l'image
+sur la base de ces étiquettes.
+
+29
+00:01:38,450 --> 00:01:41,730
+Pour quelle raison est-ce que j'ai ici
+une couche de fonctions logit ?
+
+30
+00:01:41,730 --> 00:01:45,625
+C'est parce qu'il s'agit là de la couche
+de sortie d'un réseau de neurones.
+
+31
+00:01:45,625 --> 00:01:48,652
+Une fonction logit est
+ce en quoi doit consister la sortie
+
+32
+00:01:48,652 --> 00:01:51,100
+pour un problème de classification.
+
+33
+00:01:51,100 --> 00:01:53,387
+Lorsque nous utilisons
+un classificateur linéaire
+
+34
+00:01:53,387 --> 00:01:55,365
+ou de réseau de neurones profond,
+
+35
+00:01:55,365 --> 00:02:00,990
+la couche de sortie est une fonction logit,
+une unique fonction logit.
+
+36
+00:02:00,990 --> 00:02:03,615
+Mais c'est seulement
+si nous avons une seule sortie.
+
+37
+00:02:03,615 --> 00:02:08,350
+Dans le cas du problème MNIST,
+nous avons au total dix classes.
+
+38
+00:02:08,350 --> 00:02:12,590
+Il s'agit des chiffres
+0, 1, 2, etc. Jusqu'à 9.
+
+39
+00:02:12,590 --> 00:02:15,749
+C'est la raison pour laquelle
+je n'ai pas une fonction logit,
+
+40
+00:02:15,749 --> 00:02:17,980
+mais une couche de fonctions logit.
+
+41
+00:02:17,980 --> 00:02:22,485
+J'ai une fonction logit
+pour chacun des chiffres possibles.
+
+42
+00:02:22,485 --> 00:02:24,847
+Lorsque l'on utilise
+une couche de fonctions logit
+
+43
+00:02:24,847 --> 00:02:27,250
+plutôt qu'une unique fonction logit,
+
+44
+00:02:27,250 --> 00:02:33,770
+il n'y a aucune garantie que la probabilité
+totale de tous les chiffres sera égale à 1.
+
+45
+00:02:33,770 --> 00:02:38,915
+C'est la fonction softmax qui a pour rôle
+de normaliser les différentes fonctions logit
+
+46
+00:02:38,915 --> 00:02:41,990
+afin que la probabilité totale soit égale à 1.
+
+47
+00:02:41,990 --> 00:02:43,575
+Mais désolé pour la digression.
+
+48
+00:02:43,575 --> 00:02:45,930
+J'étais en train de vous parler des RVC.
+
+49
+00:02:45,930 --> 00:02:48,260
+Donc ici, lorsque nous entraînons le modèle
+
+50
+00:02:48,260 --> 00:02:50,930
+pour qu'il puisse reconnaître
+des chiffres manuscrits,
+
+51
+00:02:50,930 --> 00:02:55,485
+chaque image est représentée
+par trois nombres.
+
+52
+00:02:55,485 --> 00:02:58,290
+Mais au contraire du cas
+des caractéristiques catégorielles,
+
+53
+00:02:58,290 --> 00:03:03,025
+l'image bitmap brute
+n'est pas encodée en one-hot.
+
+54
+00:03:03,025 --> 00:03:06,160
+Nous n'obtenons donc pas
+trois nombres pour chaque pixel.
+
+55
+00:03:06,160 --> 00:03:12,310
+Dans ce cas, les trois nombres
+correspondent à tous les pixels activés
+
+56
+00:03:12,310 --> 00:03:14,860
+pour une image donnée.
+
+57
+00:03:14,860 --> 00:03:18,532
+Vous pouvez utiliser TensorBoard
+pour visualiser ces RVC,
+
+58
+00:03:18,532 --> 00:03:24,700
+le vecteur 3D qui correspond
+à chaque image de 784 pixels.
+
+59
+00:03:24,700 --> 00:03:28,820
+Des couleurs différentes ont ici
+été affectées aux différentes étiquettes.
+
+60
+00:03:28,820 --> 00:03:30,492
+Et comme vous pouvez le voir,
+
+61
+00:03:30,492 --> 00:03:33,243
+nous avons le plaisir de constater
+
+62
+00:03:33,243 --> 00:03:37,405
+que tous les 5 sont regroupés
+en cluster dans l'espace 3D,
+
+63
+00:03:37,405 --> 00:03:41,025
+et qu'il en va de même
+de tous les 7 et de tous les 0.
+
+64
+00:03:41,025 --> 00:03:42,350
+En d'autres termes,
+
+65
+00:03:42,350 --> 00:03:47,265
+les nombres 3D qui représentent
+chaque image de chiffre manuscrit
+
+66
+00:03:47,265 --> 00:03:49,507
+sont positionnés de telle façon
+dans l'espace 3D
+
+67
+00:03:49,507 --> 00:03:52,980
+que les nombres similaires
+sont proches les uns des autres.
+
+68
+00:03:52,980 --> 00:03:56,440
+Il en va ainsi des RVC utilisées
+pour les variables catégorielles,
+
+69
+00:03:56,440 --> 00:04:00,345
+le texte en langage naturel
+et les images bitmap brutes.
+
+70
+00:04:00,345 --> 00:04:02,510
+Donc, qu'y a-t-il de commun entre elles ?
+
+71
+00:04:02,510 --> 00:04:04,320
+Elles sont toutes creuses.
+
+72
+00:04:04,320 --> 00:04:07,537
+Si vous transmettez
+l'encodage d'un vecteur creux
+
+73
+00:04:07,537 --> 00:04:09,215
+via une colonne de RVC,
+
+74
+00:04:09,215 --> 00:04:13,215
+que vous utilisez ensuite cette colonne
+comme entrée d'un réseau de neurones profond,
+
+75
+00:04:13,215 --> 00:04:15,510
+puis que vous entraînez ce réseau,
+
+76
+00:04:15,510 --> 00:04:21,185
+les RVC entraînées auront
+cette propriété de similarité,
+
+77
+00:04:21,185 --> 00:04:24,910
+dans la mesure bien sûr
+où vous disposerez d'assez de données
+
+78
+00:04:24,910 --> 00:04:28,885
+et où l'entraînement aura permis
+d'obtenir un bon niveau de justesse.
+
+79
+00:04:28,885 --> 00:04:34,185
+Vous pouvez profiter de cette propriété
+de similarité dans d'autres situations.
+
+80
+00:04:34,185 --> 00:04:40,575
+Supposez, par exemple, que votre tâche soit
+de trouver une chanson similaire à celle-ci.
+
+81
+00:04:40,575 --> 00:04:49,185
+En pareil cas, vous pouvez créer
+une RVC du clip audio de chaque chanson
+
+82
+00:04:49,185 --> 00:04:52,130
+en le représentant sous la forme
+d'un tableau de valeurs.
+
+83
+00:04:52,130 --> 00:04:55,425
+Puis, tout comme avec l'image MNIST,
+
+84
+00:04:55,425 --> 00:04:59,390
+vous transmettez le tableau via une couche
+de représentation vectorielle continue.
+
+85
+00:04:59,390 --> 00:05:04,530
+Vous l'utilisez pour entraîner un problème
+de machine learning raisonnable,
+
+86
+00:05:04,530 --> 00:05:06,360
+par exemple à l'aide du signal audio
+
+87
+00:05:06,360 --> 00:05:10,470
+pour entraîner un modèle
+à prédire le genre musical
+
+88
+00:05:10,470 --> 00:05:12,810
+ou la note de musique suivante.
+
+89
+00:05:12,810 --> 00:05:15,560
+Quelle que soit la prédiction choisie,
+
+90
+00:05:15,560 --> 00:05:21,835
+la RVC vous fournit une représentation
+aux dimensions réduites du clip audio.
+
+91
+00:05:21,835 --> 00:05:24,475
+Si vous voulez ensuite
+trouver des chansons similaires,
+
+92
+00:05:24,475 --> 00:05:28,802
+il vous suffit de calculer
+la distance euclidienne entre deux clips
+
+93
+00:05:28,802 --> 00:05:30,590
+(entre leurs RVC).
+
+94
+00:05:30,590 --> 00:05:35,010
+Vous obtenez ainsi une mesure
+de la similarité des deux chansons.
+
+95
+00:05:36,020 --> 00:05:38,365
+Vous pourriez aussi utiliser
+les vecteurs des RVC
+
+96
+00:05:38,365 --> 00:05:41,880
+comme entrées d'un algorithme de clustering.
+
+97
+00:05:41,880 --> 00:05:44,430
+L'idée de similarité peut également servir
+
+98
+00:05:44,430 --> 00:05:48,330
+à représenter conjointement
+diverses caractéristiques
+
+99
+00:05:48,330 --> 00:05:51,230
+(par exemple, du texte
+en deux langues différentes
+
+100
+00:05:51,230 --> 00:05:54,080
+ou un texte et le clip audio correspondant)
+
+101
+00:05:54,080 --> 00:05:57,500
+afin d'en définir le niveau de similarité.
+
+102
+00:05:57,500 --> 00:06:00,050
+Dans tous nos exemples,
+
+103
+00:06:00,050 --> 00:06:03,530
+nous avons utilisé trois
+représentations vectorielles continues.
+
+104
+00:06:03,530 --> 00:06:06,020
+Vous pouvez bien sûr
+utiliser des nombres différents.
+
+105
+00:06:06,020 --> 00:06:08,670
+Mais quels nombres devriez-vous utiliser ?
+
+106
+00:06:09,210 --> 00:06:14,265
+Le nombre de RVC est l'hyperparamètre
+de votre modèle de machine learning.
+
+107
+00:06:14,265 --> 00:06:17,785
+Il est nécessaire que vous testiez
+différents nombres de dimensions de RVC,
+
+108
+00:06:17,785 --> 00:06:20,270
+car vous devez faire
+un compromis à ce niveau.
+
+109
+00:06:20,270 --> 00:06:23,475
+Les RVC comportant davantage
+de dimensions sont mieux à même
+
+110
+00:06:23,475 --> 00:06:27,950
+de représenter avec justesse
+la relation entre les valeurs d'entrée.
+
+111
+00:06:27,950 --> 00:06:33,880
+Mais plus vous avez de dimensions,
+plus le risque de surapprentissage est élevé.
+
+112
+00:06:33,880 --> 00:06:38,875
+Cela a également pour effet de faire grossir
+le modèle et d'en ralentir l'entraînement.
+
+113
+00:06:38,875 --> 00:06:41,545
+Pour commencer, vous pouvez
+opter pour une bonne solution
+
+114
+00:06:41,545 --> 00:06:46,680
+qui consiste à utiliser la racine quatrième
+du nombre total de valeurs possibles.
+
+115
+00:06:46,680 --> 00:06:50,090
+Par exemple, si vous utilisez
+des RVC pour des ID de film
+
+116
+00:06:50,090 --> 00:06:53,285
+et que vous avez 500 000 films
+dans votre catalogue,
+
+117
+00:06:53,285 --> 00:06:57,190
+le nombre total
+de valeurs possibles est 500 000.
+
+118
+00:06:57,190 --> 00:07:02,935
+Il serait donc recommandé de commencer
+par la racine quatrième de 500 000.
+
+119
+00:07:02,935 --> 00:07:10,035
+La racine carrée de 500 000 est environ 700,
+et celle de 700 est environ 26.
+
+120
+00:07:10,035 --> 00:07:14,845
+J'opterais donc probablement d'abord
+pour une valeur de l'ordre de 25.
+
+121
+00:07:14,845 --> 00:07:17,152
+Si vous effectuez
+un réglage d'hyperparamètres
+
+122
+00:07:17,152 --> 00:07:19,580
+pour le nombre de dimensions de RVC,
+
+123
+00:07:19,580 --> 00:07:24,535
+je pense que l'espace de recherche pourrait
+être, disons, compris entre 15 et 35.
+
+124
+00:07:24,535 --> 00:07:26,850
+Mais c'est bien sûr juste une règle générale.

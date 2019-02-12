@@ -1,0 +1,267 @@
+1
+00:00:00,000 --> 00:00:06,720
+Storing the input vector as a one heart encoded array is a bad idea.
+
+2
+00:00:06,720 --> 00:00:11,325
+A dense representation is extremely inefficient,
+
+3
+00:00:11,325 --> 00:00:15,120
+both for storage and for compute.
+
+4
+00:00:15,120 --> 00:00:18,315
+Notice that we're calling anything where we store
+
+5
+00:00:18,315 --> 00:00:22,290
+all the values for an input tensor, a dense tensor.
+
+6
+00:00:22,290 --> 00:00:25,860
+This has nothing to do with the actual data in the tensor,
+
+7
+00:00:25,860 --> 00:00:27,930
+just about how we are storing it.
+
+8
+00:00:27,930 --> 00:00:30,885
+But consider the data in this matrix.
+
+9
+00:00:30,885 --> 00:00:36,210
+Do you think this matrix is filled densely or sparsely?
+
+10
+00:00:36,210 --> 00:00:38,945
+It's extremely sparse of course.
+
+11
+00:00:38,945 --> 00:00:45,875
+Each example around this matrix represents movies that have been watched by the user.
+
+12
+00:00:45,875 --> 00:00:48,260
+Think back to your experience,
+
+13
+00:00:48,260 --> 00:00:51,110
+how many movies have you rated?
+
+14
+00:00:51,110 --> 00:00:55,500
+So, we don't want to store the inputs in a dense form.
+
+15
+00:00:55,500 --> 00:01:00,000
+We do not want to store all the values for the tensor.
+
+16
+00:01:00,000 --> 00:01:04,240
+So, we don't want to store the inputs in a dense form,
+
+17
+00:01:04,240 --> 00:01:07,280
+we don't want to store all the values for the tensor,
+
+18
+00:01:07,280 --> 00:01:09,480
+what should we do instead?
+
+19
+00:01:09,480 --> 00:01:14,190
+It would be good to store the data in a sparse manner,
+
+20
+00:01:14,190 --> 00:01:16,760
+in a compressed way in memory.
+
+21
+00:01:16,760 --> 00:01:20,950
+It would be good to be able to do computations like
+
+22
+00:01:20,950 --> 00:01:25,285
+matrix multiplication directly on the sparse tensors,
+
+23
+00:01:25,285 --> 00:01:30,055
+without having to convert them into dense representations.
+
+24
+00:01:30,055 --> 00:01:37,535
+The way we do this is to build a dictionary mapping from each feature to an integer.
+
+25
+00:01:37,535 --> 00:01:42,480
+So, Shrek might be integers zero and Harry Potter might be the
+
+26
+00:01:42,480 --> 00:01:47,705
+integer 300 or 230, some arbitrary number.
+
+27
+00:01:47,705 --> 00:01:50,930
+Remember that there is no embedding at this point.
+
+28
+00:01:50,930 --> 00:01:57,005
+At this point, each movie just has an arbitrary integer associated with it.
+
+29
+00:01:57,005 --> 00:02:00,290
+Then, when you have a row of the Matrix
+
+30
+00:02:00,290 --> 00:02:03,620
+which represents the movie set a specific user has seen,
+
+31
+00:02:03,620 --> 00:02:08,675
+we simply store the movie IDs for the movies that the user has seen.
+
+32
+00:02:08,675 --> 00:02:10,470
+In the example row,
+
+33
+00:02:10,470 --> 00:02:12,955
+the user has seen three movies,
+
+34
+00:02:12,955 --> 00:02:16,235
+so the sparse tensor has three entries in it.
+
+35
+00:02:16,235 --> 00:02:19,525
+Any integer not present in this list,
+
+36
+00:02:19,525 --> 00:02:23,420
+that movie is assumed to not have been watched.
+
+37
+00:02:23,420 --> 00:02:26,480
+So, the three entries are one,
+
+38
+00:02:26,480 --> 00:02:31,260
+and the rest are zero in the equivalent dense representation.
+
+39
+00:02:31,260 --> 00:02:33,170
+So, there are two steps here.
+
+40
+00:02:33,170 --> 00:02:37,325
+The preprocessing step computes the dictionary,
+
+41
+00:02:37,325 --> 00:02:45,485
+and the second step uses the dictionary to create an efficient sparse representation.
+
+42
+00:02:45,485 --> 00:02:49,890
+If you're thinking that this seems familiar and just like
+
+43
+00:02:49,890 --> 00:02:55,010
+vocabulary building for categorical columns, you're absolutely correct.
+
+44
+00:02:55,010 --> 00:03:00,470
+Categorical columns are represented by tensor flow as sparse tensors.
+
+45
+00:03:00,470 --> 00:03:06,330
+So, categorical columns are an example of something that is sparse.
+
+46
+00:03:06,330 --> 00:03:09,450
+Tensor flow can do math operations on
+
+47
+00:03:09,450 --> 00:03:14,310
+sparse tensors without having to convert them into dense.
+
+48
+00:03:14,310 --> 00:03:18,490
+This saves memory and optimizes compute.
+
+49
+00:03:18,490 --> 00:03:23,580
+We looked at how to create a feature cross from categorical columns.
+
+50
+00:03:23,580 --> 00:03:30,365
+That was an example of Math that was carried out completely in terms of sparse tensors.
+
+51
+00:03:30,365 --> 00:03:37,480
+This is why, even though we crossed discretized columns of latitude and longitude,
+
+52
+00:03:37,480 --> 00:03:42,885
+and then feature across the pickup points and drop off points in our taxi for example,
+
+53
+00:03:42,885 --> 00:03:47,205
+there was no problem with memory or with computation speed.
+
+54
+00:03:47,205 --> 00:03:51,420
+We looked at how to create an embedding column from a feature across.
+
+55
+00:03:51,420 --> 00:03:56,430
+The same code works for a single categorical column of course,
+
+56
+00:03:56,430 --> 00:03:57,960
+and that's what I'm showing here.
+
+57
+00:03:57,960 --> 00:04:02,880
+The ability to deal with sparse tensors is why the code to create
+
+58
+00:04:02,880 --> 00:04:05,830
+an embedding column from categorical data in
+
+59
+00:04:05,830 --> 00:04:09,990
+tensor flow can work without causing memory or speed issues.
+
+60
+00:04:09,990 --> 00:04:13,770
+It's one of those magic implementation details.
+
+61
+00:04:13,770 --> 00:04:20,195
+Recall that we said that no separate training process is needed to do embeddings.
+
+62
+00:04:20,195 --> 00:04:21,860
+We just take two steps.
+
+63
+00:04:21,860 --> 00:04:25,100
+First take the original input and represent the input.
+
+64
+00:04:25,100 --> 00:04:28,055
+Second send it through an embedding layer.
+
+65
+00:04:28,055 --> 00:04:34,370
+The first step is done by taking the input and representing it as a sparse tensor.
+
+66
+00:04:34,370 --> 00:04:38,615
+The second step is done through the call to embedding column,
+
+67
+00:04:38,615 --> 00:04:42,900
+but how does that line of code really work?

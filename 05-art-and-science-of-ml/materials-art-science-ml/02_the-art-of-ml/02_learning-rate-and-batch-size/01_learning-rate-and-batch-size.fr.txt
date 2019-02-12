@@ -1,0 +1,71 @@
+Ceci nous amène
+à la deuxième partie de ce module, dans laquelle nous allons voir
+deux hyperparamètres importants : le taux d'apprentissage
+et la taille de lot. Amusons-nous un peu avec ces paramètres
+dans notre terrain de jeu préféré. Commençons par le taux d'apprentissage. Rappelez-vous, le taux d'apprentissage
+contrôle la taille des "pas" dans l'espace de poids. J'ai utilisé une taille de lot égale à 30 et une valeur constante pour
+tous les autres paramètres. Pour le premier essai, j'ai réglé
+le taux d'apprentissage sur 0,01. TensorFlow Playground utilise
+des points de départ aléatoires. Il se peut donc que vos résultats
+soient différents des miens. Vous remarquerez peut-être de drôles
+de rebonds sur la courbe de perte, mais elle converge assez vite. Pour ma part, j'ai une valeur de perte
+de 0,139 sur les données de test, et moins de 300 itérations. Lorsque je suis passée à
+un taux d'apprentissage de 0,001, j'ai constaté
+un ralentissement des performances. Dans mon cas,
+il a fallu près de 3 000 itérations pour atteindre une perte de test comparable à celle
+de l'expérimentation précédente. Le côté positif est
+que vous ne devriez pas observer de rebonds importants
+sur la courbe de perte. Elle devrait converger lentement,
+mais en douceur. Intéressons-nous maintenant
+aux effets de la taille de lot. Rappelez-vous que la taille de lot
+contrôle le nombre d'échantillons sur lesquels le gradient est calculé. J'ai réutilisé
+le taux d'apprentissage de 0,01 et une valeur constante pour
+tous les autres paramètres. J'ai d'abord essayé
+avec une taille de lot de 100. Si vous participez activement, vous êtes
+sûrement en train de vous demander comment augmenter
+la taille de lot au-delà de 30. Ne vous inquiétez pas, rien n'est cassé. C'est conçu ainsi. L'interface utilisateur ne permet pas
+d'aller au-delà de 30, mais vous pouvez modifier cela dans l'URL. Avec une taille de lot de 100, j'ai constaté que la convergence
+était assez lente. Il a fallu près de 1 000 itérations pour atteindre une valeur de perte semblable à celle
+des expérimentations précédentes, mais cela s'est fait en douceur. Lorsque j'ai réduit la taille de lot à 5, j'ai obtenu des résultats très rapidement. Pour tout dire, en à peine 65 itérations, la perte de test était comparable
+à celle des expérimentations précédentes. Mais certaines étapes généraient
+du bruit sur la courbe de perte. Tout ceci montre que la performance
+du modèle est très dépendante du taux d'apprentissage
+et de la taille de lot. Ça ne vous fait pas penser à l'accordage
+d'un instrument de musique ? Je vous ai dit que c'était tout un art. Récapitulons nos observations. N'oubliez pas, le taux d'apprentissage
+contrôle la taille des "pas" dans l'espace de poids. Si les pas sont trop petits, l'entraînement durera longtemps. En revanche, s'ils sont trop grands,
+des rebonds peuvent se produire. Il se peut même
+que le point optimal ne soit pas atteint. Un taux d'apprentissage de 0,001
+correspond à une taille de pas égale à 1 sur 1 000 de l'espace d'entrée. Ce taux pourrait se révéler trop faible si vous disposez
+d'une grande surface d'optimisation. Par exemple, sachez que
+pour l'estimateur de régression linéaire de la bibliothèque TensorFlow,
+la valeur par défaut est définie sur 0,2 (ou sur 1 divisé par la racine carrée
+du nombre de caractéristiques). Cela implique que les valeurs des libellés
+et des caractéristiques soient faibles. L'autre facteur concerne la taille de lot. Il permet de contrôler
+le nombre d'échantillons sur lesquels le gradient est calculé. Si la taille de lot est trop petite,
+des rebonds sont à craindre, car il se peut que le lot ne représente
+pas l'entrée assez fidèlement. D'un autre côté,
+si la taille de lot est trop importante, l'entraînement prendra beaucoup de temps. En règle générale, il est recommandé d'utiliser une taille
+de lot comprise entre 40 et 100. Sachez toutefois qu'il est possible
+d'aller jusqu'à 500. Tant que nous parlons des lots, n'oubliez pas que vous pouvez
+utiliser le brassage de lots. Vous avez sûrement entendu dire que le brassage d'exemples est
+une bonne idée, mais pourquoi ? Prenons des titres de livres
+tels que ceux-ci. Imaginons que vous entraînez
+un outil de recommandation chargé de suggérer le prochain livre
+à lire aux utilisateurs. Notez que les titres sont classés
+par ordre alphabétique. Si vous utilisez
+l'ensemble de données en l'état, chaque lot d'entraînement contiendra
+un sous-ensemble des titres, basé sur les lettres consécutives
+de l'alphabet. Vous donnerez à votre pauvre modèle
+une vision étriquée du domaine du problème et lui enlèverez toute chance
+de découvrir toute la vérité. Vous ne souhaitez pas être
+un mauvais professeur ? Vous préférez certainement que
+chaque lot soit représentatif de l'ensemble de données
+dans son intégralité. La plupart des ensembles de données
+ont un ordre intrinsèque, comme ces titres de livres
+classés alphabétiquement, des dossiers clients triés
+selon le code postal, des achats archivés par saison,
+par année, etc. Si vous brassez correctement
+votre ensemble de données, vous avez l'assurance que chaque lot sera
+représentatif de tout l'ensemble. Souvenez-vous que les gradients
+sont calculés au sein des lots. Si les lots ne sont pas représentatifs, la perte sera bien trop importante
+lorsque vous passerez d'un lot à l'autre.

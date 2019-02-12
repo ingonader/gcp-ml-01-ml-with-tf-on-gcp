@@ -1,0 +1,50 @@
+Almacenar el vector de entrada como un arreglo con codificación one-hot. es una mala idea Una representación densa
+es en extremo ineficiente para el almacenamiento
+y el cálculo. Note que llamamos tensor denso lo que sea que almacene
+todos los valores de un tensor de entrada. No se relaciona
+con los datos reales en el tensor solo con la forma en que se almacenan. Considere los datos en esta matriz. ¿Cree que la matriz se llenó
+de forma densa o dispersa? Por supuesto, es muy dispersa. Cada ejemplo, una fila en la matriz,
+representa películas que vio un usuario. Según su propia experiencia ¿cuántas películas ha calificado? No queremos
+almacenar las entradas de forma densa ni almacenar
+todos los valores para el tensor. Si no queremos almacenar las entradas
+de manera densa ni almacenar todos los valores para el tensor ¿qué debemos hacer? Sería apropiado
+almacenar los datos de forma dispersa y comprimida en la memoria. Sería bueno poder hacer cálculos como la multiplicación de matrices,
+directamente en los tensores dispersos sin tener que convertirlos
+en representaciones densas. Para ello, se debe compilar
+una asignación de diccionario para que cada atributo
+tenga un número entero. Así, Shrek podría ser
+el número entero cero y Harry Potter el número 300 o 230 o cualquier número arbitrario. Recuerde que en este punto
+no hay incorporaciones. Cada película tiene
+un número entero arbitrario asociado. Luego, cuando tengamos una fila
+de la matriz que represente las películas
+que vio un usuario específico simplemente almacenamos los ID
+de las películas que el usuario vio. En la fila de ejemplo,
+el usuario vio tres películas por lo que
+el tensor disperso tiene tres entradas. Cualquier número entero
+que no aparezca en la lista quiere decir que no ha visto esa película. Las tres entradas son 1 y el resto 0 en la representación densa equivalente. Hay dos pasos en este caso. En el paso de procesamiento previo
+se procesa el diccionario y en el segundo paso
+se usa el diccionario para crear
+una representación dispersa eficiente. Si esto le resulta familiar justo como la compilación de vocabulario
+para columnas categóricas está en lo correcto. TensorFlow representa
+las columnas categóricas como tensores dispersos. Las columnas categóricas
+son un ejemplo de elementos dispersos. TensorFlow puede realizar
+operaciones matemáticas en tensores dispersos
+sin convertirlos en densos. Esto permite ahorrar memoria
+y optimiza el cálculo. Vimos cómo crear
+combinaciones de atributos a partir de columnas categóricas. Ese fue un ejemplo de matemáticas
+que se realizaron con tensores dispersos. Es por eso que a pesar de que combinamos columnas
+discretizadas de latitud y longitud y después combinamos los atributos
+de los puntos de partida y destino de un taxi no hubo problemas con la memoria
+o la velocidad de la computación. Vimos cómo crear
+una columna de incorporación a partir de combinar atributos. El mismo código funciona
+para una sola columna categórica. Es lo que le muestro aquí. La capacidad
+de trabajar con tensores dispersos es la razón por la que el código
+para crear una columna de incorporación a partir de datos categóricos
+en TensorFlow funciona sin causar
+problemas de memoria o velocidad. Es uno de esos
+detalles de implementación mágicos. Recuerde que no necesita
+un proceso de entrenamiento separado para realizar incorporaciones. Solo son dos pasos. Primero, tomar
+la entrada original y representarla. Segundo, enviarla
+por una capa de incorporación. El primer paso se realiza
+al tomar la entrada y representarla como un tensor disperso. El segundo paso se realiza
+al llamar a la columna de incorporación. Pero ¿cómo funciona esa línea de código?

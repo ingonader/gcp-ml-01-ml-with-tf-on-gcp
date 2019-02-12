@@ -1,0 +1,129 @@
+Neste laboratório, nossa meta é aprender
+como escrever um Estimator personalizado. Presumiremos que temos
+uma função do TensorFlow que usa um conjunto de tensores de entrada
+e cria um conjunto de tensores de saída. Nosso trabalho será encapsular essa função
+na biblioteca do Estimator, para que possamos ter todos os benefícios
+de alto nível que o Estimator oferece. Na realidade, quando você pega um
+modelo de trabalho que não usa Estimators, ele terá alguma maneira
+de ler dados e gerar modelos. Você essencialmente jogará fora
+essas partes do modelo e manterá apenas o núcleo matemático do modelo: o modelo que transforma
+o tensor de entrada no tensor de saída. Neste laboratório, vamos
+observar como você pegaria um modelo e o encapsularia
+com a biblioteca do Estimator, sua própria
+função de módulo personalizada. Então, para ilustrar isso como nos slides, usaremos
+um modelo de série temporal. Não vamos nos preocupar em como
+o modelo de séries temporais funciona, vamos olhar para os modelos de sequência
+mais tarde na especialização, por enquanto apenas os tratamos
+como uma caixa preta. O básico, mas vamos olhar para o wrapper
+externo e ver como isso funciona. Então, neste caso, o que temos é... vou para uma
+importação do TensorFlow, e o que vamos fazer é basicamente criar, simular um monte de dados. Cada um desses dados tem
+essencialmente ondas senoidais diferentes de amplitudes diferentes
+que estão basicamente indo em frequências diferentes
+que estão sendo criadas. Então, aqui estão cinco exemplos
+desta série temporal. Na verdade, vamos criar
+muitos desses dados, e esses são os dados que vamos treinar, e a ideia é que daremos
+à rede neural nove valores. Então, zero, um, dois, três. Tudo bem? Daremos a ela até oito e depois vamos dar nove valores
+e fazê-la prever o décimo. Então vamos ensiná-la com base em um monte
+de dados existentes e fazê-la aprender, com base em nove valores,
+qual será o décimo. Para fazer isso, vamos criar um arquivo CSV, to_csv, dar a ele um nome de arquivo, dizer quantas sequências queremos, então basicamente abriremos o arquivo, o escreveremos e criaremos
+uma série temporal. Uma série de quantas vezes? N vezes. Então, neste caso, estou chamando
+train.csv.n igual a mil. Então vou pegar um arquivo
+com mil sequências. Meu train.csv conterá mil sequências, value.csv conterá 50 sequências. Então, todas elas serão
+separadas por vírgulas. Assim, posso executar isso, e, depois de executar, posso ver
+as cinco primeiras linhas de train.csv, estas são as cinco primeiras linhas, e as cinco primeiras linhas de value.csv. Como você pode ver, isso é essencialmente uma série temporal, e nossos atributos
+de entrada de treinamento serão estes, e este será nosso rótulo. E isso é o que queremos
+que nosso modelo aprenda. Então, onde é que algo assim entra? Quero dizer, mesmo que você não fale
+sobre séries temporais, provavelmente é bom pensar
+sobre a situação que estamos ilustrando. A situação que estamos ilustrando
+é algo como, digamos, você administra uma loja
+e tem milhares de itens, e cada um tem a própria sazonalidade, e você quer olhar para os últimos oito
+períodos ou para mais de nove períodos, e usar isso para prever
+o décimo período. Isso é o que
+você está fazendo. Isto não é algo
+sobre séries temporais em que você está tentando prever o valor futuro
+de um mercado de ações. Isso é diferente, é uma série temporal
+muito longa. Aqui, temos milhares de
+séries temporais curtas. É um problema diferente. Este problema é o exemplo do varejo, em que você tem milhares de produtos, cada um tem a própria sazonalidade, mas todos têm sazonalidade, e você quer basicamente aprender
+essa ideia da sazonalidade, para poder olhar só para a série temporal
+daquele produto e prever o próximo. Este é o nosso
+conjunto de dados de treinamento e, com base nisso,
+vamos treinar nosso modelo. O modelo que você treinará
+é chamado de rede neural recorrente. Novamente, não vamos nos preocupar com
+os componentes internos do modelo em si, mas com a forma como o configuramos. Então, novamente neste caso, importamos o TensorFlow
+e depois temos que ler nossos dados. Nossos dados são essencialmente
+o tamanho de nossa sequência. Então, basicamente,
+temos os padrões de 0,0, então são todos
+os números de ponto flutuante para o intervalo X de zero
+ao tamanho da sequência. Então, basicamente, temos 10 números. Quanto é o tamanho do nosso lote? Vamos calcular um gradiente descendente, o tamanho do lote será 20. A coluna da série temporal em nossos
+dados será chamada de rawdata, e, em nossa sequência, o número de saídas é 1, que é a saída final, e o número de entradas é um tamanho
+de sequência menos o número de saídas. Em outras palavras,
+as nove primeiras são as entradas e a última é a saída. Então, esse é o conjunto de constantes
+que você está definindo, e então escrevemos
+nosso conjunto de dados de leitura. Isto é como criar uma função de entrada. Aqui, nosso decode_csv recebeu uma linha. Ele basicamente dirá "Vá em frente e leia
+todas como números de ponto flutuante", então você terá todos os dados, que serão 10 números, mas lembre-se de que
+vai lê-los um lote de cada vez. Então, essa coisa não é uma linha, na verdade são os dados correspondentes a tipicamente 20 linhas
+porque estamos lendo lote por lote. Portanto, são 20 linhas e, dentre elas, vamos dividir as nove primeiras, e essas serão as entradas, e vamos dividir a última coluna, e isso serão os rótulos. Então é isso que estamos fazendo aqui. Estamos dividindo os nove primeiros
+valores, que são nossas entradas, e o último valor, os nossos rótulos. Novamente, inputs será do tamanho
+do lote de comprimento e largura de nove, e labels será do tamanho do lote de altura
+e largura de um, número de saídas. Então, pegamos tudo isso, esses são todos valores separados,
+e os empilhamos juntos, de modo que basicamente
+temos uma matriz. Esta é a nossa entrada. Estamos empilhando-a
+para formar uma matriz, estamos empilhando isso
+para formar uma matriz, a matriz aqui, a segunda dimensão é 1, mas ainda não está em nossa matriz, em vez da lista de listas. Não queremos uma lista de listas,
+queremos uma matriz. Então é isso que a pilha faz. Dizemos que TIMESERIES_COL,
+os dados brutos e o tensor são as entradas, e agora podemos
+retornar os atributos e rótulos. Então, há apenas um atributo, é um dicionário, que contém um atributo, esse atributo é uma matriz. Antes, todos os nossos atributos
+eram colunas únicas, mas aqui nosso atributo é uma matriz. Certo? É por isso que
+você está fazendo a pilha aqui. Então, tendo feito isso, como você faz
+o conjunto de dados de leitura? Quando alguém diz
+que ele nos dá um nome de arquivo, ele pode
+nos dar um caminho de arquivo. Então, vamos fazer glob, combinar todos os arquivos
+que têm um curinga, por exemplo, para receber uma lista de
+arquivos, e lê-la como uma linha de texto. Depois, chamar decode_csv para
+ter de volta o conjunto de dados e, se estivermos fazendo treinamento, embaralharemos o conjunto de dados. Se estamos fazendo uma avaliação,
+não é preciso embaralhar, então simplesmente não embaralhamos. Se estamos fazendo treinamento, lemos
+indefinidamente, se você estiver lendo, durante a avaliação, você quer ler
+todo o conjunto de dados uma vez, então o número de períodos é um. Basicamente, repetimos o conjunto
+de dados para o número de períodos. Para avaliação,
+fazemos isso uma vez, para o treino, fazemos isso para sempre
+e fazemos o lote por tamanho de lote. Então, 20 linhas de cada vez, 20 sequências por vez, e então basicamente retornamos o iterador. Essa é a leitura do
+conjunto de dados. Agora, com relação ao modelo em si, não vamos nos preocupar
+sobre como isso funciona, o principal é que temos um método chamado
+simple_RNN que pega nossos atributos, nossos rótulos e nosso modo, e o que ele faz é extrair
+a sequência x dos atributos e, em seguida, faz algo para eles. Então não vamos nos preocupar com isso até chegar às previsões. Esta é a saída do nosso modelo
+de série temporal. Assim, dada a entrada, basicamente temos uma saída, e isso é praticamente
+o que toda função de modelo é. Tendo feito isso, agora temos que decidir
+qual é a nossa última função. Lembre-se de que há
+um problema de série temporal, estamos prevendo o último valor. Em outras palavras,
+estamos prevendo um valor. Isto é uma regressão ou classificação?
+Regressão, certo? E como é regressão, minha perda será
+mean_squared_error. Eu poderia usar
+root_mean_squared_error, mas também posso usar
+mean_squared_error. Minha operação de treinamento
+será minimizar a perda com uma taxa de aprendizado
+específica e com o otimizador específico, e minhas métricas de avaliação
+serão o rmse desta vez. O root_mean_squared_error,
+dados os labels e predictions. Se não é treino e não é avaliação, loss, train_op e eval_metric_ops são None. São None porque não temos um rótulo. Durante a previsão, não teremos um rótulo. Então não podemos fazer avaliação, não podemos fazer treino,
+não podemos fazer perdas. Então, definimos todas as
+operações como None. Nossos dicionários de previsão são
+essencialmente as previsões de saída, estamos apenas chamando-a,
+dando a ela o nome de "predicted", e quando estamos exportando, chamamos
+regression_export_outputs, e basicamente o que fazemos é pegar
+essas previsões e gravá-las. Neste caso, não temos nenhuma
+incorporação que queremos gravar, então estamos gravando
+só uma coisa. Se você tivesse várias
+coisas para gravar, novamente, este é apenas um dicionário, então poderíamos basicamente
+descer aqui e escrever "embedding", certo? E digamos que aqui em nossa incorporação
+tivéssemos algum tensor, digamos que esse tensor de ponderação
+não fosse uma incorporação, você iria aqui embaixo e escreveria
+embedding: weight, e é isso. Quando exportamos nosso modelo, vamos exportar duas coisas. Exportaremos a saída de regressão
+e exportaremos uma incorporação. Então, tendo feito isso, podemos escrever uma especificação
+do Estimator, passando no modo, passando no prediction_dict, passando em loss, train_op, nas métricas de avaliação
+e nas coisas que queremos exportar. E é basicamente isso. O resto é essencialmente o mesmo de antes, você basicamente cria seu treinamento,
+suas funções de validação. Estes não precisam ter parâmetros ou
+funções de entrada, é isso que estou fazendo,
+estou apenas dando um get_train, que passa em train.csv
+e treina para o modo. Então nossa função serving_input_fn pega
+TIMESERIES_COL, e diz que estes são todos
+os números de 14 pontos, chamamos train_and_evaluate, e testamos como um módulo autônomo, e também podemos treiná-lo no motor ML, lembrando de mudar o intervalo
+para ser um Qwiklabs.

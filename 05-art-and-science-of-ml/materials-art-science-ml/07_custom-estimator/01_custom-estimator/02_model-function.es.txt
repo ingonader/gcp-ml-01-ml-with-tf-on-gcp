@@ -1,0 +1,59 @@
+Supongamos que lee un artículo académico que habla acerca de un modelo para predecir
+los valores futuros de una serie de tiempo. Incluso incluye el código que usa conceptos extraños como lstm_cell funciones poco comunes de TensorFlow,
+como static_rnn e incluso algunas operaciones
+de bajo nivel de TensorFlow como matmul. Por ahora, no se preocupe
+de lo que significan o cómo funcionan. Veremos los modelos de secuencias
+en el noveno curso de la especialización. Por ahora tratemos esta función como una caja negra. Esencialmente,
+la entrada es una serie de tiempo un arreglo de valores organizados por tiempo. N_INPUTS es la duración
+de esta serie de tiempo. Las predicciones son la salida del modelo. Hay números de N_OUTPUTS 
+en el arreglo de salida. Estos representan
+los valores futuros de la serie de tiempo según lo predice el modelo. Tenemos un modelo que queremos entrenar. Preste atención a algo:
+esto es solo el modelo solo la parte matemática. Aún debemos leer los datos debemos entrenarlo para que evalúe y queremos hacerlo
+de manera distribuida y tolerante a fallas. Queremos agregar la ingeniería. Naturalmente, queremos envolverlo
+en el marco de trabajo del estimador porque así obtendremos un entrenamiento
+distribuido y una predicción escalada. Veamos cómo hacerlo. Lo primero es ver
+la función train_and_evaluate. Note que toma tres parámetros:
+estimator, train_spec, eval_spec. train_spec y eval_spec son los mismos
+que en un estimador prediseñado. Controlan cómo ingresar
+los datos de entrada mediante la función de entrada
+y el conjunto de datos. También controlan la duración
+del entrenamiento la frecuencia de la evaluación
+y el momento de la exportación. La diferencia es el primer parámetro
+entrenar y evaluar el estimador. Antes, hubiéramos creado un estimador mediante un regresor lineal,
+un regresor DNN o un clasificador lineal para crear un estimador prediseñado. Ahora, creamos un estimador de clase base. Note que establecí mi estimador
+en tf.estimators.Estimator. El estimador de clase base
+toma dos parámetros. El segundo parámetro,
+tal como en los estimadores prediseñados es donde guardo los puntos de control,
+el directorio de salida. El primer parámetro
+es la función del modelo. ¿Cómo se ve esta función
+del modelo, myfunc? myfunc es un EstimatorSpec. Es decir, myfunc muestra
+un tf.estimator.EstimatorSpec. Toma tres parámetros:
+atributos, objetivos y modo. Los atributos y los objetivos
+deben ser familiares. Este es un ejemplo de resultado de una función de entrada de entrenamiento. "Features" es un diccionario de atributos. En este caso, tomo ese diccionario y obtengo el tensor correspondiente a INCOL. "Targets" es simplemente la etiqueta. De nuevo, es el resultado
+de la función de entrada de entrenamiento. "Mode" es uno de tres valores:
+train, eval o predict. Pronto veremos cuándo usaríamos este modo. A partir de estos tres valores de entrada la tarea de myfunc es crear
+y mostrar un EstimatorSpec. Hay seis elementos en un EstimatorSpec. El primer modo de parámetro
+simplemente se puede pasar. Lo que obtenga, solo páselo. El segundo parámetro son las predicciones las salidas del modelo. Las predicciones deben ser un diccionario con un nombre clave
+y su tensor correspondiente. Aquí, predictions_dict
+consiste en una sola clave. La denomino predicted y el tensor es la salida
+de model_from_research_paper. Usamos las predicciones
+para crear las salidas exportadas. La idea es que podamos exportar cosas
+más allá de las predicciones. Por ejemplo, podríamos exportar
+una integración entrenada del modelo. Aquí se hace eso. Se especifica una clave
+y el tensor correspondiente. Veamos otras cosas
+que forman el EstimatorSpec. La pérdida, la operación de entrenamiento
+y la operación de métrica de evaluación. La operación de entrenamiento
+se debe ejecutar solo si el modo es train. La métrica de evaluación se calcula
+solo si el modo es eval. Establecí la pérdida para que sea
+el error cuadrático medio entre los objetivos (o etiquetas)
+y las predicciones. La operación de entrenamiento consiste
+en optimizar la función de pérdida en este caso, mediante
+el descenso de gradientes estocástico (SGD). Quizá esto se deba a que en el artículo sobre este modelo
+se usó SGD. La métrica de evaluación es un diccionario que consiste en todas las métricas
+que deseamos evaluar. Aquí, estoy calculando
+el error cuadrático medio. Durante las predicciones no se debe ejecutar
+ninguna de estas operaciones. ¿Por qué? Porque no tendremos una etiqueta. Configuramos todas estas operaciones
+como "None" y ya está. En resumen, llamamos a train_and_evaluate
+con un estimador de clase base pasamos una función
+que muestra un EstimatorSpec. Y listo.
+Tenemos un estimador personalizado.

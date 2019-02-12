@@ -1,0 +1,315 @@
+1
+00:00:00,380 --> 00:00:01,830
+Im vorigen Kurs
+
+2
+00:00:01,830 --> 00:00:05,670
+haben wir Einbettungen aus der Sicht
+von Merkmalsverknüpfungen betrachtet.
+
+3
+00:00:05,670 --> 00:00:09,905
+Aber Einbettungen sind für
+jede kategoriale Spalte nützlich.
+
+4
+00:00:09,905 --> 00:00:14,685
+Betrachten wir Einbettungen aus einem
+anderen Blickwinkel, um das zu ergründen.
+
+5
+00:00:14,685 --> 00:00:15,602
+Nehmen wir an,
+
+6
+00:00:15,602 --> 00:00:19,580
+wir möchten Kunden Filme empfehlen.
+
+7
+00:00:19,580 --> 00:00:25,305
+Unser Unternehmen hat
+1 Million Nutzer und 500.000 Filme.
+
+8
+00:00:25,305 --> 00:00:27,105
+Das ist übrigens ziemlich klein.
+
+9
+00:00:27,105 --> 00:00:32,180
+YouTube und acht weitere Unternehmen
+von Google haben 1 Milliarde Nutzer.
+
+10
+00:00:32,180 --> 00:00:37,730
+Unsere Aufgabe ist es, jedem
+Nutzer fünf bis zehn Filme zu empfehlen.
+
+11
+00:00:37,730 --> 00:00:39,065
+Wir möchten Filme wählen,
+
+12
+00:00:39,065 --> 00:00:42,720
+die sie sehen und hoch bewerten werden.
+
+13
+00:00:42,720 --> 00:00:46,980
+Wir müssen das für 1 Million
+Nutzer tun und für jeden Nutzer
+
+14
+00:00:46,980 --> 00:00:51,985
+fünf bis zehn Filme aus 500.000 wählen.
+
+15
+00:00:51,985 --> 00:00:54,595
+Was ist also unser Input-Dataset?
+
+16
+00:00:54,595 --> 00:00:58,875
+Unser Input-Dataset, wenn wir
+es als eine Matrix darstellen würden,
+
+17
+00:00:58,875 --> 00:01:03,955
+besteht aus 1 Million
+Zeilen mal 500.000 Spalten.
+
+18
+00:01:03,955 --> 00:01:11,755
+Die Zahlen im Schaubild stehen für Filme,
+die Kunden gesehen und bewertet haben.
+
+19
+00:01:11,755 --> 00:01:15,130
+Wir müssen nun den
+Rest der Matrix ermitteln.
+
+20
+00:01:15,130 --> 00:01:16,690
+Zum Lösen dieses Problems
+
+21
+00:01:16,690 --> 00:01:22,265
+brauchen wir eine Methode, um
+festzustellen, welche Filme sich ähneln.
+
+22
+00:01:22,265 --> 00:01:30,525
+Zum Sortieren der Filme nach Ähnlichkeit 
+können wir ein Attribut der Filme nehmen.
+
+23
+00:01:30,525 --> 00:01:35,240
+Wir könnten zum Beispiel das
+Durchschnittsalter der Zuschauer nehmen
+
+24
+00:01:35,240 --> 00:01:37,840
+und die Filme in eine Reihe stellen.
+
+25
+00:01:37,840 --> 00:01:40,515
+Cartoons und Zeichentrickfilme
+
+26
+00:01:40,515 --> 00:01:48,050
+stehen dann links und die eher
+düsteren Filme für Erwachsene rechts.
+
+27
+00:01:48,050 --> 00:01:51,370
+Dann können wir sagen, dass Sie,
+wenn Sie "Die Unglaublichen" mögen,
+
+28
+00:01:51,370 --> 00:01:54,860
+vielleicht ein Kind sind
+oder ein kleines Kind haben,
+
+29
+00:01:54,860 --> 00:01:59,195
+und wir können Ihnen "Shrek" empfehlen.
+
+30
+00:01:59,195 --> 00:02:04,765
+Aber "Blue" und "Memento" sind Kunstfilme
+
+31
+00:02:04,765 --> 00:02:10,410
+und "Krieg der Sterne" und "The
+Dark Knight Rises" sind Kassenschlager.
+
+32
+00:02:10,410 --> 00:02:13,505
+Wenn jemand "Blue" mochte,
+
+33
+00:02:13,505 --> 00:02:19,020
+wird er eher "Memento" als
+einen Film über Batman mögen.
+
+34
+00:02:19,020 --> 00:02:22,930
+Ähnlich wird jemandem,
+der "Krieg der Sterne" mochte,
+
+35
+00:02:22,930 --> 00:02:28,855
+eher "The Dark Knight Rises"
+gefallen als irgendein Kunstfilm.
+
+36
+00:02:28,855 --> 00:02:32,195
+Wie lösen wir dieses Problem?
+
+37
+00:02:32,195 --> 00:02:35,655
+Sollten wir eine zweite
+Dimension hinzufügen?
+
+38
+00:02:35,655 --> 00:02:39,280
+Vielleicht ist die zweite
+Dimension die Gesamtzahl
+
+39
+00:02:39,280 --> 00:02:44,620
+der für diesen Film verkauften Tickets
+bei dessen Veröffentlichung im Kino.
+
+40
+00:02:44,620 --> 00:02:50,595
+Jetzt sehen wir "Krieg der Sterne" und
+"The Dark Knight Rises" nahe beieinander.
+
+41
+00:02:50,595 --> 00:02:53,480
+"Blue" und "Memento"
+sind nahe beieinander.
+
+42
+00:02:53,480 --> 00:02:57,290
+Auch "Shrek" und
+"Die Unglaublichen" sind nahe beieinander.
+
+43
+00:02:57,290 --> 00:03:01,560
+"Harry Potter" liegt zwischen
+den Cartoons und "Krieg der Sterne"
+
+44
+00:03:01,560 --> 00:03:03,110
+und Kinder sehen es sich an,
+
+45
+00:03:03,110 --> 00:03:07,170
+ebenso einige Erwachsene
+und es ist ein Kassenschlager.
+
+46
+00:03:07,170 --> 00:03:10,750
+Wir sehen, wie es uns das Hinzufügen
+der zweiten Dimension vereinfacht hat,
+
+47
+00:03:10,750 --> 00:03:15,435
+Filme, die gute Tipps sind,
+näher zusammenzubringen.
+
+48
+00:03:15,435 --> 00:03:20,540
+So entspricht es
+viel besser unserer Intuition.
+
+49
+00:03:20,540 --> 00:03:24,110
+Müssen wir uns auf zwei
+Dimensionen beschränken? Natürlich nicht.
+
+50
+00:03:24,110 --> 00:03:26,455
+Indem wir noch mehr
+Dimensionen hinzufügen,
+
+51
+00:03:26,455 --> 00:03:30,075
+können wir immer genauere
+Unterscheidungen erzeugen.
+
+52
+00:03:30,075 --> 00:03:33,870
+Und manchmal sind
+diese genaueren Unterscheidungen
+
+53
+00:03:33,870 --> 00:03:37,745
+umsetzbar in bessere Empfehlungen,
+
+54
+00:03:37,745 --> 00:03:39,400
+aber nicht immer.
+
+55
+00:03:39,400 --> 00:03:44,075
+Auch hier besteht die
+Gefahr der Überanpassung.
+
+56
+00:03:44,075 --> 00:03:48,650
+Die Idee ist also ein
+Input mit n Dimensionen.
+
+57
+00:03:48,650 --> 00:03:52,890
+Was ist n im Fall der betrachteten Filme?
+
+58
+00:03:52,890 --> 00:03:54,740
+500.000, richtig?
+
+59
+00:03:54,740 --> 00:03:58,050
+Erinnern wir uns, dass die
+Film-ID ein kategoriales Merkmal ist
+
+60
+00:03:58,050 --> 00:04:00,720
+und wir es normalerweise
+one-hot-codieren würden.
+
+61
+00:04:00,720 --> 00:04:04,260
+Also n = 500.000.
+
+62
+00:04:04,260 --> 00:04:08,770
+Wir haben hier alle Filme in einem
+zweidimensionalen Raum dargestellt,
+
+63
+00:04:08,770 --> 00:04:11,000
+also d = 2.
+
+64
+00:04:11,000 --> 00:04:15,785
+Der Schlüssel ist, dass d
+sehr, sehr viel weniger ist als n
+
+65
+00:04:15,785 --> 00:04:19,440
+und die Annahme ist, dass sich
+das Interesse der Nutzer in Filmen
+
+66
+00:04:19,440 --> 00:04:22,777
+durch d Aspekte darstellen lässt.
+
+67
+00:04:22,777 --> 00:04:25,985
+Wir brauchen nicht viel mehr Aspekte,
+
+68
+00:04:25,985 --> 00:04:28,930
+um das Interesse der
+Nutzer in Filmen darzustellen.

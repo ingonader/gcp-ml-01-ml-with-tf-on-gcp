@@ -1,0 +1,252 @@
+1
+00:00:00,790 --> 00:00:03,280
+Prendre en compte tous les facteurs
+
+2
+00:00:03,280 --> 00:00:08,585
+et trouver la bonne combinaison
+selon les données est une tâche fastidieuse.
+
+3
+00:00:08,715 --> 00:00:10,355
+Prenez les permutations.
+
+4
+00:00:10,455 --> 00:00:14,215
+Vous pouvez les automatiser avec
+des algorithmes de recherche sur grille.
+
+5
+00:00:14,405 --> 00:00:17,750
+Mais, la recherche de la bonne combinaison
+prend beaucoup de temps,
+
+6
+00:00:17,750 --> 00:00:20,640
+et utilise les ressources informatiques
+pendant des heures.
+
+7
+00:00:20,720 --> 00:00:24,840
+La boucle d'entraînement ne pourrait-elle pas
+effectuer le méta-apprentissage
+
+8
+00:00:24,840 --> 00:00:28,680
+des hyperparamètres
+et trouver le bon réglage ?
+
+9
+00:00:30,590 --> 00:00:33,495
+Ne vous inquiétez pas,
+Google Vizier est là pour vous aider.
+
+10
+00:00:33,675 --> 00:00:37,690
+Globalement, vous profiterez du réglage
+automatique des hyperparamètres
+
+11
+00:00:37,690 --> 00:00:40,150
+grâce à l'algorithme Google Vizier,
+
+12
+00:00:40,150 --> 00:00:42,640
+sans avoir besoin
+de connaître les détails.
+
+13
+00:00:42,820 --> 00:00:46,270
+Si vous voulez en savoir plus
+sur la boîte noire,
+
+14
+00:00:46,270 --> 00:00:50,030
+consultez l'étude accessible
+via le lien affiché à l'écran.
+
+15
+00:00:51,070 --> 00:00:54,880
+Le point à retenir est que
+Cloud ML Engine vous simplifie la vie.
+
+16
+00:00:55,100 --> 00:00:59,865
+Vous devez juste configurer votre tâche
+et ML Engine s'occupe du reste.
+
+17
+00:01:00,375 --> 00:01:05,315
+Comment profiter du réglage
+automatique des hyperparamètres ?
+
+18
+00:01:05,755 --> 00:01:08,975
+Vous devez déjà avoir
+utilisé Cloud ML Engine,
+
+19
+00:01:08,975 --> 00:01:12,620
+la plate-forme sans serveur d'entraînement
+et d'hébergement de modèles de ML.
+
+20
+00:01:12,850 --> 00:01:17,155
+ML Engine élimine le processus
+de réglage des hyperparamètres.
+
+21
+00:01:17,425 --> 00:01:20,975
+Pour utiliser ce service,
+il vous suffit de procéder comme suit.
+
+22
+00:01:22,205 --> 00:01:25,710
+Commencez par saisir
+les hyperparamètres à régler
+
+23
+00:01:25,710 --> 00:01:27,765
+sous forme d'argument
+de ligne de commande.
+
+24
+00:01:28,225 --> 00:01:32,725
+Vérifiez ensuite que les itérations
+d'entraînement n'entrent pas en conflit.
+
+25
+00:01:32,805 --> 00:01:37,900
+Enfin, vous devez fournir ces
+hyperparamètres à la tâche d'entraînement.
+
+26
+00:01:39,210 --> 00:01:42,600
+Avant de passer à l'atelier
+pour régler certains hyperparamètres,
+
+27
+00:01:42,600 --> 00:01:46,435
+voyons à quoi ressemble
+ces trois étapes dans le code.
+
+28
+00:01:46,595 --> 00:01:49,785
+La première étape consiste
+à définir les hyperparamètres
+
+29
+00:01:49,785 --> 00:01:53,040
+que vous souhaitez régler en tant
+qu'argument de ligne de commande.
+
+30
+00:01:54,150 --> 00:01:57,070
+Par exemple, j'ai ici
+deux hyperparamètres :
+
+31
+00:01:58,070 --> 00:02:03,140
+le nombre de buckets pour différencier
+la latitude de la longitude,
+
+32
+00:02:03,140 --> 00:02:07,430
+et le nombre d'unités cachées dans
+mon réseau neuronal profond.
+
+33
+00:02:07,640 --> 00:02:12,680
+À l'étape deux, vérifiez que les résultats
+des tests n'entrent pas en conflit.
+
+34
+00:02:13,770 --> 00:02:18,470
+La convention de dénomination des dossiers
+des résultats doit pour cela être adaptée.
+
+35
+00:02:19,720 --> 00:02:24,715
+La valeur d'essai utilisée ici comme suffixe
+permet de rendre unique le nom du résultat.
+
+36
+00:02:24,775 --> 00:02:27,455
+La dernière étape consiste
+à fournir les hyperparamètres
+
+37
+00:02:27,455 --> 00:02:29,500
+lors de l'envoi de la tâche d'entraînement.
+
+38
+00:02:29,520 --> 00:02:30,620
+Voici comment procéder.
+
+39
+00:02:30,700 --> 00:02:34,040
+D'abord, créez un fichier YAML
+comme celui-ci.
+
+40
+00:02:35,220 --> 00:02:37,905
+Ensuite, fournissez le chemin
+d'accès au fichier YAML
+
+41
+00:02:37,905 --> 00:02:43,025
+via des paramètres de ligne de commande
+à la commande Cloud ML Engine.
+
+42
+00:02:44,385 --> 00:02:48,330
+Détaillons maintenant
+le contenu du fichier YAML.
+
+43
+00:02:48,360 --> 00:02:53,590
+Dans cet exemple, on veut réduire la RMSE
+sur l'ensemble de données d'évaluation.
+
+44
+00:02:53,680 --> 00:02:59,940
+On exécute ML Engine pour trouver
+la taille de lots idéale, entre 64 et 512.
+
+45
+00:03:00,040 --> 00:03:03,515
+Il s'agit d'une méthode bien plus efficace
+que la recherche sur grille.
+
+46
+00:03:03,695 --> 00:03:05,660
+Notez le nombre maximum d'essais.
+
+47
+00:03:05,860 --> 00:03:10,075
+ML Engine recherche avec un algorithme
+les catégories prometteuses.
+
+48
+00:03:10,135 --> 00:03:13,300
+Il lance de façon aléatoire
+des essais parallèles,
+
+49
+00:03:13,300 --> 00:03:16,195
+dont le nombre est spécifié
+dans "maxParallelTrials",
+
+50
+00:03:16,195 --> 00:03:17,855
+puis explore les données.
+
+51
+00:03:17,935 --> 00:03:24,085
+ML Engine doit ici systématiquement tester
+des architectures de réseaux de neurones.
+
+52
+00:03:24,525 --> 00:03:27,430
+Mettons maintenant
+cette procédure en pratique.

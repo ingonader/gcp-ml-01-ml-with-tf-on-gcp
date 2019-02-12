@@ -1,0 +1,443 @@
+1
+00:00:00,000 --> 00:00:04,229
+We started out talking about embeddings from movie IDs,
+
+2
+00:00:04,229 --> 00:00:06,630
+these were categorical features.
+
+3
+00:00:06,630 --> 00:00:10,430
+Then we applied the same example to words in an ad,
+
+4
+00:00:10,430 --> 00:00:12,660
+and those were text features.
+
+5
+00:00:12,660 --> 00:00:15,475
+So, what's common between them?
+
+6
+00:00:15,475 --> 00:00:19,725
+Embeddings are not just for categorical or text features,
+
+7
+00:00:19,725 --> 00:00:21,210
+they're about something more.
+
+8
+00:00:21,210 --> 00:00:26,295
+So here, I'm showing you a classic machine learning problem called MNIST.
+
+9
+00:00:26,295 --> 00:00:32,100
+The idea is to recognize handwritten digits from scanned images.
+
+10
+00:00:32,100 --> 00:00:34,170
+So you take each image,
+
+11
+00:00:34,170 --> 00:00:37,825
+and each of the pixels in the image is an input.
+
+12
+00:00:37,825 --> 00:00:41,060
+So, that's what I mean by raw bitmap here.
+
+13
+00:00:41,060 --> 00:00:44,350
+Now, the images are 28 by 28,
+
+14
+00:00:44,350 --> 00:00:49,060
+so there are 784 pixels in that bitmap.
+
+15
+00:00:49,060 --> 00:00:53,800
+So, consider this array of 784 numbers.
+
+16
+00:00:53,800 --> 00:00:58,505
+Most of the array corresponds to blank pixels.
+
+17
+00:00:58,505 --> 00:01:01,730
+Embeddings are useful here also.
+
+18
+00:01:01,730 --> 00:01:08,530
+We take the 784 numbers and we represent them as a sparse tensor.
+
+19
+00:01:08,530 --> 00:01:12,265
+Essentially, we only save the pixels,
+
+20
+00:01:12,265 --> 00:01:14,355
+where the handwritten digit appears.
+
+21
+00:01:14,355 --> 00:01:18,800
+We only save the pixels where the digit is black,
+
+22
+00:01:18,800 --> 00:01:23,160
+and then we pass it through a 3D embedding.
+
+23
+00:01:23,160 --> 00:01:27,075
+We can then have a normal two-layer neural network
+
+24
+00:01:27,075 --> 00:01:30,135
+and we could pass and other features if you wanted,
+
+25
+00:01:30,135 --> 00:01:33,315
+and then we trained the model to predict
+
+26
+00:01:33,315 --> 00:01:37,800
+the actual number in the image based on these labels.
+
+27
+00:01:37,800 --> 00:01:41,010
+Why do I have a logit layer here?
+
+28
+00:01:41,010 --> 00:01:45,315
+These form the output layer of a neural network.
+
+29
+00:01:45,315 --> 00:01:50,630
+A logit is what the output has to be for a classification problem.
+
+30
+00:01:50,630 --> 00:01:55,365
+When we use a linear classifier or a DNN classifier,
+
+31
+00:01:55,365 --> 00:02:00,540
+the output layer is a logit, one single logit.
+
+32
+00:02:00,540 --> 00:02:03,315
+But that's only if you have one output.
+
+33
+00:02:03,315 --> 00:02:05,760
+In the case of the MNIST problem,
+
+34
+00:02:05,760 --> 00:02:08,025
+we have 10 total classes.
+
+35
+00:02:08,025 --> 00:02:10,590
+Essentially the digits zero,
+
+36
+00:02:10,590 --> 00:02:12,285
+one, two up to nine.
+
+37
+00:02:12,285 --> 00:02:15,619
+So that's why I don't have one logit,
+
+38
+00:02:15,619 --> 00:02:17,760
+I have a logit layer.
+
+39
+00:02:17,760 --> 00:02:22,125
+I have one logit for each of the possible digits.
+
+40
+00:02:22,125 --> 00:02:26,750
+When we have a logit layer as opposed to a single logit,
+
+41
+00:02:26,750 --> 00:02:33,440
+there is no guarantee that the total probability of all the digits will equal one.
+
+42
+00:02:33,440 --> 00:02:35,825
+That's the role of the Softmax.
+
+43
+00:02:35,825 --> 00:02:41,640
+It normalizes the individual logits so that the total probability equals to one.
+
+44
+00:02:41,640 --> 00:02:43,425
+But sorry for the digression,
+
+45
+00:02:43,425 --> 00:02:45,650
+we were talking about embeddings.
+
+46
+00:02:45,650 --> 00:02:50,655
+So here, then we trained the model to recognize handwritten digits,
+
+47
+00:02:50,655 --> 00:02:54,780
+each image will be represented by three numbers.
+
+48
+00:02:54,780 --> 00:02:58,055
+Unlike in the categorical case though,
+
+49
+00:02:58,055 --> 00:03:02,560
+the raw bitmap is not one-hot encoded.
+
+50
+00:03:02,560 --> 00:03:05,970
+So, we won't get three numbers for each pixel.
+
+51
+00:03:05,970 --> 00:03:07,980
+Instead the three numbers,
+
+52
+00:03:07,980 --> 00:03:14,265
+correspond to all the pixels that are turned on for a specific image.
+
+53
+00:03:14,265 --> 00:03:18,490
+In tensor board, you can visualize these embeddings,
+
+54
+00:03:18,490 --> 00:03:24,250
+the 3D vector that corresponds to each 784 pixel image.
+
+55
+00:03:24,250 --> 00:03:28,575
+Here, we have assigned different colors to the labels,
+
+56
+00:03:28,575 --> 00:03:32,965
+and as you can see, something cool happens.
+
+57
+00:03:32,965 --> 00:03:40,730
+All the fives clustered together in 3D space as do all the sevens and all the zeros.
+
+58
+00:03:40,730 --> 00:03:45,295
+In other words, the 3D numbers that represent
+
+59
+00:03:45,295 --> 00:03:48,040
+each handwritten image are such that
+
+60
+00:03:48,040 --> 00:03:52,540
+similar items are close to each other in the 3D space.
+
+61
+00:03:52,540 --> 00:03:56,205
+This is true of embeddings for categorical variables,
+
+62
+00:03:56,205 --> 00:03:58,020
+for natural language text,
+
+63
+00:03:58,020 --> 00:04:00,200
+and for raw bitmaps.
+
+64
+00:04:00,200 --> 00:04:02,470
+So what's common to all of them?
+
+65
+00:04:02,470 --> 00:04:04,100
+They're all sparse.
+
+66
+00:04:04,100 --> 00:04:09,310
+If you take a sparse vector encoding and pass it through an embedding column and
+
+67
+00:04:09,310 --> 00:04:15,195
+then use that embedding column as the input to a DNN and then you train the DNN,
+
+68
+00:04:15,195 --> 00:04:20,760
+then the trained embeddings will have this similarity property,
+
+69
+00:04:20,760 --> 00:04:23,005
+as long as of course,
+
+70
+00:04:23,005 --> 00:04:28,325
+you have enough data and your training achieved good accuracy.
+
+71
+00:04:28,325 --> 00:04:33,605
+You can take advantage of this similarity property and other situations.
+
+72
+00:04:33,605 --> 00:04:40,225
+Suppose for example, your task is to find a song similar to this song.
+
+73
+00:04:40,225 --> 00:04:46,160
+What you could do is to create an embedding of the audio associated with songs.
+
+74
+00:04:46,160 --> 00:04:52,005
+Essentially, you take the audio clip and represent it as an array of values.
+
+75
+00:04:52,005 --> 00:04:55,320
+Then, just like with the MNIST image,
+
+76
+00:04:55,320 --> 00:04:59,040
+you take the array and pass it through an embedding layer.
+
+77
+00:04:59,040 --> 00:05:04,100
+You use it to train some reasonable machine learning problem.
+
+78
+00:05:04,100 --> 00:05:08,280
+Perhaps you use the audio signal to train a model to predict
+
+79
+00:05:08,280 --> 00:05:12,530
+the musical genre or the next musical note.
+
+80
+00:05:12,530 --> 00:05:15,425
+Regardless of what you train the model to predict,
+
+81
+00:05:15,425 --> 00:05:21,265
+the embedding will give you a lower dimensional representation of the audio clip.
+
+82
+00:05:21,265 --> 00:05:24,240
+Now to find similar songs,
+
+83
+00:05:24,240 --> 00:05:28,790
+you can simply compute your euclidean distance between two clips,
+
+84
+00:05:28,790 --> 00:05:34,720
+between their embeddings, and this becomes a measure of the similarity of the two songs.
+
+85
+00:05:34,720 --> 00:05:41,360
+You could also use the embedding vectors as inputs to a clustering algorithm.
+
+86
+00:05:41,360 --> 00:05:48,140
+The similarity idea can also be used to jointly embed diverse features.
+
+87
+00:05:48,140 --> 00:05:52,190
+For example, text in two different languages or text and
+
+88
+00:05:52,190 --> 00:05:56,810
+its corresponding audio to define similarity between them.
+
+89
+00:05:56,810 --> 00:05:59,770
+In all the four examples,
+
+90
+00:05:59,770 --> 00:06:02,500
+we used three for the number of embeddings.
+
+91
+00:06:02,500 --> 00:06:05,680
+You can use different numbers of course.
+
+92
+00:06:05,680 --> 00:06:08,555
+But what numbers should you use?
+
+93
+00:06:08,555 --> 00:06:13,985
+The number of embeddings is the hyperparameter to your machine learning model.
+
+94
+00:06:13,985 --> 00:06:16,340
+You will have to try different numbers of
+
+95
+00:06:16,340 --> 00:06:19,795
+embedding dimensions because there is a trade-off here.
+
+96
+00:06:19,795 --> 00:06:23,420
+Higher dimensional embeddings can more
+
+97
+00:06:23,420 --> 00:06:27,520
+accurately represent the relationship between input values.
+
+98
+00:06:27,520 --> 00:06:30,890
+But, the more dimensions you have,
+
+99
+00:06:30,890 --> 00:06:33,495
+the greater the chance of overfitting.
+
+100
+00:06:33,495 --> 00:06:38,405
+Also, the model gets larger and this leads to slower training.
+
+101
+00:06:38,405 --> 00:06:41,600
+So, a good starting point is to go with
+
+102
+00:06:41,600 --> 00:06:46,405
+the fourth root of the total number of possible values.
+
+103
+00:06:46,405 --> 00:06:52,970
+For example, if you're embedding movie IDs and you have 500,000 movies in your catalogue,
+
+104
+00:06:52,970 --> 00:06:57,045
+the total number of possible values is 500,000.
+
+105
+00:06:57,045 --> 00:07:02,745
+So a good starting point would be the fourth root of 500,000.
+
+106
+00:07:02,745 --> 00:07:06,284
+Now the square root of 500,000 is about 700,
+
+107
+00:07:06,284 --> 00:07:09,885
+and the square root of 700 is about 26.
+
+108
+00:07:09,885 --> 00:07:14,385
+So, I would probably start at around 25.
+
+109
+00:07:14,385 --> 00:07:19,040
+If you are doing hyperparameter tuning of the number of embedding dimensions,
+
+110
+00:07:19,040 --> 00:07:24,135
+I would specify a search space of maybe 15 to 35.
+
+111
+00:07:24,135 --> 00:07:26,850
+But that's just a rule of thumb of course.

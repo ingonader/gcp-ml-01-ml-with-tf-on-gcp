@@ -1,0 +1,1107 @@
+1
+00:00:00,000 --> 00:00:03,060
+Now that you have dived a little deeper into neural networks.
+
+2
+00:00:03,060 --> 00:00:04,890
+Let's sort of how we can train them,
+
+3
+00:00:04,890 --> 00:00:07,140
+some common pitfalls and something techniques to help
+
+4
+00:00:07,140 --> 00:00:10,060
+speed up train and provide better journalism.
+
+5
+00:00:10,060 --> 00:00:14,970
+In TensorFlow using the Estimator API, using a DNNRegressor,
+
+6
+00:00:14,970 --> 00:00:17,280
+is very similar to using a LinearRegressor,
+
+7
+00:00:17,280 --> 00:00:19,890
+with only a few parameters for the code that need to be added.
+
+8
+00:00:19,890 --> 00:00:24,210
+We can use momentum based optimizers such as the default Adagrad,
+
+9
+00:00:24,210 --> 00:00:26,600
+or we can try many others such as Adam.
+
+10
+00:00:26,600 --> 00:00:30,150
+Also we now have to add a parameter named hidden units,
+
+11
+00:00:30,150 --> 00:00:31,425
+which is a list.
+
+12
+00:00:31,425 --> 00:00:34,710
+The number of items in this list is the number of hidden layers and
+
+13
+00:00:34,710 --> 00:00:39,390
+the values of each list item is a number of neurons for that particular hidden layer.
+
+14
+00:00:39,390 --> 00:00:42,625
+You will also know there is a new parameter named dropout.
+
+15
+00:00:42,625 --> 00:00:44,430
+We'll cover this and more in a few minutes.
+
+16
+00:00:44,430 --> 00:00:47,580
+But for now this is used to turn individual neurons on and
+
+17
+00:00:47,580 --> 00:00:51,855
+off for each example in hopes of having better generalization performance.
+
+18
+00:00:51,855 --> 00:00:54,140
+Please look at the tentacle documentation for
+
+19
+00:00:54,140 --> 00:00:56,430
+the complete set of parameters you can configure.
+
+20
+00:00:56,430 --> 00:00:59,170
+These are all things that could be
+
+21
+00:00:59,170 --> 00:01:01,360
+hyperparameterized so that you can tune
+
+22
+00:01:01,360 --> 00:01:04,435
+your model to have the best generalization performance.
+
+23
+00:01:04,435 --> 00:01:09,345
+Back propagation is one of the traditional topics in an ML Neural Networks course.
+
+24
+00:01:09,345 --> 00:01:10,760
+But at some level,
+
+25
+00:01:10,760 --> 00:01:13,270
+it's kind of like teaching people how to build a compiler.
+
+26
+00:01:13,270 --> 00:01:15,759
+It's essential for deeper understanding
+
+27
+00:01:15,759 --> 00:01:18,415
+but not necessarily needed for initial understanding.
+
+28
+00:01:18,415 --> 00:01:21,280
+The main thing to know is that there is an efficient algorithm for
+
+29
+00:01:21,280 --> 00:01:25,360
+calculating derivatives and TensorFlow will do it for you automatically.
+
+30
+00:01:25,360 --> 00:01:28,330
+There are some interesting failure cases to talk about though,
+
+31
+00:01:28,330 --> 00:01:29,710
+such as vanishing gradients,
+
+32
+00:01:29,710 --> 00:01:32,190
+exploding gradients and dead layers.
+
+33
+00:01:32,190 --> 00:01:38,109
+First, during the training process especially for deep networks gradients can vanish,
+
+34
+00:01:38,109 --> 00:01:43,610
+each additional layer in your network can successively reduce signal vs noise.
+
+35
+00:01:43,610 --> 00:01:45,490
+An example of this is when using
+
+36
+00:01:45,490 --> 00:01:49,000
+sigmoid or tanh activation functions throughout your hidden layers.
+
+37
+00:01:49,000 --> 00:01:51,530
+As you begin to saturate you end up in
+
+38
+00:01:51,530 --> 00:01:54,715
+the asymptotic regions of the function which begin to plateau,
+
+39
+00:01:54,715 --> 00:01:58,000
+the slope is getting closer and closer to approximately zero.
+
+40
+00:01:58,000 --> 00:02:00,930
+When you go backwards through the network during back prop,
+
+41
+00:02:00,930 --> 00:02:04,150
+your gradient can become smaller and smaller because you're compounding
+
+42
+00:02:04,150 --> 00:02:07,800
+all these small gradients until the gradient completely vanishes.
+
+43
+00:02:07,800 --> 00:02:10,855
+When this happens your weights are no longer updating
+
+44
+00:02:10,855 --> 00:02:13,900
+and therefore training grinds to a halt.
+
+45
+00:02:13,900 --> 00:02:17,065
+A simple way to fix this is to use non saturating
+
+46
+00:02:17,065 --> 00:02:21,900
+non-linear activation functions such as ReLUs, ELUs, et cetera.
+
+47
+00:02:21,900 --> 00:02:26,710
+Next, we can also have the opposite problem where gradients explode,
+
+48
+00:02:26,710 --> 00:02:31,315
+by getting bigger and bigger until our weights gets so large we overflow.
+
+49
+00:02:31,315 --> 00:02:34,295
+Even starting with relatively small gradients,
+
+50
+00:02:34,295 --> 00:02:36,025
+such as a value of two,
+
+51
+00:02:36,025 --> 00:02:39,230
+can compound and become quite large over many layers.
+
+52
+00:02:39,230 --> 00:02:43,280
+This is especially true for sequence models with long sequence lengths,
+
+53
+00:02:43,280 --> 00:02:46,400
+learning rates can be a factor here because in our weight updates,
+
+54
+00:02:46,400 --> 00:02:48,965
+remember we multiplied the gradient
+
+55
+00:02:48,965 --> 00:02:51,830
+with the learning rate and then subtract that from the current weight.
+
+56
+00:02:51,830 --> 00:02:55,700
+So, even if the grading isn't that big with a learning rate greater than
+
+57
+00:02:55,700 --> 00:03:00,725
+one it can now become too big and cause problems for us and our network.
+
+58
+00:03:00,725 --> 00:03:04,010
+There are many techniques to try and minimize this.
+
+59
+00:03:04,010 --> 00:03:06,905
+Such as weight organization and smaller batch sizes.
+
+60
+00:03:06,905 --> 00:03:09,380
+Another technique is grading and clipping,
+
+61
+00:03:09,380 --> 00:03:12,694
+where we check to see if the normal the gradient exceeds some threshold,
+
+62
+00:03:12,694 --> 00:03:15,855
+which you can hyperparameter or tune and if so,
+
+63
+00:03:15,855 --> 00:03:19,965
+then you can re-scale the gradient components to fit below your maximum.
+
+64
+00:03:19,965 --> 00:03:21,910
+Another useful technique is
+
+65
+00:03:21,910 --> 00:03:26,105
+batch normalization which solves the problem called internal co-variance shift.
+
+66
+00:03:26,105 --> 00:03:28,990
+It's piece of training because gradients flow better.
+
+67
+00:03:28,990 --> 00:03:33,295
+It also can often use a higher learning rate and might be able to get rid of dropout
+
+68
+00:03:33,295 --> 00:03:37,960
+which slows competition down to its own kind of regularization due to mini batch noise.
+
+69
+00:03:37,960 --> 00:03:39,975
+To perform batch normalization,
+
+70
+00:03:39,975 --> 00:03:42,035
+first find the mini batch mean,
+
+71
+00:03:42,035 --> 00:03:44,455
+then the mini batch's standard deviation,
+
+72
+00:03:44,455 --> 00:03:46,840
+then normalize the inputs to that node,
+
+73
+00:03:46,840 --> 00:03:52,570
+then scale and shift by gamma times X plus beta,
+
+74
+00:03:52,570 --> 00:03:55,360
+where gamma and beta are learned parameters.
+
+75
+00:03:55,360 --> 00:03:59,290
+If gamma equals the square root variance of X and beta equals the mean of X,
+
+76
+00:03:59,290 --> 00:04:01,810
+the original activation function is restored.
+
+77
+00:04:01,810 --> 00:04:06,145
+This way, you can control the range of your inputs so that they don't become too large.
+
+78
+00:04:06,145 --> 00:04:09,190
+Ideally, you would like to keep your gradients as close to one
+
+79
+00:04:09,190 --> 00:04:12,100
+as possible especially for very deep nets.
+
+80
+00:04:12,100 --> 00:04:15,910
+So you don't compound and eventually underflow or overflow.
+
+81
+00:04:15,910 --> 00:04:20,750
+Another common failure mode of grading descent is that real layers can die.
+
+82
+00:04:20,750 --> 00:04:23,830
+Fortunately, using TensorBoard we can monitor
+
+83
+00:04:23,830 --> 00:04:28,000
+the sun rays during and after training of our Neural Network models.
+
+84
+00:04:28,000 --> 00:04:33,085
+If using a candy and an estimator is automatically a scalar summary said for
+
+85
+00:04:33,085 --> 00:04:35,470
+each GN hidden layer showing the fraction of
+
+86
+00:04:35,470 --> 00:04:38,410
+zero values of the activations for that layer.
+
+87
+00:04:38,410 --> 00:04:41,530
+ReLUs stop working when their inputs keep them in
+
+88
+00:04:41,530 --> 00:04:44,870
+the negative domain giving their activation a value of zero.
+
+89
+00:04:44,870 --> 00:04:49,149
+It doesn't end there because then their contribution in the next layer is zero,
+
+90
+00:04:49,149 --> 00:04:51,250
+because despite what the weights are connecting it to
+
+91
+00:04:51,250 --> 00:04:55,340
+the next neurons it's activation is zero thus the input becomes zero.
+
+92
+00:04:55,340 --> 00:04:59,020
+A bunch of zeros come into the next neuron doesn't help it get into
+
+93
+00:04:59,020 --> 00:05:01,570
+the positive domain and then these neurons activations
+
+94
+00:05:01,570 --> 00:05:04,960
+become zero too and the problem continues to cascade.
+
+95
+00:05:04,960 --> 00:05:08,495
+Then we perform back prop and their gradients are zero,
+
+96
+00:05:08,495 --> 00:05:12,460
+so we don't have the weights and thus training halts. Not good.
+
+97
+00:05:12,460 --> 00:05:17,265
+We've talked about using Leaky or parametric ReLUs or even the slower ELUs,
+
+98
+00:05:17,265 --> 00:05:19,865
+but you can also lower your learning rates to help stop
+
+99
+00:05:19,865 --> 00:05:22,375
+ReLu layers from not activating and not staying.
+
+100
+00:05:22,375 --> 00:05:26,860
+A large gradient possibly due to too high of a learning rate can update
+
+101
+00:05:26,860 --> 00:05:31,735
+the weights in such a way that no data point will ever activate it again.
+
+102
+00:05:31,735 --> 00:05:33,639
+Since the gradient is zero,
+
+103
+00:05:33,639 --> 00:05:35,450
+we won't update the weight to something more
+
+104
+00:05:35,450 --> 00:05:38,980
+reasonable so the problem will persist indefinitely.
+
+105
+00:05:38,980 --> 00:05:41,290
+Let's have a quick intuition check,
+
+106
+00:05:41,290 --> 00:05:42,610
+what will happen to our model,
+
+107
+00:05:42,610 --> 00:05:45,325
+if we have two useful signals both
+
+108
+00:05:45,325 --> 00:05:49,210
+independently correlated with the label but there are at different scales?
+
+109
+00:05:49,210 --> 00:05:51,280
+For example, we might have
+
+110
+00:05:51,280 --> 00:05:56,285
+a soup deliciousness predictor where features represent qualities of giving ingredients.
+
+111
+00:05:56,285 --> 00:05:59,260
+If the feature for chicken stock is measured in liters,
+
+112
+00:05:59,260 --> 00:06:02,160
+but beef stock is measured in milliliters then
+
+113
+00:06:02,160 --> 00:06:05,955
+stochastic grading the scent might have a hard time converging well.
+
+114
+00:06:05,955 --> 00:06:10,240
+Since the optimal learning rate for these two dimensions is likely different.
+
+115
+00:06:10,240 --> 00:06:13,940
+Having your data clean and in a computationally helpful range
+
+116
+00:06:13,940 --> 00:06:17,820
+has many benefits during the training process of your machine learning models.
+
+117
+00:06:17,820 --> 00:06:20,755
+Having feature value small and specifically zero
+
+118
+00:06:20,755 --> 00:06:24,185
+centered helps speed up training and avoids numerical issues.
+
+119
+00:06:24,185 --> 00:06:27,935
+This is why batch normalization was helpful with exploding gradients
+
+120
+00:06:27,935 --> 00:06:31,910
+because it made sure to keep not just the initial input features,
+
+121
+00:06:31,910 --> 00:06:34,490
+but all of the intermediate features within
+
+122
+00:06:34,490 --> 00:06:37,950
+a healthy range as not to cause problems with our layers.
+
+123
+00:06:37,950 --> 00:06:41,280
+This also helps us avoid the NaN trap,
+
+124
+00:06:41,280 --> 00:06:44,790
+where our model can blow up if values exceed numerical precision range.
+
+125
+00:06:44,790 --> 00:06:47,010
+A combination of features scaling and/or
+
+126
+00:06:47,010 --> 00:06:50,685
+lower learning rate can help us avoid this nasty pitfall.
+
+127
+00:06:50,685 --> 00:06:55,050
+Also, avoiding outlier values helps with generalization.
+
+128
+00:06:55,050 --> 00:06:58,130
+So detecting these perhaps the anomaly detection and
+
+129
+00:06:58,130 --> 00:07:02,365
+pre-processing them out of the data set before training can be a great help.
+
+130
+00:07:02,365 --> 00:07:06,950
+Remember that there is no one best one size fits all method for all data.
+
+131
+00:07:06,950 --> 00:07:11,045
+It is possible to think of good and bad cases for each of these approaches.
+
+132
+00:07:11,045 --> 00:07:14,850
+There are many methods to make our future value scale to small numbers.
+
+133
+00:07:14,850 --> 00:07:20,420
+First, there is linear scaling where you first find the minimum and maximum of the data.
+
+134
+00:07:20,420 --> 00:07:21,910
+Then for each value,
+
+135
+00:07:21,910 --> 00:07:23,960
+we subtract the minimum and then divide by
+
+136
+00:07:23,960 --> 00:07:26,855
+the difference of the maximum and minimum or range.
+
+137
+00:07:26,855 --> 00:07:29,510
+This will make all values between zero and one,
+
+138
+00:07:29,510 --> 00:07:31,820
+where zero will be the minimum and one will be the maximum.
+
+139
+00:07:31,820 --> 00:07:34,695
+This is also called normalization.
+
+140
+00:07:34,695 --> 00:07:37,845
+There is also hard caping or clipping,
+
+141
+00:07:37,845 --> 00:07:40,575
+where you set a minimum value and a maximum value.
+
+142
+00:07:40,575 --> 00:07:43,880
+For instance, if my minimum value is
+
+143
+00:07:43,880 --> 00:07:47,540
+allowed to be negative seven and my maximum value is 10,
+
+144
+00:07:47,540 --> 00:07:50,575
+then all values less than negative seven will become negative seven,
+
+145
+00:07:50,575 --> 00:07:53,430
+and all values greater than 10 will become 10.
+
+146
+00:07:53,430 --> 00:07:58,730
+Log scaling is another method where you apply the logarithm function to your input data.
+
+147
+00:07:58,730 --> 00:08:01,600
+This is great when your data has huge range and you want to
+
+148
+00:08:01,600 --> 00:08:05,140
+condense it down to be more about just the magnitude of the value.
+
+149
+00:08:05,140 --> 00:08:10,625
+Another method which we just talked about with batch normalization is standardization.
+
+150
+00:08:10,625 --> 00:08:14,120
+Here, you calculate the mean of your data and the standard deviation.
+
+151
+00:08:14,120 --> 00:08:15,750
+Once you have these two values,
+
+152
+00:08:15,750 --> 00:08:19,245
+you subtract the mean from every data point and then divide with the standard deviation.
+
+153
+00:08:19,245 --> 00:08:22,260
+This way, your data becomes zero centered because your new
+
+154
+00:08:22,260 --> 00:08:25,910
+mean become zero and your new standard deviation becomes one.
+
+155
+00:08:25,910 --> 00:08:29,335
+Of course, there are many other ways to scale your data.
+
+156
+00:08:29,335 --> 00:08:33,925
+Which of these is good advice if my model is experiencing exploding gradients?
+
+157
+00:08:33,925 --> 00:08:36,220
+The correct answer is A, B,
+
+158
+00:08:36,220 --> 00:08:41,245
+C and D. The problem often occurs when weights get too large,
+
+159
+00:08:41,245 --> 00:08:44,015
+which can happen when our learning rate gets too high.
+
+160
+00:08:44,015 --> 00:08:46,610
+This can lead to a whole bunch of other issues like
+
+161
+00:08:46,610 --> 00:08:50,225
+numerical stability, divergence and [inaudible].
+
+162
+00:08:50,225 --> 00:08:56,290
+Therefore, lowering the learning rate to find that nice Goldilocks zone is a great idea.
+
+163
+00:08:56,290 --> 00:08:58,840
+Weight authorization can also help in
+
+164
+00:08:58,840 --> 00:09:02,170
+this respect because there will be a penalty for very large weights,
+
+165
+00:09:02,170 --> 00:09:04,660
+which should make it harder for gradients to explode.
+
+166
+00:09:04,660 --> 00:09:07,690
+Also, applying gradient clipping can ensure
+
+167
+00:09:07,690 --> 00:09:10,770
+that gradients never get beyond a certain threshold that we set.
+
+168
+00:09:10,770 --> 00:09:14,595
+This can help mitigate somewhat a higher learning rate.
+
+169
+00:09:14,595 --> 00:09:16,390
+However, with a high enough rate,
+
+170
+00:09:16,390 --> 00:09:19,070
+it can still drive the weights to very high values.
+
+171
+00:09:19,070 --> 00:09:21,140
+Batch normalization can help
+
+172
+00:09:21,140 --> 00:09:24,975
+the intermediate inputs at each layer stay within a tighter range,
+
+173
+00:09:24,975 --> 00:09:27,770
+so there will be a much reduced chance of weights growing out
+
+174
+00:09:27,770 --> 00:09:30,910
+of range for a small extra computational cost.
+
+175
+00:09:30,910 --> 00:09:33,385
+There are many methods to treat exploding gradients,
+
+176
+00:09:33,385 --> 00:09:35,210
+so you don't need a doctor to help.
+
+177
+00:09:35,210 --> 00:09:38,860
+All you have to do is experiment with these tools and see what works best.
+
+178
+00:09:38,860 --> 00:09:41,845
+Another form of regularization that helps build
+
+179
+00:09:41,845 --> 00:09:45,770
+more generalizable models is adding dropout layers to our neural networks.
+
+180
+00:09:45,770 --> 00:09:49,800
+To use dropout, I add a wrapper to one or more of my layers.
+
+181
+00:09:49,800 --> 00:09:53,390
+Intenser flow, the parameter you pass is called dropout,
+
+182
+00:09:53,390 --> 00:09:55,410
+which is the probability of dropping a neuron
+
+183
+00:09:55,410 --> 00:09:58,860
+temporarily from the network rather than keeping it turned on.
+
+184
+00:09:58,860 --> 00:10:01,575
+You want to be careful when setting this number because
+
+185
+00:10:01,575 --> 00:10:04,110
+for some other functions that have a dropout mechanism,
+
+186
+00:10:04,110 --> 00:10:06,295
+they use keep probability,
+
+187
+00:10:06,295 --> 00:10:07,620
+which is a complement to drop
+
+188
+00:10:07,620 --> 00:10:11,130
+probability or the probability of keeping a neuron on or off.
+
+189
+00:10:11,130 --> 00:10:14,530
+You wouldn't want to intend only a 10 percent probability to drop,
+
+190
+00:10:14,530 --> 00:10:17,640
+but actually are now only keeping 10 percent in your nodes randomly;
+
+191
+00:10:17,640 --> 00:10:20,485
+that's a very unintentional sparse model.
+
+192
+00:10:20,485 --> 00:10:23,035
+So, how does dropout work under the hood?
+
+193
+00:10:23,035 --> 00:10:26,045
+Let's say we set a dropout probability of 20 percent.
+
+194
+00:10:26,045 --> 00:10:28,895
+This means that for each forward parsed to the network,
+
+195
+00:10:28,895 --> 00:10:32,340
+the algorithm will roll the dice for each neuron and the dropout wrapped layer.
+
+196
+00:10:32,340 --> 00:10:36,660
+If the dice roll is greater than 20 and the neuron will stay active in the network,
+
+197
+00:10:36,660 --> 00:10:38,920
+[inaudible] roll will be dropped,
+
+198
+00:10:38,920 --> 00:10:41,920
+and output a value of zero regardless of its inputs
+
+199
+00:10:41,920 --> 00:10:45,305
+effectively not adding negatively or positively to the network.
+
+200
+00:10:45,305 --> 00:10:49,730
+Since adding zero changes nothing and simulates to the neuron doesn't exist.
+
+201
+00:10:49,730 --> 00:10:54,145
+To make up for the fact that each node is only kept some percentage of the time,
+
+202
+00:10:54,145 --> 00:10:56,685
+the activations are scaled by one over
+
+203
+00:10:56,685 --> 00:10:59,440
+one minus the dropout probability or in other words,
+
+204
+00:10:59,440 --> 00:11:02,070
+one over the keep probability during
+
+205
+00:11:02,070 --> 00:11:05,790
+training so that it is the expectation value of the activation.
+
+206
+00:11:05,790 --> 00:11:08,900
+When not doing training without having to change any code,
+
+207
+00:11:08,900 --> 00:11:11,900
+the wrapper effectively disappears and the neurons in
+
+208
+00:11:11,900 --> 00:11:13,815
+the formally dropout wrapper layer are
+
+209
+00:11:13,815 --> 00:11:16,685
+always on and use whatever weights were trained by the model.
+
+210
+00:11:16,685 --> 00:11:21,580
+The awesome idea of dropout is that it is essentially creating an ensemble model,
+
+211
+00:11:21,580 --> 00:11:24,530
+because for each forward pass there is effectively
+
+212
+00:11:24,530 --> 00:11:27,990
+a different network that the mini batch of data is seen.
+
+213
+00:11:27,990 --> 00:11:30,740
+When all this is added together in expectation,
+
+214
+00:11:30,740 --> 00:11:33,690
+it is like I would train two to the n neural networks,
+
+215
+00:11:33,690 --> 00:11:36,005
+where n is the number of dropout neurons,
+
+216
+00:11:36,005 --> 00:11:38,735
+and have them working in an ensemble similar to
+
+217
+00:11:38,735 --> 00:11:41,805
+a bunch of decision trees working together in a random forest.
+
+218
+00:11:41,805 --> 00:11:44,050
+There is also the added effect of spreading out
+
+219
+00:11:44,050 --> 00:11:46,440
+the data distribution of the entire network,
+
+220
+00:11:46,440 --> 00:11:48,030
+rather than having the majority of
+
+221
+00:11:48,030 --> 00:11:50,870
+the signal favor going along one branch of the network.
+
+222
+00:11:50,870 --> 00:11:54,850
+I usually imagine this as diverting water in a river or stream with multiple shunts or
+
+223
+00:11:54,850 --> 00:11:59,190
+dams to ensure all waterways eventually get some water and don't dry up.
+
+224
+00:11:59,190 --> 00:12:02,440
+This way, your network uses more of its capacity since
+
+225
+00:12:02,440 --> 00:12:06,140
+the signal more evenly flows across the entire network and thus,
+
+226
+00:12:06,140 --> 00:12:08,615
+you'll have better training and generalization without
+
+227
+00:12:08,615 --> 00:12:12,105
+large neuron dependencies being developed in popular paths.
+
+228
+00:12:12,105 --> 00:12:15,900
+Typical values for dropout are between 20 to 50 percent.
+
+229
+00:12:15,900 --> 00:12:17,555
+If you go much lower than that,
+
+230
+00:12:17,555 --> 00:12:21,205
+there is not much effect from the network since you are rarely dropping any nodes.
+
+231
+00:12:21,205 --> 00:12:22,530
+If you go higher,
+
+232
+00:12:22,530 --> 00:12:25,035
+then training doesn't happen as well since the network becomes
+
+233
+00:12:25,035 --> 00:12:28,200
+too sparse to have the capacity to learn without distribution.
+
+234
+00:12:28,200 --> 00:12:31,400
+You also want to use this on larger networks because there is
+
+235
+00:12:31,400 --> 00:12:35,045
+more capacity for the model to learn independent representations.
+
+236
+00:12:35,045 --> 00:12:38,310
+In other words, there are more possible pass for the network to try.
+
+237
+00:12:38,310 --> 00:12:39,980
+The more you drop out,
+
+238
+00:12:39,980 --> 00:12:41,440
+therefore the less you keep,
+
+239
+00:12:41,440 --> 00:12:43,290
+the stronger the regularization.
+
+240
+00:12:43,290 --> 00:12:45,720
+If you set your dropout probability to one,
+
+241
+00:12:45,720 --> 00:12:47,810
+then you keep nothing and every neuron in
+
+242
+00:12:47,810 --> 00:12:50,380
+the wrapped dropout layer is effectively removed from the neuron,
+
+243
+00:12:50,380 --> 00:12:52,600
+and outputs a zero activation.
+
+244
+00:12:52,600 --> 00:12:54,760
+During backprop, this means that
+
+245
+00:12:54,760 --> 00:12:58,015
+the weights will not update and this layer will learn nothing.
+
+246
+00:12:58,015 --> 00:13:00,035
+If you set your probably to zero,
+
+247
+00:13:00,035 --> 00:13:03,455
+then all neurons are kept active and there is no dropout regularization.
+
+248
+00:13:03,455 --> 00:13:06,460
+It's pretty much just a more computationally costly way to
+
+249
+00:13:06,460 --> 00:13:09,750
+not have a dropout wrapper at all because you still have to roll the dice.
+
+250
+00:13:09,750 --> 00:13:13,505
+Of course, somewhere between zero and one is where you want to be.
+
+251
+00:13:13,505 --> 00:13:17,065
+Specifically with dropout probabilities between 10 to 50 percent,
+
+252
+00:13:17,065 --> 00:13:20,635
+where a good baseline is usually starting at 20 percent and then adding more is needed.
+
+253
+00:13:20,635 --> 00:13:22,875
+There is no one-size-fits-all dropout
+
+254
+00:13:22,875 --> 00:13:25,785
+probability for all models and all data distributions.
+
+255
+00:13:25,785 --> 00:13:28,300
+Dropout acts as another form of blank.
+
+256
+00:13:28,300 --> 00:13:33,155
+It forces data to flow down blank paths so that there is a more even spread.
+
+257
+00:13:33,155 --> 00:13:35,650
+It also simulates blank learning.
+
+258
+00:13:35,650 --> 00:13:39,290
+Don't forget to scale the dropout activations by the inverse of the blank.
+
+259
+00:13:39,290 --> 00:13:41,830
+We remove dropout during blank.
+
+260
+00:13:41,830 --> 00:13:45,355
+The correct answer is E. Dropout act is
+
+261
+00:13:45,355 --> 00:13:48,765
+another form of regularization so the model can generalize better.
+
+262
+00:13:48,765 --> 00:13:52,160
+It does this turning off nodes with a dropout probability,
+
+263
+00:13:52,160 --> 00:13:56,545
+which forces data to flow down multiple paths so that there is a more even spread.
+
+264
+00:13:56,545 --> 00:13:58,605
+Otherwise, data and the activations
+
+265
+00:13:58,605 --> 00:14:01,425
+associated with it can learn to take preferential paths,
+
+266
+00:14:01,425 --> 00:14:03,595
+which might lead to under training of the network as
+
+267
+00:14:03,595 --> 00:14:06,775
+a whole and provide poor performance on new data.
+
+268
+00:14:06,775 --> 00:14:11,305
+Dropout also simulates ensemble learning by creating an aggregate of
+
+269
+00:14:11,305 --> 00:14:15,760
+two to the n models due to the random turning off of nodes for each forward pass,
+
+270
+00:14:15,760 --> 00:14:17,795
+where n is the number of dropout nodes.
+
+271
+00:14:17,795 --> 00:14:19,740
+Each batch sees a different network,
+
+272
+00:14:19,740 --> 00:14:24,120
+so the model can't overfit on the entire training set much like a random forest.
+
+273
+00:14:24,120 --> 00:14:28,105
+Don't forget to scale the dropout activations by the inverse of the keep probability,
+
+274
+00:14:28,105 --> 00:14:30,365
+which is one minus the dropout probability.
+
+275
+00:14:30,365 --> 00:14:34,195
+We do this with the expectation on the node will be scaled correctly during training,
+
+276
+00:14:34,195 --> 00:14:36,340
+since for inference, it will always be on;
+
+277
+00:14:36,340 --> 00:14:39,020
+since we remove dropout during inference.

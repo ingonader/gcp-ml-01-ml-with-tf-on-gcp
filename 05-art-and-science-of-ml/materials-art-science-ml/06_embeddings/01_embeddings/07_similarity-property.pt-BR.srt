@@ -1,0 +1,534 @@
+1
+00:00:00,170 --> 00:00:04,229
+Começamos falando sobre
+incorporações de códigos de filmes,
+
+2
+00:00:04,229 --> 00:00:06,630
+recursos categóricos.
+
+3
+00:00:06,630 --> 00:00:10,430
+Depois, aplicamos o mesmo
+exemplo às palavras de um anúncio,
+
+4
+00:00:10,430 --> 00:00:12,660
+recursos de texto.
+
+5
+00:00:12,660 --> 00:00:15,475
+O que há em comum?
+
+6
+00:00:16,075 --> 00:00:19,725
+As incorporações não são apenas
+para recursos categóricos ou de texto,
+
+7
+00:00:19,725 --> 00:00:21,210
+são algo maior.
+
+8
+00:00:21,210 --> 00:00:26,295
+Aqui, estou mostrando um problema
+de ML clássico chamado MNIST.
+
+9
+00:00:26,295 --> 00:00:32,100
+A ideia é reconhecer dígitos escritos
+à mão em imagens digitalizadas.
+
+10
+00:00:32,100 --> 00:00:34,170
+Você vê cada imagem,
+
+11
+00:00:34,170 --> 00:00:37,825
+e cada pixel da imagem
+é uma entrada.
+
+12
+00:00:37,825 --> 00:00:41,060
+É o que eu quero dizer
+com bitmap bruto
+
+13
+00:00:41,060 --> 00:00:44,350
+Estas imagens são 28 x 28,
+
+14
+00:00:44,350 --> 00:00:49,260
+então há 784 pixels em cada.
+
+15
+00:00:49,660 --> 00:00:53,800
+Considere esta matriz
+de 784 números.
+
+16
+00:00:54,200 --> 00:00:58,505
+A maior parte corresponde
+a pixels em branco.
+
+17
+00:00:58,825 --> 00:01:01,730
+As incorporações
+também são úteis aqui.
+
+18
+00:01:02,290 --> 00:01:08,530
+Nós representamos os 784 números
+em um tensor esparso.
+
+19
+00:01:08,870 --> 00:01:12,265
+Essencialmente,
+só salvamos os pixels
+
+20
+00:01:12,265 --> 00:01:14,355
+em que o dígito aparece.
+
+21
+00:01:14,355 --> 00:01:18,800
+Só salvamos os pixels
+em que o dígito é preto
+
+22
+00:01:18,800 --> 00:01:23,160
+e transmitimos por uma
+incorporação em 3D.
+
+23
+00:01:23,160 --> 00:01:27,075
+Agora, temos uma rede neural
+comum de duas camadas
+
+24
+00:01:27,075 --> 00:01:30,135
+e podemos transmitir
+outros recursos, se quisermos.
+
+25
+00:01:30,135 --> 00:01:33,315
+e treinamos o
+modelo para prever
+
+26
+00:01:33,315 --> 00:01:37,800
+o número real na imagem
+com base nesses rótulos.
+
+27
+00:01:38,230 --> 00:01:40,930
+Por que tenho
+uma camada logit?
+
+28
+00:01:41,490 --> 00:01:45,315
+Ela é a camada de saída
+de uma rede neural.
+
+29
+00:01:45,315 --> 00:01:50,630
+A saída de um problema de
+classificação precisa ser um logit.
+
+30
+00:01:50,630 --> 00:01:55,365
+Quando usamos um
+classificador linear ou DNN,
+
+31
+00:01:55,365 --> 00:02:00,940
+a camada de saída
+é um único logit.
+
+32
+00:02:00,940 --> 00:02:03,315
+Mas só se você
+tiver uma saída.
+
+33
+00:02:03,315 --> 00:02:05,760
+No caso do problema MNIST,
+
+34
+00:02:05,760 --> 00:02:08,025
+temos 10 classes no total.
+
+35
+00:02:08,025 --> 00:02:10,590
+Essencialmente,
+os dígitos zero,
+
+36
+00:02:10,590 --> 00:02:12,285
+um, dois, até nove.
+
+37
+00:02:12,285 --> 00:02:15,619
+Por isso não tenho um logit,
+
+38
+00:02:15,619 --> 00:02:17,760
+tenho uma camada logit.
+
+39
+00:02:17,760 --> 00:02:22,125
+Tenho um logit para cada
+um dos possíveis dígitos.
+
+40
+00:02:22,495 --> 00:02:26,750
+Quando temos uma camada logit,
+em vez de um logit único,
+
+41
+00:02:26,750 --> 00:02:33,440
+não há garantia que a probabilidade
+total de todos os dígitos será igual a 1.
+
+42
+00:02:33,440 --> 00:02:35,825
+Esse é o papel do Softmax.
+
+43
+00:02:35,825 --> 00:02:41,640
+Ele normaliza os logits individuais
+para que a probabilidade total seja 1.
+
+44
+00:02:41,640 --> 00:02:43,425
+Desculpe a tangente,
+
+45
+00:02:43,425 --> 00:02:45,650
+falávamos de incorporações.
+
+46
+00:02:45,650 --> 00:02:50,655
+Aqui, quando treinamos o modelo
+para reconhecer dígitos escritos à mão,
+
+47
+00:02:50,655 --> 00:02:54,990
+cada imagem será
+representada por três números.
+
+48
+00:02:55,390 --> 00:02:58,055
+Ao contrário do
+caso categórico,
+
+49
+00:02:58,055 --> 00:03:02,560
+o bitmap bruto
+não é codificado.
+
+50
+00:03:02,900 --> 00:03:05,970
+Assim, não recebemos
+três números por pixel.
+
+51
+00:03:05,970 --> 00:03:07,980
+Em vez disso, os três números
+
+52
+00:03:07,980 --> 00:03:13,925
+correspondem a todos os pixels
+ativados em uma imagem.
+
+53
+00:03:14,715 --> 00:03:18,490
+No TensorBoard, você pode
+ver essas incorporações,
+
+54
+00:03:18,490 --> 00:03:24,250
+o vetor 3D que corresponde
+a cada imagem de 784 pixels.
+
+55
+00:03:24,500 --> 00:03:28,575
+Aqui, atribuímos cores
+diferentes aos rótulos
+
+56
+00:03:28,575 --> 00:03:32,965
+e algo interessante acontece.
+
+57
+00:03:32,965 --> 00:03:40,730
+Os 5s se agruparam no espaço 3D,
+assim como os 7s e os 0s.
+
+58
+00:03:41,000 --> 00:03:45,295
+Ou seja, os números
+em 3D que representam
+
+59
+00:03:45,295 --> 00:03:47,340
+cada imagem escrita à mão
+
+60
+00:03:47,340 --> 00:03:52,540
+fazem com que itens semelhantes
+fiquem próximos no espaço 3D.
+
+61
+00:03:52,850 --> 00:03:56,205
+Isso ocorre em incorporações
+de variáveis categóricas,
+
+62
+00:03:56,205 --> 00:03:58,020
+texto de linguagem natural
+
+63
+00:03:58,020 --> 00:04:00,200
+e para bitmaps brutos.
+
+64
+00:04:00,200 --> 00:04:02,470
+O que há em comum entre eles?
+
+65
+00:04:02,470 --> 00:04:04,100
+São todos esparsos.
+
+66
+00:04:04,100 --> 00:04:07,460
+Se você transmitir uma
+codificação de vetor esparso
+
+67
+00:04:07,460 --> 00:04:09,310
+por uma coluna de incorporação
+
+68
+00:04:09,310 --> 00:04:15,195
+e usar essa coluna como
+entrada de um DNN e treiná-lo,
+
+69
+00:04:15,195 --> 00:04:20,760
+as incorporações treinadas
+terão esta propriedade.
+
+70
+00:04:20,760 --> 00:04:23,005
+Claro, desde que
+
+71
+00:04:23,005 --> 00:04:28,325
+você tenha dados o bastante para
+uma boa precisão no treinamento.
+
+72
+00:04:28,765 --> 00:04:33,595
+Você pode usar essa propriedade
+em outras situações.
+
+73
+00:04:33,985 --> 00:04:40,225
+Suponha, por exemplo, que a tarefa
+é encontrar músicas parecidas.
+
+74
+00:04:40,435 --> 00:04:46,160
+Você pode criar uma incorporação
+do áudio associado às músicas.
+
+75
+00:04:46,420 --> 00:04:52,005
+Essencialmente, você representa o clipe
+de áudio como uma matriz de valores.
+
+76
+00:04:52,005 --> 00:04:55,320
+Depois, assim como
+a imagem MNIST,
+
+77
+00:04:55,320 --> 00:04:59,040
+você transmite a matriz por
+uma camada de incorporação.
+
+78
+00:04:59,040 --> 00:05:04,100
+Use-a para treinar um problema
+de aprendizado de máquina.
+
+79
+00:05:04,100 --> 00:05:08,280
+Talvez você use o sinal de áudio
+para treinar um modelo para prever
+
+80
+00:05:08,280 --> 00:05:12,530
+o gênero musical
+ou a próxima nota.
+
+81
+00:05:12,530 --> 00:05:15,425
+Independentemente
+da previsão do modelo,
+
+82
+00:05:15,425 --> 00:05:21,265
+a incorporação oferecerá uma representação
+do clipe em uma dimensão menor.
+
+83
+00:05:21,585 --> 00:05:24,240
+Para encontrar
+músicas semelhantes,
+
+84
+00:05:24,240 --> 00:05:28,790
+você pode computar a distância
+euclidiana entre os clipes,
+
+85
+00:05:28,790 --> 00:05:34,910
+entre as incorporações,
+para medir a similaridade.
+
+86
+00:05:35,940 --> 00:05:38,190
+Você também pode usar
+os vetores da incorporação
+
+87
+00:05:38,190 --> 00:05:41,240
+como entradas de
+um algoritmo de cluster.
+
+88
+00:05:41,720 --> 00:05:48,140
+A ideia da similaridade também pode
+ser usada para incorporar vários recursos.
+
+89
+00:05:48,140 --> 00:05:51,140
+Por exemplo, texto
+em línguas diferentes
+
+90
+00:05:51,140 --> 00:05:56,810
+ou texto e o áudio correspondente
+para definir a similaridade.
+
+91
+00:05:57,170 --> 00:05:59,770
+Nos quatro exemplos,
+
+92
+00:05:59,770 --> 00:06:02,500
+usamos três para o
+número de incorporações.
+
+93
+00:06:03,400 --> 00:06:05,680
+Você pode usar
+números diferentes, claro.
+
+94
+00:06:05,680 --> 00:06:08,145
+Mas que números usar?
+
+95
+00:06:09,135 --> 00:06:13,985
+O número de incorporações é o
+hiperparâmetro do seu modelo de ML.
+
+96
+00:06:13,985 --> 00:06:16,340
+Você precisa testar
+diferentes números
+
+97
+00:06:16,340 --> 00:06:19,795
+de dimensões de incorporação,
+porque há uma compensação.
+
+98
+00:06:19,795 --> 00:06:22,730
+Incorporações com
+mais dimensões
+
+99
+00:06:22,730 --> 00:06:27,520
+podem representar a relação entre
+os valores com maior precisão.
+
+100
+00:06:27,520 --> 00:06:30,890
+Mas, quanto mais dimensões,
+
+101
+00:06:30,890 --> 00:06:33,495
+maiores as chances
+de sobreajuste.
+
+102
+00:06:33,495 --> 00:06:38,405
+Além disso, o modelo fica maior
+e o treinamento mais lento.
+
+103
+00:06:38,405 --> 00:06:41,600
+Um bom ponto
+de partida é seguir
+
+104
+00:06:41,600 --> 00:06:46,405
+a raiz quarta do número
+total de valores possíveis.
+
+105
+00:06:46,405 --> 00:06:52,970
+Por exemplo, ao incorporar códigos
+de 500 mil filmes do seu catálogo,
+
+106
+00:06:52,970 --> 00:06:57,045
+o número total de
+valores possíveis é 500 mil.
+
+107
+00:06:57,045 --> 00:07:02,745
+Um bom ponto de partida é
+usar a raiz quarta de 500 mil.
+
+108
+00:07:02,745 --> 00:07:06,284
+A raiz quadrada de 500 mil
+é em torno de 700,
+
+109
+00:07:06,284 --> 00:07:09,885
+e a raiz de 700 é cerca de 26.
+
+110
+00:07:09,885 --> 00:07:14,385
+Eu começaria com 25.
+
+111
+00:07:14,695 --> 00:07:19,040
+Se você estiver ajustando o
+hiperparâmetro do número de dimensões,
+
+112
+00:07:19,040 --> 00:07:24,135
+eu especificaria um
+intervalo de 15 a 35.
+
+113
+00:07:24,135 --> 00:07:26,850
+Mas essa é apenas
+uma orientação.

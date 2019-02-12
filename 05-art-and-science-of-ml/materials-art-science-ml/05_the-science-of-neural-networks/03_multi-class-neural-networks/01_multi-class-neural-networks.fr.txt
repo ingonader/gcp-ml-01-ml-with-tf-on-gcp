@@ -1,0 +1,167 @@
+Maintenant que nous avons découvert
+les réseaux de neurones, et comment les entraîner efficacement
+et optimiser leur généralisation, nous allons aborder les réseaux
+de neurones à classes multiples et les problèmes de classification
+à classes multiples. Voici à nouveau la fonction sigmoïde,
+qui nous fournit des probabilités calibrées. Elle sert à la régression logistique
+pour les problèmes de classe binaire, où on trouve la probabilité
+dans la classe positive, et où 1 moins la probabilité
+correspond à la classe négative. Que faire alors lorsque nous avons
+plus de deux classes ? Les problèmes de classes multiples
+ne manquent pas. Prenons en exemple les types de billets
+d'une salle de concert, et un modèle qui servirait
+à recommander le type de place. Imaginons quatre types de place :
+orchestre, corbeille, balcon ou loge. Si je veux obtenir une probabilité
+pour chaque type de place, je ne peux pas me contenter d'utiliser
+une classification binaire normale, car j'ai trop de classes. Si orchestre est ma classe positive,
+qu'en est-il de la classe négative ? Que faire des classes restantes ? Il est possible de convertir ce problème
+de classification à classes multiples en plusieurs problèmes
+de classification binaire. On appliquerait alors la méthode dite
+"un contre tous" ou "un contre reste". Dans ce cas, il faut créer des itérations
+pour chaque classe. Pour chaque itération, cette classe
+représente la classe positive, et les classes restantes sont regroupées
+dans la classe négative. Je peux prédire ainsi la probabilité
+d'appartenir à la classe positive, ou inversement, la probabilité
+de ne pas appartenir aux autres classes. Il est important de générer une sortie
+pour notre probabilité, et pas pour l'étiquette de classe seulement,
+afin de ne pas créer d'ambiguïtés si plusieurs classes sont prédites
+pour un seul échantillon. Une fois que chaque modèle a été entraîné
+pour la classe considérée comme positive, nous passons à l'étape la plus utile
+du ML : les prédictions. Pour faire une prédiction,
+vous envoyez l'échantillon de prédiction à chacun des modèles
+de classification binaire entraînés. Le modèle qui génère la probabilité
+ou le score de confiance maximal est alors sélectionné
+comme étant la classe prédite. Bien que cette approche semble idéale,
+elle présente quelques problèmes. Tout d'abord, il se peut
+que l'échelle des valeurs de confiance diffère pour chacun des modèles
+de classification binaire, ce qui a une incidence
+sur la prédiction globale. Cependant, même si ce n'est pas le cas,
+chaque modèle de classification binaire voit des données très déséquilibrées,
+étant donné que pour chacun d'entre eux la classe négative est la somme
+de toutes les autres classes, outre la classe actuellement considérée
+comme positive. Pour résoudre ce déséquilibre,
+il serait possible d'utiliser la méthode "un à un".
+Au lieu d'un modèle pour chaque classe, on a un modèle pour chaque combinaison
+binaire des classes. En présence de n classes,
+cela reviendrait à avoir n multiplié par n moins 1,
+divisé par 2 modèles d'ordre n au carré. Pour les quatre classes de notre exemple,
+on obtient ainsi six modèles, mais si j'ai 1 000 classes
+comme pour la compétition ImageNet, j'aurai alors 499 500 modèles ! Chaque modèle génère 1 vote
+pour son étiquette prédite, plus 1 ou plus 0 pour l'étiquette
+de classe positive de chaque modèle. Tous les votes sont totalisés, et
+la classe qui en a le plus l'emporte. Toutefois, cela ne règle pas
+le problème d'ambiguïté, car d'après la distribution d'entrée,
+on pourrait obtenir le même nombre de votes
+pour différentes classes. Est-il possible d'effectuer
+une classification à classes multiples sans ces inconvénients majeurs ? On pourrait utiliser l'approche
+"un contre tous" avec les réseaux de neurones, où, plutôt que d'avoir plusieurs modèles
+pour chaque classe, on a un modèle avec une sortie unique
+pour chaque classe possible. On entraîne ce modèle avec un signal
+"ma classe" contre "toutes les autres classes" pour chaque exemple qu'il voit. On doit donc créer nos étiquettes avec soin. Plutôt que de n'avoir
+qu'un 1 pour la vraie classe, on aura une longueur de vecteur
+égale au nombre de classes, où la correspondance aux vraies classes
+est représentée par 1, et le reste est représenté par 0. Vous récompensez ainsi le neurone à fonction
+sigmoïde correspondant à la vraie classe. Si la valeur est trop près de 1, cela pénalise
+les autres neurones à fonction sigmoïde si eux aussi se rapprochent de 1. L'erreur plus importante est calculée
+par rétropropagation via le réseau pour mettre à jour les pondérations.
+Cela pourrait poser problème en présence de millions de classes,
+et de millions de neurones de sortie. On aurait des millions de calculs de perte,
+suivis de millions d'erreurs calculées dans une rétropropagation via le réseau,
+ce qui serait très coûteux. Y a-t-il une meilleure solution ? Il suffit d'ajouter une contrainte
+pour que la somme des sorties soit égale à 1, ce qui permet d'interpréter
+la sortie comme une probabilité. Cette fonction de normalisation
+s'appelle softmax. Pour chaque nœud, on calcule
+l'exponentielle de w multiplié par x plus b, qu'on divise par la somme totale des nœuds. Ainsi, tous les nœuds
+ont une valeur comprise entre 0 et 1, et la probabilité totale
+est égale à 1, comme il se doit. Pour chaque exemple, vous obtenez
+une probabilité normalisée pour chaque classe, où vous pouvez prendre cet argmax
+pour trouver la classe, la probabilité supérieure
+pour l'étiquette prédite. Dans TensorFlow,
+on calcule les fonctions logit dans la couche finale
+en appliquant la matrice de w et x, le nœud biaisé étant ajouté au résultat
+le cas échéant. On obtient ainsi la forme du Tensor, à savoir
+la taille du lot pour le nombre de classes. Nos étiquettes ont un encodage one-hot
+comme mentionné, où la vraie classe a la valeur 1 et les autres classes
+ont la valeur 0 pour chaque exemple. La forme du Tensor est donc égale
+à la taille du lot pour le nombre de classes. Comme on utilise
+sotfmax_cross_entropy_with_logits dans TensorFlow,
+les étiquettes peuvent être floues. Autrement dit, bien que les classes
+soient mutuellement exclusives, les probabilités ne doivent pas
+l'être nécessairement. Si vous avez trois classes, par exemple,
+le mini-lot pourrait avoir la valeur 1 et ses étiquettes 
+les valeurs 0,15, 0,8 et 0,05. Elles n'ont pas un encodage one-hot,
+mais elles représentent une distribution de probabilités valide,
+car leur somme est égale à 1. Enfin, on compare nos fonctions logit
+à nos étiquettes à l'aide de
+softmax_cross_entroy_with_logits. La forme du Tensor est la taille du lot. TensorFlow 1.5 et ses versions ultérieures
+proposent une deuxième version de la fonction, tandis que la première version est obsolète. Pour obtenir la perte moyenne
+de ce mini-lot, il suffit d'utiliser reduce_mean pour la sortie. Pour plus de facilité, TensorFlow
+compte une autre fonction appelée sparse_softmax_cross_entropy_with_logits. Dans ce cas, on n'a pas besoin
+de l'encodage one-hot, ni de l'encodage flou des étiquettes, et on se contente de fournir l'index de la vraie classe entre 0
+et le nombre de classes moins 1. Cela signifie que pour nos étiquettes,
+la forme du Tensor est la taille de lot. La sortie de la fonction ne change pas :
+la forme du Tensor est la taille de lot. J'applique toujours reduce_mean au Tensor
+pour obtenir la perte moyenne du mini-lot. N'oubliez pas qu'on utilise
+ces deux fonctions softmax uniquement si les classes
+sont mutuellement exclusives. Par exemple, l'image 1 ne représente
+qu'un chien et l'image 2 qu'un chat. Cependant, qu'en est-il si l'image 3
+représente un chien et un chat ? Pour résoudre mon problème de ML,
+j'ai besoin de le savoir. Avec softmax, j'obtiens une probabilité
+pour chaque cas, mais j'utilise argmax en tant qu'étiquette. Selon l'image associée à mon modèle,
+je pourrais avoir une étiquette "chien", ou une étiquette "chat". Ce n'est pas satisfaisant, car je veux savoir
+si les deux figurent sur l'image, et s'il y a d'autres classes présentes. Il s'agit d'un problème de classification
+à plusieurs libellés et à classes multiples. Dans ce cas, je veux que la probabilité
+de chaque classe soit comprise entre 0 et 1. Heureusement, c'est précisément
+le but de la fonction de TensorFlow nommée sigmoid_cross_entropy_with_logits, qui renvoie un Tensor de type
+taille de lot par nombre de classes. On doit évaluer chaque nœud de sortie
+pour chaque exemple. Évidemment, chaque nœud de sortie
+inclut également les pondérations associées. Un seul pas pour un réseau
+avec 100 nœuds de sortie correspond à 100 pas pour un réseau
+avec un seul nœud de sortie. La mise à l'échelle est coûteuse et difficile
+pour un très grand nombre de classes. On doit parvenir à se rapprocher
+de la fonction softmax, afin de réduire les coûts de calcul dans le cas
+d'un très grand nombre de classes. Heureusement, il existe
+des versions se rapprochant de softmax. L'échantillonnage de candidats
+calcule une prédiction pour toutes les étiquettes positives,
+mais plutôt que d'en faire autant pour toutes les étiquettes négatives,
+il utilise un échantillon aléatoire. Le calcul est donc plus efficace. Le nombre d'étiquettes négatives
+échantillonnées est un hyperparamètre clé dans un modèle
+d'échantillonnage de candidats. Il est toujours,
+pour des raisons évidentes, sous-estimé. Dans TensorFlow, on peut utiliser
+la fonction sampled_softmax_loss. Pour se rapprocher de softmax, on peut aussi utiliser l'estimation
+contraste/bruit (NCE). Elle permet de se rapprocher
+du dénominateur de softmax, qui contient la somme
+de toutes les exponentielles des fonctions logit, en modélisant
+plutôt la distribution des sorties. C'est un moyen moins coûteux
+en termes de calculs d'obtenir la perte de softmax,
+sans avoir à évaluer chaque classe dans la somme du dénominateur.
+L'échantillonnage des candidats est plus intuitif
+et ne nécessite pas un modèle bien conçu. L'estimation contraste/bruit
+requière un modèle bien conçu, car elle repose sur la modélisation
+de la distribution des sorties. En général, on utilise ces fonctions
+durant l'apprentissage, mais durant l'évaluation et l'inférence,
+pour plus de précision, on utilise plutôt softmax complet.
+Pour cela, veillez à changer la stratégie de partitionnement par défaut, mode, par div,
+pour que les pertes soient cohérentes entre l'apprentissage, l'évaluation
+et la prédiction. Pour la sortie de notre classification,
+si on dispose d'étiquettes et de probabilités mutuellement exclusives,
+on devrait utiliser [blanc]. Si les étiquettes
+sont mutuellement exclusives, mais que les probabilités ne le sont pas,
+nous devrions utiliser [blanc]. Si nos étiquettes ne sont pas
+mutuellement exclusives, nous devrions utiliser [blanc]. La bonne réponse est A. Pour la sortie de notre classification,
+si on dispose d'étiquettes et de probabilités mutuellement exclusives, on devrait utiliser
+softmax_cross_entropy_with_logits_v2. Cela signifie qu'il n'y a
+qu'une vraie classe pour chaque exemple et que les étiquettes sont floues
+pour la vraie classe. L'encodage one-hot
+n'est pas requis pour la vraie classe, et les étiquettes peuvent avoir des valeurs
+comprises entre 0 et 1 pour chaque classe, pourvu que leur somme soit égale à 1. Si les étiquettes sont mutuellement
+exclusives, mais pas les probabilités, nous devrions utiliser
+sparse_softmax_cross_entropy_with_logits. Cette fonction n'autorise pas
+les étiquettes floues, mais aide à réduire la taille des données du modèle,
+car les étiquettes compressées constituent l'index de la classe vraie,
+plutôt qu'un vecteur du nombre de classes pour chaque exemple.
+Si nos étiquettes ne sont pas mutuellement exclusives, on devrait utiliser
+sigmoid_cross_entropy_with_logits. Ainsi, on obtient une probabilité pour chaque classe possible,
+ce qui nous donne les scores de confiance pour chaque classe représentée en sortie,
+telle qu'une image à classes multiples, ou si on veut vérifier
+l'existence de chaque classe.

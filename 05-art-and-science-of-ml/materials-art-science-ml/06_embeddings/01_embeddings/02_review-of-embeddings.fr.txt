@@ -1,0 +1,59 @@
+Vous avez rapidement vu les représentations
+vectorielles continues (RVC) avec les croisements de caractéristiques
+dans le cours précédent, mais les RVC sont partout
+dans le machine learning moderne et ne se limitent pas
+aux croisements de caractéristiques, ni même aux données structurées. Vous les utiliserez en effet un peu dans les modèles d'images
+et les modèles de textes. Je récapitule rapidement ce que vous savez
+des représentations vectorielles continues. Il a été question de la possibilité
+de création d'un modèle de ML permettant d'établir
+des prédictions concernant le trafic (par exemple, le temps avant que le véhicule
+suivant n'arrive à une intersection). Il y avait un certain nombre
+d'entrées dans notre modèle, et notamment des entrées catégorielles
+(heure du jour et jour de la semaine) dont il a plus particulièrement été question. Il a été dit que le modèle de machine learning
+serait nettement amélioré si, au lieu de traiter l'heure du jour
+et le jour de la semaine comme des entrées indépendantes, nous les concaténions pour créer
+un croisement de caractéristiques. Il a été dit que, si nous procédions
+à ce croisement de caractéristiques en utilisant un grand nombre
+de buckets de hachage, chacun des buckets
+ne contiendrait très probablement qu'une seule combinaison heure/jour. C'est à ce stade que les représentations
+vectorielles continues sont intervenues. Il a été indiqué que, plutôt que
+de procéder à un encodage one-hot du croisement de caractéristiques et de l'utiliser tel quel, il était possible de le transmettre
+à une couche dense, puis d'entraîner le modèle pour qu'il prédise
+le trafic comme précédemment. Cette couche dense, représentée
+par les nœuds jaune et vert, crée une représentation vectorielle continue. Les représentations vectorielles continues
+sont des nombres réels, car elles sont une somme pondérée
+des valeurs du croisement de caractéristiques. Il est important de réaliser que les pondérations de la couche
+de la représentation vectorielle continue (les nœuds jaune et vert) sont apprises à partir des données. Il se trouve que le fait d'entraîner
+ces pondérations avec un ensemble de données pour résoudre un problème utile a un effet positif. Le croisement de caractéristiques
+jour/heure a 168 valeurs uniques, mais nous en forçons le traitement pour qu'il soit simplement
+représenté par deux nombres réels. Le modèle apprend donc à représenter
+le croisement de caractéristiques dans un espace dimensionnel réduit. Il a été suggéré que le nœud vert
+pourrait avoir plutôt tendance à capturer le trafic de piétons, et le nœud jaune plutôt le trafic automobile. Mais ce que capturent exactement
+ces deux dimensions est sans importance. La chose importante est que toutes les informations relatives
+à l'heure du jour et au jour de la semaine ayant trait au trafic au niveau
+des intersections d'une ville sont converties pour ne plus
+consister qu'en deux nombres. Si l'on fait cela pour un ensemble de données
+suffisamment grand et de qualité suffisante, ces nombres ont une propriété très utile : les heures similaires en termes de trafic
+sont mises en correspondance avec des nombres réels proches, tandis que les heures
+différentes en termes de trafic sont mises en correspondance
+avec des nombres réels différents. Il a ensuite été question du mode de création
+d'une RVC dans TensorFlow. Pour créer une RVC, utilisez la méthode embedding_column
+dans tf.feature_column et transmettez la colonne catégorielle
+que vous voulez représenter. Cela fonctionne avec
+n'importe quelle colonne catégorielle, et pas seulement
+avec un croisement de caractéristiques. Vous pouvez utiliser embedding_column
+pour n'importe quelle colonne catégorielle. Enfin, nous avons vu rapidement comment vous pourriez récupérer
+les RVC apprises pour un problème afin de les appliquer à un problème
+de machine learning similaire. Vous pourriez avoir appris à représenter l'heure du jour et le jour
+de la semaine avec deux nombres réels en entraînant votre modèle
+avec des données de trafic de Londres. Afin de gagner du temps, vous pourriez
+utiliser les mêmes pondérations pour accélérer
+la création du modèle de Francfort. Vous pourriez peut-être même utiliser
+la RVC apprise avec le problème de trafic pour prédire le niveau d'audience
+d'une émission de télévision. L'idée est que le trafic
+et le niveau d'audience dépendent l'un comme l'autre
+d'un même facteur latent : les habitants de la ville sont-ils
+en déplacement, chez eux ou sur leur lieu de travail ? L'apprentissage par transfert
+peut fonctionner avec des problèmes
+apparemment très différents dès lors que ceux-ci ont
+les mêmes facteurs latents.

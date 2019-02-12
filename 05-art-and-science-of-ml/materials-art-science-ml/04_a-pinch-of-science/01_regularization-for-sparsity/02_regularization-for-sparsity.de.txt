@@ -1,0 +1,81 @@
+Lassen Sie uns zuerst darüber sprechen,
+wie wir Regularisierung nutzen können, um dünner besetzte,
+einfachere Modelle zu erhalten. Zuvor haben wir die 
+L2-Regularisierung kennengelernt, die die Summe der Terme
+der quadrierten Parametergewichte zur letzten Funktion hinzufügt. Damit konnten wir
+Gewichte klein halten, Stabilität und eine
+eindeutige Lösung erhalten, aber das Modell kann dadurch
+unnötig groß und komplex bleiben, weil alle Merkmale unabhängig
+ihrer Gewichte bewahrt bleiben. Die sogenannte L1-Regularisierung fügt 
+stattdessen die Summe des Absolutwerts der Parametergewichte
+zur letzten Funktion hinzu und drängt so die Gewichte von
+wenig prognostischen Merkmalen auf null. Dies wirkt wie ein 
+integrierter Selektor von Merkmalen, der alle schlechten Merkmale löscht
+und nur die stärksten im Modell behält. Dieses dünnbesetzte 
+Modell hat viele Vorteile. Zum einen werden weniger 
+Koeffizienten gespeichert und geladen, so werden der benötigte Speicherplatz und die Modellgröße verkleinert, was gerade bei 
+eingebetteten Modellen wichtig ist. Mit weniger Merkmalen gibt es außerdem viel weniger Mult Ads, womit nicht
+nur die Geschwindigkeit des Trainings, sondern vor allem die 
+der Vorhersagen erhöht wird. Viele Modelle für maschinelles 
+Lernen haben ohnehin genügend Merkmale. Sagen wir etwa, ich habe Daten, die die Zeiten von Bestellungen enthalten. Unser erstes Bestellmodell würde wahrscheinlich 
+sieben Merkmale für die Wochentage und 24 Merkmale für 
+die Stunden des Tages enthalten, plus womöglich viele mehr. Also ergeben allein Wochentage
+und Stunden des Tages schon 31 Eingaben. Und was, wenn wir jetzt
+die Effekte zweiter Ordnung des Wochentags mit der Stunde des Tages kreuzen? Damit gibt es nochmal 168 weitere Eingaben zusätzlich zu unseren 31, plus weiteren, und damit einen
+Gesamtbetrag von 200 Merkmalen, nur für dieses eine Datum-Zeit-Feld, plus
+den weiteren Merkmalen, die wir nutzen. Wenn wir dies mit einer One-Hot-
+Kodierung für den US-Bundesstaat kreuzen, liegt das dreifache kartesische Produkt bei 8.400 Merkmalen, wobei viele sehr
+dünnbesetzt sein werden, voller Nullen. Damit wird hoffentlich deutlich,
+warum eine eingebaute Selektion von Merkmalen durch 
+L1-Regularisierung großartig sein kann. Welche Strategien können wir nutzen,
+um Merkmalskoeffizienten zu entfernen, die nicht nützlich sind, 
+vielleicht außer L1-Regularisierung? Wir könnten einfach zählen lassen, welche Merkmale
+andere Werte als null haben. Die L0-Norm ist schlicht die Anzahl
+der Gewichte, die nicht null betragen, und danach zu optimieren ist ein NP-hartes,
+nichtkonvexes Optimierungsproblem. Dieses Diagramm zeigt einen möglichen
+nichtkonvexen Optimierungsfehler. Wie Sie sehen können,
+gibt es viele lokale Höhen und Tiefen und dies ist nur ein
+simples eindimensionales Beispiel. Man müsste also sehr viele Startpunkte
+mit Gradientenabstieg untersuchen, womit die vollständige Lösung
+zu einem NP-harten Problem wird. Glücklicherweise ist die
+L1-Norm genau wie die L2-Norm konvex und regt zudem
+die Datendichte im Modell an. In dieser Abbildung sind die Wahrscheinlichkeitsverteilungen
+der L1- und L2-Normen gezeichnet. Beachten Sie bei der L2-Norm
+den viel weicheren Höhepunkt bei null, wodurch die Beträge
+der Gewichte näher bei null liegen. Allerdings gleicht die L1-Norm eher
+einer Spitze, die auf null zentriert ist. So liegt viel mehr der Wahrscheinlichkeit
+genau bei null als mit der L2-Norm. Es gibt eine unendliche Anzahl an Normen,
+die durch die P-Norm verallgemeinert sind. Weitere Normen enthalten
+die schon behandelte L0-Norm, also die Anzahl der Werte
+eines Vektors, die nicht null sind, und die L-unendlich-Norm, also der maximale Absolutwert
+jedes Werts in einem Vektor. In der Praxis
+liefert zwar normalerweise die L2-Norm besser verallgemeinerbare 
+Modelle als die L1-Norm, allerdings landen wir mit L2 statt L1 bei
+viel komplexeren, gewichtigeren Modellen. Schuld daran sind die oftmals starken
+Korrelationen zwischen Eigenschaften, da L1 eine auswählt 
+und die andere wegwirft, während L2 beide Eigenschaften behält
+und die Beträge ihrer Gewichte klein hält. Mit L1 kann man also bei kleineren, aber
+weniger prognostischen Modellen landen. Kann man irgendwie
+das beste aus zwei Welten bekommen? Das elastische Netz ist einfach eine lineare Kombination
+der L1- und L2-Regularisierungsstrafen. So erhält man die Vorteile der Dichte in 
+schwachen, prognostischen Eigenschaften und behält zugleich
+mittel- bis hochwertige Eigenschaften mit kleineren Gewichten
+für eine gute Verallgemeinerung. Der einzige Kompromiss ist, dass es jetzt zwei statt 
+eines Hyperparameters gibt, abgestimmt auf die zwei 
+Lambda-Regularisierungsparameter. Wozu neigt L1-Regularisierung
+bei den Parametergewichten von schwach prognostischen 
+Eigenschaften eines Modells? Die korrekte Antwort ist: "Nullwerte besitzen". Wann immer wir 
+Regularisierungsverfahren anwenden, fügen wir einen 
+Strafterm zu der letzten Funktion, oder generell der 
+objektiven Funktion hinzu, damit sie nicht
+unsere Entscheidungsvariablen oder Parametergewichte überoptimiert. Wir wählen die
+Strafterme anhand von Vorwissen, Funktion, Form et cetera. Es wurde gezeigt,
+dass L1-Regularisierung im Modell Dichte erzeugt und, durch ihre
+Wahrscheinlichkeitsverteilung, mit einer hohen Spitze bei null, werden die meisten Gewichte,
+außer stark prognostische, von ihren nicht regulierten
+Werten zu null verschoben. L2-Regularisierung wird
+für kleine Beträge verwendet und sein Negativ würde
+für große Beträge verwendet werden, was beides falsch ist. Mit ausschließlich positiven Werten
+würde man dem Optimierungsproblem weitere Beschränkungen hinzufügen und alle Entscheidungsvariablen
+müssten mehr als null betragen, was auch keine
+L1-Regularisierung ist.

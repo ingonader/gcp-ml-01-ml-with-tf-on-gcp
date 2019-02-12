@@ -1,0 +1,251 @@
+Analizamos las redes neuronales
+en cursos y módulos anteriores. Ahora, exploremos la ciencia
+que hay detrás de ellas. Vimos que las combinaciones de atributos
+fueron útiles para un problema como este. Si x1 es la dimensión horizontal y x2 es la dimensión vertical no había una combinación lineal de los
+atributos para describir su distribución. Recién cuando usamos ingeniería
+de atributos y combinamos x1 y x2 para obtener el atributo nuevo x3,
+que es igual a x1 por x2 pudimos describir la distribución
+de nuestros datos. Así que, la ingeniería de atributos manual puede resolver todos los problemas
+no lineales con facilidad. ¿Verdad? Lamentablemente, en el mundo real casi no hay distribuciones que
+se puedan describir tan fácil. La ingeniería de atributos, aún con años
+de expertos trabajando en ella es limitada. Por ejemplo, ¿qué combinaciones de
+atributos modelarían esta distribución? Podrían ser dos círculos uno sobre otro
+o, quizás, dos espirales pero, en cualquier caso,
+es muy complicado. En este ejemplo, se ve la utilidad
+de las redes neuronales. Pueden crear con algoritmos combinaciones
+y transformaciones de atributos complejas. Puede pensar en espacios aún
+más complicados que este espiral que requieran del uso de redes neuronales. Las redes neuronales puede ser
+una alternativa del cruzamiento de atributos con la combinación de los atributos. Cuando diseñamos la arquitectura
+de nuestra red neuronal queríamos estructurar el modelo
+para que los atributos se combinen. Luego, queremos agregar otra capa
+para combinar las combinaciones y otra capa para combinar
+esas combinaciones, etcétera. ¿Cómo seleccionamos
+las combinaciones correctas de nuestros atributos
+y las combinaciones de ellas? Hace que el modelo las aprenda
+a través del entrenamiento. Esta es la intuición básica
+de las redes neuronales. Este enfoque no es necesariamente mejor
+que las combinaciones de atributos pero es una alternativa flexible
+que funciona en muchos casos. Esta es una representación gráfica
+de un modelo lineal. Tenemos tres entradas: x1, x2 y x3, que son los círculos azules. Se combinan con peso atribuido
+para producir un resultado. A menudo, hay un término adicional
+de la ordenada al origen pero, para simplificar,
+no se muestra aquí. Este es un modelo lineal, ya que
+la forma de y es igual a w1 x x1 + w2 x x2 + w3 x x3. Agreguemos una capa oculta
+de nuestra red de nodos y perímetros. La capa de entrada tiene tres nodos
+y la capa oculta también tiene tres pero ahora son nodos ocultos. Como esta capa está totalmente conectada hay 3 x 3 perímetros o nueve pesos. Este es un modelo no lineal
+que podemos usar para resolver nuestros problemas
+no lineales, ¿verdad? Lamentablemente, no. Analicémoslo. La entrada en el primer nodo oculto
+es la suma ponderada de w1 x x1 + w4 x x2 + w7 x x3. La entrada en el segundo nodo oculto
+es la suma ponderada de w2 x x1 + w5 x x2, + w8 x x3. La entrada en el tercer nodo oculto
+es la suma ponderada de w3 x 1x + w6 x x2, + w9 x x3. Si combinamos todo en el nodo de salida obtenemos w10 x h1 + w12 x h2 + w12 x h3. Recuerde que h1 h2 y h3 son solo combinaciones lineales
+de los atributos de entrada. Por lo tanto, si lo expandimos tenemos un conjunto complejo de constantes
+de pesos multiplicadas por cada valor de entrada: x1, x2 y x3. Podemos sustituir cada par de pesos
+con un peso nuevo. ¿Le resulta familiar? Es exactamente
+el mismo modelo lineal de antes aunque agregamos una capa
+oculta de neuronas. ¿Qué sucedió? ¿Qué pasa si agregamos otra capa oculta? Lamentablemente, también se contrae
+en una sola matriz de peso multiplicada por cada una
+de las tres entradas. Es el mismo modelo lineal. Podríamos repetir este proceso
+y obtendríamos el mismo resultado pero con un costo de computación mayor
+para el entrenamiento o la predicción para una arquitectura más complicada
+que la necesaria. Desde la perspectiva de la álgebra lineal está multiplicando varias matrices
+en una cadena. En este pequeño ejemplo primero multipliqué una matriz de 3 x 3 la transposición de la matriz de peso
+entre la entrada y la primera capa oculta por el vector de entrada de 3 x 1,
+cuyo resultado es el vector de 3 x 1 que son los valores de cada neurona oculta
+en la primera capa oculta. Definí los valores de la neurona
+de las segundas capas ocultas multipliqué la transposición de su matriz de peso de 3 x 3,
+que conecta la capa oculta 1 con la capa oculta 2 en el vector
+resultante de la capa oculta 1. Como puede ver,
+las dos matrices de peso 3 x 3 se puede combinar en una matriz de 3 x 3 si primero se calcula el producto de la matriz de la izquierda
+o de la derecha. Se obtiene la misma forma para h2 el vector de valor de la neurona
+de la segunda capa oculta. Y en la última capa entre la capa oculta 2
+y la capa de salida necesito multiplicar los pasos anteriores por la transposición de la matriz
+de peso entre las últimas dos capas. Aunque cuando prealimenta
+a través de una red neuronal realiza una multiplicación de matrices
+de derecha a izquierda si la aplica de izquierda a derecha,
+nuestra cadena grande de complicaciones de matriz se contrae
+en un vector de tres valores. Si entrena este modelo en un caso
+de regresión lineal simple de tres pesos de lado a lado y producen
+el mismo mínimo en la superficie baja aunque usé mucha computación
+para calcular los 21 pesos de mi cadena de producto de matrices
+se condensará en la ecuación menor el peso coincidirá con los pesos de
+la regresión lineal de entrenamiento. Todo ese trabajo para obtener
+el mismo resultado. Probablemente esté pensando: "Creí que las redes neuronales se trataban
+de agregar capas y capas de neuronas. ¿Cómo puedo hacer un aprendizaje profundo
+si todas las capas se contraen en una?" Le tengo buenas noticias. Hay una solución simple. La solución es agregar
+una capa de transformación no lineal que se obtiene con una función
+de activación no lineal, como una función sigmoide,
+tangente hiperbólica o ReLu. Si pensamos en términos del gráfico,
+como con TensorFlow puede imaginar
+a cada neurona con dos nodos. El primer nodo es el resultado
+de la suma ponderada de wx + b y el segundo nodo es el resultado de eso después del uso
+de la función de activación. En otras palabras, son las entradas de la función de activación,
+seguidas de los resultados de esa función es decir que la función de activación
+actúa como el punto de transición. Agregar una transformación no lineal
+es la única forma de evitar que la red neuronal se revierta
+a una red superficial. Incluso si tiene una capa con funciones de
+activación no lineales en su red, si en otro lugar de la red tiene dos
+o más capas con funciones de activación lineales, esas pueden
+contraerse en solo una red. En general, las redes neuronales
+tienen todas las capas no lineales para la primera capa y la -1 y la transformación de la última capa
+es lineal para la regresión sigmoide o softmax, que analizaremos
+luego para la clasificación. Todo depende del resultado
+que desea obtener. Volvamos a analizarlo
+desde la perspectiva de la álgebra lineal, cuando aplicamos
+una transformación lineal a una matriz o vector, estamos multiplicándolos para
+obtener la forma y resultados deseados. Como cuando quiero escalar una matriz puedo multiplicarla
+por una constante. Pero, en realidad, lo que hago
+es multiplicarla por una matriz identidad multiplicada por esa constante. Es una matriz diagonal con
+esa constante en la diagonal. Esto se contraería
+en solo un producto de matriz. Sin embargo, si agrego una no linealidad lo que hago no lo podrá
+representar una matriz. ya que le estos aplicando una función
+a mi entrada de a un elemento. Por ejemplo, si tengo una función de activación no lineal entre
+la primera y la segunda capa oculta estoy aplicando una función
+del producto de la transposición de la matriz de peso de mis primeras
+capas ocultas y el vector de entrada. La ecuación inferior es mi función
+de activación en una ReLu. Como no puedo representar
+la transformación como álgebra lineal ya no puedo contraer esa porción
+de mi cadena de transformación por lo que mi modelo sigue siendo complejo y no se contrae en una sola
+combinación lineal de entradas. Aún puedo contraer
+la segunda capa oculta de matriz de peso y la matriz de peso de la capa de salida,
+pues no se aplica una función lineal. Es decir que, cuando hay 
+dos o más capas lineales consecutivas siempre se pueden contraer en una capa
+sin importar la cantidad. Por lo tanto, como tienen las funciones
+más complejas que crea su red es mejor que toda su red tenga funciones
+de activación lineales excepto la última capa, por si usa
+un tipo de salida diferente al final. ¿Por qué importa agregar funciones de
+activación lineal a las redes neuronales? Porque evitan que las capas se contraigan a un solo modelo lineal. Las funciones de activación no lineales ayudan a crear transformaciones
+con el espacio de escritura de datos y también admiten
+funciones de composición profundas. Si hay dos o más capas
+con funciones de activación lineal este producto de matrices se puede resumir en una matriz por el vector
+de función de entrada. Por lo que tendrá un modelo más lento con más computación,
+pero con menos complejidad funcional. Las no linealidades
+no agregan regularización a la función de pérdida
+y no invocan la interrupción anticipada. Aunque las funciones
+de activación no lineales crean transformaciones
+complejas en el espacio vectorial esa dimensión no cambia,
+sigue siendo el mismo espacio vectorial. Aunque se estire, apriete o rote. Como comentamos
+en uno de los módulos anteriores hay funciones de activación
+no lineales sigmoidal y de la función sigmoide
+escalada y modificada la tangente hiperbólica
+es de las primeras. Sin embargo, puede haber una saturación que genere un problema
+de desvanecimiento de gradientes. Sin gradientes los pesos de los modelos no se actualizan
+y se detiene el entrenamiento. La unidad lineal rectificada o ReLu es una de nuestra favoritas
+porque es simple y funciona bien. En el dominio positivo, es lineal así que no hay saturación y en el
+dominio negativo, la función es cero. Las redes con activación oculta de ReLu a menudo tienen una velocidad
+de entrenamiento 10 veces mayor que las redes con activaciones
+ocultas sigmoidales. Sin embargo, como la función
+de los dominios negativos es siempre cero es posible que
+las capas reales se pierdan. Lo que quiero decir es que cuando comienza a obtener entradas en el dominio negativo,
+el resultado de la activación será cero lo que no ayuda en la próxima capa
+y las entradas en el dominio positivo. Esto combina y crea
+muchas activaciones en cero durante la propagación inversa
+cuando se actualizan los pesos como tenemos que multiplicar el derivado
+de los errores por su activación y obtendremos
+un gradiente de cero. Así, tenemos un peso de datos de cero los pesos no cambiarán y el entrenamiento
+no funcionará en esa capa. Por suerte, se desarrollaron
+métodos inteligentes para modificar un poco la ReLu
+y que el entrenamiento no se detenga pero con muchos
+de los beneficios de la ReLu convencional. Aquí está la ReLu convencional el operador máximo se puede representar
+con la ecuación lineal definida en partes en la que el valor menor a cero,
+es la función en cero. Y con un valor de cero o mayor que cero,
+la función es X. Una aproximación a la función de ReLu es la función analítica del
+logaritmo natural de uno más el exponente X. Esta es la función softplus. El derivado de la función softplus
+es una función logística. La ventaja de usar la función softplus es que es continua y diferenciable de cero a diferencia de la función de ReLu. Sin embargo, debido al logaritmo natural
+y al exponente se aplica computación adicional
+en comparación con las ReLu y las ReLu dan resultados
+iguales de buenos en la práctica. Por lo tanto, no se recomienda
+usar softplus en el aprendizaje profundo. Para resolver el problema de la pérdida
+las ReLu con las activaciones cero se desarrollaron las "Leaky ReLu". Al igual que las ReLu, tienen una función
+lineal definida en partes. Sin embargo, en el dominio negativo tienen un pendiente distinto de cero,
+específicamente, de 0.01. De esta forma,
+cuando la unidad no se activa las "Leaky ReLu" permiten que se propague
+un gradiente pequeño distinto de cero lo que debería permitir que se actualice
+el peso y continúe el entrenamiento. Si avanzamos con esta idea,
+está la ReLu paramétrica o PreLu. En lugar de permitir de forma arbitraria un centésimo de una X
+en el dominio negativo permite el Alfa de X. ¿Qué se supone que es el parámetro Alfa? En el gráfico, configuré Alfa
+como 0.5 para una mejor visualización. En la práctica, es un parámetro aprendido en el entrenamiento junto con
+otros parámetros de la red neuronal Así, en lugar de
+que configuremos este valor el valor se determinará
+en el entrenamiento con los datos y debería aprender un valor mejor
+que el que configuraríamos. Cuando Alfa es menor que uno la fórmula se puede volver a escribir
+de forma compacta con el uso del máximo. Específicamente, el máximo de x
+o Alfa por x. También hay "Leaky ReLu" aleatorizadas,
+en las que en lugar de entrenar el Alfa es una muestra aleatoria
+de una distribución uniforme. Esto puede tener un efecto similar
+a la retirada ya que técnicamente tiene un red
+distinta para cada valor de Alfa. Por lo tanto, hace algo similar
+a un ensamble. En el momento de las pruebas,
+todos los valores de Alfa se promedian en un valor determinista
+que se usa para las predicciones. También está la variante ReLu6 que es otra función lineal definida
+en partes con tres segmentos. Como una ReLu normal es de cero en el dominio negativo pero en el dominio positivo,
+la ReLu6 se mantiene en seis. Probablemente se pregunte
+"¿por qué se mantiene en seis?" Puede imaginar a una
+de estas unidades ReLu con solo seis unidades replicadas
+de Bernoulli modificadas por el sesgo. en lugar de una cantidad infinita
+debido al límite máximo. En general, se conocen
+como unidades n de ReLu en las que la "n" es el valor límite. En las pruebas, se descubrió que seis
+es el valor óptimo. Las unidades ReLu6 ayudan a los modelos
+a aprender los atributos más rápido. Primero, se usaron para redes
+convolucionales de creencia profunda en un conjunto de datos
+de imágenes CIFAR-10. También son útiles para preparar la red para la precisión
+de punto fijo en la inferencia. Si el límite superior es indefinido perderá muchos bits en la parte Q
+de un número de punto fijo mientras que con un límite
+superior de seis deja suficientes bits
+en la parte fraccional del número que lo representa de tal forma
+que permitirá una buena inferencia. Por último, hay la unidad
+lineal exponencial o ELU. Es aproximadamente lineal en la parte
+no negativa del espacio de entrada es uniforme, monótona y,
+lo más importante distinta de cero
+en la parte negativa de la entrada. Además está mejor centrada en cero
+que las ReLu convencionales lo que acelera el aprendizaje. La desventaja principal de las ELU
+es que son más caras en la composición que las ReLu dado que
+tienen que calcular el exponente. Las redes neuronales
+pueden ser complejas arbitrariamente pueden haber muchas capas neuronas por capa, salidas, entradas diferentes tipos
+de funciones de activación, etc. ¿Cuál es el propósito
+de tener varias capas? Cada capa que agrego agrega complejidad
+a las funciones que puedo crear. Cada capa subsiguiente es una composición
+de las funciones anteriores. Como usamos funciones de activación
+no lineales en las capas ocultas creo una pila de transformaciones
+de datos que rotan estiran y comprimen mis datos. El propósito de hacer todo esto es transferir mis datos de una forma que puedan ajustar sin problemas
+el hiperplano para la regresión o separar los datos con un hiperplano
+para la clasificación. Asignamos desde un espacio de atributos
+originales a un espacio convolucionado. ¿Qué pasa si agrego
+neuronas adicionales a una capa? Cada neurona nueva agrega
+una dimensión a mi espacio vectorial. Si comienzo con tres neuronas de entrada empiezo en el espacio vectorial R3. Pero, si mi próxima capa
+tiene cuatro neuronas entonces pasé al espacio vectorial R4 Cuando analizamos los métodos Kernel
+en el curso anterior teníamos un conjunto de datos
+que no se podía separar fácilmente con un hiperplano en el espacio vectorial
+de entrada original. Cuando agregamos la dimensión
+y transformamos los datos para rellenar la dimensión nueva
+de la forma correcta pudimos hacer una división clara
+entre las clases de datos. Esto también funciona
+con las redes neuronales. ¿Qué pasa si tengo varios nodos de salida? Tener varios nodos de salida le permite comparar varias etiquetas y propagar
+las áreas correspondientes hacia atrás. Imagine hacer una clasificación
+de imágenes con varias entidades o clases
+dentro de cada imagen. No podemos predecir una clase
+porque pueden haber muchas de manera que contar con
+esta flexibilidad es genial. Las redes neuronales pueden
+ser complejas de forma arbitraria. Para crear dimensiones ocultas puedo agregar [espacio]. Para incrementar
+la composición de los atributos puedo agregar [espacio]. Si tengo varias etiquetas, por ejemplo puedo agregar [espacio]. La respuesta correcta es
+neuronas, capas, salidas. Para cambiar las dimensiones ocultas puedo cambiar la cantidad
+de capas de neuronas. Eso determina las dimensiones
+del espacio vectorial. Si una capa
+tiene cuatro neuronas entonces está en el espacio
+vectorial R4 y si una capa tiene 500 neuronas
+está en el espacio vectorial R500. Es decir que tiene 500 dimensiones reales. Agregar una capa
+no cambia la dimensión de la capa anterior incluso puede no cambiar
+la dimensión de su capa a menos que tenga una cantidad distinta
+de neuronas en la capa anterior. Lo que las capas adicionales agregan
+es una mayor composición de funciones. Recuerde "g ∘ f (x)" es la composición
+de las funciones g y f en la entrada x. Por lo tanto, primero transformo x por f y luego transformo ese resultado por g. Cuantas más capas tenga, más profundo
+irán las funciones g anidadas. Esto es ideal para combinar
+funciones no lineales y hacer mapas de atributos
+convolucionados difíciles de construir para las personas
+pero ideales para computadoras y que nos permiten darle una forma a nuestros datos que para poder
+aprender y obtener información valiosa. Recibimos la información valiosa
+a través de las capas de salida que, durante la inferencia, serán
+las respuestas al problema de AA. Si solo quiere conocer la probabilidad
+de que una imagen sea un perro puede hacer con solo un nodo de salida. Pero si quiere conocer la probabilidad
+de que una imagen sea un perro un gato, un pájaro o un alce entonces deberá tener
+un nodo para cada uno de ellos. Las otras respuestas son incorrectas,
+pues dos o más palabras no son correctas.

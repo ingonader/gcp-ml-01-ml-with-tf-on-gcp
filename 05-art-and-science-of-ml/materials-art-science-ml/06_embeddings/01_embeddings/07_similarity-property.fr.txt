@@ -1,0 +1,89 @@
+J'ai commencé à parler
+des RVC pour les ID de film. Il s'agissait
+de caractéristiques catégorielles. Puis nous avons appliqué
+le même exemple aux mots d'une annonce. Il s'agissait alors
+de caractéristiques textuelles. Qu'y a-t-il de commun entre elles ? Le domaine d'application
+des RVC ne se limite pas aux caractéristiques
+catégorielles ou textuelles. Je vous montre ici un problème
+de machine learning classique appelé "MNIST". L'idée consiste à reconnaître
+des chiffres manuscrits se trouvant dans des images numérisées. Nous prenons donc chaque image, et chacun des pixels
+de l'image est une entrée. Nous pouvons donc parler
+d'image bitmap brute. Chaque image est
+un carré de 28 pixels de côté. Cette image bitmap est donc
+constituée de 784 pixels. Si nous considérons
+ce tableau de 784 nombres, nous constatons qu'il est pour l'essentiel
+constitué de pixels blancs. Les représentations vectorielles continues
+sont également utiles dans ce cas. Nous prenons ces 784 nombres, et nous les représentons
+sous la forme d'un Tensor creux. Nous n'enregistrons les pixels
+que là où le chiffre manuscrit est visible, c'est-à-dire uniquement là où ils sont noirs. Nous transmettons ensuite cela via
+une représentation vectorielle continue 3D. Nous pouvons alors avoir un réseau
+de neurones à deux couches normal, et nous pourrions aussi transmettre
+d'autres caractéristiques. Nous entraînons ensuite le modèle pour prédire le nombre de l'image
+sur la base de ces étiquettes. Pour quelle raison est-ce que j'ai ici
+une couche de fonctions logit ? C'est parce qu'il s'agit là de la couche
+de sortie d'un réseau de neurones. Une fonction logit est
+ce en quoi doit consister la sortie pour un problème de classification. Lorsque nous utilisons
+un classificateur linéaire ou de réseau de neurones profond, la couche de sortie est une fonction logit,
+une unique fonction logit. Mais c'est seulement
+si nous avons une seule sortie. Dans le cas du problème MNIST,
+nous avons au total dix classes. Il s'agit des chiffres
+0, 1, 2, etc. Jusqu'à 9. C'est la raison pour laquelle
+je n'ai pas une fonction logit, mais une couche de fonctions logit. J'ai une fonction logit
+pour chacun des chiffres possibles. Lorsque l'on utilise
+une couche de fonctions logit plutôt qu'une unique fonction logit, il n'y a aucune garantie que la probabilité
+totale de tous les chiffres sera égale à 1. C'est la fonction softmax qui a pour rôle
+de normaliser les différentes fonctions logit afin que la probabilité totale soit égale à 1. Mais désolé pour la digression. J'étais en train de vous parler des RVC. Donc ici, lorsque nous entraînons le modèle pour qu'il puisse reconnaître
+des chiffres manuscrits, chaque image est représentée
+par trois nombres. Mais au contraire du cas
+des caractéristiques catégorielles, l'image bitmap brute
+n'est pas encodée en one-hot. Nous n'obtenons donc pas
+trois nombres pour chaque pixel. Dans ce cas, les trois nombres
+correspondent à tous les pixels activés pour une image donnée. Vous pouvez utiliser TensorBoard
+pour visualiser ces RVC, le vecteur 3D qui correspond
+à chaque image de 784 pixels. Des couleurs différentes ont ici
+été affectées aux différentes étiquettes. Et comme vous pouvez le voir, nous avons le plaisir de constater que tous les 5 sont regroupés
+en cluster dans l'espace 3D, et qu'il en va de même
+de tous les 7 et de tous les 0. En d'autres termes, les nombres 3D qui représentent
+chaque image de chiffre manuscrit sont positionnés de telle façon
+dans l'espace 3D que les nombres similaires
+sont proches les uns des autres. Il en va ainsi des RVC utilisées
+pour les variables catégorielles, le texte en langage naturel
+et les images bitmap brutes. Donc, qu'y a-t-il de commun entre elles ? Elles sont toutes creuses. Si vous transmettez
+l'encodage d'un vecteur creux via une colonne de RVC, que vous utilisez ensuite cette colonne
+comme entrée d'un réseau de neurones profond, puis que vous entraînez ce réseau, les RVC entraînées auront
+cette propriété de similarité, dans la mesure bien sûr
+où vous disposerez d'assez de données et où l'entraînement aura permis
+d'obtenir un bon niveau de justesse. Vous pouvez profiter de cette propriété
+de similarité dans d'autres situations. Supposez, par exemple, que votre tâche soit
+de trouver une chanson similaire à celle-ci. En pareil cas, vous pouvez créer
+une RVC du clip audio de chaque chanson en le représentant sous la forme
+d'un tableau de valeurs. Puis, tout comme avec l'image MNIST, vous transmettez le tableau via une couche
+de représentation vectorielle continue. Vous l'utilisez pour entraîner un problème
+de machine learning raisonnable, par exemple à l'aide du signal audio pour entraîner un modèle
+à prédire le genre musical ou la note de musique suivante. Quelle que soit la prédiction choisie, la RVC vous fournit une représentation
+aux dimensions réduites du clip audio. Si vous voulez ensuite
+trouver des chansons similaires, il vous suffit de calculer
+la distance euclidienne entre deux clips (entre leurs RVC). Vous obtenez ainsi une mesure
+de la similarité des deux chansons. Vous pourriez aussi utiliser
+les vecteurs des RVC comme entrées d'un algorithme de clustering. L'idée de similarité peut également servir à représenter conjointement
+diverses caractéristiques (par exemple, du texte
+en deux langues différentes ou un texte et le clip audio correspondant) afin d'en définir le niveau de similarité. Dans tous nos exemples, nous avons utilisé trois
+représentations vectorielles continues. Vous pouvez bien sûr
+utiliser des nombres différents. Mais quels nombres devriez-vous utiliser ? Le nombre de RVC est l'hyperparamètre
+de votre modèle de machine learning. Il est nécessaire que vous testiez
+différents nombres de dimensions de RVC, car vous devez faire
+un compromis à ce niveau. Les RVC comportant davantage
+de dimensions sont mieux à même de représenter avec justesse
+la relation entre les valeurs d'entrée. Mais plus vous avez de dimensions,
+plus le risque de surapprentissage est élevé. Cela a également pour effet de faire grossir
+le modèle et d'en ralentir l'entraînement. Pour commencer, vous pouvez
+opter pour une bonne solution qui consiste à utiliser la racine quatrième
+du nombre total de valeurs possibles. Par exemple, si vous utilisez
+des RVC pour des ID de film et que vous avez 500 000 films
+dans votre catalogue, le nombre total
+de valeurs possibles est 500 000. Il serait donc recommandé de commencer
+par la racine quatrième de 500 000. La racine carrée de 500 000 est environ 700,
+et celle de 700 est environ 26. J'opterais donc probablement d'abord
+pour une valeur de l'ordre de 25. Si vous effectuez
+un réglage d'hyperparamètres pour le nombre de dimensions de RVC, je pense que l'espace de recherche pourrait
+être, disons, compris entre 15 et 35. Mais c'est bien sûr juste une règle générale.

@@ -1,0 +1,148 @@
+Dans cet atelier, votre objectif est d'apprendre
+à écrire un Estimator personnalisé. Nous allons supposer
+que nous avons une fonction TensorFlow qui crée un ensemble de Tensors de sortie
+à partir d'un ensemble de Tensors d'entrée. Notre tâche va consister à encapsuler cette fonction
+dans le framework de l'Estimator pour que nous puissions bénéficier de tous les avantages
+de haut niveau de l'Estimator. En réalité, lorsqu'un modèle fonctionne
+sans utiliser d'Estimators, il a recours à un autre mode de lecture
+des données et de génération de modèles. Vous allez vous débarrasser
+de ces parties du modèle et ne conserver de celui-ci
+que le cœur mathématique qui transforme le Tensor d'entrée
+en Tensor de sortie. Dans cet atelier, nous allons donc voir comment
+vous pouvez encapsuler un modèle avec le framework de l'Estimator, votre fonction de modèle personnalisée. Pour prendre le même exemple
+que dans les diapositives, nous allons utiliser
+un modèle de série temporelle. Nous n'allons pas nous soucier ici
+de son mode de fonctionnement. Nous verrons les modèles de séquence
+ultérieurement dans la spécialisation. Ici, nous traiterons ce modèle
+comme une boîte noire. Nous allons par contre nous intéresser
+au mode de fonctionnement du wrapper externe. Donc, ce que nous avons dans ce cas… Je vais juste importer TensorFlow. Nous allons donc créer (simuler)
+différents groupes de données ayant leurs propres ondes sinusoïdales
+de différentes amplitudes correspondant à différentes
+fréquences qui sont créées. Voici cinq exemples
+de cette série temporelle. Nous allons créer de très grandes
+quantités de ces données. Et nous les utiliserons pour l'entraînement. L'idée est que cela donnera neuf valeurs
+au réseau de neurones (0, 1, 2, 3, etc.). Nous irons donc jusqu'à 8. Nous allons lui donner neuf valeurs
+et lui demander de prédire la dixième. Nous allons l'entraîner avec
+une grande quantité de données existantes, et nous l'amènerons à déterminer
+la dixième valeur à partir des neuf premières. Pour ce faire, nous allons créer
+un fichier CSV (to_csv), lui donner un nom et indiquer le nombre
+de séquences que nous voulons. Nous ouvrirons ensuite
+ce fichier, nous l'écrirons, puis nous créerons une série temporelle
+(en fait, N séries temporelles). Donc, dans ce cas, j'appelle train.csv
+avec N qui est égal à 1000. Je vais donc obtenir
+un fichier avec 1000 séquences. Mon fichier train.csv
+va contenir 1000 séquences. Quant au fichier valid.csv,
+il va contenir 50 séquences. Et elles seront toutes
+séparées par des virgules. Je peux donc exécuter cela. Ceci fait, je peux regarder
+les cinq premières lignes de train.csv. Les voici. Et voici les cinq premières lignes
+de valid.csv. Comme vous pouvez le voir, il s'agit
+pour l'essentiel d'une série temporelle. Voici les caractéristiques
+d'entrée d'entraînement et l'étiquette que nous allons utiliser. Et c'est ce que nous voulons
+que notre modèle apprenne. Alors, pourquoi utilise-t-on cela ? Je veux dire que même si
+je ne parle pas des séries temporelles, il est probablement bon que j'évoque
+la situation que nous illustrons. Imaginons que vous avez un commerce dans lequel vous disposez
+de milliers d'articles, et que chaque article
+a sa propre saisonnalité. Vous voulez regarder
+les huit périodes passées, ou plutôt les neuf périodes passées, et utiliser cela
+pour prédire la dixième période. Voilà en résumé ce que vous faites. Ce n'est pas comparable
+à une série temporelle avec laquelle vous tenteriez de prédire
+la valeur future d'un marché financier. C'est différent. Cette série temporelle est très longue. Ici, au contraire, nous avons des milliers
+de courtes séries temporelles. C'est un problème différent. Nous prenons donc l'exemple d'un commerce dans lequel vous disposez
+de milliers de produits, et chaque produit a sa propre saisonnalité. Mais ils ont tous une saisonnalité. Et vous voulez procéder à l'apprentissage
+de cette idée de saisonnalité pour pouvoir regarder la série temporelle
+d'un produit et prédire la suivante. Voici donc notre ensemble
+de données d'entraînement que nous allons utiliser
+pour entraîner notre modèle, qui est ce que l'on appelle
+un réseau de neurones récurrent (rnn). Encore une fois, nous n'allons pas nous soucier
+du fonctionnement interne du modèle. Nous allons plutôt voir
+comment le configurer. Dans ce cas donc, nous commençons par importer TensorFlow,
+et il nous faut ensuite lire nos données. Nos données correspondent
+à notre longueur de séquence. Nous avons donc DEFAULTS
+qui est égal à 0.0. Il n'y a donc
+que des nombres à virgule flottante (pour xrange de 0 à SEQ_LEN). Nous avons donc dix nombres. Et quelle est la taille de notre lot ? Nous allons calculer une descente de gradient
+sur une taille de lot qui va être de 20. Au niveau de nos données, la colonne des séries temporelles
+va s'appeler "rawdata". Et dans notre séquence,
+le nombre de sorties est 1. C'est la sortie finale. Et le nombre d'entrées est égal à la longueur
+de séquence moins le nombre de sorties. En d'autres termes, les neuf premiers nombres sont
+les entrées, et le dernier est la sortie. C'est donc l'ensemble de constantes
+que nous définissons. Puis nous écrivons notre ensemble
+de données à lire (read_dataset). C'est semblable à la création
+d'une fonction d'entrée. Nous avons ici notre decode_csv,
+avec la référence à une ligne. Il signifie que nous demandons que toutes les valeurs soient lues
+comme des nombres à virgule flottante, ceci pour toutes les données,
+c'est-à-dire dix nombres. Mais souvenez-vous que la lecture
+va s'effectuer à raison d'un lot à la fois. Cela ne fait donc pas référence à une ligne. Il s'agit des données
+correspondant à 20 lignes puisque la lecture s'effectue lot par lot. Et à partir de ces 20 lignes, nous allons effectuer une scission
+pour récupérer les neuf premières (qui vont devenir les entrées), et une autre scission
+pour la dernière colonne (afin d'obtenir les étiquettes). C'est donc ce que nous faisons ici. Nous effectuons une scission
+pour récupérer les neuf premières valeurs (nos entrées), puis pour la dernière valeur
+(nos étiquettes). Et je répète que les entrées auront une longueur
+correspondant à la taille de lot et une largeur de 9, et les étiquettes une hauteur
+correspondant à la taille de lot et une largeur de 1 (nombre de sorties). Nous prenons donc
+toutes ces valeurs distinctes, et nous les empilons
+pour obtenir une matrice. Voici donc nos entrées que nous empilons pour former une matrice. Nous empilons cela pour former une matrice. La deuxième dimension de cette matrice est 1,
+mais elle est quand même dans notre matrice. Plutôt qu'une liste de listes,
+nous voulons une matrice, que la pile nous permet d'obtenir. Nous définissons ensuite
+TIMESERIES_COL (rawdata). Le Tensor est inputs. Puis nous pouvons 
+retourner features et labels. features est un dictionnaire contenant
+une caractéristique qui est une matrice. Précédemment, toutes nos caractéristiques
+étaient des colonnes. Mais ici,
+notre caractéristique est une matrice. C'est pourquoi vous créez la pile ici. Ceci fait, comment créer le read_dataset ? Quand on nous fournit
+pour cela un nom de fichier, il peut s'agir d'un chemin d'accès. Nous allons donc utiliser Glob,
+par exemple avec un caractère générique. Nous obtenons une liste de fichiers
+que nous lisons comme une ligne de texte. Et nous appelons decode_csv
+pour récupérer notre ensemble de données. Et si nous effectuons un entraînement,
+nous brasserons les données de cet ensemble. Pour une évaluation,
+aucun brassage n'est requis. Nous ne le ferons donc pas. Pour un entraînement,
+la lecture durera indéfiniment. Pour une évaluation, l'ensemble de données
+sera lu une fois dans son intégralité. Le nombre d'époques est donc 1. L'ensemble de données est répété
+autant de fois qu'il y a d'époques. C'est donc une fois pour l'évaluation
+et indéfiniment pour l'entraînement. Puis nous constituons un lot avec batch_size. Donc 20 lignes à la fois,
+20 séquences à la fois, puis nous affichons l'itérateur. C'est donc la lecture
+de notre ensemble de données. Intéressons-nous maintenant
+au modèle à proprement parler. Nous ne nous soucions pas
+de son mode de fonctionnement. Pour l'essentiel, nous avons un simple_rnn
+basé sur des statistiques qui utilise les caractéristiques,
+les étiquettes et le mode. Et il extrait la séquence X
+des caractéristiques, puis y applique un traitement
+(ne vous souciez donc pas de cela) jusqu'à ce qu'il atteigne
+le stade des prédictions. C'est la sortie
+de notre modèle de série temporelle. À partir de l'entrée,
+nous obtenons une sortie. Et c'est bien la fonction
+de presque tous les modèles. Ceci fait, il nous reste à décider
+de ce que doit être notre fonction de perte. Nous avons un problème de série temporelle,
+et nous prédisons la dernière valeur. En d'autres termes,
+nous prédisons une valeur. S'agit-il d'une régression
+ou d'une classification ? C'est une régression. Et parce que c'est une régression, ma perte va être
+une erreur quadratique moyenne. Je pourrais en utiliser la racine carrée. Je peux aussi utiliser
+l'erreur quadratique moyenne. Mon opération d'apprentissage
+va consister à minimiser la perte avec un taux d'apprentissage spécifique
+et un optimiseur spécifique. Et mes statistiques d'évaluation
+seront cette fois basées sur la RMSE (racine carrée
+de l'erreur quadratique moyenne), avec les étiquettes et les prédictions. Si nous n'effectuons
+ni un entraînement, ni une évaluation, nous utilisons "None" pour les opérations
+loss, train_op et eval_metric_ops, ceci parce que nous n'avons pas d'étiquette
+(pas d'étiquette pendant les prédictions). Donc pas d'évaluation, d'entraînement
+ou de détermination de la perte, d'où l'utilisation de "None"
+pour ces opérations. Notre dictionnaire de prédictions
+contient les sorties (predictions). Nous les appelons "predicted". Et lorsque nous effectuons une exportation,
+nous la nommons "regression_export_outputs". Nous récupérons ces prédictions
+et nous les écrivons. Dans ce cas, nous n'avons
+à écrire aucun embedding. Nous n'écrivons donc qu'une seule chose. Si nous avions à écrire plusieurs choses… Je répète qu'il s'agit
+juste d'un dictionnaire. Nous pourrions donc descendre ici
+et utiliser "embedding". Et imaginons que nous ayons plus haut
+un Tensor à inclure dans cet embedding. OK. Disons que ce Tensor weight est
+une représentation vectorielle continue. Dans ce cas, nous ajouterions ici
+"weight" au niveau de l'embedding. Et c'est tout. Lorsque nous exporterons notre modèle,
+nous exporterons désormais deux choses : la sortie de la régression
+et une représentation vectorielle continue. Ceci fait, nous pouvons
+écrire un EstimatorSpec en transmettant
+les opérations mode, predictions_dict, loss, train_op et eval_metric_ops, ainsi que les choses
+que nous voulons exporter. Et voilà. Le reste, pour l'essentiel, ne change pas. Nous créons les fonctions
+d'entraînement et de validation, qui doivent n'avoir aucun paramètre
+ni aucune fonction d'entrée. D'où mon code, qui contient juste un get_train transmettant train.csv et TRAIN pour le mode. Puis notre fonction serving_input_fn
+utilise le TIMESERIES_COL, et il s'agit exclusivement
+de nombres à virgule flottante. Nous appelons le train_and_evaluate, et nous essayons de l'utiliser
+comme module autonome. Nous pouvons aussi
+l'entraîner sur ML Engine. Il faut dans ce cas penser
+à transformer le bucket en bucket Qwiklabs.

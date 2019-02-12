@@ -1,0 +1,37 @@
+Si pensamos en todos los ajustes posibles,
+encontrar una combinación óptima que dependa de los datos puede parecer una tarea abrumadora. Piense en las permutaciones. Puede automatizarlas con algunos
+algoritmos de búsqueda por cuadrícula. La búsqueda de la combinación perfecta
+puede tardar mucho y consumir muchas horas
+de recursos de cómputo. ¿No sería mejor tener
+un bucle de entrenamiento que haga un metaentrenamiento
+en todos estos hiperparámetros hasta que encuentre
+la configuración óptima? No tema, Google Vizier está para ayudarlo. En general podrá aprovechar el ajuste automático
+de los hiperparámetros con la tecnología
+del algoritmo de Google Vizier sin tener que conocer los detalles. Si desea saber
+lo que sucede en la caja negra le recomiendo que revise el artículo
+de investigación que aparece en pantalla. Todo lo que debe saber es que
+Cloud ML Engine realiza el trabajo. Solo configure el trabajo
+y ML Engine hará el resto. Veamos qué se necesita para hacer que los hiperparámetros
+se ajusten automáticamente. Hasta el momento,
+debe haber usado Cloud ML Engine la plataforma sin servidor
+para entrenar y alojar modelos de AA. ML Engine abstrae el proceso
+de ajuste de hiperparámetros. Para usar el servicio,
+solo tiene que hacer lo siguiente. Primero, exprese
+los hiperparámetros que deben ajustarse como argumentos de la línea de comandos. Luego, haga que las diferentes iteraciones
+de entrenamiento no interfieran entre sí. Por último, proporcione los hiperparámetros al trabajo de entrenamiento. Antes de ir al lab
+y ajustar hiperparámetros veamos esos tres pasos en el código. El primer paso
+es definir los hiperparámetros que quiera ajustar como
+argumento de la línea de comandos. Por ejemplo, tengo dos hiperparámetros. Son la cantidad de depósitos
+para discretizar latitud y longitud y la cantidad de unidades ocultas
+en mi red neuronal profunda. El segundo paso es asegurarse
+de que los resultados de distintas pruebas no interfieran entre sí. Para ello,
+usamos una buena convención de nombres para las carpetas de salida. Por ejemplo, aquí usé
+un valor de prueba como sufijo de modo que el nombre de salida sea único. El último paso
+es proporcionar hiperparámetros con su trabajo de entrenamiento. Se hace así. Primero, cree el archivo yaml, como este. Luego, coloque la ruta a ese archivo
+con parámetros de línea de comandos mediante el comando gcloud ml-engine. De esta manera. Veamos el contenido del archivo yaml. En este ejemplo queremos minimizar la RMSE
+del conjunto de datos de evaluación. ML Engine deberá encontrar
+el tamaño del lote óptimo entre 64 y 512. Esta no es una búsqueda por cuadrícula. Es mucho más inteligente. Vea la cantidad máxima de pruebas. ML Engine usará un algoritmo
+para buscar en áreas prometedoras. Comenzará una cantidad
+de pruebas paralelas al azar según se especifica en maxParallelTrials y empezará a explorar. Aquí, le pedimos a ML Engine
+que pruebe de forma sistemática diversas arquitecturas de red neuronal. Ya estamos listos
+para realizar una prueba.

@@ -1,0 +1,42 @@
+Es gibt also zahlreiche Einstellungen,
+die sie datenabhängig anpassen müssen. Dabei die perfekte Kombination zu finden,
+erscheint wie eine große Herausforderung. Denken Sie nur an die Permutation, die mit zahlreichen Rastersuchalgorithmen
+automatisiert werden könnte. Die Suche nach der richtigen
+Kombination kann aber ewig dauern und viele Stunden an
+Rechenressourcen verbrauchen. Wäre es nicht schön,
+eine Trainingsschleife zu haben, die das Metatraining
+und all diese Hyperparameter übernimmt, um die richtigen Einstellungen zu finden? Genau dafür steht Ihnen 
+Google Vizier zur Verfügung. Im Wesentlichen
+können Sie sich zurücklehnen. Der Google Vizier-Algorithmus automatisiert
+die Hyperparameter-Abstimmung, ohne dass Sie die Details kennen müssen. Wenn Sie wissen möchten,
+was in der Blackbox passiert, lesen Sie
+die hier verlinkte Forschungsarbeit. Sie müssen aber nur wissen, dass
+Cloud ML Engine Ihnen die Arbeit abnimmt. Sie konfigurieren den Job richtig,
+dann erledigt die ML Engine den Rest. Betrachten wir einige Voraussetzungen
+für automatisch abgestimmte Hyperparameter. Sie sollten schon
+mit der Cloud ML Engine gearbeitet haben. Das ist die serverlose Plattform
+für Training und Hosting von ML-Modellen. ML Engine abstrahiert sehr gut
+den Ablauf der Hyperparameter-Abstimmung. So können Sie diesen Service nutzen: Sie müssen
+den abzustimmenden Hyperparameter als Befehlszeilenargument ausdrücken. Sorgen Sie dafür, dass sich
+Trainingsdurchläufe nicht überschreiben. Zuletzt müssen Sie diese Hyperparameter
+an den Trainingsjob übergeben. Bevor wir ein Lab
+zur Hyperparameter-Abstimmung starten, sehen wir uns kurz an,
+wie diese drei Schritte im Code aussehen. Der erste Schritt besteht darin, alle abzustimmenden Hyperparameter
+als Befehlszeilenargument zu definieren. Zum Beispiel
+habe ich hier zwei Hyperparameter: die Anzahl der Buckets zum Diskretisieren
+von Breitengrad und Längengrad und die Anzahl der versteckten Einheiten
+im neuronalen Deep-Learning-Netzwerk. Im zweiten Schritt sorgen wir dafür, dass die verschiedenen Testläufe
+sich nicht gegenseitig überschreiben. Wir tun dies mit einer guten
+Namenskonvention für die Ausgabeordner. Hier wird z. B. der Ausgabename durch
+ein Suffix mit dem Wert "trial" eindeutig. Im letzten Schritt übermitteln wir
+die Hyperparameter an den Trainingsjob: Zuerst erstellen Sie eine
+YAML-Datei wie diese hier, dann übermitteln Sie den Pfad zur
+YAML-Datei über Befehlszeilenparameter an den Befehl "gcloud ml-engine" wie hier. Sehen wir uns nun den
+Inhalt der YAML-Datei genauer an. Wir wollen in diesem Beispiel
+die RMSE des Bewertungsdatasets minimieren. Wir möchten mit ML-Engine die optimale
+Batchgröße zwischen 64 und 512 finden. Denken Sie daran, das dies keine
+Rastersuche ist, sondern viel intelligenter. Beachten Sie hier "maxTrials". ML Engine durchsucht algorithmisch
+viel versprechende Bereiche. Sie startet zufällig parallele Tests, deren Anzahl
+durch "maxParallelTrials" festgelegt ist, und beginnt die Suche. Hier lassen wir ML Engine systematisch verschiedene neuronale
+Netzwerkarchitekturen testen. Sind Sie bereit, es selbst zu versuchen?
+Dann los!

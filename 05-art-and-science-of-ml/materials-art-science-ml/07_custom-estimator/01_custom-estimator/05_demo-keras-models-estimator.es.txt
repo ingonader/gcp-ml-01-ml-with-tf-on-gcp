@@ -1,0 +1,22 @@
+Queríamos mostrarle
+cómo funciona un estimador de Keras. Ahora tenemos un método
+llamado make_keras_estimator y definimos output_dir. Lo que hace es importar Keras
+desde TensorFlow. Es el mismo modelo de series de tiempo pero esta vez, lo trataré
+como una red neuronal de 9 entradas normal. Tomo esto,
+creo un modelo secuencial de Keras y quiero crear una red densa
+con 32 nodos de entrada. Hacemos una activación ReLU. Y luego una salida de 1
+que es Dense(1). Mi pérdida será mean_squared_error. Mi optimizador será adam. Mi matriz de evaluación será mae y mape. Luego, puedo tomar
+keras.estimator.model_to_estimator y pasar este modelo de Keras compilado. Recuerde: crea el modelo de Keras,
+lo compila y lo pasa a model_to_estimator. Ahora, este código ya es parte de este paquete de simplernn. Se lo voy a mostrar. Estamos en simplernn. En simplernn hay un entrenador,
+hay un model.py. En model.py está la función simple_rnn original
+que tenía los atributos, etiquetas y modo y todo lo relacionado
+con el estimador personalizado También hay un make_keras_estimator. Ahí está make_keras_estimator que tiene el código
+que le acabo de mostrar. Crea un modelo secuencial,
+una capa densa. Crea una activación con ReLU,
+crea otra capa densa. hace las métricas de pérdida, etc. Cuando ejecuto train_and_evaluate básicamente tengo una opción use_keras. Si utilizo use_keras,
+llamo a make_keras_estimator. De otro modo,
+llamo al estimador de clase base que pasa la función simple_rnn. Esencialmente, es el mismo código
+con el parámetro use_keras. Ese parámetro se pasa desde
+la línea de comandos mediante task.py. En task.py
+hay un nuevo argumento llamado --keras. Depende de si se configuró pero básicamente pasará
+argumentos de Keras a model.train_and_evaluate. Así que esto será verdadero o falso. Ahora, si volvemos a nuestro notebook podemos ver el efecto de --keras. Debido a que pasamos --keras se ejecutará el código de simplernn. Lo ejecutará en train.csv y value.csv pero usará Keras en su lugar. Esto también funciona.

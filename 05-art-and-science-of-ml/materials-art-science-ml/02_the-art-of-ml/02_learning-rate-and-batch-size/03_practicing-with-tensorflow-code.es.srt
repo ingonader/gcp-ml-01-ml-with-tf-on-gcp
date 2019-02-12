@@ -1,0 +1,104 @@
+1
+00:00:00,200 --> 00:00:03,005
+Ahora que conocemos
+todos estas configuraciones
+
+2
+00:00:03,195 --> 00:00:05,279
+¿cómo las agregamos
+al código de TensorFlow?
+
+3
+00:00:05,469 --> 00:00:07,636
+Revisemos un código de ejemplo.
+
+4
+00:00:07,756 --> 00:00:10,620
+Controlamos el tamaño del lote
+mediante la función de entrada.
+
+5
+00:00:11,580 --> 00:00:15,040
+La tasa de aprendizaje
+es un parámetro del algoritmo Optimizer
+
+6
+00:00:15,040 --> 00:00:17,490
+en este caso, FtrlOptimizer.
+
+7
+00:00:18,640 --> 00:00:22,798
+La tasa de regularización también
+es un parámetro del algoritmo Optimizer.
+
+8
+00:00:23,968 --> 00:00:28,000
+Tras definir el optimizador,
+lo pasamos al objeto del estimador.
+
+9
+00:00:28,070 --> 00:00:32,100
+En este caso, una instancia de la clase
+LinearRegressor de los estimadores.
+
+10
+00:00:32,622 --> 00:00:35,015
+En lugar de definir la cantidad
+de ciclos de entrenamiento
+
+11
+00:00:35,015 --> 00:00:36,775
+debe definir la cantidad de pasos.
+
+12
+00:00:36,860 --> 00:00:40,145
+Esto es porque la cantidad
+de ciclos no funciona bien
+
+13
+00:00:40,145 --> 00:00:41,725
+en el entrenamiento distribuido.
+
+14
+00:00:42,175 --> 00:00:45,070
+Debe ajustar la cantidad
+de pasos según tamaño del lote
+
+15
+00:00:45,070 --> 00:00:46,260
+y la tasa de aprendizaje.
+
+16
+00:00:46,480 --> 00:00:52,400
+Por ejemplo, si desea procesar
+100 ciclos y tiene 1,000 ejemplos
+
+17
+00:00:52,710 --> 00:00:56,960
+para un tamaño de lote de 1,000,
+la cantidad de pasos sería 100.
+
+18
+00:00:57,400 --> 00:01:01,320
+Para un tamaño de lote de 100,
+la cantidad de pasos sería 1,000.
+
+19
+00:01:01,540 --> 00:01:04,790
+Básicamente, la cantidad de pasos
+es igual a la cantidad de ciclos
+
+20
+00:01:04,790 --> 00:01:07,855
+por la cantidad de ejemplos
+y dividida por el tamaño del lote.
+
+21
+00:01:08,620 --> 00:01:11,260
+Recuerde que si reduce
+la tasa de aprendizaje
+
+22
+00:01:11,260 --> 00:01:13,791
+tendrá que usar más ciclos
+para el entrenamiento.

@@ -1,0 +1,385 @@
+1
+00:00:00,000 --> 00:00:03,475
+Nous avons vu comment écrire
+un Estimator personnalisé
+
+2
+00:00:03,475 --> 00:00:07,937
+si le code permettant de passer
+du Tensor d'entrée au Tensor de sortie
+
+3
+00:00:07,937 --> 00:00:10,380
+est écrit avec TensorFlow.
+
+4
+00:00:10,380 --> 00:00:15,000
+Nous encapsulons le code dans la fonction
+qui affiche un EstimatorSpec,
+
+5
+00:00:15,000 --> 00:00:19,655
+puis nous transmettons cette fonction
+à l'Estimator de classe de base.
+
+6
+00:00:19,655 --> 00:00:21,610
+Comment cela fonctionne-t-il avec Keras ?
+
+7
+00:00:21,610 --> 00:00:24,765
+Et qu'est-ce que Keras, au juste ?
+
+8
+00:00:24,765 --> 00:00:28,645
+Keras est une API de réseau
+de neurones de haut niveau.
+
+9
+00:00:28,645 --> 00:00:30,887
+Elle est compatible
+avec les réseaux convolutifs
+
+10
+00:00:30,887 --> 00:00:33,009
+et les réseaux de neurones récurrents.
+
+11
+00:00:33,009 --> 00:00:35,772
+Toutefois, à la différence de TensorFlow,
+
+12
+00:00:35,772 --> 00:00:37,836
+Keras n'est pas une mise en œuvre
+
+13
+00:00:37,836 --> 00:00:40,410
+de l'un ou l'autre de ces types
+de réseaux de neurones.
+
+14
+00:00:40,410 --> 00:00:45,385
+Keras est une API de réseau
+de neurones de haut niveau
+
+15
+00:00:45,385 --> 00:00:51,155
+écrite en Python mais compatible
+avec TensorFlow comme backend.
+
+16
+00:00:51,155 --> 00:00:54,670
+En d'autres termes,
+quand vous appelez une fonction Keras,
+
+17
+00:00:54,670 --> 00:00:58,870
+elle appelle
+un ensemble de fonctions TensorFlow
+
+18
+00:00:58,870 --> 00:01:01,260
+pour mettre en œuvre cette fonctionnalité.
+
+19
+00:01:01,260 --> 00:01:05,384
+Outre TensorFlow,
+Keras peut également fonctionner
+
+20
+00:01:05,384 --> 00:01:08,830
+par dessus d'autres mises en œuvre
+de réseaux de neurones
+
+21
+00:01:08,830 --> 00:01:11,860
+telles que CNTK et theano.
+
+22
+00:01:11,860 --> 00:01:14,210
+Keras est conçue
+pour être très facile à utiliser
+
+23
+00:01:14,210 --> 00:01:16,420
+et pour permettre un prototypage rapide.
+
+24
+00:01:16,420 --> 00:01:21,715
+Voici par exemple un modèle
+de classification de séquence écrit en Keras.
+
+25
+00:01:21,715 --> 00:01:27,702
+Il contient diverses classes
+(Embedding, LSTM, Dropout, etc.).
+
+26
+00:01:27,702 --> 00:01:31,860
+Keras vous permet ainsi de penser
+à l'architecture de votre modèle
+
+27
+00:01:31,860 --> 00:01:35,020
+et de ne pas vous concentrer
+sur la mise en œuvre de bas niveau.
+
+28
+00:01:35,020 --> 00:01:35,770
+Par exemple,
+
+29
+00:01:35,770 --> 00:01:39,800
+pour créer une RVC dans TensorFlow,
+vous pouvez créer une colonne Embedding.
+
+30
+00:01:39,800 --> 00:01:42,800
+Et pour ce faire, vous devez
+utiliser les données d'entraînement
+
+31
+00:01:42,800 --> 00:01:45,260
+et créer tout d'abord
+une colonne catégorielle.
+
+32
+00:01:45,260 --> 00:01:49,785
+Dans Keras, vous n'avez pas à vous soucier
+de ce type de détails de mise en œuvre.
+
+33
+00:01:49,785 --> 00:01:51,662
+Cela signifie bien sûr aussi
+
+34
+00:01:51,662 --> 00:01:56,190
+que si vous voulez pour partie procéder
+différemment pour le prétraitement
+
+35
+00:01:56,190 --> 00:01:58,030
+avant de vous occuper des RVC,
+
+36
+00:01:58,030 --> 00:02:01,225
+vous aurez à étudier très attentivement
+la documentation de Keras.
+
+37
+00:02:01,225 --> 00:02:03,230
+Chacune des solutions a ses inconvénients,
+
+38
+00:02:03,230 --> 00:02:07,520
+et vous devrez souvent faire un compromis
+entre la simplicité et l'expressivité.
+
+39
+00:02:07,520 --> 00:02:12,805
+Quoi qu'il en soit, les data scientists
+créent souvent leurs modèles avec Keras.
+
+40
+00:02:12,805 --> 00:02:16,312
+L'API Keras est toutefois conçue
+pour permettre un prototypage rapide.
+
+41
+00:02:16,312 --> 00:02:21,025
+Elle ne gère pas l'entraînement distribué
+ni les prédictions mises à l'échelle.
+
+42
+00:02:21,025 --> 00:02:26,625
+Pour cela, pour la mise en production,
+le mieux est d'utiliser l'API Estimator.
+
+43
+00:02:26,625 --> 00:02:31,175
+Vous utiliserez souvent
+des prototypes de ML écrits en Keras,
+
+44
+00:02:31,175 --> 00:02:33,915
+et vous aurez à les mettre en production.
+
+45
+00:02:33,915 --> 00:02:35,765
+Donc, que devez-vous faire ?
+
+46
+00:02:35,765 --> 00:02:37,235
+Pour en avoir une idée,
+
+47
+00:02:37,235 --> 00:02:40,340
+nous pouvons regarder un peu plus le code.
+
+48
+00:02:40,340 --> 00:02:43,090
+Ne nous soucions pas
+des détails qu'il contient.
+
+49
+00:02:43,090 --> 00:02:47,205
+Vous pouvez toutefois remarquer
+qu'une architecture en couches est créée
+
+50
+00:02:47,205 --> 00:02:49,250
+dans les quelques premières lignes de code.
+
+51
+00:02:49,250 --> 00:02:55,095
+Une fois le modèle créé, il est compilé
+avec transmission de la fonction de perte,
+
+52
+00:02:55,095 --> 00:02:59,540
+de la méthode d'optimisation
+et des statistiques d'évaluation.
+
+53
+00:02:59,540 --> 00:03:02,210
+Qu'est-ce que cela vous rappelle ?
+
+54
+00:03:02,210 --> 00:03:06,950
+La fonction de modèle
+d'un Estimator personnalisé.
+
+55
+00:03:06,950 --> 00:03:11,060
+Alors, comment pouvons-nous utiliser
+à la fois Keras et l'API Estimator ?
+
+56
+00:03:11,060 --> 00:03:14,095
+La réponse est
+que vous pouvez obtenir un Estimator
+
+57
+00:03:14,095 --> 00:03:17,000
+dès que vous disposez
+d'un modèle Keras compilé.
+
+58
+00:03:17,000 --> 00:03:22,200
+Il est possible que l'ancien code Keras
+importe la version autonome de Keras.
+
+59
+00:03:22,200 --> 00:03:27,100
+Si nécessaire, vous pouvez remplacer
+"import keras" par "import tf.keras".
+
+60
+00:03:27,100 --> 00:03:31,615
+Remarquez donc que j'ai maintenant
+la ligne "from tensorflow import keras".
+
+61
+00:03:31,615 --> 00:03:34,050
+Keras fait maintenant partie
+de l'appel TensorFlow.
+
+62
+00:03:34,050 --> 00:03:35,720
+Vous pouvez donc faire cela.
+
+63
+00:03:35,720 --> 00:03:40,900
+Appelez alors simplement
+keras.estimator.model_to_estimator
+
+64
+00:03:40,900 --> 00:03:43,065
+en transmettant le modèle compilé.
+
+65
+00:03:43,065 --> 00:03:46,720
+Vous obtenez ainsi un Estimator.
+
+66
+00:03:46,720 --> 00:03:51,170
+Supprimez le model.fit
+ou le model.evaluate appelé.
+
+67
+00:03:51,170 --> 00:03:53,560
+Comment entraînez-vous ce modèle ?
+
+68
+00:03:53,560 --> 00:03:55,137
+Vous allez utiliser cet Estimator
+
+69
+00:03:55,137 --> 00:03:57,605
+comme vous utilisez
+habituellement un Estimator :
+
+70
+00:03:57,605 --> 00:04:01,544
+avec une fonction d'entrée d'entraînement,
+une fonction d'entrée d'évaluation,
+
+71
+00:04:01,544 --> 00:04:05,420
+train_spec, eval_spec, exporter, etc.
+
+72
+00:04:05,420 --> 00:04:08,480
+Et vous pouvez transmettre tout cela
+dans train_and_evaluate.
+
+73
+00:04:08,480 --> 00:04:13,425
+C'est ainsi que vous produisez
+un modèle Keras.
+
+74
+00:04:13,425 --> 00:04:15,395
+Vous devez être conscients
+
+75
+00:04:15,395 --> 00:04:19,922
+que le lien qui existe entre
+la fonction d'entrée et le modèle Keras
+
+76
+00:04:19,922 --> 00:04:22,790
+est établi via une convention
+de dénomination.
+
+77
+00:04:22,790 --> 00:04:26,835
+Si vous avez une couche Keras appelée XYZ,
+
+78
+00:04:26,835 --> 00:04:31,605
+le dictionnaire des caractéristiques
+affiché par la fonction d'entrée
+
+79
+00:04:31,605 --> 00:04:36,930
+doit contenir une caractéristique
+appelée XYZ_input.
+
+80
+00:04:36,930 --> 00:04:39,277
+Nous allons voir
+une démonstration rapide de cela
+
+81
+00:04:39,277 --> 00:04:41,545
+avec le même bloc-notes que précédemment,
+
+82
+00:04:41,545 --> 00:04:44,045
+mais avec un exemple de modèle Keras
+
+83
+00:04:44,045 --> 00:04:48,008
+que nous n'utiliserons
+que pour la démonstration.

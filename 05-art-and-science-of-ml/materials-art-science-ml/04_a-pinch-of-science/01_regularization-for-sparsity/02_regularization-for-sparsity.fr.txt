@@ -1,0 +1,80 @@
+Commençons par aborder
+la façon d'utiliser la régularisation pour créer des modèles
+plus épars et plus simples. Plus tôt dans le cours,
+nous avons abordé la régularisation L2, c'est-à-dire ajouter la somme
+des carrés des pondérations des paramètres à la dernière fonction. Cela a permis de minimiser les pondérations, d'avoir de la stabilité
+et une solution unique, mais peut donner un modèle
+inutilement grand et complexe, car toutes les caractéristiques peuvent
+rester avec des pondérations petites. Si on utilise plutôt la régularisation L1,
+on ajoute la somme de la valeur absolue des pondérations des paramètres
+à la dernière fonction, Cela pousse les pondérations
+des caractéristiques peu prédictives vers zéro. Cette stratégie sert de sélectionneur
+intégré de caractéristiques en détruisant les mauvaises
+et en laissant uniquement les plus fortes. Ce modèle épars a plusieurs avantages. Premièrement, avec moins de
+coefficients à stocker et à charger, les besoins en stockage et mémoire
+sont réduits avec un modèle plus petit, critère très important
+pour les modèles intégrés. Deuxièmement,
+avec moins de caractéristiques, les besoins en multiplications sont réduits,
+augmentant la vitesse d'entraînement, mais surtout la vitesse de prédiction. Nombre de modèles de ML ont suffisamment
+de caractéristiques comme cela. Supposons par exemple que j'ai des données
+contenant la date et l'heure de commandes. Le premier modèle de commande inclurait
+probablement sept caractéristiques pour les jours de la semaine,
+et 24 pour les heures, en plus d'autres caractéristiques. Le jour et l'heure forment
+donc déjà 31 entrées. Et si nous regardons à présent
+les effets secondaires du jour de la semaine croisé
+avec l'heure de la journée ? Nous obtenons 168 autres entrées
+en plus des 31 précédentes, entre autres, pour un total
+de presque 200 caractéristiques, juste pour cet unique champ date/heure,
+en plus d'autres caractéristiques utilisées. Si nous croisons cela avec un encodage HUD
+pour un état américain par exemple, le triple produit cartésien affiche
+déjà 8 400 caractéristiques, dont un bon nombre sont
+sûrement très éparses, pleines de 0. Il est donc évident
+que la sélection intégrée de caractéristiques via la régularisation L1
+peut être un véritable atout. Quelles stratégies utiliser pour supprimer
+les coefficients de caractéristiques inutiles à part peut-être pour la régularisation L1 ? La somme simple des caractéristiques
+avec des valeurs autres que 0 est possible. La norme L0 est simplement
+la somme des pondérations autres que 0. Optimiser cette norme est un problème
+NP-difficile et non convexe d'optimisation. Ce graphique montre à quoi ressemble une surface
+d'erreur d'optimisation non convexe. Vous pouvez voir de nombreux pics et creux. Il s'agit juste
+d'un exemple unidimensionnel simple. Vous devez explorer de nombreux points
+de départ avec la descente de gradient, ce qui rend la résolution complète
+du problème NP difficile. La norme L1, comme la norme L2,
+est heureusement convexe, mais favorise aussi
+la parcimonie dans le modèle. Les distributions de probabilité
+des normes L1 et L2 sont représentées ici. Remarquez que la norme L2
+affiche un pic plus doux à zéro, ce qui rapproche les grandeurs
+des pondérations de zéro. À l'inverse, la norme L1 ressemble plus
+à une pointe centrée sur zéro. La probabilité d'avoir exactement zéro est
+donc plus importante que pour la norme L2. Il existe un nombre infini de normes,
+généralisées par la norme p : certaines autres normes,
+ou la norme L0 déjà abordée, étant la somme des valeurs
+différentes de 0 dans un vecteur, et la norme L∞, étant la valeur absolue
+maximale de toute valeur dans un vecteur. En pratique, la norme L2 fournit pourtant
+en général des modèles plus généralisables que la norme L1. Nous obtiendrons toutefois des modèles
+plus lourds et complexes avec la norme L2, car les caractéristiques ont souvent
+une forte corrélation entre elles. La régularisation L1 en choisira
+une et ignorera l'autre. La régularisation L2 les conservera et maintiendra
+de faibles grandeurs de pondération. Avec L1, vous obtenez un modèle plus
+petit, mais qui peut être moins prédictif. Est-il possible
+de gagner sur les deux tableaux ? L'Elastic-net est l'association linéaire
+des pénalités de régularisation L1 et L2. Vous avez les avantages de la parcimonie
+pour les caractéristiques peu prédictives, tout en conservant
+les bonnes caractéristiques avec des pondérations réduites,
+pour une bonne généralisation. Le seul compromis restant est qu'il y a
+deux hyperparamètres au lieu d'un seul à régler avec deux paramètres
+de régularisation lambda différents. Que tend à faire une régularisation L1
+aux pondérations des hyperparamètres de caractéristiques
+peu prédictives d'un modèle ? La bonne réponse est
+"Avoir des valeurs égales à zéro". Utiliser des techniques de régularisation ajoute une pénalité à la dernière fonction
+ou généralement à la fonction objective, pour ne pas trop optimiser nos variables
+de décision ou les pondérations de paramètres. La pénalité est choisie en fonction
+des connaissances préalables, de l'état de la fonction, etc. Il est démontré que la régularisation L1
+induit la parcimonie dans le modèle. Grâce à sa distribution de probabilité,
+avec un pic élevé à 0, la plupart des pondérations,
+sauf celles très prévisibles, passeront
+de valeurs non régularisées à zéro. La régularisation L2 sera utilisée
+pour obtenir de petites grandeurs, et sa négative sera utilisée pour obtenir
+d'importantes grandeurs, toutes incorrectes. N'avoir que des valeurs positives reviendrait
+à ajouter au problème d'optimisation des contraintes supplémentaires limitant toutes les variables
+de décision à être supérieures à 0, ce qui n'est pas non plus
+la régularisation L1.

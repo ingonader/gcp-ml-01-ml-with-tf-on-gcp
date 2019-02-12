@@ -1,0 +1,55 @@
+Nous avons vu comment écrire
+un Estimator personnalisé si le code permettant de passer
+du Tensor d'entrée au Tensor de sortie est écrit avec TensorFlow. Nous encapsulons le code dans la fonction
+qui affiche un EstimatorSpec, puis nous transmettons cette fonction
+à l'Estimator de classe de base. Comment cela fonctionne-t-il avec Keras ? Et qu'est-ce que Keras, au juste ? Keras est une API de réseau
+de neurones de haut niveau. Elle est compatible
+avec les réseaux convolutifs et les réseaux de neurones récurrents. Toutefois, à la différence de TensorFlow, Keras n'est pas une mise en œuvre de l'un ou l'autre de ces types
+de réseaux de neurones. Keras est une API de réseau
+de neurones de haut niveau écrite en Python mais compatible
+avec TensorFlow comme backend. En d'autres termes,
+quand vous appelez une fonction Keras, elle appelle
+un ensemble de fonctions TensorFlow pour mettre en œuvre cette fonctionnalité. Outre TensorFlow,
+Keras peut également fonctionner par dessus d'autres mises en œuvre
+de réseaux de neurones telles que CNTK et theano. Keras est conçue
+pour être très facile à utiliser et pour permettre un prototypage rapide. Voici par exemple un modèle
+de classification de séquence écrit en Keras. Il contient diverses classes
+(Embedding, LSTM, Dropout, etc.). Keras vous permet ainsi de penser
+à l'architecture de votre modèle et de ne pas vous concentrer
+sur la mise en œuvre de bas niveau. Par exemple, pour créer une RVC dans TensorFlow,
+vous pouvez créer une colonne Embedding. Et pour ce faire, vous devez
+utiliser les données d'entraînement et créer tout d'abord
+une colonne catégorielle. Dans Keras, vous n'avez pas à vous soucier
+de ce type de détails de mise en œuvre. Cela signifie bien sûr aussi que si vous voulez pour partie procéder
+différemment pour le prétraitement avant de vous occuper des RVC, vous aurez à étudier très attentivement
+la documentation de Keras. Chacune des solutions a ses inconvénients, et vous devrez souvent faire un compromis
+entre la simplicité et l'expressivité. Quoi qu'il en soit, les data scientists
+créent souvent leurs modèles avec Keras. L'API Keras est toutefois conçue
+pour permettre un prototypage rapide. Elle ne gère pas l'entraînement distribué
+ni les prédictions mises à l'échelle. Pour cela, pour la mise en production,
+le mieux est d'utiliser l'API Estimator. Vous utiliserez souvent
+des prototypes de ML écrits en Keras, et vous aurez à les mettre en production. Donc, que devez-vous faire ? Pour en avoir une idée, nous pouvons regarder un peu plus le code. Ne nous soucions pas
+des détails qu'il contient. Vous pouvez toutefois remarquer
+qu'une architecture en couches est créée dans les quelques premières lignes de code. Une fois le modèle créé, il est compilé
+avec transmission de la fonction de perte, de la méthode d'optimisation
+et des statistiques d'évaluation. Qu'est-ce que cela vous rappelle ? La fonction de modèle
+d'un Estimator personnalisé. Alors, comment pouvons-nous utiliser
+à la fois Keras et l'API Estimator ? La réponse est
+que vous pouvez obtenir un Estimator dès que vous disposez
+d'un modèle Keras compilé. Il est possible que l'ancien code Keras
+importe la version autonome de Keras. Si nécessaire, vous pouvez remplacer
+"import keras" par "import tf.keras". Remarquez donc que j'ai maintenant
+la ligne "from tensorflow import keras". Keras fait maintenant partie
+de l'appel TensorFlow. Vous pouvez donc faire cela. Appelez alors simplement
+keras.estimator.model_to_estimator en transmettant le modèle compilé. Vous obtenez ainsi un Estimator. Supprimez le model.fit
+ou le model.evaluate appelé. Comment entraînez-vous ce modèle ? Vous allez utiliser cet Estimator comme vous utilisez
+habituellement un Estimator : avec une fonction d'entrée d'entraînement,
+une fonction d'entrée d'évaluation, train_spec, eval_spec, exporter, etc. Et vous pouvez transmettre tout cela
+dans train_and_evaluate. C'est ainsi que vous produisez
+un modèle Keras. Vous devez être conscients que le lien qui existe entre
+la fonction d'entrée et le modèle Keras est établi via une convention
+de dénomination. Si vous avez une couche Keras appelée XYZ, le dictionnaire des caractéristiques
+affiché par la fonction d'entrée doit contenir une caractéristique
+appelée XYZ_input. Nous allons voir
+une démonstration rapide de cela avec le même bloc-notes que précédemment, mais avec un exemple de modèle Keras que nous n'utiliserons
+que pour la démonstration.

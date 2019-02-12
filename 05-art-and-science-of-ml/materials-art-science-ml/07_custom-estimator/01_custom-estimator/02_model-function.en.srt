@@ -1,0 +1,355 @@
+1
+00:00:00,000 --> 00:00:04,180
+Let's say you read a research paper and they talk about
+
+2
+00:00:04,180 --> 00:00:08,695
+a cool model to predict the future values of a time series.
+
+3
+00:00:08,695 --> 00:00:10,545
+They even give you the code,
+
+4
+00:00:10,545 --> 00:00:14,245
+it uses strange concepts like LSTMCell,
+
+5
+00:00:14,245 --> 00:00:18,045
+unfamiliar TensorFlow functions like static_rnn and
+
+6
+00:00:18,045 --> 00:00:22,785
+even does a bit of low-level TensorFlow operations like matmul.
+
+7
+00:00:22,785 --> 00:00:26,915
+For now, let's not worry about what these mean or how they work.
+
+8
+00:00:26,915 --> 00:00:31,360
+We will look at sequence models in the ninth course of the specialization.
+
+9
+00:00:31,360 --> 00:00:35,970
+For now though, let's just treat this function as a Blackbox.
+
+10
+00:00:35,970 --> 00:00:39,585
+Essentially, the input is a time series,
+
+11
+00:00:39,585 --> 00:00:42,935
+an array of values organized by time.
+
+12
+00:00:42,935 --> 00:00:46,820
+N_INPUTS is a length of this time series.
+
+13
+00:00:46,820 --> 00:00:50,390
+The predictions is the output of the model.
+
+14
+00:00:50,390 --> 00:00:53,910
+There N_OUTPUTS numbers in the output array.
+
+15
+00:00:53,910 --> 00:00:59,140
+These represent the future values of the time series as predicted by this model.
+
+16
+00:00:59,140 --> 00:01:03,445
+So, you have a model and you'd like to train it.
+
+17
+00:01:03,445 --> 00:01:07,995
+Notice something here, this is just the model,
+
+18
+00:01:07,995 --> 00:01:09,870
+just the math if you will.
+
+19
+00:01:09,870 --> 00:01:12,120
+We still need to read in the data,
+
+20
+00:01:12,120 --> 00:01:14,340
+we still need to train to evaluate,
+
+21
+00:01:14,340 --> 00:01:19,165
+et cetera, and we want to do this in a distributed fault-tolerant way.
+
+22
+00:01:19,165 --> 00:01:21,885
+We want to add the engineering.
+
+23
+00:01:21,885 --> 00:01:26,275
+Naturally, we want to wrap it in estimator framework because
+
+24
+00:01:26,275 --> 00:01:30,685
+that's the way to get distributed training scaled prediction, et cetera.
+
+25
+00:01:30,685 --> 00:01:33,135
+So, let's look at how to do this.
+
+26
+00:01:33,135 --> 00:01:38,215
+The first thing is to go look at the train_and_evaluate function.
+
+27
+00:01:38,215 --> 00:01:45,370
+Notice that it takes three parameters: estimator, train_spec, eval_spec.
+
+28
+00:01:45,370 --> 00:01:50,450
+Train_spec and eval_spec are the same as in a canned estimator.
+
+29
+00:01:50,450 --> 00:01:56,035
+These control how to feed the input data using input function and data set.
+
+30
+00:01:56,035 --> 00:01:59,200
+They also control how long to train,
+
+31
+00:01:59,200 --> 00:02:02,440
+how often to evaluate, when to export.
+
+32
+00:02:02,440 --> 00:02:08,880
+What's different here is the first parameter to train and evaluate, the estimator.
+
+33
+00:02:08,880 --> 00:02:12,580
+Before, we would create an estimator by creating
+
+34
+00:02:12,580 --> 00:02:16,890
+a linear regressor or DNN regressor or linear classifier,
+
+35
+00:02:16,890 --> 00:02:21,405
+et cetera, we would create a canned or pre-built estimator.
+
+36
+00:02:21,405 --> 00:02:25,790
+Now though, we create a base class estimator.
+
+37
+00:02:25,790 --> 00:02:31,810
+Notice that I'm setting the estimator to just tf.estimators.Estimator.
+
+38
+00:02:31,810 --> 00:02:36,395
+The base class estimator takes two parameters,
+
+39
+00:02:36,395 --> 00:02:40,090
+the second parameter, just [inaudible] canned estimators,
+
+40
+00:02:40,090 --> 00:02:43,905
+is where to save the check points, the output directory.
+
+41
+00:02:43,905 --> 00:02:47,950
+The first parameter is the model function.
+
+42
+00:02:47,950 --> 00:02:53,190
+What does this model function, myfunc, looks like?
+
+43
+00:02:53,190 --> 00:02:58,080
+Myfunc is an estimator_spec.
+
+44
+00:02:58,080 --> 00:03:06,285
+What I mean is that myfunc returns a tf.estimater.EstimatorSpec.
+
+45
+00:03:06,285 --> 00:03:10,940
+It takes three parameters: features, targets and mode.
+
+46
+00:03:10,940 --> 00:03:14,190
+Features and targets should be familiar.
+
+47
+00:03:14,190 --> 00:03:15,620
+This is what gets returned,
+
+48
+00:03:15,620 --> 00:03:18,525
+for example, from a training input function.
+
+49
+00:03:18,525 --> 00:03:21,400
+Features is a dictionary of features,
+
+50
+00:03:21,400 --> 00:03:28,070
+so in this case I take that dictionary and pull out the tensor corresponding to INCOL.
+
+51
+00:03:28,070 --> 00:03:30,950
+Targets is simply the label,
+
+52
+00:03:30,950 --> 00:03:35,280
+again what gets returned from the training input function.
+
+53
+00:03:35,280 --> 00:03:40,765
+The mode is one of three values: train, eval or predict.
+
+54
+00:03:40,765 --> 00:03:44,815
+We look at why you might want this mode shortly.
+
+55
+00:03:44,815 --> 00:03:47,840
+From these three input values,
+
+56
+00:03:47,840 --> 00:03:54,150
+the job of myfunc is to create and return an estimator_spec.
+
+57
+00:03:54,150 --> 00:03:57,620
+There are six things in an estimator_spec.
+
+58
+00:03:57,620 --> 00:04:01,875
+The first parameter mode can simply be passed through,
+
+59
+00:04:01,875 --> 00:04:04,470
+what you get in, just pass it out.
+
+60
+00:04:04,470 --> 00:04:07,970
+The second parameter is the predictions,
+
+61
+00:04:07,970 --> 00:04:10,000
+the outputs of the model.
+
+62
+00:04:10,000 --> 00:04:13,510
+The predictions have to be a dictionary,
+
+63
+00:04:13,510 --> 00:04:17,270
+provide a key name and the corresponding tensor.
+
+64
+00:04:17,270 --> 00:04:22,305
+So here, my predictions_dict consist of just one key,
+
+65
+00:04:22,305 --> 00:04:25,760
+I'm calling it predicted, and the tensor,
+
+66
+00:04:25,760 --> 00:04:30,330
+of course, is the output of the model from research paper.
+
+67
+00:04:30,330 --> 00:04:35,615
+We use the predictions to create the exported outputs.
+
+68
+00:04:35,615 --> 00:04:40,875
+The idea is that we could export things other than just the predictions.
+
+69
+00:04:40,875 --> 00:04:45,420
+For example, you might want to export a trained embedding from the model,
+
+70
+00:04:45,420 --> 00:04:47,100
+this is where you would do that,
+
+71
+00:04:47,100 --> 00:04:50,755
+specify a key and the corresponding tensor.
+
+72
+00:04:50,755 --> 00:04:54,635
+Let's look at other things that form the estimator_spec;
+
+73
+00:04:54,635 --> 00:04:59,510
+the loss, the training operation and the evaluation metric operation.
+
+74
+00:04:59,510 --> 00:05:05,730
+The training operation needs to be carried out only if the mode is trained.
+
+75
+00:05:05,730 --> 00:05:11,535
+The evaluation metric needs to be computed only if the mode is eval.
+
+76
+00:05:11,535 --> 00:05:16,470
+So, I set the loss to be the mean squared error between the targets,
+
+77
+00:05:16,470 --> 00:05:18,610
+the labels and the predictions.
+
+78
+00:05:18,610 --> 00:05:24,530
+The training op consist of optimizing the loss function using,
+
+79
+00:05:24,530 --> 00:05:27,410
+in this case, Stochastic Gradian Descent.
+
+80
+00:05:27,410 --> 00:05:33,175
+Presumably because in the research paper we saw this model described in, they used SGD.
+
+81
+00:05:33,175 --> 00:05:36,000
+The evaluation metric is a dictionary
+
+82
+00:05:36,000 --> 00:05:39,570
+consisting of all the metrics that we want to evaluate.
+
+83
+00:05:39,570 --> 00:05:43,290
+Here, I'm computing just a root mean squared error.
+
+84
+00:05:43,290 --> 00:05:48,310
+During predictions, none of these operations should be executed.
+
+85
+00:05:48,310 --> 00:05:52,450
+Why? Because we won't have a label.
+
+86
+00:05:52,450 --> 00:05:57,560
+So, we set all these ops to be none, and that's it.
+
+87
+00:05:57,560 --> 00:06:03,100
+So in summary, we call train_and_evaluate with a base class estimator,
+
+88
+00:06:03,100 --> 00:06:06,905
+passing in a function that returns an estimator_spec,
+
+89
+00:06:06,905 --> 00:06:10,610
+and that's it, we have a custom estimator.

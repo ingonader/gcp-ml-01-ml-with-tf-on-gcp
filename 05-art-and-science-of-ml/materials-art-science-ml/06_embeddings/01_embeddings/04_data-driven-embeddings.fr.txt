@@ -1,0 +1,34 @@
+Dans la leçon précédente, nous avons vu comment créer des RVC
+manuellement à l'aide de règles. Nous avons utilisé des attributs tels que l'âge moyen du spectateur
+et le nombre total de places vendues pour faire passer nos films de ce qui aurait été un espace à 500 000
+dimensions à un espace bidimensionnel. Dans le cas de notre RVC bidimensionnelle, nous avons opté pour des axes que nous pourrions nommer "Âge"
+et "Nombre de places vendues", avec les extrémités "Enfant" et "Adulte",
+ainsi que "Art et essai" et "Blockbuster". Il n'est toutefois pas essentiel
+que ces axes aient des noms. Ce qui est important, c'est que
+nous soyons passés de 500 000 à 2. Notez que nous l'avons fait en regardant
+les attributs des films manuellement. Quel est l'impact de la réduction
+des dimensions de 500 000 à 2 ? La représentation vectorielle continue 2D
+que nous avons pour chaque film est associée à deux valeurs réelles, de sorte que chaque film peut être représenté
+par un point dans un espace 2D. Pourquoi devons-nous créer cette RVC ? C'est notamment requis
+pour la raison essentielle suivante : imaginons que nous entraînons un modèle pour prédire
+si un utilisateur va aimer un film. Il est plus facile d'entraîner un modèle
+ayant d entrées qu'un modèle qui en a N. Souvenez-vous que N est très supérieur à d. Moins il y a de nœuds d'entrée,
+moins il y a de pondérations à optimiser. Cela signifie
+que le modèle s'entraîne plus rapidement, et que le risque de surapprentissage
+est moins important. Le recours à une RVC est
+une façon de simplifier le problème. Toutefois, nous devons procéder
+à cette réduction des dimensions de façon à ne pas perdre d'informations. Comment pouvons-nous
+trouver une RVC appropriée ? Elle peut être apprise à partir des données dans le cadre du processus
+d'entraînement normal. Il n'est pas nécessaire
+d'avoir recours à un processus distinct. Nous représentons l'entrée d'origine
+sous la forme d'un tableau encodé en one-hot, puis nous l'envoyons via une couche
+de représentation vectorielle continue. Avec cette approche, la couche de RVC est simplement une couche
+cachée ayant une unité par dimension. Étant donné que nous entraînons
+un modèle avec des étiquettes, la représentation vectorielle continue
+est modifiée en fonction de ces étiquettes. Intuitivement, les unités cachées découvrent
+comment organiser les éléments dans l'espace à d dimensions de façon que l'objectif final
+puisse être optimisé au mieux. Il y a toutefois un petit problème. Quelle est la quantité de mémoire
+requise pour le stockage des entrées ? Nous avons une variable d'entrée
+catégorielle, mais 500 000 valeurs possibles. Nous devons donc
+créer 500 000 nœuds d'entrée et avoir recours aux mathématiques
+des matrices pour d'énormes matrices.

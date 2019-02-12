@@ -1,0 +1,16 @@
+Now that we know about all these nodes and
+levers, how do we set them in [INAUDIBLE] code? Let's have a close look
+at some sample code. We control the batchsize,
+we have the input function, the learning rate is a parameter of the optimizer
+algorithm, in this case, FtrlOptimizer. Regularization rate is also a parameter
+of the optimizer algorithm. Once they define the optimizer,
+we pass it to the estimator object. In this case, an instance of the linear
+regressive class of estimators. Instead of setting number of epochs,
+you need to define number of steps. This is because number of epochs is not
+failure-friendly in distributed training. You need to adjust number of steps
+based on batchsize and learning rate. For instance, if you want to process for
+100 epochs and you have a 1,000 examples, then for a batchsize of 1,000,
+number of steps would be 100. For a batchsize of 100,
+number of steps would be 1,000. Basically, number of steps equal number of epochs multiplied by number of
+examples divided by batchsize. And remember, if you decrease the learning
+rate, you'll have to train for more epochs.

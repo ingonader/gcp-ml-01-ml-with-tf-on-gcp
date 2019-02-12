@@ -1,0 +1,199 @@
+1
+00:00:00,000 --> 00:00:03,990
+Think about all these knobs and leavers and finding
+
+2
+00:00:03,990 --> 00:00:08,715
+the Goldi logs combination that's data dependent sounds like a daunting task.
+
+3
+00:00:08,715 --> 00:00:10,455
+Just think about the permutations,
+
+4
+00:00:10,455 --> 00:00:13,815
+you could automate it using any number of Gritz search algorithms,
+
+5
+00:00:13,815 --> 00:00:17,100
+but the search for the right combination can take
+
+6
+00:00:17,100 --> 00:00:20,670
+forever and burn many hours of computational resources.
+
+7
+00:00:20,670 --> 00:00:23,610
+Wouldn't it be nice to have a training loop,
+
+8
+00:00:23,610 --> 00:00:29,590
+do meta-training and all these hyper parameters and find the setting that's just right.
+
+9
+00:00:29,870 --> 00:00:33,675
+Fear not, Google Vizier is at your service.
+
+10
+00:00:33,675 --> 00:00:36,300
+For the most part you'll enjoy auto magic
+
+11
+00:00:36,300 --> 00:00:40,240
+hyperparameter tuning that's powered by Google Vizier algorithm,
+
+12
+00:00:40,240 --> 00:00:42,820
+without needing to know about the details.
+
+13
+00:00:42,820 --> 00:00:46,270
+If you're curious to know what's going on inside the black box,
+
+14
+00:00:46,270 --> 00:00:50,510
+I'd recommend reviewing the research paper via the link that's on the screen.
+
+15
+00:00:50,510 --> 00:00:55,100
+All you need to know is that Cloud ML Engine takes the burden away,
+
+16
+00:00:55,100 --> 00:01:00,155
+you just need to configure your job properly and let the ML Engine do the heavy lifting.
+
+17
+00:01:00,155 --> 00:01:05,555
+Let's see what it takes to get some hyperparameters tuned for us the auto magic way.
+
+18
+00:01:05,555 --> 00:01:08,975
+By now you should have played with Cloud ML Engine,
+
+19
+00:01:08,975 --> 00:01:12,830
+the Serverless platform for training and hosting ML models.
+
+20
+00:01:12,830 --> 00:01:17,215
+ML Engine nicely abstracts the way the process of hyperparameter tuning.
+
+21
+00:01:17,215 --> 00:01:21,575
+All you need to do to use this service is as follows.
+
+22
+00:01:21,575 --> 00:01:23,660
+One, you need to express
+
+23
+00:01:23,660 --> 00:01:27,815
+the hyperparameters in need of tuning as a command-line argument.
+
+24
+00:01:27,815 --> 00:01:32,725
+Then, you need to ensure different iterations of training don't clobber each other.
+
+25
+00:01:32,725 --> 00:01:38,420
+Finally, you'll need to supply those hyperparameters to the training job.
+
+26
+00:01:38,420 --> 00:01:42,600
+Before we jump into a lab and do some hyperparameter tuning,
+
+27
+00:01:42,600 --> 00:01:46,595
+let's quickly highlight how those three steps look like in code.
+
+28
+00:01:46,595 --> 00:01:49,785
+The first step is to define any hyperparameter
+
+29
+00:01:49,785 --> 00:01:53,640
+that you intend to get tuned as a command-line argument.
+
+30
+00:01:53,640 --> 00:01:58,380
+For instance, here I have two hyperparameters: the
+
+31
+00:01:58,380 --> 00:02:03,220
+number of packets to discretize latitude and longitude,
+
+32
+00:02:03,220 --> 00:02:07,640
+and the number of hidden units in my deep neural net.
+
+33
+00:02:07,640 --> 00:02:12,680
+The second step is to ensure the outputs of different trials don't clobber each other,
+
+34
+00:02:12,680 --> 00:02:18,940
+and that's done by employing good naming convention for output folders.
+
+35
+00:02:18,940 --> 00:02:24,775
+Here for instance, I use a trial value as a suffix that makes the output name unique.
+
+36
+00:02:24,775 --> 00:02:26,695
+The last step is to supply
+
+37
+00:02:26,695 --> 00:02:30,540
+hyperparameters when submitting a training job, and here is how.
+
+38
+00:02:30,540 --> 00:02:34,580
+First you create the yaml file like this one,
+
+39
+00:02:34,580 --> 00:02:37,965
+then you supply the path to the yaml file via
+
+40
+00:02:37,965 --> 00:02:43,745
+command-line parameters to the G Cloud ML Engine command, like this.
+
+41
+00:02:43,745 --> 00:02:48,180
+Now let's get a closer look at the contents of the yaml file.
+
+42
+00:02:48,180 --> 00:02:53,590
+Notice in this example we want to minimize the rmse on the evaluation data set.
+
+43
+00:02:53,590 --> 00:03:00,080
+We run the ML Engine to try to find the optimal batch size between 64 and 512.
+
+44
+00:03:00,080 --> 00:03:03,445
+Remind you this is not Gritz search, it's much smarter.
+
+45
+00:03:03,445 --> 00:03:05,860
+Notice the max trial here,
+
+46
+00:03:05,860 --> 00:03:10,135
+ML Engine will algorithmically search into promising areas,
+
+47
+00:03:10,135 --> 00:03:13,690
+it randomly starts a number of parallel trials as
+
+48
+00:03:13,690 --> 00:03:17,935
+specified by max parallel trials, and starts exploring.
+
+49
+00:03:17,935 --> 00:03:24,425
+Here, we are asking ML Engine to systematically try various neural network architectures.
+
+50
+00:03:24,425 --> 00:03:27,610
+Ready to put this into a test? Let's do it.

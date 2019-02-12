@@ -1,0 +1,115 @@
+Il est temps de passer à la pratique. Dans cet atelier, nous allons utiliser
+TensorFlow Playground pour créer des réseaux de neurones
+à des fins d'apprentissage. Vous allez devoir résoudre
+ces problèmes de deux façons. D'abord, nous devons entraîner les modèles
+avec l'extraction manuelle de caractéristiques qui nous permet,
+grâce à nos connaissances, d'identifier la combinaison et la transformation
+de caractéristiques appropriées. Ensuite, nous allons céder la place
+au réseau de neurones, et ajouter d'autres couches et neurones
+à l'aide d'un simple ensemble de caractéristiques d'entrées pour voir
+si le réseau peut effectuer l'extraction. Nous voici à nouveau
+dans TensorFlow Playground. Dans cet atelier, nous allons voir
+si l'extraction des caractéristiques peut donner de meilleurs résultats
+que les réseaux de neurones. J'ai l'impression que ce ne sera pas le cas.
+Voyons cela de plus près. Bien. Dans ce graphe,
+nous essayons de classifier les points orange et bleus.
+C'est un problème de classification. Vous noterez qu'ils forment
+deux cercles concentriques. Cependant, dans ce cas,
+il y a énormément de bruit. Tout est mélangé. Je vais essayer de voir les performances
+de x1 et x2 durant l'apprentissage. Comme vous le voyez,
+l'apprentissage n'est pas très efficace. Tout est flou et assez blanc. Rien n'est vraiment clairement défini, à en juger par l'échelle -1, 0, 1. Le réseau n'a pas appris grand-chose.
+Voyons si on peut faire mieux. Avec l'extraction des caractéristiques,
+je sais qu'il s'agit d'un cercle. J'élève x1 et x2 au carré, puis je fais un essai. Voyons le résultat. Cela ressemble à une ellipse. Le réseau arrive presque
+à identifier cette fonction. Nous savons qu'il s'agit d'un cercle, mais il y a beaucoup de bruit [inaudible]. Mais je peux peut-être réduire
+la perte de données à moins de 0,275. Lorsqu'on se débarrasse de x1 et de x2,
+on a une représentation linéaire. Faisons un essai. 0,285. Le cercle est plus net. Toutefois, la perte de test
+est un peu meilleure. Voyons si nous pouvons faire la même chose
+avec les réseaux de neurones. Revenons à x1 et x2. Comme nous l'avons vu tout à l'heure,
+le résultat n'était pas probant. Ajoutons une couche cachée
+et deux neurones. Comme vous pouvez le voir, le réseau
+ne parvient pas à identifier la fonction. Le problème, c'est que la capacité
+de ces deux neurones est insuffisante, tout comme la précision géométrique
+pour l'apprentissage de cette distribution. Mettons cela en pause. Ajoutons un neurone. La capacité sera peut-être suffisante
+pour l'apprentissage de cette fonction. Bien. Le réseau ne peut toujours pas l'identifier. Regardez. Cela a pris du temps, mais le réseau arrive petit à petit
+à déterminer la forme de la fonction. Il s'agit d'une forme rectangulaire. Cela veut dire qu'on a presque
+le nombre nécessaire de neurones pour représenter cette distribution. Voyons si nous pouvons faciliter
+les choses en ajoutant un neurone. Regardez le résultat. Cela a été beaucoup plus rapide. Nous n'avons que quatre neurones. Voyons maintenant le résultat
+si nous ajoutons un grand nombre de neurones. Ajoutons quatre neurones à chacune des couches. Voyons le résultat. Lançons l'entraînement. C'est beaucoup plus lent. Le nombre des calculs est bien plus élevé
+en raison des couches intermédiaires. Je pense que le réseau
+va finir par identifier la fonction. Je crains que l'on soit face
+à un cas de surapprentissage. Ce n'est plus une sorte de cercle.
+C'est un drôle de polygone. Le modèle correspond
+trop étroitement aux données, ce qui n'est pas idéal
+pour la perte de test, qui est plus élevée qu'auparavant. Regardons d'autres distributions. Voici une distribution classique
+de type "x ou y". Si x et y sont tous les deux positifs,
+ou négatifs, nous obtenons la classe bleue,
+et si x et y diffèrent, nous obtenons la classe orange. Voyons si nous pouvons
+faire un apprentissage avec x1 et x2. Comme vous l'avez déjà vu, x1 et x2 ne sont pas assez puissants
+pour pouvoir décrire cette fonction. On obtient 0 de manière générale. Voyons si nous pouvons résoudre ce problème
+avec l'extraction des caractéristiques. Grâce à l'extraction des caractéristiques,
+je vais introduire x1x2, car je sais à quoi cela ressemble.
+Lançons l'entraînement. Regardez. La perte de test est de 0,170. Excellent. Je n'ai pas eu de mal à trouver la solution. Voici la pondération, 0,190. Il y a du bruit
+et tout n'est donc pas parfait. Mais dans l'ensemble,
+le résultat est plutôt bon. Voyons maintenant si le machine learning peut faire mieux
+avec les réseaux de neurones. Nous allons à nouveau
+prendre à la fois x1 et x2, et nous allons ajouter une couche cachée. Une fois de plus, mon objectif est d'avoir le plus petit nombre possible. Je vais limiter cela à deux neurones
+et lancer l'apprentissage. Cependant, comme vous le voyez, le ML ne sait pas
+interpréter la fonction. La complexité et la capacité
+de ce modèle sont insuffisantes. Mettons le processus en pause
+et ajoutons un troisième neurone. Lançons à nouveau l'apprentissage. Comme vous le voyez ici, le réseau a du mal
+à apprendre cette fonction. Il y est presque, et il me suffit
+peut-être d'attendre un peu plus. Mais il est coincé. Une autre initialisation pourrait résoudre
+le problème. Voyons cela… Nous y voici. Nous avons effectué
+une autre réinitialisation, et le réseau apprend la fonction en partie. Elle ressemble un peu
+à un sablier en diagonale. Mais ce n'est pas tout à fait la fonction. Vous voyez que la perte est plus élevée. Passons donc à quatre neurones. Voyons cela… Nous obtenons toujours un sablier,
+mais la forme ressemble de plus en plus à une série de carrés,
+ce qui représente bien notre fonction. Maintenant, si j'ajoute
+toute une série de neurones, voyons si nous aboutissons
+à un cas de surapprentissage. La perte d'apprentissage
+est beaucoup plus lente. En revanche, la forme des carrés
+est beaucoup plus apparente. C'est très encourageant. Essayons un autre type de distribution. Voici une spirale, deux spirales en fait
+tournant l'une autour de l'autre. Un peu comme la photo d'une galaxie. Voyons si nous pouvons
+effectuer l'entraînement avec x1 et x2. J'en doute fort. Comme vous le voyez ici,
+le réseau n'a pas appris la distribution. On est proche de 0,
+et on ne sait pas de quoi il s'agit. Essayons maintenant
+l'extraction des caractéristiques. Faisons un essai. Que pensez-vous d'un cercle ? Non. Essayons plutôt cela. Sinus et cosinus, ou sin(x1) et sin(x2). J'ai six caractéristiques brutes ici
+qui entrent en ligne de compte. Comme vous le voyez en haut, on a une progression lente. Il y a un écart important ici.
+Je ne sais pas où cela va aller. On a une très forte extrapolation ici. Le résultat n'est pas bien meilleur,
+et le processus est bloqué. Voyons si nous pouvons faire mieux
+avec les réseaux de neurones. Désactivons tout cela,
+et ajoutons une couche cachée. Commençons avec deux neurones
+et voyons le résultat. Comme vous le remarquez ici, le résultat
+n'est pas bien meilleur qu'avec x1 et x2. La capacité est insuffisante
+pour l'apprentissage de ce modèle. Passons à trois. Le résultat est un tout petit peu meilleur
+qu'avant en termes d'extrapolation. Toutefois, ce n'est pas aussi concluant
+qu'avec six ou sept caractéristiques activées. Bien. Voyons si nous pouvons
+ajouter un autre neurone, ou peut-être une autre couche. Voyons ce qui va se passer. Tout est prêt. Notez que la perte d'apprentissage
+est très faible, mais que la perte de test n'est pas bonne. On est coincé. Essayons d'ajouter d'autres couches cachées. Ajoutons quatre neurones à chaque couche. Ça devrait être suffisant. Voyons le résultat. On observe une baisse significative
+des deux chiffres. Cependant, l'écran blanc
+indique l'indécision du réseau. Voici le point d'inflexion. La perte est réduite de façon significative. Mais vous pouvez voir
+que la perte de test augmente. Elle atteint un palier,
+ce qui indique un manque de capacité. Nous allons aller aussi loin que possible
+et ajouter huit neurones par couche. J'espère que ce sera suffisant
+pour l'apprentissage de cette fonction qui est très complexe
+et comporte du bruit. Bien. Lançons l'apprentissage. Comme vous le voyez,
+l'apprentissage est très lent ici. Espérons que nous allons arriver
+à utiliser cette fonction. La perte d'apprentissage
+est moins importante, mais la perte de test augmente. La perte de test se stabilise quelque peu. Si vous effectuez l'apprentissage par
+vous-même, les résultats peuvent varier en raison des initialisations
+aléatoires du réseau. Essayons autre chose. Nous obtiendrons peut-être
+un résultat plus satisfaisant. C'est effectivement plus prometteur. Vous voyez ce qui se passe.
+L'apprentissage s'effectue à ce niveau. Cette section se remplit. Il y a surapprentissage,
+car notre perte de test diverge. Ce n'est pas bon. Et voilà. Comme vous le voyez, malgré la taille du réseau, nous n'arrivons pas à apprendre
+cette distribution correctement. Nous avons toutes ces extrapolations…
+ces conjectures, mais le résultat ne va pas être bon
+en termes de perte de test. Notre perte de test
+diminue soudain. Excellent. Le réseau apprend
+la fonction de mieux en mieux. Cependant, le processus est très lent
+en raison de la taille même du réseau. N'oubliez pas
+que pour chacune de ces couches, il y a 64 pondérations. Nous avons six couches, je veux dire 6 x 64, juste là. Cela n'inclut pas la couche
+des caractéristiques ni la couche supérieure, qui en comptent 8 chacune. Nous y voici. Regardez, c'est excellent. Le réseau apprend bien cette fonction. Mais il y a ces extrapolations, ces intrapolations ici. Cette pointe orange traverse la spirale. Le processus s'améliore au fil du temps. Comme vous le voyez,
+la perte de test continue de diminuer. En revanche, cette forme indique
+un surapprentissage. C'est fait. Nous avons fini par identifier
+toutes ces formes, à l'aide des réseaux de neurones,
+ce qui peut s'avérer plus efficace, voire indispensable, comme dans le cas de la spirale,
+dont nous avons identifié la forme.

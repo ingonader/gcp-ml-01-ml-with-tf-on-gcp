@@ -1,0 +1,411 @@
+1
+00:00:00,510 --> 00:00:04,160
+A primeira seção deste módulo
+é sobre a regularização.
+
+2
+00:00:04,160 --> 00:00:08,100
+Nossa meta ao treinar o modelo
+é minimizar o valor de perda.
+
+3
+00:00:08,100 --> 00:00:09,975
+Se você fizer a curva de perda
+
+4
+00:00:09,975 --> 00:00:12,180
+nos dados de
+treinamento e de teste,
+
+5
+00:00:12,180 --> 00:00:14,115
+ela pode ser assim.
+
+6
+00:00:14,115 --> 00:00:19,875
+O gráfico mostra a perda
+no eixo Y e o tempo no eixo X.
+
+7
+00:00:19,875 --> 00:00:21,855
+Percebeu alguma coisa errada?
+
+8
+00:00:21,855 --> 00:00:24,685
+O valor de perda está descendo
+
+9
+00:00:24,685 --> 00:00:29,280
+nos dados de treinamento,
+mas aumenta nos de teste.
+
+10
+00:00:29,280 --> 00:00:31,050
+Isso não pode ser bom.
+
+11
+00:00:31,400 --> 00:00:34,785
+Há claramente um sobreajuste,
+
+12
+00:00:34,785 --> 00:00:38,490
+que parece relacionado ao
+número de iterações de treinamento.
+
+13
+00:00:38,490 --> 00:00:40,045
+Como podemos resolver isso?
+
+14
+00:00:40,045 --> 00:00:43,350
+Podemos reduzir o número de
+iterações de treinamento e parar antes.
+
+15
+00:00:43,350 --> 00:00:45,800
+A parada antecipada
+é uma opção,
+
+16
+00:00:45,800 --> 00:00:47,820
+mas há opções melhores.
+
+17
+00:00:47,820 --> 00:00:51,395
+Aqui entra a regularização.
+
+18
+00:00:51,395 --> 00:00:55,335
+Vamos usar a intuição no
+TensorFlow Playground.
+
+19
+00:00:55,335 --> 00:00:58,980
+Você já o viu e usou
+em cursos anteriores.
+
+20
+00:00:58,980 --> 00:01:00,870
+Lembrete rápido:
+
+21
+00:01:00,870 --> 00:01:03,745
+o TensorFlow Playground
+é uma ferramenta útil
+
+22
+00:01:03,745 --> 00:01:06,835
+para visualizar o aprendizado
+das redes neurais.
+
+23
+00:01:07,325 --> 00:01:12,615
+Nós o usamos muito nesta
+especialização para ver os conceitos.
+
+24
+00:01:12,925 --> 00:01:15,255
+Observe a tela.
+
+25
+00:01:15,985 --> 00:01:18,030
+Há algo estranho aqui.
+
+26
+00:01:18,500 --> 00:01:22,680
+Há uma região no canto inferior
+esquerdo que tende para o azul.
+
+27
+00:01:22,680 --> 00:01:25,170
+Os dados não sugerem o azul.
+
+28
+00:01:25,170 --> 00:01:28,840
+Essa decisão do modelo
+é meio aleatória.
+
+29
+00:01:29,420 --> 00:01:31,140
+Por que isso acontece?
+
+30
+00:01:31,290 --> 00:01:36,310
+Percebe a grossura das cinco linhas
+que vão da entrada para a saída?
+
+31
+00:01:36,310 --> 00:01:39,810
+Elas mostram o peso
+relativo dos cinco recursos.
+
+32
+00:01:40,280 --> 00:01:43,785
+As linhas que
+emanam de X1 e X2
+
+33
+00:01:43,785 --> 00:01:47,140
+são mais grossas que
+as dos cruzamentos.
+
+34
+00:01:47,140 --> 00:01:50,110
+Os cruzamentos
+contribuem muito menos
+
+35
+00:01:50,110 --> 00:01:53,510
+para o modelo que
+os recursos comuns.
+
+36
+00:01:53,510 --> 00:01:57,160
+Remover os cruzamentos
+oferece um modelo mais saudável.
+
+37
+00:01:57,160 --> 00:02:01,105
+Tente você mesmo e veja
+como os limites curvos
+
+38
+00:02:01,105 --> 00:02:05,320
+que sugerem sobreajuste
+desaparecem e o teste converge.
+
+39
+00:02:06,050 --> 00:02:09,250
+Depois de mil iterações,
+a perda do teste
+
+40
+00:02:09,250 --> 00:02:13,565
+será um valor um pouco menor
+que estes cruzamentos.
+
+41
+00:02:14,015 --> 00:02:18,060
+Seus resultados podem variar
+dependendo do conjunto de dados.
+
+42
+00:02:18,990 --> 00:02:23,080
+Os dados deste exercício
+são lineares, mais o ruído.
+
+43
+00:02:23,490 --> 00:02:27,960
+Se você usar um modelo complicado,
+como um com vários cruzamentos
+
+44
+00:02:27,960 --> 00:02:31,870
+e com a oportunidade de incluir
+o ruído nos dados de treinamento,
+
+45
+00:02:31,870 --> 00:02:35,880
+o custo de gerar o modelo é um
+desempenho ruim nos dados de teste.
+
+46
+00:02:35,880 --> 00:02:38,950
+A parada antecipada
+não ajuda nesse caso,
+
+47
+00:02:38,950 --> 00:02:42,750
+por causa da complexidade do
+modelo que precisamos controlar.
+
+48
+00:02:42,750 --> 00:02:46,145
+Mas como medir a
+complexidade e evitá-la?
+
+49
+00:02:46,145 --> 00:02:49,740
+Concluímos que modelos mais simples
+geralmente são melhores.
+
+50
+00:02:49,740 --> 00:02:52,920
+Não queremos cozinhar
+com todos os temperos.
+
+51
+00:02:52,920 --> 00:02:57,540
+Há um campo de pesquisa chamado
+teoria de generalização ou GT
+
+52
+00:02:57,540 --> 00:03:01,440
+que define a
+estrutura estatística.
+
+53
+00:03:01,440 --> 00:03:05,069
+A maneira mais fácil
+é usar a intuição,
+
+54
+00:03:05,069 --> 00:03:09,270
+com base nos princípios de
+William de Occam, do século 14.
+
+55
+00:03:09,270 --> 00:03:13,680
+Ao treinar o modelo, aplicamos
+o princípio da navalha de Occam
+
+56
+00:03:13,680 --> 00:03:18,420
+como guia heurístico para favorecer
+modelos simples com menos suposições.
+
+57
+00:03:18,420 --> 00:03:19,740
+Vamos ver algumas
+
+58
+00:03:19,740 --> 00:03:22,050
+das técnicas de regularização
+mais comuns
+
+59
+00:03:22,050 --> 00:03:24,600
+que podem ajudar
+a aplicar esse princípio.
+
+60
+00:03:24,600 --> 00:03:27,705
+A ideia é penalizar a
+complexidade do modelo.
+
+61
+00:03:27,705 --> 00:03:30,930
+Até agora, no
+processo de treinamento,
+
+62
+00:03:30,930 --> 00:03:34,310
+tentamos minimizar a perda
+dos dados que o modelo recebe.
+
+63
+00:03:34,310 --> 00:03:37,815
+Precisamos equilibrar
+a perda e a complexidade.
+
+64
+00:03:38,265 --> 00:03:41,040
+Antes de falar sobre como medir
+a complexidade do modelo,
+
+65
+00:03:41,040 --> 00:03:45,570
+vamos entender porque equilibrar
+a complexidade e a perda.
+
+66
+00:03:45,570 --> 00:03:50,625
+Na verdade, modelos
+simples demais são inúteis.
+
+67
+00:03:50,625 --> 00:03:52,340
+Se você levar isso ao extremo,
+
+68
+00:03:52,340 --> 00:03:54,315
+terminará sem modelo nenhum.
+
+69
+00:03:54,315 --> 00:03:57,090
+Precisamos encontrar
+o equilíbrio certo entre
+
+70
+00:03:57,090 --> 00:04:00,000
+simplicidade e ajuste preciso
+dos dados de treinamento.
+
+71
+00:04:00,000 --> 00:04:02,580
+Espero que você tenha
+entendido que essa abordagem
+
+72
+00:04:02,580 --> 00:04:05,580
+é mais íntegra que
+a parada antecipada.
+
+73
+00:04:05,580 --> 00:04:10,185
+A regularização é um dos maiores campos
+de pesquisa do aprendizado de máquina.
+
+74
+00:04:10,185 --> 00:04:13,020
+Há várias técnicas publicadas
+e mais no futuro.
+
+75
+00:04:13,020 --> 00:04:15,330
+Já mencionamos
+a parada antecipada.
+
+76
+00:04:15,330 --> 00:04:17,714
+Também começamos
+a explorar os métodos
+
+77
+00:04:17,714 --> 00:04:20,774
+nas penalidades de
+normas de parâmetro.
+
+78
+00:04:20,774 --> 00:04:24,045
+Também há métodos de
+aumento do conjunto de dados,
+
+79
+00:04:24,045 --> 00:04:28,110
+robustez do ruído, representação
+esparsa e muito mais.
+
+80
+00:04:28,850 --> 00:04:32,520
+Neste módulo, veremos
+melhor os métodos
+
+81
+00:04:32,520 --> 00:04:36,765
+de regularização L1 e L2 do grupo de
+penalidades de normas de parâmetros.
+
+82
+00:04:36,765 --> 00:04:38,250
+Antes disso,
+
+83
+00:04:38,250 --> 00:04:42,860
+vamos lembrar qual problema
+a regularização resolve.
+
+84
+00:04:43,850 --> 00:04:47,990
+Regularização é qualquer técnica
+que ajuda a generalizar um modelo.
+
+85
+00:04:47,990 --> 00:04:50,210
+Um modelo generalizado
+tem bom desempenho
+
+86
+00:04:50,210 --> 00:04:53,830
+nos dados de treinamento
+e em dados de teste novos.

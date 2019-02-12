@@ -1,0 +1,359 @@
+1
+00:00:00,560 --> 00:00:04,090
+This brings us to the second section of this module,
+
+2
+00:00:04,090 --> 00:00:06,840
+where we discuss two important hyperparameters,
+
+3
+00:00:06,840 --> 00:00:08,760
+Learning Rate and Batch Size.
+
+4
+00:00:08,760 --> 00:00:14,490
+Let's just start by playing with these parameters in our favorite playground.
+
+5
+00:00:14,560 --> 00:00:18,270
+Starting with Learning Rate.
+
+6
+00:00:18,270 --> 00:00:22,960
+Remember learning rate controls the size of the stop in the weight space.
+
+7
+00:00:22,960 --> 00:00:25,510
+Keeping batch size equal to 30,
+
+8
+00:00:25,510 --> 00:00:27,830
+and all other parameters constant,
+
+9
+00:00:27,830 --> 00:00:31,585
+I first set the learning rate to 0.01.
+
+10
+00:00:31,585 --> 00:00:34,720
+Tensorflow playground uses random starting points.
+
+11
+00:00:34,720 --> 00:00:37,645
+So your results might be different than mine.
+
+12
+00:00:37,645 --> 00:00:41,410
+You may notice funny bounces on the last curve,
+
+13
+00:00:41,410 --> 00:00:43,210
+but it converges pretty fast.
+
+14
+00:00:43,210 --> 00:00:48,760
+In my case, I got to 0.139 loss value on the test rate,
+
+15
+00:00:48,760 --> 00:00:51,530
+and less than 300 epochs.
+
+16
+00:00:51,820 --> 00:00:56,230
+By changing the learning rate to 0.001,
+
+17
+00:00:56,230 --> 00:00:58,260
+I saw much slower performance.
+
+18
+00:00:58,260 --> 00:01:01,110
+In my case, it took almost 3,000 epochs
+
+19
+00:01:01,110 --> 00:01:04,810
+to reach a test loss comparable to the previous experiment.
+
+20
+00:01:04,810 --> 00:01:09,660
+On the bright side, you should not see any crazy bounces on the loss curve.
+
+21
+00:01:09,660 --> 00:01:12,690
+It should converge slowly, but smoothly.
+
+22
+00:01:12,690 --> 00:01:18,100
+Now, let's experiment with the effects of batch size.
+
+23
+00:01:18,100 --> 00:01:24,150
+Remember, batch size controls the number of samples that the gradient is calculated on.
+
+24
+00:01:24,150 --> 00:01:27,390
+Keeping learning rate as 0.01,
+
+25
+00:01:27,390 --> 00:01:29,740
+and all the other parameters constant,
+
+26
+00:01:29,740 --> 00:01:32,775
+I first tried batch size equal 100.
+
+27
+00:01:32,775 --> 00:01:34,965
+If you're playing along,
+
+28
+00:01:34,965 --> 00:01:39,630
+you may be scratching your head at this point as how to increase batch size beyond 30.
+
+29
+00:01:39,630 --> 00:01:41,130
+Don't worry, it's not broken.
+
+30
+00:01:41,130 --> 00:01:42,480
+It's by design.
+
+31
+00:01:42,480 --> 00:01:46,170
+The UI doesn't allow you to go beyond 30,
+
+32
+00:01:46,170 --> 00:01:49,080
+but you can change it into URO.
+
+33
+00:01:49,080 --> 00:01:51,690
+With batch size equal 100,
+
+34
+00:01:51,690 --> 00:01:54,185
+I noticed a rather slow convergence.
+
+35
+00:01:54,185 --> 00:02:00,395
+It took more than 1,000 epochs to reach a similar loss value as previous experiments.
+
+36
+00:02:00,395 --> 00:02:03,510
+But there were no noisy steps.
+
+37
+00:02:04,090 --> 00:02:07,630
+When reducing the batch size to five,
+
+38
+00:02:07,630 --> 00:02:09,610
+I got very fast results.
+
+39
+00:02:09,610 --> 00:02:11,780
+Basically, in only 65 epochs,
+
+40
+00:02:11,780 --> 00:02:15,670
+I reached similar test loss as previous experiments.
+
+41
+00:02:15,670 --> 00:02:19,745
+But there were some noisy steps visible on the loss curve.
+
+42
+00:02:19,745 --> 00:02:24,710
+Turns out model performance is very sensitive to learning rate and batch size.
+
+43
+00:02:24,710 --> 00:02:27,860
+Doesn't it feel like tuning a musical instrument?
+
+44
+00:02:27,860 --> 00:02:29,630
+Told you there's some art involved.
+
+45
+00:02:29,630 --> 00:02:34,460
+So, let's recap our findings.
+
+46
+00:02:34,460 --> 00:02:39,575
+Once again, learning rate controls the size of the step in the weight space.
+
+47
+00:02:39,575 --> 00:02:42,095
+If the steps are too small,
+
+48
+00:02:42,095 --> 00:02:44,165
+training will take a long time.
+
+49
+00:02:44,165 --> 00:02:47,235
+On the other hand, if the steps are too large,
+
+50
+00:02:47,235 --> 00:02:51,125
+it will bounce around and could even miss the optimal point.
+
+51
+00:02:51,125 --> 00:02:54,200
+A learning rate of point 0.001,
+
+52
+00:02:54,200 --> 00:02:58,850
+means a step size equal to one over 1,000 of the input space.
+
+53
+00:02:58,850 --> 00:03:01,150
+This could be too small of a learning rate,
+
+54
+00:03:01,150 --> 00:03:04,420
+when you have a large optimization surface.
+
+55
+00:03:04,420 --> 00:03:10,545
+For instance, the default value for linear regressor estimator in Tensorflow library,
+
+56
+00:03:10,545 --> 00:03:15,430
+is set to 0.2 or one over a square root of the number of features.
+
+57
+00:03:15,430 --> 00:03:19,920
+This assumes your feature and label values are small numbers.
+
+58
+00:03:20,910 --> 00:03:23,610
+The other knob being batch size,
+
+59
+00:03:23,610 --> 00:03:27,510
+controls the number of samples that gradient is calculated on.
+
+60
+00:03:27,510 --> 00:03:29,460
+If batch size is too small,
+
+61
+00:03:29,460 --> 00:03:31,980
+we could be bouncing around because the batch may
+
+62
+00:03:31,980 --> 00:03:34,845
+not be a good enough representation of the input.
+
+63
+00:03:34,845 --> 00:03:37,815
+On the other hand, if batch size is too large,
+
+64
+00:03:37,815 --> 00:03:40,650
+training will take a very long time.
+
+65
+00:03:40,650 --> 00:03:42,460
+As a rule of thumb,
+
+66
+00:03:42,460 --> 00:03:46,830
+40 to 100 tends to be a good range for batch size.
+
+67
+00:03:46,830 --> 00:03:50,070
+It can go up to as high as 500.
+
+68
+00:03:52,680 --> 00:03:55,710
+While on the topic of batching,
+
+69
+00:03:55,710 --> 00:03:58,355
+let's not forget the batch shuffling.
+
+70
+00:03:58,355 --> 00:04:02,380
+You must have heard that shuffling examples is a good idea. But why?
+
+71
+00:04:02,380 --> 00:04:05,590
+Take book titles like these.
+
+72
+00:04:05,590 --> 00:04:07,930
+Let's say you're training every commander that's
+
+73
+00:04:07,930 --> 00:04:10,870
+suggest the next title to read to a user.
+
+74
+00:04:10,870 --> 00:04:13,975
+Notice the titles are alphabetically sorted.
+
+75
+00:04:13,975 --> 00:04:17,120
+If you use your dataset as is,
+
+76
+00:04:17,120 --> 00:04:20,950
+each training batch will contain a subset of the titles,
+
+77
+00:04:20,950 --> 00:04:24,265
+based on the consecutive letters of the alphabet.
+
+78
+00:04:24,265 --> 00:04:27,670
+You'll be giving your poor model a very narrow view of
+
+79
+00:04:27,670 --> 00:04:32,585
+the problem domain and taking away its chance of discovering the whole truth.
+
+80
+00:04:32,585 --> 00:04:35,065
+You wouldn't want to be a bad teacher.
+
+81
+00:04:35,065 --> 00:04:40,225
+Instead, you want every batch to be representative of the entire dataset.
+
+82
+00:04:40,225 --> 00:04:43,570
+Most datasets tend to have some in hand order.
+
+83
+00:04:43,570 --> 00:04:46,420
+Like these alphabetically sorted book titles,
+
+84
+00:04:46,420 --> 00:04:48,880
+customer records sorted by zip code,
+
+85
+00:04:48,880 --> 00:04:52,085
+purchases archived by season, year etc.
+
+86
+00:04:52,085 --> 00:04:54,740
+By properly shuffling the dataset,
+
+87
+00:04:54,740 --> 00:04:58,940
+you'll ensure each batch is representative of the entire dataset.
+
+88
+00:04:58,940 --> 00:05:02,790
+Remember, the gradient are computed within the batch.
+
+89
+00:05:02,790 --> 00:05:04,985
+If the batch is not representative,
+
+90
+00:05:04,985 --> 00:05:09,690
+the loss will jump around too much from botched batch.

@@ -1,0 +1,120 @@
+Jetzt möchten wir
+das neue Wissen anwenden und mit neuronalen Netzwerken
+in TensorFlow ein ML-Modell erstellen. Titel des Labs: "Neuronale Netzwerke
+verwenden, um ML-Modelle zu erstellen". Dieses Mal verwenden Sie in TensorFlow die DNNRegressor-Klasse, um durchschnittliche Hauspreise 
+anhand von Merkmalen vorherzusagen. Die Daten basieren auf
+der kalifornischen Volkszählung von 1990 und wurden auf Häuserblockebene erhoben. Die Funktionen beziehen sich
+also auf die Zahl der Zimmer oder der Bewohner pro Block. Willkommen zurück. Wir sehen uns unseren Code an,
+da wir in TensorFlow mit dem DNN-Klassen-Regressor
+ein neuronales Netzwerk erstellen möchten. Wir erfahren,
+wie man ein neuronales Netzwerk verwendet, und stützen uns auf die Daten
+der kalifornischen Volkszählung von 1990. Sie sind auf Häuserblöcke bezogen. Es geht um Merkmale wie die Zimmerzahl und die Bewohnerzahl in diesem Block. Wir nutzen bestimmte Merkmale,
+um den Hauswert zu ermitteln. Zuerst die Einrichtung. In der ersten Zelle laden wir
+die erforderlichen Bibliotheken. Wir importieren math, shutil, numpy, pandas, tensorflow. Stellen Sie Ausführlichkeit auf "Info",
+um mehr Ergebnisse zu erhalten. Achten Sie darauf, dass ein
+Format für pandas festgelegt ist. Jetzt laden wir unser
+Dataset über diese URL. Die Trainingsdaten werden
+in einen pandas-Datenframe importiert. Nun werden die Daten analysiert. Es empfiehlt sich, die Daten
+zuerst unter die Lupe zu nehmen. Wir drucken für jede Spalte
+eine kurze Zusammenfassung aus, inklusive Mittelwert, Standardabweichung,
+Maximum, Minimum und Quantile. Als Erstes drucken wir
+den Head des Datenframes, also z. B. die ersten
+fünf Zeilen des Datasets. Längengrad, Breitengrad,
+mittleres Hausalter, Zimmerzahl,
+Schlafzimmerzahl, Bevölkerung, Haushalte, mittleres Einkommen
+und mittlerer Hauswert, hier das Label. Das möchte ich mit den anderen Merkmalen vorhersagen. Sehen wir uns die tatsächlichen Daten an. Das kann ich mit df.describe machen. Es zeigt die Anzahl, Mittelwerte, Standardabweichung, Minimum, 25. Perzentil, 50. Perzentil,
+75. Perzentil und Maximum an. Hier sieht alles ziemlich gut aus, ist aber immer noch auf Wohnblockebene. Wir müssen herausfinden,
+wie das auf Hausebene funktioniert. Ich brauche die Zahl
+der Zimmer. Dafür nehme ich die Zahl der Zimmer
+für den gesamten Wohnblock und teile sie durch
+die Zahl der Haushalte in dem Block. So erhalte ich den Mittelwert
+für die Zahl der Zimmer pro Haus. Für Schlafzimmer nehme ich die Zahl der Schlafzimmer, die Zahl der Schlafzimmer im gesamten Block
+und teile sie durch die Zahl der Haushalte in diesem Block. So erhalte ich
+den Mittelwert für Schlafzimmer. Für Personen pro Haus nehme ich die Gesamtbevölkerung des Blocks und teile sie durch die Zahl der Haushalte und dasselbe für den
+Mittelwert der Hausbewohner. Wenn ich ein df.describe durchführe, sehe ich hier meine Originalspalten. Hier wurden jedoch
+neue Spalten hinzugefügt. Das ist die mittlere Zahl
+an Zimmern pro Haus, an Schlafzimmern pro Haus und an Hausbewohnern. Sehr gut. Nun kann ich die
+Bevölkerungsdaten einfügen und gehe zu den Daten auf Blockebene, z. B. Zimmer, Schlafzimmer, Bevölkerung, Haushalte
+und füge alle Spalten ein, sodass kein neuer
+Datenframe erforderlich ist. Mit df.describe sehen Sie meine neuen Merkmale hier und meine alten dort. Hier ist mein Label und die zuvor
+genutzten Daten sind nicht mehr da. Dies ist die Ansicht auf Hausebene. Nun erstellen wir unser neuronales Netzwerkmodell mit unseren
+Merkmalsdaten im korrekten Format. Jetzt erstellen wir die
+Spalten für die Merkmale. Sie stellen unsere Daten im Grunde so dar, dass sie von unserem
+Modell verwendet werden können. Selbst wenn es sich um eine
+Schreibweise mit Gleitkommazahlen handelt, müssen wir festlegen, ob Gleitkommazahlen
+in einer Spalte verwendet werden. Sie gehen hier rein und ich zeige hier auf alle Spalten
+und den Mittelwert für Hausalter, und Einkommen, die Zimmerzahl, Schlafzimmerzahl und Personen pro Haus. Danach möchte ich die
+Merkmale weiter bearbeiten. Ich erstelle eine neue
+Merkmalsspalte namens "Längengrad", eine in Buckets aufgeteilte
+Spalte der numerischen Längengradspalte. Der lineare Bereich reicht vom negativen 124,3 bis zum negativen
+114,3 in Fünferschritten. Dann die Merkmalsspalten Breitengrad. Es ist wieder dasselbe, nur reicht der Bereich jetzt von Breitengrad 32,5
+bis 42 und es gibt 10 Buckets. Kalifornien ist nämlich länger als breit. Daher sollte unser
+Breitengrad mehr Buckets haben. 10 Buckets im Gegensatz zu
+5 für den Längengrad. Ich drucke nur
+die Namen der Merkmalsspalten aus. Hier habe ich den Mittelwert
+für Einkommen, Hausbewohner, Zahl der Zimmer, Hausalter, Längengrad, Zahl der
+Schlafzimmer und Breitengrad. Toll. Aber zuerst müssen wir das in Datasets
+für Training und Bewertung aufteilen. So sehe ich, wie sich das Modell
+während des Trainings entwickelt. Ich erstelle dazu eine zufällige Maske, in der ich nach
+der Länge des Datenframes suche. Dann erstelle ich
+genau so viele zufällige Werte aus einer einheitlichen Verteilung. Sind sie weniger als 0,8, speichere ich sie in diesem Maskenvektor. Er hat dieselbe Länge wie der Datenframe, die Werte sind alle "true" und "false". Das ist eine Boolesche Maske. Wenn ich sie auf
+meinen Datenframe anwende, werden diese Zeilen für
+alle Fälle, in denen die Maske "true" ist, in den trainierten Datenframe eingesetzt. Für alle Werte, die nicht "true" sind, gibt es diese Tilde. Sie werden
+in den Bewertungsframe eingesetzt. So ergibt sich
+ein 80%iger Anteil für den Trainingsframe. 20 % der Daten
+fließen in den Bewertungsframe. Der Skalierungsfaktor ist hier 100.000. Das liegt daran, dass ich
+meine Labels hier skalieren möchte. Da sie viel zu groß sind, gibt es vollkommen
+unterschiedliche Skalierungen. Diese liegen 
+im Bereich von 100.000, Millionen. Diese sind viel kleiner,
+1- oder 2-stellige Gleitkommazahlen. Das mache ich jetzt.
+Dann erstelle ich die Batch-Größe und stelle sie auf 100. Ich stelle sie unter
+jedem Datenframe auf 100 Zeilen. Dann erstelle ich
+die Funktion für die Trainingseingabe. Dafür verwende ich die
+Eingabefunktion des Estimators pandas, wo X gleich meine Merkmale ist. So wird ein Tensor-Dictionary erstellt und das ist die Ausgabe. So wird mein Trainingsframe für mittlere
+Hauswerte zu dieser Spalte gedreht. Ich lese das in "Y" und es wird
+dann ein Tensor für meine Labels. Die Anzahl der Epochen ist 1, Wert für die Batch-Größe
+und ich verwende "Shuffle". Hier ist meine
+Eingabefunktion zur Bewertung. Es wird auch hier
+die pandas-Eingabefunktion verwendet. Die Einstellungen für
+den Eingabeframe sind fast identisch. "Shuffle" ist jedoch gleich "false", da ich keine Shuffle-Bewertungen,
+sondern Wiederholbarkeit möchte. Ich erstelle außerdem
+die Funktion "print_rmse", die den RMSE meines Modells ausdruckt, einschließlich des Namens
+und der verknüpften Eingabefunktion. Ich erstelle die Messwerte. Ich gehe zu model.evaluate des Estimators. Denn mein Estimator ist ein Modell. Ich übergebe es an die Eingabefunktion. Dort ist es die Eingabefunktion,
+die an "print_rmse" übergeben wird, und ich nehme einen Schritt. Auf diese Weise schließe ich diese Messwerte aus. Das sollte Dictionary sein. Gibt es ein Regressionsproblem, das zu Verlust führt, einem durchschnittlichen Verlust
+und zu einem globalen Schritt? Dann drucke ich
+den RMSE in diesem Dataset aus. Ich muss die Quadratwurzel erreichen, weil der durchschnittliche
+Verlust nur der MSE ist. Über den RMSE prüfe ich die Quadratwurzel. Hier wird mit der Skalierung multipliziert. Ich gelange zu den richtigen Einheiten für
+den Preis zurück, der mittlere Hauswert. Nun bearbeite ich die lineare Regression. Ich habe ein Ausgabeverzeichnis erstellt. Hier werden alle Dateien
+aus dem Training gespeichert, z. B. meine Prüfpunkte,
+meine Ereignis-Logs, gespeicherte Modelle. Ich möchte sie entfernen,
+damit ich jedes Mal von vorn beginne. Ich lösche alle Inhalte in diesem Baum, um einen leeren Ordner zu erhalten. Ich erstelle meinen
+benutzerdefinierten Optimierer. Das ist lineare Regression. Ich nutze den Optimierer 
+"Follow-the-Regularized-Leader". Das ist in der Regel eine gute Wahl. Die Lernrate beträgt 0,01. Dann erstelle ich mein Modell. Ich erstelle den Estimator, einen linearen Regressor. Ich übergebe mein Modellverzeichnis. Ich kopiere meine Daten in die Merkmalsspalten
+und füge die Werte hinzu. Das sind die Tensoren dafür. Mein Optimierer ist benutzerdefiniert
+für meinen Regularized-Leader. Ich trainiere für verschiedene Schritte. Hierfür trainiere ich 100 Mal, für meinen Frame oder die Batch-Größe. Ich trainiere also für 100 Epochen. Dann rufe ich model.train auf, übergebe meine Eingabefunktion für das Training. Meine Schrittzahl könnte die sein, die ich hier erstellt habe.
+Sie trainiert das Modell. Am Ende drucke ich dann
+den RMSE des Modells aus. Ich rufe meine Funktion
+für die Bewertungseingabe auf, damit sie in
+meinem Funktionsset enthalten ist. Wenn ich das Training ausführe, habe ich hier die Standardkonfiguration. Wenn ich das ändere, erstelle ich
+einen Prüfpunkt und beginne das Training. Ich berechne zuerst den Verlust. Hier sehe ich
+die pro Sekunde ausgeführten Schritte. Im Laufe des Trainings wird der Verlust hoffentlich geringer. Der letzte durchschnittliche
+Verlust meiner Bewertung beträgt 0,93 nach 137 globalen Schritten. Der Gesamtverlust ist 3.141. Der RMSE meiner Bewertung
+ist nach Multiplizieren mit der Skalierung meines Bewertungssets 96.583 $. RMSE ist die
+Standardabweichung Ihrer Restbeträge. Diese enthalten die Differenz zwischen Ihrer Vorhersage und dem Label. Nun finden wir heraus,
+ob es mit dem DNNRegressor besser wird. Alles ist genauso wie vorher. Doch nun verwende ich den AdamOptimizer, weil er besser zum DNNRegressor passt
+als der Follow-the-Regularized-Leader. Ich wechsle nun auch vom
+linearen Regressor zum DNNRegressor. Dort übergebe ich
+die Daten vor allen anderen. Ich füge allerdings meine verborgenen
+Einheiten ein und ich habe eine, zwei, drei Ebenen hier. Die erste Ebene hat
+100 verborgene Neuronen, die zweite 50 und die letzte 20. Ich übergebe auch die Merkmalsspalten, den selbst erstellten Optimierer, der dieses Mal Adam verwendet, dann ein Drop-out von 10 %. Dies ist die Drop-out-Wahrscheinlichkeit, nicht die Key-Wahrscheinlichkeit
+wie in anderen Installationen. Ich erstelle auch
+die Zahl der Schritte wie zuvor, trainiere wie zuvor
+und ich habe den RMSE ausgedruckt. Gibt es etwas zu verbessern? Es läuft alles wie zuvor, wenn meine
+Standardkonfiguration trainiert. Nun die letzten Schritte. Der durchschnittliche
+Verlust meines Trainings ist 0,67. Da er zuvor bei 0,93 lag,
+ist das eine Verbesserung. Aber in meinem RMSE sind es 81.974 $. Wie Sie hier sehen, ist die
+Standardabweichung viel kleiner als zuvor, das Modell läuft also bedeutend besser. Natürlich kann man es viel komplizierter machen
+und mehr Algorithmen nutzen. Daran sehen Sie,
+dass ein neuronales Netzwerk leicht eine höhere Leistung als
+eine lineare Regression erreichen kann. Schließlich können wir es
+in TensorBoard aufrufen und den Fortschritt verfolgen.

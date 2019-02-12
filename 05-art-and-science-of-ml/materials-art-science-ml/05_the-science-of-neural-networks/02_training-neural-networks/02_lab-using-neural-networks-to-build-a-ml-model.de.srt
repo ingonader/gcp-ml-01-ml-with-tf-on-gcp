@@ -1,0 +1,1138 @@
+1
+00:00:00,000 --> 00:00:02,600
+Jetzt möchten wir
+das neue Wissen anwenden und
+
+2
+00:00:02,600 --> 00:00:06,035
+mit neuronalen Netzwerken
+in TensorFlow ein ML-Modell erstellen.
+
+3
+00:00:06,035 --> 00:00:10,480
+Titel des Labs: "Neuronale Netzwerke
+verwenden, um ML-Modelle zu erstellen".
+
+4
+00:00:10,480 --> 00:00:13,150
+Dieses Mal verwenden Sie in TensorFlow
+
+5
+00:00:13,150 --> 00:00:15,100
+die DNNRegressor-Klasse,
+
+6
+00:00:15,110 --> 00:00:19,075
+um durchschnittliche Hauspreise 
+anhand von Merkmalen vorherzusagen.
+
+7
+00:00:19,515 --> 00:00:22,500
+Die Daten basieren auf
+der kalifornischen Volkszählung von 1990
+
+8
+00:00:22,500 --> 00:00:25,020
+und wurden auf Häuserblockebene erhoben.
+
+9
+00:00:25,020 --> 00:00:28,635
+Die Funktionen beziehen sich
+also auf die Zahl der Zimmer oder
+
+10
+00:00:28,645 --> 00:00:31,095
+der Bewohner pro Block.
+
+11
+00:00:31,415 --> 00:00:33,095
+Willkommen zurück.
+
+12
+00:00:33,095 --> 00:00:35,880
+Wir sehen uns unseren Code an,
+da wir in TensorFlow mit dem
+
+13
+00:00:35,880 --> 00:00:39,855
+DNN-Klassen-Regressor
+ein neuronales Netzwerk erstellen möchten.
+
+14
+00:00:39,855 --> 00:00:43,490
+Wir erfahren,
+wie man ein neuronales Netzwerk verwendet,
+
+15
+00:00:43,490 --> 00:00:48,150
+und stützen uns auf die Daten
+der kalifornischen Volkszählung von 1990.
+
+16
+00:00:48,150 --> 00:00:50,230
+Sie sind auf Häuserblöcke bezogen.
+
+17
+00:00:50,230 --> 00:00:51,735
+Es geht um Merkmale
+
+18
+00:00:51,735 --> 00:00:53,150
+wie die Zimmerzahl
+
+19
+00:00:53,150 --> 00:00:55,990
+und die Bewohnerzahl in diesem Block.
+
+20
+00:00:55,990 --> 00:00:59,515
+Wir nutzen bestimmte Merkmale,
+um den Hauswert zu ermitteln.
+
+21
+00:00:59,515 --> 00:01:01,290
+Zuerst die Einrichtung.
+
+22
+00:01:01,290 --> 00:01:04,755
+In der ersten Zelle laden wir
+die erforderlichen Bibliotheken.
+
+23
+00:01:04,755 --> 00:01:06,185
+Wir importieren math,
+
+24
+00:01:06,185 --> 00:01:08,540
+shutil, numpy, pandas, tensorflow.
+
+25
+00:01:08,540 --> 00:01:12,895
+Stellen Sie Ausführlichkeit auf "Info",
+um mehr Ergebnisse zu erhalten.
+
+26
+00:01:12,895 --> 00:01:16,735
+Achten Sie darauf, dass ein
+Format für pandas festgelegt ist.
+
+27
+00:01:16,735 --> 00:01:19,835
+Jetzt laden wir unser
+Dataset über diese URL.
+
+28
+00:01:19,835 --> 00:01:23,820
+Die Trainingsdaten werden
+in einen pandas-Datenframe importiert.
+
+29
+00:01:23,820 --> 00:01:25,675
+Nun werden die Daten analysiert.
+
+30
+00:01:25,675 --> 00:01:28,755
+Es empfiehlt sich, die Daten
+zuerst unter die Lupe zu nehmen.
+
+31
+00:01:28,755 --> 00:01:32,550
+Wir drucken für jede Spalte
+eine kurze Zusammenfassung aus,
+
+32
+00:01:32,550 --> 00:01:33,950
+inklusive Mittelwert,
+
+33
+00:01:33,950 --> 00:01:36,920
+Standardabweichung,
+Maximum, Minimum und Quantile.
+
+34
+00:01:36,920 --> 00:01:40,270
+Als Erstes drucken wir
+den Head des Datenframes,
+
+35
+00:01:40,270 --> 00:01:44,200
+also z. B. die ersten
+fünf Zeilen des Datasets.
+
+36
+00:01:44,300 --> 00:01:46,570
+Längengrad, Breitengrad,
+mittleres Hausalter,
+
+37
+00:01:46,570 --> 00:01:49,600
+Zimmerzahl,
+Schlafzimmerzahl, Bevölkerung, Haushalte,
+
+38
+00:01:49,600 --> 00:01:52,325
+mittleres Einkommen
+und mittlerer Hauswert,
+
+39
+00:01:52,325 --> 00:01:54,140
+hier das Label. Das möchte ich
+
+40
+00:01:54,140 --> 00:01:56,725
+mit den anderen Merkmalen vorhersagen.
+
+41
+00:01:56,725 --> 00:01:59,190
+Sehen wir uns die tatsächlichen Daten an.
+
+42
+00:01:59,190 --> 00:02:01,285
+Das kann ich mit df.describe machen.
+
+43
+00:02:01,285 --> 00:02:02,560
+Es zeigt die Anzahl,
+
+44
+00:02:02,560 --> 00:02:04,770
+Mittelwerte, Standardabweichung,
+
+45
+00:02:04,770 --> 00:02:06,450
+Minimum, 25. Perzentil,
+
+46
+00:02:06,450 --> 00:02:09,699
+50. Perzentil,
+75. Perzentil und Maximum an.
+
+47
+00:02:10,349 --> 00:02:12,815
+Hier sieht alles ziemlich gut aus,
+
+48
+00:02:12,815 --> 00:02:16,050
+ist aber immer noch auf Wohnblockebene.
+
+49
+00:02:16,050 --> 00:02:20,220
+Wir müssen herausfinden,
+wie das auf Hausebene funktioniert.
+
+50
+00:02:20,220 --> 00:02:24,220
+Ich brauche die Zahl
+der Zimmer. Dafür nehme ich
+
+51
+00:02:24,220 --> 00:02:26,840
+die Zahl der Zimmer
+für den gesamten Wohnblock
+
+52
+00:02:26,840 --> 00:02:30,100
+und teile sie durch
+die Zahl der Haushalte in dem Block.
+
+53
+00:02:30,100 --> 00:02:33,395
+So erhalte ich den Mittelwert
+für die Zahl der Zimmer pro Haus.
+
+54
+00:02:33,395 --> 00:02:34,870
+Für Schlafzimmer nehme ich
+
+55
+00:02:34,870 --> 00:02:36,955
+die Zahl der Schlafzimmer, die Zahl
+
+56
+00:02:36,955 --> 00:02:41,560
+der Schlafzimmer im gesamten Block
+und teile sie durch die Zahl der Haushalte
+
+57
+00:02:41,560 --> 00:02:44,315
+in diesem Block. So erhalte ich
+den Mittelwert für Schlafzimmer.
+
+58
+00:02:44,585 --> 00:02:46,735
+Für Personen pro Haus
+
+59
+00:02:46,735 --> 00:02:49,230
+nehme ich die Gesamtbevölkerung des Blocks
+
+60
+00:02:49,230 --> 00:02:51,775
+und teile sie durch die Zahl der Haushalte
+
+61
+00:02:51,775 --> 00:02:54,660
+und dasselbe für den
+Mittelwert der Hausbewohner.
+
+62
+00:02:54,660 --> 00:02:56,785
+Wenn ich ein df.describe durchführe,
+
+63
+00:02:56,785 --> 00:02:59,005
+sehe ich hier meine Originalspalten.
+
+64
+00:02:59,115 --> 00:03:02,160
+Hier wurden jedoch
+neue Spalten hinzugefügt.
+
+65
+00:03:02,160 --> 00:03:04,940
+Das ist die mittlere Zahl
+an Zimmern pro Haus,
+
+66
+00:03:04,940 --> 00:03:06,550
+an Schlafzimmern pro Haus
+
+67
+00:03:06,550 --> 00:03:08,575
+und an Hausbewohnern.
+
+68
+00:03:09,085 --> 00:03:10,085
+Sehr gut.
+
+69
+00:03:10,305 --> 00:03:14,375
+Nun kann ich die
+Bevölkerungsdaten einfügen
+
+70
+00:03:14,375 --> 00:03:17,890
+und gehe zu den Daten auf Blockebene,
+
+71
+00:03:17,890 --> 00:03:19,630
+z. B. Zimmer, Schlafzimmer,
+
+72
+00:03:19,630 --> 00:03:23,390
+Bevölkerung, Haushalte
+und füge alle Spalten ein,
+
+73
+00:03:23,390 --> 00:03:26,345
+sodass kein neuer
+Datenframe erforderlich ist.
+
+74
+00:03:26,345 --> 00:03:27,840
+Mit df.describe
+
+75
+00:03:27,840 --> 00:03:30,825
+sehen Sie meine neuen Merkmale hier
+
+76
+00:03:30,825 --> 00:03:32,440
+und meine alten dort.
+
+77
+00:03:32,440 --> 00:03:36,540
+Hier ist mein Label und die zuvor
+genutzten Daten sind nicht mehr da.
+
+78
+00:03:36,540 --> 00:03:39,025
+Dies ist die Ansicht auf Hausebene.
+
+79
+00:03:39,025 --> 00:03:40,850
+Nun erstellen wir unser
+
+80
+00:03:40,850 --> 00:03:45,565
+neuronales Netzwerkmodell mit unseren
+Merkmalsdaten im korrekten Format.
+
+81
+00:03:45,565 --> 00:03:48,565
+Jetzt erstellen wir die
+Spalten für die Merkmale.
+
+82
+00:03:48,565 --> 00:03:51,070
+Sie stellen unsere Daten im Grunde so dar,
+
+83
+00:03:51,070 --> 00:03:54,360
+dass sie von unserem
+Modell verwendet werden können.
+
+84
+00:03:54,360 --> 00:03:58,880
+Selbst wenn es sich um eine
+Schreibweise mit Gleitkommazahlen handelt,
+
+85
+00:03:58,880 --> 00:04:03,745
+müssen wir festlegen, ob Gleitkommazahlen
+in einer Spalte verwendet werden.
+
+86
+00:04:03,745 --> 00:04:05,620
+Sie gehen hier rein
+
+87
+00:04:05,620 --> 00:04:07,625
+und ich zeige hier
+
+88
+00:04:07,625 --> 00:04:10,940
+auf alle Spalten
+und den Mittelwert für Hausalter,
+
+89
+00:04:10,940 --> 00:04:13,130
+und Einkommen, die Zimmerzahl,
+
+90
+00:04:13,130 --> 00:04:15,780
+Schlafzimmerzahl und Personen pro Haus.
+
+91
+00:04:15,780 --> 00:04:19,325
+Danach möchte ich die
+Merkmale weiter bearbeiten.
+
+92
+00:04:19,325 --> 00:04:23,299
+Ich erstelle eine neue
+Merkmalsspalte namens "Längengrad",
+
+93
+00:04:23,299 --> 00:04:27,665
+eine in Buckets aufgeteilte
+Spalte der numerischen Längengradspalte.
+
+94
+00:04:27,665 --> 00:04:31,680
+Der lineare Bereich reicht vom negativen
+
+95
+00:04:31,680 --> 00:04:37,125
+124,3 bis zum negativen
+114,3 in Fünferschritten.
+
+96
+00:04:37,125 --> 00:04:39,440
+Dann die Merkmalsspalten Breitengrad.
+
+97
+00:04:39,440 --> 00:04:40,775
+Es ist wieder dasselbe, nur reicht
+
+98
+00:04:40,775 --> 00:04:46,880
+der Bereich jetzt von Breitengrad 32,5
+bis 42 und es gibt 10 Buckets.
+
+99
+00:04:49,490 --> 00:04:53,665
+Kalifornien ist nämlich länger als breit.
+
+100
+00:04:53,665 --> 00:04:56,150
+Daher sollte unser
+Breitengrad mehr Buckets haben.
+
+101
+00:04:56,150 --> 00:04:59,215
+10 Buckets im Gegensatz zu
+5 für den Längengrad.
+
+102
+00:04:59,215 --> 00:05:01,995
+Ich drucke nur
+die Namen der Merkmalsspalten aus.
+
+103
+00:05:01,995 --> 00:05:05,730
+Hier habe ich den Mittelwert
+für Einkommen, Hausbewohner,
+
+104
+00:05:05,730 --> 00:05:07,490
+Zahl der Zimmer, Hausalter,
+
+105
+00:05:07,490 --> 00:05:09,555
+Längengrad, Zahl der
+Schlafzimmer und Breitengrad.
+
+106
+00:05:09,565 --> 00:05:11,440
+Toll. Aber zuerst
+
+107
+00:05:11,440 --> 00:05:15,210
+müssen wir das in Datasets
+für Training und Bewertung aufteilen.
+
+108
+00:05:15,210 --> 00:05:19,810
+So sehe ich, wie sich das Modell
+während des Trainings entwickelt.
+
+109
+00:05:19,810 --> 00:05:22,430
+Ich erstelle dazu eine zufällige Maske,
+
+110
+00:05:22,430 --> 00:05:25,315
+in der ich nach
+der Länge des Datenframes suche.
+
+111
+00:05:25,315 --> 00:05:28,165
+Dann erstelle ich
+genau so viele zufällige Werte
+
+112
+00:05:28,165 --> 00:05:30,395
+aus einer einheitlichen Verteilung.
+
+113
+00:05:30,395 --> 00:05:32,200
+Sind sie weniger als 0,8,
+
+114
+00:05:32,200 --> 00:05:34,720
+speichere ich sie in diesem Maskenvektor.
+
+115
+00:05:34,720 --> 00:05:37,710
+Er hat dieselbe Länge wie der Datenframe,
+
+116
+00:05:37,710 --> 00:05:40,580
+die Werte sind alle "true" und "false".
+
+117
+00:05:40,580 --> 00:05:42,695
+Das ist eine Boolesche Maske.
+
+118
+00:05:42,695 --> 00:05:45,295
+Wenn ich sie auf
+meinen Datenframe anwende,
+
+119
+00:05:45,295 --> 00:05:49,195
+werden diese Zeilen für
+alle Fälle, in denen die Maske "true" ist,
+
+120
+00:05:49,195 --> 00:05:51,780
+in den trainierten Datenframe eingesetzt.
+
+121
+00:05:51,780 --> 00:05:54,545
+Für alle Werte, die nicht "true" sind,
+
+122
+00:05:54,545 --> 00:05:56,210
+gibt es diese Tilde.
+
+123
+00:05:56,210 --> 00:05:58,915
+Sie werden
+in den Bewertungsframe eingesetzt.
+
+124
+00:05:58,915 --> 00:06:03,110
+So ergibt sich
+ein 80%iger Anteil für den Trainingsframe.
+
+125
+00:06:03,110 --> 00:06:06,195
+20 % der Daten
+fließen in den Bewertungsframe.
+
+126
+00:06:06,195 --> 00:06:07,880
+Der Skalierungsfaktor
+
+127
+00:06:07,880 --> 00:06:10,645
+ist hier 100.000.
+
+128
+00:06:10,645 --> 00:06:14,510
+Das liegt daran, dass ich
+meine Labels hier skalieren möchte.
+
+129
+00:06:14,510 --> 00:06:16,220
+Da sie viel zu groß sind,
+
+130
+00:06:16,220 --> 00:06:19,195
+gibt es vollkommen
+unterschiedliche Skalierungen.
+
+131
+00:06:19,195 --> 00:06:22,395
+Diese liegen 
+im Bereich von 100.000, Millionen.
+
+132
+00:06:22,395 --> 00:06:26,740
+Diese sind viel kleiner,
+1- oder 2-stellige Gleitkommazahlen.
+
+133
+00:06:26,740 --> 00:06:29,050
+Das mache ich jetzt.
+Dann erstelle ich
+
+134
+00:06:29,050 --> 00:06:30,260
+die Batch-Größe
+
+135
+00:06:30,260 --> 00:06:31,810
+und stelle sie auf 100.
+
+136
+00:06:31,810 --> 00:06:35,080
+Ich stelle sie unter
+jedem Datenframe auf 100 Zeilen.
+
+137
+00:06:35,080 --> 00:06:38,640
+Dann erstelle ich
+die Funktion für die Trainingseingabe.
+
+138
+00:06:38,640 --> 00:06:43,350
+Dafür verwende ich die
+Eingabefunktion des Estimators pandas,
+
+139
+00:06:43,350 --> 00:06:45,300
+wo X gleich meine Merkmale ist.
+
+140
+00:06:45,300 --> 00:06:48,900
+So wird ein Tensor-Dictionary erstellt
+
+141
+00:06:48,900 --> 00:06:50,430
+und das ist die Ausgabe.
+
+142
+00:06:50,430 --> 00:06:55,585
+So wird mein Trainingsframe für mittlere
+Hauswerte zu dieser Spalte gedreht.
+
+143
+00:06:55,585 --> 00:06:59,960
+Ich lese das in "Y" und es wird
+dann ein Tensor für meine Labels.
+
+144
+00:06:59,960 --> 00:07:01,810
+Die Anzahl der Epochen ist 1,
+
+145
+00:07:01,810 --> 00:07:05,140
+Wert für die Batch-Größe
+und ich verwende "Shuffle".
+
+146
+00:07:05,140 --> 00:07:06,240
+Hier
+
+147
+00:07:06,240 --> 00:07:08,800
+ist meine
+Eingabefunktion zur Bewertung.
+
+148
+00:07:08,800 --> 00:07:12,115
+Es wird auch hier
+die pandas-Eingabefunktion verwendet.
+
+149
+00:07:12,115 --> 00:07:15,740
+Die Einstellungen für
+den Eingabeframe sind fast identisch.
+
+150
+00:07:15,740 --> 00:07:16,990
+"Shuffle" ist jedoch
+
+151
+00:07:16,990 --> 00:07:18,855
+gleich "false", da ich keine
+
+152
+00:07:18,855 --> 00:07:22,360
+Shuffle-Bewertungen,
+sondern Wiederholbarkeit möchte.
+
+153
+00:07:22,360 --> 00:07:25,365
+Ich erstelle außerdem
+die Funktion "print_rmse",
+
+154
+00:07:25,365 --> 00:07:27,930
+die den RMSE meines Modells ausdruckt,
+
+155
+00:07:27,930 --> 00:07:31,905
+einschließlich des Namens
+und der verknüpften Eingabefunktion.
+
+156
+00:07:31,905 --> 00:07:33,815
+Ich erstelle die Messwerte.
+
+157
+00:07:33,815 --> 00:07:36,600
+Ich gehe zu model.evaluate des Estimators.
+
+158
+00:07:36,600 --> 00:07:38,790
+Denn mein Estimator ist ein Modell.
+
+159
+00:07:38,790 --> 00:07:41,100
+Ich übergebe es an die Eingabefunktion.
+
+160
+00:07:41,100 --> 00:07:45,070
+Dort ist es die Eingabefunktion,
+die an "print_rmse" übergeben wird,
+
+161
+00:07:45,070 --> 00:07:47,190
+und ich nehme einen Schritt.
+
+162
+00:07:48,390 --> 00:07:49,615
+Auf diese Weise
+
+163
+00:07:49,615 --> 00:07:51,720
+schließe ich diese Messwerte aus.
+
+164
+00:07:51,720 --> 00:07:53,480
+Das sollte Dictionary sein.
+
+165
+00:07:53,480 --> 00:07:55,625
+Gibt es ein Regressionsproblem,
+
+166
+00:07:55,625 --> 00:07:56,950
+das zu Verlust führt,
+
+167
+00:07:56,950 --> 00:08:00,800
+einem durchschnittlichen Verlust
+und zu einem globalen Schritt?
+
+168
+00:08:00,800 --> 00:08:03,560
+Dann drucke ich
+den RMSE in diesem Dataset aus.
+
+169
+00:08:03,560 --> 00:08:05,830
+Ich muss die Quadratwurzel erreichen,
+
+170
+00:08:05,830 --> 00:08:08,615
+weil der durchschnittliche
+Verlust nur der MSE ist.
+
+171
+00:08:08,615 --> 00:08:11,100
+Über den RMSE prüfe ich die Quadratwurzel.
+
+172
+00:08:11,100 --> 00:08:13,645
+Hier wird mit der Skalierung multipliziert.
+
+173
+00:08:13,645 --> 00:08:18,165
+Ich gelange zu den richtigen Einheiten für
+den Preis zurück, der mittlere Hauswert.
+
+174
+00:08:18,165 --> 00:08:20,460
+Nun bearbeite ich die lineare Regression.
+
+175
+00:08:20,460 --> 00:08:22,750
+Ich habe ein Ausgabeverzeichnis erstellt.
+
+176
+00:08:22,750 --> 00:08:25,290
+Hier werden alle Dateien
+aus dem Training gespeichert,
+
+177
+00:08:25,290 --> 00:08:28,505
+z. B. meine Prüfpunkte,
+meine Ereignis-Logs,
+
+178
+00:08:28,505 --> 00:08:29,830
+gespeicherte Modelle.
+
+179
+00:08:29,830 --> 00:08:33,229
+Ich möchte sie entfernen,
+damit ich jedes Mal von vorn beginne.
+
+180
+00:08:33,229 --> 00:08:35,374
+Ich lösche alle Inhalte in diesem Baum,
+
+181
+00:08:35,374 --> 00:08:37,380
+um einen leeren Ordner zu erhalten.
+
+182
+00:08:37,380 --> 00:08:40,265
+Ich erstelle meinen
+benutzerdefinierten Optimierer.
+
+183
+00:08:40,265 --> 00:08:42,330
+Das ist lineare Regression. Ich nutze
+
+184
+00:08:42,330 --> 00:08:44,850
+den Optimierer 
+"Follow-the-Regularized-Leader".
+
+185
+00:08:44,850 --> 00:08:47,260
+Das ist in der Regel eine gute Wahl.
+
+186
+00:08:47,260 --> 00:08:49,090
+Die Lernrate beträgt 0,01.
+
+187
+00:08:49,090 --> 00:08:50,880
+Dann erstelle ich mein Modell.
+
+188
+00:08:50,880 --> 00:08:52,530
+Ich erstelle den Estimator,
+
+189
+00:08:52,530 --> 00:08:54,040
+einen linearen Regressor.
+
+190
+00:08:54,040 --> 00:08:56,730
+Ich übergebe mein Modellverzeichnis.
+
+191
+00:08:56,730 --> 00:08:58,420
+Ich kopiere meine Daten
+
+192
+00:08:58,420 --> 00:09:01,210
+in die Merkmalsspalten
+und füge die Werte hinzu.
+
+193
+00:09:01,210 --> 00:09:03,110
+Das sind die Tensoren dafür.
+
+194
+00:09:03,110 --> 00:09:06,810
+Mein Optimierer ist benutzerdefiniert
+für meinen Regularized-Leader.
+
+195
+00:09:06,810 --> 00:09:09,060
+Ich trainiere für verschiedene Schritte.
+
+196
+00:09:09,060 --> 00:09:11,100
+Hierfür trainiere ich 100 Mal,
+
+197
+00:09:11,100 --> 00:09:13,460
+für meinen Frame oder die Batch-Größe.
+
+198
+00:09:13,460 --> 00:09:16,430
+Ich trainiere also für 100 Epochen.
+
+199
+00:09:16,430 --> 00:09:18,275
+Dann rufe ich model.train auf,
+
+200
+00:09:18,275 --> 00:09:20,140
+übergebe meine Eingabefunktion
+
+201
+00:09:20,140 --> 00:09:21,210
+für das Training.
+
+202
+00:09:21,210 --> 00:09:23,630
+Meine Schrittzahl könnte die sein, die ich
+
+203
+00:09:23,630 --> 00:09:26,460
+hier erstellt habe.
+Sie trainiert das Modell.
+
+204
+00:09:26,460 --> 00:09:29,300
+Am Ende drucke ich dann
+den RMSE des Modells aus.
+
+205
+00:09:29,300 --> 00:09:32,860
+Ich rufe meine Funktion
+für die Bewertungseingabe auf,
+
+206
+00:09:32,860 --> 00:09:35,805
+damit sie in
+meinem Funktionsset enthalten ist.
+
+207
+00:09:35,805 --> 00:09:38,320
+Wenn ich das Training ausführe,
+
+208
+00:09:38,320 --> 00:09:40,890
+habe ich hier die Standardkonfiguration.
+
+209
+00:09:40,890 --> 00:09:44,955
+Wenn ich das ändere, erstelle ich
+einen Prüfpunkt und beginne das Training.
+
+210
+00:09:44,955 --> 00:09:46,800
+Ich berechne zuerst den Verlust.
+
+211
+00:09:46,800 --> 00:09:49,850
+Hier sehe ich
+die pro Sekunde ausgeführten Schritte.
+
+212
+00:09:49,850 --> 00:09:51,270
+Im Laufe des Trainings
+
+213
+00:09:51,270 --> 00:09:54,010
+wird der Verlust hoffentlich geringer.
+
+214
+00:09:54,010 --> 00:09:59,175
+Der letzte durchschnittliche
+Verlust meiner Bewertung beträgt 0,93
+
+215
+00:09:59,175 --> 00:10:01,590
+nach 137 globalen Schritten.
+
+216
+00:10:01,590 --> 00:10:04,345
+Der Gesamtverlust ist 3.141.
+
+217
+00:10:04,345 --> 00:10:10,000
+Der RMSE meiner Bewertung
+ist nach Multiplizieren mit der Skalierung
+
+218
+00:10:10,000 --> 00:10:13,985
+meines Bewertungssets 96.583 $.
+
+219
+00:10:13,985 --> 00:10:16,845
+RMSE ist die
+Standardabweichung Ihrer Restbeträge.
+
+220
+00:10:16,845 --> 00:10:19,360
+Diese enthalten die Differenz zwischen
+
+221
+00:10:19,360 --> 00:10:21,760
+Ihrer Vorhersage und dem Label.
+
+222
+00:10:21,760 --> 00:10:25,370
+Nun finden wir heraus,
+ob es mit dem DNNRegressor besser wird.
+
+223
+00:10:25,370 --> 00:10:27,095
+Alles ist genauso wie vorher.
+
+224
+00:10:27,095 --> 00:10:29,580
+Doch nun verwende ich den AdamOptimizer,
+
+225
+00:10:29,580 --> 00:10:33,850
+weil er besser zum DNNRegressor passt
+als der Follow-the-Regularized-Leader.
+
+226
+00:10:33,850 --> 00:10:38,100
+Ich wechsle nun auch vom
+linearen Regressor zum DNNRegressor.
+
+227
+00:10:38,100 --> 00:10:40,960
+Dort übergebe ich
+die Daten vor allen anderen.
+
+228
+00:10:40,960 --> 00:10:45,310
+Ich füge allerdings meine verborgenen
+Einheiten ein und ich habe eine,
+
+229
+00:10:45,310 --> 00:10:46,865
+zwei, drei Ebenen hier.
+
+230
+00:10:46,865 --> 00:10:49,720
+Die erste Ebene hat
+100 verborgene Neuronen,
+
+231
+00:10:49,720 --> 00:10:50,975
+die zweite 50
+
+232
+00:10:50,975 --> 00:10:52,240
+und die letzte 20.
+
+233
+00:10:52,240 --> 00:10:54,445
+Ich übergebe auch die Merkmalsspalten,
+
+234
+00:10:54,445 --> 00:10:56,370
+den selbst erstellten Optimierer,
+
+235
+00:10:56,370 --> 00:10:58,215
+der dieses Mal Adam verwendet,
+
+236
+00:10:58,215 --> 00:11:00,505
+dann ein Drop-out von 10 %.
+
+237
+00:11:00,505 --> 00:11:02,770
+Dies ist die Drop-out-Wahrscheinlichkeit,
+
+238
+00:11:02,770 --> 00:11:06,160
+nicht die Key-Wahrscheinlichkeit
+wie in anderen Installationen.
+
+239
+00:11:06,160 --> 00:11:09,000
+Ich erstelle auch
+die Zahl der Schritte wie zuvor,
+
+240
+00:11:09,000 --> 00:11:12,020
+trainiere wie zuvor
+und ich habe den RMSE ausgedruckt.
+
+241
+00:11:12,020 --> 00:11:13,730
+Gibt es etwas zu verbessern?
+
+242
+00:11:13,730 --> 00:11:15,380
+Es läuft alles wie zuvor,
+
+243
+00:11:15,380 --> 00:11:18,100
+wenn meine
+Standardkonfiguration trainiert.
+
+244
+00:11:18,100 --> 00:11:19,890
+Nun die letzten Schritte.
+
+245
+00:11:19,890 --> 00:11:23,060
+Der durchschnittliche
+Verlust meines Trainings ist 0,67.
+
+246
+00:11:23,060 --> 00:11:27,175
+Da er zuvor bei 0,93 lag,
+ist das eine Verbesserung.
+
+247
+00:11:27,175 --> 00:11:31,860
+Aber in meinem RMSE sind es 81.974 $.
+
+248
+00:11:31,860 --> 00:11:36,600
+Wie Sie hier sehen, ist die
+Standardabweichung viel kleiner als zuvor,
+
+249
+00:11:36,600 --> 00:11:39,020
+das Modell läuft also bedeutend besser.
+
+250
+00:11:39,020 --> 00:11:40,550
+Natürlich kann man es viel
+
+251
+00:11:40,550 --> 00:11:43,175
+komplizierter machen
+und mehr Algorithmen nutzen.
+
+252
+00:11:43,175 --> 00:11:45,810
+Daran sehen Sie,
+dass ein neuronales Netzwerk
+
+253
+00:11:45,810 --> 00:11:48,520
+leicht eine höhere Leistung als
+eine lineare Regression erreichen kann.
+
+254
+00:11:49,770 --> 00:11:52,700
+Schließlich können wir es
+in TensorBoard aufrufen
+
+255
+00:11:52,700 --> 00:11:54,940
+und den Fortschritt verfolgen.

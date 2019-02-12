@@ -1,0 +1,1349 @@
+1
+00:00:00,000 --> 00:00:03,060
+Agora que você sabe um pouco
+mais nas redes neurais,
+
+2
+00:00:03,060 --> 00:00:04,890
+vamos ver
+como podemos treiná-las,
+
+3
+00:00:04,890 --> 00:00:07,140
+algumas armadilhas comuns
+e técnicas para ajudar
+
+4
+00:00:07,140 --> 00:00:10,060
+a acelerar o treino
+e fornecer uma generalização melhor.
+
+5
+00:00:10,060 --> 00:00:14,970
+No TensorFlow, usar a API Estimator
+e um DNNRegressor
+
+6
+00:00:14,970 --> 00:00:17,210
+é muito semelhante a usar
+um LinearRegressor,
+
+7
+00:00:17,210 --> 00:00:20,640
+com apenas alguns parâmetros para
+o código que precisam ser adicionados.
+
+8
+00:00:20,640 --> 00:00:24,210
+Podemos usar otimizadores baseados
+no momento, como o AdaGrad padrão,
+
+9
+00:00:24,210 --> 00:00:26,600
+ou podemos tentar outros, como o Adam.
+
+10
+00:00:26,600 --> 00:00:30,150
+Também temos que adicionar um parâmetro
+chamado hidden_units,
+
+11
+00:00:30,150 --> 00:00:31,425
+que é uma lista.
+
+12
+00:00:31,425 --> 00:00:34,710
+O número de itens nessa lista
+é o número de camadas ocultas,
+
+13
+00:00:34,710 --> 00:00:39,390
+e os valores de cada item são o número de
+neurônios para essa camada oculta.
+
+14
+00:00:39,390 --> 00:00:42,625
+Você também verá que há um novo
+parâmetro chamado dropout.
+
+15
+00:00:42,625 --> 00:00:44,430
+Vamos abordar isso em alguns minutos.
+
+16
+00:00:44,430 --> 00:00:48,300
+Mas, por enquanto, isso é usado para
+ligar e desligar os neurônios individuais
+
+17
+00:00:48,300 --> 00:00:51,855
+em cada exemplo, para ter um
+desempenho melhor de generalização.
+
+18
+00:00:51,855 --> 00:00:53,920
+Veja a documentação
+do TensorFlow
+
+19
+00:00:53,920 --> 00:00:57,020
+para o conjunto completo de parâmetros
+que você pode configurar.
+
+20
+00:00:57,020 --> 00:00:59,920
+Isso tudo pode ser hiperparametizado
+
+21
+00:00:59,920 --> 00:01:01,610
+para você ajustar
+
+22
+00:01:01,610 --> 00:01:04,435
+seu modelo e conseguir o melhor
+desempenho de generalização.
+
+23
+00:01:04,435 --> 00:01:09,345
+A retropropagação é um tópico tradicional
+no curso de redes neurais de ML.
+
+24
+00:01:09,345 --> 00:01:10,760
+Mas, às vezes,
+
+25
+00:01:10,760 --> 00:01:13,270
+é como ensinar as pessoas
+a criar um compilador.
+
+26
+00:01:13,270 --> 00:01:15,759
+É essencial para uma compreensão
+mais profunda,
+
+27
+00:01:15,759 --> 00:01:18,415
+mas não é necessária para
+o entendimento inicial.
+
+28
+00:01:18,415 --> 00:01:21,280
+O principal é que há
+um algoritmo eficiente
+
+29
+00:01:21,280 --> 00:01:25,360
+para calcular derivativos, e o TensorFlow
+fará isso automaticamente.
+
+30
+00:01:25,360 --> 00:01:28,330
+Há alguns casos de falha interessantes
+para discutirmos,
+
+31
+00:01:28,330 --> 00:01:30,010
+como gradientes desaparecidos,
+
+32
+00:01:30,010 --> 00:01:32,190
+gradientes em explosão
+e camadas inoperantes.
+
+33
+00:01:32,190 --> 00:01:38,109
+Durante o treino, especialmente em redes
+profundas, gradientes podem desaparecer,
+
+34
+00:01:38,109 --> 00:01:43,610
+cada camada adicional na rede pode reduzir
+sucessivamente o sinal contra o ruído.
+
+35
+00:01:43,610 --> 00:01:45,890
+Um exemplo disso é usar
+funções de ativação
+
+36
+00:01:45,890 --> 00:01:49,000
+sigmoide ou tanh em todas
+as camadas ocultas.
+
+37
+00:01:49,000 --> 00:01:51,010
+Quando você começa a saturar,
+
+38
+00:01:51,010 --> 00:01:54,715
+acaba nas regiões assintóticas da função
+que começam a se estabilizar,
+
+39
+00:01:54,715 --> 00:01:57,790
+a inclinação está chegando
+cada vez mais perto de 0.
+
+40
+00:01:57,790 --> 00:02:00,930
+Quando você retrocede pela
+rede durante a retropropagação,
+
+41
+00:02:00,930 --> 00:02:04,150
+seu gradiente pode diminuir
+porque você está compondo
+
+42
+00:02:04,150 --> 00:02:07,800
+todos esses pequenos gradientes até
+que o gradiente desapareça completamente.
+
+43
+00:02:07,800 --> 00:02:10,854
+Quando isso acontece, suas ponderações
+não são mais atualizadas
+
+44
+00:02:10,854 --> 00:02:13,900
+e, portanto, o treinamento é interrompido.
+
+45
+00:02:13,900 --> 00:02:17,335
+Uma maneira de corrigir isso é usar
+funções de ativação não lineares
+
+46
+00:02:17,335 --> 00:02:21,440
+e não saturadas, como ReLUs, ELUs etc.
+
+47
+00:02:22,290 --> 00:02:26,710
+Também podemos ter o problema contrário,
+quando os gradientes explodem,
+
+48
+00:02:26,710 --> 00:02:31,315
+crescendo até que as ponderações
+ficam tão grandes que transbordam.
+
+49
+00:02:31,315 --> 00:02:34,295
+Mesmo começando com gradientes pequenos,
+
+50
+00:02:34,295 --> 00:02:36,025
+como um valor de 2,
+
+51
+00:02:36,025 --> 00:02:39,230
+ele pode compor e se tornar grande
+por muitas camadas.
+
+52
+00:02:39,230 --> 00:02:42,840
+Isso serve para modelos sequenciais com
+longos comprimentos de sequência.
+
+53
+00:02:42,840 --> 00:02:46,550
+Taxas de aprendizado podem ser um fator,
+porque nas atualizações de ponderação,
+
+54
+00:02:46,550 --> 00:02:48,965
+lembre-se, multiplicamos o gradiente
+
+55
+00:02:48,965 --> 00:02:52,270
+com a taxa de aprendizado e então
+subtraímos isso da atual ponderação.
+
+56
+00:02:52,270 --> 00:02:56,450
+Mesmo que o gradiente não seja tão grande,
+com uma taxa de aprendizado maior que 1,
+
+57
+00:02:56,450 --> 00:03:00,725
+ele agora pode se tornar muito grande
+e causar problemas a você e à rede.
+
+58
+00:03:00,725 --> 00:03:04,040
+Há muitas técnicas para tentar
+minimizar isso.
+
+59
+00:03:04,040 --> 00:03:07,135
+Tal como organização de ponderação
+e tamanhos de lote menores.
+
+60
+00:03:07,135 --> 00:03:09,430
+Outra técnica é
+truncamento de gradiente,
+
+61
+00:03:09,430 --> 00:03:12,694
+quando verificamos se o gradiente normal
+excede algum limite,
+
+62
+00:03:12,694 --> 00:03:15,855
+o que você pode ajustar
+e, em caso afirmativo,
+
+63
+00:03:15,855 --> 00:03:19,965
+pode redefinir os componentes do gradiente
+para se ajustarem abaixo do máximo.
+
+64
+00:03:19,965 --> 00:03:22,920
+Outra técnica útil é
+a normalização de lotes,
+
+65
+00:03:22,920 --> 00:03:26,105
+que resolve o problema chamado
+deslocamento de covariância interna.
+
+66
+00:03:26,105 --> 00:03:28,990
+É parte do treino porque
+os gradientes fluem melhor.
+
+67
+00:03:28,990 --> 00:03:33,295
+É possível usar uma taxa de aprendizado
+maior e se livrar do dropout,
+
+68
+00:03:33,295 --> 00:03:36,490
+o que retarda a competição
+até o próprio tipo de regularização,
+
+69
+00:03:36,490 --> 00:03:37,960
+devido ao ruído do minilote.
+
+70
+00:03:37,960 --> 00:03:39,975
+Para realizar a normalização em lote,
+
+71
+00:03:39,975 --> 00:03:42,035
+primeiro, encontre a média do minilote,
+
+72
+00:03:42,035 --> 00:03:44,455
+depois o desvio padrão do minilote,
+
+73
+00:03:44,455 --> 00:03:46,840
+normalize as entradas para esse nó,
+
+74
+00:03:46,840 --> 00:03:52,570
+então escalone e alterne
+para gama vezes X mais beta,
+
+75
+00:03:52,570 --> 00:03:55,360
+em que gama e beta são
+parâmetros aprendidos.
+
+76
+00:03:55,360 --> 00:03:59,290
+Se gama é igual à variação de raiz
+quadrada de X e beta é igual à média de X,
+
+77
+00:03:59,290 --> 00:04:01,810
+a função de ativação original
+é restaurada.
+
+78
+00:04:01,810 --> 00:04:06,145
+Dessa forma, você controla o intervalo das
+entradas, para não ficarem muito grandes.
+
+79
+00:04:06,145 --> 00:04:08,750
+O ideal é manter seus gradientes
+
+80
+00:04:08,750 --> 00:04:12,100
+o mais próximo possível de 1,
+especialmente para redes profundas.
+
+81
+00:04:12,100 --> 00:04:15,910
+Então você não compõe e acaba
+tendo subfluxo ou sobrefluxo.
+
+82
+00:04:15,910 --> 00:04:20,750
+Outra falha do gradiente descendente
+é que as camadas reais podem morrer.
+
+83
+00:04:20,750 --> 00:04:23,830
+Felizmente, usando o TensorBoard, podemos
+
+84
+00:04:23,830 --> 00:04:28,000
+monitorar os raios da soma durante e após
+o treino de nossos modelos de rede reural.
+
+85
+00:04:28,010 --> 00:04:33,085
+Se você usa um doce e um Estimator, há
+automaticamente um resumo escalar
+
+86
+00:04:33,085 --> 00:04:35,470
+para cada camada oculta GN,
+mostrando a fração
+
+87
+00:04:35,470 --> 00:04:38,410
+de valores zerados
+das ativações para aquela camada.
+
+88
+00:04:38,410 --> 00:04:42,660
+ReLUs param de funcionar quando as
+entradas as mantêm no domínio negativo,
+
+89
+00:04:42,660 --> 00:04:44,870
+dando à ativação
+um valor nulo.
+
+90
+00:04:44,870 --> 00:04:48,889
+Não termina aí porque então a contribuição
+delas na próxima camada é zero.
+
+91
+00:04:48,889 --> 00:04:52,760
+Isso porque, apesar do que as ponderações
+estão conectando aos próximos neurônios,
+
+92
+00:04:52,760 --> 00:04:55,340
+a ativação é zero, portanto,
+a entrada se torna nula.
+
+93
+00:04:55,340 --> 00:04:58,770
+Um grupo de zeros que entram no próximo
+neurônio não ajuda a entrar
+
+94
+00:04:58,770 --> 00:05:01,760
+no domínio positivo, e então
+essas ativações de neurônios
+
+95
+00:05:01,760 --> 00:05:04,960
+também se tornam nulas
+e o problema continua.
+
+96
+00:05:04,960 --> 00:05:08,495
+Aí executamos a retropropagação
+e os gradientes são zero,
+
+97
+00:05:08,495 --> 00:05:12,460
+então, não temos as ponderações e, assim,
+o treino é interrompido. Não é bom.
+
+98
+00:05:12,460 --> 00:05:17,035
+Conversamos sobre o uso de Leaky ReLUs
+ou paramétricas ou as ELUs mais lentas,
+
+99
+00:05:17,035 --> 00:05:20,225
+mas você pode diminuir as taxas
+de aprendizado para ajudar a impedir
+
+100
+00:05:20,225 --> 00:05:22,905
+que as camadas ReLU não sejam
+ativadas e não permaneçam.
+
+101
+00:05:22,905 --> 00:05:26,860
+Um gradiente grande, devido a uma alta
+taxa de aprendizado, pode atualizar
+
+102
+00:05:26,860 --> 00:05:31,735
+as ponderações de modo que nenhum
+ponto de dados o ative novamente.
+
+103
+00:05:31,735 --> 00:05:33,639
+Como o gradiente é zero,
+
+104
+00:05:33,639 --> 00:05:36,320
+não atualizamos a ponderação
+para algo mais razoável,
+
+105
+00:05:36,320 --> 00:05:38,980
+então o problema persistirá
+indefinidamente.
+
+106
+00:05:38,980 --> 00:05:41,290
+Vamos fazer uma rápida
+verificação de intuição.
+
+107
+00:05:41,290 --> 00:05:42,930
+O que acontecerá com o modelo
+
+108
+00:05:42,930 --> 00:05:46,525
+se tivermos dois sinais úteis, ambos
+correlacionados com o rótulo
+
+109
+00:05:46,525 --> 00:05:49,210
+de maneira independente,
+mas em escalas diferentes?
+
+110
+00:05:49,210 --> 00:05:53,090
+Por exemplo, podemos ter
+um preditor de sabor de sopa
+
+111
+00:05:53,090 --> 00:05:56,285
+em que os atributos representam
+as qualidades dos ingredientes.
+
+112
+00:05:56,285 --> 00:05:59,260
+Se o atributo para o caldo
+de galinha for medido em litros,
+
+113
+00:05:59,260 --> 00:06:02,160
+mas caldo de carne
+for medido em mililitros,
+
+114
+00:06:02,160 --> 00:06:05,955
+então o gradiente descendente estocástico
+pode ter dificuldade em convergir bem,
+
+115
+00:06:05,955 --> 00:06:10,240
+já que a taxa de aprendizado ideal para
+essas dimensões é provavelmente diferente.
+
+116
+00:06:10,240 --> 00:06:13,940
+Limpar os dados e colocá-los em um
+intervalo útil para computação
+
+117
+00:06:13,940 --> 00:06:17,820
+tem muitos benefícios durante o treino
+dos modelos de aprendizado de máquina.
+
+118
+00:06:17,820 --> 00:06:21,205
+Ter um valor de atributo pequeno
+e especificamente centrado em zero
+
+119
+00:06:21,205 --> 00:06:24,185
+ajuda a acelerar o treino
+e evita problemas numéricos.
+
+120
+00:06:24,185 --> 00:06:27,935
+É por isso que a normalização em lote
+foi útil com os gradientes em explosão,
+
+121
+00:06:27,935 --> 00:06:31,910
+pois manteve não apenas os atributos
+iniciais de entrada,
+
+122
+00:06:31,910 --> 00:06:34,490
+mas todos os atributos intermediários
+
+123
+00:06:34,490 --> 00:06:37,790
+em um intervalo saudável, para não
+causar problemas em nossas camadas.
+
+124
+00:06:37,790 --> 00:06:42,300
+Isso também nos ajuda a evitar a armadilha
+do NaN, em que o modelo pode explodir
+
+125
+00:06:42,300 --> 00:06:45,040
+se os valores excedem
+o intervalo de precisão numérica.
+
+126
+00:06:45,040 --> 00:06:47,170
+Uma combinação de
+escalonamento de atributos
+
+127
+00:06:47,170 --> 00:06:50,685
+e/ou menor taxa de aprendizado pode
+ajudar a evitar essa armadilha.
+
+128
+00:06:50,685 --> 00:06:55,050
+Além disso, evitar valores atípicos
+ajuda na generalização.
+
+129
+00:06:55,050 --> 00:06:58,130
+Portanto, detectar isso,
+talvez a detecção de anomalias,
+
+130
+00:06:58,130 --> 00:07:02,365
+e pré-processá-las fora do conjunto de
+dados antes do treino pode ser útil.
+
+131
+00:07:02,365 --> 00:07:06,950
+Lembre-se de que não há um método
+único para todos os dados.
+
+132
+00:07:06,950 --> 00:07:11,045
+É possível pensar em casos bons e ruins
+para cada uma dessas abordagens.
+
+133
+00:07:11,045 --> 00:07:14,850
+Há muitos métodos para fazer o valor de
+atributos escalonar em pequenos números.
+
+134
+00:07:14,850 --> 00:07:20,420
+Há o escalonamento linear onde você acha,
+primeiro, o mínimo e o máximo dos dados.
+
+135
+00:07:20,420 --> 00:07:21,910
+Então, para cada valor,
+
+136
+00:07:21,910 --> 00:07:23,960
+subtraímos o mínimo e depois dividimos
+
+137
+00:07:23,960 --> 00:07:26,855
+pela diferença entre o máximo
+e o mínimo ou o intervalo.
+
+138
+00:07:26,855 --> 00:07:29,510
+Isso deixará todos os valores
+entre 0 e 1,
+
+139
+00:07:29,510 --> 00:07:31,820
+em que 0 será o mínimo
+e 1 será o máximo.
+
+140
+00:07:31,820 --> 00:07:34,695
+Isso também é chamado de normalização.
+
+141
+00:07:34,695 --> 00:07:37,845
+Há também o limite forçado ou truncamento,
+
+142
+00:07:37,845 --> 00:07:40,575
+em que você define um
+valor mínimo e um valor máximo.
+
+143
+00:07:40,575 --> 00:07:43,880
+Por exemplo, se meu valor
+mínimo for permitido
+
+144
+00:07:43,880 --> 00:07:47,540
+como -7 e meu valor máximo for 10,
+
+145
+00:07:47,540 --> 00:07:50,575
+todos os valores inferiores a -7
+serão -7
+
+146
+00:07:50,575 --> 00:07:53,430
+e todos os valores
+maiores que 10 serão 10.
+
+147
+00:07:53,430 --> 00:07:58,730
+No escalonamento de registros, aplica-se a
+função de logaritmo aos dados de entrada.
+
+148
+00:07:58,730 --> 00:08:01,880
+Isso é ótimo quando seus dados têm
+um intervalo grande e você quer
+
+149
+00:08:01,880 --> 00:08:05,140
+condensá-los para serem mais que
+apenas a magnitude do valor.
+
+150
+00:08:05,140 --> 00:08:10,625
+Outro método, que acabamos de falar, com a
+normalização em lote é a padronização.
+
+151
+00:08:10,625 --> 00:08:14,120
+Aqui, você calcula a média dos dados
+e o desvio padrão.
+
+152
+00:08:14,120 --> 00:08:15,750
+Depois de ter esses dois valores,
+
+153
+00:08:15,750 --> 00:08:19,385
+você subtrai a média dos pontos
+de dados e os divide com o desvio padrão.
+
+154
+00:08:19,385 --> 00:08:22,260
+Dessa maneira, seus dados
+se tornam centralizados em zero,
+
+155
+00:08:22,260 --> 00:08:25,910
+porque a média nova se torna 0
+e o desvio padrão novo se torna 1.
+
+156
+00:08:25,910 --> 00:08:29,335
+Claro, há muitas outras maneiras
+de escalonar seus dados.
+
+157
+00:08:29,335 --> 00:08:33,924
+Qual destes é um bom conselho se meu
+modelo estiver com gradientes em explosão?
+
+158
+00:08:33,924 --> 00:08:37,050
+A resposta correta é A, B, C e D.
+
+159
+00:08:37,050 --> 00:08:41,245
+O problema geralmente ocorre quando
+as ponderações ficam muito grandes,
+
+160
+00:08:41,245 --> 00:08:44,075
+o que acontece quando a taxa
+de aprendizado fica muito alta.
+
+161
+00:08:44,075 --> 00:08:46,610
+Isso pode levar a um monte
+de outras questões
+
+162
+00:08:46,610 --> 00:08:50,225
+como estabilidade numérica,
+divergência e ReLUs inativas.
+
+163
+00:08:50,225 --> 00:08:56,290
+Portanto, reduzir essa taxa para encontrar
+uma boa zona é uma ótima ideia.
+
+164
+00:08:56,290 --> 00:08:58,730
+A organização de ponderação
+também pode ajudar
+
+165
+00:08:58,730 --> 00:09:02,170
+nesse aspecto, pois haverá uma penalidade
+para ponderações muito grandes,
+
+166
+00:09:02,170 --> 00:09:04,660
+o que dificultará
+a explosão dos gradientes.
+
+167
+00:09:04,660 --> 00:09:07,690
+Além disso, aplicar o truncamento
+de gradiente pode garantir
+
+168
+00:09:07,690 --> 00:09:10,850
+que os gradientes nunca ultrapassem
+um determinado limite definido.
+
+169
+00:09:10,850 --> 00:09:14,355
+Isso pode ajudar a reduzir
+um pouco a taxa de aprendizado.
+
+170
+00:09:14,355 --> 00:09:16,390
+No entanto, uma taxa
+alta o suficiente
+
+171
+00:09:16,390 --> 00:09:19,070
+ainda pode levar as ponderações
+a valores altos.
+
+172
+00:09:19,070 --> 00:09:21,140
+A normalização em lote pode ajudar
+
+173
+00:09:21,140 --> 00:09:24,975
+as entradas intermediárias em cada camada
+a ficar em um intervalo estreito.
+
+174
+00:09:24,975 --> 00:09:27,860
+Portanto, haverá uma chance menor
+de as ponderações crescerem
+
+175
+00:09:27,860 --> 00:09:30,910
+fora do intervalo por um pequeno
+custo computacional extra.
+
+176
+00:09:30,910 --> 00:09:33,385
+Há muitos métodos para tratar
+gradientes em explosão,
+
+177
+00:09:33,385 --> 00:09:35,680
+então você não precisa
+de um médico para ajudar.
+
+178
+00:09:35,680 --> 00:09:38,860
+Tudo a fazer é testar essas ferramentas
+e ver qual é a melhor.
+
+179
+00:09:38,860 --> 00:09:41,845
+Outra forma de regularização
+que ajuda a criar
+
+180
+00:09:41,845 --> 00:09:45,770
+modelos mais generalizáveis ​​é adicionar
+camadas de descarte às redes neurais.
+
+181
+00:09:45,770 --> 00:09:49,800
+Para usar o descarte, adiciono um wrapper
+a uma ou mais das minhas camadas.
+
+182
+00:09:49,800 --> 00:09:53,390
+No TensorFlow, o parâmetro que você
+passa é chamado de dropout,
+
+183
+00:09:53,390 --> 00:09:55,410
+que é a probabilidade
+de deixar um neurônio
+
+184
+00:09:55,410 --> 00:09:58,860
+temporariamente fora da rede,
+em vez de mantê-lo ligado.
+
+185
+00:09:58,860 --> 00:10:01,575
+Tenha cuidado ao configurar
+esse número porque,
+
+186
+00:10:01,575 --> 00:10:04,050
+para algumas funções que têm
+um mecanismo de dropout,
+
+187
+00:10:04,050 --> 00:10:05,945
+elas usam a probabilidade
+de manutenção,
+
+188
+00:10:05,945 --> 00:10:08,650
+que é um complemento para
+a probabilidade de descarte
+
+189
+00:10:08,650 --> 00:10:11,370
+ou a probabilidade de manter
+um neurônio ligado ou não.
+
+190
+00:10:11,370 --> 00:10:14,530
+Você não quer ter uma probabilidade
+de apenas 10% de descarte,
+
+191
+00:10:14,530 --> 00:10:17,640
+mas na verdade mantém apenas
+10% nos nós aleatoriamente,
+
+192
+00:10:17,640 --> 00:10:20,485
+esse é um modelo esparso
+muito não intencional.
+
+193
+00:10:20,485 --> 00:10:23,035
+Então, como o dropout funciona?
+
+194
+00:10:23,035 --> 00:10:26,045
+Vamos dizer que definimos uma
+probabilidade de descarte de 20%.
+
+195
+00:10:26,045 --> 00:10:29,625
+Para cada avanço passado para a rede,
+o algoritmo rolará os dados
+
+196
+00:10:29,625 --> 00:10:32,340
+para cada neurônio e para
+a camada de dropout com wrapper.
+
+197
+00:10:32,340 --> 00:10:36,650
+Se a rolagem de dados for maior que 20
+e o neurônio permanecer ativo na rede,
+
+198
+00:10:36,650 --> 00:10:38,920
+a rolagem [inaudível] será descartada
+
+199
+00:10:38,920 --> 00:10:41,920
+e a saída será um valor zero,
+independentemente das entradas.
+
+200
+00:10:41,920 --> 00:10:45,305
+Efetivamente, não será adicionada
+de modo negativo ou positivo à rede,
+
+201
+00:10:45,305 --> 00:10:49,730
+já que a adição de zero nada muda e simula
+que o neurônio não existe.
+
+202
+00:10:49,730 --> 00:10:54,145
+Para compensar o fato de cada nó ser
+mantido apenas uma porcentagem do tempo,
+
+203
+00:10:54,145 --> 00:10:56,955
+as ativações são escalonadas em
+um por um menos
+
+204
+00:10:56,955 --> 00:10:59,440
+a probabilidade de descarte
+ou, em outras palavras,
+
+205
+00:10:59,440 --> 00:11:02,070
+um sobre a probabilidade de manutenção,
+
+206
+00:11:02,070 --> 00:11:05,790
+durante o treino, para que seja o valor
+esperado da ativação.
+
+207
+00:11:05,790 --> 00:11:08,900
+Quando não está em treinamento,
+sem ter que alterar nenhum código,
+
+208
+00:11:08,900 --> 00:11:11,820
+o wrapper desaparece e os neurônios
+
+209
+00:11:11,820 --> 00:11:14,305
+na camada de dropout com wrapper
+estão sempre ativos
+
+210
+00:11:14,305 --> 00:11:16,905
+e usam quaisquer ponderações
+treinadas pelo modelo.
+
+211
+00:11:16,905 --> 00:11:21,580
+Algo positivo do dropout é que ele está
+basicamente criando um modelo em conjunto,
+
+212
+00:11:21,580 --> 00:11:24,530
+porque, para cada passagem
+avançada, há efetivamente
+
+213
+00:11:24,530 --> 00:11:27,990
+uma rede diferente
+em que o minilote de dados é visto.
+
+214
+00:11:27,990 --> 00:11:30,740
+Quando tudo isso é somado em expectativa,
+
+215
+00:11:30,740 --> 00:11:33,690
+é como se eu fosse treinar dois
+para as n redes neurais,
+
+216
+00:11:33,690 --> 00:11:36,005
+em que n é o número
+de neurônios descartados.
+
+217
+00:11:36,005 --> 00:11:38,735
+E fazê-los trabalhar
+em um conjunto semelhante
+
+218
+00:11:38,735 --> 00:11:41,805
+a um grupo de árvores de decisão
+em uma Random Forest.
+
+219
+00:11:41,805 --> 00:11:44,050
+Há também o efeito adicional de espalhar
+
+220
+00:11:44,050 --> 00:11:46,440
+a distribuição de dados de toda a rede,
+
+221
+00:11:46,440 --> 00:11:48,030
+em vez de ter a maioria
+
+222
+00:11:48,030 --> 00:11:50,870
+do sinal favorecendo
+uma ramificação da rede.
+
+223
+00:11:50,870 --> 00:11:54,850
+Costumo imaginar isso como a água
+em um rio com vários desvios
+
+224
+00:11:54,850 --> 00:11:59,190
+ou barragens para garantir que todas as
+hidrovias recebam água e não sequem.
+
+225
+00:11:59,190 --> 00:12:02,440
+Dessa forma, sua rede usa
+mais capacidade,
+
+226
+00:12:02,440 --> 00:12:06,140
+já que o sinal flui mais uniformemente
+pela rede inteira e, portanto,
+
+227
+00:12:06,140 --> 00:12:08,715
+você terá melhor treino e generalização
+
+228
+00:12:08,715 --> 00:12:12,295
+sem grandes dependências de neurônios
+desenvolvidas em caminhos conhecidos.
+
+229
+00:12:12,295 --> 00:12:15,900
+Valores típicos para descarte
+são entre 20% e 50%.
+
+230
+00:12:15,900 --> 00:12:17,555
+Se for muito menor que isso,
+
+231
+00:12:17,555 --> 00:12:21,205
+não há muito efeito da rede, já que você
+raramente descarta algum nó.
+
+232
+00:12:21,205 --> 00:12:22,530
+Se for mais alto,
+
+233
+00:12:22,530 --> 00:12:25,135
+o treino também não acontecerá,
+já que a rede se torna
+
+234
+00:12:25,135 --> 00:12:28,550
+muito esparsa para ter a capacidade
+de aprender a distribuição de dados.
+
+235
+00:12:28,550 --> 00:12:31,400
+Você também quer usar isso
+em redes maiores porque há
+
+236
+00:12:31,400 --> 00:12:35,045
+mais capacidade para o modelo
+aprender representações independentes.
+
+237
+00:12:35,045 --> 00:12:38,310
+Em outras palavras, há mais
+passes possíveis para a rede tentar.
+
+238
+00:12:38,310 --> 00:12:39,980
+Quanto mais você descartar,
+
+239
+00:12:39,980 --> 00:12:41,440
+portanto, quanto menos manter,
+
+240
+00:12:41,440 --> 00:12:43,290
+mais forte será a regularização.
+
+241
+00:12:43,290 --> 00:12:45,810
+Se você define sua probabilidade
+de descarte como 1,
+
+242
+00:12:45,810 --> 00:12:47,810
+não mantém nada
+e todos os neurônios
+
+243
+00:12:47,810 --> 00:12:50,720
+na camada de descarte com wrapper
+serão removidos do neurônio.
+
+244
+00:12:50,720 --> 00:12:52,600
+Isso gera uma ativação nula.
+
+245
+00:12:52,600 --> 00:12:54,760
+Durante a retropropagação, isso significa
+
+246
+00:12:54,760 --> 00:12:58,225
+que as ponderações não serão atualizadas
+e a camada não aprenderá nada.
+
+247
+00:12:58,225 --> 00:13:00,035
+Se você define a probabilidade para 0,
+
+248
+00:13:00,035 --> 00:13:03,545
+todos os neurônios são mantidos ativos
+e não há regularização de descarte.
+
+249
+00:13:03,545 --> 00:13:06,360
+É praticamente uma maneira mais cara
+
+250
+00:13:06,360 --> 00:13:09,830
+de não ter um dropout com wrapper, pois
+você ainda precisa rolar os dados.
+
+251
+00:13:09,830 --> 00:13:13,505
+Claro, queremos estar
+em algum lugar entre 0 e 1.
+
+252
+00:13:13,505 --> 00:13:17,065
+Especificamente, com probabilidades de
+descarte entre 10% e 50%,
+
+253
+00:13:17,065 --> 00:13:20,785
+em que uma boa linha de base começa
+em 20% e é necessário adicionar mais.
+
+254
+00:13:20,785 --> 00:13:22,675
+Não há uma probabilidade de descarte
+
+255
+00:13:22,675 --> 00:13:25,785
+que se ajuste a todos os modelos
+e a todas distribuições de dados.
+
+256
+00:13:25,785 --> 00:13:28,300
+O dropout age como outra forma
+de quê?
+
+257
+00:13:28,300 --> 00:13:33,155
+Ele força os dados a fluírem por quais
+caminhos, para uma distribuição uniforme?
+
+258
+00:13:33,155 --> 00:13:35,650
+Ele também simula o aprendizado
+de quê?
+
+259
+00:13:35,650 --> 00:13:39,600
+Não esqueça de escalonar as ativações de
+descarte pelo oposto de quê?
+
+260
+00:13:39,600 --> 00:13:41,830
+Removemos o dropout durante
+o quê?
+
+261
+00:13:41,830 --> 00:13:45,435
+A resposta correta é E.
+O dropout atua como outra forma
+
+262
+00:13:45,435 --> 00:13:48,765
+de regularização para que o modelo
+possa generalizar melhor.
+
+263
+00:13:48,765 --> 00:13:52,160
+Ele faz isso desativando nós
+com uma probabilidade de descarte,
+
+264
+00:13:52,160 --> 00:13:56,065
+o que força os dados a fluírem por vários
+caminhos, para uma distribuição uniforme.
+
+265
+00:13:56,065 --> 00:13:59,235
+Caso contrário, os dados
+e as ativações associadas a eles
+
+266
+00:13:59,235 --> 00:14:01,425
+podem aprender a seguir
+caminhos preferenciais,
+
+267
+00:14:01,425 --> 00:14:03,685
+o que pode levar ao treino
+insuficiente da rede
+
+268
+00:14:03,685 --> 00:14:06,775
+como um todo e fornecer
+um desempenho ruim nos dados.
+
+269
+00:14:06,775 --> 00:14:11,305
+Dropout também simula o aprendizado
+em conjunto, criando um agregado
+
+270
+00:14:11,305 --> 00:14:14,650
+de dois para os n modelos, devido ao
+desligamento aleatório dos nós
+
+271
+00:14:14,650 --> 00:14:15,760
+para cada avanço,
+
+272
+00:14:15,760 --> 00:14:17,795
+onde n é o número de nós descartados.
+
+273
+00:14:17,795 --> 00:14:19,740
+Cada lote vê uma rede diferente,
+
+274
+00:14:19,740 --> 00:14:22,860
+então o modelo não pode se sobrepor em
+todo o conjunto de treino,
+
+275
+00:14:22,860 --> 00:14:24,120
+como uma Random Forest.
+
+276
+00:14:24,120 --> 00:14:26,315
+Escalone as ativações de dropout,
+
+277
+00:14:26,315 --> 00:14:28,375
+pelo inverso da probabilidade
+de manutenção,
+
+278
+00:14:28,375 --> 00:14:30,375
+que é um menos
+a probabilidade de descarte.
+
+279
+00:14:30,375 --> 00:14:34,195
+Fazemos isso esperando que o nó seja
+escalonado corretamente durante o treino,
+
+280
+00:14:34,195 --> 00:14:36,460
+pois, para inferência,
+ele estará sempre ligado,
+
+281
+00:14:36,460 --> 00:14:39,020
+já que removemos o descarte
+durante a inferência.

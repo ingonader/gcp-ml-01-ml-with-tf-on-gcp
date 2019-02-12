@@ -1,0 +1,71 @@
+Angenommen Sie lesen 
+eine Forschungsarbeit über ein Modell zum Vorhersagen 
+künftiger Werte einer Zeitachse. Auch wird der Code genannt. Es werden 
+ungewöhnliche Konzepte wie "LSTMCell", unbekannte TensorFlow-
+Funktionen wie "static_rnn" und untergeordnete TensorFlow-
+Vorgänge wie "Matmul" verwendet. Lassen wir erstmal 
+deren Bedeutung und Funktion außer Acht. Im 9. Kurs dieser Reihe 
+beschäftigen wir uns mit Sequenzmodellen. Sehen wir die Funktion 
+für den Moment einfach als Black Box an. Im Grunde dient 
+eine Zeitachse als Eingabe, ein Array von Werten, 
+die nach Zeit geordnet wurden. N_INPUTS drückt 
+eine Länge dieser Zeitachse aus. Die Vorhersagen stellen 
+die Ausgabe des Modells dar. Im Ausgabe-Array 
+befinden sich N_OUTPUTS Ziffern. Laut der Vorhersage des Modells 
+sind das die künftigen Zeitachsenwerte. Sie haben also ein Modell, 
+das Sie trainieren möchten. Beachten Sie, dass Sie 
+hier nur das Modell sehen. Quasi nur die Mathematik. Wir müssen noch die Daten einlesen, das Modell 
+für die Bewertung trainieren usw. und wollen das 
+auf verteilte, fehlertolerante Art tun. Wir wollen die "Technik" hinzufügen. Natürlich schließen wir sie 
+in ein Estimator-Framework ein, um auf verteiltem Training basierende, 
+skalierte Vorhersagen usw. zu erhalten. Schauen wir uns an, wie das geht. Sehen wir uns zuerst 
+die Funktion "train_and_evaluate" an. Sie verwendet drei Parameter: 
+"estimator", "train_spec" und "eval_spec". "Train_spec" und "eval_spec" 
+kennen Sie aus gespeicherten Estimatoren. Damit steuert man, wie mit einer Funktion 
+Dataset-Eingabedaten eingespeist werden. Es wird auch gesteuert, 
+wie lange trainiert wird, wie oft bewertet
+und wann exportiert wird. Neu ist hier der erste Parameter 
+zum Trainieren und Bewerten (Estimator). Bisher haben wir mithilfe eines linearen Regressors, 
+DNN-Regressors, linearen Klassifikators usw. einen gespeicherten 
+oder vorgefertigten Estimator erstellt. Jetzt erstellen wir 
+einen Basisklassen-Estimator. Ich setze den Estimator 
+nur auf "tf.estimators.Estimator". Der Basisklassen-
+Estimator verwendet zwei Parameter. Der zweite Parameter gibt, 
+wie bei gespeicherten Estimatoren, an, wo die Kontrollpunkte 
+(das Ausgabeverzeichnis) gespeichert werden. Die Modellfunktion wird 
+durch den ersten Parameter ausgedrückt. Wie ist 
+die Modellfunktion "myfunc" aufgebaut? Myfunc ist eine "EstimatorSpec". Das heißt, myfunc gibt 
+eine "tf.estimator.EstimatorSpec" zurück. Sie verwendet drei Parameter: 
+"features", "targets" und "mode". Sie kennen bestimmt
+"features" und "targets". Diese Parameter werden beispielsweise von Trainingseingabe-
+funktionen zurückgegeben. Features ist ein Wörterbuch von Merkmalen. In diesem Fall ziehe ich daraus 
+den Tensor heraus, der INCOL entspricht. Targets ist einfach das Label, das von der Trainingseingabe-
+funktion zurückgegeben wird. Mode hat folgenden Wert:
+"train", "eval" oder "predict". Wir schauen uns gleich an, 
+welchen Nutzen "mode" bringt. Anhand dieser drei Eingabewerte soll myfunc eine EstimatorSpec 
+erstellen und zurückgeben. sechs Aspekte zeichnen eine EstimatorSpec aus. Der erste Parameter (mode) 
+kann einfach übergeben werden. Übergeben Sie die Eingabe als Ausgabe. Der zweite Parameter sind die Vorhersagen, die Ausgaben des Modells. Die Vorhersagen müssen sich 
+in einem Wörterbuch befinden. Geben Sie einen Schlüsselnamen 
+und den entsprechenden Tensor an. Hier besteht "predictions_dict" 
+aus nur einem Schlüssel. Ich nenne ihn "predicted" und der Tensor ist die Ausgabe 
+des Modells aus der Forschungsarbeit. Wir verwenden die Vorhersagen, 
+um die exportierten Ausgaben zu erstellen. Man könnte noch andere Dinge
+als die Vorhersagen exportieren. Falls Sie eine trainierte Einbettung 
+des Modells z. B. exportieren wollen, würden Sie das hier tun, indem Sie einen Schlüssel 
+und den entsprechenden Tensor angeben. Schauen wir uns an, 
+woraus die EstimatorSpec noch besteht: Verlust, Trainingsvorgang 
+und Evaluationsmesswertvorgang. Nur wenn "mode" auf "TRAIN" gesetzt ist,
+muss der Trainingsvorgang ausgeführt werden. Nur wenn "mode" auf "EVAL" gesetzt ist, 
+ist der Evaluationsmesswert zu berechnen. Ich lege den Verlust als
+mittleren quadratischen Fehler zwischen den Zielen (Labels)
+und den Vorhersagen fest. Der Trainingsvorgang besteht 
+aus dem Optimieren der Verlustfunktion. Das geschieht hier mit dem 
+Stochastic Gradient Descent (SGD). Vermutlich, da der SGD auch 
+in der Forschungsarbeit genutzt wurde. Der Evaluationsmesswert ist ein Wörterbuch mit den Messwerten, 
+die wir bewerten wollen. Hier berechne ich nur die Wurzel 
+eines mittleren quadratischen Fehlers. Führen Sie diese Vorgänge nicht
+während der Vorhersagenerstellung aus. Wieso? Weil wir kein Label haben werden. Daher setzen wir 
+diese Vorgänge abschließend auf "None". Wir haben also "train_and_evaluate " 
+mit einem Basisklassen-Estimator aufgerufen und darin eine Funktion übergeben, 
+die eine EstimatorSpec zurückgibt. Dann haben wir 
+einen benutzerdefinierten Estimator.

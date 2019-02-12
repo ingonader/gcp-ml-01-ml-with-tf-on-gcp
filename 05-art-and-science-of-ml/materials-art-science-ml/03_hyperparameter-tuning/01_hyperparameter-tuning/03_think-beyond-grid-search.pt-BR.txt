@@ -1,0 +1,47 @@
+Pensar em todos
+os botões e alavancas e encontrar a combinação ideal que
+depende dos dados é uma tarefa hercúlea. Pense nas permutações. Automatize com os algoritmos de
+pesquisa do Gritz que quiser, mas a pesquisa pela combinação
+ideal pode levar muito tempo e gastar muitas horas
+de recursos de computação Não seria bom se
+um loop de treinamento fizesse o metatreinamento
+desses hiperparâmetros para encontrar as
+configurações ideais? O Google Vizier
+faz isso para você. Na maioria dos casos,
+você verá um ajuste automático realizado pelo
+algoritmo do Google Vizier, sem precisar
+saber dos detalhes. Se estiver curioso para saber
+o que acontece nos bastidores, recomendo o artigo
+mostrado na tela. Você só precisa saber que o
+Cloud ML Engine faz o trabalho, você só precisa configurar
+o job corretamente e pronto. Vamos ver como fazer
+essa mágica acontecer. Você já deve ter
+usado o Cloud ML Engine, a plataforma sem servidor para
+treinar e hospedar modelos de ML. O ML Engine abstrai o
+ajuste dos hiperparâmetros. Você só precisa usar
+o serviço desta maneira. Primeiro, é preciso expressar os hiperparâmetros a serem ajustados
+como um argumento da linha de comando. As iterações do treinamento não
+podem atrapalhar umas às outras. Depois, forneça esses hiperparâmetros
+para o job de treinamento. Antes de ir para o
+laboratório fazer os ajustes, vamos destacar como
+essas etapas ficam no código. A primeira etapa é
+definir os hiperparâmetros que precisam de ajuste como
+um argumento da linha de comando. Por exemplo, tenho dois aqui: o número de pacotes para
+ocultar a latitude e a longitude e o número de unidades ocultas
+na minha rede neural profunda. A segunda etapa é garantir que as
+saídas não atrapalhem umas às outras. Para isso, use uma boa convenção
+de nomes para as pastas de saída. Por exemplo, uso um valor "trial"
+como sufixo para tornar o nome exclusivo. A última etapa é fornecer os hiperparâmetros ao enviar um
+job de treinamento. Veja como. Primeiro, crie um
+arquivo YAML como este e forneça o caminho
+para o arquivo com os parâmetros de linha de comando
+para o comando do ML Engine, assim. Agora, vamos ver o
+conteúdo do arquivo YAML. Neste exemplo, queremos minimizar
+o rmse nos dados de avaliação. Queremos que o ML Engine encontre
+o tamanho perfeito entre 64 e 514. Essa não é uma pesquisa Gritz,
+é muito mais inteligente. Veja o teste máximo. O algoritmo do ML Engine
+pesquisa em áreas promissoras, inicia aleatoriamente
+alguns testes em paralelo conforme especificado pelo
+valor máximo e começa a explorar. Estamos pedindo para o
+ML Engine testar sistematicamente várias arquiteturas
+da rede neural. Pronto para testar? Vamos lá.

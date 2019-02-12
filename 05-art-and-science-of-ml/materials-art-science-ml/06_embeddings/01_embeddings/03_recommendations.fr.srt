@@ -1,0 +1,319 @@
+1
+00:00:00,000 --> 00:00:01,830
+Dans le cours précédent,
+
+2
+00:00:01,830 --> 00:00:05,710
+nous avons vu les RVC du point de vue
+d'un croisement de caractéristiques.
+
+3
+00:00:05,710 --> 00:00:09,927
+Mais les RVC sont utiles pour
+n'importe quelle colonne catégorielle.
+
+4
+00:00:09,927 --> 00:00:14,765
+Nous allons voir pourquoi en nous intéressant
+aux RVC d'un point de vue différent.
+
+5
+00:00:14,765 --> 00:00:19,710
+Imaginons que nous voulons
+recommander des films à des clients.
+
+6
+00:00:19,710 --> 00:00:25,285
+Notre entreprise a un million
+d'utilisateurs et 500 000 films.
+
+7
+00:00:25,285 --> 00:00:27,115
+En fait, c'est relativement peu.
+
+8
+00:00:27,115 --> 00:00:32,200
+YouTube et huit autres services de Google
+ont un milliard d'utilisateurs.
+
+9
+00:00:32,200 --> 00:00:37,900
+Pour chaque utilisateur, notre tâche
+consiste à recommander de 5 à 10 films.
+
+10
+00:00:37,900 --> 00:00:40,495
+Nous voulons choisir
+des films qu'ils regarderont,
+
+11
+00:00:40,495 --> 00:00:42,790
+et auxquels ils donneront une note élevée.
+
+12
+00:00:42,790 --> 00:00:45,350
+Nous devons faire cela
+pour un million d'utilisateurs
+
+13
+00:00:45,350 --> 00:00:52,095
+en sélectionnant pour chacun de 5 à 10 films
+parmi les 500 000 dont nous disposons.
+
+14
+00:00:52,095 --> 00:00:54,565
+Quel est notre ensemble
+de données d'entrée ?
+
+15
+00:00:54,565 --> 00:00:58,875
+Si nous le représentons
+sous la forme d'une matrice,
+
+16
+00:00:58,875 --> 00:01:04,015
+notre ensemble de données d'entrée a
+un million de lignes et 500 000 colonnes.
+
+17
+00:01:04,015 --> 00:01:11,855
+Les nombres du tableau indiquent les films
+que les clients ont regardés et notés.
+
+18
+00:01:11,855 --> 00:01:15,130
+Notre tâche consiste
+à déterminer le reste de la matrice.
+
+19
+00:01:15,130 --> 00:01:18,030
+Pour résoudre ce problème,
+nous devons faire preuve de méthode
+
+20
+00:01:18,030 --> 00:01:22,185
+afin d'établir des liens de similarité
+entre les différents films.
+
+21
+00:01:22,185 --> 00:01:23,725
+Une approche consiste
+
+22
+00:01:23,725 --> 00:01:30,495
+à organiser les films par similarité
+à l'aide de certains de leurs attributs.
+
+23
+00:01:30,495 --> 00:01:35,270
+Par exemple, nous pourrions
+consulter l'âge moyen de l'audience
+
+24
+00:01:35,270 --> 00:01:37,820
+et placer les films sur une ligne.
+
+25
+00:01:37,820 --> 00:01:42,555
+Les dessins animés et les films
+d'animation se trouvent à gauche,
+
+26
+00:01:42,555 --> 00:01:47,980
+et les films plus sombres s'adressant
+à un public adulte apparaissent à droite.
+
+27
+00:01:47,980 --> 00:01:51,550
+Ainsi, si vous avez aimé
+Les Indestructibles (The Incredibles),
+
+28
+00:01:51,550 --> 00:01:55,020
+il est possible que vous soyez un enfant
+ou que vous ayez un enfant jeune,
+
+29
+00:01:55,020 --> 00:01:58,975
+et nous pouvons vous recommander Shrek.
+
+30
+00:01:58,975 --> 00:02:05,055
+Mais Trois couleurs : Bleu et Memento
+sont des films d'art et d'essai,
+
+31
+00:02:05,055 --> 00:02:10,480
+tandis que Star Wars et The Dark Knight Rises
+sont tous deux des blockbusters.
+
+32
+00:02:10,480 --> 00:02:13,505
+Une personne qui a regardé et aimé Bleu
+
+33
+00:02:13,505 --> 00:02:19,100
+est plus susceptible d'aimer Memento
+qu'un film à propos de Batman.
+
+34
+00:02:19,100 --> 00:02:22,900
+De même, une personne
+qui a regardé et aimé Star Wars
+
+35
+00:02:22,900 --> 00:02:29,055
+est plus susceptible d'aimer The Dark
+Knight Rises qu'un film d'art et d'essai.
+
+36
+00:02:29,055 --> 00:02:32,225
+Comment résolvons-nous ce problème ?
+
+37
+00:02:32,225 --> 00:02:35,715
+Et si nous ajoutions une deuxième dimension ?
+
+38
+00:02:35,715 --> 00:02:41,550
+Elle pourrait représenter le nombre total
+de places vendues pour chaque film
+
+39
+00:02:41,550 --> 00:02:44,600
+lorsqu'il est sorti au cinéma.
+
+40
+00:02:44,600 --> 00:02:45,667
+Nous voyons maintenant
+
+41
+00:02:45,667 --> 00:02:50,685
+que Star Wars et The Dark Knight Rises
+sont proches l'un de l'autre,
+
+42
+00:02:50,685 --> 00:02:57,580
+et qu'il en va de même de Bleu et de Memento,
+tout comme de Shrek et des Indestructibles.
+
+43
+00:02:57,580 --> 00:03:01,640
+Harry Potter est
+entre les dessins animés et Star Wars.
+
+44
+00:03:01,640 --> 00:03:07,130
+C'est un film regardé par les enfants
+et certains adultes, et c'est un blockbuster.
+
+45
+00:03:07,130 --> 00:03:11,660
+Voyez comme l'ajout d'une deuxième
+dimension a aidé à rapprocher les films
+
+46
+00:03:11,660 --> 00:03:15,365
+constituant les uns pour les autres
+de bonnes recommandations.
+
+47
+00:03:15,365 --> 00:03:20,450
+Cela correspond bien mieux à notre intuition.
+
+48
+00:03:20,450 --> 00:03:24,260
+Devons-nous nous arrêter
+à deux dimensions ? Bien sûr que non.
+
+49
+00:03:24,260 --> 00:03:26,455
+En ajoutant de nouvelles dimensions,
+
+50
+00:03:26,455 --> 00:03:30,245
+nous pouvons établir
+des distinctions de plus en plus fines.
+
+51
+00:03:30,245 --> 00:03:34,932
+Et ces distinctions plus fines
+permettent parfois
+
+52
+00:03:34,932 --> 00:03:37,750
+d'obtenir de meilleures recommandations.
+
+53
+00:03:37,750 --> 00:03:39,520
+Mais pas toujours.
+
+54
+00:03:39,520 --> 00:03:44,185
+Il y a, ici aussi,
+un risque de surapprentissage.
+
+55
+00:03:44,185 --> 00:03:48,640
+L'idée est donc que nous avons
+une entrée comportant N dimensions.
+
+56
+00:03:48,640 --> 00:03:52,940
+Alors, à quoi correspond N
+dans le cas des films que nous avons vus ?
+
+57
+00:03:52,940 --> 00:03:54,700
+500 000.
+
+58
+00:03:54,700 --> 00:03:57,960
+Souvenez-vous que l'ID du film
+est une caractéristique catégorielle
+
+59
+00:03:57,960 --> 00:04:00,910
+pour laquelle nous utiliserions
+normalement l'encodage one-hot.
+
+60
+00:04:00,910 --> 00:04:04,260
+Donc, N = 500 000.
+
+61
+00:04:04,260 --> 00:04:04,975
+Dans notre cas,
+
+62
+00:04:04,975 --> 00:04:08,770
+tous les films sont représentés
+dans un espace bidimensionnel.
+
+63
+00:04:08,770 --> 00:04:11,080
+Donc d = 2.
+
+64
+00:04:11,080 --> 00:04:15,775
+Le point essentiel est
+que d est très inférieur à N.
+
+65
+00:04:15,775 --> 00:04:17,432
+Et nous supposons
+
+66
+00:04:17,432 --> 00:04:22,710
+que l'intérêt d'un utilisateur pour des films
+peut être représenté par d aspects.
+
+67
+00:04:22,710 --> 00:04:26,025
+Nous n'avons pas besoin
+de beaucoup plus d'aspects
+
+68
+00:04:26,025 --> 00:04:28,930
+pour représenter l'intérêt
+d'un utilisateur pour des films.

@@ -1,0 +1,275 @@
+1
+00:00:00,000 --> 00:00:05,155
+We looked at how to write a custom estimator if the code to go from
+
+2
+00:00:05,155 --> 00:00:09,980
+input to tensor to output tensor was written using TensorFlow.
+
+3
+00:00:09,980 --> 00:00:13,360
+We wrap the code and the function that return
+
+4
+00:00:13,360 --> 00:00:19,205
+an EstimatorSpec and then we pass that function to the base class Estimator.
+
+5
+00:00:19,205 --> 00:00:21,570
+How does this work with Keras?
+
+6
+00:00:21,570 --> 00:00:24,025
+And what is Keras anyway?
+
+7
+00:00:24,025 --> 00:00:28,405
+Keras is a high-level neural networks API.
+
+8
+00:00:28,405 --> 00:00:32,635
+It supports both convolutional networks and recurring neural networks.
+
+9
+00:00:32,635 --> 00:00:39,890
+However, unlike TensorFlow, Keras is not an implementation of CNNs or RNNs.
+
+10
+00:00:39,890 --> 00:00:44,485
+What Keras is, is that it's a high level neural networks
+
+11
+00:00:44,485 --> 00:00:50,815
+API written in Python but which supports TensorFlow as a backend.
+
+12
+00:00:50,815 --> 00:00:55,180
+In other words, when you call a Keras function it turns
+
+13
+00:00:55,180 --> 00:01:00,820
+around and calls a set of TensorFlow functions to implement that functionality.
+
+14
+00:01:00,820 --> 00:01:05,395
+Besides TensorFlow, Keras also supports running on
+
+15
+00:01:05,395 --> 00:01:11,320
+top of other neural network implementations like CNTK and theano.
+
+16
+00:01:11,320 --> 00:01:16,060
+Keras is meant to be very easy to use and fast for prototyping.
+
+17
+00:01:16,060 --> 00:01:21,340
+Here for example is a sequence classification model written in Keras,
+
+18
+00:01:21,340 --> 00:01:27,450
+there are classes for things like embedding LSDMs, Dropout, et cetera.
+
+19
+00:01:27,450 --> 00:01:30,850
+So Keras allows you to think about the architecture
+
+20
+00:01:30,850 --> 00:01:34,600
+of your model and not focus on the low level implementation.
+
+21
+00:01:34,600 --> 00:01:39,720
+For example, to create an embedding in TensorFlow you'd create an embedding column,
+
+22
+00:01:39,720 --> 00:01:40,750
+and in order to do that,
+
+23
+00:01:40,750 --> 00:01:44,960
+you have to take the training data and make a categorical column first.
+
+24
+00:01:44,960 --> 00:01:49,495
+You don't need to worry about these sorts of implementation details in Keras.
+
+25
+00:01:49,495 --> 00:01:52,990
+Of course that also means that if you want to do something
+
+26
+00:01:52,990 --> 00:01:58,030
+different about how to carry out the pre-processing before you get to the embeddings,
+
+27
+00:01:58,030 --> 00:02:00,955
+you'll have to delve deep into the Keras documentation.
+
+28
+00:02:00,955 --> 00:02:03,670
+There is no easy lunch and there is often
+
+29
+00:02:03,670 --> 00:02:07,090
+a trade-off between simplicity and expressiveness.
+
+30
+00:02:07,090 --> 00:02:12,575
+In any case you will often see data scientists believe their models using Keras.
+
+31
+00:02:12,575 --> 00:02:16,070
+However keras is meant for fast prototyping,
+
+32
+00:02:16,070 --> 00:02:20,645
+it does not handle distributor training or scale predictions.
+
+33
+00:02:20,645 --> 00:02:23,645
+For that, for productionization,
+
+34
+00:02:23,645 --> 00:02:26,525
+we will want to use the Estimator API.
+
+35
+00:02:26,525 --> 00:02:29,575
+So oftentimes you will take ML prototypes
+
+36
+00:02:29,575 --> 00:02:33,475
+written in Keras and you will have to operationalize them.
+
+37
+00:02:33,475 --> 00:02:35,405
+So what do you have to do?
+
+38
+00:02:35,405 --> 00:02:37,180
+To get the hint,
+
+39
+00:02:37,180 --> 00:02:39,940
+let's look a bit more at the code.
+
+40
+00:02:39,940 --> 00:02:42,895
+Let's not worry about the details in the code
+
+41
+00:02:42,895 --> 00:02:46,120
+but notice that in the first few lines of code,
+
+42
+00:02:46,120 --> 00:02:48,895
+a layered architecture gets created.
+
+43
+00:02:48,895 --> 00:02:54,780
+Once the model is created it's compiled passing in the last function,
+
+44
+00:02:54,780 --> 00:02:59,050
+the optimization method and the evaluation metrics.
+
+45
+00:02:59,050 --> 00:03:00,920
+What does this remind you of?
+
+46
+00:03:00,920 --> 00:03:06,480
+Write the model function in a custom estimator.
+
+47
+00:03:06,480 --> 00:03:10,650
+So how do we mix Keras and the Estimator API?
+
+48
+00:03:10,650 --> 00:03:16,660
+The answer is that once you have a compiled Keras model you can get an estimator.
+
+49
+00:03:16,660 --> 00:03:21,930
+Older Keras code might be importing the standalone version of Keras.
+
+50
+00:03:21,930 --> 00:03:26,835
+Change the import statements if necessary to import TF.Keras.
+
+51
+00:03:26,835 --> 00:03:31,410
+So notice that I now have from TensorFlow import Keras.
+
+52
+00:03:31,410 --> 00:03:33,920
+Keras is now part of TensorFlow call,
+
+53
+00:03:33,920 --> 00:03:35,290
+so you can do this.
+
+54
+00:03:35,290 --> 00:03:40,720
+Then simply call Keras.estimator.model_to_estimator
+
+55
+00:03:40,720 --> 00:03:46,000
+passing in the compiled model and this gives you back an estimator.
+
+56
+00:03:46,000 --> 00:03:50,640
+Throw away the model that fits the model that evaluates that's being called.
+
+57
+00:03:50,640 --> 00:03:52,935
+So how do you train this model?
+
+58
+00:03:52,935 --> 00:03:57,424
+You will use this estimator the way you normally use an estimator,
+
+59
+00:03:57,424 --> 00:03:59,410
+with a training input function,
+
+60
+00:03:59,410 --> 00:04:03,500
+evaluation input function, trains spec, eval spec,
+
+61
+00:04:03,500 --> 00:04:08,025
+exporter, et cetera and pass them into train and evaluate.
+
+62
+00:04:08,025 --> 00:04:12,925
+This is the way to productionize a Keras model.
+
+63
+00:04:12,925 --> 00:04:16,660
+One thing to be aware of is that the linkage between
+
+64
+00:04:16,660 --> 00:04:22,285
+the input function and the Keras model is through a naming convention.
+
+65
+00:04:22,285 --> 00:04:26,425
+If you have a Keras layer named XYZ,
+
+66
+00:04:26,425 --> 00:04:29,940
+then in the features dictionary return from
+
+67
+00:04:29,940 --> 00:04:36,415
+the input function you should have a feature named XYZ underscore input.
+
+68
+00:04:36,415 --> 00:04:40,755
+Let's look at a quick demo of this I'll be using the same notebook as
+
+69
+00:04:40,755 --> 00:04:46,560
+earlier but using an example Keras model just for demonstration purposes.

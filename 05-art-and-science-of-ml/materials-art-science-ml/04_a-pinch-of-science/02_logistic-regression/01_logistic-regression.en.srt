@@ -1,0 +1,1371 @@
+1
+00:00:00,000 --> 00:00:02,265
+Now that we've learned about [inaudible] regularization,
+
+2
+00:00:02,265 --> 00:00:04,575
+let's dive deeper into Logistic Regression
+
+3
+00:00:04,575 --> 00:00:07,775
+and see why it's important to use regularization.
+
+4
+00:00:07,775 --> 00:00:11,035
+Suppose we want to predict the outcomes of coin flips.
+
+5
+00:00:11,035 --> 00:00:12,990
+We all know that for a fair coin,
+
+6
+00:00:12,990 --> 00:00:16,305
+the expected value is 50 percent of heads and 50 percent tails.
+
+7
+00:00:16,305 --> 00:00:19,785
+What if we had instead an unfair coin,
+
+8
+00:00:19,785 --> 00:00:21,180
+with a bend in it.
+
+9
+00:00:21,180 --> 00:00:25,080
+Now, let's say we want to generalize coin flip prediction to all coins,
+
+10
+00:00:25,080 --> 00:00:27,960
+fair and unfair, big and small,
+
+11
+00:00:27,960 --> 00:00:30,105
+heavy and light, et cetera.
+
+12
+00:00:30,105 --> 00:00:35,455
+What features could we use to predict whether a flip would be heads or tails?
+
+13
+00:00:35,455 --> 00:00:39,930
+Perhaps we could use the angle of the bend because it distributes X percent of mass in
+
+14
+00:00:39,930 --> 00:00:42,240
+the other dimension and/or creates a difference in
+
+15
+00:00:42,240 --> 00:00:44,655
+rotation due to air resistance or center of mass.
+
+16
+00:00:44,655 --> 00:00:47,655
+The mass of the coin might also be a good feature to know,
+
+17
+00:00:47,655 --> 00:00:51,690
+as well as size, properties such as diameter, thickness, et cetera.
+
+18
+00:00:51,690 --> 00:00:54,240
+We could use some feature engineering on this to get
+
+19
+00:00:54,240 --> 00:00:56,610
+the volume of the coin and, furthermore, the density.
+
+20
+00:00:56,610 --> 00:00:58,290
+Maybe the type of material or
+
+21
+00:00:58,290 --> 00:01:01,620
+materials the coin is composed of would be useful information.
+
+22
+00:01:01,620 --> 00:01:03,915
+These features would be pretty easy to measure.
+
+23
+00:01:03,915 --> 00:01:07,245
+However, they're only one side of the coin, pun intended.
+
+24
+00:01:07,245 --> 00:01:10,440
+The rest comes down to the action of the flip itself
+
+25
+00:01:10,440 --> 00:01:13,565
+such as how much a linear and angular velocity the coin was given,
+
+26
+00:01:13,565 --> 00:01:14,920
+the angle of launch,
+
+27
+00:01:14,920 --> 00:01:16,785
+the angle of what it lands on,
+
+28
+00:01:16,785 --> 00:01:18,345
+wind speed, et cetera.
+
+29
+00:01:18,345 --> 00:01:20,885
+These might be a bit harder to measure.
+
+30
+00:01:20,885 --> 00:01:23,130
+Now that we have all of these features,
+
+31
+00:01:23,130 --> 00:01:26,810
+what's the simplest model we could use to predict heads or tails?
+
+32
+00:01:26,810 --> 00:01:28,805
+Linear regression, of course.
+
+33
+00:01:28,805 --> 00:01:31,055
+What could go wrong with this choice though?
+
+34
+00:01:31,055 --> 00:01:33,895
+Our labels are heads or tails,
+
+35
+00:01:33,895 --> 00:01:35,295
+or thought of it in another way,
+
+36
+00:01:35,295 --> 00:01:36,915
+heads or not heads,
+
+37
+00:01:36,915 --> 00:01:42,040
+which could represent with the [inaudible] encoding of one for heads and zero for not heads.
+
+38
+00:01:42,040 --> 00:01:45,920
+But if we use linear regression with a standard mean squared error loss function,
+
+39
+00:01:45,920 --> 00:01:49,190
+our predictions could end up being outside the range of zero and one.
+
+40
+00:01:49,190 --> 00:01:52,955
+What does it mean if we predict 2.75 for the coin flip state?
+
+41
+00:01:52,955 --> 00:01:54,625
+That makes no sense.
+
+42
+00:01:54,625 --> 00:01:57,350
+A model that minimizes squared error is under
+
+43
+00:01:57,350 --> 00:02:00,320
+no constraint to treat as a probability in zero to one,
+
+44
+00:02:00,320 --> 00:02:01,955
+but this is what we need here.
+
+45
+00:02:01,955 --> 00:02:04,940
+In particular, you can imagine a model that predicts values less
+
+46
+00:02:04,940 --> 00:02:08,240
+than zero or greater than one for some new examples.
+
+47
+00:02:08,240 --> 00:02:11,480
+This would mean we can't use this model as a probability.
+
+48
+00:02:11,480 --> 00:02:16,430
+Simple tricks like capping their predictions at zero or one would introduce bias.
+
+49
+00:02:16,430 --> 00:02:17,900
+So we need something else,
+
+50
+00:02:17,900 --> 00:02:20,180
+in particular, a new loss function.
+
+51
+00:02:20,180 --> 00:02:24,820
+Converting this from linear progression to logistic regression can solve this dilemma.
+
+52
+00:02:24,820 --> 00:02:26,380
+From an earlier course of ours,
+
+53
+00:02:26,380 --> 00:02:29,765
+we went through the history of ML and used the sigmoid activation function.
+
+54
+00:02:29,765 --> 00:02:32,150
+Let's take a deeper look into that now.
+
+55
+00:02:32,150 --> 00:02:37,520
+The sigmoid activation function essentially takes the weighted sum, W transpose X,
+
+56
+00:02:37,520 --> 00:02:40,400
+plus B from a linear regression and instead of
+
+57
+00:02:40,400 --> 00:02:43,580
+just outputting that and then calculating the means squared error loss,
+
+58
+00:02:43,580 --> 00:02:47,630
+we change the activation function from linear to sigmoid which takes
+
+59
+00:02:47,630 --> 00:02:52,070
+that as an argument and squashes it smoothly between zero and one.
+
+60
+00:02:52,070 --> 00:02:53,865
+The input into the sigmoid,
+
+61
+00:02:53,865 --> 00:02:55,470
+normally the output of linear regression,
+
+62
+00:02:55,470 --> 00:02:57,150
+is called the logit.
+
+63
+00:02:57,150 --> 00:03:01,760
+So, we are performing a nonlinear transformation on our linear model.
+
+64
+00:03:01,760 --> 00:03:05,790
+Notice how the probability asymptotes to zero when the logits
+
+65
+00:03:05,790 --> 00:03:09,480
+go to negative infinity and to one when the logits go to positive infinity.
+
+66
+00:03:09,480 --> 00:03:11,760
+What does this imply for training?
+
+67
+00:03:11,760 --> 00:03:13,490
+Unlike mean squared error,
+
+68
+00:03:13,490 --> 00:03:18,495
+the sigmoid never guesses 1.0 or 0.0 probability.
+
+69
+00:03:18,495 --> 00:03:20,580
+This means that in gradient descents
+
+70
+00:03:20,580 --> 00:03:23,940
+constant drive to get the loss closer and closer to zero,
+
+71
+00:03:23,940 --> 00:03:26,190
+it will drive the weights closer and closer to plus or
+
+72
+00:03:26,190 --> 00:03:29,190
+minus infinity in the absence of regularization,
+
+73
+00:03:29,190 --> 00:03:31,220
+which can lead to problems.
+
+74
+00:03:31,220 --> 00:03:34,680
+First though, how can we interpret the output of a sigmoid?
+
+75
+00:03:34,680 --> 00:03:37,710
+Is it just some function that range is zero to one,
+
+76
+00:03:37,710 --> 00:03:40,725
+of which there are many, or is it something more?
+
+77
+00:03:40,725 --> 00:03:42,990
+The good news is it is something more;
+
+78
+00:03:42,990 --> 00:03:45,360
+it's a calibrated probability estimate.
+
+79
+00:03:45,360 --> 00:03:46,800
+Beyond just the range,
+
+80
+00:03:46,800 --> 00:03:49,515
+the sigmoid function is the cumulative distribution function
+
+81
+00:03:49,515 --> 00:03:51,720
+of the logistic probability distribution,
+
+82
+00:03:51,720 --> 00:03:56,265
+whose quantile function is the inverse of the logit which models the log odds.
+
+83
+00:03:56,265 --> 00:04:01,250
+Therefore, mathematically, the opposite of a sigmoid can be considered probabilities.
+
+84
+00:04:01,250 --> 00:04:04,100
+In this way, we can think of calibration as
+
+85
+00:04:04,100 --> 00:04:07,550
+the fact the outputs are real world values like probabilities.
+
+86
+00:04:07,550 --> 00:04:10,480
+This is in contrast to uncalibrated outputs like
+
+87
+00:04:10,480 --> 00:04:12,320
+an embedding vector which is internally
+
+88
+00:04:12,320 --> 00:04:15,485
+informative but the values have no real correlation.
+
+89
+00:04:15,485 --> 00:04:17,520
+Lots of output activation functions,
+
+90
+00:04:17,520 --> 00:04:19,150
+in fact, an infinite number,
+
+91
+00:04:19,150 --> 00:04:23,120
+could give you a number between zero and one but only this sigmoid is
+
+92
+00:04:23,120 --> 00:04:27,920
+proven to be a calibrated estimate of the training dataset probability of occurrence.
+
+93
+00:04:27,920 --> 00:04:30,930
+Using this fact about the sigmoid activation function,
+
+94
+00:04:30,930 --> 00:04:35,050
+we can cast binary classification problems into probabilistic problems.
+
+95
+00:04:35,050 --> 00:04:39,635
+For instance, instead of a model just predicting a yes or no such as,
+
+96
+00:04:39,635 --> 00:04:41,210
+will a customer buy an item,
+
+97
+00:04:41,210 --> 00:04:43,550
+it can now predict the probability that a customer buys an item.
+
+98
+00:04:43,550 --> 00:04:45,620
+This, paired with a threshold,
+
+99
+00:04:45,620 --> 00:04:49,925
+can provide a lot more predictive power than just a simple binary answer.
+
+100
+00:04:49,925 --> 00:04:53,000
+So now that we have calculated logistical regressions output
+
+101
+00:04:53,000 --> 00:04:55,860
+to some calibrated probability between zero and one,
+
+102
+00:04:55,860 --> 00:05:00,805
+how can we find our error and use that to update our weights through back propagation?
+
+103
+00:05:00,805 --> 00:05:03,855
+We use a loss function called cross-entropy,
+
+104
+00:05:03,855 --> 00:05:05,890
+which is also the Log Loss.
+
+105
+00:05:05,890 --> 00:05:07,470
+Unlike mean squared error,
+
+106
+00:05:07,470 --> 00:05:10,380
+there is less emphasis on errors where the output is relatively
+
+107
+00:05:10,380 --> 00:05:13,750
+close to the label where it's almost linear compared to quadratic.
+
+108
+00:05:13,750 --> 00:05:16,820
+However, also unlike mean squared error,
+
+109
+00:05:16,820 --> 00:05:21,570
+cross-entropy grows exponentially when the prediction is close to the opposite the label.
+
+110
+00:05:21,570 --> 00:05:24,960
+In other words, there is a very high penalty when the model not
+
+111
+00:05:24,960 --> 00:05:28,800
+only gets it wrong but does so with very high confidence.
+
+112
+00:05:28,800 --> 00:05:33,060
+Furthermore, the derivative of mean squared error could cause problems with training.
+
+113
+00:05:33,060 --> 00:05:36,390
+As we push the output closer and closer to zero or one,
+
+114
+00:05:36,390 --> 00:05:40,245
+and the gradient which is the output times one minus the output,
+
+115
+00:05:40,245 --> 00:05:44,025
+becomes smaller and smaller and changes the weights less and less.
+
+116
+00:05:44,025 --> 00:05:46,230
+Training could completely stall.
+
+117
+00:05:46,230 --> 00:05:49,140
+However, the gradient across entropy is
+
+118
+00:05:49,140 --> 00:05:52,170
+a logistic function times 1 minus logistic function,
+
+119
+00:05:52,170 --> 00:05:54,765
+which conveniently cancels out during back propagation,
+
+120
+00:05:54,765 --> 00:05:56,595
+therefore, not having that problem.
+
+121
+00:05:56,595 --> 00:05:59,655
+However, regularization is important in logistic regression
+
+122
+00:05:59,655 --> 00:06:03,390
+because driving loss to zero is difficult and dangerous.
+
+123
+00:06:03,390 --> 00:06:06,840
+First, as gradient descent seeks to minimize cross-entropy,
+
+124
+00:06:06,840 --> 00:06:09,150
+it pushes output values closer to one for
+
+125
+00:06:09,150 --> 00:06:12,060
+positive labels and closer to zero for negative labels.
+
+126
+00:06:12,060 --> 00:06:13,740
+Due to the equation of the sigmoid,
+
+127
+00:06:13,740 --> 00:06:16,980
+the function asymptotes to zero when the logic is negative infinity,
+
+128
+00:06:16,980 --> 00:06:19,260
+and to one when the logic is positive infinity.
+
+129
+00:06:19,260 --> 00:06:22,215
+To get the logits to negative or positive infinity,
+
+130
+00:06:22,215 --> 00:06:26,475
+imagine the weights is increased and increased leading to numerical stability problems,
+
+131
+00:06:26,475 --> 00:06:28,455
+overflows, and under flows.
+
+132
+00:06:28,455 --> 00:06:31,275
+This is dangerous and can ruin our training.
+
+133
+00:06:31,275 --> 00:06:33,420
+Also, near the asymptotes,
+
+134
+00:06:33,420 --> 00:06:34,825
+as you can see from the graph,
+
+135
+00:06:34,825 --> 00:06:37,200
+the sigmoid function becomes flatter and flatter.
+
+136
+00:06:37,200 --> 00:06:40,635
+This means that the derivative is getting closer and closer to zero.
+
+137
+00:06:40,635 --> 00:06:43,740
+Since we use the derivative and back propagation to update the weights,
+
+138
+00:06:43,740 --> 00:06:46,995
+it is important for the gradient not to become zero,
+
+139
+00:06:46,995 --> 00:06:48,960
+or else, training will stop.
+
+140
+00:06:48,960 --> 00:06:50,715
+This is called saturation,
+
+141
+00:06:50,715 --> 00:06:53,910
+when all activations end up in these plateaus which
+
+142
+00:06:53,910 --> 00:06:57,620
+leads to a vanishing gradient problem and makes training difficult.
+
+143
+00:06:57,620 --> 00:07:00,640
+This is also potentially useful insight here.
+
+144
+00:07:00,640 --> 00:07:05,505
+Imagine you assign a unique ID for each example and map each ID to its own feature.
+
+145
+00:07:05,505 --> 00:07:08,150
+If you use unregularized logistical regression,
+
+146
+00:07:08,150 --> 00:07:10,680
+this will lead to absolute overfitting.
+
+147
+00:07:10,680 --> 00:07:15,330
+As the model tries to drive loss to zero on all examples and never gets there,
+
+148
+00:07:15,330 --> 00:07:17,450
+the weights for each indicator feature will be driven
+
+149
+00:07:17,450 --> 00:07:19,865
+to positive infinity or negative infinity.
+
+150
+00:07:19,865 --> 00:07:21,455
+This can happen in practice,
+
+151
+00:07:21,455 --> 00:07:23,755
+in high dimensional data with feature crosses.
+
+152
+00:07:23,755 --> 00:07:28,645
+Often, there is a huge mass of rare crosses that happens only in one example each.
+
+153
+00:07:28,645 --> 00:07:32,435
+So, how can we protect ourselves from overfitting?
+
+154
+00:07:32,435 --> 00:07:36,180
+Which of these is important in performing logistic regression?
+
+155
+00:07:36,180 --> 00:07:38,940
+The correct answer is both A and B.
+
+156
+00:07:38,940 --> 00:07:41,670
+Adding regularization to logistic regression helps keep
+
+157
+00:07:41,670 --> 00:07:44,580
+the model simpler by having smaller parameter weights.
+
+158
+00:07:44,580 --> 00:07:47,400
+This penalty term added to the loss function makes
+
+159
+00:07:47,400 --> 00:07:50,370
+sure that cross-entropy through gradient descent doesn't keep
+
+160
+00:07:50,370 --> 00:07:53,130
+pushing the weights from closer to closer to
+
+161
+00:07:53,130 --> 00:07:56,265
+plus or minus infinity and causing numerical issues.
+
+162
+00:07:56,265 --> 00:07:58,500
+Also, with [inaudible] logits,
+
+163
+00:07:58,500 --> 00:08:00,570
+we can now stay in the less flat portions of
+
+164
+00:08:00,570 --> 00:08:03,870
+the sigmoid function making our gradients less close to zero,
+
+165
+00:08:03,870 --> 00:08:07,125
+and thus allowing weight updates and turning to continue.
+
+166
+00:08:07,125 --> 00:08:09,735
+C is incorrect, therefore,
+
+167
+00:08:09,735 --> 00:08:12,160
+so is E because regularization does
+
+168
+00:08:12,160 --> 00:08:15,250
+not transform the outputs in a calibrated probability estimate.
+
+169
+00:08:15,250 --> 00:08:18,940
+The great thing about logistic regression is that it already outputs
+
+170
+00:08:18,940 --> 00:08:20,740
+the calibrated property estimate since
+
+171
+00:08:20,740 --> 00:08:22,030
+the sigmoid function is
+
+172
+00:08:22,030 --> 00:08:24,955
+a cumulative distribution function of the logistic probability distribution.
+
+173
+00:08:24,955 --> 00:08:26,920
+This allows us to actually predict
+
+174
+00:08:26,920 --> 00:08:30,010
+probabilities instead of just binary answers like yes or no,
+
+175
+00:08:30,010 --> 00:08:32,325
+true or false, buy or sell, et cetera.
+
+176
+00:08:32,325 --> 00:08:37,545
+To counteract overfitting, we often do both regularization and early stopping.
+
+177
+00:08:37,545 --> 00:08:41,175
+For regularization model complexity increases with large weights,
+
+178
+00:08:41,175 --> 00:08:45,265
+and so as we tune and start to get larger larger weights for rarer and rarer scenarios,
+
+179
+00:08:45,265 --> 00:08:47,990
+we end up increasing the loss so we stop.
+
+180
+00:08:47,990 --> 00:08:51,430
+L2 regularization will keep the weight values smaller and
+
+181
+00:08:51,430 --> 00:08:55,245
+L1 regularization will keep the model sparser by dropping more features.
+
+182
+00:08:55,245 --> 00:08:59,895
+To find the optimal L1 and L2 hyperparameter choices during hyperperimeter tuning,
+
+183
+00:08:59,895 --> 00:09:01,340
+you're searching for the point in
+
+184
+00:09:01,340 --> 00:09:04,525
+the validation loss function where you obtain the lowest value.
+
+185
+00:09:04,525 --> 00:09:08,320
+At that point, any less regularization increases your variance,
+
+186
+00:09:08,320 --> 00:09:10,920
+starts overfitting and hurts generalization
+
+187
+00:09:10,920 --> 00:09:13,840
+and any more regularization increases your bias,
+
+188
+00:09:13,840 --> 00:09:17,315
+starts underfitting and it hurts your generalization.
+
+189
+00:09:17,315 --> 00:09:21,370
+Early stoppings stops training when overfitting begins.
+
+190
+00:09:21,370 --> 00:09:22,760
+As you train your model,
+
+191
+00:09:22,760 --> 00:09:25,375
+you should evaluate your model on your validation data set,
+
+192
+00:09:25,375 --> 00:09:28,585
+every so many steps, epics, minutes etc.
+
+193
+00:09:28,585 --> 00:09:31,145
+As training continues, both the training error,
+
+194
+00:09:31,145 --> 00:09:33,745
+and the validation error should be decreasing but at
+
+195
+00:09:33,745 --> 00:09:37,560
+some point the validation error might begin to actually increase.
+
+196
+00:09:37,560 --> 00:09:41,360
+It is at this point that the model is beginning to memorize the training data set,
+
+197
+00:09:41,360 --> 00:09:45,080
+and lose its ability to generalize to the validation data set and most
+
+198
+00:09:45,080 --> 00:09:49,505
+importantly to the new data that we will eventually want to use this model four.
+
+199
+00:09:49,505 --> 00:09:53,620
+Using early stopping, would stop the model at this point and then back
+
+200
+00:09:53,620 --> 00:09:55,020
+up and use the weights from
+
+201
+00:09:55,020 --> 00:09:58,235
+the previous step before it hit validation error and function point.
+
+202
+00:09:58,235 --> 00:10:00,685
+Here, the loss is just L(w,
+
+203
+00:10:00,685 --> 00:10:03,265
+D) i.e. no regularization term.
+
+204
+00:10:03,265 --> 00:10:07,180
+Interestingly, early stopping is an approximate equivalent of
+
+205
+00:10:07,180 --> 00:10:09,290
+L2 regularization and it is often used
+
+206
+00:10:09,290 --> 00:10:11,900
+in its place because it is competitionally cheaper.
+
+207
+00:10:11,900 --> 00:10:15,550
+Fortunately, in practice we always use both as
+
+208
+00:10:15,550 --> 00:10:21,235
+Epoch regularization L1 and L2 and also some amount of early stopping regularization.
+
+209
+00:10:21,235 --> 00:10:25,520
+Even though L2 regularization and early stopping seem a bit redundant,
+
+210
+00:10:25,520 --> 00:10:28,030
+for liberal sytems, you may not quite choose
+
+211
+00:10:28,030 --> 00:10:32,630
+the optimal hyperparameters and thus early stopping can help fix that choice for you.
+
+212
+00:10:32,630 --> 00:10:36,735
+It's great that we can obtain a probability from our logistic regression model.
+
+213
+00:10:36,735 --> 00:10:38,985
+However, at the end of the day sometimes
+
+214
+00:10:38,985 --> 00:10:41,490
+users just want a simple decision to be made for them,
+
+215
+00:10:41,490 --> 00:10:43,120
+for their real world problems.
+
+216
+00:10:43,120 --> 00:10:46,230
+Should the email be sent to the spam folder or not,
+
+217
+00:10:46,230 --> 00:10:48,560
+Should the loan be approved or not,
+
+218
+00:10:48,560 --> 00:10:51,395
+which road should we route the user through.
+
+219
+00:10:51,395 --> 00:10:54,230
+How can we use our probability estimate to help
+
+220
+00:10:54,230 --> 00:10:57,440
+the tool using our model to make a decision?
+
+221
+00:10:57,440 --> 00:10:59,175
+We choose a threshold.
+
+222
+00:10:59,175 --> 00:11:01,950
+A simple threshold of a binary classification problem
+
+223
+00:11:01,950 --> 00:11:04,020
+would be all probabilities less than or equal to
+
+224
+00:11:04,020 --> 00:11:09,020
+50 percent should be a no and all probability is greater than 50 percent should be a yes.
+
+225
+00:11:09,020 --> 00:11:11,285
+However, for certain real world problems,
+
+226
+00:11:11,285 --> 00:11:12,785
+we weigh them on a different split,
+
+227
+00:11:12,785 --> 00:11:16,175
+like 60-40, 20-80, 19-91.
+
+228
+00:11:16,175 --> 00:11:20,940
+Etc. Depending on how we want our balance of our type one and type two errors,
+
+229
+00:11:20,940 --> 00:11:24,955
+on other words our balance of false positives and false negatives.
+
+230
+00:11:24,955 --> 00:11:29,190
+For binary classification, we will have four possible outcomes;
+
+231
+00:11:29,190 --> 00:11:31,525
+true positives, true negatives,
+
+232
+00:11:31,525 --> 00:11:33,845
+false positives, and false negatives.
+
+233
+00:11:33,845 --> 00:11:37,630
+Combinations of these values can lead to evaluation metrics like precision,
+
+234
+00:11:37,630 --> 00:11:41,480
+which is the number of true positives divided by all positives and
+
+235
+00:11:41,480 --> 00:11:43,790
+recall which is the number of true positives divided
+
+236
+00:11:43,790 --> 00:11:46,285
+by the sum of true positives and false negatives,
+
+237
+00:11:46,285 --> 00:11:49,485
+which gives the sensitivity or true positive rate.
+
+238
+00:11:49,485 --> 00:11:53,480
+You can tune your choice of threshold to optimize the metric of your choice.
+
+239
+00:11:53,480 --> 00:11:56,540
+Is there any easy way to help us do this?
+
+240
+00:11:56,540 --> 00:12:00,700
+A Receiver Operating Characteristic Curve or ROC curve for short,
+
+241
+00:12:00,700 --> 00:12:04,095
+shows how a given Malos predictions create different true positive
+
+242
+00:12:04,095 --> 00:12:07,910
+versus false positive rates when different decision thresholds are used.
+
+243
+00:12:07,910 --> 00:12:12,350
+As we lower the threshold we are likely to have more false positives,
+
+244
+00:12:12,350 --> 00:12:15,465
+but will also increase the number of true positives we find.
+
+245
+00:12:15,465 --> 00:12:20,020
+Ideally, a perfect model would have zero false positives and zero false negatives
+
+246
+00:12:20,020 --> 00:12:21,845
+which plugging that into the equations would give
+
+247
+00:12:21,845 --> 00:12:25,295
+a true positive rate of one and a false positive rate of zero.
+
+248
+00:12:25,295 --> 00:12:30,440
+To create a curve, we would pick each possible decision threshold and re-evaluate.
+
+249
+00:12:30,440 --> 00:12:33,640
+Each threshold value creates a single point but by
+
+250
+00:12:33,640 --> 00:12:37,025
+evaluating many thresholds eventually a curve is formed.
+
+251
+00:12:37,025 --> 00:12:40,705
+Fortunately there is an efficient sorting based algorithm to do this.
+
+252
+00:12:40,705 --> 00:12:43,515
+Each mile would create a different ROC curve.
+
+253
+00:12:43,515 --> 00:12:47,660
+So how can we use these curves to compare the relative performance of our models when
+
+254
+00:12:47,660 --> 00:12:51,810
+we don't know exactly what decision threshold we want to use?
+
+255
+00:12:51,810 --> 00:12:53,880
+We can use the area under the curve as
+
+256
+00:12:53,880 --> 00:12:57,970
+an aggregate measure performance across all possible classification thresholds.
+
+257
+00:12:57,970 --> 00:13:00,970
+AUC helps you choose between models when
+
+258
+00:13:00,970 --> 00:13:03,870
+you don't know what your system threshold is going to be ultimately used.
+
+259
+00:13:03,870 --> 00:13:07,510
+It's like asking, if we pick a random positive and a random
+
+260
+00:13:07,510 --> 00:13:12,840
+negative what's the probability my model scores them in the correct relative order?
+
+261
+00:13:12,840 --> 00:13:15,560
+The nice thing about AUC is that its scale and
+
+262
+00:13:15,560 --> 00:13:18,400
+variant and classification threshold and variant.
+
+263
+00:13:18,400 --> 00:13:20,645
+People like to use it for those reasons.
+
+264
+00:13:20,645 --> 00:13:24,220
+People sometimes also use AUC for the precision recall curve,
+
+265
+00:13:24,220 --> 00:13:27,050
+or more recently and precision recall gain curves,
+
+266
+00:13:27,050 --> 00:13:28,700
+which just use different combinations of
+
+267
+00:13:28,700 --> 00:13:31,665
+the four production outcomes as metrics along the axes.
+
+268
+00:13:31,665 --> 00:13:36,520
+However, treating this only as an aggregate measure can mask some effects.
+
+269
+00:13:36,520 --> 00:13:41,615
+For example, a small improvement in AUC might come by doing a better job of
+
+270
+00:13:41,615 --> 00:13:46,765
+ranking very unlikely negatives as even still yet more unlikely.
+
+271
+00:13:46,765 --> 00:13:50,405
+Which is fine, but potentially not materially beneficial.
+
+272
+00:13:50,405 --> 00:13:52,830
+When evaluating our logistic regression models,
+
+273
+00:13:52,830 --> 00:13:55,470
+we need to make sure predictions are unbiased.
+
+274
+00:13:55,470 --> 00:13:57,965
+When we talk about bias in this sense,
+
+275
+00:13:57,965 --> 00:14:01,095
+we are not talking about the bias term in the models linear equation.
+
+276
+00:14:01,095 --> 00:14:02,910
+Instead we mean there should be
+
+277
+00:14:02,910 --> 00:14:06,250
+an overall shift in either the positive or negative direction.
+
+278
+00:14:06,250 --> 00:14:08,400
+A simple way to check the prediction bias is compare
+
+279
+00:14:08,400 --> 00:14:10,870
+the average value predictions made by the model,
+
+280
+00:14:10,870 --> 00:14:14,740
+over a dataset, to the average value of the labels in that data set.
+
+281
+00:14:14,740 --> 00:14:16,530
+If they are not relatively close,
+
+282
+00:14:16,530 --> 00:14:18,040
+then you might have a problem.
+
+283
+00:14:18,040 --> 00:14:20,145
+Bias is like a canary in the mine,
+
+284
+00:14:20,145 --> 00:14:23,100
+where we can use it as an indicator of something being wrong.
+
+285
+00:14:23,100 --> 00:14:24,425
+If you have bias,
+
+286
+00:14:24,425 --> 00:14:25,950
+you definitely have a problem.
+
+287
+00:14:25,950 --> 00:14:28,030
+But even zero bias alone,
+
+288
+00:14:28,030 --> 00:14:30,430
+does not mean everything in your system is perfect,
+
+289
+00:14:30,430 --> 00:14:32,425
+but it is a great sanity check.
+
+290
+00:14:32,425 --> 00:14:34,005
+If you have bias,
+
+291
+00:14:34,005 --> 00:14:35,835
+you could have an incomplete feature set,
+
+292
+00:14:35,835 --> 00:14:39,575
+a buggy pipeline, a biased training sample, etc.
+
+293
+00:14:39,575 --> 00:14:42,000
+You can look for bias in slices of data,
+
+294
+00:14:42,000 --> 00:14:45,650
+which can help guide improvements of removing bias from your model.
+
+295
+00:14:45,650 --> 00:14:48,250
+Let's look at an example of how you can do that.
+
+296
+00:14:48,250 --> 00:14:51,675
+Here's a calibration plot from the simple experiment browser.
+
+297
+00:14:51,675 --> 00:14:54,025
+You'll notice that this isn't a log log scale.
+
+298
+00:14:54,025 --> 00:14:58,490
+As we're comparing the bucketed log odds predicted to the bucketed log odds observed.
+
+299
+00:14:58,490 --> 00:15:02,130
+You'll note that things are pretty well calibrated in the moderate range,
+
+300
+00:15:02,130 --> 00:15:04,520
+but the extreme low end is pretty bad.
+
+301
+00:15:04,520 --> 00:15:07,930
+This can happen in parts the data's base is not well represented or
+
+302
+00:15:07,930 --> 00:15:11,500
+because of noise or because of overly strong reservation.
+
+303
+00:15:11,500 --> 00:15:14,080
+The bucketing can be done in a couple of ways;
+
+304
+00:15:14,080 --> 00:15:15,810
+you can bucket it by literally breaking up
+
+305
+00:15:15,810 --> 00:15:18,905
+the target predictions or we can bucket it by quantiles.
+
+306
+00:15:18,905 --> 00:15:21,740
+Why do we need to bucket prediction
+
+307
+00:15:21,740 --> 00:15:24,900
+to make calibration plots in predicting probabilities?
+
+308
+00:15:24,900 --> 00:15:28,970
+For any given event, the true label is either 0 or one.
+
+309
+00:15:28,970 --> 00:15:31,425
+For example, not clicked or clicked.
+
+310
+00:15:31,425 --> 00:15:34,540
+But our prediction values will always be a probabilistic guess
+
+311
+00:15:34,540 --> 00:15:38,085
+somewhere in the middle like 0.1 or 0.33.
+
+312
+00:15:38,085 --> 00:15:41,295
+For any individual example, we're always off.
+
+313
+00:15:41,295 --> 00:15:43,675
+But if you group enough examples together,
+
+314
+00:15:43,675 --> 00:15:46,540
+we'd like to see that on average the sum of the true zeros
+
+315
+00:15:46,540 --> 00:15:50,430
+and ones is about the same as a mean probability we're predicting.
+
+316
+00:15:50,430 --> 00:15:54,665
+Which of these is important performing Logistic regression.
+
+317
+00:15:54,665 --> 00:15:58,130
+The correct answer is all of the above.
+
+318
+00:15:58,130 --> 00:16:00,855
+It is extremely important that our model generalizes,
+
+319
+00:16:00,855 --> 00:16:02,905
+so that we have the best predictions and new data
+
+320
+00:16:02,905 --> 00:16:05,290
+which is the entire reason we create them all to begin with.
+
+321
+00:16:05,290 --> 00:16:09,200
+To help do this, it is important that we do not overfed our data.
+
+322
+00:16:09,200 --> 00:16:12,205
+Therefore, adding in penalty terms to the objective function like with
+
+323
+00:16:12,205 --> 00:16:17,170
+L1 regularization for sparsity and L2 regularization for keeping model width small,
+
+324
+00:16:17,170 --> 00:16:19,615
+and adding early stopping can help in this regard.
+
+325
+00:16:19,615 --> 00:16:23,150
+It is also important to choose a tuned threshold for
+
+326
+00:16:23,150 --> 00:16:26,790
+deciding what decisions to make when your probability estimate outputs.
+
+327
+00:16:26,790 --> 00:16:30,650
+To minimize or maximize the business metric is important to you.
+
+328
+00:16:30,650 --> 00:16:32,535
+If this isn't well-defined,
+
+329
+00:16:32,535 --> 00:16:34,460
+then we can use more statistical means,
+
+330
+00:16:34,460 --> 00:16:37,930
+such as calculating the number of true and false positives and negatives,
+
+331
+00:16:37,930 --> 00:16:39,680
+and combine them into different metrics,
+
+332
+00:16:39,680 --> 00:16:41,760
+such as the true and false positive rates.
+
+333
+00:16:41,760 --> 00:16:43,710
+We can then repeat this process for
+
+334
+00:16:43,710 --> 00:16:46,075
+many different thresholds and then plot the area under
+
+335
+00:16:46,075 --> 00:16:50,910
+the curve or AUC to come up with a relative aggregate measure of model performance.
+
+336
+00:16:50,910 --> 00:16:54,785
+Lastly, it's important in our predictions are unbiased,
+
+337
+00:16:54,785 --> 00:16:57,050
+and even if there isn't bias we should be still
+
+338
+00:16:57,050 --> 00:17:00,040
+diligent to make sure our model is performing well.
+
+339
+00:17:00,040 --> 00:17:03,420
+We begin looking for bias by making sure that
+
+340
+00:17:03,420 --> 00:17:06,875
+the average of the predictions is very close to the errors observations.
+
+341
+00:17:06,875 --> 00:17:11,430
+A helpful way to find where bias might be hiding is to look at slices of data and
+
+342
+00:17:11,430 --> 00:17:13,570
+use something like a calibration plot to isolate
+
+343
+00:17:13,570 --> 00:17:16,400
+the problem areas for further refinement.

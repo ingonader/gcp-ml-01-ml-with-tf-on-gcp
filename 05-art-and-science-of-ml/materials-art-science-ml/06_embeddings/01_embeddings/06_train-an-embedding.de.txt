@@ -1,0 +1,51 @@
+Nehmen wir an,
+Sie erstellen eine Einbettung zur Darstellung des wichtigsten
+Worts in einer Immobilienanzeige. Ignorieren wir vorerst,
+wie Sie dieses wichtige Wort wählen. Wörter in einer Anzeige sind natürliche
+Sprache, das mögliche Wörterbuch riesig. In diesem Fall könnte es die
+Liste aller englischen Wörter sein. Zigtausende Wörter. Selbst bei Ausschluss seltener Wörter
+und wissenschaftlicher Fachsprache. Also obwohl die erste Ebene hier ein Wort der Immobilienanzeige
+nimmt und one-hot-codiert, wird das im Speicher als
+ein dünnbesetzter Vektor dargestellt. Auf diese Weise sorgt TensorFlow
+für eine effiziente Speichernutzung. Wenn wir die
+one-hot-codierte Darstellung haben, senden wir sie durch
+eine Ebene mit drei Knoten. Das ist unsere Einbettung. Und da wir drei Knoten in der Ebene haben, ist es eine dreidimensionale Einbettung. Die "sparse" Wörter und eingebetteten
+Wörter sind eigentlich Merkmalsspalten, aber ich zeige sie hier als
+Ebenen im neuronalen Netzwerk, da sie aus mathematischer Sicht genau wie
+Ebenen eines neuronalen Netzwerks sind. Mathematisch ist eine
+Einbettung in diesem Fall nicht wirklich anders als irgendeine
+verborgene Schicht in einem Netzwerk. Sie können es als einen
+praktischen Adapter sehen, der es dem Netzwerk ermöglicht, Sparse- oder kategoriale
+Daten gut zu integrieren. Der Hauptzweck dieser
+Folien ist es, Ihnen zu zeigen, dass das mit einem 
+Regressions-, Klassifikations- oder Rankingproblem möglich ist. Die Gewichte werden bei Verwendung
+eines tiefen neuronalen Netzwerks durch Rückpropagierung angelernt, genau wie die anderen Ebenen. Sagen wir, wir verwenden die Einbettung
+für die Wörter in der Immobilienanzeige als eine der Eingaben in das Modell,
+das den Verkaufspreis vorhersagt. Dieses Modell trainieren wir anhand
+historischer Verkaufspreise für Häuser. Zusätzlich zum Wort in der Anzeige
+könnten wir die Anzahl der Räume, der Schlafzimmer usw. als Input verwenden. Das ist also ein Regressionsproblem
+mit strukturierten Daten. Ebenso wie das Problem des Taxipreises. Was passiert, wenn Sie versuchen, die
+Gewichte in allen Ebenen zu optimieren, um den Fehler im vorausgesagten
+Verkaufspreis zu minimieren? Alle Gewichte auf allen
+Ebenen müssen abgeglichen werden. Die Gewichte werden so abgeglichen, dass die Einbettungszahlen
+für ein Wort relevant werden für dessen Fähigkeit,
+Verkaufspreise vorauszusagen. Wenn die Anzeige
+ein Wort wie "Ausblick" oder "See" enthält, muss
+der Verkaufspreis vielleicht höher sein und bei einem Wort wie etwa
+"Zwangsvollstreckung" niedriger. Die Gewichte auf allen Ebenen
+passen sich an, um das zu lernen. Mathematisch ist eine
+Einbettung nicht wirklich anders als jede andere verborgene
+Schicht in einem Netzwerk. Sie können das als einen
+praktischen Adapter sehen, der es einem Netzwerk ermöglicht, Sparse- oder
+kategoriale Daten gut zu integrieren. Die Gewichte werden bei einem
+DNN durch Rückpropagierung angelernt. Genau wie andere Ebenen. Und das ist mit einem
+Regressionsproblem möglich oder mit einem Klassifikationsproblem. Erinnern Sie sich jetzt an einen zentralen
+Aspekt der allerersten, der blauen Ebene. Im Gegensatz zu den gelben Knoten
+ist die blaue Ebene one-hot-codiert. Bei Verwendung des Worts "Ausblick"
+schaltet sich nur einer der Knoten ein. Sagen wir, dieser schwarze hier. Das Gewicht für die Verknüpfungen vom
+schwarzen Knoten zur nächsten Ebene erfasst dann die Relevanz
+des Worts "Ausblick" für dieses Problem. Deshalb wird jedes Wort nur
+durch drei Zahlen dargestellt. Jeder der drei Knoten kann als
+eine Dimension betrachtet werden, in die Wörter projiziert werden. Randgewichte zwischen einem
+Film und einer verborgenen Ebene sind die Koordinaten in dieser
+Projektion mit weniger Dimensionen.

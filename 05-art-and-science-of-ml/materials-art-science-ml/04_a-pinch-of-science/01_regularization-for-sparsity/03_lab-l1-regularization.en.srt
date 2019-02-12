@@ -1,0 +1,239 @@
+1
+00:00:00,000 --> 00:00:02,505
+Let's now see for ourselves how important
+
+2
+00:00:02,505 --> 00:00:05,760
+L1 regularization can be included in sparse concise models.
+
+3
+00:00:05,760 --> 00:00:07,740
+In this L1 regularization lab,
+
+4
+00:00:07,740 --> 00:00:12,275
+I had add in lots of spurious features and it created a fairly complex model.
+
+5
+00:00:12,275 --> 00:00:15,360
+We're first going to train the model without L1 regularization,
+
+6
+00:00:15,360 --> 00:00:18,015
+and then we will see if L1 regularization
+
+7
+00:00:18,015 --> 00:00:21,210
+helps pulling the model down into a much more sparse,
+
+8
+00:00:21,210 --> 00:00:24,345
+concise, and hopefully more generalizable form.
+
+9
+00:00:24,345 --> 00:00:26,970
+Hi, welcome back to TensorFlow playground.
+
+10
+00:00:26,970 --> 00:00:29,085
+In this lab, we're going to see if
+
+11
+00:00:29,085 --> 00:00:32,715
+L1 regularization can help make our models more sparse and concise.
+
+12
+00:00:32,715 --> 00:00:35,235
+As you can see here, this is a classification problem,
+
+13
+00:00:35,235 --> 00:00:37,770
+where we're going to be trying to classify these two shapes.
+
+14
+00:00:37,770 --> 00:00:40,290
+What we have here are two concentric circles,
+
+15
+00:00:40,290 --> 00:00:45,330
+the blue circle in the middle and the orange circle in the outside.
+
+16
+00:00:45,330 --> 00:00:47,820
+The great news is that there is no noise set.
+
+17
+00:00:47,820 --> 00:00:51,215
+So therefore, it should be decently easy to strain.
+
+18
+00:00:51,215 --> 00:00:53,490
+What you also might notice is there are features.
+
+19
+00:00:53,490 --> 00:00:55,205
+We have all of our features turned on.
+
+20
+00:00:55,205 --> 00:00:57,945
+That means, it would be a pretty complicated model.
+
+21
+00:00:57,945 --> 00:01:02,695
+We know intuitively that this is an X squared by Y squared,
+
+22
+00:01:02,695 --> 00:01:06,940
+or X1 squared by X2 squared kind of equation because there are circles.
+
+23
+00:01:06,940 --> 00:01:11,095
+However, we have a whole bunch of other extra features added to this.
+
+24
+00:01:11,095 --> 00:01:15,680
+We also have extra layers here with six neurons each.
+
+25
+00:01:15,680 --> 00:01:17,930
+So, this is highly complex.
+
+26
+00:01:17,930 --> 00:01:21,860
+Let's see how this thing trains without L1 regularization,
+
+27
+00:01:21,860 --> 00:01:24,270
+set to none in this case.
+
+28
+00:01:25,270 --> 00:01:27,615
+Now that was pretty fast.
+
+29
+00:01:27,615 --> 00:01:33,225
+As you can see here, L1 regularization pretty much found the distribution of our data.
+
+30
+00:01:33,225 --> 00:01:38,060
+However, you can notice that there are some inconsistencies here where
+
+31
+00:01:38,060 --> 00:01:42,800
+some little dips here and some bulges here, isn't quite a circle.
+
+32
+00:01:42,800 --> 00:01:45,640
+The reason for this, is because it's overfitting perhaps.
+
+33
+00:01:45,640 --> 00:01:49,250
+So, we have way too many features and too many hidden layers was
+
+34
+00:01:49,250 --> 00:01:53,030
+finding overfit complex function to this data.
+
+35
+00:01:53,030 --> 00:01:56,800
+Is there a way that we can now find a much simpler model?
+
+36
+00:01:56,800 --> 00:01:59,010
+Well, without feature engineering it ourselves,
+
+37
+00:01:59,010 --> 00:02:01,365
+looking as L1 regularization to be able to use this.
+
+38
+00:02:01,365 --> 00:02:03,450
+Let's see if that works.
+
+39
+00:02:03,450 --> 00:02:08,490
+I'm going to set my regularization here to L1, okay.
+
+40
+00:02:08,490 --> 00:02:13,810
+I'm going to start off with a new initialization and let's see how this does.
+
+41
+00:02:15,590 --> 00:02:19,770
+Look at that. This is much better.
+
+42
+00:02:19,770 --> 00:02:22,365
+Let's investigate it a little bit more.
+
+43
+00:02:22,365 --> 00:02:25,770
+As you can see here, it learned a much smoother circle which
+
+44
+00:02:25,770 --> 00:02:28,800
+is great because that goes intuitively with what we see in the data.
+
+45
+00:02:28,800 --> 00:02:31,470
+However though, in real life,
+
+46
+00:02:31,470 --> 00:02:33,630
+we usually don't have nice distributions like this.
+
+47
+00:02:33,630 --> 00:02:38,250
+So therefore, we might need to use this for a lot of other processes.
+
+48
+00:02:38,250 --> 00:02:39,870
+And there are features here,
+
+49
+00:02:39,870 --> 00:02:44,400
+you can see we have X1 squared and X2 squared, and there weights.
+
+50
+00:02:44,400 --> 00:02:47,040
+They're pretty much the only weights that have any magnitude left anymore.
+
+51
+00:02:47,040 --> 00:02:48,330
+All other weights, as you can see,
+
+52
+00:02:48,330 --> 00:02:50,865
+are grayed out with a value of zero.
+
+53
+00:02:50,865 --> 00:02:56,940
+This then goes to the inter hidden layers here where you can see,
+
+54
+00:02:56,940 --> 00:03:01,940
+hey, look, X1 and X2 squared are pretty much the only ones that propagate through.
+
+55
+00:03:01,940 --> 00:03:04,230
+And they all go to this neuron in the last layer,
+
+56
+00:03:04,230 --> 00:03:06,000
+and finally to the output.
+
+57
+00:03:06,000 --> 00:03:08,940
+So, it's as if we only are using X1,
+
+58
+00:03:08,940 --> 00:03:14,080
+X2 squared because they are much more predictive in our model than the other features.
+
+59
+00:03:14,080 --> 00:03:17,205
+And due to the nature of L1 and the probably distribution,
+
+60
+00:03:17,205 --> 00:03:19,090
+it's able to shrink it down.

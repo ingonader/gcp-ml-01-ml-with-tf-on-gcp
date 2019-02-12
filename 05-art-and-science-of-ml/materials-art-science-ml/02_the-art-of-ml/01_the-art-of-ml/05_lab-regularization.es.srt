@@ -1,0 +1,252 @@
+1
+00:00:00,190 --> 00:00:04,700
+El objetivo de este lab era experimentar
+con las regularizaciones L1 y L2
+
+2
+00:00:04,870 --> 00:00:06,655
+y observar visualmente
+sus efectos.
+
+3
+00:00:07,215 --> 00:00:09,095
+Revisemos juntos los resultados.
+
+4
+00:00:09,845 --> 00:00:13,245
+Inicié TensorFlow Playground
+mediante el vínculo que aparece aquí.
+
+5
+00:00:13,495 --> 00:00:15,360
+Antes de iniciar el bucle
+de entrenamiento
+
+6
+00:00:15,360 --> 00:00:17,300
+agregué algo de ruido
+al conjunto de datos.
+
+7
+00:00:17,300 --> 00:00:18,350
+Elegí 30.
+
+8
+00:00:18,800 --> 00:00:21,955
+En vez de usar solo x1 y x2
+como atributos
+
+9
+00:00:22,585 --> 00:00:24,730
+también usé combinaciones de atributos.
+
+10
+00:00:24,910 --> 00:00:29,205
+Primero, intenté entrenar sin regularizar,
+para ver qué pasaba con mi modelo.
+
+11
+00:00:29,555 --> 00:00:32,765
+Como era de esperar, la pérdida
+del entrenamiento converge bien
+
+12
+00:00:33,035 --> 00:00:35,040
+pero la pérdida de prueba se mantuvo alta.
+
+13
+00:00:35,310 --> 00:00:37,565
+Fíjese en la forma
+del modelo de entrenamiento.
+
+14
+00:00:37,735 --> 00:00:39,940
+¿Nota la forma extraña de la región azul?
+
+15
+00:00:40,880 --> 00:00:43,435
+Claramente, el modelo
+se estaba sobreajustando
+
+16
+00:00:44,135 --> 00:00:46,890
+para aprender todo el ruido
+de los datos de entrenamiento.
+
+17
+00:00:47,640 --> 00:00:49,775
+Terminé con un mal modelo.
+
+18
+00:00:49,925 --> 00:00:51,585
+No se puede generalizar.
+
+19
+00:00:52,525 --> 00:00:55,317
+Luego, obligué a mi modelo a aplicar
+la Navaja de Ockham
+
+20
+00:00:55,727 --> 00:00:57,010
+para mantenerlo simple.
+
+21
+00:00:57,410 --> 00:01:02,090
+Para penalizar la complejidad,
+podemos aplicar la regularización L1.
+
+22
+00:01:02,240 --> 00:01:05,610
+Después de hacerlo,
+observé un rendimiento mucho mejor.
+
+23
+00:01:05,990 --> 00:01:09,130
+La forma azul era mucho más suave
+y cancelaba el ruido.
+
+24
+00:01:09,470 --> 00:01:12,100
+La pérdida de prueba también
+convergía muy bien.
+
+25
+00:01:12,270 --> 00:01:14,115
+Sin duda, este modelo
+es mucho mejor.
+
+26
+00:01:14,225 --> 00:01:18,140
+Me gustaría que observara
+los atributos que ignora el modelo.
+
+27
+00:01:18,600 --> 00:01:22,840
+Note que no hay líneas
+que salgan de x1 o x2
+
+28
+00:01:23,180 --> 00:01:25,820
+ni x1 multiplicado por x2.
+
+29
+00:01:26,700 --> 00:01:31,260
+Recuerde que puede usar la regularización L1
+como mecanismo de selección de atributos.
+
+30
+00:01:31,400 --> 00:01:33,665
+Luego, probé la regularización L2.
+
+31
+00:01:34,015 --> 00:01:37,190
+En comparación con L1,
+no hubo selección de atributos.
+
+32
+00:01:37,330 --> 00:01:40,835
+Los atributos más importantes tenían
+asociados los pesos más grandes
+
+33
+00:01:41,015 --> 00:01:44,775
+pero el resto seguía participando,
+con pesos más bajos.
+
+34
+00:01:45,195 --> 00:01:48,975
+Tal vez no se vea en la imagen,
+pero mientras ejecutábamos esto
+
+35
+00:01:49,185 --> 00:01:51,645
+las líneas que salían de x1, x2
+
+36
+00:01:51,975 --> 00:01:54,860
+y x1 por x2 se movían.
+
+37
+00:01:55,880 --> 00:01:57,930
+Recuerde que el peso de un atributo
+
+38
+00:01:57,930 --> 00:02:02,115
+se visualiza a través del grosor
+de la línea que emana de él.
+
+39
+00:02:02,485 --> 00:02:04,780
+No había ninguna curvatura extraña.
+
+40
+00:02:04,960 --> 00:02:06,990
+La pérdida de prueba se veía muy bien.
+
+41
+00:02:07,080 --> 00:02:08,485
+Parecía ser un buen modelo.
+
+42
+00:02:08,625 --> 00:02:12,140
+Luego, traté de enfatizar
+un poco más la simplicidad del modelo
+
+43
+00:02:12,140 --> 00:02:14,010
+al aumentar la tasa de regularización.
+
+44
+00:02:14,130 --> 00:02:16,880
+La cambié de 0.1 a 0.3.
+
+45
+00:02:17,270 --> 00:02:22,070
+El rendimiento del modelo
+mejoró de 0.179 a 0.160.
+
+46
+00:02:22,270 --> 00:02:25,012
+Luego, decidí subirla aún más
+
+47
+00:02:25,132 --> 00:02:27,295
+y configurar
+la tasa de regularización en uno.
+
+48
+00:02:27,585 --> 00:02:28,805
+Fue demasiado.
+
+49
+00:02:29,035 --> 00:02:30,960
+Mi modelo no pudo aprender nada.
+
+50
+00:02:31,080 --> 00:02:32,820
+Tal como los otros hiperparámetros
+
+51
+00:02:33,000 --> 00:02:36,430
+ajustar la tasa de regularización
+toma tiempo y paciencia.
+
+52
+00:02:38,400 --> 00:02:40,840
+Para resumir,
+los modelos complejos son malos.
+
+53
+00:02:41,490 --> 00:02:46,105
+Una manera de simplificar el modelo
+es aplicar la regularización
+
+54
+00:02:46,685 --> 00:02:51,130
+y ajustar la tasa
+hasta conseguir un rendimiento aceptable.
+
+55
+00:02:53,200 --> 00:02:56,830
+Espero que esto lo ayude a familiarizarse
+con el concepto de regularización.

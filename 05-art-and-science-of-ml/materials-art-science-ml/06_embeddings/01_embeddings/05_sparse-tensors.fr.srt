@@ -1,0 +1,357 @@
+1
+00:00:00,000 --> 00:00:05,100
+Le fait de stocker le vecteur d'entrée
+comme tableau encodé en one-hot
+
+2
+00:00:05,100 --> 00:00:07,040
+est une mauvaise idée.
+
+3
+00:00:07,040 --> 00:00:11,505
+Une représentation dense
+est extrêmement inefficace,
+
+4
+00:00:11,505 --> 00:00:15,620
+aussi bien pour le stockage
+que pour les calculs.
+
+5
+00:00:15,620 --> 00:00:19,525
+Remarquez que nous qualifions de Tensor dense
+absolument tout ce que nous utilisons
+
+6
+00:00:19,525 --> 00:00:22,800
+pour stocker la totalité
+des valeurs d'un Tensor d'entrée.
+
+7
+00:00:22,800 --> 00:00:25,860
+Cela n'a rien à voir
+avec les données du Tensor.
+
+8
+00:00:25,860 --> 00:00:28,550
+C'est simplement
+lié à son mode de stockage.
+
+9
+00:00:28,550 --> 00:00:31,185
+Mais regardez les données de cette matrice.
+
+10
+00:00:31,185 --> 00:00:36,730
+Pensez-vous que cette matrice
+est densément ou faiblement remplie ?
+
+11
+00:00:36,730 --> 00:00:39,225
+Très faiblement, bien sûr.
+
+12
+00:00:39,225 --> 00:00:42,410
+Chaque exemple (ligne de cette matrice)
+
+13
+00:00:42,410 --> 00:00:46,275
+représente des films
+regardés par l'utilisateur.
+
+14
+00:00:46,275 --> 00:00:48,530
+Pensez à votre expérience personnelle.
+
+15
+00:00:48,530 --> 00:00:52,250
+Combien de films avez-vous notés ?
+
+16
+00:00:52,250 --> 00:00:55,880
+Nous n'avons donc pas intérêt à stocker
+les entrées sous une forme dense.
+
+17
+00:00:55,880 --> 00:01:00,400
+Nous ne voulons pas stocker
+toutes les valeurs du Tensor.
+
+18
+00:01:01,740 --> 00:01:07,439
+Donc, si nous ne voulons pas stocker toutes
+les valeurs du Tensor sous une forme dense,
+
+19
+00:01:07,439 --> 00:01:10,070
+quelle autre démarche pouvons-nous adopter ?
+
+20
+00:01:10,070 --> 00:01:14,190
+Nous aurions intérêt
+à opter pour des données creuses
+
+21
+00:01:14,190 --> 00:01:17,240
+que nous pourrions stocker
+sous forme compressée dans la mémoire.
+
+22
+00:01:17,240 --> 00:01:18,210
+Ce serait pratique
+
+23
+00:01:18,210 --> 00:01:22,687
+si nous pouvions effectuer des calculs
+tels que la multiplication de matrices
+
+24
+00:01:22,687 --> 00:01:25,445
+directement au niveau des Tensors creux
+
+25
+00:01:25,445 --> 00:01:30,575
+sans qu'il soit nécessaire
+de les convertir en représentations denses.
+
+26
+00:01:30,575 --> 00:01:34,465
+Nous pouvons faire cela
+en créant un mappage de dictionnaire
+
+27
+00:01:34,465 --> 00:01:37,795
+pour associer
+chaque caractéristique à un entier.
+
+28
+00:01:37,795 --> 00:01:40,740
+Shrek pourrait ainsi
+correspondre à l'entier 0,
+
+29
+00:01:40,740 --> 00:01:47,945
+et Harry Potter à l'entier 300 ou 230
+(un nombre arbitraire).
+
+30
+00:01:47,945 --> 00:01:51,107
+Souvenez-vous
+qu'il n'y a pas de RVC à ce stade.
+
+31
+00:01:51,110 --> 00:01:57,335
+À ce stade, chaque film est simplement
+associé à un entier arbitraire.
+
+32
+00:01:57,335 --> 00:02:00,430
+Ensuite, pour une ligne de la matrice
+
+33
+00:02:00,430 --> 00:02:03,940
+représentant l'ensemble des films
+vus par un utilisateur donné,
+
+34
+00:02:03,940 --> 00:02:08,875
+nous stockons simplement les ID
+des films que l'utilisateur a vus.
+
+35
+00:02:08,875 --> 00:02:13,005
+Dans la ligne utilisée comme exemple,
+l'utilisateur a vu trois films.
+
+36
+00:02:13,005 --> 00:02:16,715
+Le Tensor creux contient donc trois entrées.
+
+37
+00:02:16,715 --> 00:02:19,655
+Lorsqu'un entier n'est
+pas présent dans cette liste,
+
+38
+00:02:19,655 --> 00:02:23,780
+nous supposons que le film
+correspondant n'a pas été regardé.
+
+39
+00:02:23,780 --> 00:02:26,480
+Les trois entrées sont donc
+associées à la valeur 1,
+
+40
+00:02:26,480 --> 00:02:31,610
+et les autres sont associées à la valeur 0
+dans la représentation dense équivalente.
+
+41
+00:02:31,610 --> 00:02:33,580
+Nous avons donc deux étapes :
+
+42
+00:02:33,580 --> 00:02:37,565
+nous effectuons un prétraitement
+pour le calcul du dictionnaire,
+
+43
+00:02:37,565 --> 00:02:46,195
+puis nous créons une représentation
+creuse efficace avec ce dictionnaire.
+
+44
+00:02:46,195 --> 00:02:49,160
+Si vous vous dites
+que cela vous semble familier
+
+45
+00:02:49,160 --> 00:02:53,010
+et vous rappelle la création de vocabulaire
+pour les colonnes catégorielles,
+
+46
+00:02:53,010 --> 00:02:55,220
+vous avez tout à fait raison.
+
+47
+00:02:55,220 --> 00:03:00,520
+TensorFlow représente les colonnes
+catégorielles sous la forme de Tensors creux.
+
+48
+00:03:00,520 --> 00:03:06,330
+Une colonne catégorielle est donc
+un exemple d'objet creux.
+
+49
+00:03:06,330 --> 00:03:11,030
+TensorFlow peut effectuer des opérations
+mathématiques sur des Tensors creux
+
+50
+00:03:11,030 --> 00:03:14,460
+sans avoir à les convertir en Tensors denses.
+
+51
+00:03:14,460 --> 00:03:19,140
+Cela permet d'économiser de la mémoire
+et d'optimiser les calculs.
+
+52
+00:03:19,140 --> 00:03:21,995
+Nous avons vu comment créer
+un croisement de caractéristiques
+
+53
+00:03:21,995 --> 00:03:23,880
+à partir de colonnes catégorielles.
+
+54
+00:03:23,880 --> 00:03:26,202
+C'était un exemple de calcul mathématique
+
+55
+00:03:26,202 --> 00:03:30,575
+effectué complètement
+en termes de Tensors creux.
+
+56
+00:03:30,575 --> 00:03:32,002
+C'est la raison pour laquelle,
+
+57
+00:03:32,002 --> 00:03:35,551
+même si nous avons croisé
+des colonnes discrètes
+
+58
+00:03:35,551 --> 00:03:37,660
+contenant la latitude et la longitude,
+
+59
+00:03:37,660 --> 00:03:43,005
+ainsi que les points de départ et d'arrivée
+dans notre exemple des taxis,
+
+60
+00:03:43,005 --> 00:03:47,875
+nous n'avons eu aucun problème
+de mémoire ni de vitesse de calcul.
+
+61
+00:03:47,875 --> 00:03:52,012
+J'ai parlé de la création d'une colonne de RVC
+avec un croisement de caractéristiques.
+
+62
+00:03:52,012 --> 00:03:56,430
+Le même code fonctionne bien sûr
+pour une colonne catégorielle unique,
+
+63
+00:03:56,430 --> 00:03:58,220
+et c'est ce que je vous montre ici.
+
+64
+00:03:58,220 --> 00:04:01,690
+La possibilité de gérer des Tensors creux
+est la raison pour laquelle
+
+65
+00:04:01,690 --> 00:04:04,355
+le code permettant
+de créer une colonne de RVC
+
+66
+00:04:04,355 --> 00:04:06,980
+à partir de données catégorielles
+dans TensorFlow
+
+67
+00:04:06,980 --> 00:04:10,270
+peut fonctionner sans provoquer
+de problèmes de mémoire ou de vitesse.
+
+68
+00:04:10,270 --> 00:04:14,440
+Nous pouvons classer cela parmi
+les détails de mise en œuvre magiques.
+
+69
+00:04:14,440 --> 00:04:15,822
+Souvenez-vous qu'il a été dit
+
+70
+00:04:15,822 --> 00:04:20,378
+qu'aucun processus d'entraînement distinct
+n'est requis pour la création de RVC.
+
+71
+00:04:20,378 --> 00:04:22,280
+Nous n'avons besoin que de deux étapes :
+
+72
+00:04:22,280 --> 00:04:28,430
+nous représentons l'entrée d'origine,
+puis nous l'envoyons à une couche de RVC.
+
+73
+00:04:28,430 --> 00:04:30,262
+La première étape s'effectue
+
+74
+00:04:30,262 --> 00:04:34,370
+par la représentation de l'entrée
+sous la forme d'un Tensor creux,
+
+75
+00:04:34,370 --> 00:04:38,945
+et la seconde par l'appel
+de embedding_column.
+
+76
+00:04:38,945 --> 00:04:42,991
+Mais comment cette ligne de code
+fonctionne-t-elle réellement ?

@@ -1,0 +1,988 @@
+1
+00:00:00,290 --> 00:00:04,665
+In diesem Lab erstellen wir 
+einen benutzerdefinierten Estimator.
+
+2
+00:00:04,665 --> 00:00:07,215
+Wir haben eine TensorFlow-Funktion,
+
+3
+00:00:07,215 --> 00:00:12,650
+die aus einer Reihe von Eingabetensoren 
+eine Reihe von Ausgabetensoren erstellt.
+
+4
+00:00:12,650 --> 00:00:17,235
+Wir werden diese Funktion 
+mit dem Estimator-Framework verpacken,
+
+5
+00:00:17,235 --> 00:00:21,320
+um die übergeordneten Vorteile 
+dieses Estimators zu erhalten.
+
+6
+00:00:21,320 --> 00:00:25,839
+Funktionierende Modelle, 
+die keine Estimatoren verwenden,
+
+7
+00:00:25,839 --> 00:00:30,705
+nutzen andere Möglichkeiten, 
+Daten zu lesen und Modelle auszugeben.
+
+8
+00:00:30,705 --> 00:00:34,490
+Sie entfernen quasi
+diese Modellteile und behalten
+
+9
+00:00:34,490 --> 00:00:37,260
+nur den mathematischen Kern des Modells,
+
+10
+00:00:37,260 --> 00:00:41,630
+das Eingabetensoren
+in Ausgabetensoren umwandelt.
+
+11
+00:00:41,630 --> 00:00:44,930
+In diesem Lab geht es darum, wie man
+
+12
+00:00:44,930 --> 00:00:48,415
+ein Modell
+mit dem Estimator-Framework verpackt,
+
+13
+00:00:48,415 --> 00:00:51,535
+also eine 
+benutzerdefinierte Modulfunktion.
+
+14
+00:00:51,535 --> 00:00:54,100
+Wie Sie auf den Folien sehen werden,
+
+15
+00:00:54,100 --> 00:00:56,385
+verwenden wir 
+im Grunde ein Zeitachsenmodell.
+
+16
+00:00:56,385 --> 00:01:00,020
+Lassen wir mal außer Acht, 
+wie dieses Modell funktioniert.
+
+17
+00:01:00,020 --> 00:01:03,570
+Wir beschäftigen uns 
+später noch mit Sequenzmodellen,
+
+18
+00:01:03,570 --> 00:01:06,195
+aber jetzt
+sehen wir es als Black Box an.
+
+19
+00:01:06,195 --> 00:01:10,835
+So können wir nachvollziehen,
+wie der umgebende Wrapper funktioniert.
+
+20
+00:01:10,835 --> 00:01:13,325
+In diesem Fall haben wir also...
+
+21
+00:01:13,325 --> 00:01:15,625
+Ich importiere kurz TensorFlow.
+
+22
+00:01:15,625 --> 00:01:18,660
+Wir werden also Datenelemente
+
+23
+00:01:18,660 --> 00:01:21,515
+erstellen bzw. simulieren,
+
+24
+00:01:21,515 --> 00:01:24,250
+die abweichenden Sinuskurven mit
+
+25
+00:01:24,250 --> 00:01:26,500
+verschiedenen Amplituden und
+
+26
+00:01:26,500 --> 00:01:29,530
+Frequenzen entsprechen, 
+die erstellt werden.
+
+27
+00:01:29,530 --> 00:01:32,770
+Hier sehen Sie 
+fünf Beispiele dieser Zeitachse.
+
+28
+00:01:32,770 --> 00:01:35,625
+Wir werden 
+viele solcher Elemente erstellen.
+
+29
+00:01:35,625 --> 00:01:38,615
+Und diese Daten 
+verwenden wir beim Trainieren.
+
+30
+00:01:38,615 --> 00:01:43,090
+Wir trainieren 
+das neuronale Netzwerk mit neun Werten.
+
+31
+00:01:43,090 --> 00:01:44,905
+Also null, eins, zwei, drei.
+
+32
+00:01:45,165 --> 00:01:47,195
+Wir nehmen bis zu acht Werte.
+
+33
+00:01:47,195 --> 00:01:52,180
+Dann nehmen wir neun Werte 
+und lassen es den zehnten vorhersagen.
+
+34
+00:01:52,180 --> 00:01:56,870
+Wir trainieren es 
+mit vielen bestehenden Datenelementen.
+
+35
+00:01:56,870 --> 00:02:03,550
+So lernt es anhand von acht 
+bzw. neun Werten, den zehnten vorherzusagen.
+
+36
+00:02:03,610 --> 00:02:05,155
+Zu diesem Zweck
+
+37
+00:02:05,155 --> 00:02:07,770
+erstellen wir eine CSV-Datei,
+
+38
+00:02:07,770 --> 00:02:10,009
+genauer gesagt zwei, benennen sie
+
+39
+00:02:10,009 --> 00:02:13,110
+und legen die Anzahl der Sequenzen fest.
+
+40
+00:02:14,380 --> 00:02:16,625
+Dann öffnen wir die Datei,
+
+41
+00:02:16,625 --> 00:02:20,280
+schreiben sie 
+und erstellen eine Zeitachse.
+
+42
+00:02:21,120 --> 00:02:23,495
+Wie viele Zeitachsen? N Zeitachsen.
+
+43
+00:02:23,495 --> 00:02:27,910
+Im Beispiel rufe ich "train.csv" auf,
+wobei N der Zahl 1.000 entspricht.
+
+44
+00:02:27,910 --> 00:02:30,715
+Ich erhalte 
+eine Datei mit 1.000 Sequenzen.
+
+45
+00:02:30,715 --> 00:02:33,290
+"Train.csv" enthält 1.000 Sequenzen.
+
+46
+00:02:33,290 --> 00:02:36,840
+"Value.csv" enthält nur 50 Sequenzen.
+
+47
+00:02:37,710 --> 00:02:41,075
+Diese sind 
+durch Kommas voneinander getrennt.
+
+48
+00:02:41,075 --> 00:02:43,010
+Ich führe das hier aus
+
+49
+00:02:44,790 --> 00:02:45,975
+und danach
+
+50
+00:02:45,975 --> 00:02:49,875
+sehe ich mir 
+die ersten fünf Zeilen von "train.csv" an,
+
+51
+00:02:50,265 --> 00:02:52,345
+das sind die ersten fünf Zeilen,
+
+52
+00:02:52,345 --> 00:02:55,325
+und die ersten 5 Zeilen von "value.csv".
+
+53
+00:02:55,325 --> 00:02:58,240
+Wie Sie sehen, ist das im Grunde
+
+54
+00:02:58,240 --> 00:03:04,695
+eine Zeitachse und diese Werte sind 
+die Eingabemerkmale zum Trainieren
+
+55
+00:03:05,335 --> 00:03:07,100
+und das ist unser Label.
+
+56
+00:03:07,100 --> 00:03:11,265
+Diesen Wert soll unser Modell vorhersagen.
+
+57
+00:03:12,005 --> 00:03:14,000
+Wo wird so etwas angewendet?
+
+58
+00:03:14,000 --> 00:03:16,795
+Ich möchte nicht näher 
+auf Zeitachsen eingehen,
+
+59
+00:03:16,795 --> 00:03:20,795
+aber Sie sollten wissen,
+was für eine Situation wir veranschaulichen.
+
+60
+00:03:20,795 --> 00:03:23,880
+Stellen Sie sich folgende Situation vor:
+
+61
+00:03:23,880 --> 00:03:27,920
+Sie betreiben ein Geschäft 
+und haben Tausende von Artikeln.
+
+62
+00:03:27,920 --> 00:03:31,800
+Jeder Artikel weist 
+seine eigene Saisonabhängigkeit auf.
+
+63
+00:03:31,800 --> 00:03:39,615
+Sie wollen sich die vergangen acht 
+oder mehr als neun Zeiträume ansehen
+
+64
+00:03:39,615 --> 00:03:42,665
+und damit den zehnten vorhersagen lassen.
+
+65
+00:03:42,665 --> 00:03:44,310
+Das tun wir auch.
+
+66
+00:03:44,310 --> 00:03:47,450
+Hier verwenden wir die Zeitachse nicht,
+
+67
+00:03:47,450 --> 00:03:51,660
+um die zukünftige Bewertung
+eines Aktienmarkts vorherzusagen.
+
+68
+00:03:51,660 --> 00:03:56,280
+Das ist ein anderer Fall.
+Da gibt es eine extrem lange Zeitachse.
+
+69
+00:03:56,900 --> 00:04:01,675
+Hier haben wir stattdessen
+tausende von kurzen Zeitachsen.
+
+70
+00:04:01,675 --> 00:04:03,030
+Es handelt sich also
+
+71
+00:04:03,030 --> 00:04:04,700
+um ein anderes Problem.
+
+72
+00:04:04,700 --> 00:04:06,630
+Wir bleiben 
+beim Einzelhandel.
+
+73
+00:04:06,630 --> 00:04:09,290
+Sie haben Tausende 
+saisonabhängiger Produkte,
+
+74
+00:04:09,290 --> 00:04:11,205
+deren Saisonabhängigkeit
+
+75
+00:04:11,205 --> 00:04:13,315
+aber je nach Produkt variiert.
+
+76
+00:04:13,315 --> 00:04:17,750
+Sie wollen die Hintergründe 
+der Saisonalität verstehen,
+
+77
+00:04:17,750 --> 00:04:22,715
+um mit der Zeitachse eines Produkts 
+die nächste vorhersagen lassen zu können.
+
+78
+00:04:23,925 --> 00:04:26,360
+Das ist unser Trainings-Dataset,
+
+79
+00:04:26,360 --> 00:04:29,120
+anhand dessen wir das Modell trainieren.
+
+80
+00:04:29,120 --> 00:04:32,440
+So ein Modell nennt man 
+"Recurrent Neural Network (RNN)".
+
+81
+00:04:32,440 --> 00:04:36,570
+Wie erwähnt, kümmern wir uns 
+nicht groß um die Interna des Modells,
+
+82
+00:04:36,570 --> 00:04:39,205
+sondern mehr um die Einrichtung.
+
+83
+00:04:39,205 --> 00:04:42,460
+Wir importieren TensorFlow
+
+84
+00:04:42,460 --> 00:04:45,540
+und lesen dann unsere Daten aus.
+
+85
+00:04:45,540 --> 00:04:49,600
+Die Daten entsprechen
+unserer Sequenzlänge.
+
+86
+00:04:49,600 --> 00:04:53,690
+Die Standardeinstellung ist also 0.0.
+
+87
+00:04:53,690 --> 00:04:57,830
+Das sind Gleitkommazahlen für X 
+im Bereich (0, Sequenzlänge).
+
+88
+00:04:57,830 --> 00:04:59,825
+Wir haben somit zehn Zahlen.
+
+89
+00:04:59,825 --> 00:05:02,580
+Die Batchgröße gibt an, 
+aus wie viel Sequenzen
+
+90
+00:05:02,580 --> 00:05:04,735
+wir den Gradient Descent berechnen.
+
+91
+00:05:04,735 --> 00:05:06,445
+Unsere Batchgröße ist 20.
+
+92
+00:05:06,445 --> 00:05:10,410
+Die Zeitachsenspalte heißt "rawdata".
+
+93
+00:05:11,080 --> 00:05:12,830
+Bei der Sequenz
+
+94
+00:05:12,830 --> 00:05:15,160
+beträgt die Anzahl der Ausgaben "1",
+
+95
+00:05:15,160 --> 00:05:16,485
+eine finale Ausgabe.
+
+96
+00:05:16,485 --> 00:05:21,840
+Die Anzahl der Eingaben entspricht
+einer Sequenzlänge minus der Ausgabenanzahl.
+
+97
+00:05:21,840 --> 00:05:24,930
+Anders ausgedrückt: 
+Die ersten neun Werte sind die Eingaben
+
+98
+00:05:24,930 --> 00:05:27,375
+und der letzte Wert ist die Ausgabe.
+
+99
+00:05:27,375 --> 00:05:31,405
+Das ist der Satz 
+definierbarer Konstanten.
+
+100
+00:05:31,405 --> 00:05:34,460
+Dann erstellen wir
+das Dataset zum Einlesen.
+
+101
+00:05:34,460 --> 00:05:37,330
+Wir gehen 
+wie bei einer Eingabefunktion vor.
+
+102
+00:05:37,330 --> 00:05:40,565
+Hier erhält "decode_csv" eine Zeile.
+
+103
+00:05:40,565 --> 00:05:45,750
+Damit wird die Anweisung ausgedrückt, 
+alle Werte als Gleitkommazahlen zu lesen.
+
+104
+00:05:45,750 --> 00:05:47,620
+Es werden alle Daten eingelesen,
+
+105
+00:05:47,620 --> 00:05:49,200
+genauer gesagt, zehn Zahlen.
+
+106
+00:05:49,200 --> 00:05:52,700
+Es wird jedoch stets 
+nur ein Batch auf einmal gelesen.
+
+107
+00:05:52,700 --> 00:05:55,125
+Das hier entspricht keiner Zeile.
+
+108
+00:05:55,125 --> 00:05:57,360
+Das sind Daten, die üblicherweise
+
+109
+00:05:57,360 --> 00:06:01,145
+20 Zeilen entsprechen, 
+da sie batchweise gelesen werden.
+
+110
+00:06:01,145 --> 00:06:03,070
+Das sind 20 Zeilen.
+
+111
+00:06:03,370 --> 00:06:09,810
+Davon verwenden wir 
+die ersten neun als Eingaben.
+
+112
+00:06:09,855 --> 00:06:11,955
+Die Werte der letzten Spalte
+
+113
+00:06:11,955 --> 00:06:13,800
+verwenden wir als Labels.
+
+114
+00:06:13,800 --> 00:06:15,650
+Genau darum geht es hier.
+
+115
+00:06:15,650 --> 00:06:20,095
+Wir verwenden 
+die ersten neun Werte als Eingaben
+
+116
+00:06:20,095 --> 00:06:22,260
+und den letzten Wert als Label.
+
+117
+00:06:22,260 --> 00:06:29,020
+Die Länge der Eingaben beträgt 
+"Batchgröße" und die Breite "Neun".
+
+118
+00:06:29,150 --> 00:06:35,605
+Labels hat die Höhe "Batchgröße" 
+und die Breite "Eins" (Anzahl Ausgaben).
+
+119
+00:06:35,675 --> 00:06:39,025
+Wir nehmen all diese
+
+120
+00:06:39,025 --> 00:06:44,500
+separaten Werte und stapeln sie so,
+
+121
+00:06:44,500 --> 00:06:46,510
+dass wir eine Matrix erhalten.
+
+122
+00:06:46,510 --> 00:06:49,870
+Diese Eingabewerte
+stapeln wir zum Erstellen einer Matrix.
+
+123
+00:06:49,870 --> 00:06:52,840
+Wir stapeln diese Werte, 
+um noch eine Matrix zu erhalten.
+
+124
+00:06:52,840 --> 00:06:54,750
+Die 2. Dimension der Matrix ist 1,
+
+125
+00:06:54,750 --> 00:06:56,980
+aber statt der Liste von Listen
+
+126
+00:06:56,980 --> 00:06:58,565
+immer noch nicht in der Matrix.
+
+127
+00:06:58,565 --> 00:07:01,290
+Wir wollen keine 
+Liste von Listen sondern eine Matrix.
+
+128
+00:07:01,290 --> 00:07:02,805
+Dafür sorgt der Stapelprozess.
+
+129
+00:07:02,805 --> 00:07:04,635
+Wir definieren "TIMESERIES_COL"
+
+130
+00:07:04,635 --> 00:07:07,785
+(Rohdaten, den Tensor) als Eingabe.
+
+131
+00:07:07,785 --> 00:07:10,825
+Nun können die "features" 
+und "labels" zurückgegeben werden.
+
+132
+00:07:10,825 --> 00:07:13,680
+"Features" enthält nur eine Funktion,
+
+133
+00:07:13,680 --> 00:07:15,440
+ein Wörterbuch.
+
+134
+00:07:15,440 --> 00:07:18,160
+Diese Funktion ist eine Matrix.
+
+135
+00:07:18,160 --> 00:07:21,370
+Vorhin hatten die Funktionen 
+ein Spaltenformat,
+
+136
+00:07:21,370 --> 00:07:24,275
+hier ist die Funktion eine Matrix.
+
+137
+00:07:24,275 --> 00:07:26,470
+Daher haben Sie 
+den Stapelvorgang ausgeführt.
+
+138
+00:07:26,522 --> 00:07:28,012
+Wie erstellen Sie nun
+
+139
+00:07:28,012 --> 00:07:29,895
+das Dataset zum Einlesen?
+
+140
+00:07:29,895 --> 00:07:31,800
+Für ein einzulesendes Dataset
+
+141
+00:07:31,800 --> 00:07:34,310
+erhalten wir oft 
+einen Dateipfad statt -namen.
+
+142
+00:07:34,310 --> 00:07:37,205
+Wir wenden also "Glob" an,
+
+143
+00:07:37,205 --> 00:07:42,075
+was alle Dateien mit z. B. 
+einem Platzhalter in einer Liste aufführt,
+
+144
+00:07:42,075 --> 00:07:47,685
+lesen diese als Textzeile ein und erhalten
+dank Aufruf von "decode_csv" das Dataset zurück.
+
+145
+00:07:47,685 --> 00:07:50,715
+Falls wir es auch 
+zum Trainieren verwenden wollen,
+
+146
+00:07:50,715 --> 00:07:52,870
+analysieren wir es (Zufallsprinzip).
+
+147
+00:07:52,870 --> 00:07:55,125
+Falls wir es 
+zum Bewerten nutzen möchten,
+
+148
+00:07:55,125 --> 00:07:57,000
+ist das Analysieren nicht nötig.
+
+149
+00:07:57,000 --> 00:07:59,945
+Beim Trainieren 
+wird für unbestimmte Zeit gelesen.
+
+150
+00:07:59,945 --> 00:08:04,560
+Beim Bewerten muss das Dataset 
+nur einmal komplett gelesen werden.
+
+151
+00:08:04,560 --> 00:08:06,550
+Also ist die Anzahl von Epochen 1.
+
+152
+00:08:06,550 --> 00:08:09,700
+Wir wiederholen das Dataset 
+entsprechend der Epochenanzahl.
+
+153
+00:08:09,700 --> 00:08:12,040
+Beim Bewerten wiederholen wir es einmal,
+
+154
+00:08:12,040 --> 00:08:16,075
+beim Trainieren unendlich oft. 
+Wir erstellen gleich große Batches.
+
+155
+00:08:16,075 --> 00:08:18,145
+Hier 20 Zeilen,
+
+156
+00:08:18,145 --> 00:08:20,455
+20 Sequenzen auf einmal.
+
+157
+00:08:20,455 --> 00:08:22,965
+Dann wird der Iterator zurückgegeben.
+
+158
+00:08:22,965 --> 00:08:25,865
+Damit haben wir das Dataset eingelesen.
+
+159
+00:08:27,975 --> 00:08:31,425
+Wie das Modell an sich funktioniert,
+
+160
+00:08:31,425 --> 00:08:33,150
+ist nicht wichtig.
+
+161
+00:08:33,880 --> 00:08:37,425
+Wichtig ist nur: Es ist 
+ein metrisches einfaches RNN,
+
+162
+00:08:37,425 --> 00:08:40,779
+das unsere Features, 
+Labels und unser Mode verwendet.
+
+163
+00:08:41,399 --> 00:08:46,295
+Es zieht die Sequenz X aus den Features
+
+164
+00:08:46,295 --> 00:08:49,320
+und tut damit etwas,
+
+165
+00:08:49,530 --> 00:08:51,145
+ignorieren wir das mal,
+
+166
+00:08:51,145 --> 00:08:53,885
+bis es die Vorhersagen erreicht.
+
+167
+00:08:53,885 --> 00:08:56,570
+Das ist die Ausgabe
+unseres Zeitachsenmodells.
+
+168
+00:08:56,570 --> 00:08:59,090
+In Bezug auf diese Eingabe
+
+169
+00:08:59,090 --> 00:09:01,430
+haben wir eine Ausgabe.
+
+170
+00:09:01,780 --> 00:09:04,095
+So ist das bei allen Modellfunktionen.
+
+171
+00:09:04,095 --> 00:09:07,825
+Wir müssen nun 
+unsere Verlustfunktion festlegen.
+
+172
+00:09:07,825 --> 00:09:10,420
+Es handelt sich ja 
+um ein Zeitachsenproblem,
+
+173
+00:09:10,420 --> 00:09:12,745
+Der letzte Wert soll vorhergesagt werden.
+
+174
+00:09:12,745 --> 00:09:15,030
+Es soll also ein Wert vorhergesagt werden.
+
+175
+00:09:15,030 --> 00:09:17,610
+Ist das Regression oder Klassifizierung?
+
+176
+00:09:17,610 --> 00:09:21,110
+Es ist eine Regression.
+
+177
+00:09:21,110 --> 00:09:23,825
+Deswegen ist mein Verlust
+der mittlere quadratische Fehler.
+
+178
+00:09:23,825 --> 00:09:26,765
+Ich kann die Wurzel 
+des mittleren quadratischen Fehlers
+
+179
+00:09:26,765 --> 00:09:28,765
+oder den Fehler an sich verwenden.
+
+180
+00:09:28,765 --> 00:09:31,655
+Der Trainingsvorgang besteht darin,
+
+181
+00:09:31,655 --> 00:09:34,859
+den Verlust mit der angegebenen Lernrate
+
+182
+00:09:34,859 --> 00:09:40,550
+und Optimierungsmethode zu minimieren. 
+Die Bewertungsmesswerte sind "rmse",
+
+183
+00:09:40,550 --> 00:09:45,105
+die Wurzeln der mittleren quadratischen Fehler 
+zwischen den Labels und Vorhersagen.
+
+184
+00:09:45,105 --> 00:09:48,200
+Wenn es sich nicht 
+um Training oder Bewertung handelt,
+
+185
+00:09:48,200 --> 00:09:52,335
+haben Verlust, Trainingsvorgang 
+und Bewertungsmesswerte den Wert "None".
+
+186
+00:09:52,725 --> 00:09:55,035
+Ihr Wert ist "None", 
+weil das Label fehlt.
+
+187
+00:09:55,125 --> 00:09:57,730
+Im Vorhersageprozess 
+haben wir kein Label.
+
+188
+00:09:57,730 --> 00:09:59,470
+Also sind keine Bewertung,
+
+189
+00:09:59,470 --> 00:10:01,585
+kein Training, kein Verlust möglich.
+
+190
+00:10:01,925 --> 00:10:04,090
+Also setzen wir 
+die Vorgänge auf "None".
+
+191
+00:10:04,090 --> 00:10:06,955
+Das Vorhersagenwörterbuch,
+
+192
+00:10:06,955 --> 00:10:11,390
+die Vorhersagen, sind die Ausgabe,
+der wir den Namen "predicted" geben.
+
+193
+00:10:11,980 --> 00:10:15,810
+Beim Export nennen wir sie 
+"regression_export_outputs".
+
+194
+00:10:15,820 --> 00:10:21,750
+Wir geben diese Vorhersagen aus.
+
+195
+00:10:21,750 --> 00:10:24,725
+Hier gibt es keine 
+eingebetteten Inhalte zum Ausgeben,
+
+196
+00:10:24,725 --> 00:10:26,750
+also geben wir eine Sache aus.
+
+197
+00:10:26,750 --> 00:10:28,870
+Gäbe es mehrere Werte zum Ausgeben,
+
+198
+00:10:28,870 --> 00:10:30,915
+das ist ja nur das Wörterbuch,
+
+199
+00:10:30,915 --> 00:10:37,105
+könnten wir hier "embedding" eingeben.
+
+200
+00:10:37,105 --> 00:10:41,295
+Angenommen hier oben 
+ist ein Tensor eingebettet.
+
+201
+00:10:41,295 --> 00:10:44,820
+Angenommen wir haben 
+einen Tensor namens "weight" eingebettet.
+
+202
+00:10:45,140 --> 00:10:49,030
+Sie würden hier unten "weight" eingeben.
+
+203
+00:10:49,030 --> 00:10:50,970
+Wenn wir das Modell exportieren,
+
+204
+00:10:50,970 --> 00:10:52,540
+exportieren wir nun zwei Dinge,
+
+205
+00:10:52,540 --> 00:10:56,185
+Regressionsausgabe und Einbettung.
+
+206
+00:10:56,815 --> 00:11:00,110
+Danach kann 
+eine EstimatorSpec ausgegeben werden,
+
+207
+00:11:00,110 --> 00:11:01,535
+um "mode",
+
+208
+00:11:01,535 --> 00:11:03,970
+"predictions_dict", "loss",
+
+209
+00:11:03,970 --> 00:11:06,060
+"train_op", die Bewertungsmesswerte
+
+210
+00:11:06,060 --> 00:11:07,810
+und das
+
+211
+00:11:07,810 --> 00:11:11,005
+zu Exportierende auszugeben. Fertig.
+
+212
+00:11:11,005 --> 00:11:14,100
+Jetzt gehen Sie wie vorhin vor.
+
+213
+00:11:14,100 --> 00:11:17,640
+Sie erstellen die Funktionen
+zum Trainieren, zum Validieren.
+
+214
+00:11:17,640 --> 00:11:20,755
+Diese müssen keine Parameter 
+oder Eingabefunktionen verwenden.
+
+215
+00:11:20,755 --> 00:11:25,500
+Also füge ich 
+"get_train" ein, um "train.csv"
+
+216
+00:11:25,500 --> 00:11:27,775
+und als Mode "TRAIN" zu übergeben.
+
+217
+00:11:27,775 --> 00:11:31,660
+Dann nutzt die Bereitstellungs-
+eingabefunktion "TIMESERIES_COL"
+
+218
+00:11:31,660 --> 00:11:33,995
+und nimmt an, dass das
+Gleitkommazahlen sind.
+
+219
+00:11:33,995 --> 00:11:36,290
+Wir rufen 
+"train_and_evaluate" auf
+
+220
+00:11:36,290 --> 00:11:38,880
+und testen es als eigenständiges Modul.
+
+221
+00:11:39,700 --> 00:11:42,695
+Wir können sie auch 
+über ML Engine trainieren,
+
+222
+00:11:42,695 --> 00:11:46,315
+müssen dann aber den Bucket 
+in einen Qwiklabs-Bucket ändern.

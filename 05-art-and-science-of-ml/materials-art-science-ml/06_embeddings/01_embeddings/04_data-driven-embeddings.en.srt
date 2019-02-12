@@ -1,0 +1,179 @@
+1
+00:00:00,000 --> 00:00:01,710
+In the previous lesson,
+
+2
+00:00:01,710 --> 00:00:06,090
+we talked about creating embeddings manually using rules.
+
+3
+00:00:06,090 --> 00:00:10,170
+We used attributes like the average age of the viewer,
+
+4
+00:00:10,170 --> 00:00:12,570
+and the total ticket sales to take
+
+5
+00:00:12,570 --> 00:00:17,310
+our movies which would have been in a 500,000 dimensional space,
+
+6
+00:00:17,310 --> 00:00:20,760
+and project them into a two dimensional space.
+
+7
+00:00:20,760 --> 00:00:23,670
+In the case of our two dimensional embedding,
+
+8
+00:00:23,670 --> 00:00:26,835
+we gave our axis names like age,
+
+9
+00:00:26,835 --> 00:00:33,225
+and ticket sold, children versus adult, arthouse versus blockbuster.
+
+10
+00:00:33,225 --> 00:00:37,740
+However, it's not essential that these axis have names.
+
+11
+00:00:37,740 --> 00:00:42,765
+What is important is that we went from 500,000 to two.
+
+12
+00:00:42,765 --> 00:00:47,560
+Note that we did it by looking at attributes of the movies man manually.
+
+13
+00:00:47,560 --> 00:00:54,275
+What is the impact of doing the dimensionality reduction from 500,000 to two?
+
+14
+00:00:54,275 --> 00:01:01,100
+The 2D embedding that we have for each movie is associated with two real values,
+
+15
+00:01:01,100 --> 00:01:05,875
+and so you can represent each movie by pointing 2D space.
+
+16
+00:01:05,875 --> 00:01:08,465
+Why should we do this embedding?
+
+17
+00:01:08,465 --> 00:01:11,270
+One key reason is this,
+
+18
+00:01:11,270 --> 00:01:17,105
+let's say we are training a model to predict whether some user will like a movie.
+
+19
+00:01:17,105 --> 00:01:21,154
+It is easier to train a model that has D inputs,
+
+20
+00:01:21,154 --> 00:01:24,880
+than it is to train a model that has N input.
+
+21
+00:01:24,880 --> 00:01:32,540
+Remember that N is much much larger than D.The fewer the number of input nodes,
+
+22
+00:01:32,540 --> 00:01:35,645
+the fewer the weights that we have to optimize.
+
+23
+00:01:35,645 --> 00:01:39,240
+This means that the model trains faster,
+
+24
+00:01:39,240 --> 00:01:42,235
+and has less chance of overfitting.
+
+25
+00:01:42,235 --> 00:01:46,505
+Embedding is a way of making the problem simpler.
+
+26
+00:01:46,505 --> 00:01:48,630
+However, we have to do
+
+27
+00:01:48,630 --> 00:01:53,290
+this dimensionality reduction in a way that we don't lose information.
+
+28
+00:01:53,290 --> 00:01:58,410
+How could we come up with an appropriate embedding?
+
+29
+00:01:58,410 --> 00:02:04,395
+You can learn embedding from the data as part of your normal training process.
+
+30
+00:02:04,395 --> 00:02:07,470
+No separate training process is needed.
+
+31
+00:02:07,470 --> 00:02:10,240
+First, take the original input,
+
+32
+00:02:10,240 --> 00:02:14,310
+and represent the input as a one heart encoded array.
+
+33
+00:02:14,310 --> 00:02:17,400
+Then, send it through an embedding layer.
+
+34
+00:02:17,400 --> 00:02:25,695
+In this approach, the embedding layer is just a hidden layer with one unit per dimension.
+
+35
+00:02:25,695 --> 00:02:28,790
+Because we're training a model with labels,
+
+36
+00:02:28,790 --> 00:02:33,205
+the embedding get changed based on these labels.
+
+37
+00:02:33,205 --> 00:02:37,540
+Intuitively, the hidden units discover how to
+
+38
+00:02:37,540 --> 00:02:42,130
+organize the items in the D dimensional space in a way,
+
+39
+00:02:42,130 --> 00:02:45,770
+so as to best optimize a final objective.
+
+40
+00:02:45,770 --> 00:02:48,065
+There is a small problem though.
+
+41
+00:02:48,065 --> 00:02:52,550
+How much memory is required to store the inputs?
+
+42
+00:02:52,550 --> 00:02:55,380
+You have a categorical input variable,
+
+43
+00:02:55,380 --> 00:02:58,355
+but 500,000 possible values.
+
+44
+00:02:58,355 --> 00:03:03,320
+So you have to create 500,000 input nodes,
+
+45
+00:03:03,320 --> 00:03:09,910
+and do matrix math of huge matrices.

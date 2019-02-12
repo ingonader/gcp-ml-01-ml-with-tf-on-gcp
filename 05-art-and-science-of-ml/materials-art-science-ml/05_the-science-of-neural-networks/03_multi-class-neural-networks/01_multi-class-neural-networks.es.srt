@@ -1,0 +1,1068 @@
+1
+00:00:00,000 --> 00:00:02,060
+Ahora que conocemos
+las redes neuronales
+
+2
+00:00:02,060 --> 00:00:03,580
+cómo entrenarlas
+con eficiencia
+
+3
+00:00:03,580 --> 00:00:05,340
+y cómo obtener
+la mayor generalización
+
+4
+00:00:05,340 --> 00:00:07,740
+analicemos las redes neuronales
+de clases múltiples
+
+5
+00:00:07,740 --> 00:00:10,675
+cuando tenemos problemas
+de clasificación de clases múltiples.
+
+6
+00:00:10,675 --> 00:00:12,865
+Esta es una función sigmoide
+
+7
+00:00:12,865 --> 00:00:15,005
+que nos brinda
+las probabilidades calibradas.
+
+8
+00:00:15,005 --> 00:00:18,620
+Es útil en la regresión logística
+para los problemas de clase binaria
+
+9
+00:00:18,620 --> 00:00:21,450
+porque puedo encontrar
+la probabilidad en la clase positiva
+
+10
+00:00:21,450 --> 00:00:22,875
+donde -1
+
+11
+00:00:22,875 --> 00:00:24,790
+probablemente
+esté en la clase negativa.
+
+12
+00:00:24,790 --> 00:00:27,900
+¿Qué hacemos cuando
+tenemos más de dos clases?
+
+13
+00:00:27,900 --> 00:00:30,345
+Hay muchos
+problemas de clases múltiples.
+
+14
+00:00:30,345 --> 00:00:33,465
+Este ejemplo es de tipos
+de entradas para la ópera.
+
+15
+00:00:33,465 --> 00:00:36,715
+Quizás el modelo creó
+un tipo de asiento para recomendar.
+
+16
+00:00:36,715 --> 00:00:39,045
+Supongamos que
+hay cuatro lugares para sentarse:
+
+17
+00:00:39,045 --> 00:00:40,935
+el foso de orquesta,
+la platea baja
+
+18
+00:00:40,935 --> 00:00:42,855
+el balcón
+o un palco.
+
+19
+00:00:42,855 --> 00:00:45,860
+Si quiero la probabilidad de cada uno
+de estos tipos de asientos
+
+20
+00:00:45,860 --> 00:00:50,940
+no puedo usar una clasificación binaria
+normal porque hay muchas clases.
+
+21
+00:00:50,940 --> 00:00:53,070
+Si el foso es una clase positiva
+
+22
+00:00:53,070 --> 00:00:54,915
+¿qué es su clase negativa?
+
+23
+00:00:54,915 --> 00:00:57,285
+¿Qué hago con las clases restantes?
+
+24
+00:00:57,285 --> 00:01:01,170
+Una idea es transformar el problema
+de una clasificación de clases múltiples
+
+25
+00:01:01,170 --> 00:01:03,390
+a muchos problemas
+de clasificación binaria.
+
+26
+00:01:03,390 --> 00:01:08,510
+Un método es con el enfoque
+uno frente a todos o uno frente al resto.
+
+27
+00:01:08,510 --> 00:01:11,525
+Con este enfoque, iteraremos
+en cada clase.
+
+28
+00:01:11,525 --> 00:01:14,555
+En cada iteración,
+esa clase irá a la clase positiva
+
+29
+00:01:14,555 --> 00:01:18,615
+y las clases restantes
+se agruparán en la clase negativa.
+
+30
+00:01:18,615 --> 00:01:23,010
+Así, estoy prediciendo la probabilidad
+de estar en la clase positiva
+
+31
+00:01:23,010 --> 00:01:27,015
+y la probabilidad
+de no estar en las otras clases.
+
+32
+00:01:27,015 --> 00:01:29,880
+Es importante
+que obtengamos una probabilidad
+
+33
+00:01:29,880 --> 00:01:32,175
+y no solo un nivel de clase
+
+34
+00:01:32,175 --> 00:01:34,410
+para no crear ambigüedades
+
+35
+00:01:34,410 --> 00:01:36,960
+si se predicen múltiples clases
+para una sola muestra.
+
+36
+00:01:36,960 --> 00:01:40,940
+Una vez que se entrenaron los modelos
+de cada clase seleccionada como positiva
+
+37
+00:01:40,940 --> 00:01:44,180
+pasamos a la parte más valiosa
+del AA: las predicciones.
+
+38
+00:01:44,180 --> 00:01:46,910
+Para hacer una predicción, 
+envía su muestra de predicción
+
+39
+00:01:46,910 --> 00:01:49,675
+a través de cada modelo
+de clasificación binaria entrenado.
+
+40
+00:01:49,675 --> 00:01:53,130
+El modelo que produzca la probabilidad
+o el puntaje de confianza más alto
+
+41
+00:01:53,130 --> 00:01:55,770
+se elegirá como
+la clase predicha general.
+
+42
+00:01:55,770 --> 00:01:58,050
+Aunque parece una solución ideal
+
+43
+00:01:58,050 --> 00:01:59,775
+tiene varios problemas.
+
+44
+00:01:59,775 --> 00:02:02,700
+Primero, el ajuste
+de los valores de confianza
+
+45
+00:02:02,700 --> 00:02:05,580
+puede ser diferente para
+cada modelo de clasificación binaria
+
+46
+00:02:05,580 --> 00:02:08,170
+lo que produce un margen
+en nuestra predicción general.
+
+47
+00:02:08,170 --> 00:02:10,350
+Incluso si ese no es el caso
+
+48
+00:02:10,350 --> 00:02:12,570
+cada modelo de clasificación binaria
+
+49
+00:02:12,570 --> 00:02:15,620
+verá distribuciones de datos
+desequilibradas, ya que
+
+50
+00:02:15,620 --> 00:02:18,050
+para cada una de ellas,
+la clase negativa es la suma
+
+51
+00:02:18,050 --> 00:02:19,330
+de todas las demás clases.
+
+52
+00:02:19,330 --> 00:02:23,575
+además de la que está
+marcada para la clase positiva.
+
+53
+00:02:23,575 --> 00:02:28,160
+Este desequilibrio se puede corregir
+con el método uno frente a todos.
+
+54
+00:02:28,160 --> 00:02:31,070
+Con él, en lugar de tener
+un modelo para cada clase
+
+55
+00:02:31,070 --> 00:02:33,830
+hay un modelo para cada
+combinación binaria de las clases.
+
+56
+00:02:33,830 --> 00:02:35,320
+Si hay clases
+
+57
+00:02:35,320 --> 00:02:37,260
+esto significa que habrá
+
+58
+00:02:37,260 --> 00:02:41,300
+n(n-1)/2 modelos
+con n al cuadrado.
+
+59
+00:02:41,620 --> 00:02:45,665
+Para las cuatro clases
+del ejemplo, son seis modelos
+
+60
+00:02:45,665 --> 00:02:47,855
+pero si tuviera 1,000 clases
+
+61
+00:02:47,855 --> 00:02:49,805
+como en una competencia
+de imágenes
+
+62
+00:02:49,805 --> 00:02:53,440
+serían 499,500 modelos.
+
+63
+00:02:54,090 --> 00:02:57,540
+Cada modelo genera un voto
+para su etiqueta predicha
+
+64
+00:02:57,540 --> 00:03:02,345
++1 o +0 para la etiqueta
+de clase positiva de cada modelo.
+
+65
+00:03:02,345 --> 00:03:06,640
+Todos los votos se acumulan
+y la clase que tiene más, gana.
+
+66
+00:03:06,640 --> 00:03:09,950
+Sin embargo, esto no resuelve
+el problema de la ambigüedad
+
+67
+00:03:09,950 --> 00:03:11,840
+porque según
+la distribución de entradas
+
+68
+00:03:11,840 --> 00:03:15,095
+podría terminar con la misma cantidad
+de votos para clases distintas.
+
+69
+00:03:15,095 --> 00:03:20,605
+¿Se puede hacer la clasificación
+de clases múltiples sin estos problemas?
+
+70
+00:03:21,095 --> 00:03:23,970
+Una idea podría ser usar
+el enfoque uno frente a todos
+
+71
+00:03:23,970 --> 00:03:25,230
+con las redes neuronales
+
+72
+00:03:25,230 --> 00:03:27,810
+y en lugar de tener
+varios modelos para cada clase
+
+73
+00:03:27,810 --> 00:03:31,750
+hay un modelo con un resultado único
+para cada clase posible.
+
+74
+00:03:31,750 --> 00:03:34,650
+Podemos entrenar
+este modelo con una señal
+
+75
+00:03:34,650 --> 00:03:36,865
+de "mi clase" frente
+a "todas las demás clases"
+
+76
+00:03:36,865 --> 00:03:38,395
+para cada ejemplo que vea.
+
+77
+00:03:38,395 --> 00:03:41,975
+Debemos ser cuidosos con
+el diseño de nuestras etiquetas.
+
+78
+00:03:41,975 --> 00:03:44,470
+En lugar de tener un 1
+para la clase verdadera
+
+79
+00:03:44,470 --> 00:03:47,455
+tendremos un vector de la longitud
+de la cantidad de clases
+
+80
+00:03:47,455 --> 00:03:50,110
+donde la clase verdadera será un 1
+
+81
+00:03:50,110 --> 00:03:51,845
+y el resto será 0.
+
+82
+00:03:51,845 --> 00:03:56,400
+Así, premiará a la neurona sigmoidal
+para la clase verdadera
+
+83
+00:03:56,400 --> 00:03:57,830
+si se acerca a 1
+
+84
+00:03:57,830 --> 00:04:01,240
+y penalizará a las otras neuronas
+sigmoidales si también se acercan a 1
+
+85
+00:04:01,240 --> 00:04:05,845
+con un error mayor que se propagará
+hacia atrás en la red para los pesos.
+
+86
+00:04:05,845 --> 00:04:09,560
+Pero podemos tener problemas
+si hay millones de clases nuevas
+
+87
+00:04:09,560 --> 00:04:11,815
+ya que tendremos millones
+de neuronas de salida.
+
+88
+00:04:11,815 --> 00:04:13,765
+Tendremos millones
+de cálculos de pérdida
+
+89
+00:04:13,765 --> 00:04:16,609
+con millones de errores
+que se propagarán hacia atrás
+
+90
+00:04:16,609 --> 00:04:19,095
+en la red, lo que genera
+costos de computación altos.
+
+91
+00:04:19,095 --> 00:04:20,300
+¿Hay una forma mejor?
+
+92
+00:04:20,300 --> 00:04:22,840
+Si agregamos una restricción adicional
+
+93
+00:04:22,840 --> 00:04:25,025
+la suma de los resultados será 1
+
+94
+00:04:25,025 --> 00:04:28,945
+y permitirá que el resultado
+se interprete como probabilidades.
+
+95
+00:04:28,945 --> 00:04:32,405
+Esta función de normalización
+se llama softmax.
+
+96
+00:04:32,405 --> 00:04:36,825
+En cada nodo, encontramos
+el exponente W por X
+
+97
+00:04:36,825 --> 00:04:40,720
+más B y lo dividimos
+por la suma de todos los nodos.
+
+98
+00:04:40,720 --> 00:04:44,000
+Así, garantizamos que todos
+los nodos estén entre 0 y 1
+
+99
+00:04:44,000 --> 00:04:47,290
+y que la probabilidad total sea de 1.
+
+100
+00:04:47,290 --> 00:04:49,000
+De esta forma, para cada ejemplo
+
+101
+00:04:49,000 --> 00:04:51,640
+tendrá una probabilidad
+normalizada para cada clase
+
+102
+00:04:51,640 --> 00:04:54,190
+donde puede calcular el argmax
+para encontrar la clase
+
+103
+00:04:54,190 --> 00:04:57,005
+con la probabilidad más alta
+de su etiqueta predicha.
+
+104
+00:04:57,005 --> 00:04:59,820
+En TensorFlow, calculamos los logits
+
+105
+00:04:59,820 --> 00:05:02,730
+en la última capa como la aplicación
+de la matriz de W y X
+
+106
+00:05:02,730 --> 00:05:05,850
+con el nodo de sesgo agregado
+a los resultados, si hubiera uno.
+
+107
+00:05:05,850 --> 00:05:08,440
+Esto nos dará una forma
+del tensor del tamaño del lote
+
+108
+00:05:08,440 --> 00:05:09,780
+para la cantidad de clases.
+
+109
+00:05:09,780 --> 00:05:12,670
+Las etiquetas tendrán
+una codificación de un solo 1
+
+110
+00:05:12,670 --> 00:05:14,650
+con la que la clase
+verdadera obtiene un 1
+
+111
+00:05:14,650 --> 00:05:17,215
+y las demás clases un 0
+para cada ejemplo.
+
+112
+00:05:17,215 --> 00:05:20,065
+Por lo tanto, también tendrán
+la forma del tensor
+
+113
+00:05:20,065 --> 00:05:22,820
+del tamaño del lote
+por la cantidad de clases.
+
+114
+00:05:22,820 --> 00:05:25,730
+Dado que estamos usando TensorFlow
+
+115
+00:05:25,730 --> 00:05:28,460
+la entropía cruzada de softmax
+con la función de logit
+
+116
+00:05:28,460 --> 00:05:30,690
+las etiquetas pueden ser flexibles.
+
+117
+00:05:30,690 --> 00:05:32,450
+Esto significa que
+
+118
+00:05:32,450 --> 00:05:34,950
+aunque las clases
+son exclusivas mutuamente
+
+119
+00:05:34,950 --> 00:05:37,035
+las probabilidades pueden no serlo.
+
+120
+00:05:37,035 --> 00:05:39,660
+Si tiene tres clases
+
+121
+00:05:39,660 --> 00:05:43,665
+su minilote podría ser 1
+y sus etiquetas 0.15
+
+122
+00:05:43,665 --> 00:05:47,415
+0.8 y 0.05, como su etiqueta.
+
+123
+00:05:47,415 --> 00:05:49,710
+No tienen codificación de un solo 1
+
+124
+00:05:49,710 --> 00:05:53,520
+pero sigue habiendo una distribución
+de probabilidades válida porque suman 1.
+
+125
+00:05:53,520 --> 00:05:57,720
+Por último, comparamos los logits
+con las etiquetas con la entropía cruzada
+
+126
+00:05:57,720 --> 00:05:58,800
+de softmax con logits.
+
+127
+00:05:58,800 --> 00:06:01,875
+Como resultado, tendrá la forma del tensor
+y el tamaño del lote.
+
+128
+00:06:01,875 --> 00:06:05,220
+En TensorFlow 1.5, se creó
+
+129
+00:06:05,220 --> 00:06:08,630
+una segunda versión de la función
+y la versión anterior será obsoleta.
+
+130
+00:06:08,630 --> 00:06:11,010
+Para obtener la pérdida promedio
+de ese minilote
+
+131
+00:06:11,010 --> 00:06:13,715
+use "reduce_mean" en el resultado.
+
+132
+00:06:13,715 --> 00:06:18,030
+TensorFlow tiene otra función que puede
+usar, en lugar de calcular el softmax
+
+133
+00:06:18,030 --> 00:06:22,200
+que se llama entropía cruzada
+de softmax disperso con logits
+
+134
+00:06:22,200 --> 00:06:24,800
+En este caso, no usamos
+la codificación en solo 1
+
+135
+00:06:24,800 --> 00:06:27,000
+ni la codificación suave
+de nuestras etiquetas
+
+136
+00:06:27,000 --> 00:06:29,520
+solo proporcionaremos
+el índice de la clase verdadera
+
+137
+00:06:29,520 --> 00:06:32,785
+entre 0 y la cantidad
+de clases menos uno.
+
+138
+00:06:32,785 --> 00:06:36,870
+Esto significa que las etiquetas son
+un tensor de forma de tamaño de lote.
+
+139
+00:06:36,870 --> 00:06:40,550
+El resultado de la función es el mismo
+que antes, un tensor de forma
+
+140
+00:06:40,550 --> 00:06:41,550
+de tamaño de lote.
+
+141
+00:06:41,550 --> 00:06:46,845
+Y debo reducir la media de ese tensor para
+obtener la pérdida promedio del minilote.
+
+142
+00:06:46,845 --> 00:06:49,365
+Para algunas funciones de softmax
+
+143
+00:06:49,365 --> 00:06:52,935
+usamos solo algunas, porque las clases
+son exclusivas mutuamente.
+
+144
+00:06:52,935 --> 00:06:56,700
+Por ejemplo, la imagen 1
+es la foto de un perro
+
+145
+00:06:56,700 --> 00:06:58,785
+y la imagen 2
+es la foto de un gato.
+
+146
+00:06:58,785 --> 00:07:03,420
+¿Qué pasa si la imagen 3 es la foto
+de un perro y un gato?
+
+147
+00:07:03,420 --> 00:07:04,665
+Para mi problema de AA
+
+148
+00:07:04,665 --> 00:07:06,075
+quiero averiguar eso.
+
+149
+00:07:06,075 --> 00:07:09,105
+Con softmax, obtendré
+una probabilidad de cada una
+
+150
+00:07:09,105 --> 00:07:11,670
+pero tomaré el argmax
+como mi etiqueta.
+
+151
+00:07:11,670 --> 00:07:14,295
+Así, según la imagen de mi modelo
+
+152
+00:07:14,295 --> 00:07:15,780
+la etiqueta puede ser un perro
+
+153
+00:07:15,780 --> 00:07:17,340
+o puede ser un gato.
+
+154
+00:07:17,340 --> 00:07:21,210
+Eso no es correcto, porque quiero
+saber si ambos están en la imagen
+
+155
+00:07:21,210 --> 00:07:23,985
+y si hay otras clases también.
+
+156
+00:07:23,985 --> 00:07:28,570
+Este es un problema de clasificación
+de clases y etiquetas múltiples.
+
+157
+00:07:28,570 --> 00:07:32,390
+En este caso, quiero la probabilidad
+de cada clase de 0 a 1.
+
+158
+00:07:32,390 --> 00:07:36,415
+Por suerte, TensorFlow
+tiene una función que hace eso
+
+159
+00:07:36,415 --> 00:07:39,280
+llamada entropía cruzada
+sigmoidal con logits
+
+160
+00:07:39,280 --> 00:07:42,595
+que devuelve un tamaño de lote
+por la cantidad de clases del tensor.
+
+161
+00:07:42,595 --> 00:07:46,325
+Debemos evaluar cada nodo de salida
+para cada ejemplo.
+
+162
+00:07:46,325 --> 00:07:50,080
+Cada nodo de salida incluye
+también los pesos que lo generaron.
+
+163
+00:07:50,080 --> 00:07:53,130
+Es decir, un solo paso
+de una red de 100 nodos de salida
+
+164
+00:07:53,130 --> 00:07:55,765
+es como 100 pasos
+de una sola red de salida.
+
+165
+00:07:55,765 --> 00:07:59,780
+Muy caro y difícil de ajustar
+para grandes cantidades de clases.
+
+166
+00:07:59,780 --> 00:08:02,340
+Necesitamos otro método
+para aproximar este softmax
+
+167
+00:08:02,340 --> 00:08:05,455
+con el que podamos reducir
+los costos de computación
+
+168
+00:08:05,455 --> 00:08:07,575
+de los problemas grandes
+de múltiples clases.
+
+169
+00:08:07,575 --> 00:08:11,460
+Por suerte, hay versiones
+aproximadas de softmax.
+
+170
+00:08:11,460 --> 00:08:14,810
+El muestreo de candidatos
+calcula todas las etiquetas positivas
+
+171
+00:08:14,810 --> 00:08:18,100
+pero en lugar de procesar
+todas las etiquetas negativas
+
+172
+00:08:18,100 --> 00:08:20,400
+hace un muestreo aleatorio
+de algunos negativos.
+
+173
+00:08:20,400 --> 00:08:22,235
+lo que debería reducir la computación.
+
+174
+00:08:22,235 --> 00:08:24,070
+La cantidad de negativos de la muestra
+
+175
+00:08:24,070 --> 00:08:27,560
+es un hiperparámetro importante
+para un modelo de muestreo de candidatos.
+
+176
+00:08:27,560 --> 00:08:30,695
+Por motivos evidentes,
+siempre se subestima.
+
+177
+00:08:30,695 --> 00:08:35,049
+En TensorFlow, podemos usar la función
+sample_softmax_loss.
+
+178
+00:08:35,049 --> 00:08:37,335
+Otra forma de aproximarse al softmax
+
+179
+00:08:37,335 --> 00:08:40,305
+es usar la estimación
+contrastiva de contaminación.
+
+180
+00:08:40,335 --> 00:08:42,740
+La estimación contrastiva
+de contaminación aproxima
+
+181
+00:08:42,760 --> 00:08:43,990
+el denominador al softmax
+
+182
+00:08:43,990 --> 00:08:46,795
+que contiene la suma de todos
+los exponentes de los logits
+
+183
+00:08:46,795 --> 00:08:49,350
+mediante el modelado
+de la distribución de resultados.
+
+184
+00:08:49,350 --> 00:08:52,620
+Esto puede brindar una aproximación
+con menos costos de computación
+
+185
+00:08:52,620 --> 00:08:54,400
+para encontrar la pérdida de softmax
+
+186
+00:08:54,400 --> 00:08:58,030
+sin tener que evaluar todas las clases
+en la suma del denominador.
+
+187
+00:08:58,030 --> 00:09:00,190
+El muestreo de candidatos
+es más intuitivo
+
+188
+00:09:00,190 --> 00:09:01,950
+y no requiere
+un modelo muy bueno.
+
+189
+00:09:01,950 --> 00:09:05,030
+Para el contraste de contaminación
+se precisa un modelo muy bueno
+
+190
+00:09:05,030 --> 00:09:08,125
+ya que depende del modelado
+de la distribución de los resultados.
+
+191
+00:09:08,125 --> 00:09:11,110
+Generalmente, usamos estas funciones
+durante el entrenamiento
+
+192
+00:09:11,110 --> 00:09:13,000
+pero para la evaluación
+y la inferencia
+
+193
+00:09:13,000 --> 00:09:15,960
+para una mayor precisión,
+solemos usar el softmax completo.
+
+194
+00:09:15,960 --> 00:09:19,375
+Asegúrese de cambiar la estrategia
+de partición predeterminada
+
+195
+00:09:19,375 --> 00:09:20,905
+de "mod" a "div"
+
+196
+00:09:20,905 --> 00:09:22,785
+para que las pérdidas
+sean consistentes
+
+197
+00:09:22,785 --> 00:09:25,125
+en el entrenamiento,
+la evaluación y la predicción
+
+198
+00:09:25,125 --> 00:09:26,935
+Para el resultado de la clasificación
+
+199
+00:09:26,935 --> 00:09:29,880
+si tenemos etiquetas y probabilidades
+exclusivas mutuamente
+
+200
+00:09:29,880 --> 00:09:31,490
+debemos usar [espacio].
+
+201
+00:09:31,490 --> 00:09:33,605
+Si las etiquetas
+son exclusivas mutuamente
+
+202
+00:09:33,605 --> 00:09:36,890
+pero las probabilidades no lo son,
+debemos usar [espacio].
+
+203
+00:09:36,890 --> 00:09:39,340
+Si las etiquetas
+no son exclusivas mutuamente
+
+204
+00:09:39,340 --> 00:09:41,710
+debemos usar [espacio].
+
+205
+00:09:41,710 --> 00:09:44,855
+La respuesta correcta es la A.
+
+206
+00:09:44,855 --> 00:09:46,710
+Para el resultado de la clasificación
+
+207
+00:09:46,710 --> 00:09:50,435
+si tenemos etiquetas y probabilidades
+exclusivas mutuamente
+
+208
+00:09:50,435 --> 00:09:53,690
+debemos usar
+softmax_cross_entropy_with_logits_v2.
+
+209
+00:09:53,690 --> 00:09:56,980
+esto significa que hay solo
+una clase verdadera para cada ejemplo
+
+210
+00:09:56,980 --> 00:09:59,540
+y permite etiquetas flexibles
+cuando la clase verdades
+
+211
+00:09:59,540 --> 00:10:02,030
+no tiene que ser de un solo 1
+para la clase verdadera
+
+212
+00:10:02,030 --> 00:10:06,380
+sino que puede ser una combinación
+de valores entre 0 y 1 para cada clase
+
+213
+00:10:06,380 --> 00:10:08,605
+siempre que la suma de todos sea 1.
+
+214
+00:10:08,605 --> 00:10:11,020
+Si las etiquetas son exclusivas mutuamente
+
+215
+00:10:11,020 --> 00:10:13,850
+pero las probabilidades no lo son,
+debemos usar
+
+216
+00:10:13,850 --> 00:10:15,820
+sparse_softmax_cross_entropy_with_logits.
+
+217
+00:10:15,820 --> 00:10:17,980
+Esto no permite etiquetas flexibles
+
+218
+00:10:17,980 --> 00:10:20,435
+pero ayuda a producir
+el tamaño de datos del modelo.
+
+219
+00:10:20,435 --> 00:10:24,560
+ya que puede comprimir las etiqueta
+en un índice de la clase verdadera
+
+220
+00:10:24,560 --> 00:10:27,710
+en lugar de un vector de la cantidad
+de clases para cada ejemplo.
+
+221
+00:10:27,710 --> 00:10:30,330
+Si las etiquetas
+no son exclusivas mutuamente
+
+222
+00:10:30,330 --> 00:10:32,925
+debemos usar
+sigmoid_cross_entropy_with_logits.
+
+223
+00:10:32,925 --> 00:10:36,470
+Así, obtenemos la probabilidad
+de cada clase posible
+
+224
+00:10:36,470 --> 00:10:39,420
+lo que nos da puntajes de confianza
+de clase que se representa
+
+225
+00:10:39,420 --> 00:10:42,940
+en el resultado, como una imagen
+con varias clases
+
+226
+00:10:42,940 --> 00:10:46,070
+o si queremos averiguar
+la existencia de cada clase.

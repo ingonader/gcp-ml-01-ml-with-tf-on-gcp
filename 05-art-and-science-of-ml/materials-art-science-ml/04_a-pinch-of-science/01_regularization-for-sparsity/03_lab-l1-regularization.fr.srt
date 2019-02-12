@@ -1,0 +1,274 @@
+1
+00:00:00,000 --> 00:00:03,415
+Voyons à présent
+l'importance de la régularisation L1
+
+2
+00:00:03,415 --> 00:00:05,720
+dans les modèles épars et concis.
+
+3
+00:00:05,720 --> 00:00:07,740
+Dans cet atelier sur la régularisation L1,
+
+4
+00:00:07,740 --> 00:00:12,275
+j'ai ajouté de fausses caractéristiques,
+créant ainsi un modèle très complexe.
+
+5
+00:00:12,275 --> 00:00:15,360
+Nous allons d'abord entraîner
+le modèle sans régularisation L1,
+
+6
+00:00:15,360 --> 00:00:21,325
+puis nous verrons si la régularisation L1
+aide à rendre le modèle plus épars
+
+7
+00:00:21,325 --> 00:00:24,610
+et concis, et peut-être plus généralisable.
+
+8
+00:00:24,610 --> 00:00:26,970
+Bonjour et bon retour
+dans TensorFlow Playground.
+
+9
+00:00:26,970 --> 00:00:30,515
+Dans cet atelier, nous verrons
+si la régularisation L1 aide
+
+10
+00:00:30,515 --> 00:00:32,715
+à rendre
+nos modèles plus épars et concis.
+
+11
+00:00:32,715 --> 00:00:35,235
+Vous pouvez voir ici
+un problème de classification,
+
+12
+00:00:35,235 --> 00:00:37,770
+où nous allons essayer
+de classer ces deux formes.
+
+13
+00:00:37,770 --> 00:00:40,290
+Nous avons ici deux cercles concentriques,
+
+14
+00:00:40,290 --> 00:00:45,110
+le cercle bleu au milieu,
+et le cercle orange à l'extérieur.
+
+15
+00:00:45,480 --> 00:00:47,820
+Bonne nouvelle :
+il n'y a aucun ensemble de bruit.
+
+16
+00:00:47,820 --> 00:00:50,525
+L'entraînement devrait
+donc être facile à réaliser.
+
+17
+00:00:51,675 --> 00:00:53,490
+Il y a aussi des caractéristiques.
+
+18
+00:00:53,490 --> 00:00:55,205
+Nous les avons toutes activées.
+
+19
+00:00:55,205 --> 00:00:57,525
+Ce modèle sera donc assez difficile.
+
+20
+00:00:58,145 --> 00:01:01,015
+Nous savons intuitivement
+qu'il s'agit d'une équation de type
+
+21
+00:01:01,015 --> 00:01:06,940
+X² multiplié par un Y², ou
+X1² par X2², car il y a des cercles.
+
+22
+00:01:06,940 --> 00:01:11,095
+Nous avons toutefois un bon nombre
+de caractéristiques supplémentaires.
+
+23
+00:01:11,535 --> 00:01:15,680
+Nous avons aussi des couches
+supplémentaires avec six neurones chacune.
+
+24
+00:01:15,680 --> 00:01:17,930
+C'est donc un modèle hautement complexe.
+
+25
+00:01:17,930 --> 00:01:21,860
+Observons son entraînement
+sans régularisation L1,
+
+26
+00:01:21,860 --> 00:01:24,270
+définie sur "None" (Aucune) dans ce cas.
+
+27
+00:01:26,100 --> 00:01:27,615
+C'était plutôt rapide.
+
+28
+00:01:27,615 --> 00:01:33,225
+Vous pouvez voir que la régularisation L1
+a trouvé la distribution de nos données.
+
+29
+00:01:33,225 --> 00:01:38,060
+Vous voyez pourtant ici
+qu'il y a quelques incohérences,
+
+30
+00:01:38,060 --> 00:01:42,800
+avec des creux ici et des bosses là.
+Ce n'est pas tout à fait un cercle.
+
+31
+00:01:43,300 --> 00:01:45,640
+Le surapprentissage peut en être la cause.
+
+32
+00:01:45,640 --> 00:01:49,250
+Nous avons donc trop de caractéristiques
+et trop de couches cachées,
+
+33
+00:01:49,250 --> 00:01:53,030
+qui ont mené à une fonction complexe
+en surapprentissage pour ces données.
+
+34
+00:01:53,030 --> 00:01:56,700
+Pouvons-nous trouver
+un modèle bien plus simple ?
+
+35
+00:01:56,700 --> 00:01:59,010
+Sans en extraire nous-mêmes
+les caractéristiques,
+
+36
+00:01:59,010 --> 00:02:01,485
+nous pouvons utiliser
+la régularisation L1 pour cela.
+
+37
+00:02:01,485 --> 00:02:02,890
+Voyons si cela fonctionne.
+
+38
+00:02:04,290 --> 00:02:08,490
+Je vais définir la régularisation
+ici sur "L1". Parfait.
+
+39
+00:02:08,490 --> 00:02:13,050
+Je vais lancer une nouvelle initialisation
+et observer le résultat.
+
+40
+00:02:16,610 --> 00:02:19,310
+Regardez ça. C'est beaucoup mieux.
+
+41
+00:02:20,420 --> 00:02:22,365
+Examinons cela de plus près.
+
+42
+00:02:22,365 --> 00:02:25,770
+Vous voyez ici qu'il a appris
+avec un cercle mieux défini.
+
+43
+00:02:25,770 --> 00:02:28,800
+Cela correspond bien
+à ce que nous voyons intuitivement.
+
+44
+00:02:29,380 --> 00:02:31,470
+Souvenez-vous par contre que, en pratique,
+
+45
+00:02:31,470 --> 00:02:33,630
+nous n'observons pas une telle distribution.
+
+46
+00:02:33,630 --> 00:02:37,860
+Nous aurions alors besoin d'utiliser cela
+pour de nombreux autres processus.
+
+47
+00:02:38,420 --> 00:02:39,870
+Dans nos caractéristiques ici,
+
+48
+00:02:39,870 --> 00:02:44,020
+vous pouvez voir X1² et X2²,
+ainsi que leurs pondérations.
+
+49
+00:02:44,020 --> 00:02:47,040
+Ces pondérations sont les seules
+à encore afficher une grandeur.
+
+50
+00:02:47,040 --> 00:02:50,870
+Toutes les autres pondérations
+sont grisées avec une valeur de zéro.
+
+51
+00:02:50,870 --> 00:02:55,640
+Cet élément va
+dans les couches intermédiaires ici,
+
+52
+00:02:55,640 --> 00:03:01,700
+où vous pouvez voir que X1² et X2²
+sont presque les seuls à se propager.
+
+53
+00:03:01,700 --> 00:03:04,420
+Ils convergent tous
+vers ce neurone de la dernière couche,
+
+54
+00:03:04,420 --> 00:03:06,000
+puis enfin vers la sortie.
+
+55
+00:03:06,000 --> 00:03:10,020
+Cela revient à dire
+que nous n'utilisons que X1² et X2²,
+
+56
+00:03:10,020 --> 00:03:12,550
+car elles sont bien plus
+prédictives dans notre modèle
+
+57
+00:03:12,550 --> 00:03:14,080
+que les autres caractéristiques.
+
+58
+00:03:14,080 --> 00:03:17,205
+Grâce à la nature de L1
+et à la distribution de probabilité,
+
+59
+00:03:17,205 --> 00:03:19,090
+il est possible de le réduire.

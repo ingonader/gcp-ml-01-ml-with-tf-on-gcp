@@ -1,0 +1,1650 @@
+1
+00:00:00,000 --> 00:00:02,685
+Maintenant que vous savez
+ce qu'est la régularisation L1,
+
+2
+00:00:02,685 --> 00:00:05,065
+approfondissons
+le concept de régression logistique
+
+3
+00:00:05,065 --> 00:00:08,205
+et voyons pourquoi il est important
+d'utiliser la régularisation.
+
+4
+00:00:08,205 --> 00:00:11,315
+Supposons que vous voulez prédire
+les résultats du "pile ou face".
+
+5
+00:00:11,315 --> 00:00:13,890
+Nous le savons tous,
+pour une pièce de monnaie normale,
+
+6
+00:00:13,890 --> 00:00:16,705
+la valeur escomptée est de 50 %
+de "face" et 50 % de "pile".
+
+7
+00:00:16,705 --> 00:00:21,185
+Et si, au lieu d'une pièce normale,
+nous utilisions une pièce tordue ?
+
+8
+00:00:21,185 --> 00:00:24,100
+Disons que nous souhaitons
+généraliser les prédictions
+
+9
+00:00:24,100 --> 00:00:26,860
+pour tous les types de pièces,
+les normales, les anormales,
+
+10
+00:00:26,860 --> 00:00:30,105
+les grandes, les petites,
+les lourdes, les légères, etc.
+
+11
+00:00:30,105 --> 00:00:32,995
+Quelles caractéristiques
+pourrions-nous utiliser pour prédire
+
+12
+00:00:32,995 --> 00:00:35,260
+si le résultat sera "pile" ou "face" ?
+
+13
+00:00:35,260 --> 00:00:37,950
+Nous pourrions utiliser
+l'angle de courbure de la pièce,
+
+14
+00:00:37,950 --> 00:00:40,710
+qui transfère une partie de la masse
+dans l'autre dimension
+
+15
+00:00:40,710 --> 00:00:43,625
+et/ou modifie sa rotation
+en raison des frottements dans l'air
+
+16
+00:00:43,625 --> 00:00:44,825
+ou du centre de la masse.
+
+17
+00:00:44,825 --> 00:00:48,105
+La masse de la pièce peut aussi être
+une caractéristique déterminante,
+
+18
+00:00:48,105 --> 00:00:51,470
+tout comme sa taille, son diamètre,
+son épaisseur, etc.
+
+19
+00:00:51,470 --> 00:00:54,520
+Par l'extraction de caractéristiques,
+nous pourrions définir
+
+20
+00:00:54,520 --> 00:00:56,580
+le volume de la pièce,
+ou encore sa densité.
+
+21
+00:00:56,580 --> 00:00:59,000
+Autre information
+qui pourrait nous être utile,
+
+22
+00:00:59,000 --> 00:01:01,620
+le ou les matériaux
+dont la pièce est composée.
+
+23
+00:01:01,620 --> 00:01:04,225
+Il serait assez simple
+de mesurer ces caractéristiques.
+
+24
+00:01:04,225 --> 00:01:07,585
+Mais ce n'est qu'une face de la médaille,
+sans mauvais jeu de mots.
+
+25
+00:01:07,585 --> 00:01:10,440
+Le lancer de la pièce est également
+à prendre en compte,
+
+26
+00:01:10,440 --> 00:01:13,565
+notamment la vitesse linéaire
+et la vitesse de rotation,
+
+27
+00:01:13,565 --> 00:01:14,920
+l'angle de lancement,
+
+28
+00:01:14,920 --> 00:01:16,785
+l'angle de la surface où elle retombe,
+
+29
+00:01:16,785 --> 00:01:18,275
+la vitesse du vent, etc.
+
+30
+00:01:18,275 --> 00:01:21,135
+Ces éléments sont un peu
+plus délicats à mesurer.
+
+31
+00:01:21,135 --> 00:01:23,240
+Une fois ces caractéristiques identifiées,
+
+32
+00:01:23,240 --> 00:01:27,140
+quel modèle simple pouvons-nous utiliser
+pour prédire le résultat du pile ou face ?
+
+33
+00:01:27,140 --> 00:01:28,805
+La régression linéaire, bien sûr.
+
+34
+00:01:28,805 --> 00:01:31,225
+Mais quel pourrait être
+le problème avec ce choix ?
+
+35
+00:01:31,225 --> 00:01:36,915
+Nos libellés sont "pile" et "face",
+autrement dit "face" et "pas face",
+
+36
+00:01:36,915 --> 00:01:41,580
+qu'on peut coder avec 1
+pour "face" et 0 pour "pas face".
+
+37
+00:01:41,580 --> 00:01:43,490
+Si nous utilisons la régression linéaire
+
+38
+00:01:43,490 --> 00:01:46,830
+avec une fonction de perte standard
+d'erreur quadratique moyenne (EQM),
+
+39
+00:01:46,830 --> 00:01:49,390
+nos prédictions pourraient
+sortir de la plage "0-1".
+
+40
+00:01:49,390 --> 00:01:52,955
+Que signifierait une prédiction de 2,75
+dans le cas de notre pile ou face ?
+
+41
+00:01:52,955 --> 00:01:54,625
+Cela n'aurait aucun sens.
+
+42
+00:01:54,625 --> 00:01:57,950
+Un modèle minimisant l'erreur quadratique
+n'est pas contraint
+
+43
+00:01:57,950 --> 00:02:00,160
+de fixer la plage de probabilité entre 0 et 1.
+
+44
+00:02:00,160 --> 00:02:02,265
+C'est pourtant
+ce dont nous avons besoin ici.
+
+45
+00:02:02,265 --> 00:02:04,150
+Vous pouvez bien sûr imaginer un modèle
+
+46
+00:02:04,150 --> 00:02:08,330
+qui prédit des valeurs inférieures à 0
+ou supérieures à 1 pour d'autres cas.
+
+47
+00:02:08,330 --> 00:02:11,530
+Mais vous ne pourrez pas
+utiliser ce modèle de probabilité ici.
+
+48
+00:02:11,530 --> 00:02:16,420
+Les astuces simples, comme plafonner les
+prédictions à 0 ou 1, créeraient un biais.
+
+49
+00:02:16,430 --> 00:02:18,190
+Nous avons donc besoin d'autre chose,
+
+50
+00:02:18,190 --> 00:02:20,570
+plus précisément,
+d'une nouvelle fonction de perte.
+
+51
+00:02:20,570 --> 00:02:24,830
+Convertir cette progression linéaire
+en régression logistique, par exemple.
+
+52
+00:02:24,830 --> 00:02:26,000
+Dans un précédent cours,
+
+53
+00:02:26,000 --> 00:02:29,835
+nous avons retracé l'histoire du ML
+et utilisé la fonction d'activation sigmoïde.
+
+54
+00:02:29,835 --> 00:02:32,010
+Examinons cette fonction de plus près.
+
+55
+00:02:32,590 --> 00:02:38,590
+La fonction d'activation sigmoïde utilise
+la somme pondérée (W^T x+b)
+
+56
+00:02:38,590 --> 00:02:40,120
+d'une régression linéaire.
+
+57
+00:02:40,120 --> 00:02:43,630
+Et au lieu de générer la sortie,
+puis de calculer la perte de l'EQM,
+
+58
+00:02:43,630 --> 00:02:47,030
+nous passons la fonction d'activation
+de linéaire à sigmoïde,
+
+59
+00:02:47,030 --> 00:02:48,960
+qui prend cette valeur comme argument
+
+60
+00:02:48,960 --> 00:02:51,870
+et l'encadre en douceur
+pour la ramener entre 0 et 1.
+
+61
+00:02:52,230 --> 00:02:53,765
+L'entrée de la fonction sigmoïde
+
+62
+00:02:53,765 --> 00:02:56,060
+(en principe la sortie
+de la régression linéaire)
+
+63
+00:02:56,060 --> 00:02:57,350
+est appelée "Logit".
+
+64
+00:02:57,350 --> 00:03:01,400
+Nous effectuons donc une transformation
+non linéaire sur notre modèle linéaire.
+
+65
+00:03:01,740 --> 00:03:06,950
+Remarquez que la probabilité
+tend vers 0 quand le logit tend vers -∞,
+
+66
+00:03:06,950 --> 00:03:09,480
+et vers 1
+quand le logit tend vers +∞.
+
+67
+00:03:09,480 --> 00:03:11,810
+Qu'est-ce que cela implique
+pour l'entraînement ?
+
+68
+00:03:11,810 --> 00:03:13,910
+Contrairement à l'erreur
+quadratique moyenne,
+
+69
+00:03:13,910 --> 00:03:18,495
+la sigmoïde ne devine jamais
+une probabilité de 0.0 ou 1.0.
+
+70
+00:03:18,495 --> 00:03:20,960
+Cela signifie que,
+en l'absence de régularisation,
+
+71
+00:03:20,960 --> 00:03:23,630
+les poids sont rapprochés de +∞ ou -∞
+
+72
+00:03:23,630 --> 00:03:27,360
+lorsque vous utilisez de façon constante
+un algorithme de descente de gradient
+
+73
+00:03:27,360 --> 00:03:29,190
+pour rapprocher le taux de perte de 0,
+
+74
+00:03:29,190 --> 00:03:31,220
+ce qui peut générer des problèmes.
+
+75
+00:03:31,220 --> 00:03:34,680
+Mais tout d'abord, comment interpréter
+le résultat d'une sigmoïde ?
+
+76
+00:03:34,680 --> 00:03:38,160
+Est-ce juste une fonction pour figer
+la plage de probabilité entre 0 et 1,
+
+77
+00:03:38,160 --> 00:03:40,805
+pour définir plusieurs plages,
+ou est-ce plus que cela ?
+
+78
+00:03:40,805 --> 00:03:42,990
+Bonne nouvelle, c'est bien plus que cela.
+
+79
+00:03:42,990 --> 00:03:45,970
+Cette fonction permet d'étalonner
+l'estimation de probabilités.
+
+80
+00:03:45,970 --> 00:03:47,310
+En plus de figer la plage,
+
+81
+00:03:47,310 --> 00:03:50,645
+la fonction sigmoïde fait office
+de fonction de distribution cumulative
+
+82
+00:03:50,645 --> 00:03:52,880
+pour la distribution logistique
+de probabilités.
+
+83
+00:03:52,880 --> 00:03:56,675
+Sa fonction quantile est l'inverse du logit,
+qui modélise la cote logarithmique.
+
+84
+00:03:56,675 --> 00:04:01,900
+En mathématiques, l'inverse d'une sigmoïde
+peut être considéré comme une probabilité.
+
+85
+00:04:01,900 --> 00:04:06,210
+Nous pouvons ainsi voir l'étalonnage comme
+un moyen de produire des valeurs réelles,
+
+86
+00:04:06,210 --> 00:04:07,600
+telles que des probabilités.
+
+87
+00:04:07,600 --> 00:04:10,270
+Voici la différence
+avec les résultats non étalonnés,
+
+88
+00:04:10,270 --> 00:04:13,419
+tels que les vecteurs d'inclusion,
+informatifs sur le plan interne,
+
+89
+00:04:13,419 --> 00:04:16,199
+mais n'offrant pas
+de corrélation entre les valeurs.
+
+90
+00:04:16,199 --> 00:04:19,149
+La plupart des fonctions d'activation
+de sortie peuvent fournir
+
+91
+00:04:19,149 --> 00:04:21,389
+un chiffre compris entre 0 et 1,
+
+92
+00:04:21,389 --> 00:04:24,819
+mais seule cette fonction sigmoïde
+peut fournir une estimation étalonnée
+
+93
+00:04:24,819 --> 00:04:28,489
+de la probabilité d'occurrence sur un
+ensemble de données d'entraînement.
+
+94
+00:04:28,489 --> 00:04:31,774
+Cette caractéristique de la fonction
+d'activation sigmoïde nous permet
+
+95
+00:04:31,774 --> 00:04:34,299
+de transformer des problèmes
+de classification binaire
+
+96
+00:04:34,299 --> 00:04:35,669
+en problèmes probabilistes.
+
+97
+00:04:35,669 --> 00:04:39,069
+Par exemple, au lieu d'un modèle juste
+capable de dire si oui ou non
+
+98
+00:04:39,069 --> 00:04:40,799
+un client va acheter un article,
+
+99
+00:04:40,799 --> 00:04:44,460
+vous pouvez utiliser un modèle capable
+de prédire la probabilité de cet achat.
+
+100
+00:04:44,460 --> 00:04:47,940
+L'association de cette capacité
+à un seuil offre un "pouvoir prédictif"
+
+101
+00:04:47,940 --> 00:04:50,285
+bien plus important
+qu'une simple réponse binaire.
+
+102
+00:04:50,285 --> 00:04:53,240
+Bien, nous avons calculé
+des résultats de régression logistique
+
+103
+00:04:53,240 --> 00:04:56,820
+et obtenu des probabilités étalonnées
+entre 0 et 1. Comment alors identifier
+
+104
+00:04:56,820 --> 00:05:01,155
+l'erreur et l'utiliser pour actualiser
+les pondérations via une rétropropagation ?
+
+105
+00:05:01,165 --> 00:05:04,175
+Nous utilisons une fonction de perte
+appelée "entropie croisée",
+
+106
+00:05:04,175 --> 00:05:06,570
+qui correspond
+à la perte logarithmique (Log Loss).
+
+107
+00:05:06,570 --> 00:05:08,680
+Contrairement à
+l'erreur quadratique moyenne,
+
+108
+00:05:08,680 --> 00:05:10,680
+l'accent est ici moins mis sur les erreurs
+
+109
+00:05:10,680 --> 00:05:14,010
+quand le résultat est relativement
+proche du libellé, presque linéaire.
+
+110
+00:05:14,010 --> 00:05:16,820
+Cependant, toujours par rapport à l'EQM,
+
+111
+00:05:16,820 --> 00:05:19,950
+quand la prédiction s'approche
+de l'opposé du libellé,
+
+112
+00:05:19,950 --> 00:05:21,820
+elle augmente de façon exponentielle.
+
+113
+00:05:21,820 --> 00:05:25,700
+Autrement dit, la pénalité est très forte
+quand non seulement le modèle commet
+
+114
+00:05:25,700 --> 00:05:28,910
+une erreur, mais qu'en plus 
+son taux de confiance est élevé.
+
+115
+00:05:28,910 --> 00:05:33,070
+La dérivée de l'EQM pourrait aussi causer
+des problèmes avec l'entraînement.
+
+116
+00:05:33,070 --> 00:05:36,390
+Lorsque nous poussons la sortie
+de plus en plus près de 0 ou 1,
+
+117
+00:05:36,390 --> 00:05:41,655
+le gradient (sortie * 1 - sortie)
+devient de plus en plus petit,
+
+118
+00:05:41,655 --> 00:05:44,025
+et modifie de moins en moins les poids.
+
+119
+00:05:44,025 --> 00:05:46,480
+Cela pourrait complètement
+paralyser l'entraînement.
+
+120
+00:05:46,480 --> 00:05:48,680
+Heureusement, le gradient dans l'entropie
+
+121
+00:05:48,680 --> 00:05:52,170
+(fonction logique * 1 - fonction logique)
+
+122
+00:05:52,170 --> 00:05:54,765
+s'annule pendant la rétropropagation.
+
+123
+00:05:54,765 --> 00:05:56,765
+Par conséquent,
+cela ne pose pas problème.
+
+124
+00:05:56,765 --> 00:06:00,005
+Toutefois, la régularisation est
+importante en régression logistique,
+
+125
+00:06:00,005 --> 00:06:03,440
+car réduire la perte à zéro
+est difficile et dangereux.
+
+126
+00:06:03,440 --> 00:06:07,260
+La descente de gradient ayant pour but
+de minimiser l'entropie croisée,
+
+127
+00:06:07,260 --> 00:06:10,460
+elle pousse les valeurs de sortie
+vers 1 pour les libellés positifs,
+
+128
+00:06:10,460 --> 00:06:12,180
+et vers 0 pour
+les libellés négatifs.
+
+129
+00:06:12,180 --> 00:06:13,950
+Du fait de l'équation de la sigmoïde,
+
+130
+00:06:13,950 --> 00:06:17,030
+la fonction tend vers 0
+si le logit est l'infini négatif (-∞)
+
+131
+00:06:17,030 --> 00:06:19,470
+et vers 1 si le logit est
+l'infini positif (+∞).
+
+132
+00:06:19,470 --> 00:06:22,215
+Si vous définissez
+les logits sur -∞ ou +∞,
+
+133
+00:06:22,215 --> 00:06:25,075
+cela entraîne une augmentation
+continue des pondérations
+
+134
+00:06:25,075 --> 00:06:28,875
+et des problèmes d'instabilité numérique,
+des débordements et des soupassements.
+
+135
+00:06:28,875 --> 00:06:31,475
+C'est dangereux !
+Cela peut ruiner votre entraînement.
+
+136
+00:06:31,475 --> 00:06:34,730
+Comme on peut le voir ici,
+à proximité des asymptotes,
+
+137
+00:06:34,730 --> 00:06:37,730
+la courbe de la fonction sigmoïde
+devient de plus en plus plate.
+
+138
+00:06:37,730 --> 00:06:40,635
+Cela signifie que la dérivée
+tend à se rapprocher de 0.
+
+139
+00:06:40,635 --> 00:06:43,020
+Nous utilisons cette dérivée
+et la rétropropagation
+
+140
+00:06:43,020 --> 00:06:44,590
+pour actualiser les pondérations,
+
+141
+00:06:44,590 --> 00:06:47,435
+il est donc important
+que le gradient n'atteigne pas 0,
+
+142
+00:06:47,435 --> 00:06:48,960
+sinon l'entraînement s'arrêtera.
+
+143
+00:06:48,960 --> 00:06:50,625
+Ce phénomène est appelé saturation,
+
+144
+00:06:50,625 --> 00:06:53,140
+quand toutes les activations
+atteignent ces paliers,
+
+145
+00:06:53,140 --> 00:06:55,740
+ce qui entraîne un problème
+de disparition de gradient.
+
+146
+00:06:55,740 --> 00:06:57,860
+L'entraînement est alors très difficile.
+
+147
+00:06:57,860 --> 00:07:00,650
+Voici une autre information
+qui pourrait vous être utile.
+
+148
+00:07:00,650 --> 00:07:04,425
+Imaginons que vous attribuez un ID unique
+à chaque exemple et associez chaque ID
+
+149
+00:07:04,425 --> 00:07:08,280
+à une caractéristique. Si vous utilisez
+une régression logistique non régularisée,
+
+150
+00:07:08,280 --> 00:07:10,720
+cela entraînera un surapprentissage absolu.
+
+151
+00:07:10,730 --> 00:07:14,490
+Comme le modèle tente de ramener
+la perte à zéro sur tous les exemples,
+
+152
+00:07:14,490 --> 00:07:15,490
+sans y parvenir,
+
+153
+00:07:15,490 --> 00:07:19,515
+toutes ces caractéristiques verront
+leurs pondérations tendre vers +∞ ou -∞.
+
+154
+00:07:19,515 --> 00:07:21,135
+En pratique, cela peut se produire
+
+155
+00:07:21,135 --> 00:07:24,585
+pour des données multidimensionnelles
+avec des caractéristiques croisées.
+
+156
+00:07:24,585 --> 00:07:28,725
+Il y a de nombreux croisements rares,
+ne se produisant dans un seul exemple.
+
+157
+00:07:28,725 --> 00:07:32,215
+Alors, comment nous protéger
+du surapprentissage ?
+
+158
+00:07:32,215 --> 00:07:36,370
+Parmi ces éléments, lesquels sont importants
+pour exécuter des régressions logistiques ?
+
+159
+00:07:36,370 --> 00:07:37,900
+Les bonnes réponses sont A et B.
+
+160
+00:07:37,900 --> 00:07:40,960
+L'ajout de la régularisation
+à une régression logistique garantit
+
+161
+00:07:40,960 --> 00:07:42,690
+la simplicité de votre modèle,
+
+162
+00:07:42,690 --> 00:07:44,880
+car les paramètres ont
+une pondération moindre.
+
+163
+00:07:44,880 --> 00:07:47,830
+L'ajout de ce critère de pénalité
+à la fonction de perte permet
+
+164
+00:07:47,830 --> 00:07:50,870
+de s'assurer que l'entropie
+croisée via la descente de gradient
+
+165
+00:07:50,870 --> 00:07:54,510
+ne poussera pas les pondérations
+toujours plus près de +∞ ou -∞
+
+166
+00:07:54,510 --> 00:07:56,695
+et ne provoquera pas
+de problèmes numériques.
+
+167
+00:07:56,695 --> 00:07:58,690
+De plus, les logits étant plus petits,
+
+168
+00:07:58,690 --> 00:08:01,120
+nous pouvons rester
+dans les portions moins plates
+
+169
+00:08:01,120 --> 00:08:03,870
+de la fonction sigmoïde
+et éloigner nos gradients de 0,
+
+170
+00:08:03,870 --> 00:08:07,405
+pour continuer à actualiser les pondérations
+et de poursuivre l'entraînement.
+
+171
+00:08:07,405 --> 00:08:09,320
+La réponse C est fausse,
+
+172
+00:08:09,320 --> 00:08:10,880
+et donc la réponse E également,
+
+173
+00:08:10,880 --> 00:08:15,370
+car la régularisation ne transforme pas
+les sorties en "probabilités étalonnées".
+
+174
+00:08:15,370 --> 00:08:18,770
+L'avantage de la régression
+logistique est qu'elle génère déjà
+
+175
+00:08:18,770 --> 00:08:20,720
+l'estimation des probabilités étalonnées,
+
+176
+00:08:20,720 --> 00:08:23,385
+la sigmoïde étant une fonction
+de distribution cumulative
+
+177
+00:08:23,385 --> 00:08:25,580
+de la distribution logistique
+des probabilités.
+
+178
+00:08:25,580 --> 00:08:27,610
+Nous pouvons prédire des probabilités
+
+179
+00:08:27,610 --> 00:08:30,575
+au lieu d'exploiter des réponses
+binaires du type "oui ou non",
+
+180
+00:08:30,575 --> 00:08:32,575
+"vrai ou faux", "acheter ou vendre", etc.
+
+181
+00:08:32,575 --> 00:08:37,354
+Nous utilisons la régularisation et l'arrêt
+précoce pour contrer le surapprentissage.
+
+182
+00:08:37,354 --> 00:08:40,804
+La complexité du modèle augmente
+avec les pondérations importantes.
+
+183
+00:08:40,804 --> 00:08:43,767
+En réglant les hyperparamètres
+pour que la pondération augmente
+
+184
+00:08:43,767 --> 00:08:45,157
+selon la rareté du scénario,
+
+185
+00:08:45,157 --> 00:08:48,222
+nous observons une augmentation
+de la perte, donc nous arrêtons.
+
+186
+00:08:48,222 --> 00:08:51,270
+La régularisation L2 garantit
+des valeurs pondérales plus basses,
+
+187
+00:08:51,270 --> 00:08:55,555
+la régularisation L1 un modèle plus épars
+en éliminant les caractéristiques inutiles
+
+188
+00:08:55,555 --> 00:08:59,855
+Pour trouver les hyperparamètres L1 et L2
+idéaux lors du réglage des hyperparamètres,
+
+189
+00:08:59,865 --> 00:09:02,640
+vous devez chercher
+dans la fonction de perte de validation
+
+190
+00:09:02,640 --> 00:09:04,795
+le point où vous obtenez
+la plus basse valeur.
+
+191
+00:09:04,795 --> 00:09:08,250
+À ce stade, une régularisation moins
+importante augmente la variance,
+
+192
+00:09:08,250 --> 00:09:10,920
+provoque un surapprentissage
+et nuit à la généralisation,
+
+193
+00:09:10,920 --> 00:09:13,840
+et une régularisation plus
+importante augmente le biais,
+
+194
+00:09:13,840 --> 00:09:17,315
+provoque un sous-apprentissage
+et nuit aussi à la généralisation.
+
+195
+00:09:17,315 --> 00:09:21,370
+L'arrêt précoce stoppe l'entraînement
+lorsque le surapprentissage démarre.
+
+196
+00:09:21,370 --> 00:09:23,010
+Quand vous entraînez votre modèle,
+
+197
+00:09:23,010 --> 00:09:26,105
+vous devriez l'évaluer sur votre ensemble
+de données d'évaluation,
+
+198
+00:09:26,105 --> 00:09:28,585
+toutes les X étapes,
+X itérations, X minutes, etc.
+
+199
+00:09:28,585 --> 00:09:30,285
+Au fur et à mesure,
+
+200
+00:09:30,285 --> 00:09:33,255
+les erreurs d'entraînement
+et de validation devraient diminuer.
+
+201
+00:09:33,255 --> 00:09:37,610
+Mais à un certain point, les erreurs
+de validation devraient en fait augmenter.
+
+202
+00:09:37,610 --> 00:09:41,360
+C'est à ce point que le modèle commence
+à mémoriser les données d'entraînement,
+
+203
+00:09:41,360 --> 00:09:45,210
+et qu'il perd sa capacité à généraliser,
+pour l'ensemble de données de validation,
+
+204
+00:09:45,210 --> 00:09:49,445
+mais surtout pour les nouvelles données
+que nous voudrons traiter avec ce modèle.
+
+205
+00:09:49,445 --> 00:09:53,150
+L'utilisation de l'arrêt précoce permet
+de "figer" le modèle sur ce point,
+
+206
+00:09:53,150 --> 00:09:55,885
+puis de revenir en arrière
+pour utiliser les pondérations
+
+207
+00:09:55,885 --> 00:09:58,235
+des étapes précédant
+l'arrivée sur ce point.
+
+208
+00:09:58,235 --> 00:10:00,685
+Ici, la perte est uniquement L (w,D),
+
+209
+00:10:00,685 --> 00:10:03,155
+ce qui signifie
+"aucun critère de régularisation".
+
+210
+00:10:03,155 --> 00:10:06,990
+Point intéressant, l'arrêt précoce offre
+presque les mêmes possibilités
+
+211
+00:10:06,990 --> 00:10:08,380
+que la régularisation L2,
+
+212
+00:10:08,380 --> 00:10:11,900
+et il est souvent utilisé à sa place
+en raison de son moindre coût.
+
+213
+00:10:11,900 --> 00:10:18,450
+Dans la pratique, nous utilisons toujours
+les types de régularisation L1 et L2,
+
+214
+00:10:18,450 --> 00:10:21,235
+ainsi qu'un peu de régularisation
+par arrêt précoce.
+
+215
+00:10:21,235 --> 00:10:25,520
+Même si la régularisation L2
+et l'arrêt précoce semblent redondants,
+
+216
+00:10:25,520 --> 00:10:28,420
+pour des systèmes réels,
+vous ne parviendrez peut-être pas
+
+217
+00:10:28,420 --> 00:10:32,620
+à identifier les hyperparamètres idéaux.
+L'arrêt précoce peut alors vous aider.
+
+218
+00:10:32,630 --> 00:10:36,985
+Obtenir des probabilités avec notre modèle
+de régression logistique est super.
+
+219
+00:10:36,985 --> 00:10:39,485
+Mais, parfois, les utilisateurs
+souhaitent simplement
+
+220
+00:10:39,485 --> 00:10:41,570
+qu'une décision simple
+soit prise pour eux
+
+221
+00:10:41,570 --> 00:10:43,100
+pour leurs problèmes quotidiens.
+
+222
+00:10:43,100 --> 00:10:46,530
+Cet e-mail doit-il être envoyé dans
+le dossier "Courriers indésirables" ?
+
+223
+00:10:46,530 --> 00:10:48,560
+Ce prêt doit-il être accordé ou non ?
+
+224
+00:10:48,560 --> 00:10:51,395
+Quel itinéraire conseiller à l'utilisateur ?
+
+225
+00:10:51,395 --> 00:10:54,780
+Comment utiliser notre estimation
+des probabilités pour aider les outils
+
+226
+00:10:54,780 --> 00:10:57,780
+qui s'appuient sur notre modèle
+à prendre une décision ?
+
+227
+00:10:57,780 --> 00:10:59,305
+Nous devons choisir un seuil.
+
+228
+00:10:59,305 --> 00:11:01,310
+Pour un problème de classification binaire,
+
+229
+00:11:01,310 --> 00:11:02,540
+cela pourrait être :
+
+230
+00:11:02,540 --> 00:11:06,070
+toutes les probabilités inférieures
+ou égales à 50 % correspondent à "Non",
+
+231
+00:11:06,070 --> 00:11:09,295
+et toutes les probabilités supérieures
+à 50 % correspondent à "Oui".
+
+232
+00:11:09,295 --> 00:11:12,985
+Pour des problèmes réels plus complexes,
+le découpage peut être différent,
+
+233
+00:11:12,985 --> 00:11:17,225
+par exemple 60-40, 20-80, 99-1 ou autres,
+
+234
+00:11:17,225 --> 00:11:20,940
+selon l'équilibre que nous souhaitons
+définir entre les erreurs de type 1 et 2,
+
+235
+00:11:20,940 --> 00:11:24,750
+en d'autres termes, l'équilibre entre
+faux positifs et faux négatifs.
+
+236
+00:11:25,500 --> 00:11:29,395
+Pour la classification binaire,
+quatre résultats sont possibles :
+
+237
+00:11:29,395 --> 00:11:31,545
+vrai positif, vrai négatif,
+
+238
+00:11:31,545 --> 00:11:33,715
+faux positif et faux négatif.
+
+239
+00:11:33,715 --> 00:11:37,522
+L'association de ces valeurs génère
+des métriques d'évaluation comme la précision
+
+240
+00:11:37,522 --> 00:11:40,902
+(nombre de vrais positifs divisé
+par le nombre total de positifs)
+
+241
+00:11:40,902 --> 00:11:43,862
+et le rappel
+(nombre de vrais positifs divisé
+
+242
+00:11:43,862 --> 00:11:46,385
+par la somme de vrais positifs
+et de faux négatifs),
+
+243
+00:11:46,385 --> 00:11:49,485
+ce qui nous donne la sensibilité,
+ou taux de vrais positifs.
+
+244
+00:11:49,485 --> 00:11:53,480
+Vous pouvez régler le seuil choisi
+pour optimiser la métrique de votre choix.
+
+245
+00:11:53,480 --> 00:11:56,540
+Avons-nous un moyen simple d'y arriver ?
+
+246
+00:11:56,540 --> 00:12:00,700
+Une fonction d'efficacité du récepteur,
+ou courbe ROC pour faire court, montre
+
+247
+00:12:00,700 --> 00:12:04,095
+comment des prédictions
+de malus créent différents taux de vrais
+
+248
+00:12:04,095 --> 00:12:07,910
+positifs contre faux positifs
+pour différents seuils de décision utilisés.
+
+249
+00:12:07,910 --> 00:12:12,350
+En abaissant le seuil, la probabilité
+d'avoir de faux positifs augmente,
+
+250
+00:12:12,350 --> 00:12:15,465
+mais également celle
+d'avoir de vrais positifs.
+
+251
+00:12:15,465 --> 00:12:19,770
+Dans l'idéal, un modèle devrait n'avoir
+aucun faux positif ou faux négatif.
+
+252
+00:12:19,770 --> 00:12:22,105
+En intégrant cela aux équations,
+nous obtiendrions
+
+253
+00:12:22,105 --> 00:12:25,295
+un taux de vrais positifs de 1
+et un taux de faux positifs de 0.
+
+254
+00:12:25,295 --> 00:12:30,440
+Pour créer une courbe, nous sélectionnons
+chaque seuil de décision pour réévaluation.
+
+255
+00:12:30,440 --> 00:12:33,370
+Chaque valeur de seuil crée un seul point.
+
+256
+00:12:33,370 --> 00:12:37,025
+Cependant, en évaluant
+de nombreux seuils, une courbe se crée.
+
+257
+00:12:37,025 --> 00:12:40,705
+Il existe heureusement un algorithme
+de tri efficace pour cette opération.
+
+258
+00:12:40,705 --> 00:12:43,515
+Chaque mile créera
+une courbe ROC différente.
+
+259
+00:12:43,515 --> 00:12:47,350
+Comment utiliser ces courbes pour comparer
+la performance relative de nos modèles
+
+260
+00:12:47,350 --> 00:12:50,490
+si nous ne savons pas exactement
+quel seuil de décision utiliser ?
+
+261
+00:12:51,740 --> 00:12:55,640
+L'aire sous la courbe (AUC) peut être
+utilisée comme mesurée agrégée de performance
+
+262
+00:12:55,640 --> 00:12:57,970
+pour tous les seuils possibles
+de classification.
+
+263
+00:12:57,970 --> 00:13:01,370
+L'AUC vous aide à choisir
+un modèle si vous ne savez pas
+
+264
+00:13:01,370 --> 00:13:03,870
+quel seuil de votre système
+va être utilisé au final.
+
+265
+00:13:03,870 --> 00:13:07,970
+C'est comme poser la question "en prenant
+un positif et un négatif aléatoires,
+
+266
+00:13:07,970 --> 00:13:12,450
+quelle est la probabilité que mon modèle
+les intègre dans le bon ordre relatif ?".
+
+267
+00:13:12,450 --> 00:13:15,560
+L'avantage de l'AUC est
+son échelle et sa variante,
+
+268
+00:13:15,560 --> 00:13:18,400
+ainsi que son seuil
+de classification et sa variante.
+
+269
+00:13:18,400 --> 00:13:20,645
+Elle est appréciée
+des utilisateurs pour cela.
+
+270
+00:13:20,645 --> 00:13:24,050
+Ceux-ci utilisent parfois l'AUC
+pour la courbe de précision/rappel,
+
+271
+00:13:24,050 --> 00:13:26,890
+ou plus récemment
+pour les courbes de gain précision/rappel,
+
+272
+00:13:26,890 --> 00:13:28,700
+qui utilisent différentes associations
+
+273
+00:13:28,700 --> 00:13:31,885
+des quatre résultats de production
+comme métriques le long des axes.
+
+274
+00:13:31,885 --> 00:13:36,520
+Traiter cela juste comme mesure agrégée
+peut toutefois cacher certains effets.
+
+275
+00:13:36,520 --> 00:13:41,615
+Une petite amélioration de l'AUC peut,
+par exemple, la rendre plus efficace
+
+276
+00:13:41,615 --> 00:13:46,765
+dans le classement des négatifs peu probables
+et les rendre encore moins probables.
+
+277
+00:13:46,765 --> 00:13:50,405
+C'est bien, mais c'est potentiellement
+désavantageux au niveau matériel.
+
+278
+00:13:50,405 --> 00:13:52,830
+Pour évaluer les modèles
+de régression logistiques,
+
+279
+00:13:52,830 --> 00:13:55,500
+il faut être sûr
+que les prédictions soient non biaisées.
+
+280
+00:13:55,500 --> 00:13:57,965
+Dans ce contexte,
+lorsque nous parlons de biais,
+
+281
+00:13:57,965 --> 00:14:01,105
+nous ne l'entendons pas
+au sens de l'équation linéaire des modèles,
+
+282
+00:14:01,105 --> 00:14:03,630
+mais plutôt qu'il faudrait
+une réorientation générale
+
+283
+00:14:03,630 --> 00:14:06,250
+vers les positifs ou les négatifs.
+
+284
+00:14:06,250 --> 00:14:08,220
+Vous pouvez facilement vérifier cela
+
+285
+00:14:08,220 --> 00:14:10,880
+en comparant les prédictions
+de valeur moyenne du modèle
+
+286
+00:14:10,880 --> 00:14:14,720
+sur un ensemble de données, à la valeur
+moyenne des libellés dans cet ensemble.
+
+287
+00:14:14,720 --> 00:14:18,040
+Si les deux ne sont pas assez proches,
+il y a sûrement un problème.
+
+288
+00:14:18,040 --> 00:14:20,005
+Le biais est un canari dans la mine.
+
+289
+00:14:20,005 --> 00:14:23,100
+Nous pouvons l'utiliser pour indiquer
+que quelque chose ne va pas.
+
+290
+00:14:23,100 --> 00:14:25,955
+Si un biais apparaît,
+vous avez sûrement un problème.
+
+291
+00:14:25,955 --> 00:14:28,030
+Pourtant,
+l'absence de biais ne signifie pas
+
+292
+00:14:28,030 --> 00:14:32,420
+que tout votre système est parfait,
+mais elle reste un bon indicateur d'intégrité.
+
+293
+00:14:32,425 --> 00:14:35,845
+Si un biais apparaît, la cause peut
+être une caractéristique incomplète,
+
+294
+00:14:35,845 --> 00:14:39,575
+un pipeline buggé,
+un échantillon biaisé d'entraînement, etc.
+
+295
+00:14:39,575 --> 00:14:42,490
+Vous pouvez rechercher les biais
+dans des tranches de données,
+
+296
+00:14:42,490 --> 00:14:45,650
+pour vous aider à améliorer
+votre modèle en supprimant ces biais.
+
+297
+00:14:45,650 --> 00:14:48,250
+Regardons un exemple de ce processus.
+
+298
+00:14:48,250 --> 00:14:51,675
+Voici un repère d'étalonnage
+pour le navigateur de test simple.
+
+299
+00:14:51,675 --> 00:14:54,025
+Remarquez qu'il s'agit
+d'une échelle log-log,
+
+300
+00:14:54,025 --> 00:14:58,490
+car nous comparons les probabilités log
+compartimentées prévues et observées.
+
+301
+00:14:58,490 --> 00:15:02,090
+Vous voyez que la calibration est
+plutôt bonne dans la plage modérée,
+
+302
+00:15:02,090 --> 00:15:04,520
+mais elle est assez mauvaise
+pour l'extrémité basse.
+
+303
+00:15:04,520 --> 00:15:08,180
+Cela arrive dans les parties où la base
+de données n'est pas bien représentée,
+
+304
+00:15:08,180 --> 00:15:11,500
+à cause de bruit
+ou d'une réservation trop forte.
+
+305
+00:15:11,500 --> 00:15:14,080
+Le binning peut être réalisé
+de plusieurs façons :
+
+306
+00:15:14,080 --> 00:15:16,730
+en cassant littéralement
+les prédictions cibles,
+
+307
+00:15:16,730 --> 00:15:18,905
+ou en utilisant les quantiles.
+
+308
+00:15:18,905 --> 00:15:21,740
+Pourquoi devoir placer
+les prédictions dans un bucket
+
+309
+00:15:21,740 --> 00:15:24,900
+pour créer des repères d'étalonnage
+en prédisant les probabilités ?
+
+310
+00:15:24,900 --> 00:15:28,970
+Pour chaque événement,
+le vrai libellé est soit 0, soit 1,
+
+311
+00:15:28,970 --> 00:15:31,365
+(par exemple, "non cliqué" ou "cliqué"),
+
+312
+00:15:31,365 --> 00:15:34,650
+mais nos valeurs de prédictions resteront
+une supposition probabiliste
+
+313
+00:15:34,650 --> 00:15:38,085
+quelque part au milieu,
+comme 0,1 ou 0,33.
+
+314
+00:15:38,085 --> 00:15:41,295
+Pour chaque exemple seul,
+nous tombons toujours à côté.
+
+315
+00:15:41,295 --> 00:15:43,675
+Toutefois,
+en rassemblant assez d'exemples,
+
+316
+00:15:43,675 --> 00:15:46,540
+nous aimerions voir que,
+en moyenne, la somme des vrais 0
+
+317
+00:15:46,540 --> 00:15:50,130
+et 1 est semblable à une probabilité
+moyenne que nous prédisons.
+
+318
+00:15:51,080 --> 00:15:54,665
+Parmi ces éléments, lesquels sont
+importants pour la régression logistique ?
+
+319
+00:15:55,065 --> 00:15:57,490
+La bonne réponse est la D,
+soit toutes ces réponses.
+
+320
+00:15:57,490 --> 00:16:01,365
+Il est crucial que notre modèle généralise
+pour obtenir les meilleures prédictions
+
+321
+00:16:01,365 --> 00:16:02,905
+sur les nouvelles données,
+
+322
+00:16:02,905 --> 00:16:05,520
+car c'est la raison
+pour laquelle nous les avons créées.
+
+323
+00:16:05,520 --> 00:16:08,850
+Pour ce faire, nous ne devons
+en aucun cas suralimenter nos données.
+
+324
+00:16:08,850 --> 00:16:12,205
+Ajouter des conditions de pénalité
+à la fonction d'objectif (comme avec
+
+325
+00:16:12,205 --> 00:16:16,820
+la régularisation L1 pour la parcimonie et
+la régularisation L2 pour une petite largeur
+
+326
+00:16:16,820 --> 00:16:19,615
+de modèle) et un arrêt précoce
+peuvent donc vous aider.
+
+327
+00:16:19,615 --> 00:16:23,200
+Choisir un seuil réglé est également
+important pour savoir quelles décisions
+
+328
+00:16:23,200 --> 00:16:26,790
+prendre quand votre estimation
+de probabilité génère un résultat.
+
+329
+00:16:26,790 --> 00:16:30,370
+Il est aussi important de maximiser
+ou minimiser la métrique commerciale.
+
+330
+00:16:30,370 --> 00:16:33,025
+Si elle n'est pas bien définie,
+nous pouvons utiliser
+
+331
+00:16:33,025 --> 00:16:34,460
+plus de moyennes statistiques,
+
+332
+00:16:34,460 --> 00:16:37,760
+le calcul du nombre de vrais
+et faux positifs ou négatifs,
+
+333
+00:16:37,760 --> 00:16:39,680
+et les associer dans diverses métriques,
+
+334
+00:16:39,680 --> 00:16:41,760
+comme les taux de vrais et faux positifs.
+
+335
+00:16:41,760 --> 00:16:44,930
+Nous pouvons répéter ce processus
+pour plusieurs seuils différents,
+
+336
+00:16:44,930 --> 00:16:47,735
+puis tracer l'aire sous la courbe (AUC)
+
+337
+00:16:47,735 --> 00:16:50,910
+pour obtenir une mesure agrégée relative
+du modèle de performance.
+
+338
+00:16:50,910 --> 00:16:54,785
+Pour finir, il est crucial
+que nos prédictions soient non biaisées.
+
+339
+00:16:54,785 --> 00:16:57,460
+Même si c'est le cas,
+nous devons toujours être minutieux
+
+340
+00:16:57,460 --> 00:17:00,040
+et vérifier
+que notre modèle s'exécute bien.
+
+341
+00:17:00,040 --> 00:17:03,420
+Nous commençons
+à rechercher les biais en vérifiant
+
+342
+00:17:03,420 --> 00:17:06,895
+que la moyenne des prédictions est
+très proche des observations d'erreurs.
+
+343
+00:17:06,895 --> 00:17:09,240
+Pour vous aider à trouver
+où se cachent les biais,
+
+344
+00:17:09,240 --> 00:17:11,150
+observer des tranches de données
+
+345
+00:17:11,150 --> 00:17:13,529
+et utiliser, par exemple,
+un traçage d'étalonnage
+
+346
+00:17:13,529 --> 00:17:16,400
+pour isoler les zones problématiques
+afin de les améliorer.

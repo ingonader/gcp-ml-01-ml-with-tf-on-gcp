@@ -1,0 +1,49 @@
+En el curso anterior
+aprendió brevemente sobre incorporaciones así como sobre combinaciones de atributos. Pero las incorporaciones se encuentran
+en todos los aspectos del AA actual y no se limitan
+a las combinaciones de atributos o incluso a datos estructurados. De hecho las usará bastante
+en modelos de imágenes y de texto. Resumamos cómo
+entendemos las incorporaciones. Dijimos que podemos crear
+un modelo de aprendizaje automático para predecir un aspecto del tráfico quizá la hora
+en la que el siguiente vehículo llegará a una intersección. Tenemos una cantidad
+de entradas en nuestro modelo. Buscamos entradas categóricas
+específicamente la hora del día y el día de la semana. Dijimos que se podría mejorar
+el modelo de AA en gran medida si, en vez de tener
+la hora del día y el día de la semana como entradas independientes las concatenamos para crear
+una combinación de atributos. Dijimos que, si usamos
+una cantidad grande de depósitos hash cuando hagamos
+la combinación de atributos podemos estar bastante seguros
+de que cada depósito tendrá solo una combinación de hora y día. En este punto,
+introdujimos las incorporaciones. Dijimos que si en vez de usar codificación one-hot
+en la combinación de atributos la usamos como es podríamos pasarla por una capa densa y luego entrenar el modelo
+para predecir el tráfico como antes. Esta capa densa que muestran los nodos amarillo y verde crea una incorporación. Las incorporaciones
+son números con valor real ya que son la suma ponderada de los valores
+de la combinación de atributos. Debemos tener en cuenta que los pesos que se usan
+en la capa de incorporación los nodos amarillo y verde se aprenden a partir de los datos. El punto es que si entrena estos pesos
+en un conjunto de datos para resolver un problema útil algo genial ocurre. La combinación de atributos de día y hora tiene 168 valores únicos pero forzamos su representación
+con solo dos números de valor real. El modelo aprende a incorporar
+la combinación de atributos en un espacio dimensional inferior. Sugerimos que la caja verde
+tiende a capturar el tráfico peatonal y la amarilla, el tráfico automotor. Pero no importa
+lo que esas dos dimensiones capturen. Lo importante es que toda la información
+de hora del día y día de la semana en lo que se refiere
+al tráfico en intersecciones urbanas se reduce a solo dos números. Si hace esto en un conjunto de datos
+lo suficientemente grande y apropiado estos números tendrán
+una propiedad muy útil. Las horas que son similares
+en cuanto al tráfico obtendrán números de valor real cercanos. Y las horas que son diferentes
+en cuanto al tráfico obtendrán números de valor real diferentes. Luego, vimos cómo crear
+una incorporación en TensorFlow. Para crear una incorporación use el método
+embedding_column en tf.feature_column y pasen la columna categórica que desee incorporar. Esto funciona
+con cualquier columna categórica no solo con la combinación de atributos. Puede hacer una incorporación
+de cualquier columna categórica. Por último, vimos rápidamente cómo puede usar las incorporaciones
+que aprendió para un problema para aplicarlas en otro problema
+de aprendizaje automático similar. Quizá aprendió a representar
+la hora del día y el día de la semana con dos números de valor real mediante el entrenamiento
+con datos del tráfico de Londres. Como inicio rápido,
+puede usar los mismos pesos para iniciar el mismo modelo
+para Fráncfort. Incluso podría usar la incorporación
+que aprendió con el problema de tráfico para predecir la cantidad de espectadores
+de un programa de TV. La idea es que el tráfico de la calle
+y los espectadores de TV dependen del mismo factor latente. Es decir, ¿las personas
+de la ciudad están en movimiento? ¿O están en casa o en el trabajo? El aprendizaje por transferencia
+puede funcionar en problemas muy distintos siempre que compartan
+los mismos factores latentes.

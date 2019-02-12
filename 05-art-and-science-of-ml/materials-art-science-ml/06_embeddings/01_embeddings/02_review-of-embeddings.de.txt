@@ -1,0 +1,51 @@
+Im vorigen Kurs haben wir Einbettungen
+bei Merkmalsverknüpfungen gesehen, aber Einbettungen kommen
+im modernen ML überall vor und sind nicht auf Merkmalsverknüpfungen
+oder gar strukturierte Daten beschränkt. Tatsächlich werden Sie sie ziemlich viel
+für Bildmodelle und Textmodelle einsetzen. Fassen wir Einbettungen erneut
+kurz so zusammen, wie wir sie verstehen. Wir haben gesagt, wir
+möchten vielleicht ein ML-Modell bauen, um etwas über
+den Straßenverkehr vorherzusagen, etwa die Zeit, bevor das nächste Fahrzeug
+an einer Kreuzung ankommt, und wir haben diverse
+Inputs für unser Modell. Insbesondere sind das kategoriale Inputs, Tageszeit und Wochentag. Wir haben gesagt, dass
+das ML-Modell wesentlich besser wäre, wenn wir, anstatt die Tageszeit
+unabhängig vom Wochentag zu behandeln, diese Inputs verketten würden, um
+eine Merkmalsverknüpfung zu erstellen. Wenn wir viele Hash-Buckets für
+diese Merkmalsverknüpfung verwenden, können wir relativ sicher sein, dass jeder Bucket nur eine
+Uhrzeit/Tag-Kombination enthält. An diesem Punkt haben
+wir Einbettungen eingeführt. Anstatt eine one-hot-codierte
+Merkmalsverknüpfung so zu verwenden, können wir sie einem Dense Layer übergeben und das Modell zur Vorhersage trainieren. Der Dense Layer, hier der gelbe
+und grüne Knoten, bildet eine Einbettung. Die Einbettungen sind reale Werte, da sie eine gewichtete Summe der
+Werte der Merkmalsverknüpfung sind. Zu beachten ist, dass die Gewichte,
+die in die Einbettungsebene übergehen, den gelben und grünen
+Knoten, die Einbettungsebene, diese Gewichte
+wurden aus den Daten erlernt. Der Punkt ist, dass durch das Trainieren
+dieser Gewichte an einem Dataset, sodass Sie ein praktisches Problem lösen, etwas ganz Besonderes geschieht. Die Funktionsverknüpfung
+Tag/Stunde hat 168 einmalige Werte, aber wir erzwingen deren
+Darstellung durch nur zwei reale Werte. Das Modell lernt, die Funktionsverknüpfung
+im Raum niedrigerer Dimension einzubetten. Wir haben überlegt, dass
+vielleicht die grüne Box dazu tendiert, den Fußgängerverkehr zu
+erfassen und die gelbe den Autoverkehr. Aber es ist egal, was genau
+diese zwei Dimensionen erfassen. Wichtig ist, dass all die Informationen
+in der Tageszeit und dem Wochentag, die sich auf den Verkehr
+an den Kreuzungen beziehen, in nur zwei Zahlen eingezwängt werden. Wenn Sie das mit einem ausreichend
+großen und guten Dataset vornehmen, haben diese Zahlen
+eine sehr nützliche Eigenschaft. Bezüglich des Verkehrs ähnliche Zeiten, erhalten reale Werte,
+die nahe beieinanderliegen und bezüglich des
+Verkehrs unterschiedliche Zeiten erhalten reale Werte, die differieren. Dann haben wir gesehen, wie man
+eine Einbettung in TensorFlow erzeugt. Zum Erzeugen einer Einbettung verwenden Sie die Methode
+embedding_column in tf.feature_column und übergeben ihr die kategoriale
+Spalte, die Sie einbetten möchten. Das funktioniert mit
+jeder kategorialen Spalte, nicht nur mit Merkmalsverknüpfungen. Sie führen eine Einbettung einer
+beliebigen kategorialen Spalte durch. Zum Schluss haben wir kurz gesehen, wie Sie die mit einem
+Problem erlernten Einbettungen auf ein anderes ähnliches
+ML-Problem anwenden könnten. Vielleicht haben Sie gelernt, wie
+Sie die Tageszeit und den Wochentag durch Training an Verkehrsdaten in London
+mit zwei realen Werten darstellen können. Sie können dieselben Gewichte für ihr
+Frankfurt-Modell als Starthilfe nutzen. Möglicherweise können
+Sie sogar die Einbettung, die Sie im Verkehrsproblem gelernt haben zur Vorhersage der Zuschauer
+einer TV-Sendung verwenden. Dahinter steckt die Idee,
+dass sowohl der Straßenverkehr als auch die Zuschauerschaft von
+demselben latenten Faktor abhängen, nämlich: Sind die Einwohner der Stadt
+unterwegs oder daheim oder bei der Arbeit? Der Lerntransfer kann für scheinbar sehr
+unterschiedliche Probleme funktionieren, sofern dieselben latenten Faktoren gelten.

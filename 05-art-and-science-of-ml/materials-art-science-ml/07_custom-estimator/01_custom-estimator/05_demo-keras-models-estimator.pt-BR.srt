@@ -1,0 +1,216 @@
+1
+00:00:00,430 --> 00:00:04,220
+Certo, queremos mostrar como funciona
+um Estimator do Keras.
+
+2
+00:00:04,220 --> 00:00:07,720
+Então agora temos um método
+chamado make_keras_estimator,
+
+3
+00:00:07,720 --> 00:00:09,220
+com um output_dir.
+
+4
+00:00:09,220 --> 00:00:13,565
+E o que ele faz é importar o Keras
+do TensorFlow.
+
+5
+00:00:13,565 --> 00:00:16,045
+Este é o mesmo modelo
+de série temporal de antes,
+
+6
+00:00:16,045 --> 00:00:20,595
+mas, desta vez, vou tratá-lo como
+uma rede neural de entrada simples.
+
+7
+00:00:20,595 --> 00:00:24,945
+Então, estou pegando isso
+e criando um modelo sequencial do Keras,
+
+8
+00:00:24,945 --> 00:00:29,435
+dizendo que quero criar uma rede densa
+com 32 nós de entrada,
+
+9
+00:00:29,435 --> 00:00:31,545
+fazer uma ativação ReLu,
+
+10
+00:00:31,545 --> 00:00:34,287
+e então uma saída, que é um Dense(1),
+
+11
+00:00:34,287 --> 00:00:37,612
+e minha perda será mean_squared_error,
+
+12
+00:00:37,612 --> 00:00:39,631
+meu otimizador será adam,
+
+13
+00:00:39,631 --> 00:00:42,940
+e minha matriz de avaliação
+será mean_absolute_error
+
+14
+00:00:42,940 --> 00:00:45,470
+e mean absolute (percentage) error.
+
+15
+00:00:45,470 --> 00:00:50,060
+Então, posso pegar
+keras.estimator.model_to_estimator,
+
+16
+00:00:50,060 --> 00:00:53,580
+passando para este
+modelo do Keras compilado.
+
+17
+00:00:53,580 --> 00:00:56,910
+Então, lembre-se:
+crie o modelo Keras, compile-o
+
+18
+00:00:56,910 --> 00:00:59,290
+e passe-o para model_to_estimator.
+
+19
+00:00:59,290 --> 00:01:03,410
+Agora este código já faz parte
+
+20
+00:01:03,410 --> 00:01:06,790
+deste pacote simplernn,
+então deixe-me mostrar-lhe isso.
+
+21
+00:01:06,790 --> 00:01:09,520
+Aqui estamos nós no simplernn.
+
+22
+00:01:09,520 --> 00:01:15,160
+E, no simplernn, há um trainer,
+um model.py.
+
+23
+00:01:15,160 --> 00:01:21,178
+No model.py, havia a função
+simplernn original
+
+24
+00:01:21,178 --> 00:01:26,745
+que usava os atributos, rótulos e modo, e
+fazia tudo do Estimator personalizado.
+
+25
+00:01:26,745 --> 00:01:31,590
+Há também um make_keras_estimator.
+
+26
+00:01:31,590 --> 00:01:33,580
+Aqui está o make_keras_estimator.
+
+27
+00:01:33,580 --> 00:01:36,740
+Então make_keras_estimator tem o código
+que acabei de mostrar.
+
+28
+00:01:36,740 --> 00:01:39,662
+Ele cria um modelo sequencial,
+uma camada densa
+
+29
+00:01:39,662 --> 00:01:43,840
+e faz uma ativação disso com atualização,
+cria outra camada densa,
+
+30
+00:01:43,840 --> 00:01:46,190
+e faz as métricas de perda etc.
+
+31
+00:01:46,190 --> 00:01:51,913
+Quando fazemos train_and_evaluate,
+eu basicamente tenho uma opção use_keras.
+
+32
+00:01:51,913 --> 00:01:55,950
+E se alguém diz use_keras,
+eu os chamo de make_keras_estimator.
+
+33
+00:01:55,950 --> 00:01:59,126
+Caso contrário, chamo
+o Estimator da classe base,
+
+34
+00:01:59,126 --> 00:02:01,206
+passando na função simple_rnn.
+
+35
+00:02:01,206 --> 00:02:07,307
+É basicamente o mesmo código
+com o parâmetro use_keras.
+
+36
+00:02:07,307 --> 00:02:13,521
+E esse parâmetro é passado da linha
+de comando usando task.py.
+
+37
+00:02:13,521 --> 00:02:19,088
+Portanto, em task.py, há um novo argumento
+chamado --keras.
+
+38
+00:02:19,088 --> 00:02:22,686
+Então, dependendo se isso
+é definido ou não,
+
+39
+00:02:22,686 --> 00:02:27,489
+basicamente passamos argumentos
+de Keras para model.train_and_evaluate.
+
+40
+00:02:27,489 --> 00:02:30,090
+Então isso será verdadeiro ou falso.
+
+41
+00:02:30,090 --> 00:02:32,400
+Agora, se voltarmos
+para o nosso bloco de notas,
+
+42
+00:02:32,400 --> 00:02:35,760
+poderemos ver
+qual será o efeito do --keras.
+
+43
+00:02:35,760 --> 00:02:37,933
+Por causa da transferência de --keras,
+
+44
+00:02:37,933 --> 00:02:41,399
+isso vai executar
+o código simplernn.
+
+45
+00:02:41,399 --> 00:02:45,189
+Vai executar em train.csv e value.csv,
+
+46
+00:02:45,189 --> 00:02:47,489
+mas usará o Keras.
+
+47
+00:02:47,489 --> 00:02:49,860
+E isso também funcionará.

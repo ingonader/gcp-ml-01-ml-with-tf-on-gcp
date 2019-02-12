@@ -1,0 +1,253 @@
+1
+00:00:00,850 --> 00:00:03,250
+Pensar em todos
+os botões e alavancas
+
+2
+00:00:03,250 --> 00:00:08,715
+e encontrar a combinação ideal que
+depende dos dados é uma tarefa hercúlea.
+
+3
+00:00:08,715 --> 00:00:10,455
+Pense nas permutações.
+
+4
+00:00:10,455 --> 00:00:14,275
+Automatize com os algoritmos de
+pesquisa do Gritz que quiser,
+
+5
+00:00:14,275 --> 00:00:17,780
+mas a pesquisa pela combinação
+ideal pode levar muito tempo
+
+6
+00:00:17,780 --> 00:00:20,670
+e gastar muitas horas
+de recursos de computação
+
+7
+00:00:20,670 --> 00:00:23,610
+Não seria bom se
+um loop de treinamento
+
+8
+00:00:23,610 --> 00:00:26,480
+fizesse o metatreinamento
+desses hiperparâmetros
+
+9
+00:00:26,480 --> 00:00:29,000
+para encontrar as
+configurações ideais?
+
+10
+00:00:30,700 --> 00:00:33,675
+O Google Vizier
+faz isso para você.
+
+11
+00:00:33,675 --> 00:00:36,300
+Na maioria dos casos,
+você verá um ajuste
+
+12
+00:00:36,300 --> 00:00:40,240
+automático realizado pelo
+algoritmo do Google Vizier,
+
+13
+00:00:40,240 --> 00:00:42,820
+sem precisar
+saber dos detalhes.
+
+14
+00:00:42,820 --> 00:00:46,270
+Se estiver curioso para saber
+o que acontece nos bastidores,
+
+15
+00:00:46,270 --> 00:00:50,210
+recomendo o artigo
+mostrado na tela.
+
+16
+00:00:51,070 --> 00:00:55,100
+Você só precisa saber que o
+Cloud ML Engine faz o trabalho,
+
+17
+00:00:55,100 --> 00:00:59,965
+você só precisa configurar
+o job corretamente e pronto.
+
+18
+00:01:00,485 --> 00:01:05,395
+Vamos ver como fazer
+essa mágica acontecer.
+
+19
+00:01:05,875 --> 00:01:08,975
+Você já deve ter
+usado o Cloud ML Engine,
+
+20
+00:01:08,975 --> 00:01:12,830
+a plataforma sem servidor para
+treinar e hospedar modelos de ML.
+
+21
+00:01:12,830 --> 00:01:17,215
+O ML Engine abstrai o
+ajuste dos hiperparâmetros.
+
+22
+00:01:17,215 --> 00:01:21,215
+Você só precisa usar
+o serviço desta maneira.
+
+23
+00:01:21,995 --> 00:01:23,660
+Primeiro, é preciso expressar
+
+24
+00:01:23,660 --> 00:01:27,815
+os hiperparâmetros a serem ajustados
+como um argumento da linha de comando.
+
+25
+00:01:28,295 --> 00:01:33,035
+As iterações do treinamento não
+podem atrapalhar umas às outras.
+
+26
+00:01:33,035 --> 00:01:38,420
+Depois, forneça esses hiperparâmetros
+para o job de treinamento.
+
+27
+00:01:38,960 --> 00:01:42,600
+Antes de ir para o
+laboratório fazer os ajustes,
+
+28
+00:01:42,600 --> 00:01:46,595
+vamos destacar como
+essas etapas ficam no código.
+
+29
+00:01:46,595 --> 00:01:49,785
+A primeira etapa é
+definir os hiperparâmetros
+
+30
+00:01:49,785 --> 00:01:53,360
+que precisam de ajuste como
+um argumento da linha de comando.
+
+31
+00:01:54,090 --> 00:01:57,460
+Por exemplo, tenho dois aqui:
+
+32
+00:01:58,050 --> 00:02:03,040
+o número de pacotes para
+ocultar a latitude e a longitude
+
+33
+00:02:03,640 --> 00:02:07,640
+e o número de unidades ocultas
+na minha rede neural profunda.
+
+34
+00:02:07,640 --> 00:02:12,840
+A segunda etapa é garantir que as
+saídas não atrapalhem umas às outras.
+
+35
+00:02:13,600 --> 00:02:18,610
+Para isso, use uma boa convenção
+de nomes para as pastas de saída.
+
+36
+00:02:19,550 --> 00:02:24,775
+Por exemplo, uso um valor "trial"
+como sufixo para tornar o nome exclusivo.
+
+37
+00:02:24,775 --> 00:02:26,695
+A última etapa é fornecer
+
+38
+00:02:26,695 --> 00:02:30,540
+os hiperparâmetros ao enviar um
+job de treinamento. Veja como.
+
+39
+00:02:30,540 --> 00:02:34,050
+Primeiro, crie um
+arquivo YAML como este
+
+40
+00:02:35,140 --> 00:02:37,965
+e forneça o caminho
+para o arquivo
+
+41
+00:02:37,965 --> 00:02:43,095
+com os parâmetros de linha de comando
+para o comando do ML Engine, assim.
+
+42
+00:02:44,505 --> 00:02:48,470
+Agora, vamos ver o
+conteúdo do arquivo YAML.
+
+43
+00:02:48,470 --> 00:02:53,590
+Neste exemplo, queremos minimizar
+o rmse nos dados de avaliação.
+
+44
+00:02:53,590 --> 00:03:00,080
+Queremos que o ML Engine encontre
+o tamanho perfeito entre 64 e 514.
+
+45
+00:03:00,080 --> 00:03:03,445
+Essa não é uma pesquisa Gritz,
+é muito mais inteligente.
+
+46
+00:03:03,445 --> 00:03:05,860
+Veja o teste máximo.
+
+47
+00:03:05,860 --> 00:03:10,135
+O algoritmo do ML Engine
+pesquisa em áreas promissoras,
+
+48
+00:03:10,135 --> 00:03:13,330
+inicia aleatoriamente
+alguns testes em paralelo
+
+49
+00:03:13,330 --> 00:03:17,935
+conforme especificado pelo
+valor máximo e começa a explorar.
+
+50
+00:03:17,935 --> 00:03:21,825
+Estamos pedindo para o
+ML Engine testar sistematicamente
+
+51
+00:03:21,825 --> 00:03:24,065
+várias arquiteturas
+da rede neural.
+
+52
+00:03:24,745 --> 00:03:27,610
+Pronto para testar? Vamos lá.

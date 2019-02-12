@@ -1,0 +1,51 @@
+Dies bringt uns
+zum zweiten Abschnitt dieses Moduls, in dem wir
+zwei wichtige Hyperparameter diskutieren, Lernrate und Batchgröße. Spielen wir mit den Parametern
+erst einmal in Playground. Beginnen wir mit der Lernrate. Die Lernrate steuert
+die Schrittgröße im Gewichtungsbereich. Wir lassen die Batchgröße bei 30 und auch die anderen Parameter konstant. Als Erstes setze ich
+die Lernrate auf 0,01. Tensorflow Playground
+verwendet zufällige Startpunkte. Ihr Ergebnis kann daher
+von meinem abweichen. Möglicherweise erhalten Sie
+in der Verlustkurve seltsame Sprünge, doch sie konvergiert ziemlich schnell. Ich habe für die Testdaten
+einen Verlustwert von 0,139 erhalten und bin unter 300 Epochen geblieben. Nach Änderung der Lernrate auf 0,001 hat die Leistung deutlich nachgelassen. In meinem Fall
+waren fast 3.000 Epochen erforderlich, um einen Testverlust
+wie im vorherigen Experiment zu erreichen. Immerhin sollten Sie in der Verlustkurve
+keine seltsamen Sprünge sehen. Sie sollte langsam,
+aber gleichmäßig konvergieren. Experimentieren wir nun
+mit den Auswirkungen der Batchgröße. Die Batchgröße steuert die Beispielanzahl,
+für die der Gradient berechnet wird. Wir lassen die Lernrate bei 0,01 und alle anderen Parameter konstant. Als Erstes habe ich
+eine Batchgröße von 100 ausprobiert. Sie stoßen beim Experimentieren
+vielleicht auf das Problem, wie Sie die Batchgröße
+über 30 hinaus erhöhen können. Keine Sorge, das ist in Ordnung. Das soll so sein. Die UI lässt keine Werte über 30 zu, Sie können
+die Batchgröße jedoch in der URL ändern. Mit einer Batchgröße von 100 erhielt ich eine eher langsame Konvergenz. Über 1.000 Epochen waren erforderlich, um einen ähnlichen Verlustwert wie
+in vorherigen Experimenten zu erreichen. Ich konnte dafür
+aber kein Rauschen beobachten. Nach Verringerung der Batchgröße auf 5 erhielt ich sehr schnell Ergebnisse. Im Grunde habe ich in nur 65 Epochen einen ähnlichen Testverlust erreicht
+wie in den vorherigen Experimenten. In der Verlustkurve waren allerdings
+einige ungleichmäßige Schritte zu sehen. Offensichtlich reagiert die Modellleistung
+sehr sensibel auf Lernrate und Batchgröße. Ist das nicht
+wie das Stimmen eines Musikinstruments? Ich sagte ja,
+dass auch Kunst eine Rolle spielt. Fassen wir unsere Ergebnisse zusammen. Die Lernrate steuert
+die Schrittgröße im Gewichtungsbereich. Wenn die Schritte zu klein sind, dauert das Training sehr lange. Wenn die Schritte aber zu groß sind, ist das Training unkontrollierbar
+und könnte den optimalen Punkt verfehlen. Eine Lernrate von 0,001 bedeutet, dass die Schrittgröße
+1/1.000 des Eingabebereichs beträgt. Dies könnte zu wenig für eine große
+Optimierungsoberfläche sein. Zum Beispiel beträgt der Standardwert
+für LinearRegressor im TensorFlow-Estimator 0,2 oder den Kehrwert der Wurzel
+aus der Anzahl der Merkmale. Das setzt voraus, dass Merkmal-
+und Labelwerte kleine Zahlen sind. Die andere Option, die Batchgröße,
+steuert die Anzahl der Beispiele, für die der Gradient berechnet wird. Wenn die Batchgröße zu klein ist, erhalten wir Sprünge, da der Batch möglicherweise
+die Eingabe nicht gut genug repräsentiert. Wenn aber die Batchgröße zu hoch ist, dauert das Training sehr lange. Als Faustregel ist ein Wert
+zwischen 40 und 100 eine gute Batchgröße. Sie kann auch bis zu 500 betragen. Lassen Sie uns beim Thema Batchvorgänge nicht die Batchverarbeitung
+nach Zufallsprinzip vergessen. Sie haben sicher gehört, dass
+Mischen von Beispielen eine gute Idee ist. Aber warum? Nehmen wir Buchtitel wie hier. Nehmen wir an,
+Sie möchten einem Nutzer vorschlagen, was er als Nächstes lesen könnte. Wie Sie sehen,
+sind die Titel alphabetisch sortiert. Wenn Sie das Dataset so verwenden, enthält jeder Trainingsbatch
+eine Teilmenge der Titel auf Basis aufeinanderfolgender Buchstaben. Sie gewähren Ihrem armen Modell eine sehr eingeschränkte Sicht
+auf den Problembereich und verwehren ihm die Chance,
+die ganze Wahrheit zu entdecken. Sie möchten doch wohl
+kein schlechter Lehrer sein. Stattdessen möchten Sie, dass jeder Batch
+repräsentativ für das gesamte Dataset ist. Die meisten Datasets
+weisen irgendeine Reihenfolge auf. Bücher
+sind alphabetisch nach Titel sortiert, Kundendaten nach Postleitzahl, Einkäufe nach Jahreszeit, Jahr usw. Durch gründliches Mischen des Datasets sorgen Sie dafür, dass jeder Batch
+für das gesamte Dataset repräsentativ ist. Erinnern wir uns,
+der Gradient wird im Batch berechnet. Wenn der Batch nicht repräsentativ ist, variiert der Verlust
+von Batch zu Batch zu stark.

@@ -1,0 +1,257 @@
+Falamos sobre redes neurais
+em cursos e módulos anteriores. Agora, vamos aprender
+a ciência por trás delas. Vimos que os cruzamentos de atributos
+funcionavam bem em um problema como esse. Se x1 é a dimensão horizontal e x2 é a dimensão vertical, não houve combinação linear dos dois
+atributos para descrever a distribuição. Não até fazermos engenharia de atributos
+e cruzarmos x1 e x2 para conseguir um novo atributo, x3, que equivale a x1 vezes x2, em que podemos
+descrever nossa distribuição de dados. Assim, o artesanato manual
+para a engenharia de atributos pode resolver facilmente os
+problemas não lineares. Certo? Infelizmente, o mundo real quase nunca tem distribuições
+tão facilmente descritas. A engenharia de atributos, mesmo com
+pessoas brilhantes trabalhando nela, só consegue chegar até esse ponto. Por exemplo, qual cruzamento de atributos
+é preciso para modelar essa distribuição? Parecem dois círculos em cima um do
+outro ou talvez duas espirais, mas seja o que for, é muito bagunçado. Este exemplo configura a utilidade das
+redes neurais para que elas possam criar algoritmicamente cruzamentos
+e transformações muito complexos. Você pode imaginar espaços
+muito mais complicados que esta espiral que realmente
+requerem o uso de redes neurais. Elas são uma alternativa ao cruzamento
+de atributos, por combinar atributos. Quando estávamos projetando
+nossa arquitetura de rede neural, queríamos estruturar o modelo de modo
+que haja atributos combinados. Depois, pretendíamos adicionar outra
+camada para combinar nossas combinações e, em seguida, adicionar outra camada para
+combinar essas combinações etc. Como escolhemos as combinações certas de nossos atributos e as combinações
+deles etc.? Você consegue o modelo para aprendê-los
+por meio de treino, é claro. Essa é a intuição básica
+por trás das redes neurais. Essa abordagem não é necessariamente
+melhor que cruzamentos de atributos, mas é uma alternativa flexível
+que funciona bem em muitos casos. Aqui está uma representação
+gráfica de um modelo linear. Temos três entradas: x1, x2 e x3 mostradas nos círculos azuis. Elas são combinadas com uma ponderação
+dada nas bordas para produzir uma saída. Elas são muitas vezes
+um termo extratendencioso, mas, para simplificar,
+isso não é mostrado aqui. Este é um modelo linear, pois é uma forma
+de y igual a w1 vezes x1, mais w2 vezes x2, mais w3 vezes x3. Agora, vamos adicionar uma camada oculta
+à nossa rede de nós e bordas. Nossa camada de entrada tem três nós
+e nossa camada oculta também tem três. Mas, agora, nós ocultos. Como essa é uma camada
+completamente conectada, há três vezes três bordas
+ou nove ponderações. Certamente, agora este é um modelo
+não linear que podemos usar para resolver nossos
+problemas não lineares, certo? Infelizmente, não.
+Vamos entender melhor. A entrada para o primeiro nó oculto
+é a soma ponderada de w1 vezes x1, mais w4 vezes x2, mais w7 vezes x3. A entrada para o segundo nó oculto
+é a soma ponderada w2 vezes x1, mais w5 vezes x2, mais w8 vezes x3. A entrada para o terceiro nó oculto
+é a soma ponderada w3 vezes x1, mais w6 vezes x2,
+mais w9 vezes x3. Combinando tudo junto no nó de saída, temos w10 vezes h1, mais w11 vezes h2, mais w12 vezes h3. Lembre-se, porém, que h1, h2 e h3 são apenas combinações lineares
+dos atributos de entrada. Portanto, expandindo isso, ficamos com um conjunto complexo
+de constantes ponderadas multiplicadas por cada valor de entrada x1, x2 e x3. Podemos substituir cada grupo
+de ponderações por uma nova ponderação. Parece familiar? Este é exatamente o mesmo
+modelo linear de antes, apesar da adição de uma camada oculta
+de neurônios. Então, o que aconteceu? E se adicionássemos outra camada oculta? Infelizmente, isso mais uma vez
+recolhe até chegar a uma matriz de ponderação única,
+multiplicada por cada uma das 3 entradas. É o mesmo modelo linear. Podemos continuar este processo
+e ainda seria o mesmo resultado, mas exigiria muito mais computação
+para treino ou previsão de uma arquitetura muito mais complicada do que necessário. Pensando nisso
+de uma perspectiva de álgebra linear, você está multiplicando várias matrizes
+juntas em uma cadeia. Neste exemplo, primeiro multiplico
+uma matriz de 3x3, a transposição da matriz ponderada entre
+a camada de entrada e camada oculta 1, pelo vetor de entrada 3x1,
+resultando no vetor 3x1, que são os valores em cada neurônio oculto
+na camada oculta 1. Definidas as segundas camadas ocultas
+dos valores do neurônio, eu multiplico a transposição da matriz ponderada de 3x3
+que conecta a camada oculta 1 com a camada oculta 2 ao meu vetor
+resultante na camada oculta 1. Como você pode imaginar, as duas matrizes ponderadas 3x3
+podem ser combinadas em uma matriz 3x3, calculando primeiro o produto da matriz da esquerda,
+em vez da direita. Isso ainda dá a mesma forma para h2, o segundo vetor de valor
+do neurônio da camada oculta. Adicionando a camada final entre
+a camada oculta 2 e a camada de saída, eu preciso multiplicar
+as etapas precedentes pela transposição da matriz ponderada
+entre as duas últimas camadas. Mesmo que, ao avançar por
+uma rede neural, você execute a multiplicação de matrizes
+da direita para a esquerda, aplicando-a da esquerda para a direita, você pode ver que nossa grande cadeia
+de complicações matriciais se recolhe a apenas
+um vetor de três valores. Se você treinar este modelo em apenas
+um caso de regressão linear simples de 3 ponderações lado a lado e elas caírem
+no mesmo mínimo na superfície baixa, então, mesmo que eu tenha feito muitos
+cálculos para todas as 21 ponderações em minha cadeia de produtos de matriz
+que se condensará na equação mais baixa, a ponderação corresponderá às ponderações
+de regressão linear simples de treino. Todo esse trabalho para o mesmo resultado. Você provavelmente está pensando agora: "eu pensei que redes neurais eram
+a adição de camadas em neurônios. Como posso fazer aprendizado profundo
+quando minhas camadas se recolhem em uma?" Tenho boas notícias. Há uma solução fácil. A solução é adicionar uma camada
+de transformação não linear, facilitada por uma função de ativação não
+linear, como sigmoide, tanh ou ReLU. E pensando nos termos do gráfico, como
+se estivesse fazendo no TensorFlow, você pode imaginar cada neurônio
+tendo, na verdade, dois nós. O primeiro nó é o resultado
+da soma ponderada wx mais b, e o segundo nó é o resultado disso sendo passado
+pela função de ativação. Em outras palavras, há entradas da função de ativação seguidas pelas
+saídas da função de ativação, de modo que a função de ativação atua
+como o ponto de transição entre elas. Adicionar essa transformação
+não linear é a única maneira de impedir que a rede neural volte
+a se condensar em uma rede superficial. Mesmo se você tiver uma camada com
+função de ativação não linear na rede, se em algum lugar você tiver duas ou mais
+camadas com funções de ativação linear, elas ainda poderão ser recolhidas
+a uma única rede. Geralmente, as redes neurais têm
+todas as camadas não lineares para a primeira e -1
+camadas e, em seguida, deixam a transformação da camada final
+linear para regressão ou sigmoide ou softmax, que
+falaremos em breve para classificação. Tudo depende de como você
+quer que seja a saída. Pensando sobre isso novamente, de uma perspectiva
+de álgebra linear, quando aplicamos transformação
+linear a uma matriz ou vetor, estamos multiplicando-os para
+levar ao resultado que queremos. Como quando quero escalonar uma matriz, posso multiplicá-la por uma constante. Mas o que é feito é a multiplicação por
+uma matriz de identidade multiplicada por essa constante. Então, é uma matriz diagonal
+com essa constante toda na diagonal. Isso pode ser recolhido em apenas
+um produto de matriz. No entanto, se eu adicionar
+uma não linearidade, o que estou fazendo não pode ser
+representado por uma matriz, já que o elemento y está aplicando
+uma função na minha entrada. Por exemplo, se eu tiver uma função de ativação não linear entre
+a primeira e a segunda camada oculta, aplico uma função do produto
+da transposição das primeiras matrizes ponderadas das camadas
+ocultas e do vetor de entrada. A equação mais baixa é minha função
+de ativação em uma ReLU. Como não posso representar a transformação
+em termos de álgebra linear, não posso mais recolher essa parte da
+minha cadeia de transformação, de modo que a complexidade
+do modelo permanece e não se recolhe em apenas
+uma combinação linear das entradas. Observe que ainda posso recolher a
+segunda camada oculta da matriz ponderada e a matriz ponderada da camada de saída,
+já que não há função não linear aplicada. Isso significa que sempre que houver duas
+ou mais camadas lineares consecutivas, elas poderão ser recolhidas em uma camada,
+independentemente de quantas sejam. Como elas têm as funções mais complexas
+sendo criadas pela sua rede, é melhor ter toda a sua rede
+com funções de ativação linear, exceto na última camada, caso você queira
+usar um tipo diferente de saída no final. Por que é importante adicionar funções
+de ativação não linear às redes neurais? A resposta é que ela impede
+que as camadas se recolham a apenas um modelo linear. As funções de ativação não linear
+não apenas ajudam a criar transformações por meio
+do espaço de escritura de dados, mas também permitem funções
+de composição profundas. Como explicamos, se há duas ou mais
+camadas com funções de ativação linear, esse produto de matrizes pode ser resumido por apenas uma matriz
+vezes o vetor de atributo de entrada. Portanto, você acaba com
+um modelo mais lento, com mais computação, mas com toda
+a sua complexidade funcional reduzida. As não linearidades
+não adicionam regularização à função de perda e não invocam
+a parada antecipada. Mesmo que as funções
+de ativação não linear criem transformações complexas
+no espaço vetorial, essa dimensão não muda,
+permanece o mesmo espaço vetorial. Mesmo esticado, esmagado ou girado. Como mencionado em um
+de nossos cursos anteriores, há muitas funções de ativação
+não linear com sigmoide, sendo que a tangente hiperbólica com sigmoide escalonado e deslocado
+é uma das mais antigas. No entanto, como mencionado antes, eles podem ter saturação, o que leva
+ao problema do gradiente de fuga, em que, com gradientes nulos, as ponderações dos modelos não são
+atualizadas e o treino é interrompido. A Unidade Linear Retificada,
+ou ReLU, é um dos nossos métodos favoritos porque
+é simples e funciona bem. No domínio positivo, ela é linear, então não temos saturação, enquanto
+no domínio negativo a função é zero. Redes com ativação oculta de ReLU
+têm 10 vezes mais velocidade de treino do que redes
+com ativações ocultas de sigmoides. No entanto, devido à função de domínios
+negativos ser sempre zero, podemos acabar com
+as camadas reais morrendo. O que quero dizer é que, quando você recebe entradas no domínio negativo,
+a saída da ativação será zero, o que não ajuda na próxima camada
+e recebe entradas no domínio positivo. Isso compõe e cria
+um monte de ativações zero, durante a propagação de volta
+ao atualizar as ponderações, uma vez que temos que multiplicar
+os erros derivados pela ativação, e acabamos com um gradiente de zero. Portanto, uma ponderação
+de dados zero, as ponderações não mudam e o treinamento
+falha para essa camada. Felizmente, muitos métodos
+inteligentes foram desenvolvidos para modificar levemente a ReLU e
+garantir que o treinamento não pare, mas ainda assim, com muitos
+benefícios da ReLU convencional. Aqui está a ReLu convencional. O operador máximo também pode ser
+representado pela equação linear por partes, em que menos de zero, a função é zero. E maior que ou igual a zero,
+a função é X. Uma aproximação da função de ReLU é a função analítica
+do registro natural de 1, mais o X exponencial. Isso é chamado de função Softplus. Curiosamente, a derivada da função
+Softplus é uma função logística. Os prós de usar a função Softplus são: ela é contínua e diferenciável em zero, ao contrário da função ReLU. No entanto, devido ao registro
+natural e exponencial, há mais computação
+em comparação com as ReLUs, e as ReLUs ainda têm resultados 
+igualmente bons na prática. Portanto, Softplus, geralmente, não é
+recomendado no aprendizado profundo. Para tentar resolver nosso problema
+de ReLUs mortos devido a ativações zero, o Leaky ReLU foi desenvolvido. Assim como ReLUs, Leaky ReLUs têm
+uma função linear por partes. No entanto, no domínio negativo, em vez de zero, há uma inclinação
+diferente de zero, especificamente, 0,01. Dessa forma, quando a unidade
+não está ativada, as Leaky ReLUs ainda permitem que um
+pequeno gradiente diferente de zero passe, o que permitirá que a atualização
+de ponderação e o treino continuem. Um passo adiante da ideia Leaky
+é a ReLU paramétrica, ou PReLU. Aqui, em vez de permitir arbitrariamente um centésimo de um X no domínio negativo, ela permite que o alfa de X passe. Mas qual deveria ser o parâmetro
+de alfa? No gráfico, defino alfa como 0,5
+para fins de visualização. Mas na prática, na verdade, é um parâmetro
+aprendido do treinamento junto com os outros
+parâmetros da rede neural. Dessa forma, em vez de
+definirmos esse valor, o valor será determinado durante o
+treinamento por meio dos dados e provavelmente aprenderá um valor mais
+otimizado do que nós definiríamos. Observe que quando alfa é menor que 1, a fórmula pode ser reescrita novamente
+no formato compacto usando o máximo. Especificamente, o máximo de X
+ou alfa vezes x. Há também Leaky ReLUs aleatórios
+em que, em vez de o alfa ser treinado, é uma amostra de uma distribuição
+uniforme aleatória. Isso pode ter um efeito
+semelhante à exclusão, já que você tem uma rede
+diferente para cada valor de alfa. E, portanto, está fazendo algo
+semelhante a um conjunto. No momento do teste,
+todos os valores de alfa são comparados juntos a um valor
+determinístico para as previsões. Há também a variante ReLU6, outra função linear por partes
+com três segmentos. Como uma ReLU normal, ela é zero no domínio negativo. No entanto, no domínio positivo,
+a ReLU6 é mantida em seis. Você provavelmente está pensando:
+"por que é mantida em seis?" Você pode imaginar uma dessas
+unidades de ReLU tendo apenas seis unidades replicadas
+por uma Bernoulli deslocada, em vez de uma quantidade
+infinita devido ao limite máximo. Em geral, elas são chamadas
+de unidades n de ReLU, em que n é o valor de limite. Em testes, seis foi definido
+como o valor mais próximo do ideal. Unidades de ReLU6 podem ajudar os modelos
+a aprender atributos esparsos mais cedo. Seu primeiro uso foi em redes
+de elite profundas convolucionais em um conjunto
+de dados de imagem CIFAR-10. Eles também têm a
+propriedade útil de preparar a rede para precisão de ponto
+fixo para inferência. Se o limite superior é ilimitado, você perde muitos bits para a
+parte Q de um número de ponto fixo, enquanto que
+um limite superior a seis deixa bits suficientes
+para a parte fracionária do número, fazendo com que seja bem representado
+para fazer uma boa inferência. Por fim, há a unidade linear
+exponencial, ou ELU. É aproximadamente linear na porção
+não negativa do espaço de entrada, e é suave, monotônica e, mais importante, diferente de zero
+na porção negativa da entrada. Elas também são melhor centradas no zero do que ReLUs convencionais,
+o que pode acelerar o aprendizado. A principal desvantagem das ELUs é que são
+mais caras em termos de composição do que as ReLUs, devido a terem
+que calcular o exponencial. As redes neurais podem ser
+arbitrariamente complexas, pode haver muitas camadas, neurônios por camada, saídas, entradas, diferentes tipos
+de funções de ativação etc. Qual o propósito de múltiplas camadas? Cada camada adicionada aumenta a complexidade
+das funções que posso criar. Cada camada subsequente é uma composição
+das funções anteriores. Como estamos usando funções de ativação
+não linear nas minhas camadas ocultas, estou criando uma pilha de transformações
+de dados que giram, esticam e espremem meus dados. Lembre-se, o propósito de fazer tudo isso é transferir os dados de modo
+que seja possível encaixar o hiperplano para eles, para regressão, ou separar meus dados com um
+hiperplano para classificação. Estamos mapeando do espaço de atributo
+original para um espaço confuso. O que acontece se eu adicionar
+neurônios a uma camada? Cada neurônio que adiciono acrescenta uma
+nova dimensão ao meu espaço vetorial. Se eu começar com
+três neurônios de entrada, começo no espaço vetorial R3. Mas se a próxima camada tiver quatro,
+mudo para um espaço vetorial R4. Quando falamos sobre os métodos
+Kernel no curso anterior, tínhamos um conjunto de dados
+que não podia ser separado com um hiperplano no espaço
+vetorial de entrada original. Mas, adicionando a dimensão
+e, em seguida, transformando os dados para preencher a nova
+dimensão, da maneira certa, conseguimos facilmente criar uma fatia
+limpa entre as classes dos dados. O mesmo se aplica aqui com redes neurais. O que acontece se tenho
+vários nós de saída? Ter vários nós de saída permite comparar com vários rótulos e depois propagar
+as áreas correspondentes anteriores. Você pode imaginar a classificação
+de imagens em que há várias entidades ou classes
+dentro de cada imagem. Não podemos apenas prever uma classe
+porque talvez haja muitas, então ter essa flexibilidade é ótimo. Redes neurais podem ser
+arbitrariamente complexas. Para aumentar as dimensões ocultas, adiciono o quê? Para aumentar a composição da função, adiciono o quê? Se eu tiver vários rótulos, adiciono o quê? A resposta correta é
+"neurônios, camadas, saídas". Para alterar as dimensões ocultas,
+altero o número de camadas de neurônios. Isso determina dimensões
+do espaço vetorial, pois o vetor intermediário
+está dentro. Se uma camada tem 4 neurônios, está no espaço vetorial R4, e se uma camada tem 500 neurônios,
+está no espaço vetorial R500. Significa que tem 500 dimensões reais. Adicionar uma camada não altera a dimensão
+da camada anterior, e talvez nem altere a dimensão na camada dela, a menos que tenha um número diferente
+de neurônios na camada anterior. O que camadas adicionais acrescentam
+é mais composição de funções. Lembre-se, G de F de X, é a composição da função G
+com a função F na entrada X. Portanto, primeiro transformo
+X por F e depois transformo esse resultado por G. Quanto mais camadas, mais
+profundamente as funções aninhadas vão. Isso é ótimo para combinar
+funções não lineares em conjunto para criar mapas de atributos
+complicados, difíceis de serem criados por humanos,
+mas ótimos para computadores. Além disso,
+nos permitem colocar nossos dados em uma forma melhor
+para aprender e ter insights dela. Falando de insights, nós os recebemos por
+meio das camadas de saída. Durante a inferência, serão as respostas
+para o problema formulado pelo ML. Se você só quer saber a probabilidade
+de uma imagem ser um cão, pode conseguir com
+apenas um nó de saída. Mas se quiser saber a probabilidade de uma
+imagem ser um gato, cão, pássaro ou alce, então você precisa ter um nó para cada um. As outras três respostas estão erradas,
+pois têm duas ou mais palavras erradas.

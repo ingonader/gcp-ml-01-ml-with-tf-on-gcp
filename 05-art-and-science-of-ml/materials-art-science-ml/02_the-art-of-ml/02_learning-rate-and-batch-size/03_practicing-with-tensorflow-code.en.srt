@@ -1,0 +1,86 @@
+1
+00:00:00,200 --> 00:00:03,195
+Now that we know about all these nodes and
+levers,
+
+2
+00:00:03,195 --> 00:00:05,419
+how do we set them in [INAUDIBLE] code?
+
+3
+00:00:05,419 --> 00:00:07,526
+Let's have a close look
+at some sample code.
+
+4
+00:00:07,526 --> 00:00:12,220
+We control the batchsize,
+we have the input function, the learning
+
+5
+00:00:12,220 --> 00:00:17,010
+rate is a parameter of the optimizer
+algorithm, in this case, FtrlOptimizer.
+
+6
+00:00:18,670 --> 00:00:22,688
+Regularization rate is also a parameter
+of the optimizer algorithm.
+
+7
+00:00:22,688 --> 00:00:28,110
+Once they define the optimizer,
+we pass it to the estimator object.
+
+8
+00:00:28,110 --> 00:00:32,040
+In this case, an instance of the linear
+regressive class of estimators.
+
+9
+00:00:33,142 --> 00:00:36,890
+Instead of setting number of epochs,
+you need to define number of steps.
+
+10
+00:00:36,890 --> 00:00:41,770
+This is because number of epochs is not
+failure-friendly in distributed training.
+
+11
+00:00:41,770 --> 00:00:46,480
+You need to adjust number of steps
+based on batchsize and learning rate.
+
+12
+00:00:46,480 --> 00:00:52,710
+For instance, if you want to process for
+100 epochs and you have a 1,000 examples,
+
+13
+00:00:52,710 --> 00:00:57,400
+then for a batchsize of 1,000,
+number of steps would be 100.
+
+14
+00:00:57,400 --> 00:01:01,350
+For a batchsize of 100,
+number of steps would be 1,000.
+
+15
+00:01:01,350 --> 00:01:04,090
+Basically, number of steps equal number
+
+16
+00:01:04,090 --> 00:01:07,425
+of epochs multiplied by number of
+examples divided by batchsize.
+
+17
+00:01:08,620 --> 00:01:12,470
+And remember, if you decrease the learning
+rate, you'll have to train for
+
+18
+00:01:12,470 --> 00:01:13,881
+more epochs.

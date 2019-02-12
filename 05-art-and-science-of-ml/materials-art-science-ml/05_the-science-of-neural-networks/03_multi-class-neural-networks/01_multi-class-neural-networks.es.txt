@@ -1,0 +1,166 @@
+Ahora que conocemos
+las redes neuronales cómo entrenarlas
+con eficiencia y cómo obtener
+la mayor generalización analicemos las redes neuronales
+de clases múltiples cuando tenemos problemas
+de clasificación de clases múltiples. Esta es una función sigmoide que nos brinda
+las probabilidades calibradas. Es útil en la regresión logística
+para los problemas de clase binaria porque puedo encontrar
+la probabilidad en la clase positiva donde -1 probablemente
+esté en la clase negativa. ¿Qué hacemos cuando
+tenemos más de dos clases? Hay muchos
+problemas de clases múltiples. Este ejemplo es de tipos
+de entradas para la ópera. Quizás el modelo creó
+un tipo de asiento para recomendar. Supongamos que
+hay cuatro lugares para sentarse: el foso de orquesta,
+la platea baja el balcón
+o un palco. Si quiero la probabilidad de cada uno
+de estos tipos de asientos no puedo usar una clasificación binaria
+normal porque hay muchas clases. Si el foso es una clase positiva ¿qué es su clase negativa? ¿Qué hago con las clases restantes? Una idea es transformar el problema
+de una clasificación de clases múltiples a muchos problemas
+de clasificación binaria. Un método es con el enfoque
+uno frente a todos o uno frente al resto. Con este enfoque, iteraremos
+en cada clase. En cada iteración,
+esa clase irá a la clase positiva y las clases restantes
+se agruparán en la clase negativa. Así, estoy prediciendo la probabilidad
+de estar en la clase positiva y la probabilidad
+de no estar en las otras clases. Es importante
+que obtengamos una probabilidad y no solo un nivel de clase para no crear ambigüedades si se predicen múltiples clases
+para una sola muestra. Una vez que se entrenaron los modelos
+de cada clase seleccionada como positiva pasamos a la parte más valiosa
+del AA: las predicciones. Para hacer una predicción, 
+envía su muestra de predicción a través de cada modelo
+de clasificación binaria entrenado. El modelo que produzca la probabilidad
+o el puntaje de confianza más alto se elegirá como
+la clase predicha general. Aunque parece una solución ideal tiene varios problemas. Primero, el ajuste
+de los valores de confianza puede ser diferente para
+cada modelo de clasificación binaria lo que produce un margen
+en nuestra predicción general. Incluso si ese no es el caso cada modelo de clasificación binaria verá distribuciones de datos
+desequilibradas, ya que para cada una de ellas,
+la clase negativa es la suma de todas las demás clases. además de la que está
+marcada para la clase positiva. Este desequilibrio se puede corregir
+con el método uno frente a todos. Con él, en lugar de tener
+un modelo para cada clase hay un modelo para cada
+combinación binaria de las clases. Si hay clases esto significa que habrá n(n-1)/2 modelos
+con n al cuadrado. Para las cuatro clases
+del ejemplo, son seis modelos pero si tuviera 1,000 clases como en una competencia
+de imágenes serían 499,500 modelos. Cada modelo genera un voto
+para su etiqueta predicha +1 o +0 para la etiqueta
+de clase positiva de cada modelo. Todos los votos se acumulan
+y la clase que tiene más, gana. Sin embargo, esto no resuelve
+el problema de la ambigüedad porque según
+la distribución de entradas podría terminar con la misma cantidad
+de votos para clases distintas. ¿Se puede hacer la clasificación
+de clases múltiples sin estos problemas? Una idea podría ser usar
+el enfoque uno frente a todos con las redes neuronales y en lugar de tener
+varios modelos para cada clase hay un modelo con un resultado único
+para cada clase posible. Podemos entrenar
+este modelo con una señal de "mi clase" frente
+a "todas las demás clases" para cada ejemplo que vea. Debemos ser cuidosos con
+el diseño de nuestras etiquetas. En lugar de tener un 1
+para la clase verdadera tendremos un vector de la longitud
+de la cantidad de clases donde la clase verdadera será un 1 y el resto será 0. Así, premiará a la neurona sigmoidal
+para la clase verdadera si se acerca a 1 y penalizará a las otras neuronas
+sigmoidales si también se acercan a 1 con un error mayor que se propagará
+hacia atrás en la red para los pesos. Pero podemos tener problemas
+si hay millones de clases nuevas ya que tendremos millones
+de neuronas de salida. Tendremos millones
+de cálculos de pérdida con millones de errores
+que se propagarán hacia atrás en la red, lo que genera
+costos de computación altos. ¿Hay una forma mejor? Si agregamos una restricción adicional la suma de los resultados será 1 y permitirá que el resultado
+se interprete como probabilidades. Esta función de normalización
+se llama softmax. En cada nodo, encontramos
+el exponente W por X más B y lo dividimos
+por la suma de todos los nodos. Así, garantizamos que todos
+los nodos estén entre 0 y 1 y que la probabilidad total sea de 1. De esta forma, para cada ejemplo tendrá una probabilidad
+normalizada para cada clase donde puede calcular el argmax
+para encontrar la clase con la probabilidad más alta
+de su etiqueta predicha. En TensorFlow, calculamos los logits en la última capa como la aplicación
+de la matriz de W y X con el nodo de sesgo agregado
+a los resultados, si hubiera uno. Esto nos dará una forma
+del tensor del tamaño del lote para la cantidad de clases. Las etiquetas tendrán
+una codificación de un solo 1 con la que la clase
+verdadera obtiene un 1 y las demás clases un 0
+para cada ejemplo. Por lo tanto, también tendrán
+la forma del tensor del tamaño del lote
+por la cantidad de clases. Dado que estamos usando TensorFlow la entropía cruzada de softmax
+con la función de logit las etiquetas pueden ser flexibles. Esto significa que aunque las clases
+son exclusivas mutuamente las probabilidades pueden no serlo. Si tiene tres clases su minilote podría ser 1
+y sus etiquetas 0.15 0.8 y 0.05, como su etiqueta. No tienen codificación de un solo 1 pero sigue habiendo una distribución
+de probabilidades válida porque suman 1. Por último, comparamos los logits
+con las etiquetas con la entropía cruzada de softmax con logits. Como resultado, tendrá la forma del tensor
+y el tamaño del lote. En TensorFlow 1.5, se creó una segunda versión de la función
+y la versión anterior será obsoleta. Para obtener la pérdida promedio
+de ese minilote use "reduce_mean" en el resultado. TensorFlow tiene otra función que puede
+usar, en lugar de calcular el softmax que se llama entropía cruzada
+de softmax disperso con logits En este caso, no usamos
+la codificación en solo 1 ni la codificación suave
+de nuestras etiquetas solo proporcionaremos
+el índice de la clase verdadera entre 0 y la cantidad
+de clases menos uno. Esto significa que las etiquetas son
+un tensor de forma de tamaño de lote. El resultado de la función es el mismo
+que antes, un tensor de forma de tamaño de lote. Y debo reducir la media de ese tensor para
+obtener la pérdida promedio del minilote. Para algunas funciones de softmax usamos solo algunas, porque las clases
+son exclusivas mutuamente. Por ejemplo, la imagen 1
+es la foto de un perro y la imagen 2
+es la foto de un gato. ¿Qué pasa si la imagen 3 es la foto
+de un perro y un gato? Para mi problema de AA quiero averiguar eso. Con softmax, obtendré
+una probabilidad de cada una pero tomaré el argmax
+como mi etiqueta. Así, según la imagen de mi modelo la etiqueta puede ser un perro o puede ser un gato. Eso no es correcto, porque quiero
+saber si ambos están en la imagen y si hay otras clases también. Este es un problema de clasificación
+de clases y etiquetas múltiples. En este caso, quiero la probabilidad
+de cada clase de 0 a 1. Por suerte, TensorFlow
+tiene una función que hace eso llamada entropía cruzada
+sigmoidal con logits que devuelve un tamaño de lote
+por la cantidad de clases del tensor. Debemos evaluar cada nodo de salida
+para cada ejemplo. Cada nodo de salida incluye
+también los pesos que lo generaron. Es decir, un solo paso
+de una red de 100 nodos de salida es como 100 pasos
+de una sola red de salida. Muy caro y difícil de ajustar
+para grandes cantidades de clases. Necesitamos otro método
+para aproximar este softmax con el que podamos reducir
+los costos de computación de los problemas grandes
+de múltiples clases. Por suerte, hay versiones
+aproximadas de softmax. El muestreo de candidatos
+calcula todas las etiquetas positivas pero en lugar de procesar
+todas las etiquetas negativas hace un muestreo aleatorio
+de algunos negativos. lo que debería reducir la computación. La cantidad de negativos de la muestra es un hiperparámetro importante
+para un modelo de muestreo de candidatos. Por motivos evidentes,
+siempre se subestima. En TensorFlow, podemos usar la función
+sample_softmax_loss. Otra forma de aproximarse al softmax es usar la estimación
+contrastiva de contaminación. La estimación contrastiva
+de contaminación aproxima el denominador al softmax que contiene la suma de todos
+los exponentes de los logits mediante el modelado
+de la distribución de resultados. Esto puede brindar una aproximación
+con menos costos de computación para encontrar la pérdida de softmax sin tener que evaluar todas las clases
+en la suma del denominador. El muestreo de candidatos
+es más intuitivo y no requiere
+un modelo muy bueno. Para el contraste de contaminación
+se precisa un modelo muy bueno ya que depende del modelado
+de la distribución de los resultados. Generalmente, usamos estas funciones
+durante el entrenamiento pero para la evaluación
+y la inferencia para una mayor precisión,
+solemos usar el softmax completo. Asegúrese de cambiar la estrategia
+de partición predeterminada de "mod" a "div" para que las pérdidas
+sean consistentes en el entrenamiento,
+la evaluación y la predicción Para el resultado de la clasificación si tenemos etiquetas y probabilidades
+exclusivas mutuamente debemos usar [espacio]. Si las etiquetas
+son exclusivas mutuamente pero las probabilidades no lo son,
+debemos usar [espacio]. Si las etiquetas
+no son exclusivas mutuamente debemos usar [espacio]. La respuesta correcta es la A. Para el resultado de la clasificación si tenemos etiquetas y probabilidades
+exclusivas mutuamente debemos usar
+softmax_cross_entropy_with_logits_v2. esto significa que hay solo
+una clase verdadera para cada ejemplo y permite etiquetas flexibles
+cuando la clase verdades no tiene que ser de un solo 1
+para la clase verdadera sino que puede ser una combinación
+de valores entre 0 y 1 para cada clase siempre que la suma de todos sea 1. Si las etiquetas son exclusivas mutuamente pero las probabilidades no lo son,
+debemos usar sparse_softmax_cross_entropy_with_logits. Esto no permite etiquetas flexibles pero ayuda a producir
+el tamaño de datos del modelo. ya que puede comprimir las etiqueta
+en un índice de la clase verdadera en lugar de un vector de la cantidad
+de clases para cada ejemplo. Si las etiquetas
+no son exclusivas mutuamente debemos usar
+sigmoid_cross_entropy_with_logits. Así, obtenemos la probabilidad
+de cada clase posible lo que nos da puntajes de confianza
+de clase que se representa en el resultado, como una imagen
+con varias clases o si queremos averiguar
+la existencia de cada clase.

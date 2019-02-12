@@ -1,0 +1,83 @@
+Neste laboratório, testamos o
+ajuste manual de hiperparâmetros. Vamos analisar os resultados. Estamos fazendo uma regressão
+linear simples para prever o preço de casas com base
+no número de quartos. Julgaremos a precisão do
+modelo com base no RMSE e ajustaremos a taxa de aprendizado
+e o tamanho do lote para melhorá-lo. Os dados usados neste laboratório
+são do censo de 1990 da Califórnia. Se você vir o bloco
+de notas do Python, só estou carregando algumas
+bibliotecas, nada demais. Recebi um aviso
+que pode ser ignorado. Você pode não receber,
+dependendo da versão usada. Depois, carrego meu conjunto
+de dados deste URL público para um DataFrame do Pandas e examino os dados
+olhando alguns registros e estatísticas dos dados. Um problema deste
+conjunto de dados é que ele está no nível de granularidade
+de blocos de cidade, não no nível das casas. Precisamos corrigir
+isso antes de usar. Para fazer isso, basta criar uma nova coluna de
+dados com base no número total de quartos que temos no nível do
+bloco dividido pelo número de casas, também no nível de bloco, o que nos dá um valor aproximado
+do número de quartos por casa. Se eu descrever isso, receberia estas estatísticas. Antes de passar para
+o treinamento do modelo, vamos ver nosso
+conjunto de dados e lembrar o que
+estamos fazendo. Esta é a coluna que
+acabamos de criar dividindo as duas colunas
+existentes, num_rooms. Esse será nosso recurso. É basicamente a entrada
+do nosso modelo. Nosso modelo prevê
+o valor médio das casas. Esta coluna cria
+o rótulo para nós. Nesta célula, defino o que
+o treinamento precisa. A função do treinamento,
+a função de entrada, vem do DataFrame. O número de quartos
+é o recurso e o valor médio
+da casa é o rótulo. Aqui, eu defino
+o diretório de saída e garanto que ele
+sempre comece do zero removendo o conteúdo
+desse diretório. Mencionamos que seria
+um regressor linear, então é isso
+que estou fazendo. Estou usando o regressor linear
+da biblioteca do TensorFlow e transmitindo o recurso e o
+diretório de saída para o estimador. Em seguida,
+começo o treinamento. Como mencionei, vou julgar o desempenho do
+modelo pelo RMSE. É isso que está
+acontecendo aqui. Se eu executar a célula, vejo que há um número grande
+informado para o RMSE. Isso é insano, porque o RMSE
+deveria estar nas centenas, não em um número
+gigante assim. O que está acontecendo aqui é que há um escalonamento. Isso é informado
+na escala de 100 mil, precisamos aplicar essa escala para ver o valor
+adequado do RMSE. Farei isso no Excel. Basta dividir o valor de Y
+com base na escala mencionada, o restante permanece igual. Se eu executar agora, recebo uma taxa
+de erro de 7,4%. Não é ruim para o começo, mas podemos melhorar. É isso que acontece
+na próxima célula. Vou alterar a taxa de aprendizado
+e o tamanho do lote para ver a alteração na taxa de erro. Da mesma maneira,
+a escala permanece igual. Agora, defino
+um tamanho de lote de 10. Da mesma maneira,
+começaremos do zero. Sempre removemos
+o diretório de saída. Incluímos uma taxa
+de aprendizado de 0,01. Novamente é
+um regressor linear. o restante permanece igual. A única diferença aqui é que como temos um tamanho
+de lote menor, precisamos de mais etapas, é isso que está acontecendo. Depois, mostramos o RMSE
+para ver o que aconteceu. Lembre-se, antes de alterar a taxa
+de aprendizado e o tamanho do lote, estávamos em 7,4. Com essa pequena mudança, fomos para 3,6. Faça testes com esses hiperparâmetros
+para ter o melhor desempenho possível. Na última vez que
+tentei, consegui 2,528. É isso que eu queria
+dizer neste laboratório. Uma pergunta frequente é se há um método padrão
+para ajustar esses parâmetros. A resposta curta é: o efeito de hiperparâmetros
+depende dos dados, então não há atalhos. Você precisa fazer o
+teste nos seus dados. Há algumas diretrizes que
+podem ajudar a guiar você. Quando você monitora
+o erro de treinamento, ele deve diminuir
+constantemente. Geralmente, é rápido no começo e depois estabiliza conforme
+o treinamento converge. Se o treinamento
+não convergir, tente executar por mais tempo. Se a queda do erro de
+treinamento demorar muito, aumentar a taxa de
+aprendizado por ajudar. Mas, às vezes, pode ocorrer o
+oposto se a taxa for alta demais. Se o erro de treinamento
+variar muito, tente reduzir a
+taxa de aprendizado. Essa redução, mais o
+número grande de etapas ou um tamanho de lote maior
+geralmente são uma boa combinação. Lotes muito pequenos também
+podem causar instabilidade. Teste primeiro valores maiores, como 100 ou mil,
+e diminua até ver a queda. Nunca siga estas diretrizes estritamente,
+porque os efeitos dependem dos dados. Faça testes e
+verifique os resultados. Como um bônus, você pode adicionar mais
+recursos e ver os resultados. Não deve demorar muito. Entre cinco e 10 minutos, você poderá adicionar recursos
+e ver o desempenho do modelo.

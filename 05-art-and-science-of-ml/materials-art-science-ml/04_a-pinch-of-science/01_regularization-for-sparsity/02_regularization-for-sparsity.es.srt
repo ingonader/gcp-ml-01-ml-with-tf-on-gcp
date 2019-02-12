@@ -1,0 +1,476 @@
+1
+00:00:00,490 --> 00:00:02,550
+Primero, veamos cómo podemos usar
+
+2
+00:00:02,550 --> 00:00:05,940
+la regularización para crear modelos
+más dispersos y simples.
+
+3
+00:00:06,380 --> 00:00:09,292
+Anteriormente, vimos la regularización L2
+
+4
+00:00:09,552 --> 00:00:12,455
+que es la suma de los cuadrados
+de los pesos de los parámetros
+
+5
+00:00:12,565 --> 00:00:13,690
+a la función de pérdida.
+
+6
+00:00:14,020 --> 00:00:16,105
+Esto es útil
+para que los pesos sean pequeños
+
+7
+00:00:16,205 --> 00:00:18,485
+para tener estabilidad
+y una solución única
+
+8
+00:00:18,655 --> 00:00:21,535
+pero el modelo puede volverse
+demasiado grande y complejo
+
+9
+00:00:21,895 --> 00:00:25,400
+ya que todos los atributos pueden
+tener pesos muy bajos.
+
+10
+00:00:26,630 --> 00:00:29,775
+Si usamos la regularización L1
+
+11
+00:00:29,965 --> 00:00:32,890
+suma el valor absoluto
+de los pesos de los parámetros
+
+12
+00:00:32,890 --> 00:00:34,040
+a la función de pérdida
+
+13
+00:00:34,210 --> 00:00:37,910
+lo que tiende a llevar los pesos
+de los atributos más débiles a cero.
+
+14
+00:00:38,330 --> 00:00:42,200
+Es una especie de selector de atributos
+que elimina todos los atributos malos
+
+15
+00:00:42,200 --> 00:00:44,335
+y deja solo los más fuertes en el modelo.
+
+16
+00:00:45,085 --> 00:00:47,425
+Este modelo disperso
+tiene muchos beneficios.
+
+17
+00:00:47,765 --> 00:00:50,680
+Primero, con menos coeficientes
+que almacenar y cargar
+
+18
+00:00:50,760 --> 00:00:54,655
+se reduce el almacenamiento y la memoria
+que se necesita, con un tamaño más pequeño
+
+19
+00:00:55,095 --> 00:00:57,570
+lo que es muy importante
+para modelos incorporados.
+
+20
+00:00:58,190 --> 00:00:59,800
+Además, con menos atributos
+
+21
+00:00:59,860 --> 00:01:03,805
+hay menos multiplicaciones y sumas,
+lo que aumenta la velocidad del entrenamiento
+
+22
+00:01:03,805 --> 00:01:06,420
+y, más importante,
+la velocidad de las predicciones.
+
+23
+00:01:07,190 --> 00:01:10,200
+Muchos modelos de AA
+ya tienen suficientes atributos.
+
+24
+00:01:10,600 --> 00:01:12,290
+Por ejemplo, digamos
+que tengo datos
+
+25
+00:01:12,290 --> 00:01:14,805
+que contienen la fecha
+y la hora de pedidos hechos.
+
+26
+00:01:15,145 --> 00:01:16,540
+Nuestro modelo de primer orden
+
+27
+00:01:16,540 --> 00:01:19,250
+probablemente tendría
+7 atributos para los días de la semana
+
+28
+00:01:19,330 --> 00:01:21,090
+y 24 para las horas del día
+
+29
+00:01:21,470 --> 00:01:23,280
+y posiblemente, otros atributos más.
+
+30
+00:01:23,730 --> 00:01:28,875
+Por ende, los días de la semana más
+las horas del día ya son 31 entradas.
+
+31
+00:01:30,415 --> 00:01:32,980
+Y si queremos ver
+el efecto del segundo orden
+
+32
+00:01:32,980 --> 00:01:35,620
+del día de la semana combinado
+con la hora del día.
+
+33
+00:01:35,990 --> 00:01:39,810
+Ahí tenemos otras 168 entradas,
+además de nuestras 31
+
+34
+00:01:40,140 --> 00:01:43,210
+más muchas otras,
+para un total de casi 200 atributos.
+
+35
+00:01:43,410 --> 00:01:47,360
+Solo por un campo con fecha y hora
+más otros atributos que usemos.
+
+36
+00:01:48,070 --> 00:01:51,540
+Si combinamos esto con codificación one-hot
+para estados de EE.UU.
+
+37
+00:01:51,700 --> 00:01:55,300
+el producto cartesiano triple
+ya alcanza un total de 8400 atributos
+
+38
+00:01:55,530 --> 00:01:59,135
+y muchos de ellos probablemente sean
+muy dispersos y llenos de ceros.
+
+39
+00:01:59,635 --> 00:02:02,380
+Esto aclara por qué
+la selección integrada de atributos
+
+40
+00:02:02,380 --> 00:02:05,260
+mediante una regularización L1
+puede ser muy útil.
+
+41
+00:02:06,210 --> 00:02:09,039
+¿Con qué estrategias podemos eliminar
+coeficientes de atributos
+
+42
+00:02:09,039 --> 00:02:11,955
+que no se usan,
+además de la regularización L1?
+
+43
+00:02:13,745 --> 00:02:15,510
+Podríamos incluir conteos simples
+
+44
+00:02:15,510 --> 00:02:18,110
+de los atributos con valores
+diferentes de cero.
+
+45
+00:02:19,480 --> 00:02:22,690
+La norma L0 es simplemente
+un conteo de los pesos que no son cero.
+
+46
+00:02:22,940 --> 00:02:27,780
+Optimizar para esta norma es un problema
+NP-complejo de optimización no convexa.
+
+47
+00:02:28,120 --> 00:02:32,525
+Este diagrama ilustra una superficie
+de error de optimización no convexa.
+
+48
+00:02:33,005 --> 00:02:35,850
+Podemos ver que hay muchos picos
+y valles locales
+
+49
+00:02:36,040 --> 00:02:38,440
+y este es solo un ejemplo
+sencillo y unidimensional.
+
+50
+00:02:38,740 --> 00:02:42,540
+Tendría que explorar muchos
+puntos iniciales con descenso de gradiente
+
+51
+00:02:42,610 --> 00:02:45,495
+por lo que debe resolver por completo
+un problema NP-complejo.
+
+52
+00:02:46,295 --> 00:02:50,525
+Afortunadamente, la norma L1,
+tal como la norma L2, es convexa
+
+53
+00:02:51,045 --> 00:02:53,480
+pero también fomenta la dispersión
+en el modelo.
+
+54
+00:02:53,820 --> 00:02:58,460
+En esta imagen se trazan las distribuciones
+de probabilidad de las normas L1 y L2.
+
+55
+00:02:58,960 --> 00:03:02,635
+Note que la norma L2
+tiene un pico mucho más suave en cero
+
+56
+00:03:02,855 --> 00:03:05,665
+por lo que las magnitudes de los pesos
+se acercan más a cero.
+
+57
+00:03:05,945 --> 00:03:09,870
+Sin embargo, la norma L1 es como una cima
+centrada en cero.
+
+58
+00:03:10,450 --> 00:03:15,150
+Por ende, es más claro que la probabilidad
+está exactamente en cero que la norma L2.
+
+59
+00:03:15,780 --> 00:03:19,335
+Existe una cantidad infinita de normas
+generalizadas por la norma P.
+
+60
+00:03:19,675 --> 00:03:22,320
+Otras normas, como la norma L0
+de la que ya hablamos
+
+61
+00:03:22,320 --> 00:03:25,055
+que es el conteo de los valores de un vector
+que no son cero
+
+62
+00:03:25,375 --> 00:03:26,730
+y la norma L infinito
+
+63
+00:03:26,920 --> 00:03:30,005
+que es el valor absoluto máximo
+de cualquier valor en un vector.
+
+64
+00:03:30,315 --> 00:03:32,740
+En la práctica, generalmente la norma L2
+
+65
+00:03:32,740 --> 00:03:35,815
+nos ofrece modelos más generalizables
+que la norma L1.
+
+66
+00:03:36,105 --> 00:03:36,857
+Sin embargo
+
+67
+00:03:36,857 --> 00:03:41,510
+tendremos modelos más complejos y pesados
+si usamos L2 en lugar de L1.
+
+68
+00:03:41,960 --> 00:03:45,710
+Esto sucede porque los atributos
+suelen estar fuertemente correlacionados
+
+69
+00:03:45,950 --> 00:03:50,925
+y la regularización L1 elige uno de ellos
+y descarta los otros
+
+70
+00:03:51,445 --> 00:03:56,160
+mientras que la regularización L2 conserva
+ambos atributos con magnitudes de peso bajas.
+
+71
+00:03:56,710 --> 00:03:59,285
+Con L1
+tendremos un modelo más pequeño
+
+72
+00:03:59,585 --> 00:04:01,020
+pero menos predictivo.
+
+73
+00:04:01,350 --> 00:04:03,515
+¿Hay alguna manera de aprovechar ambas?
+
+74
+00:04:04,625 --> 00:04:09,640
+La red elástica es una combinación lineal
+de las penalizaciones de L1 y L2.
+
+75
+00:04:10,330 --> 00:04:14,110
+Así, se aprovecha la dispersión
+para los atributos poco predictivos
+
+76
+00:04:14,300 --> 00:04:16,689
+y se conservan los atributos
+decentes y buenos
+
+77
+00:04:16,809 --> 00:04:19,194
+con pesos más bajos,
+para una buena generalización.
+
+78
+00:04:19,474 --> 00:04:20,684
+La única compensación
+
+79
+00:04:20,684 --> 00:04:23,810
+es que hay dos hiperparámetros
+en vez de uno que ajustar
+
+80
+00:04:24,050 --> 00:04:26,950
+junto con dos parámetros Lambda
+de regularización diferentes.
+
+81
+00:04:27,990 --> 00:04:31,330
+¿Qué tiende a hacer la regularización L1
+con los pesos de los parámetros
+
+82
+00:04:31,330 --> 00:04:33,720
+de los atributos poco predictivos
+de un modelo?
+
+83
+00:04:35,260 --> 00:04:37,720
+La respuesta correcta es:
+C. Tener valores de cero.
+
+84
+00:04:38,110 --> 00:04:40,020
+Cuando usamos técnicas de regularización
+
+85
+00:04:40,020 --> 00:04:44,455
+agregamos una penalización a la función
+de pérdida o a la función objetivo.
+
+86
+00:04:44,755 --> 00:04:47,052
+Así, no sobreoptimiza
+las variables de decisión
+
+87
+00:04:47,052 --> 00:04:48,100
+o pesos de parámetros.
+
+88
+00:04:48,660 --> 00:04:51,190
+Escogemos la penalización
+por conocimiento previo
+
+89
+00:04:51,280 --> 00:04:52,720
+la función, la forma, etc.
+
+90
+00:04:53,500 --> 00:04:56,820
+Hemos visto que la regularización L1
+induce dispersión en el modelo.
+
+91
+00:04:56,960 --> 00:04:59,870
+Dada su distribución de probabilidades
+con un pico alto en cero
+
+92
+00:05:00,125 --> 00:05:02,360
+la mayoría de los pesos,
+salvo los muy predictivos
+
+93
+00:05:02,360 --> 00:05:04,950
+cambiarán de sus valores
+no regularizados a cero.
+
+94
+00:05:05,980 --> 00:05:09,689
+La regularización L2 se usará
+para tener magnitudes bajas
+
+95
+00:05:09,729 --> 00:05:12,617
+y se usará su negativo
+para tener magnitudes altas.
+
+96
+00:05:12,847 --> 00:05:14,265
+Ambas son incorrectas.
+
+97
+00:05:15,085 --> 00:05:16,585
+Tener todos los valores positivos
+
+98
+00:05:16,585 --> 00:05:19,930
+agregaría muchas limitaciones adicionales
+al problema de optimización.
+
+99
+00:05:20,020 --> 00:05:22,530
+Todas las variables de decisión
+serían mayores que cero
+
+100
+00:05:22,700 --> 00:05:25,320
+algo que tampoco es regularización L1.

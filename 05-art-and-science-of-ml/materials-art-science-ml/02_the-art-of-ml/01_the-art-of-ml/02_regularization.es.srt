@@ -1,0 +1,430 @@
+1
+00:00:00,530 --> 00:00:04,040
+Comencemos con la primera sección
+de este módulo: regularización.
+
+2
+00:00:04,160 --> 00:00:08,030
+Nuestro objetivo al entrenar el modelo
+es minimizar el valor de la pérdida.
+
+3
+00:00:08,030 --> 00:00:09,795
+Si traza la curva de pérdida
+
+4
+00:00:10,135 --> 00:00:12,180
+en los datos de entrenamiento
+y los de prueba
+
+5
+00:00:12,180 --> 00:00:13,895
+se verá más o menos así.
+
+6
+00:00:14,335 --> 00:00:19,655
+El gráfico muestra la pérdida
+en el eje y frente al tiempo en el eje x.
+
+7
+00:00:20,235 --> 00:00:21,675
+¿Nota algo extraño?
+
+8
+00:00:22,075 --> 00:00:25,795
+El valor de pérdida desciende
+en los datos de entrenamiento
+
+9
+00:00:26,165 --> 00:00:29,330
+pero comienza a subir
+en cierto punto en los datos de prueba.
+
+10
+00:00:29,720 --> 00:00:30,890
+Eso no es bueno.
+
+11
+00:00:31,500 --> 00:00:34,352
+Claramente, tenemos algo de sobreajuste
+
+12
+00:00:35,042 --> 00:00:36,325
+que parece correlacionarse
+
+13
+00:00:36,325 --> 00:00:38,450
+con la cantidad
+de iteraciones de entrenamiento.
+
+14
+00:00:38,770 --> 00:00:39,995
+¿Qué podemos hacer?
+
+15
+00:00:40,175 --> 00:00:43,380
+Podríamos reducir la cantidad
+de iteraciones del entrenamiento.
+
+16
+00:00:43,740 --> 00:00:45,970
+La interrupción anticipada
+sin duda es una opción
+
+17
+00:00:46,030 --> 00:00:47,680
+pero deben de haber mejores formas.
+
+18
+00:00:48,310 --> 00:00:50,995
+Aquí aparece la regularización.
+
+19
+00:00:51,975 --> 00:00:55,135
+Usemos nuestra intuición
+en TensorFlow Playground.
+
+20
+00:00:55,565 --> 00:00:59,010
+Seguramente usó Playground
+en cursos anteriores.
+
+21
+00:00:59,040 --> 00:01:00,620
+Para que lo recuerde
+
+22
+00:01:01,010 --> 00:01:04,625
+TensorFlow Playground
+es una herramienta para visualizar
+
+23
+00:01:04,625 --> 00:01:06,405
+cómo aprenden las redes neuronales.
+
+24
+00:01:07,355 --> 00:01:12,385
+La usamos bastante en esta especialización
+para entender conceptos fácilmente.
+
+25
+00:01:12,885 --> 00:01:15,365
+Mire la pantalla con atención.
+
+26
+00:01:16,205 --> 00:01:18,180
+Hay algo extraño aquí.
+
+27
+00:01:18,620 --> 00:01:20,985
+Note que una región
+en la parte inferior izquierda
+
+28
+00:01:20,985 --> 00:01:22,400
+que tiende a azul
+
+29
+00:01:22,950 --> 00:01:25,240
+pero no hay nada en los datos
+que sugiera azul.
+
+30
+00:01:25,500 --> 00:01:28,720
+La decisión del modelo es un poco extraña.
+
+31
+00:01:29,490 --> 00:01:31,000
+¿Por qué cree que sucede esto?
+
+32
+00:01:31,460 --> 00:01:36,110
+¿Ve el grosor relativo de las 5 líneas
+de la entrada a la salida?
+
+33
+00:01:36,560 --> 00:01:39,860
+Estas líneas muestran el peso relativo
+de los cinco atributos.
+
+34
+00:01:40,440 --> 00:01:43,675
+Las líneas que salen de x1 y x2
+
+35
+00:01:43,815 --> 00:01:47,160
+son mucho más gruesas
+que las de las combinaciones de atributos.
+
+36
+00:01:47,620 --> 00:01:50,550
+Las combinaciones de atributos
+contribuyen mucho menos
+
+37
+00:01:50,550 --> 00:01:53,330
+al modelo que los atributos
+normales no combinados.
+
+38
+00:01:53,810 --> 00:01:57,050
+Si eliminamos todas las combinaciones,
+obtenemos un modelo más sensato.
+
+39
+00:01:57,449 --> 00:02:00,637
+Pruébelo para ver la manera en que
+los límites curvos
+
+40
+00:02:00,637 --> 00:02:03,125
+que sugieren un sobreajuste desaparecen
+
+41
+00:02:03,125 --> 00:02:04,907
+y la pérdida de prueba converge.
+
+42
+00:02:06,190 --> 00:02:08,040
+Después de 1,000 iteraciones
+
+43
+00:02:08,270 --> 00:02:11,125
+la pérdida de prueba
+debería tener un valor ligeramente menor
+
+44
+00:02:11,125 --> 00:02:13,235
+que cuando había
+combinaciones de atributos.
+
+45
+00:02:14,175 --> 00:02:17,780
+Sus resultados pueden variar un poco,
+según el conjunto de datos que tenga.
+
+46
+00:02:19,000 --> 00:02:22,830
+Los datos de este ejercicio
+son datos lineales más ruido.
+
+47
+00:02:23,710 --> 00:02:27,960
+Si usa un modelo demasiado complicado,
+como el que tenía muchas combinaciones
+
+48
+00:02:27,960 --> 00:02:31,440
+es más probable que el ruido se introduzca
+en los datos de entrenamiento
+
+49
+00:02:31,870 --> 00:02:35,650
+lo que hará que el modelo funcione mal
+en los datos de prueba.
+
+50
+00:02:36,220 --> 00:02:39,120
+Claramente, la interrupción anticipada
+no servirá en este caso.
+
+51
+00:02:39,660 --> 00:02:42,750
+Necesitamos controlar
+la complejidad del modelo.
+
+52
+00:02:43,130 --> 00:02:45,955
+¿Cómo podemos medir la complejidad
+para poder evitarla?
+
+53
+00:02:46,455 --> 00:02:49,760
+Concluimos que, en general,
+los modelos más simples son mejores.
+
+54
+00:02:49,970 --> 00:02:52,870
+No queremos cocinar
+con todas las especias en el anaquel.
+
+55
+00:02:52,960 --> 00:02:54,880
+Hay todo un campo que aborda esto
+
+56
+00:02:54,880 --> 00:02:57,560
+que se llama teoría
+de la generalización (teoría G)
+
+57
+00:02:57,660 --> 00:03:01,190
+que se dedica a definir
+el marco de trabajo estadístico.
+
+58
+00:03:01,920 --> 00:03:05,099
+Lo más fácil que uno puede hacer
+es seguir su intuición
+
+59
+00:03:05,099 --> 00:03:09,110
+basándose en los principios establecidos
+en el siglo XIV por Guillermo de Ockham.
+
+60
+00:03:09,490 --> 00:03:13,200
+Cuando entrenamos un modelo, aplicamos
+el principio de la Navaja de Ockham
+
+61
+00:03:13,590 --> 00:03:16,550
+como nuestra guía heurística
+que favorece los modelos simples
+
+62
+00:03:16,550 --> 00:03:18,600
+con menos suposiciones
+para el entrenamiento.
+
+63
+00:03:18,690 --> 00:03:21,900
+Revisemos algunas de las técnicas
+de regularización más comunes
+
+64
+00:03:21,990 --> 00:03:24,690
+que nos pueden ayudar
+a poner en práctica este principio.
+
+65
+00:03:24,770 --> 00:03:27,565
+La idea es penalizar
+la complejidad del modelo.
+
+66
+00:03:27,915 --> 00:03:30,760
+Hasta ahora, en nuestro
+proceso de entrenamiento
+
+67
+00:03:31,090 --> 00:03:34,460
+hemos intentado minimizar la pérdida
+en los datos del modelo.
+
+68
+00:03:34,560 --> 00:03:37,695
+Debemos equilibrar
+con respecto a la complejidad del modelo.
+
+69
+00:03:38,225 --> 00:03:41,040
+Antes de ver cómo medir
+la complejidad de un modelo
+
+70
+00:03:41,040 --> 00:03:43,180
+veamos por qué hablamos
+
+71
+00:03:43,180 --> 00:03:45,630
+de equilibrar la complejidad
+con relación a la pérdida.
+
+72
+00:03:45,700 --> 00:03:50,495
+La verdad es que los modelos
+demasiado simplificados son inútiles.
+
+73
+00:03:50,825 --> 00:03:54,200
+Si lo llevamos a un extremo,
+terminaremos con un modelo nulo.
+
+74
+00:03:54,590 --> 00:03:56,480
+Debemos encontrar el equilibrio correcto
+
+75
+00:03:56,740 --> 00:04:00,050
+entre la simplicidad y el ajuste preciso
+de los datos de entrenamiento.
+
+76
+00:04:00,120 --> 00:04:02,510
+Espero que ahora esté claro
+por qué este enfoque
+
+77
+00:04:02,580 --> 00:04:05,400
+tiene más sentido
+que la interrupción anticipada.
+
+78
+00:04:05,810 --> 00:04:10,075
+La regularización es uno de los campos
+de investigación más importantes del AA.
+
+79
+00:04:10,365 --> 00:04:12,960
+Se han publicado muchas técnicas
+y aparecerán más.
+
+80
+00:04:13,300 --> 00:04:15,330
+Ya hablamos
+de la interrupción anticipada.
+
+81
+00:04:15,460 --> 00:04:17,714
+También comenzamos
+a explorar el grupo de métodos
+
+82
+00:04:17,714 --> 00:04:20,624
+conocidos como penalizaciones
+por norma de parámetros.
+
+83
+00:04:21,254 --> 00:04:23,885
+También existen métodos de aumento
+del conjunto de datos
+
+84
+00:04:24,035 --> 00:04:27,800
+robustez frente al ruido,
+representación dispersa, entre otros.
+
+85
+00:04:28,990 --> 00:04:33,660
+En este módulo, revisaremos
+los métodos de regularización L1 y L2
+
+86
+00:04:33,670 --> 00:04:36,585
+del grupo de técnicas de
+penalizaciones por norma de parámetros.
+
+87
+00:04:37,055 --> 00:04:38,180
+Antes de eso
+
+88
+00:04:38,330 --> 00:04:42,610
+recordemos cuál es el problema
+que resolvemos con la regularización.
+
+89
+00:04:43,990 --> 00:04:47,900
+La regularización es cualquier técnica
+que nos ayude a generalizar un modelo.
+
+90
+00:04:48,170 --> 00:04:51,470
+Un modelo generalizado funciona bien
+no solo con datos de entrenamiento
+
+91
+00:04:51,470 --> 00:04:53,720
+sino también con datos
+de prueba no conocidos.

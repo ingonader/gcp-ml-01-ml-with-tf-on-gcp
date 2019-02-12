@@ -1,0 +1,152 @@
+Agora que aprendemos
+mais sobre redes neurais, como treiná-las e conseguir mais generalização delas, vamos falar sobre
+redes neurais multiclasse ao trabalhar com problemas
+de classificação multiclasse. Aqui, novamente, está a função sigmoide, o que nos dá probabilidades calibradas. É útil na regressão legítima
+para problemas de classe binária, ou posso encontrar a probabilidade
+na classe positiva, em que 1 menos isso provavelmente está na classe negativa. O que fazer, então, quando temos
+mais de duas classes? Há muitos problemas de multiclasse. Este é o exemplo de tipos de bilhetes
+em um salão da Ópera. Talvez o modelo seja sobre qual
+tipo de assento recomendar. Digamos que há
+quatro lugares para sentar, na plateia, no balcão, em círculo ou em um camarote. Se quero uma probabilidade para cada
+tipo de assento, não posso usar uma classificação binária
+normal, pois tenho muitas classes. Se plateia é minha classe positiva, qual é a classe negativa? O que faço com as classes restantes? Uma ideia é transformar o problema
+da classificação multiclasse em vários problemas
+de classificação binária. Um método para fazer isso é a abordagem
+um contra todos ou um contra o restante. Nesta abordagem, vamos iterar
+por cada classe. Para cada iteração, essa classe
+será positiva e todas as classes restantes
+serão agrupadas na classe negativa. Dessa maneira, estou prevendo a
+probabilidade de estar na classe positiva e, inversamente, a probabilidade de
+não estar nas outras classes. É importante produzir
+nossa probabilidade, e não apenas o rótulo da classe. Assim, não criamos ambiguidades se várias classes forem previstas
+para uma única amostra. Quando o modelo treinado para cada classe
+for selecionado como positivo, passaremos para a parte mais valiosa
+do aprendizado de máquina: previsões. Para fazer uma previsão,
+envie as amostras de previsões por meio de cada modelo
+de classificação binária treinado. O modelo que produzir a maior
+probabilidade ou pontuação de confiança será escolhido como
+a classe geral prevista. Mesmo que isso pareça uma ótima solução, ela tem vários problemas. Primeiro: a habilidade da pontuação
+de confiança pode ser diferente para cada um
+dos modelos de classificação binária, o que distorce a previsão geral. No entanto, mesmo que não seja o caso, cada modelo de classificação binária vê distribuições de dados
+muito desequilibradas, pois, para cada uma, a classe negativa
+é a soma de todas as outras classes, além da que está marcada
+para a classe positiva. Uma possível correção para esse problema
+de desequilíbrio é o método um contra um. Em vez de ter um modelo para cada classe, temos um modelo para cada
+combinação binária das classes. Se há não nenhuma classe, isso significa que haverá n
+vezes n menos 1, acima de dois modelos,
+de ordem n ao quadrado. Já para as quatro classes
+em nosso exemplo, são seis modelos, mas se eu tivesse mil classes, imagine essa concorrência, haveria 499.500 modelos. Cada modelo produz basicamente
+um voto para o rótulo previsto, mais 1 ou mais 0 para o rótulo
+de classe positivo de cada modelo. Então todos os votos são acumulados,
+e vence a classe que tem mais. No entanto, isso não corrige
+o problema de ambiguidade, porque, com base
+na distribuição de entrada, você pode acabar tendo o mesmo número
+de votos para classes diferentes. Há uma maneira de fazer uma classificação
+de várias classes sem grandes problemas? Uma ideia poderia ser usar a abordagem
+um contra todos com redes neurais, em que, em vez de ter vários modelos
+para cada classe, ter um único modelo com uma saída única
+para cada classe possível. Podemos treinar este modelo
+em um sinal de ''minha classe'' contra ''todas as outras classes''
+para cada exemplo que ele vê. Portanto, precisamos ter cuidado sobre
+como projetamos nossos rótulos. Em vez de ter apenas um
+para a nossa verdadeira classe, teremos um vetor do comprimento
+do número de classes, em que as classes
+verdadeiras correspondentes serão 1 e o restante será zero. Assim, você recompensa o neurônio sigmoide
+correspondente para a classe verdadeira e, se ficar muito próximo de 1, ele punirá os outros neurônios sigmoides
+se também se aproximarem de 1. Com um erro maior para ser retropropagado
+por meio da rede das ponderações. No entanto, podemos ter problemas
+com milhões de novas classes, uma vez que teremos
+milhões de neurônios de saída. Assim, milhões de cálculos de perda, seguidos por milhões de erros, são
+retropropagados pela rede. Isso usa muito poder de computação. Há uma maneira melhor? Se simplesmente adicionarmos
+uma restrição adicional, a soma das saídas será igual a 1. Isso permite que a saída seja
+interpretada como probabilidades. Essa função de normalização
+é chamada de softmax. Em cada nó, encontramos
+o exponencial de W vezes X, mais B e dividimos
+pela soma de todos os nós. Isso garante que todos os nós
+estejam entre 0 e 1 e que a probabilidade total
+seja igual a 1, como deveria. Desta forma, para cada exemplo, você terá uma probabilidade
+normalizada para cada classe, em que poderá pegar esse argmax
+para encontrar a classe, a maior probabilidade
+como seu rótulo previsto. No TensorFlow, calculamos nossos logits em nossa camada final como
+uma malha de aplicação de W e X, com o nó tendencioso adicionado
+ao resultado, se há um. Isso nos dará uma forma de tensor do
+tamanho do lote para o número de classes. Nossos rótulos passam pela codificação
+one-hot, como falamos antes, em que a classe verdadeira tem 1 e as outras classes recebem 0,
+para cada exemplo. Portanto, também tendo a forma de tensor do tamanho de lote,
+pelo número de classes. Observe que, como estamos usando
+a entropia cruzada softmax do TensorFlow com a função logits, os rótulos podem ser suaves. O que quero dizer é que, mesmo que as classes ainda sejam
+mutuamente exclusivas, as probabilidades não precisam ser. Se você tem três classes, por exemplo, seu minilote pode ser
+um com rótulos de 0,15, 0,8 e 0,05 como rótulo. Eles não estão
+com uma codificação one-hot, porém, ainda há uma distribuição de
+probabilidade válida, pois eles somam 1. Por fim, comparamos os logits e os rótulos
+com a entropia cruzada softmax com logits. Isso conseguirá um resultado de tensor
+do tamanho de lote da forma. No TensorFlow 1.5 e posterior,
+uma versão dois da função com a versão um da função
+definida para ser obsoleta. Para ter a perda média desse minilote, use apenas reduce_mean na saída. Por conveniência, o TensorFlow tem
+outra função que você pode usar para calcular o softmax, chamada entropia
+cruzada softmax esparsa com logits. Nesse caso, eliminamos
+a codificação one-hot ou a codificação flexível
+dos rótulos e, em vez disso, apenas
+fornecemos o índice da classe real entre 0
+e o número de classes menos 1. Isso significa que os rótulos são agora
+um tensor de tamanho de lote da forma. A saída da função é a mesma de antes como
+um tensor de tamanho de lote da forma. Eu ainda vou reduzir a média daquele
+tensor para ter a perda média do minilote. Lembre-se, para ambas as funções softmax, estamos apenas usando-as porque
+nossas classes são mutuamente exclusivas. Por exemplo, a imagem 1
+é apenas uma foto de um cachorro e a imagem 2 é apenas
+a foto de um gato. Porém, e se a imagem 3 for uma foto
+de um cachorro e de um gato? E para o meu problema de ML, quero saber isso. Usando o softmax, eu vou ter uma
+probabilidade para cada uma, mas vou pegar o argmax dele
+como meu rótulo. Dependendo da imagem
+no meu modelo, ela pode ser rotulada
+como um cão ou como um gato. Isso não é bom, porque quero saber
+se ambos estão lá e se também há outras classes. Este é um problema de classificação
+de vários rótulos e multiclasse. Nesse caso, quero que a probabilidade
+de cada classe seja de 0 a 1. Felizmente, TensorFlow tem uma função
+bacana que faz exatamente isso, chamada entropia cruzada
+sigmoide com logits, que retorna um tamanho de lote
+pelo número de tensores de classes. Precisamos avaliar cada nó de saída
+para cada exemplo. Cada nó de saída significa também
+cada ponderação que leva a ele. Assim, uma única etapa de 100 redes
+de nó de saída é como uma centena de etapas
+de uma única rede de saída. Extremamente caro e difícil de escalonar
+para um grande número de classes. Precisamos de uma maneira
+de aproximar este softmax, para reduzir custos de competição para
+problemas multiclasses muito grandes. Felizmente, há versões
+aproximadas do softmax. A amostragem de candidatos calcula
+para todos os rótulos positivos, mas, em vez de também reformar
+o cálculo em todos os rótulos negativos, ela aleatoriamente
+mostra alguns negativos. O que pode reduzir
+bastante o cálculo. O número de amostras negativas é um importante hiperparâmetro para
+um modelo de amostragem de candidato. É sempre, por razões óbvias, subestimado. No TensorFlow, podemos usar a função
+sample_softmax_loss. Outra maneira de aproximar o softmax é usar a estimativa de contraste de ruído. Ela aproxima o denominador de softmax, que contém a soma de todas
+as exponenciais dos logits, modelando a distribuição de saídas. Isso pode fornecer médias aproximadas
+de modo menos dispendioso para encontrar
+nossa perda de softmax, sem ter que avaliar todas
+as classes na soma do denominador. A amostragem de candidatos
+é mais intuitiva e não requer um modelo muito bom. O contraste de ruído requer
+um modelo realmente bom, pois depende da distribuição
+de modelagem das saídas. Normalmente, usaremos essas funções
+durante o treinamento, mas, para avaliação de exemplo, para melhor precisão, geralmente
+usamos o softmax completo. Para fazer isso, certifique-se de alterar
+a estratégia de partição padrão de modo para div, para que as perdas sejam consistentes
+entre treinamento, avaliação e previsão. Para nossa saída de classificação, se tivermos rótulos e probabilidades
+mutuamente exclusivos, devemos usar o quê? Se os rótulos são mutuamente exclusivos, as probabilidades não são,
+então o que usamos? Se nossos rótulos não forem exclusivos, o que usamos? A resposta correta é A. Para nossa saída de classificação, se tivermos rótulos e probabilidades
+mutuamente exclusivos, usamos a entropia cruzada softmax
+com logits versão 2. Isso significa que há apenas
+uma classe verdadeira para cada exemplo, e permitimos rótulos suaves
+com a classe verdadeira. Não precisa ser um com codificação 
+one-hot para essa classe, mas pode ser qualquer combinação
+de valores entre 0 e 1 para cada classe, contanto que todos eles somem até 1. Se os rótulos são mutuamente exclusivos,
+as probabilidades não são. Então usamos entropia
+cruzada softmax esparsa com logits. Isso não permite rótulos de software, mas ajuda a reduzir o tamanho
+de dados do modelo, pois pode compactar os rótulos, e eles
+estão sendo o índice da classe verdadeira, em vez de um vetor do número
+de classes para cada exemplo. Se nossos rótulos não são
+mutuamente exclusivos, usamos entropia
+cruzada sigmoide com logits. Dessa forma, teremos uma probabilidade
+para cada classe possível, o que pode nos fornecer pontuações
+de confiança de cada classe sendo representada na saída,
+como uma imagem com multiclasses, ou vamos querer saber
+a existência de cada classe.

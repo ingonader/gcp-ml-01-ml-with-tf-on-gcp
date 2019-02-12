@@ -1,0 +1,385 @@
+1
+00:00:00,000 --> 00:00:01,865
+Bienvenue à tous.
+
+2
+00:00:01,865 --> 00:00:07,350
+Dans ce module, vous allez apprendre
+à écrire des Estimators personnalisés.
+
+3
+00:00:07,350 --> 00:00:10,065
+Dans ce cours,
+nous allons voir diverses choses
+
+4
+00:00:10,065 --> 00:00:13,690
+dont tous ceux qui font du ML doivent
+disposer dans leur boîte à outils.
+
+5
+00:00:13,690 --> 00:00:17,640
+Et bien que vous puissiez dans bien des cas
+vous servir des Estimators standardisés,
+
+6
+00:00:17,640 --> 00:00:19,010
+il y aura des situations
+
+7
+00:00:19,010 --> 00:00:22,340
+dans lesquelles vous voudrez disposer
+de solutions plus personnalisées.
+
+8
+00:00:22,340 --> 00:00:26,735
+C'est pour cette raison que vous allez
+apprendre à écrire un Estimator personnalisé.
+
+9
+00:00:26,735 --> 00:00:33,940
+Vous pourrez ainsi mieux
+contrôler la fonction de modèle
+
+10
+00:00:33,940 --> 00:00:37,740
+tout en continuant à bénéficier
+des avantages de l'API Estimator
+
+11
+00:00:37,740 --> 00:00:42,090
+et de sa capacité à distribuer l'entraînement
+et l'évaluation de votre modèle.
+
+12
+00:00:42,090 --> 00:00:44,750
+Enfin, je profiterai de l'occasion
+
+13
+00:00:44,750 --> 00:00:48,937
+pour expliquer la relation
+qui existe entre TensorFlow et Keras,
+
+14
+00:00:48,937 --> 00:00:51,515
+puisque c'est une question
+que l'on me pose souvent.
+
+15
+00:00:51,515 --> 00:00:55,180
+Keras entre en jeu lorsque l'on pense
+aux Estimators personnalisés,
+
+16
+00:00:55,180 --> 00:00:59,915
+car cette API constitue un moyen pratique
+d'écrire la fonction de modèle
+
+17
+00:00:59,915 --> 00:01:01,670
+pour un Estimator personnalisé.
+
+18
+00:01:01,670 --> 00:01:03,720
+Si vous n'avez pas entendu parler de Keras,
+
+19
+00:01:03,720 --> 00:01:06,840
+sachez que c'est une interface
+Open Source très intuitive
+
+20
+00:01:06,840 --> 00:01:08,800
+pour les modèles de deep learning.
+
+21
+00:01:08,800 --> 00:01:11,690
+Nous verrons les modèles Keras
+rapidement dans ce module.
+
+22
+00:01:11,690 --> 00:01:13,305
+Vous verrez ainsi également
+
+23
+00:01:13,305 --> 00:01:18,340
+comment intégrer des modèles Keras
+dans le framework de l'Estimator.
+
+24
+00:01:18,340 --> 00:01:22,575
+Retenez que l'API Estimator présente
+pour nous plusieurs avantages.
+
+25
+00:01:22,575 --> 00:01:26,615
+Elle résout les problèmes liés
+aux données hors mémoire,
+
+26
+00:01:26,615 --> 00:01:28,635
+à l'aide de l'API Dataset.
+
+27
+00:01:28,635 --> 00:01:32,660
+Elle constitue un moyen pratique
+de distribuer l'entraînement et l'évaluation
+
+28
+00:01:32,660 --> 00:01:35,935
+avec la fonction train_and_evaluate.
+
+29
+00:01:35,935 --> 00:01:38,180
+Elle exporte des résumés
+
+30
+00:01:38,180 --> 00:01:42,980
+pour que nous puissions en plus
+effectuer une surveillance.
+
+31
+00:01:42,980 --> 00:01:45,650
+Nous pouvons grâce à elle
+exporter des points de contrôle
+
+32
+00:01:45,650 --> 00:01:47,635
+lorsque nous effectuons l'évaluation.
+
+33
+00:01:47,635 --> 00:01:51,310
+Ces points de contrôle permettent
+la reprise après sinistre.
+
+34
+00:01:51,310 --> 00:01:54,992
+L'exportation facilite
+le déploiement d'un modèle
+
+35
+00:01:54,992 --> 00:01:57,045
+afin qu'il soit possible, en production,
+
+36
+00:01:57,045 --> 00:02:00,265
+de diffuser des prédictions
+à partir d'un modèle entraîné.
+
+37
+00:02:00,265 --> 00:02:05,060
+Les statistiques d'évaluation permettent
+également le réglage d'hyperparamètres.
+
+38
+00:02:05,060 --> 00:02:07,882
+Mais j'apprécie principalement l'Estimator
+
+39
+00:02:07,882 --> 00:02:11,628
+parce qu'il nous permet
+de disposer d'un modèle rapide.
+
+40
+00:02:11,628 --> 00:02:13,095
+Rapide. Mais à quel point ?
+
+41
+00:02:13,095 --> 00:02:16,370
+Nous avons vu cela dans le troisième
+cours de la spécialisation.
+
+42
+00:02:16,370 --> 00:02:19,800
+Si vous voulez entraîner un modèle
+pour prédire les prix des logements,
+
+43
+00:02:19,800 --> 00:02:21,810
+l'intégralité du code d'entraînement
+
+44
+00:02:21,810 --> 00:02:24,515
+qui permet de lire
+les ensembles de données hors mémoire
+
+45
+00:02:24,515 --> 00:02:26,380
+et d'entraîner le modèle
+
+46
+00:02:26,380 --> 00:02:29,570
+tient dans une diapositive.
+
+47
+00:02:29,570 --> 00:02:32,570
+L'ajout de la possibilité
+d'effectuer un entraînement distribué,
+
+48
+00:02:32,570 --> 00:02:34,900
+pas seulement
+avec de grands ensembles de données,
+
+49
+00:02:34,900 --> 00:02:36,682
+mais sur de nombreuses machines,
+
+50
+00:02:36,682 --> 00:02:38,685
+et avec une tolérance aux pannes,
+
+51
+00:02:38,685 --> 00:02:41,262
+a impliqué de définir
+quelques concepts supplémentaires
+
+52
+00:02:41,262 --> 00:02:44,590
+quant à la spécification des paramètres
+d'entraînement et d'évaluation,
+
+53
+00:02:44,590 --> 00:02:48,782
+et quant à l'indication de la durée
+et de la fréquence à respecter.
+
+54
+00:02:48,782 --> 00:02:52,640
+Il nous a également fallu spécifier
+une signature d'exportation
+
+55
+00:02:52,640 --> 00:02:55,210
+pour qu'il soit possible
+de produire le modèle.
+
+56
+00:02:55,210 --> 00:03:00,580
+L'Estimator prédéfini n'en reste
+pas moins un code très simple
+
+57
+00:03:00,580 --> 00:03:04,527
+qui facilite l'accomplissement
+de nombreuses opérations complexes
+
+58
+00:03:04,527 --> 00:03:08,915
+grâce à la puissante fonction
+train_and_evaluate.
+
+59
+00:03:09,915 --> 00:03:12,275
+Il existe toutefois des situations
+
+60
+00:03:12,275 --> 00:03:15,735
+dans lesquelles les Estimators
+standardisés peuvent être insuffisants.
+
+61
+00:03:15,735 --> 00:03:18,955
+Vous ne pouvez utiliser un Estimator
+prédéfini (ou standardisé)
+
+62
+00:03:18,955 --> 00:03:24,510
+que s'il en existe un convenant parfaitement
+pour ce que vous voulez faire.
+
+63
+00:03:24,510 --> 00:03:28,865
+L'équipe TensorFlow tente de proposer
+les types de modèles les plus courants,
+
+64
+00:03:28,865 --> 00:03:30,005
+mais il semble évident
+
+65
+00:03:30,005 --> 00:03:34,775
+qu'il ne pourra jamais y en avoir un pour
+chacun des cas particuliers envisageables.
+
+66
+00:03:34,775 --> 00:03:36,380
+Dans ces situations,
+
+67
+00:03:36,380 --> 00:03:41,885
+il est important que vous puissiez tirer
+le meilleur parti de celui que vous employez
+
+68
+00:03:41,885 --> 00:03:46,345
+tout en ayant la possibilité de modifier
+le modèle mathématique utilisé.
+
+69
+00:03:46,345 --> 00:03:49,800
+L'idée est qu'en tant que data scientist,
+
+70
+00:03:49,800 --> 00:03:53,390
+vous voulez pouvoir définir
+l'organisation du réseau de neurones,
+
+71
+00:03:53,390 --> 00:03:57,755
+la fonction de perte, le mode
+de mise en forme des sorties,
+
+72
+00:03:57,755 --> 00:04:00,600
+mais rarement modifier
+le mode de communication
+
+73
+00:04:00,600 --> 00:04:03,650
+entre les nœuds de calcul
+et les serveurs de paramètres.
+
+74
+00:04:03,650 --> 00:04:08,185
+Vous pouvez donc avoir recours pour tout cela
+aux fonctionnalités intégrées des Estimators
+
+75
+00:04:08,185 --> 00:04:14,065
+tout en gardant
+un contrôle précis sur le modèle.
+
+76
+00:04:14,065 --> 00:04:19,685
+Il se trouve par ailleurs que Keras
+nous permet d'écrire notre propre modèle.
+
+77
+00:04:19,685 --> 00:04:21,135
+Si vous utilisez Keras,
+
+78
+00:04:21,135 --> 00:04:23,980
+vous pouvez souhaiter
+vous en servir pour écrire un modèle,
+
+79
+00:04:23,980 --> 00:04:28,375
+mais entraîner et évaluer
+ce modèle Keras à l'aide de l'Estimator.
+
+80
+00:04:28,375 --> 00:04:31,060
+La possibilité d'utiliser Keras
+pour écrire un modèle est
+
+81
+00:04:31,060 --> 00:04:35,760
+un autre exemple du type de flexibilité
+dont vous pouvez souhaiter bénéficier,
+
+82
+00:04:35,760 --> 00:04:40,090
+et c'est ce dont il va être
+question dans ce module.

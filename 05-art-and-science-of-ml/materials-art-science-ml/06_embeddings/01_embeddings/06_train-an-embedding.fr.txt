@@ -1,0 +1,52 @@
+Imaginez que vous créez
+une représentation vectorielle continue (RVC) pour représenter le mot clé
+d'une annonce immobilière. Nous ignorons pour le moment
+le mode de choix de ce mot important. Les mots d'une annonce
+sont en langage naturel, de sorte que la liste de ceux
+qu'il est possible d'utiliser est longue. Dans ce cas, elle pourrait
+contenir tous les mots anglais. Des dizaines de milliers de mots, même si nous ignorons
+les mots rares et le jargon scientifique. Manifestement donc, même si cette première couche
+prend un mot de l'annonce immobilière et l'encode en one-hot, celui-ci sera représenté en mémoire
+sous la forme d'un vecteur creux. C'est ainsi que TensorFlow peut être efficace
+dans son utilisation de la mémoire. Une fois que nous avons
+la représentation encodée en one-hot, nous la transmettons
+via une couche à trois nœuds. C'est notre RVC. Et étant donné que nous utilisons
+trois nœuds dans cette couche, c'est une représentation
+vectorielle continue 3D. Remarquez que, même si sparse_word et embedded_word sont
+vraiment des colonnes de caractéristiques, je les représente comme
+des couches de réseau de neurones, ceci parce que c'est exactement
+ce dont il s'agit mathématiquement. Dans ce cas, mathématiquement, une RVC n'est pas vraiment différente
+de toute autre couche cachée d'un réseau. Vous pouvez la voir
+comme un adaptateur pratique qui permet au réseau d'incorporer correctement
+les données creuses ou catégorielles. L'information essentielle de ces diapositives est que cela est possible
+avec un problème de régression, de classification ou de classement. Avec un réseau de neurones profond, les pondérations sont apprises
+par rétropropagation, tout comme avec les autres couches. Imaginons que nous utilisons la RVC
+des mots de l'annonce immobilière comme l'une des entrées du modèle
+qui prédit le prix de vente. Nous entraînerions ce modèle sur la base
+des prix de vente historiques des maisons. Outre le mot de l'annonce, nous pourrions
+également utiliser comme entrées le nombre de pièces,
+le nombre de chambres, etc. Il s'agit donc d'un problème de régression
+avec des données structurées. C'est exactement comme
+le problème des courses de taxi. Voyez-vous ce qui se produit si vous essayez d'optimiser
+les pondérations de toutes les couches pour minimiser les erreurs
+au niveau du prix de vente prédit ? Toutes les pondérations
+de toutes les couches doivent être adaptées. Les pondérations sont adaptées de sorte
+que les nombres de la RVC pour un mot deviennent pertinents pour la capacité
+à prédire les prix de vente. Par exemple, si l'annonce contient
+un mot tel que "vue" ou "lac", le prix de vente peut être plus élevé, tandis que si elle contient
+un mot tel que "saisie", la pondération peut être moins élevée. Les pondérations de toutes les couches
+s'ajusteront pour apprendre cela. Mathématiquement, une RVC n'est pas vraiment différente
+de toute autre couche cachée d'un réseau. Vous pouvez la voir
+comme un adaptateur pratique qui permet au réseau d'incorporer correctement
+les données creuses ou catégorielles. Avec un réseau de neurones profond, les pondérations sont apprises
+par rétropropagation, tout comme avec les autres couches. Et cela est possible avec un problème
+de régression ou de classification. Souvenez-vous d'une information essentielle
+à propos de la toute première couche, la couche bleue. À la différence des nœuds jaunes,
+la couche bleue est encodée en one-hot. Donc, si vous utilisez le mot "vue",
+seul l'un de ces nœuds sera activé. Disons que c'est celui qui est en noir ici. Puis la pondération applicable aux liens
+reliant ce nœud noir à la couche suivante va capturer la pertinence
+du mot "vue" pour ce problème. Par conséquent, chaque mot
+est représenté par seulement trois nombres. Chacun des trois nœuds peut être considéré comme une dimension
+dans laquelle les mots sont projetés. Les pondérations des bords
+reliant un film à une couche cachée sont les valeurs des coordonnées
+de cette projection aux dimensions réduites.

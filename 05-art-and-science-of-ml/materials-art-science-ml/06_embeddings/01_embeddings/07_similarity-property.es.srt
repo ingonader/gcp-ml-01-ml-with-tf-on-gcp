@@ -1,0 +1,561 @@
+1
+00:00:00,420 --> 00:00:02,899
+Comenzamos diciendo
+que las incorporaciones
+
+2
+00:00:02,899 --> 00:00:06,280
+de los ID de películas
+eran atributos categóricos.
+
+3
+00:00:06,920 --> 00:00:08,760
+Luego, aplicamos el mismo ejemplo
+
+4
+00:00:08,760 --> 00:00:12,075
+a palabras en un anuncio,
+es decir, atributos de texto.
+
+5
+00:00:13,205 --> 00:00:14,635
+¿Qué tienen en común?
+
+6
+00:00:16,225 --> 00:00:19,520
+Las incorporaciones no solo sirven
+para atributos categóricos o de texto.
+
+7
+00:00:20,005 --> 00:00:21,190
+Se tratan de algo más.
+
+8
+00:00:21,480 --> 00:00:24,825
+Aquí le muestro un problema clásico
+de aprendizaje automático
+
+9
+00:00:25,085 --> 00:00:26,070
+llamado MNIST.
+
+10
+00:00:26,510 --> 00:00:30,240
+La idea es reconocer dígitos
+escritos a mano
+
+11
+00:00:30,440 --> 00:00:31,890
+en imágenes escaneadas.
+
+12
+00:00:32,398 --> 00:00:37,431
+En una imagen,
+cada píxel representa una entrada.
+
+13
+00:00:38,161 --> 00:00:40,886
+A esto me refiero
+cuando digo un bitmap sin procesar.
+
+14
+00:00:41,479 --> 00:00:44,059
+Las imágenes son de 28 x 28
+
+15
+00:00:44,552 --> 00:00:49,097
+por lo que hay 784 píxeles en ese bitmap.
+
+16
+00:00:49,711 --> 00:00:53,330
+Considere este arreglo de 784 números.
+
+17
+00:00:54,414 --> 00:00:57,942
+La mayor parte del arreglo
+corresponde a píxeles en blanco.
+
+18
+00:00:59,013 --> 00:01:01,353
+En este caso,
+las incorporaciones son útiles.
+
+19
+00:01:02,505 --> 00:01:04,780
+Tomamos los 784 números
+
+20
+00:01:05,250 --> 00:01:08,420
+y los representamos
+como un tensor disperso.
+
+21
+00:01:08,964 --> 00:01:12,070
+Básicamente, solo guardamos los píxeles
+
+22
+00:01:12,420 --> 00:01:14,427
+donde aparece el dígito escrito a mano.
+
+23
+00:01:14,427 --> 00:01:18,898
+Solo guardamos los píxeles
+en los que el dígito es negro
+
+24
+00:01:19,495 --> 00:01:22,815
+y lo pasamos a una incorporación 3D.
+
+25
+00:01:23,643 --> 00:01:27,059
+Luego, podemos tener
+una red neuronal normal de dos capas
+
+26
+00:01:27,226 --> 00:01:30,015
+y podemos pasar otros atributos
+si lo deseamos.
+
+27
+00:01:30,435 --> 00:01:33,326
+Luego, entrenamos el modelo para predecir
+
+28
+00:01:33,436 --> 00:01:37,200
+el número real de la imagen
+según estas etiquetas.
+
+29
+00:01:38,356 --> 00:01:40,588
+¿Por qué tengo una capa de logit aquí?
+
+30
+00:01:41,702 --> 00:01:45,022
+Estas forman la capa de salida
+de la red neuronal.
+
+31
+00:01:45,561 --> 00:01:50,266
+En un problema de clasificación,
+la salida debe ser un logit.
+
+32
+00:01:50,987 --> 00:01:55,269
+Cuando usamos un clasificador lineal o DNN
+
+33
+00:01:55,499 --> 00:01:57,881
+la capa de salida es un logit.
+
+34
+00:01:58,501 --> 00:02:00,594
+Un solo logit.
+
+35
+00:02:01,040 --> 00:02:03,140
+Pero ocurre solo si tiene una sola salida.
+
+36
+00:02:03,709 --> 00:02:07,656
+En el caso del problema MNIST,
+tenemos un total de 10 clases.
+
+37
+00:02:08,395 --> 00:02:12,193
+Los dígitos cero, uno, dos y hasta nueve.
+
+38
+00:02:12,563 --> 00:02:15,559
+Por eso no tengo un solo logit
+
+39
+00:02:15,659 --> 00:02:17,615
+sino una capa de logits.
+
+40
+00:02:18,001 --> 00:02:21,679
+Tengo un logit
+por cada uno de los dígitos posibles.
+
+41
+00:02:22,499 --> 00:02:26,800
+Cuando tenemos
+una capa de logits en vez de un solo logit
+
+42
+00:02:27,295 --> 00:02:31,835
+no hay garantía de que
+la probabilidad total de todos los dígitos
+
+43
+00:02:32,005 --> 00:02:33,080
+sea igual a uno.
+
+44
+00:02:33,840 --> 00:02:35,530
+Esa es la función del softmax.
+
+45
+00:02:36,010 --> 00:02:38,657
+Normaliza los logits individuales
+
+46
+00:02:38,897 --> 00:02:41,385
+para que la probabilidad total
+sea igual a uno.
+
+47
+00:02:41,935 --> 00:02:45,390
+Perdón por el paréntesis,
+hablábamos de las incorporaciones.
+
+48
+00:02:45,870 --> 00:02:50,385
+Cuando entrenamos un modelo
+para reconocer dígitos escritos a mano
+
+49
+00:02:50,855 --> 00:02:54,720
+cada imagen
+se representará con tres números.
+
+50
+00:02:55,480 --> 00:02:57,865
+A diferencia del caso categórico
+
+51
+00:02:58,325 --> 00:03:02,200
+no se usó codificación one-hot
+para el bitmap sin procesar.
+
+52
+00:03:03,020 --> 00:03:05,885
+Por lo tanto, no obtendremos
+tres números por cada píxel.
+
+53
+00:03:06,205 --> 00:03:12,070
+Esos tres números corresponden
+a todos los píxeles que se activaron
+
+54
+00:03:12,270 --> 00:03:13,790
+para una imagen específica.
+
+55
+00:03:14,900 --> 00:03:18,550
+Puede visualizar
+estas incorporaciones en TensorBoard.
+
+56
+00:03:18,700 --> 00:03:23,953
+El vector 3D que corresponde
+a cada una de las imágenes de 784 píxeles.
+
+57
+00:03:24,631 --> 00:03:28,240
+Aquí, asignamos colores diferentes
+a las etiquetas.
+
+58
+00:03:28,770 --> 00:03:32,610
+Como puede ver, ocurrió algo genial.
+
+59
+00:03:33,230 --> 00:03:36,925
+Todos los cincos
+se agruparon en el espacio 3D
+
+60
+00:03:37,335 --> 00:03:40,305
+al igual que los sietes y los ceros.
+
+61
+00:03:41,036 --> 00:03:47,060
+Es decir, los números 3D
+que representan cada imagen escrita a mano
+
+62
+00:03:47,260 --> 00:03:49,370
+muestran que los elementos similares
+
+63
+00:03:49,580 --> 00:03:52,045
+se agrupan en el espacio 3D.
+
+64
+00:03:52,975 --> 00:03:55,950
+Esto es así en las incorporaciones
+de variables categóricas
+
+65
+00:03:56,450 --> 00:04:00,055
+en texto con lenguaje natural
+y en los bitmaps sin procesar.
+
+66
+00:04:00,455 --> 00:04:01,956
+¿Qué tienen en común?
+
+67
+00:04:02,506 --> 00:04:03,987
+Todos son dispersos.
+
+68
+00:04:04,349 --> 00:04:06,500
+Si toma una codificación de vector disperso
+
+69
+00:04:06,760 --> 00:04:08,960
+y lo pasa por una columna de incorporación
+
+70
+00:04:09,090 --> 00:04:12,905
+y usa esa columna como entrada en una DNN
+
+71
+00:04:13,085 --> 00:04:14,940
+y luego entrena la DNN
+
+72
+00:04:15,490 --> 00:04:20,470
+las incorporaciones entrenadas
+tendrán esta propiedad de similitud
+
+73
+00:04:21,040 --> 00:04:24,675
+siempre que tenga los datos suficientes
+
+74
+00:04:24,875 --> 00:04:27,950
+y el entrenamiento
+logre una precisión adecuada.
+
+75
+00:04:28,950 --> 00:04:33,065
+Puede aprovechar la propiedad de similitud
+en otras situaciones.
+
+76
+00:04:34,145 --> 00:04:35,580
+Por ejemplo
+
+77
+00:04:35,670 --> 00:04:39,935
+su tarea es encontrar
+una canción similar a esta.
+
+78
+00:04:40,605 --> 00:04:41,735
+Lo que puede hacer
+
+79
+00:04:41,735 --> 00:04:45,550
+es crear una incorporación
+del audio asociado a canciones.
+
+80
+00:04:46,630 --> 00:04:48,915
+Es decir, toma el clip de audio
+
+81
+00:04:49,195 --> 00:04:51,465
+y lo representa
+como un arreglo de valores.
+
+82
+00:04:52,205 --> 00:04:55,330
+Luego, tal como con la imagen MNIST
+
+83
+00:04:55,590 --> 00:04:58,800
+pasa el arreglo
+por una capa de incorporación.
+
+84
+00:04:59,430 --> 00:05:03,830
+Puede usarlo para entrenar un problema
+de aprendizaje automático razonable.
+
+85
+00:05:04,500 --> 00:05:07,500
+Quizá podría usar la señal de audio
+para entrenar un modelo
+
+86
+00:05:07,760 --> 00:05:09,800
+para predecir el género musical
+
+87
+00:05:10,400 --> 00:05:12,210
+o la siguiente nota musical.
+
+88
+00:05:12,860 --> 00:05:15,390
+Sin importar
+para qué predicción entrenó al modelo
+
+89
+00:05:15,570 --> 00:05:19,345
+la incorporación le dará
+una representación dimensional menor
+
+90
+00:05:19,565 --> 00:05:20,555
+del clip de audio.
+
+91
+00:05:21,795 --> 00:05:24,070
+Para encontrar canciones similares
+
+92
+00:05:24,450 --> 00:05:27,290
+solo debe calcular la distancia euclidiana
+
+93
+00:05:27,700 --> 00:05:30,180
+entre dos clips,
+entre sus incorporaciones.
+
+94
+00:05:30,580 --> 00:05:33,750
+Esto se convierte
+en la medida de la similitud
+
+95
+00:05:33,750 --> 00:05:34,900
+entre las dos canciones.
+
+96
+00:05:35,860 --> 00:05:38,410
+También puede usar
+los vectores de incorporación
+
+97
+00:05:38,410 --> 00:05:41,230
+como entradas de un algoritmo
+de agrupación en clústeres.
+
+98
+00:05:41,890 --> 00:05:47,900
+La similitud se puede usar
+para incorporar varios atributos juntos.
+
+99
+00:05:48,290 --> 00:05:50,940
+Por ejemplo,
+texto en dos idiomas diferentes
+
+100
+00:05:51,190 --> 00:05:53,735
+o texto con su audio correspondiente
+
+101
+00:05:54,055 --> 00:05:56,310
+para determinar la similitud entre ellos.
+
+102
+00:05:57,450 --> 00:05:59,325
+En todos los ejemplos
+
+103
+00:06:00,105 --> 00:06:02,475
+usamos tres
+para la cantidad de incorporaciones.
+
+104
+00:06:03,595 --> 00:06:05,540
+Por supuesto, puede usar otras cantidades.
+
+105
+00:06:06,010 --> 00:06:07,905
+Pero ¿cuáles debería usar?
+
+106
+00:06:09,195 --> 00:06:13,940
+La cantidad de incorporaciones
+es un hiperparámetro del modelo del AA.
+
+107
+00:06:14,340 --> 00:06:17,720
+Deberá probar diferentes cantidades
+de dimensiones de incorporación
+
+108
+00:06:17,830 --> 00:06:19,520
+ya que ocurre una compensación.
+
+109
+00:06:20,210 --> 00:06:21,975
+Más incorporaciones dimensionales
+
+110
+00:06:22,825 --> 00:06:27,215
+pueden representar mejor
+la relación entre los valores de entrada.
+
+111
+00:06:27,985 --> 00:06:30,620
+Pero mientras más dimensiones tenga
+
+112
+00:06:30,920 --> 00:06:33,335
+mayor será la posibilidad de sobreajuste.
+
+113
+00:06:33,905 --> 00:06:38,230
+Además, a medida que el modelo crece,
+el entrenamiento se hace más lento.
+
+114
+00:06:38,900 --> 00:06:45,865
+Un buen comienzo es usar la raíz cuarta
+de la cantidad total de valores posibles.
+
+115
+00:06:46,675 --> 00:06:49,835
+Por ejemplo,
+si incorpora los ID de películas
+
+116
+00:06:50,075 --> 00:06:52,994
+y tiene 500,000 películas en su catálogo
+
+117
+00:06:53,214 --> 00:06:56,995
+la cantidad de valores posibles es 500,000.
+
+118
+00:06:57,275 --> 00:07:02,470
+Sería apropiado empezar
+por la raíz cuarta de 500,000.
+
+119
+00:07:03,090 --> 00:07:06,265
+La raíz cuadrada de 500,000
+es alrededor de 700
+
+120
+00:07:06,465 --> 00:07:09,740
+y la de 700, alrededor de 26.
+
+121
+00:07:10,180 --> 00:07:13,900
+Yo empezaría alrededor de 25.
+
+122
+00:07:14,830 --> 00:07:17,042
+Si realiza el ajuste de hiperparámetros
+
+123
+00:07:17,142 --> 00:07:19,262
+de la cantidad de dimensiones
+de incorporación
+
+124
+00:07:19,502 --> 00:07:23,782
+usaría un espacio de búsqueda de 15 a 35.
+
+125
+00:07:24,571 --> 00:07:26,421
+Esto es solo una regla general.

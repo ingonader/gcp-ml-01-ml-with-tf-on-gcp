@@ -1,0 +1,425 @@
+1
+00:00:00,000 --> 00:00:04,080
+Angenommen Sie lesen 
+eine Forschungsarbeit über
+
+2
+00:00:04,080 --> 00:00:08,595
+ein Modell zum Vorhersagen 
+künftiger Werte einer Zeitachse.
+
+3
+00:00:08,595 --> 00:00:10,805
+Auch wird der Code genannt.
+
+4
+00:00:10,805 --> 00:00:14,345
+Es werden 
+ungewöhnliche Konzepte wie "LSTMCell",
+
+5
+00:00:14,345 --> 00:00:18,285
+unbekannte TensorFlow-
+Funktionen wie "static_rnn" und
+
+6
+00:00:18,285 --> 00:00:22,785
+untergeordnete TensorFlow-
+Vorgänge wie "Matmul" verwendet.
+
+7
+00:00:22,785 --> 00:00:26,915
+Lassen wir erstmal 
+deren Bedeutung und Funktion außer Acht.
+
+8
+00:00:26,915 --> 00:00:31,450
+Im 9. Kurs dieser Reihe 
+beschäftigen wir uns mit Sequenzmodellen.
+
+9
+00:00:31,450 --> 00:00:36,190
+Sehen wir die Funktion 
+für den Moment einfach als Black Box an.
+
+10
+00:00:36,190 --> 00:00:39,295
+Im Grunde dient 
+eine Zeitachse als Eingabe,
+
+11
+00:00:39,295 --> 00:00:42,935
+ein Array von Werten, 
+die nach Zeit geordnet wurden.
+
+12
+00:00:42,935 --> 00:00:46,820
+N_INPUTS drückt 
+eine Länge dieser Zeitachse aus.
+
+13
+00:00:46,820 --> 00:00:50,470
+Die Vorhersagen stellen 
+die Ausgabe des Modells dar.
+
+14
+00:00:50,470 --> 00:00:53,910
+Im Ausgabe-Array 
+befinden sich N_OUTPUTS Ziffern.
+
+15
+00:00:53,910 --> 00:00:59,370
+Laut der Vorhersage des Modells 
+sind das die künftigen Zeitachsenwerte.
+
+16
+00:00:59,370 --> 00:01:03,445
+Sie haben also ein Modell, 
+das Sie trainieren möchten.
+
+17
+00:01:03,445 --> 00:01:07,775
+Beachten Sie, dass Sie 
+hier nur das Modell sehen.
+
+18
+00:01:07,775 --> 00:01:09,750
+Quasi nur die Mathematik.
+
+19
+00:01:09,750 --> 00:01:12,230
+Wir müssen noch die Daten einlesen,
+
+20
+00:01:12,230 --> 00:01:15,280
+das Modell 
+für die Bewertung trainieren usw.
+
+21
+00:01:15,280 --> 00:01:19,165
+und wollen das 
+auf verteilte, fehlertolerante Art tun.
+
+22
+00:01:19,165 --> 00:01:21,885
+Wir wollen die "Technik" hinzufügen.
+
+23
+00:01:21,885 --> 00:01:26,015
+Natürlich schließen wir sie 
+in ein Estimator-Framework ein,
+
+24
+00:01:26,015 --> 00:01:30,945
+um auf verteiltem Training basierende, 
+skalierte Vorhersagen usw. zu erhalten.
+
+25
+00:01:30,945 --> 00:01:33,245
+Schauen wir uns an, wie das geht.
+
+26
+00:01:33,245 --> 00:01:38,215
+Sehen wir uns zuerst 
+die Funktion "train_and_evaluate" an.
+
+27
+00:01:38,215 --> 00:01:45,370
+Sie verwendet drei Parameter: 
+"estimator", "train_spec" und "eval_spec".
+
+28
+00:01:45,370 --> 00:01:50,450
+"Train_spec" und "eval_spec" 
+kennen Sie aus gespeicherten Estimatoren.
+
+29
+00:01:50,450 --> 00:01:56,035
+Damit steuert man, wie mit einer Funktion 
+Dataset-Eingabedaten eingespeist werden.
+
+30
+00:01:56,035 --> 00:01:59,430
+Es wird auch gesteuert, 
+wie lange trainiert wird,
+
+31
+00:01:59,430 --> 00:02:02,440
+wie oft bewertet
+und wann exportiert wird.
+
+32
+00:02:02,440 --> 00:02:08,880
+Neu ist hier der erste Parameter 
+zum Trainieren und Bewerten (Estimator).
+
+33
+00:02:08,880 --> 00:02:12,210
+Bisher haben wir mithilfe
+
+34
+00:02:12,210 --> 00:02:16,890
+eines linearen Regressors, 
+DNN-Regressors, linearen Klassifikators
+
+35
+00:02:16,890 --> 00:02:21,405
+usw. einen gespeicherten 
+oder vorgefertigten Estimator erstellt.
+
+36
+00:02:21,405 --> 00:02:25,790
+Jetzt erstellen wir 
+einen Basisklassen-Estimator.
+
+37
+00:02:25,790 --> 00:02:31,810
+Ich setze den Estimator 
+nur auf "tf.estimators.Estimator".
+
+38
+00:02:31,810 --> 00:02:36,005
+Der Basisklassen-
+Estimator verwendet zwei Parameter.
+
+39
+00:02:36,005 --> 00:02:40,320
+Der zweite Parameter gibt, 
+wie bei gespeicherten Estimatoren, an,
+
+40
+00:02:40,320 --> 00:02:44,465
+wo die Kontrollpunkte 
+(das Ausgabeverzeichnis) gespeichert werden.
+
+41
+00:02:44,465 --> 00:02:48,680
+Die Modellfunktion wird 
+durch den ersten Parameter ausgedrückt.
+
+42
+00:02:48,680 --> 00:02:53,190
+Wie ist 
+die Modellfunktion "myfunc" aufgebaut?
+
+43
+00:02:53,190 --> 00:02:57,710
+Myfunc ist eine "EstimatorSpec".
+
+44
+00:02:58,860 --> 00:03:06,285
+Das heißt, myfunc gibt 
+eine "tf.estimator.EstimatorSpec" zurück.
+
+45
+00:03:06,285 --> 00:03:10,940
+Sie verwendet drei Parameter: 
+"features", "targets" und "mode".
+
+46
+00:03:10,940 --> 00:03:14,050
+Sie kennen bestimmt
+"features" und "targets".
+
+47
+00:03:14,050 --> 00:03:15,870
+Diese Parameter werden beispielsweise
+
+48
+00:03:15,870 --> 00:03:18,685
+von Trainingseingabe-
+funktionen zurückgegeben.
+
+49
+00:03:18,685 --> 00:03:21,750
+Features ist ein Wörterbuch von Merkmalen.
+
+50
+00:03:21,750 --> 00:03:27,710
+In diesem Fall ziehe ich daraus 
+den Tensor heraus, der INCOL entspricht.
+
+51
+00:03:28,640 --> 00:03:30,950
+Targets ist einfach das Label,
+
+52
+00:03:30,950 --> 00:03:35,460
+das von der Trainingseingabe-
+funktion zurückgegeben wird.
+
+53
+00:03:35,460 --> 00:03:40,765
+Mode hat folgenden Wert:
+"train", "eval" oder "predict".
+
+54
+00:03:40,765 --> 00:03:44,815
+Wir schauen uns gleich an, 
+welchen Nutzen "mode" bringt.
+
+55
+00:03:44,815 --> 00:03:47,840
+Anhand dieser drei Eingabewerte soll
+
+56
+00:03:47,840 --> 00:03:53,900
+myfunc eine EstimatorSpec 
+erstellen und zurückgeben.
+
+57
+00:03:54,730 --> 00:03:57,620
+sechs Aspekte zeichnen eine EstimatorSpec aus.
+
+58
+00:03:57,620 --> 00:04:01,745
+Der erste Parameter (mode) 
+kann einfach übergeben werden.
+
+59
+00:04:01,745 --> 00:04:04,630
+Übergeben Sie die Eingabe als Ausgabe.
+
+60
+00:04:04,630 --> 00:04:07,970
+Der zweite Parameter sind die Vorhersagen,
+
+61
+00:04:07,970 --> 00:04:10,000
+die Ausgaben des Modells.
+
+62
+00:04:10,000 --> 00:04:13,700
+Die Vorhersagen müssen sich 
+in einem Wörterbuch befinden.
+
+63
+00:04:13,700 --> 00:04:17,579
+Geben Sie einen Schlüsselnamen 
+und den entsprechenden Tensor an.
+
+64
+00:04:17,579 --> 00:04:22,185
+Hier besteht "predictions_dict" 
+aus nur einem Schlüssel.
+
+65
+00:04:22,185 --> 00:04:25,760
+Ich nenne ihn "predicted" und der Tensor
+
+66
+00:04:25,760 --> 00:04:29,860
+ist die Ausgabe 
+des Modells aus der Forschungsarbeit.
+
+67
+00:04:31,220 --> 00:04:35,845
+Wir verwenden die Vorhersagen, 
+um die exportierten Ausgaben zu erstellen.
+
+68
+00:04:35,845 --> 00:04:40,875
+Man könnte noch andere Dinge
+als die Vorhersagen exportieren.
+
+69
+00:04:40,875 --> 00:04:45,700
+Falls Sie eine trainierte Einbettung 
+des Modells z. B. exportieren wollen,
+
+70
+00:04:45,700 --> 00:04:47,160
+würden Sie das hier tun,
+
+71
+00:04:47,160 --> 00:04:51,035
+indem Sie einen Schlüssel 
+und den entsprechenden Tensor angeben.
+
+72
+00:04:51,385 --> 00:04:54,965
+Schauen wir uns an, 
+woraus die EstimatorSpec noch besteht:
+
+73
+00:04:55,095 --> 00:04:59,640
+Verlust, Trainingsvorgang 
+und Evaluationsmesswertvorgang.
+
+74
+00:04:59,640 --> 00:05:05,730
+Nur wenn "mode" auf "TRAIN" gesetzt ist,
+muss der Trainingsvorgang ausgeführt werden.
+
+75
+00:05:05,730 --> 00:05:11,535
+Nur wenn "mode" auf "EVAL" gesetzt ist, 
+ist der Evaluationsmesswert zu berechnen.
+
+76
+00:05:11,535 --> 00:05:15,760
+Ich lege den Verlust als
+mittleren quadratischen Fehler zwischen
+
+77
+00:05:15,760 --> 00:05:18,610
+den Zielen (Labels)
+und den Vorhersagen fest.
+
+78
+00:05:19,250 --> 00:05:24,190
+Der Trainingsvorgang besteht 
+aus dem Optimieren der Verlustfunktion.
+
+79
+00:05:24,190 --> 00:05:27,930
+Das geschieht hier mit dem 
+Stochastic Gradient Descent (SGD).
+
+80
+00:05:27,930 --> 00:05:32,955
+Vermutlich, da der SGD auch 
+in der Forschungsarbeit genutzt wurde.
+
+81
+00:05:32,955 --> 00:05:36,000
+Der Evaluationsmesswert ist ein Wörterbuch
+
+82
+00:05:36,000 --> 00:05:39,540
+mit den Messwerten, 
+die wir bewerten wollen.
+
+83
+00:05:39,540 --> 00:05:43,760
+Hier berechne ich nur die Wurzel 
+eines mittleren quadratischen Fehlers.
+
+84
+00:05:43,760 --> 00:05:48,310
+Führen Sie diese Vorgänge nicht
+während der Vorhersagenerstellung aus.
+
+85
+00:05:48,310 --> 00:05:52,290
+Wieso? Weil wir kein Label haben werden.
+
+86
+00:05:52,290 --> 00:05:57,400
+Daher setzen wir 
+diese Vorgänge abschließend auf "None".
+
+87
+00:05:57,870 --> 00:06:03,100
+Wir haben also "train_and_evaluate " 
+mit einem Basisklassen-Estimator aufgerufen
+
+88
+00:06:03,100 --> 00:06:07,105
+und darin eine Funktion übergeben, 
+die eine EstimatorSpec zurückgibt.
+
+89
+00:06:07,105 --> 00:06:10,150
+Dann haben wir 
+einen benutzerdefinierten Estimator.

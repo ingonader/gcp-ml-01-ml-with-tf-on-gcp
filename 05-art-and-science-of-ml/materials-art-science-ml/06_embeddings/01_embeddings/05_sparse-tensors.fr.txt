@@ -1,0 +1,55 @@
+Le fait de stocker le vecteur d'entrée
+comme tableau encodé en one-hot est une mauvaise idée. Une représentation dense
+est extrêmement inefficace, aussi bien pour le stockage
+que pour les calculs. Remarquez que nous qualifions de Tensor dense
+absolument tout ce que nous utilisons pour stocker la totalité
+des valeurs d'un Tensor d'entrée. Cela n'a rien à voir
+avec les données du Tensor. C'est simplement
+lié à son mode de stockage. Mais regardez les données de cette matrice. Pensez-vous que cette matrice
+est densément ou faiblement remplie ? Très faiblement, bien sûr. Chaque exemple (ligne de cette matrice) représente des films
+regardés par l'utilisateur. Pensez à votre expérience personnelle. Combien de films avez-vous notés ? Nous n'avons donc pas intérêt à stocker
+les entrées sous une forme dense. Nous ne voulons pas stocker
+toutes les valeurs du Tensor. Donc, si nous ne voulons pas stocker toutes
+les valeurs du Tensor sous une forme dense, quelle autre démarche pouvons-nous adopter ? Nous aurions intérêt
+à opter pour des données creuses que nous pourrions stocker
+sous forme compressée dans la mémoire. Ce serait pratique si nous pouvions effectuer des calculs
+tels que la multiplication de matrices directement au niveau des Tensors creux sans qu'il soit nécessaire
+de les convertir en représentations denses. Nous pouvons faire cela
+en créant un mappage de dictionnaire pour associer
+chaque caractéristique à un entier. Shrek pourrait ainsi
+correspondre à l'entier 0, et Harry Potter à l'entier 300 ou 230
+(un nombre arbitraire). Souvenez-vous
+qu'il n'y a pas de RVC à ce stade. À ce stade, chaque film est simplement
+associé à un entier arbitraire. Ensuite, pour une ligne de la matrice représentant l'ensemble des films
+vus par un utilisateur donné, nous stockons simplement les ID
+des films que l'utilisateur a vus. Dans la ligne utilisée comme exemple,
+l'utilisateur a vu trois films. Le Tensor creux contient donc trois entrées. Lorsqu'un entier n'est
+pas présent dans cette liste, nous supposons que le film
+correspondant n'a pas été regardé. Les trois entrées sont donc
+associées à la valeur 1, et les autres sont associées à la valeur 0
+dans la représentation dense équivalente. Nous avons donc deux étapes : nous effectuons un prétraitement
+pour le calcul du dictionnaire, puis nous créons une représentation
+creuse efficace avec ce dictionnaire. Si vous vous dites
+que cela vous semble familier et vous rappelle la création de vocabulaire
+pour les colonnes catégorielles, vous avez tout à fait raison. TensorFlow représente les colonnes
+catégorielles sous la forme de Tensors creux. Une colonne catégorielle est donc
+un exemple d'objet creux. TensorFlow peut effectuer des opérations
+mathématiques sur des Tensors creux sans avoir à les convertir en Tensors denses. Cela permet d'économiser de la mémoire
+et d'optimiser les calculs. Nous avons vu comment créer
+un croisement de caractéristiques à partir de colonnes catégorielles. C'était un exemple de calcul mathématique effectué complètement
+en termes de Tensors creux. C'est la raison pour laquelle, même si nous avons croisé
+des colonnes discrètes contenant la latitude et la longitude, ainsi que les points de départ et d'arrivée
+dans notre exemple des taxis, nous n'avons eu aucun problème
+de mémoire ni de vitesse de calcul. J'ai parlé de la création d'une colonne de RVC
+avec un croisement de caractéristiques. Le même code fonctionne bien sûr
+pour une colonne catégorielle unique, et c'est ce que je vous montre ici. La possibilité de gérer des Tensors creux
+est la raison pour laquelle le code permettant
+de créer une colonne de RVC à partir de données catégorielles
+dans TensorFlow peut fonctionner sans provoquer
+de problèmes de mémoire ou de vitesse. Nous pouvons classer cela parmi
+les détails de mise en œuvre magiques. Souvenez-vous qu'il a été dit qu'aucun processus d'entraînement distinct
+n'est requis pour la création de RVC. Nous n'avons besoin que de deux étapes : nous représentons l'entrée d'origine,
+puis nous l'envoyons à une couche de RVC. La première étape s'effectue par la représentation de l'entrée
+sous la forme d'un Tensor creux, et la seconde par l'appel
+de embedding_column. Mais comment cette ligne de code
+fonctionne-t-elle réellement ?

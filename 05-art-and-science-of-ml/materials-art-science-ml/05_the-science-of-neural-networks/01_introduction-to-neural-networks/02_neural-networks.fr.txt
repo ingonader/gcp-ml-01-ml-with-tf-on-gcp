@@ -1,0 +1,285 @@
+Nous avons déjà parlé
+des réseaux de neurones. Nous allons maintenant les aborder
+sous l'angle de la science. Nous avons vu
+que les croisements de caractéristiques étaient efficaces dans ce type de cas. Si x1 est la dimension horizontale et x2 est la dimension verticale, il n'y a aucune combinaison linéaire des deux caractéristiques
+décrivant cette distribution. Ce n'est que lorsque nous avons extrait
+des caractéristiques et croisé x1 et x2 pour obtenir
+une nouvelle caractéristique x3 (x1x2), que nous avons pu décrire
+notre distribution de données. Donc, l'extraction manuelle
+des caractéristiques peut facilement résoudre tous les problèmes
+de non-linéarité. OK ? Malheureusement, le monde réel
+ne présente pratiquement jamais des distributions si facilement décrites. L'extraction des caractéristiques,
+malgré des années de travail poussé, a des limites. Par exemple, quels croisements
+de caractéristiques seraient nécessaires pour modéliser cette distribution ? On dirait deux cercles l'un sur l'autre,
+ou deux spirales, mais en fait, ce n'est pas très clair. Cet exemple démontre l'utilité
+des réseaux de neurones qui peuvent créer, avec un algorithme, des transformations
+et croisements de caractéristiques très complexes. Vous pouvez imaginer des distributions
+encore plus complexes que cette spirale, qui requièrent l'utilisation
+des réseaux de neurones. Les réseaux de neurones peuvent être utilisés
+à la place des croisements de caractéristiques en combinant des caractéristiques. Lors de la conception de l'architecture
+de notre réseau de neurones, nous voulons structurer le modèle pour obtenir des combinaisons
+de caractéristiques. Nous voulons ensuite ajouter une autre 
+couche pour lier ces combinaisons, puis une autre encore pour lier
+ces combinaisons et ainsi de suite. Comment choisir les bonnes combinaisons de caractéristiques et les combinaisons
+de combinaisons ? Vous devez entraîner le modèle, bien sûr. C'est ce qui constitue l'intuition de base
+des réseaux de neurones. Cette approche n'est pas supérieure
+aux croisements de caractéristiques, mais c'est une alternative flexible
+qui s'adapte à de nombreux cas. Voici une représentation graphique
+d'un modèle linéaire. Nous avons trois entrées : x1, x2 et x3, comme indiqué
+par les cercles bleus. Elles sont combinées,
+et chaque arête est pondérée pour produire une sortie. Il y a souvent
+un terme pondéré supplémentaire, mais pour plus de simplicité,
+il n'apparaît pas ici. C'est un modèle linéaire,
+car il se présente sous la forme y = w1x1 + w2x2 + w3x3
+(où w est la pondération). Ajoutons maintenant une couche cachée
+à notre réseau de nœuds et d'arêtes. Notre couche d'entrée comporte trois nœuds
+et notre couche cachée trois également. Parlons des nœuds cachés. Comme il s'agit d'une couche
+entièrement connectée, il y a 3 x 3 arêtes, ou 9 pondérations. Voici donc un modèle non linéaire
+que nous pouvons utiliser pour résoudre des problèmes
+de non-linéarité, n'est-ce pas ? Malheureusement, non.
+Regardons cela de plus près. L'entrée du premier nœud caché est égale
+à la somme pondérée de : w1x1 + w4x2 + w7x3. L'entrée du deuxième nœud caché est égale
+à la somme pondérée de : w2x1 + w5x2 + w8x3. L'entrée du troisième nœud caché est égale
+à la somme pondérée de : w3x1 + w6x2 + w9x3. Une fois que l'on combine tout cela
+au niveau du nœud de sortie, on obtient :
+w10h1 + w11h2 + w12h3. Rappelez-vous toutefois que h1, h2 et h3 ne sont que des combinaisons
+linéaires des caractéristiques d'entrée. Si nous développons tout cela, nous obtenons un ensemble complexe
+de constantes de pondération multipliées par chaque valeur d'entrée, x1, x2 et x3. Nous pouvons substituer
+chaque pondération double par une nouvelle. Ça vous semble familier ? Il s'agit du même modèle linéaire qu'avant, malgré le fait que nous avons ajouté
+une couche cachée de neurones. Que s'est-il passé ? Et si on ajoutait
+une autre couche cachée ? Malheureusement, on obtient encore une matrice de pondération unique
+multipliée par chacune des trois entrées. Il s'agit du même modèle linéaire. On peut poursuivre ce processus
+à l'infini et obtenir le même résultat, encore que ce serait très coûteux
+en termes de calcul pour l'apprentissage ou la prédiction, et avec une architecture
+bien plus compliquée que nécessaire. Si l'on considère cela
+sous l'angle de l'algèbre linéaire, on multiplie un enchaînement de matrices. Dans ce petit exemple, je multiplie d'abord une matrice 3 x 3, la transposition de la matrice de pondération
+entre les couches entrée et cachée h1 par le vecteur d'entrée 3 x 1,
+ce qui donne le vecteur 3 x 1, c'est-à-dire les valeurs
+pour chaque neurone caché dans la couche cachée h1. Pour trouver les valeurs de neurones
+de la deuxième couche cachée, je multiplie la transposition de sa matrice de pondération 3 x 1
+qui connecte la couche cachée h1 à la couche cachée h2 par le vecteur
+résultant au niveau de la couche cachée h1. Comme vous pouvez le deviner, les deux matrices de pondération 3 x 3 peuvent être combinées
+en une seule matrice 3 x 3 en calculant d'abord
+le produit des matrices à partir de la gauche,
+du milieu ou de la droite. On obtient toujours
+la même forme pour h2, le vecteur de valeur de neurone
+de la deuxième couche cachée. Lorsque j'ajoute la couche finale
+entre la couche cachée h2 et la couche de sortie,
+je dois multiplier les étapes précédentes par la transposition
+de la matrice de pondération entre les deux dernières couches. Bien que dans une propagation avant
+via un réseau de neurones, vous effectuiez la multiplication de la matrice de droite
+à gauche en l'appliquant de gauche à droite, vous pouvez voir
+que notre longue chaîne de multiplications se réduit à un vecteur à trois valeurs. Si vous entraînez ce modèle
+dans une régression linéaire simple de trois pondérations côte à côte
+avec une surface de perte identique, et même si vous avez fait des tonnes
+de calculs pour les 21 pondérations, la chaîne des produits des matrices
+se réduit à l'équation inférieure et la pondération correspond exactement
+aux pondérations de la régression linéaire simple
+d'apprentissage. Tout ce travail pour le même résultat. Vous vous dites probablement :
+"Je pensais que les réseaux de neurones consistaient à ajouter
+de multiples couches de neurones. Comment faire du deep learning
+si toutes les couches se réduisent à une seule ?"
+J'ai de bonnes nouvelles pour vous. La solution est très simple. Il suffit d'ajouter une couche
+de transformation non linéaire, à l'aide d'une fonction d'activation
+non linéaire telle que la fonction sigmoïde,
+TanH ou ReLU. En termes de graphe dans TensorFlow, vous pouvez imaginer
+que chaque neurone dispose de deux nœuds. Le premier nœud est le résultat
+de la somme pondérée wx + b, et le deuxième nœud correspond à ce résultat
+une fois passé par la fonction d'activation. En d'autres termes, il s'agit des entrées
+de la fonction d'activation suivies des sorties
+de la fonction d'activation, de sorte que la fonction d'activation
+fait office de point de transition. L'ajout de cette transformation
+non linéaire est le seul moyen d'empêcher le réseau de neurones
+d'être réduit à un réseau peu profond. Même si vous disposez d'une couche
+avec des fonctions d'activation non linéaires dans le réseau,
+si ailleurs dans le réseau, vous disposez de deux ou plusieurs couches
+avec des fonctions d'activation linéaires, elles peuvent être réduites
+à un seul réseau. Habituellement, les couches des réseaux
+de neurones sont non linéaires (couches 1 et -1), avec une transformation
+de couche finale linéaire pour une régression, une fonction sigmoïde ou softmax
+que nous évoquerons bientôt dans les problèmes de classification. Tout dépend de la sortie voulue. Si on considère cela sous l'angle
+de l'algèbre linéaire, lorsqu'on applique une transformation linéaire
+à une matrice ou un vecteur, nous le multiplions
+par une matrice ou un vecteur afin d'obtenir
+la forme et le résultat voulus. Ainsi, lorsque je veux
+mettre à l'échelle une matrice je peux la multiplier par une constante. Mais en fait, vous la multipliez
+par une matrice d'identité qui est multipliée par cette constante. Il s'agit donc d'une matrice diagonale
+avec cette constante sur la diagonale. Le tout pourrait être réduit
+à un produit de matrice. Toutefois, si j'ajoute une non-linéarité, il m'est impossible de la représenter
+par une matrice. En effet, d'un point de vue des éléments,
+j'ajoute une fonction à mon entrée. Par exemple, si j'ai une fonction
+d'activation non linéaire entre la première et la deuxième couches cachées,
+j'applique une fonction du produit entre la transposition
+de la matrice de pondération de ma première couche cachée
+et de mon vecteur d'entrée. L'équation du bas est ma fonction
+d'activation dans une unité ReLU. Comme je ne peux pas
+représenter la transformation sous forme algébrique linéaire,
+je ne peux plus réduire cette portion de la chaîne de transformation.
+Le modèle demeure donc complexe et ne peut pas être réduit
+à une combinaison linéaire des entrées. Je peux toujours réduire la matrice
+de pondération de la deuxième couche cachée et la matrice de pondération
+de la couche de sortie, car aucune fonction non linéaire
+n'est appliquée. Cela veut dire qu'en présence de deux
+ou plusieurs couches linéaires consécutives, celles-ci peuvent toujours être réduites
+à une couche, quel que soit leur nombre. Les fonctions les plus complexes
+sont donc créées par votre réseau. Il est recommandé d'appliquer
+des fonctions d'activation linéaires à votre réseau,
+à l'exception de la dernière couche au cas où vous utiliseriez
+un autre type de sortie. Pourquoi est-il important d'ajouter
+des fonctions d'activation non linéaires aux réseaux de neurones ? Parce que cela empêche les couches
+d'être réduites à un modèle linéaire. Les fonctions d'activation non linéaires 
+créent d'intéressantes transformations via un espace de caractéristiques
+de données, et permettent d'utiliser des fonctions de composition profondes.
+Pour rappel, en présence d'au moins deux couches
+de fonctions d'activation linéaires, ce produit des matrices
+peut se résumer à une matrice multipliée par le vecteur
+des caractéristiques d'entrée. Vous obtenez ainsi un modèle plus lent
+avec une puissance de calcul supérieure, mais avec une complexité
+fonctionnelle réduite. Les non-linéarités n'ajoutent pas
+de régularisation à la fonction de perte et ne déclenchent pas
+d'arrêt prématuré. Bien que les fonctions d'activation
+non linéaires créent des transformations complexes
+dans l'espace vectoriel, cette dimension ne change pas.
+C'est le même espace vectoriel même s'il est étiré, rapetissé ou pivoté. Comme mentionné
+dans l'un des cours précédents, il existe de nombreuses fonctions
+d'activation non linéaire avec sigmoïde. La sigmoïde mise à l'échelle et décalée,
+dite tangente hyperbolique, fait partie des toutes premières. Toutefois, elles peuvent arriver
+à saturation, ce qui entraîne la disparition du gradient. Dans ce cas, les pondérations des modèles
+ne sont pas mises à jour et l'entraînement s'interrompt. L'unité de rectification linéaire (ReLU)
+est l'une de nos fonctions préférées, car elle est simple
+et fonctionne parfaitement. Dans le domaine positif, elle est
+linéaire, donc pas de saturation, et dans le domaine négatif, la fonction
+est égale à zéro. Les réseaux avec activation "cachée"
+de type ReLU apprennent 10 fois plus vite que les réseaux
+avec activation "cachée" de type sigmoïde. Cependant, la fonction étant toujours
+égale à zéro dans le domaine négatif, on peut en arriver à la disparition
+des couches ReLU. En effet, lorsque vous commencez à obtenir
+des entrées dans le domaine négatif et que la sortie de l'activation est
+égale à zéro, c'est au détriment de la couche suivante et des entrées
+données dans le domaine positif. Cet effet cumulé aboutit à la création
+de nombreuses activations égales à zéro, durant la rétropropagation
+et la mise à jour des pondérations, car on doit multiplier la dérivée
+des erreurs par la valeur d'activation, et on obtient alors un gradient de zéro.
+La pondération est alors égale à zéro, les pondérations ne changent pas,
+et l'apprentissage de cette couche échoue. Heureusement, on a développé
+plusieurs méthodes astucieuses pour modifier légèrement la fonction ReLU
+sans interruption de l'apprentissage, tout en bénéficiant des avantages
+de la fonction ReLU standard. La voici. L'opérateur maximal
+peut aussi être représenté par une application linéaire par morceaux. Si x est inférieur à zéro,
+la fonction est égale à zéro, et si x est supérieur ou égal à zéro,
+la fonction est égale à x. Il existe une approximation douce
+de la fonction ReLU. C'est la fonction logistique :
+logarithme népérien de 1 plus exponentielle de x.
+Il s'agit de la fonction SoftPlus. Notez que la dérivée de la fonction SoftPlus
+est une fonction logistique. L'utilisation de la fonction SoftPlus
+présente des avantages : elle est continue et dérivable en 0,
+contrairement à la fonction ReLU. Toutefois, du fait du logarithme népérien
+et de la fonction exponentielle, la fonction requière davantage de calculs
+que les fonctions ReLU, qui offrent tout de même
+de bons résultats dans la pratique. C'est pourquoi SoftPlus n'est généralement
+pas recommandée en deep learning. Pour essayer de résoudre le problème
+de la disparition des ReLU en raison des activations égales à zéro, la fonction Leaky ReLU a été développée. Comme la fonction ReLU, Leaky ReLU
+est une fonction linéaire par morceaux. Cependant, dans le domaine négatif,
+la fonction n'est pas égale à zéro. Elle a une courbe non nulle,
+spécifiquement, 0,01. Ainsi, lorsque l'unité n'est pas activée,
+la fonction Leaky ReLU autorise tout de même le passage d'un gradient infime non nul,
+qui, avec un peu de chance, permet de poursuivre la mise à jour
+des pondérations et de l'apprentissage. L'unité ReLU paramétrique, ou PReLU,
+est une autre variante. Plutôt que d'autoriser arbitrairement
+le passage d'un centième de x dans le domaine négatif,
+elle laisse passer αx. Qu'est-ce que ce paramètre alpha ? Dans le graphe, je donne à alpha
+la valeur de 0,5 à des fins de visualisation, mais dans la pratique, il s'agit
+d'un paramètre appris durant l'apprentissage, tout comme les autres paramètres
+de réseaux de neurones. Ainsi, nous ne définissons pas cette valeur. Celle-ci est déterminée
+durant l'entraînement grâce aux données et la valeur d'apprentissage
+devrait être supérieure à celle que nous aurions pu définir.
+Notez que si α est inférieur à 1, la formule peut être réduite à nouveau
+à sa forme compacte avec la valeur maximale, spécifiquement, la valeur maximale de x,
+ou alpha multiplié par x. Il existe également
+une fonction Leaky ReLU aléatoire dans laquelle alpha n'est pas entraîné,
+mais échantillonné de façon aléatoire à partir d'une distribution uniforme. L'effet peut être similaire à un abandon,
+car vous obtenez un réseau différent pour chaque valeur d'alpha. Vous obtenez ainsi un résultat
+semblable à un ensemble. Lors des tests, on fait la moyenne
+de toutes les valeurs d'alpha pour obtenir une valeur déterministe
+à des fins de prédiction. Il existe aussi la variante ReLU6, une autre fonction linéaire par morceaux
+avec trois segments. Tout comme une ReLU normale,
+elle est égale à zéro dans le domaine négatif. En revanche, dans le domaine positif,
+la limite pour ReLU6 est de six. Vous vous demandez peut-être pourquoi. Imaginez que chaque unité ReLU dispose de seulement six unités répliquées
+avec un biais de type Bernoulli, plutôt que d'un nombre infini
+en raison du plafond fixe. On les appelle généralement
+les unités n ReLU, où n représente la valeur plafond. Lors des tests, on a trouvé
+que six était la valeur optimale. Les unités ReLU6 peuvent aider
+les modèles à apprendre des caractéristiques creuses plus rapidement.
+Elles ont été d'abord utilisées dans des réseaux CDBN sur un ensemble
+de données d'images CIFAR-10. Elles sont également utiles,
+car elles préparent le réseau pour une précision à virgule fixe
+à des fins d'inférence. En l'absence de limite supérieure,
+on perd trop d'éléments dans la partie décimale du nombre
+à virgule fixe, mais si on dispose d'une limite supérieure de six,
+on a suffisamment d'éléments dans la partie décimale du nombre
+à des fins d'inférence. Enfin, on a l'unité
+exponentielle linéaire, ou ELU. Elle est pour ainsi dire linéaire
+dans la partie non négative des entrées. C'est une fonction douce,
+monotone et, fait plus important, non nulle
+dans la partie négative des entrées. Cette fonction est mieux centrée sur zéro
+que la fonction ReLU standard, ce qui accélère l'apprentissage. Le principal inconvénient de l'unité ELU
+c'est qu'en termes de calcul, elle est plus coûteuse qu'une ReLU,
+car elle doit générer l'exponentielle. Les réseaux de neurones peuvent être
+arbitrairement complexes : couches nombreuses,
+nombreux neurones par couche, entrées et sorties, plusieurs types
+de fonctions d'activation, etc. À quoi servent ces multiples couches ? Chaque couche accroît la complexité
+des fonctions que je peux créer. Chaque couche subséquente est une
+composition des fonctions précédentes. Comme j'utilise des fonctions d'activation
+non linéaires dans les couches cachées, je crée une pile de transformations
+de données qui pivotent, étirent ou rapetissent mes données. N'oubliez pas que je fais tout cela,
+soit pour transférer mes données afin qu'elles tiennent dans un hyperplan
+à des fins de régression, soit pour séparer mes données
+dans des hyperplans à des fins de classification. On fait correspondre
+l'espace des caractéristiques d'origine et le nouvel espace
+des caractéristiques convolutives. Quel est l'intérêt d'ajouter
+des neurones à une couche ? Chaque neurone ajoute une nouvelle
+dimension dans mon espace vectoriel. Si je commence avec trois neurones d'entrée,
+je débute dans l'espace vectoriel R3. Mais si ma couche suivante
+comporte quatre neurones, je suis dans un espace vectoriel R4. Quand nous avons abordé les méthodes
+de noyau dans le cours précédent, nous avions un ensemble de données
+qui n'étaient pas facilement séparées avec un hyperplan dans l'espace vectoriel
+d'entrée d'origine. Mais, en ajoutant la dimension,
+puis en transformant les données pour remplir cette nouvelle dimension
+de façon adaptée, nous avons pu facilement séparer les différentes
+classes de données. Il en va de même
+pour les réseaux de neurones. À quoi sert-il d'avoir
+plusieurs nœuds de sortie ? L'utilisation de plusieurs nœuds de sortie
+vous permet de les comparer à plusieurs étiquettes, puis de faire
+une rétropropagation des erreurs correspondantes. Imaginons le cas
+d'une classification d'images avec plusieurs entités ou
+classes par image. Il est impossible de prédire une classe,
+car il pourrait y en avoir plusieurs. Cette flexibilité représente
+donc un réel atout. Les réseaux de neurones peuvent être
+arbitrairement complexes. Pour accroître les dimensions cachées,
+je peux ajouter [blanc]. Pour accroître la composition
+des fonctions, je peux ajouter [blanc]. Si j'ai plusieurs étiquettes, par exemple,
+je peux ajouter [blanc]. La bonne réponse est :
+neurones, couches, sorties. Pour modifier les dimensions cachées,
+il faut changer le nombre de neurones, pour déterminer les dimensions de l'espace
+vectoriel où se situe le vecteur intermédiaire. Si une couche a quatre neurones,
+elle est dans l'espace vectoriel R4. Et si une couche comporte 500 neurones,
+elle est dans l'espace vectoriel R500. En d'autres termes,
+elle a 500 dimensions réelles. L'ajout d'une couche ne modifie pas
+la dimension de la couche précédente ni même la dimension de cette couche, à moins que son nombre de neurones diffère
+de celui de la couche précédente. Les couches supplémentaires permettent
+d'optimiser la composition des fonctions. Rappelez-vous que g ∘ f(x) correspond à la fonction composée
+de g et de f pour l'entrée x. Je transforme donc x avec f,
+puis je transforme ce résultat avec g. Plus j'ajoute de couches, plus
+les fonctions imbriquées sont profondes. C'est idéal pour combiner
+des fonctions non linéaires afin de créer des cartes
+de caractéristiques très convolutives que le cerveau humain a du mal
+à élaborer, mais pas un ordinateur. Cela nous permet aussi de mieux préparer
+nos données à des fins d'apprentissage et pour obtenir des insights.
+À ce propos, on les reçoit via nos couches de sortie,
+durant l'inférence. Ce sont les réponses
+au problème formulé en termes de ML. Si vous voulez uniquement
+connaître la probabilité qu'une image soit celle d'un chien, vous pouvez
+vous contenter d'un seul nœud de sortie. Mais si vous voulez reconnaître
+les images d'un chat, d'un chien, d'un oiseau ou d'un orignal,
+vous devez alors avoir un nœud pour chacun d'entre eux. Les trois autres réponses sont fausses,
+au moins deux des termes étant incorrects.

@@ -1,0 +1,401 @@
+1
+00:00:00,000 --> 00:00:04,160
+Beginnen wir mit dem ersten Abschnitt
+dieses Moduls: Regularisierung.
+
+2
+00:00:04,160 --> 00:00:08,100
+Das Trainingsziel für ein Modell ist
+die Minimierung des Verlustwerts.
+
+3
+00:00:08,100 --> 00:00:09,975
+Ein Graph der Verlustkurve
+
+4
+00:00:09,975 --> 00:00:12,180
+für Trainings- und Testdaten
+
+5
+00:00:12,180 --> 00:00:14,115
+kann wie hier aussehen.
+
+6
+00:00:14,115 --> 00:00:19,875
+Der Graph zeigt den Verlust auf der Y-Achse
+gegenüber der Zeit auf der X-Achse an.
+
+7
+00:00:19,875 --> 00:00:21,855
+Fällt Ihnen etwas auf?
+
+8
+00:00:21,855 --> 00:00:25,855
+Der Verlustwert verringert sich
+bei den Trainingsdaten wie gewünscht,
+
+9
+00:00:25,855 --> 00:00:29,280
+nimmt bei den Testdaten
+nach einiger Zeit aber wieder zu.
+
+10
+00:00:29,280 --> 00:00:31,050
+Das ist nicht gut.
+
+11
+00:00:31,050 --> 00:00:34,785
+Hier ist eindeutig
+eine Überanpassung erfolgt.
+
+12
+00:00:34,785 --> 00:00:38,490
+Es scheint eine Beziehung
+zur Anzahl der Trainingsläufe zu bestehen.
+
+13
+00:00:38,490 --> 00:00:40,045
+Wir gehen wir da heran?
+
+14
+00:00:40,045 --> 00:00:43,350
+Wir könnten die Anzahl der Läufe
+verringern und vorzeitig stoppen.
+
+15
+00:00:43,350 --> 00:00:45,800
+Vorzeitiges Stoppen ist definitiv möglich,
+
+16
+00:00:45,800 --> 00:00:47,820
+es muss aber eine bessere Option geben.
+
+17
+00:00:47,820 --> 00:00:51,395
+Hier kommt die Regularisierung ins Spiel.
+
+18
+00:00:51,395 --> 00:00:55,335
+Lassen wir unserer Intuition
+in TensorFlow Playground freien Lauf.
+
+19
+00:00:55,335 --> 00:00:58,980
+Sie kennen diesen Playground
+bereits aus früheren Kursen.
+
+20
+00:00:58,980 --> 00:01:03,750
+TensorFlow Playground
+ist ein praktisches kleines Tool,
+
+21
+00:01:03,750 --> 00:01:06,835
+um zu visualisieren, 
+wie neurale Netzwerke lernen.
+
+22
+00:01:06,835 --> 00:01:10,255
+Wir nutzen es
+sehr oft in dieser Spezialisierung,
+
+23
+00:01:10,255 --> 00:01:12,615
+um Konzepte intuitiv zu begreifen.
+
+24
+00:01:12,615 --> 00:01:15,645
+Sehen Sie sich diesen Bildschirm an.
+
+25
+00:01:15,645 --> 00:01:18,030
+Irgendetwas ist hier seltsam.
+
+26
+00:01:18,030 --> 00:01:22,680
+Unten links
+ist ein Bereich, der ins Blaue geht.
+
+27
+00:01:22,680 --> 00:01:25,170
+In den Daten weist nichts auf blau hin.
+
+28
+00:01:25,170 --> 00:01:29,610
+Die Modellentscheidung ist seltsam.
+
+29
+00:01:29,610 --> 00:01:31,140
+Warum ist das der Fall?
+
+30
+00:01:31,140 --> 00:01:36,310
+Sie sehen die fünf relativ dicken Linien
+von der Eingabe zur Ausgabe.
+
+31
+00:01:36,310 --> 00:01:40,050
+Diese Linien zeigen
+die relative Gewichtung der fünf Merkmale.
+
+32
+00:01:40,050 --> 00:01:43,775
+Die Linien von x1 und x2
+
+33
+00:01:43,775 --> 00:01:47,140
+sind deutlich dicker
+als die von den Merkmalkreuzungen.
+
+34
+00:01:47,140 --> 00:01:51,030
+Die Merkmalkreuzungen tragen also
+wesentlich weniger zum Modell bei
+
+35
+00:01:51,030 --> 00:01:53,510
+als die normalen, ungekreuzten Merkmale.
+
+36
+00:01:53,510 --> 00:01:57,160
+Das Entfernen aller Merkmalkreuzungen
+führt zu einem brauchbareren Modell.
+
+37
+00:01:57,160 --> 00:01:58,965
+Sie sollten dies ausprobieren.
+
+38
+00:01:58,965 --> 00:02:03,067
+Sie stellen fest, dass der Grenzbereich
+aufgrund der Überanpassung verschwindet
+
+39
+00:02:03,067 --> 00:02:05,610
+und der Testverlust konvergiert.
+
+40
+00:02:05,610 --> 00:02:10,780
+Nach 1.000 Durchläufen sollte
+der Testverlust geringer sein als dort,
+
+41
+00:02:10,780 --> 00:02:13,645
+wo die Merkmalkreuzungen verwendet wurden.
+
+42
+00:02:13,645 --> 00:02:18,350
+Ihre Ergebnisse können abhängig
+vom Dataset etwas anders aussehen.
+
+43
+00:02:18,350 --> 00:02:22,830
+Die Daten in dieser Übung
+sind lineare Daten plus Rauschen.
+
+44
+00:02:22,830 --> 00:02:27,960
+Wenn Ihr Modell zu komplex ist,
+z. B. zu vielen Kreuzungen hat,
+
+45
+00:02:27,960 --> 00:02:31,870
+kann es sich an das Rauschen
+in den Trainingsdaten anpassen.
+
+46
+00:02:31,870 --> 00:02:35,880
+Bietet das Modell allerdings bei Testdaten
+schlechte Leistung, ist das nicht gut.
+
+47
+00:02:35,880 --> 00:02:38,950
+Vorzeitiges Stoppen ist hier keine Lösung.
+
+48
+00:02:38,950 --> 00:02:42,750
+Wir müssen
+die Modellkomplexität verändern.
+
+49
+00:02:42,750 --> 00:02:46,145
+Wie messen wir Modellkomplexität
+und wie vermeiden wir sie?
+
+50
+00:02:46,145 --> 00:02:49,740
+Wir haben gelernt,
+dass einfachere Modell meist besser sind.
+
+51
+00:02:49,740 --> 00:02:52,920
+Nicht jedes Gewürz im Regal
+muss ins Essen.
+
+52
+00:02:52,920 --> 00:02:57,540
+Mit diesem Thema beschäftigt sich
+die Generalisierungstheorie oder G-Theorie.
+
+53
+00:02:57,540 --> 00:03:01,440
+Dabei geht es um das Definieren
+des statistischen Frameworks.
+
+54
+00:03:01,440 --> 00:03:05,069
+Die einfachste Herangehensweise
+ist allerdings die Intuition.
+
+55
+00:03:05,069 --> 00:03:09,270
+Dies basiert auf den Prinzipien
+aus dem 14. Jh. von William Ockham.
+
+56
+00:03:09,270 --> 00:03:13,680
+Beim Modelltraining wenden wir
+das Prinzip von Ockhams Rasiermesser an.
+
+57
+00:03:13,680 --> 00:03:18,420
+Wir ziehen einfachere Modelle
+mit weniger Annahmen zum Training vor.
+
+58
+00:03:18,420 --> 00:03:21,970
+Beschäftigen wir uns mit
+den gängigsten Regularisierungstechniken,
+
+59
+00:03:21,970 --> 00:03:24,600
+mit denen wir
+dieses Prinzip praktisch anwenden können.
+
+60
+00:03:24,600 --> 00:03:27,705
+Modellkomplexität soll bestraft werden.
+
+61
+00:03:27,705 --> 00:03:30,930
+Bisher haben wir
+in unserem Trainingsprozess versucht,
+
+62
+00:03:30,930 --> 00:03:34,310
+Datenverlust für das Modell zu minimieren.
+
+63
+00:03:34,310 --> 00:03:37,815
+Wir müssen dies
+gegen die Modellkomplexität abwägen.
+
+64
+00:03:37,815 --> 00:03:41,040
+Bevor wir darüber reden,
+wie wir Modellkomplexität messen,
+
+65
+00:03:41,040 --> 00:03:45,570
+müssen wir klären, warum Komplexität
+und Verlust ausgeglichen sein sollen.
+
+66
+00:03:45,570 --> 00:03:50,625
+Fakt ist,
+stark vereinfachte Modelle sind nutzlos.
+
+67
+00:03:50,625 --> 00:03:54,300
+Wenn Sie dort übertreiben,
+haben Sie am Ende kein Modell mehr.
+
+68
+00:03:54,315 --> 00:03:56,380
+Wir benötigen die richtige Balance
+
+69
+00:03:56,380 --> 00:04:00,000
+zwischen Einfachheit
+und exakt angepassten Trainingsdaten.
+
+70
+00:04:00,000 --> 00:04:02,580
+Mittlerweile sollte klar sein,
+warum dieser Ansatz
+
+71
+00:04:02,580 --> 00:04:05,580
+dem Prinzip eher gerecht wird
+als vorzeitiges Stoppen.
+
+72
+00:04:05,580 --> 00:04:08,142
+Regularisierung ist
+im Bereich maschinelles Lernen
+
+73
+00:04:08,142 --> 00:04:10,005
+eines der größeren Forschungsfelder.
+
+74
+00:04:10,005 --> 00:04:13,120
+Viele Techniken wurden veröffentlicht
+und weitere werden folgen.
+
+75
+00:04:13,120 --> 00:04:15,330
+Wir haben
+vorzeitiges Stoppen bereits erwähnt.
+
+76
+00:04:15,330 --> 00:04:17,714
+Wir haben auch die Methoden untersucht,
+
+77
+00:04:17,714 --> 00:04:20,774
+die sich zusammenfassen lassen
+unter Parameternormabzüge.
+
+78
+00:04:20,774 --> 00:04:24,045
+Zudem gibt es
+die Methoden zur Dataset-Vergrößerung,
+
+79
+00:04:24,045 --> 00:04:28,260
+Unempfindlichkeit gegen Rauschen,
+spärliche Darstellung und mehr.
+
+80
+00:04:28,260 --> 00:04:33,610
+In diesem Modul sehen wir uns
+die L1- und L2-Regularisierungen an,
+
+81
+00:04:33,610 --> 00:04:36,765
+die unter Parameternormabzüge fallen.
+
+82
+00:04:36,765 --> 00:04:38,250
+Vorher erinnern wir uns aber,
+
+83
+00:04:38,250 --> 00:04:43,240
+welches Problem
+Regularisierung für uns löst.
+
+84
+00:04:43,240 --> 00:04:47,990
+Regularisierung bezieht sich auf eine
+Technik zur Modellgeneralisierung.
+
+85
+00:04:47,990 --> 00:04:50,160
+Ein generalisiertes Modell
+ist leistungsstark,
+
+86
+00:04:50,157 --> 00:04:53,807
+nicht nur bei Trainingsdaten,
+sondern auch bei unbekannten Testdaten.

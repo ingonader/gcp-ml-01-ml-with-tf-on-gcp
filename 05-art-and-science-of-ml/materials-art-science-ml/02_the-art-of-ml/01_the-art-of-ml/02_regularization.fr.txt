@@ -1,0 +1,69 @@
+Commençons par la première partie
+de ce module : la régularisation. Souvenez-vous que le but
+de l'entraînement d'un modèle est de minimiser la valeur de perte. Si vous tracez une courbe de perte sur les données d'entraînement et de test, cela devrait ressembler à ceci. Ce graphique représente la perte (axe Y)
+en fonction du temps (axe X). Vous ne remarquez rien d'anormal ? Oui, la valeur de la perte décroit dans
+le temps pour les données d'entraînement, alors qu'à un certain point, elle repart
+à la hausse pour les données de test. Ce n'est pas bon signe. Nous avons clairement
+un problème de surapprentissage ici, vraisemblablement imputable
+au nombre d'itérations d'entraînement. Comment régler ce problème ? Réduire le nombre d'itérations
+d'entraînement et arrêter plus tôt ? L'arrêt prématuré est une possibilité, mais il doit en exister de meilleures. C'est ici que
+la régularisation entre en jeu. Laissons notre intuition nous guider
+et servons-nous de TensorFlow Playground. Normalement, vous avez vu et utilisé ce
+"terrain de jeu" dans les cours précédents. Pour rappel, Tensorflow Playground est
+un petit outil pratique pour visualiser la manière
+dont les réseaux de neurones apprennent. Nous l'utilisons intensivement
+tout au long de cette spécialisation pour vous aider
+à saisir les concepts de façon intuitive. Permettez-moi d'attirer
+votre attention sur l'écran. Il se passe quelque chose d'étrange ici. Vous avez remarqué la région
+en bas à gauche qui tire vers le bleu ? Rien dans les données
+ne fait référence au bleu. Le choix du modèle est un peu fou. Pourquoi cela, à votre avis ? Observez l'épaisseur des cinq lignes
+allant de l'entrée à la sortie. Ces lignes indiquent le poids relatif
+de chacune des cinq caractéristiques. Les lignes émanant de X1 et X2
+sont bien plus épaisses que celles provenant
+des croisements de caractéristiques. Ces croisements de caractéristiques
+contribuent donc beaucoup moins au modèle que les caractéristiques
+normales non croisées. La suppression de toutes
+les caractéristiques croisées donne un modèle plus sain. Essayez cela par vous-même. Vous pourrez voir que la limite de courbe
+suggérant un surapprentissage disparaît et que la valeur de la perte converge
+pour les données de test. Après 1 000 itérations, cette valeur
+devrait être légèrement inférieure à celle obtenue en conservant
+les croisements de caractéristiques. Notez toutefois que,
+selon l'ensemble de données concerné, les résultats peuvent un peu varier. Dans cet exercice, nous avons surtout
+des données linéaires et du "bruit". Si votre modèle est trop compliqué, notamment s'il comporte
+trop de croisements, vous avez la possibilité de l'adapter
+au bruit pour les données d'entraînement. Mais souvent, cela implique que le modèle
+sera peu efficace sur les données de test. L'arrêt prématuré ne sera
+d'aucune aide dans un tel cas, nous devons avant tout maîtriser
+la complexité du modèle. Mais comment pouvons-nous mesurer
+la complexité du modèle et y pallier ? Nous avons constaté que les modèles plus
+simples sont généralement meilleurs. Il n'est pas nécessaire d'utiliser tous
+les ingrédients à votre disposition. Il existe tout un champ autour de cette
+théorie de la généralisation, ou G Theory, qui a pour objet
+de définir le cadre statistique. La façon la plus simple de considérer
+cela est de faire appel à l'intuition, selon les principes énoncés
+au XIVe siècle par William Ockham. Lorsque nous entraînerons notre modèle, nous utiliserons le principe du rasoir
+d'Ockham comme guide heuristique pour privilégier des modèles plus simples avec moins d'hypothèses
+sur les données d'entraînement. Parlons de certaines des techniques
+de régularisation les plus courantes, qui nous aideront à appliquer ce principe. L'idée est de pénaliser
+la complexité du modèle. Jusqu'à présent,
+dans notre processus d'entraînement, nous avons tenté de minimiser la perte
+des données fournies au modèle. Nous devons trouver un équilibre
+entre cela et la complexité du modèle. Avant de parler de la façon
+de mesurer la complexité d'un modèle, attachons-nous à comprendre pourquoi
+équilibrer la complexité et la perte. À vrai dire, les modèles trop simplifiés
+sont parfaitement inutiles. Si vous poussez
+la simplification à l’extrême, vous vous retrouverez sans modèle. Vous devez trouver le juste équilibre entre simplicité et précision de
+l'ajustement des données d'entraînement. J'espère que vous comprenez maintenant pourquoi cette approche repose davantage
+sur des principes que l'arrêt prématuré. La régularisation est l'un
+des principaux domaines de recherche en matière de machine learning. De nombreuses techniques existent déjà,
+et d'autres sont à venir. Nous avons déjà mentionné
+l'arrêt prématuré. Nous avons également commencé
+à explorer le groupe de méthodes appelé "sanctions normatives
+liées aux paramètres". Il existe également des méthodes
+d'augmentation des ensembles de données, de résistance au bruit,
+de représentation éparse, et bien d'autres encore. Dans ce module, nous examinerons en détail
+les méthodes de régularisation L1 et L2 du groupe de techniques de "sanctions
+normatives liées aux paramètres". Mais avant cela, je tiens à vous rappeler
+quels types de problèmes la régularisation peut résoudre. Le terme "régularisation" fait référence à toute technique pouvant aider
+à généraliser un modèle. Un modèle généralisé est efficace
+aussi bien sur les données d'entraînement que sur les données de test inconnues.

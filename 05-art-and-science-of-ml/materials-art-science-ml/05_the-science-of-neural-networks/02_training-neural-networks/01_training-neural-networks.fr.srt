@@ -1,0 +1,1331 @@
+1
+00:00:00,000 --> 00:00:03,050
+Maintenant que nous avons étudié
+les réseaux de neurones,
+
+2
+00:00:03,050 --> 00:00:07,440
+voyons l'apprentissage, les principaux
+pièges et certaines des techniques
+
+3
+00:00:07,440 --> 00:00:10,820
+permettant d'accélérer l'apprentissage
+et d'améliorer la généralisation.
+
+4
+00:00:10,820 --> 00:00:13,640
+Dans TensorFlow, si vous vous servez
+de l'API Estimator,
+
+5
+00:00:13,640 --> 00:00:16,640
+l'utilisation de DNNRegressor
+est très semblable à celle
+
+6
+00:00:16,640 --> 00:00:20,380
+de LinearRegressor. Il suffit d'ajouter
+quelques paramètres au code.
+
+7
+00:00:20,380 --> 00:00:23,520
+On peut utiliser des optimiseurs
+de type Momentum, tels qu'Adagrad
+
+8
+00:00:23,520 --> 00:00:26,800
+qui est fourni par défaut, ou essayer
+de nombreux autres tels qu'Adam.
+
+9
+00:00:26,800 --> 00:00:31,390
+On doit également ajouter un paramètre
+appelé hidden_units, qui est une liste.
+
+10
+00:00:31,390 --> 00:00:35,050
+Le nombre d'éléments dans cette liste
+correspond au nombre de couches cachées,
+
+11
+00:00:35,050 --> 00:00:38,235
+et les valeurs de chaque élément
+correspondent au nombre de neurones
+
+12
+00:00:38,235 --> 00:00:41,380
+de cette couche cachée.
+Vous verrez également un nouveau paramètre
+
+13
+00:00:41,380 --> 00:00:46,180
+appelé dropout. Nous y reviendrons.
+Pour l'instant, sachez qu'il permet
+
+14
+00:00:46,180 --> 00:00:50,045
+d'activer ou de désactiver des neurones
+un par un, pour améliorer les performances
+
+15
+00:00:50,045 --> 00:00:54,070
+en termes de généralisation. Reportez-vous
+à la documentation de TensorFlow
+
+16
+00:00:54,070 --> 00:00:57,570
+qui contient l'ensemble
+des paramètres configurables.
+
+17
+00:00:57,570 --> 00:01:00,350
+Vous pourriez vous en servir
+en tant qu'hyperparamètres
+
+18
+00:01:00,350 --> 00:01:05,010
+afin d'ajuster votre modèle et d'optimiser
+les performances de généralisation.
+
+19
+00:01:05,010 --> 00:01:08,630
+La rétropropagation fait partie des sujets
+généralement abordés dans un cours
+
+20
+00:01:08,630 --> 00:01:12,255
+sur les réseaux de neurones du ML.
+Mais, c'est un peu comme lorsqu'on apprend
+
+21
+00:01:12,255 --> 00:01:15,965
+à créer un compilateur. C'est crucial
+si on veut approfondir ses connaissances,
+
+22
+00:01:15,965 --> 00:01:19,200
+mais ce n'est pas nécessaire
+pour comprendre le concept initialement.
+
+23
+00:01:19,200 --> 00:01:22,910
+L'important, c'est de savoir qu'il existe
+un algorithme efficace pour le calcul
+
+24
+00:01:22,910 --> 00:01:25,879
+des dérivées, qui est effectué
+automatiquement par TensorFlow.
+
+25
+00:01:25,879 --> 00:01:29,775
+Certaines problématiques valent la peine
+d'être abordées, telles que la disparition
+
+26
+00:01:29,775 --> 00:01:32,740
+des gradients, l'explosion des gradients
+et les couches mortes.
+
+27
+00:01:32,740 --> 00:01:36,780
+D'abord, durant le processus d'apprentissage
+des réseaux profonds particulièrement,
+
+28
+00:01:36,780 --> 00:01:40,060
+les gradients peuvent diminuer.
+Chaque couche supplémentaire du réseau
+
+29
+00:01:40,060 --> 00:01:45,600
+peut réduire le signal vs le bruit.
+C'est le cas lorsque vous utilisez
+
+30
+00:01:45,600 --> 00:01:49,449
+une fonction d'activation sigmoïde ou tanh
+dans vos couches cachées.
+
+31
+00:01:49,449 --> 00:01:52,540
+Alors que vous atteignez le point
+de saturation, vous vous trouvez
+
+32
+00:01:52,540 --> 00:01:55,920
+dans la région asymptotique
+de la fonction qui commence à se stabiliser.
+
+33
+00:01:55,920 --> 00:01:58,690
+La courbe se rapproche de plus en plus de 0.
+
+34
+00:01:58,690 --> 00:02:01,240
+Lors de la phase descendante
+de la rétropropagation,
+
+35
+00:02:01,240 --> 00:02:04,255
+votre gradient diminue de plus en plus,
+car vous amalgamez
+
+36
+00:02:04,255 --> 00:02:08,210
+tous ces petits gradients
+jusqu'à ce que le gradient disparaisse.
+
+37
+00:02:08,210 --> 00:02:11,400
+Lorsque cela se produit, vos pondérations
+ne sont plus mises à jour,
+
+38
+00:02:11,400 --> 00:02:14,120
+et l'apprentissage s'arrête donc.
+
+39
+00:02:14,120 --> 00:02:16,990
+Pour résoudre ce problème,
+il suffit d'utiliser des fonctions
+
+40
+00:02:16,990 --> 00:02:21,354
+d'activation non linéaires et non saturées
+telles que les fonctions ReLU, ELU, etc.
+
+41
+00:02:22,084 --> 00:02:26,790
+On peut être confronté au problème
+inverse, en cas d'explosion du gradient,
+
+42
+00:02:26,790 --> 00:02:32,025
+lorsque l'augmentation des pondérations
+est telle qu'elle crée un débordement.
+
+43
+00:02:32,025 --> 00:02:35,740
+Même en commençant
+avec un petit gradient de 2,
+
+44
+00:02:35,740 --> 00:02:39,795
+il est facile d'aboutir à un gradient de taille
+en présence de nombreuses couches.
+
+45
+00:02:39,795 --> 00:02:42,415
+C'est le cas en particulier
+pour les modèles de séquence
+
+46
+00:02:42,415 --> 00:02:45,035
+comportant une longue séquence.
+Les taux d'apprentissage
+
+47
+00:02:45,035 --> 00:02:47,920
+peuvent être un facteur, car
+à la mise à jour des pondérations,
+
+48
+00:02:47,920 --> 00:02:50,490
+on a multiplié le gradient
+par le taux d'apprentissage,
+
+49
+00:02:50,490 --> 00:02:53,260
+puis on a soustrait ce résultat
+de la pondération actuelle.
+
+50
+00:02:53,260 --> 00:02:57,085
+Bien que le gradient ne soit pas important,
+un taux d'apprentissage supérieur à 1
+
+51
+00:02:57,085 --> 00:03:01,100
+peut le faire trop augmenter
+et nous poser problème, ainsi qu'au réseau.
+
+52
+00:03:01,100 --> 00:03:04,850
+Il existe de nombreuses techniques
+pour minimiser ce problème,
+
+53
+00:03:04,850 --> 00:03:08,665
+telles que la régularisation des pondérations
+et des tailles de lot plus petites,
+
+54
+00:03:08,665 --> 00:03:12,730
+ou le bornement de la norme du gradient,
+pour vérifier si le gradient dépasse
+
+55
+00:03:12,730 --> 00:03:15,685
+un certain seuil que vous pouvez
+régler avec un hyperparamètre.
+
+56
+00:03:15,685 --> 00:03:19,070
+Dans ce cas, vous pouvez remettre
+à l'échelle les composants du gradient
+
+57
+00:03:19,070 --> 00:03:21,354
+pour qu'ils n'excèdent pas
+les valeurs maximales.
+
+58
+00:03:21,354 --> 00:03:25,545
+La normalisation des lots peut aussi être
+utile pour résoudre le décalage
+
+59
+00:03:25,545 --> 00:03:26,615
+de covariance interne.
+
+60
+00:03:26,615 --> 00:03:29,960
+Elle permet d'accélérer le flux des gradients,
+et donc l'apprentissage.
+
+61
+00:03:29,960 --> 00:03:33,905
+Elle utilise souvent un taux d'apprentissage
+plus élevé et peut éliminer
+
+62
+00:03:33,905 --> 00:03:37,240
+l'abandon qui ralentit la compilation
+selon son type de régularisation,
+
+63
+00:03:37,240 --> 00:03:41,295
+en raison du bruit généré par les mini-lots.
+Pour effectuer une normalisation par lot,
+
+64
+00:03:41,295 --> 00:03:44,835
+vous devez d'abord trouver la moyenne
+ainsi que l'écart type des mini-lots,
+
+65
+00:03:44,835 --> 00:03:47,315
+puis normaliser les entrées de ce nœud
+
+66
+00:03:47,315 --> 00:03:52,390
+et enfin effectuer une mise à l'échelle
+et un décalage équivalant à γx + β,
+
+67
+00:03:52,390 --> 00:03:55,830
+où gamma et bêta
+représentent les paramètres appris.
+
+68
+00:03:55,830 --> 00:03:59,300
+Si gamma est égal à la racine carrée
+de la variance de x, et bêta est égal
+
+69
+00:03:59,300 --> 00:04:02,540
+à la moyenne des x, la fonction
+d'activation d'origine est restaurée.
+
+70
+00:04:02,540 --> 00:04:06,030
+Vous pouvez ainsi contrôler
+la taille de la plage de vos entrées.
+
+71
+00:04:06,030 --> 00:04:10,165
+Dans l'idéal, vous devez garder les gradients
+aussi proches de la valeur 1 que possible,
+
+72
+00:04:10,165 --> 00:04:12,410
+particulièrement pour les réseaux
+très profonds,
+
+73
+00:04:12,410 --> 00:04:16,590
+pour éviter leur amalgame,
+voire un dépassement positif ou négatif.
+
+74
+00:04:16,590 --> 00:04:19,780
+La descente de gradient peut aboutir
+à un autre problème courant,
+
+75
+00:04:19,780 --> 00:04:22,980
+la mort des couches ReLU réelles.
+Heureusement, avec TensorBoard,
+
+76
+00:04:22,980 --> 00:04:26,150
+on peut surveiller les résumés
+durant et après l'apprentissage
+
+77
+00:04:26,150 --> 00:04:28,180
+des modèles de ML.
+
+78
+00:04:28,180 --> 00:04:31,465
+En cas d'utilisation d'un DNNEstimator
+standardisé, un résumé scalaire
+
+79
+00:04:31,465 --> 00:04:34,860
+est automatiquement enregistré
+pour chaque couche cachée du DNN
+
+80
+00:04:34,860 --> 00:04:38,800
+indiquant la fraction des valeurs 0
+des activations pour cette couche.
+
+81
+00:04:38,800 --> 00:04:41,750
+Les fonctions ReLU s'arrêtent
+lorsque leurs entrées les gardent
+
+82
+00:04:41,750 --> 00:04:45,140
+dans le domaine négatif
+générant ainsi une valeur d'activation de 0.
+
+83
+00:04:45,140 --> 00:04:46,939
+L'impact ne se limite pas là.
+
+84
+00:04:46,939 --> 00:04:51,029
+Leur contribution dans la couche suivante
+est égale à 0, car, en dépit des pondérations
+
+85
+00:04:51,029 --> 00:04:55,610
+assurant la connexion aux neurones suivants,
+l'activation et donc l'entrée sont égales à 0.
+
+86
+00:04:55,610 --> 00:04:58,620
+Une fois que quelques zéros figurent
+dans les neurones suivants,
+
+87
+00:04:58,620 --> 00:05:01,050
+il est impossible de passer
+dans le domaine positif.
+
+88
+00:05:01,050 --> 00:05:03,530
+Les activations de ces neurones
+sont alors égales à 0
+
+89
+00:05:03,530 --> 00:05:05,770
+et le problème continue de se propager.
+
+90
+00:05:05,770 --> 00:05:09,345
+Ensuite, on effectue la rétropropagation,
+et leurs gradients sont égaux à 0.
+
+91
+00:05:09,345 --> 00:05:13,160
+On n'a donc plus de pondérations,
+et l'apprentissage s'arrête. Aïe.
+
+92
+00:05:13,160 --> 00:05:16,365
+On a évoqué l'utilisation des fonctions
+Leaky ReLU ou paramétriques,
+
+93
+00:05:16,365 --> 00:05:18,095
+voire des fonctions ELU plus lentes,
+
+94
+00:05:18,095 --> 00:05:22,105
+mais vous pouvez aussi réduire les taux
+d'apprentissage pour éviter la non-activation
+
+95
+00:05:22,105 --> 00:05:24,065
+et donc la mort des couches ReLU.
+
+96
+00:05:24,065 --> 00:05:27,310
+Un gradient important, résultant
+d'un taux d'apprentissage trop élevé
+
+97
+00:05:27,310 --> 00:05:30,545
+peut mettre à jour les pondérations
+de sorte qu'aucun point de donnée
+
+98
+00:05:30,545 --> 00:05:33,149
+ne pourra plus l'activer.
+Le gradient étant égal à 0,
+
+99
+00:05:33,149 --> 00:05:36,480
+on ne mettra pas à jour la pondération
+avec une valeur plus raisonnable
+
+100
+00:05:36,480 --> 00:05:38,980
+de sorte que le problème
+persistera indéfiniment.
+
+101
+00:05:38,980 --> 00:05:42,700
+Faisons appel à notre intuition.
+Qu'arrivera-t-il à notre modèle,
+
+102
+00:05:42,700 --> 00:05:47,430
+si on a deux signaux utiles,
+tous deux corrélés avec l'étiquette,
+
+103
+00:05:47,430 --> 00:05:49,695
+mais avec des échelles différentes ?
+
+104
+00:05:49,695 --> 00:05:51,495
+Par exemple, on pourrait avoir
+
+105
+00:05:51,495 --> 00:05:54,730
+un prédicteur de bonnes soupes
+dont les caractéristiques représentent
+
+106
+00:05:54,730 --> 00:05:56,020
+la qualité des ingrédients.
+
+107
+00:05:56,020 --> 00:05:59,220
+Si la caractéristique du bouillon de volaille
+est mesurée en litres,
+
+108
+00:05:59,220 --> 00:06:02,250
+et celle du bouillon de bœuf en millilitres,
+il se pourrait fort
+
+109
+00:06:02,250 --> 00:06:06,395
+que la descente de gradient stochastique
+ait du mal à atteindre le point de convergence,
+
+110
+00:06:06,395 --> 00:06:11,120
+car le taux d'apprentissage optimal de ces deux
+dimensions diffèrent très probablement.
+
+111
+00:06:11,120 --> 00:06:15,445
+Disposer de données propres et dans une plage
+de calcul adéquate présente bien des avantages
+
+112
+00:06:15,445 --> 00:06:17,970
+durant le processus d'apprentissage
+des modèles de ML.
+
+113
+00:06:17,970 --> 00:06:21,740
+Des valeurs de caractéristiques basses
+et plus particulièrement centrées sur 0
+
+114
+00:06:21,740 --> 00:06:25,070
+aident à accélérer l'apprentissage
+et évitent les problèmes numériques.
+
+115
+00:06:25,070 --> 00:06:28,985
+C'est pourquoi la normalisation par lot
+est utile pour les explosions de gradients,
+
+116
+00:06:28,985 --> 00:06:32,895
+car elle permet de conserver non seulement
+les caractéristiques d'entrée initiales,
+
+117
+00:06:32,895 --> 00:06:36,995
+mais également toutes les caractéristiques
+intermédiaires dans une plage opérationnelle
+
+118
+00:06:36,995 --> 00:06:39,260
+pour éviter tout problème
+au niveau des couches.
+
+119
+00:06:39,260 --> 00:06:43,110
+Cela nous aide aussi à éviter le piège NaN
+selon lequel notre modèle peut exploser
+
+120
+00:06:43,110 --> 00:06:45,780
+si les valeurs excèdent
+la plage de précision numérique.
+
+121
+00:06:45,780 --> 00:06:48,320
+Une combinaison de caractéristiques
+mises à l'échelle
+
+122
+00:06:48,320 --> 00:06:51,990
+et/ou d'un taux d'apprentissage inférieur
+peut nous aider à éviter cet écueil.
+
+123
+00:06:51,990 --> 00:06:55,895
+Il est également judicieux d'éviter
+les anomalies pour faciliter la généralisation.
+
+124
+00:06:55,895 --> 00:06:59,770
+La détection de ces valeurs anormales
+et leur exclusion de l'ensemble de données
+
+125
+00:06:59,770 --> 00:07:02,390
+avant l'apprentissage
+peuvent s'avérer fort utiles.
+
+126
+00:07:02,390 --> 00:07:06,925
+N'oubliez pas qu'il n'existe pas de méthode
+unique adaptée à toutes les données.
+
+127
+00:07:06,925 --> 00:07:11,540
+Chacune de ces approches présente
+des avantages et des inconvénients.
+
+128
+00:07:11,540 --> 00:07:15,455
+Il existe plusieurs façons de réduire
+nos valeurs de caractéristiques.
+
+129
+00:07:15,455 --> 00:07:18,340
+D'abord, on a la mise à l'échelle linéaire
+où l'on identifie
+
+130
+00:07:18,340 --> 00:07:22,100
+les valeurs minimale et maximale
+des données. Ensuite, pour chaque valeur,
+
+131
+00:07:22,100 --> 00:07:25,200
+on soustrait la valeur minimale,
+puis on divise par la différence
+
+132
+00:07:25,200 --> 00:07:27,450
+entre les valeurs maximale
+et minimale (plage).
+
+133
+00:07:27,450 --> 00:07:29,705
+Les valeurs seront
+alors comprises entre 0 et 1,
+
+134
+00:07:29,705 --> 00:07:32,110
+0 étant la valeur minimale
+et 1 la valeur maximale.
+
+135
+00:07:32,110 --> 00:07:35,010
+On parle aussi de normalisation.
+
+136
+00:07:35,010 --> 00:07:38,255
+On peut aussi utiliser le bornement
+de la norme du gradient,
+
+137
+00:07:38,255 --> 00:07:41,125
+pour lequel vous définissez
+des valeurs minimale et maximale.
+
+138
+00:07:41,125 --> 00:07:47,635
+Par exemple, si ma valeur minimale est définie
+sur -7 et ma valeur maximale sur 10,
+
+139
+00:07:47,635 --> 00:07:50,850
+alors toutes les valeurs inférieures à -7
+prennent la valeur -7,
+
+140
+00:07:50,850 --> 00:07:54,030
+et toutes les valeurs supérieures à 10
+prennent la valeur 10.
+
+141
+00:07:54,030 --> 00:07:56,735
+Une autre méthode, l'échelle logarithmique,
+
+142
+00:07:56,735 --> 00:08:00,020
+consiste à appliquer la fonction logarithmique
+à vos données d'entrée.
+
+143
+00:08:00,020 --> 00:08:02,640
+C'est très utile si vous avez
+une vaste plage de données
+
+144
+00:08:02,640 --> 00:08:06,160
+et que vous souhaitez la condenser
+en fonction de la grandeur de la valeur.
+
+145
+00:08:06,160 --> 00:08:11,150
+La standardisation est une autre méthode
+déjà évoquée avec la normalisation par lot.
+
+146
+00:08:11,150 --> 00:08:14,395
+Dans ce cas, vous calculez la moyenne
+de vos données et l'écart type.
+
+147
+00:08:14,395 --> 00:08:18,350
+Une fois cela fait, vous soustrayez la moyenne
+de chaque point de donnée,
+
+148
+00:08:18,350 --> 00:08:20,030
+puis vous divisez par l'écart type.
+
+149
+00:08:20,030 --> 00:08:21,870
+Ainsi, vos données sont centrées sur 0,
+
+150
+00:08:21,870 --> 00:08:26,445
+car votre nouvelle moyenne est égale à 0
+et le nouvel écart type est alors égal à 1.
+
+151
+00:08:26,445 --> 00:08:29,670
+Il existe bien d'autres façons
+de mettre à l'échelle vos données.
+
+152
+00:08:29,670 --> 00:08:32,100
+Lesquels de ces conseils s'appliquent
+si mon modèle
+
+153
+00:08:32,100 --> 00:08:34,895
+génère des explosions de gradients ?
+
+154
+00:08:34,895 --> 00:08:38,064
+La bonne réponse est A, B, C, D.
+
+155
+00:08:38,064 --> 00:08:40,540
+Ce problème survient souvent
+lorsque les pondérations
+
+156
+00:08:40,540 --> 00:08:42,685
+deviennent trop importantes,
+ce qui est le cas
+
+157
+00:08:42,685 --> 00:08:44,875
+lorsque le taux d'apprentissage
+est trop élevé.
+
+158
+00:08:44,875 --> 00:08:47,210
+Cela peut générer
+toutes sortes d'autres problèmes
+
+159
+00:08:47,210 --> 00:08:50,355
+tels que la stabilité numérique,
+la divergence et la mort des ReLU.
+
+160
+00:08:50,355 --> 00:08:56,715
+Il est donc conseillé de réduire le taux
+d'apprentissage pour trouver le juste milieu.
+
+161
+00:08:56,715 --> 00:08:59,760
+La régularisation des pondérations
+peut également s'avérer utile,
+
+162
+00:08:59,760 --> 00:09:02,570
+car une pénalité est appliquée
+aux pondérations importantes,
+
+163
+00:09:02,570 --> 00:09:05,220
+ce qui permet d'éviter
+les explosions de gradients.
+
+164
+00:09:05,220 --> 00:09:09,170
+Le bornement de la norme du gradient
+permet également de s'assurer que les gradients
+
+165
+00:09:09,170 --> 00:09:11,930
+ne dépassent pas un seuil spécifique
+que nous avons défini.
+
+166
+00:09:11,930 --> 00:09:14,900
+Cela peut aider à réduire un peu
+un taux d'apprentissage élevé.
+
+167
+00:09:14,900 --> 00:09:18,425
+Mais, si le taux est assez élevé,
+les pondérations ont tendance à atteindre
+
+168
+00:09:18,425 --> 00:09:19,880
+de très hautes valeurs.
+
+169
+00:09:19,880 --> 00:09:24,180
+La normalisation par lot peut vous aider
+à garder les entrées intermédiaires des couches
+
+170
+00:09:24,180 --> 00:09:25,840
+dans une plage plus restreinte.
+
+171
+00:09:25,840 --> 00:09:29,670
+Il est donc bien moins probable
+que les pondérations soient hors plage, et ce,
+
+172
+00:09:29,670 --> 00:09:32,480
+avec un faible coût supplémentaire
+en termes de calcul.
+
+173
+00:09:32,480 --> 00:09:34,870
+Il y a de nombreuses solutions
+en cas d'explosion.
+
+174
+00:09:34,870 --> 00:09:37,160
+Il vous suffit de faire des tests
+avec ces outils
+
+175
+00:09:37,160 --> 00:09:39,755
+et d'identifier la méthode
+qui convient le mieux.
+
+176
+00:09:39,755 --> 00:09:43,180
+Il existe une autre forme de régularisation
+qui facilite le développement
+
+177
+00:09:43,180 --> 00:09:46,610
+de modèles plus généralisables : l'ajout de
+couches d'abandon aux réseaux de neurones.
+
+178
+00:09:46,630 --> 00:09:48,875
+Pour utiliser cette méthode,
+j'ajoute un wrapper
+
+179
+00:09:48,875 --> 00:09:50,930
+à une ou plusieurs couches.
+Dans TensorFlow,
+
+180
+00:09:50,930 --> 00:09:55,130
+ce paramètre s'appelle dropout.
+Il correspond à la probabilité d'abandonner
+
+181
+00:09:55,130 --> 00:09:59,070
+un neurone temporairement
+plutôt que de le garder activé.
+
+182
+00:09:59,070 --> 00:10:02,500
+Soyez prudent lorsque vous définissez
+ce chiffre, car certaines fonctions
+
+183
+00:10:02,500 --> 00:10:06,490
+disposant d'un mécanisme d'abandon,
+utilisent la probabilité "keep",
+
+184
+00:10:06,490 --> 00:10:08,895
+qui est le complément
+de la probabilité "drop",
+
+185
+00:10:08,895 --> 00:10:12,180
+à savoir la probabilité d'activation
+ou de désactivation d'un neurone.
+
+186
+00:10:12,180 --> 00:10:15,465
+Vous ne voulez pas appliquer
+une probabilité "drop" de 10 % seulement,
+
+187
+00:10:15,465 --> 00:10:19,220
+et découvrir que vous appliquez en fait
+une probabilité "keep" de 10 % seulement
+
+188
+00:10:19,220 --> 00:10:21,220
+dans les nœuds de façon aléatoire,
+créant ainsi un modèle creux.
+
+189
+00:10:21,220 --> 00:10:23,180
+Comment fonctionne l'abandon exactement ?
+
+190
+00:10:23,180 --> 00:10:26,270
+Supposons que nous ayons défini
+une probabilité d'abandon de 20 %.
+
+191
+00:10:26,270 --> 00:10:28,855
+Pour chaque propagation avant
+dans le réseau,
+
+192
+00:10:28,855 --> 00:10:33,005
+l'algorithme jette le dé pour chaque neurone
+et la couche associée au DropoutWrapper.
+
+193
+00:10:33,005 --> 00:10:36,715
+Si le nombre de jets est supérieur à 20,
+le neurone reste actif dans le réseau,
+
+194
+00:10:36,715 --> 00:10:40,595
+sinon le neurone est abandonné
+et génère une valeur de sortie de 0
+
+195
+00:10:40,595 --> 00:10:45,390
+quelles que soient les valeurs d'entrée, et ce,
+sans ajout ni positif, ni négatif au réseau.
+
+196
+00:10:45,390 --> 00:10:50,140
+En effet, l'ajout d'un zéro n'a aucun effet,
+comme si le neurone n'existait pas.
+
+197
+00:10:50,140 --> 00:10:52,990
+Pour compenser le fait
+que chaque nœud n'est conservé
+
+198
+00:10:52,990 --> 00:10:56,470
+qu'un certain pourcentage du temps,
+les activations sont mises à l'échelle
+
+199
+00:10:56,470 --> 00:11:01,865
+1 ÷ 1 moins la probabilité d'abandon,
+c'est-à-dire 1 divisé par la probabilité "keep"
+
+200
+00:11:01,865 --> 00:11:06,125
+durant l'apprentissage, pour que l'activation
+ait cette valeur attendue.
+
+201
+00:11:06,125 --> 00:11:09,100
+En l'absence d'apprentissage,
+et sans aucun changement de code,
+
+202
+00:11:09,100 --> 00:11:11,460
+le wrapper disparaît et les neurones
+
+203
+00:11:11,460 --> 00:11:14,040
+dans la couche auparavant associée
+au DropoutWrapper
+
+204
+00:11:14,040 --> 00:11:17,380
+restent activés et utilisent les pondérations
+entraînées par le modèle.
+
+205
+00:11:17,380 --> 00:11:19,900
+L'avantage de cette méthode,
+c'est qu'elle permet
+
+206
+00:11:19,900 --> 00:11:22,125
+de créer un groupe de modèles,
+
+207
+00:11:22,125 --> 00:11:24,615
+car pour chaque propagation avant,
+on dispose en fait
+
+208
+00:11:24,615 --> 00:11:28,400
+d'un réseau différent
+pour le mini-lot de données.
+
+209
+00:11:28,400 --> 00:11:30,960
+Lorsqu'on ajoute tout cela,
+
+210
+00:11:30,960 --> 00:11:34,010
+cela revient à entraîner
+2 réseaux de neurones à la puissance n,
+
+211
+00:11:34,010 --> 00:11:36,460
+où n est le nombre de neurones abandonnés.
+
+212
+00:11:36,460 --> 00:11:38,760
+Ces réseaux travaillent en groupe
+
+213
+00:11:38,760 --> 00:11:41,995
+comme des schémas de décision
+au sein d'un ensemble aléatoire.
+
+214
+00:11:41,995 --> 00:11:44,525
+Cette méthode a par ailleurs
+l'avantage d'étendre
+
+215
+00:11:44,525 --> 00:11:46,675
+la distribution des données
+du réseau entier,
+
+216
+00:11:46,675 --> 00:11:51,120
+plutôt que la majeure partie du signal
+soit concentrée sur une branche du réseau.
+
+217
+00:11:51,120 --> 00:11:54,320
+Généralement, j'assimile cela
+au détournement de l'eau d'une rivière
+
+218
+00:11:54,320 --> 00:11:57,510
+à l'aide de plusieurs barrages
+pour s'assurer que tous les ruisseaux
+
+219
+00:11:57,510 --> 00:11:59,800
+sont approvisionnés en eau
+et ne s'assèchent pas.
+
+220
+00:11:59,800 --> 00:12:02,430
+Votre réseau tire meilleur parti
+de sa capacité,
+
+221
+00:12:02,430 --> 00:12:05,560
+car le signal circule de façon plus
+homogène dans tout le réseau.
+
+222
+00:12:05,560 --> 00:12:08,420
+L'apprentissage et la généralisation
+s'en trouvent améliorées
+
+223
+00:12:08,420 --> 00:12:12,820
+sans que des dépendances se créent au niveau
+des neurones dans les voies les plus utilisées.
+
+224
+00:12:12,820 --> 00:12:16,065
+Les valeurs typiques d'abandon
+sont de 20 à 50 %.
+
+225
+00:12:16,065 --> 00:12:18,015
+Pour toute valeur très inférieure à cela,
+
+226
+00:12:18,015 --> 00:12:21,680
+l'effet sur le réseau est insignifiant,
+en raison du nombre réduit d'abandons.
+
+227
+00:12:21,680 --> 00:12:23,075
+Pour toute valeur supérieure,
+
+228
+00:12:23,075 --> 00:12:26,315
+l'apprentissage n'est pas aussi efficace,
+car le réseau devient creux
+
+229
+00:12:26,315 --> 00:12:29,420
+au point de perdre sa capacité 
+d'apprentissage sans distribution.
+
+230
+00:12:29,420 --> 00:12:32,575
+Cette méthode est toute conseillée
+sur des réseaux plus importants,
+
+231
+00:12:32,575 --> 00:12:35,810
+car le modèle peut mieux apprendre
+les représentations indépendantes.
+
+232
+00:12:35,810 --> 00:12:39,090
+En d'autres termes, le réseau dispose
+d'un plus grand nombre de voies.
+
+233
+00:12:39,090 --> 00:12:40,665
+Plus vous abandonnez de neurones,
+
+234
+00:12:40,665 --> 00:12:42,060
+et donc moins vous en gardez,
+
+235
+00:12:42,060 --> 00:12:43,680
+plus la régularisation est solide.
+
+236
+00:12:43,680 --> 00:12:46,010
+Si vous définissez
+la probabilité d'abandon sur 1,
+
+237
+00:12:46,010 --> 00:12:47,550
+vous ne conservez aucun neurone,
+
+238
+00:12:47,550 --> 00:12:50,920
+et chaque neurone de la couche
+associée au DropoutWrapper est supprimé,
+
+239
+00:12:50,920 --> 00:12:53,270
+et la valeur de sortie
+de l'activation est de 0.
+
+240
+00:12:53,270 --> 00:12:55,290
+Durant la rétropropagation, cela signifie
+
+241
+00:12:55,290 --> 00:12:58,950
+que les pondérations ne sont pas mises à jour
+et que la couche n'apprend rien.
+
+242
+00:12:58,950 --> 00:13:02,380
+Si vous définissez la probabilité sur 0,
+tous les neurones restent actifs
+
+243
+00:13:02,380 --> 00:13:04,535
+et la régularisation par abandon
+n'a pas lieu.
+
+244
+00:13:04,535 --> 00:13:06,825
+C'est une façon plus coûteuse
+en termes de calcul
+
+245
+00:13:06,825 --> 00:13:10,495
+de ne pas avoir de DropoutWrapper,
+car vous devez tout de même jeter le dé.
+
+246
+00:13:10,495 --> 00:13:13,270
+Vous voulez bien évidemment
+être quelque part entre 0 et 1,
+
+247
+00:13:13,270 --> 00:13:16,870
+plus spécifiquement, avec une probabilité
+d'abandon entre 10 et 50 %.
+
+248
+00:13:16,870 --> 00:13:20,655
+La valeur de référence est de 20 % au départ,
+puis vous augmentez au besoin.
+
+249
+00:13:20,655 --> 00:13:24,445
+Il n'y a pas de probabilité d'abandon unique
+qui s'applique à tous les modèles
+
+250
+00:13:24,445 --> 00:13:26,185
+et distributions de données.
+
+251
+00:13:26,185 --> 00:13:28,625
+L'abandon est une autre méthode de [blanc].
+
+252
+00:13:28,625 --> 00:13:31,245
+Il force les données à circuler
+dans des voies [blanc]
+
+253
+00:13:31,245 --> 00:13:33,460
+pour une distribution plus homogène.
+
+254
+00:13:33,460 --> 00:13:35,305
+Il émule l'apprentissage de [blanc].
+
+255
+00:13:35,305 --> 00:13:37,475
+Pour mettre à l'échelle les activations
+
+256
+00:13:37,475 --> 00:13:40,330
+d'abandon, n'oubliez pas d'appliquer
+l'inverse de la [blanc].
+
+257
+00:13:40,330 --> 00:13:42,250
+L'abandon est supprimé durant [blanc].
+
+258
+00:13:42,250 --> 00:13:45,950
+La bonne réponse est E.
+Un abandon est une autre méthode
+
+259
+00:13:45,950 --> 00:13:49,575
+de régularisation en vue d'améliorer
+la capacité de généralisation du modèle.
+
+260
+00:13:49,575 --> 00:13:52,295
+Les nœuds sont désactivés
+selon une probabilité d'abandon,
+
+261
+00:13:52,295 --> 00:13:55,110
+ce qui force les données à circuler
+dans des voies multiples
+
+262
+00:13:55,110 --> 00:13:56,825
+pour une distribution plus homogène.
+
+263
+00:13:56,825 --> 00:13:59,215
+Autrement, les données
+et activations associées
+
+264
+00:13:59,215 --> 00:14:02,455
+peuvent apprendre à préférer certaines voies,
+ce qui pourrait aboutir
+
+265
+00:14:02,455 --> 00:14:05,515
+à un sous-apprentissage du réseau,
+et à de mauvaises performances
+
+266
+00:14:05,515 --> 00:14:07,785
+sur de nouvelles données.
+
+267
+00:14:07,785 --> 00:14:09,935
+L'abandon émule l'apprentissage de groupe
+
+268
+00:14:09,935 --> 00:14:13,645
+en cumulant 2 modèles à la puissance n,
+en raison de la désactivation aléatoire
+
+269
+00:14:13,645 --> 00:14:17,740
+des nœuds pour chaque propagation avant,
+où n représente le nombre de nœuds abandonnés.
+
+270
+00:14:17,740 --> 00:14:22,055
+Chaque lot est vu par un réseau différent,
+pour éviter un surapprentissage du modèle
+
+271
+00:14:22,055 --> 00:14:24,500
+sur l'ensemble d'apprentissage.
+
+272
+00:14:24,500 --> 00:14:28,070
+Pour mettre à l'échelle les activations
+d'abandon, n'oubliez pas d'appliquer
+
+273
+00:14:28,070 --> 00:14:31,605
+l'inverse de la probabilité "keep",
+soit 1 moins la probabilité d'abandon.
+
+274
+00:14:31,605 --> 00:14:35,945
+L'objectif est de mettre à l'échelle le nœud
+durant l'apprentissage, car durant l'inférence,
+
+275
+00:14:35,945 --> 00:14:38,995
+il est actif, puisqu'on supprime l'abandon
+pendant l'inférence.

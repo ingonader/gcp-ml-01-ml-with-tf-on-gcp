@@ -1,0 +1,364 @@
+1
+00:00:00,470 --> 00:00:03,100
+En el curso anterior,
+vimos las incorporaciones
+
+2
+00:00:03,170 --> 00:00:05,390
+desde el punto de vista
+de la combinación de atributos.
+
+3
+00:00:05,740 --> 00:00:09,535
+Pero las incorporaciones son útiles
+para cualquier columna categórica.
+
+4
+00:00:09,855 --> 00:00:10,925
+Para entender por qué
+
+5
+00:00:11,075 --> 00:00:14,020
+revisemos las incorporaciones
+desde un punto de vista diferente.
+
+6
+00:00:14,740 --> 00:00:18,795
+Queremos recomendar películas
+a los clientes.
+
+7
+00:00:19,675 --> 00:00:22,595
+Supongamos que nuestra empresa
+tiene un millón de usuarios
+
+8
+00:00:22,805 --> 00:00:24,800
+y 500,000 películas.
+
+9
+00:00:25,330 --> 00:00:26,910
+Es una cantidad pequeña.
+
+10
+00:00:27,210 --> 00:00:30,085
+YouTube y otras ocho propiedades de Google
+
+11
+00:00:30,085 --> 00:00:31,620
+tienen mil millones de usuarios.
+
+12
+00:00:32,270 --> 00:00:37,160
+Debemos recomendar
+de 5 a 10 películas por usuario.
+
+13
+00:00:37,820 --> 00:00:40,235
+Debemos escoger películas que verán
+
+14
+00:00:40,465 --> 00:00:42,215
+y calificarán con una puntuación alta.
+
+15
+00:00:42,755 --> 00:00:45,045
+Necesitamos hacer esto
+para un millón de usuarios
+
+16
+00:00:45,345 --> 00:00:49,325
+y para cada uno,
+seleccionar de 5 a 10 películas
+
+17
+00:00:49,675 --> 00:00:51,395
+de un total de 500,000.
+
+18
+00:00:51,995 --> 00:00:53,970
+¿Cuál es el conjunto de datos de entrada?
+
+19
+00:00:54,650 --> 00:00:56,315
+Nuestro conjunto de datos de entrada
+
+20
+00:00:56,685 --> 00:00:58,740
+si lo representamos como una matriz
+
+21
+00:00:59,020 --> 00:01:03,035
+es un millón de filas y 500,000 columnas.
+
+22
+00:01:04,025 --> 00:01:05,545
+Los números en el diagrama
+
+23
+00:01:05,775 --> 00:01:10,390
+indican las películas
+que los clientes vieron y calificaron.
+
+24
+00:01:11,740 --> 00:01:14,960
+Lo que debemos hacer es descubrir
+los datos del resto de la matriz.
+
+25
+00:01:15,170 --> 00:01:16,715
+Para solucionar este problema
+
+26
+00:01:16,815 --> 00:01:18,880
+necesitamos un método
+para determinar
+
+27
+00:01:19,040 --> 00:01:21,080
+qué películas son similares.
+
+28
+00:01:22,260 --> 00:01:26,280
+Un enfoque
+es organizar las películas por similitud
+
+29
+00:01:26,650 --> 00:01:29,155
+según un atributo de las películas.
+
+30
+00:01:30,450 --> 00:01:34,810
+Por ejemplo, podemos ver
+la edad promedio del público
+
+31
+00:01:35,260 --> 00:01:37,245
+y poner las películas en una línea.
+
+32
+00:01:37,865 --> 00:01:40,385
+De modo que
+las películas animadas o de dibujos
+
+33
+00:01:40,625 --> 00:01:42,420
+aparezcan a la izquierda
+
+34
+00:01:42,620 --> 00:01:45,802
+y las películas para adultos
+
+35
+00:01:46,062 --> 00:01:47,371
+aparezcan a la derecha.
+
+36
+00:01:48,035 --> 00:01:51,260
+Podemos suponer
+que si a alguien le gustó Los Increíbles
+
+37
+00:01:51,550 --> 00:01:54,740
+es probable que se trate de un niño
+o de un adulto con un niño pequeño
+
+38
+00:01:54,940 --> 00:01:58,105
+por lo que le recomendaremos Shrek.
+
+39
+00:02:00,085 --> 00:02:04,495
+Pero Azul y Memento son cine de autor
+
+40
+00:02:05,025 --> 00:02:08,115
+mientras que Star Wars
+y El caballero de la noche asciende
+
+41
+00:02:08,115 --> 00:02:09,830
+son películas taquilleras.
+
+42
+00:02:10,490 --> 00:02:12,870
+Si alguien vio Azul y le gustó
+
+43
+00:02:13,500 --> 00:02:16,100
+es más probable que le guste más Memento
+
+44
+00:02:16,360 --> 00:02:18,105
+que una película de Batman.
+
+45
+00:02:18,971 --> 00:02:22,503
+De igual forma,
+si una persona vio Star Wars y le gustó
+
+46
+00:02:22,923 --> 00:02:26,166
+es más probable que le guste
+El caballero de la noche asciende
+
+47
+00:02:26,456 --> 00:02:28,302
+que una película de cine de autor.
+
+48
+00:02:28,882 --> 00:02:30,526
+¿Cómo solucionamos el problema?
+
+49
+00:02:32,181 --> 00:02:35,077
+¿Qué pasa si agregamos
+una segunda dimensión?
+
+50
+00:02:35,963 --> 00:02:40,337
+La segunda dimensión podría ser
+la cantidad total de boletos vendidos
+
+51
+00:02:40,337 --> 00:02:43,542
+cuando la película
+se estrenó en los cines.
+
+52
+00:02:44,587 --> 00:02:48,771
+Ahora, vemos que Star Wars
+y El caballero de la noche asciende
+
+53
+00:02:48,771 --> 00:02:50,203
+están cerca una de la otra.
+
+54
+00:02:50,636 --> 00:02:53,217
+Azul y Memento están cerca.
+
+55
+00:02:53,607 --> 00:02:57,167
+También lo están Shrek
+y Los Increíbles.
+
+56
+00:02:57,497 --> 00:03:01,441
+Harry Potter está entre
+las películas animadas y Star Wars.
+
+57
+00:03:01,681 --> 00:03:06,228
+Es decir, que niños y adultos la miran
+y, además, es una película taquillera.
+
+58
+00:03:07,099 --> 00:03:09,713
+Observe que agregar la segunda dimensión
+
+59
+00:03:10,185 --> 00:03:14,817
+ayudó a agrupar películas
+que son buenas recomendaciones.
+
+60
+00:03:15,487 --> 00:03:19,325
+Se ajusta más a nuestra intuición.
+
+61
+00:03:20,548 --> 00:03:22,383
+¿Nos detenemos en dos dimensiones?
+
+62
+00:03:22,966 --> 00:03:23,977
+Por supuesto que no.
+
+63
+00:03:24,307 --> 00:03:29,786
+Si agregamos más dimensiones,
+podremos crear diferencias más precisas.
+
+64
+00:03:30,389 --> 00:03:34,746
+A veces, estas diferencias 
+pueden traducirse
+
+65
+00:03:35,026 --> 00:03:36,706
+en mejores recomendaciones.
+
+66
+00:03:37,759 --> 00:03:39,181
+Pero no siempre es así.
+
+67
+00:03:39,488 --> 00:03:43,370
+También existe el peligro del sobreajuste.
+
+68
+00:03:44,099 --> 00:03:46,664
+La idea es que tengamos una entrada
+
+69
+00:03:46,664 --> 00:03:48,359
+con N dimensiones.
+
+70
+00:03:48,722 --> 00:03:52,242
+¿Qué significa N
+en el caso de las películas?
+
+71
+00:03:53,032 --> 00:03:54,541
+500,000, ¿correcto?
+
+72
+00:03:54,742 --> 00:03:57,797
+Recuerde que el ID de la película
+es un atributo categórico
+
+73
+00:03:58,027 --> 00:04:00,723
+que normalmente usa codificación one-hot.
+
+74
+00:04:00,888 --> 00:04:03,266
+Por lo que, N = 500,000.
+
+75
+00:04:04,221 --> 00:04:06,948
+En nuestro caso,
+representamos todas las películas
+
+76
+00:04:07,063 --> 00:04:08,739
+en un espacio de dos dimensiones.
+
+77
+00:04:08,849 --> 00:04:10,527
+Es decir, d = 2.
+
+78
+00:04:11,035 --> 00:04:15,062
+El aspecto clave es que d
+es mucho menor que N
+
+79
+00:04:15,735 --> 00:04:19,361
+y la suposición es que el interés
+del usuario en las películas
+
+80
+00:04:19,501 --> 00:04:22,391
+puede representarse
+mediante d aspectos.
+
+81
+00:04:22,721 --> 00:04:26,061
+No necesitamos muchos más aspectos
+
+82
+00:04:26,061 --> 00:04:28,511
+para representar
+el interés de usuarios en las películas.

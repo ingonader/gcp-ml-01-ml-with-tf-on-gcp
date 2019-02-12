@@ -1,0 +1,446 @@
+1
+00:00:00,390 --> 00:00:03,460
+Commençons par aborder
+la façon d'utiliser la régularisation
+
+2
+00:00:03,460 --> 00:00:06,150
+pour créer des modèles
+plus épars et plus simples.
+
+3
+00:00:06,150 --> 00:00:09,115
+Plus tôt dans le cours,
+nous avons abordé la régularisation L2,
+
+4
+00:00:09,115 --> 00:00:12,490
+c'est-à-dire ajouter la somme
+des carrés des pondérations des paramètres
+
+5
+00:00:12,490 --> 00:00:13,790
+à la dernière fonction.
+
+6
+00:00:13,790 --> 00:00:16,245
+Cela a permis de minimiser les pondérations,
+
+7
+00:00:16,245 --> 00:00:18,485
+d'avoir de la stabilité
+et une solution unique,
+
+8
+00:00:18,485 --> 00:00:21,665
+mais peut donner un modèle
+inutilement grand et complexe,
+
+9
+00:00:21,665 --> 00:00:25,540
+car toutes les caractéristiques peuvent
+rester avec des pondérations petites.
+
+10
+00:00:26,280 --> 00:00:31,365
+Si on utilise plutôt la régularisation L1,
+on ajoute la somme de la valeur absolue
+
+11
+00:00:31,365 --> 00:00:33,965
+des pondérations des paramètres
+à la dernière fonction,
+
+12
+00:00:33,965 --> 00:00:37,990
+Cela pousse les pondérations
+des caractéristiques peu prédictives vers zéro.
+
+13
+00:00:37,990 --> 00:00:41,040
+Cette stratégie sert de sélectionneur
+intégré de caractéristiques
+
+14
+00:00:41,040 --> 00:00:44,495
+en détruisant les mauvaises
+et en laissant uniquement les plus fortes.
+
+15
+00:00:44,495 --> 00:00:47,585
+Ce modèle épars a plusieurs avantages.
+
+16
+00:00:47,755 --> 00:00:50,760
+Premièrement, avec moins de
+coefficients à stocker et à charger,
+
+17
+00:00:50,760 --> 00:00:54,925
+les besoins en stockage et mémoire
+sont réduits avec un modèle plus petit,
+
+18
+00:00:54,925 --> 00:00:57,730
+critère très important
+pour les modèles intégrés.
+
+19
+00:00:57,730 --> 00:00:59,830
+Deuxièmement,
+avec moins de caractéristiques,
+
+20
+00:00:59,830 --> 00:01:03,755
+les besoins en multiplications sont réduits,
+augmentant la vitesse d'entraînement,
+
+21
+00:01:03,755 --> 00:01:06,640
+mais surtout la vitesse de prédiction.
+
+22
+00:01:06,640 --> 00:01:10,410
+Nombre de modèles de ML ont suffisamment
+de caractéristiques comme cela.
+
+23
+00:01:10,410 --> 00:01:15,020
+Supposons par exemple que j'ai des données
+contenant la date et l'heure de commandes.
+
+24
+00:01:15,020 --> 00:01:18,520
+Le premier modèle de commande inclurait
+probablement sept caractéristiques
+
+25
+00:01:18,520 --> 00:01:21,210
+pour les jours de la semaine,
+et 24 pour les heures,
+
+26
+00:01:21,210 --> 00:01:23,340
+en plus d'autres caractéristiques.
+
+27
+00:01:23,340 --> 00:01:29,195
+Le jour et l'heure forment
+donc déjà 31 entrées.
+
+28
+00:01:30,445 --> 00:01:33,360
+Et si nous regardons à présent
+les effets secondaires du jour
+
+29
+00:01:33,360 --> 00:01:35,670
+de la semaine croisé
+avec l'heure de la journée ?
+
+30
+00:01:35,670 --> 00:01:40,480
+Nous obtenons 168 autres entrées
+en plus des 31 précédentes, entre autres,
+
+31
+00:01:40,480 --> 00:01:43,210
+pour un total
+de presque 200 caractéristiques,
+
+32
+00:01:43,210 --> 00:01:47,590
+juste pour cet unique champ date/heure,
+en plus d'autres caractéristiques utilisées.
+
+33
+00:01:47,590 --> 00:01:51,600
+Si nous croisons cela avec un encodage HUD
+pour un état américain par exemple,
+
+34
+00:01:51,600 --> 00:01:55,380
+le triple produit cartésien affiche
+déjà 8 400 caractéristiques,
+
+35
+00:01:55,380 --> 00:01:59,295
+dont un bon nombre sont
+sûrement très éparses, pleines de 0.
+
+36
+00:01:59,295 --> 00:02:02,360
+Il est donc évident
+que la sélection intégrée de caractéristiques
+
+37
+00:02:02,360 --> 00:02:05,670
+via la régularisation L1
+peut être un véritable atout.
+
+38
+00:02:05,670 --> 00:02:09,859
+Quelles stratégies utiliser pour supprimer
+les coefficients de caractéristiques inutiles
+
+39
+00:02:09,859 --> 00:02:12,155
+à part peut-être pour la régularisation L1 ?
+
+40
+00:02:13,645 --> 00:02:18,260
+La somme simple des caractéristiques
+avec des valeurs autres que 0 est possible.
+
+41
+00:02:19,350 --> 00:02:22,760
+La norme L0 est simplement
+la somme des pondérations autres que 0.
+
+42
+00:02:22,760 --> 00:02:27,770
+Optimiser cette norme est un problème
+NP-difficile et non convexe d'optimisation.
+
+43
+00:02:27,770 --> 00:02:29,505
+Ce graphique montre
+
+44
+00:02:29,505 --> 00:02:32,735
+à quoi ressemble une surface
+d'erreur d'optimisation non convexe.
+
+45
+00:02:32,735 --> 00:02:35,870
+Vous pouvez voir de nombreux pics et creux.
+
+46
+00:02:35,870 --> 00:02:38,500
+Il s'agit juste
+d'un exemple unidimensionnel simple.
+
+47
+00:02:38,500 --> 00:02:42,640
+Vous devez explorer de nombreux points
+de départ avec la descente de gradient,
+
+48
+00:02:42,640 --> 00:02:45,715
+ce qui rend la résolution complète
+du problème NP difficile.
+
+49
+00:02:46,425 --> 00:02:50,805
+La norme L1, comme la norme L2,
+est heureusement convexe,
+
+50
+00:02:50,805 --> 00:02:53,500
+mais favorise aussi
+la parcimonie dans le modèle.
+
+51
+00:02:53,920 --> 00:02:58,560
+Les distributions de probabilité
+des normes L1 et L2 sont représentées ici.
+
+52
+00:02:58,560 --> 00:03:02,775
+Remarquez que la norme L2
+affiche un pic plus doux à zéro,
+
+53
+00:03:02,775 --> 00:03:05,595
+ce qui rapproche les grandeurs
+des pondérations de zéro.
+
+54
+00:03:05,595 --> 00:03:10,060
+À l'inverse, la norme L1 ressemble plus
+à une pointe centrée sur zéro.
+
+55
+00:03:10,060 --> 00:03:15,330
+La probabilité d'avoir exactement zéro est
+donc plus importante que pour la norme L2.
+
+56
+00:03:15,330 --> 00:03:19,355
+Il existe un nombre infini de normes,
+généralisées par la norme p :
+
+57
+00:03:19,355 --> 00:03:22,260
+certaines autres normes,
+ou la norme L0 déjà abordée,
+
+58
+00:03:22,260 --> 00:03:25,125
+étant la somme des valeurs
+différentes de 0 dans un vecteur,
+
+59
+00:03:25,125 --> 00:03:30,135
+et la norme L∞, étant la valeur absolue
+maximale de toute valeur dans un vecteur.
+
+60
+00:03:30,135 --> 00:03:34,690
+En pratique, la norme L2 fournit pourtant
+en général des modèles plus généralisables
+
+61
+00:03:34,690 --> 00:03:35,905
+que la norme L1.
+
+62
+00:03:35,905 --> 00:03:41,590
+Nous obtiendrons toutefois des modèles
+plus lourds et complexes avec la norme L2,
+
+63
+00:03:41,590 --> 00:03:45,710
+car les caractéristiques ont souvent
+une forte corrélation entre elles.
+
+64
+00:03:45,710 --> 00:03:51,095
+La régularisation L1 en choisira
+une et ignorera l'autre.
+
+65
+00:03:51,095 --> 00:03:54,060
+La régularisation L2 les conservera
+
+66
+00:03:54,060 --> 00:03:56,590
+et maintiendra
+de faibles grandeurs de pondération.
+
+67
+00:03:56,590 --> 00:04:01,120
+Avec L1, vous obtenez un modèle plus
+petit, mais qui peut être moins prédictif.
+
+68
+00:04:01,120 --> 00:04:04,015
+Est-il possible
+de gagner sur les deux tableaux ?
+
+69
+00:04:04,015 --> 00:04:09,870
+L'Elastic-net est l'association linéaire
+des pénalités de régularisation L1 et L2.
+
+70
+00:04:09,870 --> 00:04:13,770
+Vous avez les avantages de la parcimonie
+pour les caractéristiques peu prédictives,
+
+71
+00:04:13,770 --> 00:04:16,229
+tout en conservant
+les bonnes caractéristiques
+
+72
+00:04:16,229 --> 00:04:19,144
+avec des pondérations réduites,
+pour une bonne généralisation.
+
+73
+00:04:19,144 --> 00:04:23,384
+Le seul compromis restant est qu'il y a
+deux hyperparamètres au lieu d'un seul
+
+74
+00:04:23,384 --> 00:04:27,170
+à régler avec deux paramètres
+de régularisation lambda différents.
+
+75
+00:04:27,880 --> 00:04:31,660
+Que tend à faire une régularisation L1
+aux pondérations des hyperparamètres
+
+76
+00:04:31,660 --> 00:04:33,970
+de caractéristiques
+peu prédictives d'un modèle ?
+
+77
+00:04:35,270 --> 00:04:37,850
+La bonne réponse est
+"Avoir des valeurs égales à zéro".
+
+78
+00:04:37,850 --> 00:04:39,950
+Utiliser des techniques de régularisation
+
+79
+00:04:39,950 --> 00:04:44,135
+ajoute une pénalité à la dernière fonction
+ou généralement à la fonction objective,
+
+80
+00:04:44,135 --> 00:04:48,250
+pour ne pas trop optimiser nos variables
+de décision ou les pondérations de paramètres.
+
+81
+00:04:48,250 --> 00:04:51,320
+La pénalité est choisie en fonction
+des connaissances préalables,
+
+82
+00:04:51,320 --> 00:04:53,000
+de l'état de la fonction, etc.
+
+83
+00:04:53,000 --> 00:04:56,940
+Il est démontré que la régularisation L1
+induit la parcimonie dans le modèle.
+
+84
+00:04:56,940 --> 00:04:59,840
+Grâce à sa distribution de probabilité,
+avec un pic élevé à 0,
+
+85
+00:04:59,840 --> 00:05:02,560
+la plupart des pondérations,
+sauf celles très prévisibles,
+
+86
+00:05:02,560 --> 00:05:05,030
+passeront
+de valeurs non régularisées à zéro.
+
+87
+00:05:05,960 --> 00:05:09,659
+La régularisation L2 sera utilisée
+pour obtenir de petites grandeurs,
+
+88
+00:05:09,659 --> 00:05:14,555
+et sa négative sera utilisée pour obtenir
+d'importantes grandeurs, toutes incorrectes.
+
+89
+00:05:14,555 --> 00:05:17,765
+N'avoir que des valeurs positives reviendrait
+à ajouter au problème d'optimisation
+
+90
+00:05:17,765 --> 00:05:19,840
+des contraintes supplémentaires
+
+91
+00:05:19,840 --> 00:05:22,890
+limitant toutes les variables
+de décision à être supérieures à 0,
+
+92
+00:05:22,890 --> 00:05:26,050
+ce qui n'est pas non plus
+la régularisation L1.

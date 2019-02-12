@@ -1,0 +1,475 @@
+1
+00:00:00,000 --> 00:00:03,800
+In this lab, we've experimented the manual hyperparameter tuning.
+
+2
+00:00:03,800 --> 00:00:05,610
+Let's review the results.
+
+3
+00:00:05,610 --> 00:00:08,270
+We're doing simple linear regression to predict
+
+4
+00:00:08,270 --> 00:00:12,070
+housing prices based on the number of rooms in a house.
+
+5
+00:00:12,070 --> 00:00:16,895
+We will judge the accuracy of our model by keeping an eye on RMSE,
+
+6
+00:00:16,895 --> 00:00:21,455
+and we adjust the learning rate and batch size to improve the RMSE.
+
+7
+00:00:21,455 --> 00:00:27,420
+The data that we used for this lab is based on 1990 census from California.
+
+8
+00:00:27,420 --> 00:00:33,090
+So, if you pay attention to the Python notebook here,
+
+9
+00:00:33,090 --> 00:00:36,360
+at the beginning I'm just loading some libraries, nothing exciting.
+
+10
+00:00:36,360 --> 00:00:40,080
+I am getting a warning here that can be ignored.
+
+11
+00:00:40,080 --> 00:00:43,820
+You may not get it, depending on the versions that you're running.
+
+12
+00:00:43,820 --> 00:00:53,430
+Then, I will load my data set from this public URL into a pandas DataFrame,
+
+13
+00:00:53,430 --> 00:00:56,820
+and then we will examine the data by looking at some of
+
+14
+00:00:56,820 --> 00:01:03,480
+the records and some statistics from the data.
+
+15
+00:01:04,910 --> 00:01:08,680
+One problem that this data set has is that,
+
+16
+00:01:08,680 --> 00:01:11,955
+it's at the granularity level of the city blocks,
+
+17
+00:01:11,955 --> 00:01:13,500
+not at the household level,
+
+18
+00:01:13,500 --> 00:01:16,610
+and we need to fix that before we start using it.
+
+19
+00:01:16,610 --> 00:01:18,250
+And in order to do that,
+
+20
+00:01:18,250 --> 00:01:22,640
+we'll just make up a new column of data based on the total number
+
+21
+00:01:22,640 --> 00:01:27,335
+of rooms that we have at the block level divided by households,
+
+22
+00:01:27,335 --> 00:01:29,090
+that again is at the block level,
+
+23
+00:01:29,090 --> 00:01:34,145
+and that would give us roughly the total number of rooms per household.
+
+24
+00:01:34,145 --> 00:01:36,395
+If I get to describe that,
+
+25
+00:01:36,395 --> 00:01:40,800
+it would give me these statistics.
+
+26
+00:01:40,800 --> 00:01:43,710
+Before we get into training the model,
+
+27
+00:01:43,710 --> 00:01:45,935
+let's quickly look at our data set,
+
+28
+00:01:45,935 --> 00:01:48,160
+and remind ourselves what we are doing.
+
+29
+00:01:48,160 --> 00:01:51,370
+This is the column that we made up just
+
+30
+00:01:51,370 --> 00:01:54,850
+now by dividing the two existing columns, number of rooms.
+
+31
+00:01:54,850 --> 00:01:56,455
+This is going to be our feature.
+
+32
+00:01:56,455 --> 00:01:58,890
+This is basically the input to our model,
+
+33
+00:01:58,890 --> 00:02:04,120
+and what we are going to do with our model is to predict the housing median age.
+
+34
+00:02:04,120 --> 00:02:08,780
+So, this column basically makes up the label for us.
+
+35
+00:02:10,190 --> 00:02:15,925
+In this cell, I'm defining what it takes to actually start training.
+
+36
+00:02:15,925 --> 00:02:20,180
+The training function, the input function is
+
+37
+00:02:20,180 --> 00:02:26,690
+from the data frame.
+
+38
+00:02:26,690 --> 00:02:30,400
+Remember that the number of rooms is the feature,
+
+39
+00:02:30,400 --> 00:02:34,700
+and the median house value is the label.
+
+40
+00:02:36,830 --> 00:02:40,700
+Here, I'm defining the output directory,
+
+41
+00:02:40,700 --> 00:02:44,390
+and I'm making sure that every time I start from
+
+42
+00:02:44,390 --> 00:02:48,160
+scratch by removing the content of that output directory.
+
+43
+00:02:48,160 --> 00:02:52,204
+We did mention that this is going to be a linear regressor,
+
+44
+00:02:52,204 --> 00:02:53,850
+so that's what I'm doing.
+
+45
+00:02:53,850 --> 00:02:56,840
+I'm using the linear regressor from the Tensorflow library,
+
+46
+00:02:56,840 --> 00:03:01,475
+and I'm passing the feature and the output directory to that estimator,
+
+47
+00:03:01,475 --> 00:03:03,605
+and then I start the training here.
+
+48
+00:03:03,605 --> 00:03:05,570
+And as I mentioned, I'm going to judge
+
+49
+00:03:05,570 --> 00:03:09,080
+the performance of our model by looking at the RMSE,
+
+50
+00:03:09,080 --> 00:03:10,645
+and that's what's happening here.
+
+51
+00:03:10,645 --> 00:03:17,650
+If I run the cell,
+
+52
+00:03:17,650 --> 00:03:23,080
+I will see there is a very large number that's reported for the RMSE,
+
+53
+00:03:23,080 --> 00:03:28,330
+and that's kind of insane because RMSE is supposed to be in the hundredths,
+
+54
+00:03:28,330 --> 00:03:31,980
+not such a giant number.
+
+55
+00:03:31,980 --> 00:03:33,550
+What's happening here is that,
+
+56
+00:03:33,550 --> 00:03:35,080
+there is some scaling going on.
+
+57
+00:03:35,080 --> 00:03:37,850
+This is reported at the 100,000 scale,
+
+58
+00:03:37,850 --> 00:03:39,410
+and we need to apply that scale,
+
+59
+00:03:39,410 --> 00:03:43,925
+so that we look at the RMSE at the proper scale,
+
+60
+00:03:43,925 --> 00:03:46,675
+and that's what I'm doing in an Excel.
+
+61
+00:03:46,675 --> 00:03:52,830
+I'm just dividing the Y value based on that scale that I mentioned,
+
+62
+00:03:52,830 --> 00:03:55,340
+and the rest remains the same.
+
+63
+00:03:55,340 --> 00:03:58,860
+If I run that now,
+
+64
+00:03:58,860 --> 00:04:03,635
+it's giving me sort of a 7.4 percent error rate,
+
+65
+00:04:03,635 --> 00:04:05,540
+which is for the beginning,
+
+66
+00:04:05,540 --> 00:04:08,245
+not too bad but we can do better.
+
+67
+00:04:08,245 --> 00:04:10,250
+This is what's happening in the next cell.
+
+68
+00:04:10,250 --> 00:04:14,000
+I'm going to be changing the learning rate and batch size to see how it
+
+69
+00:04:14,000 --> 00:04:18,000
+improves the error rate.
+
+70
+00:04:18,000 --> 00:04:20,490
+The same way, the scale remains.
+
+71
+00:04:20,490 --> 00:04:23,325
+Now, I am defining a batch size here,
+
+72
+00:04:23,325 --> 00:04:25,600
+batch size of 10.
+
+73
+00:04:25,850 --> 00:04:29,055
+Same way, we will start from scratch.
+
+74
+00:04:29,055 --> 00:04:31,534
+Everytime we remove the output directory,
+
+75
+00:04:31,534 --> 00:04:38,220
+we are introducing a learning rate here of 0.01.
+
+76
+00:04:38,220 --> 00:04:40,080
+Again, it's a linear regressor.
+
+77
+00:04:40,080 --> 00:04:43,800
+The rest of the code remains as is,
+
+78
+00:04:43,800 --> 00:04:46,280
+and the only thing that's different here is because,
+
+79
+00:04:46,280 --> 00:04:48,050
+now we have a small batch size.
+
+80
+00:04:48,050 --> 00:04:51,170
+We need to do more number of steps,
+
+81
+00:04:51,170 --> 00:04:52,865
+and that's what's happening here.
+
+82
+00:04:52,865 --> 00:05:02,520
+And then, we'll print the RMSE and see what's happening.
+
+83
+00:05:02,520 --> 00:05:06,950
+So remember, before having the learning rate and batch size,
+
+84
+00:05:06,950 --> 00:05:09,245
+we were at 7.4.
+
+85
+00:05:09,245 --> 00:05:12,185
+And with this minor change,
+
+86
+00:05:12,185 --> 00:05:15,050
+now we are down to 3.6.
+
+87
+00:05:15,050 --> 00:05:20,165
+You should experiment with these hyperparameters to get the best performance possible.
+
+88
+00:05:20,165 --> 00:05:25,620
+The last time I played with this, I got 2.528.
+
+89
+00:05:26,350 --> 00:05:32,030
+So, this is pretty much what I wanted to cover in this lab.
+
+90
+00:05:32,030 --> 00:05:36,795
+So, one of the commonly asked questions is,
+
+91
+00:05:36,795 --> 00:05:41,970
+if there is a standard method for tuning these parameters.
+
+92
+00:05:41,970 --> 00:05:43,630
+The short answer is that,
+
+93
+00:05:43,630 --> 00:05:46,605
+the effects of different hyperparameters is data-dependent,
+
+94
+00:05:46,605 --> 00:05:48,695
+so there is no hard and fast rules.
+
+95
+00:05:48,695 --> 00:05:51,290
+You need to run the test on your data.
+
+96
+00:05:51,290 --> 00:05:55,360
+There are a few rule of thumbs that may help guide you.
+
+97
+00:05:55,360 --> 00:05:57,900
+When you monitor your training error,
+
+98
+00:05:57,900 --> 00:06:01,850
+it should steadily decrease and typically,
+
+99
+00:06:01,850 --> 00:06:03,830
+it's steeply at first,
+
+100
+00:06:03,830 --> 00:06:08,210
+and then it should eventually plateau as the training converges.
+
+101
+00:06:08,210 --> 00:06:10,145
+If the training has not converged,
+
+102
+00:06:10,145 --> 00:06:12,065
+try running it for longer.
+
+103
+00:06:12,065 --> 00:06:15,350
+If the training error decreases too slowly,
+
+104
+00:06:15,350 --> 00:06:19,160
+increasing the learning rate may help it decrease faster.
+
+105
+00:06:19,160 --> 00:06:24,435
+But sometimes, the exact opposite may happen if the learning rate is too high.
+
+106
+00:06:24,435 --> 00:06:27,360
+If the training error varies widely,
+
+107
+00:06:27,360 --> 00:06:29,220
+try decreasing the learning rate.
+
+108
+00:06:29,220 --> 00:06:32,700
+Lowering learning rate, plus larger number of steps or
+
+109
+00:06:32,700 --> 00:06:36,465
+larger batch size is often a good combination.
+
+110
+00:06:36,465 --> 00:06:41,505
+Very small batch sizes can also cause instability.
+
+111
+00:06:41,505 --> 00:06:43,530
+First, try larger values,
+
+112
+00:06:43,530 --> 00:06:48,280
+like hundred or thousand and decrease until you see degradation.
+
+113
+00:06:48,280 --> 00:06:54,170
+Again, never go strictly by these rules of thumbs because the effects are data-dependent.
+
+114
+00:06:54,170 --> 00:06:56,880
+Always experiment and verify.
+
+115
+00:06:57,770 --> 00:07:00,210
+As a bonus to this lab,
+
+116
+00:07:00,210 --> 00:07:04,425
+you should add some more features and see the results.
+
+117
+00:07:04,425 --> 00:07:06,800
+It should not take you too long.
+
+118
+00:07:06,800 --> 00:07:08,640
+Between five to 10 minutes,
+
+119
+00:07:08,640 --> 00:07:14,880
+you should be able to add some more features and see how your model performs.

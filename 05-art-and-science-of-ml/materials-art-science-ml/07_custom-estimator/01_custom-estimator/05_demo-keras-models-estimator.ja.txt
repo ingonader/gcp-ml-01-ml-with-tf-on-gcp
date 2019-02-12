@@ -1,0 +1,23 @@
+Keras Estimatorの機能について
+説明しましょう make_keras_estimator
+というメソッドで output_dirを指定し from tensorFlow import keras
+を行います ここまでは
+以前の時系列モデルと同じですが 今回は 単純な古い9個の
+入力ニューラルネットワークとして扱います これから 
+KerasのSequentialモデルを作り 32個の入力ノードを持つデンス（Dense）
+ネットワークの作成を指定します reluでアクティブ化し 1つの出力Dense(1) 損失（loss）はmean_squared_error optimizerはadam 評価マトリクスは平均絶対誤差（mas）と 平均絶対誤差率（mape）です 次に 
+keras.estimator.model to estimatorで このkerasコンパイル済みモデルを渡します このように kerasモデルを作成し
+コンパイルして model_to_estimatorに渡します このコードはすでに このsimplernnパッケージに含まれます 見てみましょう
+これがsimplernnです simplernnの中に
+trainerとmodel.pyがあり model.pyの中に
+元のsimple_rnn関数がありました features、labels、modeを受け入れ
+custom_estimatorの処理を行います make_keras_estimatorもあります これがmake_keras_estimatorです 先ほどお見せしたコードが
+ここにあります Sequencialモデルを作成し
+Denseレイヤを作成し reluでモデルをアクティブ化し
+別のDenseレイヤを作成し loss metricsなどもあります train and evaluateを行うとき
+use_kerasオプションがあります もしuse_kerasならば
+make_keras_estimatorを呼び出し そうでないなら基底クラスestimatorを
+呼び出し 関数simple_rnnを渡します ですから 本質的に同じコードです この1つのパラメータuse_kerasは task.pyを使って
+コマンドラインから渡されます task.pyの中には
+--kerasという新しい引数があります それが設定されるかどうかに応じて kerasの引数を
+model_train_and_evaluateに渡します これはtrueまたはfalseです ここで Notebookに戻ると --kerasの効果がここに見えます --kerasを渡したので simple rnnコードを実行し 対象はtrain.csvとvalue.csvですが 代わりにkerasを使用します これも動作するはずです

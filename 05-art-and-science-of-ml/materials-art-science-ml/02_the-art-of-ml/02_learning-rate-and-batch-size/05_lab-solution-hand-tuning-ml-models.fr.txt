@@ -1,0 +1,83 @@
+Dans cet atelier, vous avez expérimenté
+le réglage manuel des hyperparamètres. Examinons les résultats. Nous effectuons
+une régression linéaire simple pour prédire les prix des logements
+en fonction du nombre de pièces. Nous évaluerons la précision du modèle en gardant un œil sur la RMSE
+(erreur quadratique moyenne). Nous ajusterons le taux d'apprentissage et
+la taille de lot pour améliorer la RMSE. Les données utilisées dans cet atelier
+sont basées sur le recensement effectué en 1990 en Californie. Intéressons-nous
+au bloc-notes Python affiché à l'écran. En premier lieu,
+je charge quelques bibliothèques, rien de bien excitant. L'avertissement qui s'affiche ici
+peut être ignoré. Selon la version que vous utilisez,
+ce message peut apparaître ou non. Ensuite, j'importe l'ensemble de données
+depuis cette URL publique dans une structure de données Pandas. Pour l'analyse des données, nous allons nous intéresser
+à certains enregistrements et à certaines statistiques
+tirées de ces données. Cet ensemble de données
+présente un problème de granularité. Il est à l'échelle des quartiers, et non à l'échelle des logements. Nous devons corriger cela
+avant de commencer à l'utiliser. Pour ce faire, nous allons simplement créer
+une nouvelle colonne de données basée sur le nombre total de pièces
+comptabilisé pour un quartier divisé par le nombre de logements
+situés dans ce quartier. Cela nous permet d'obtenir le nombre
+moyen de pièces par logement. Si j'exécute une commande "describe", j'obtiens le tableau statistique suivant. Avant de passer
+à l'entraînement du modèle, nous allons rapidement identifier
+l'ensemble de données concerné et repréciser ce que nous allons faire. Voici la colonne que nous venons de créer
+(num_rooms, nombre de pièces) en "divisant" deux colonnes existantes. Ce sera notre caractéristique. En gros, cette colonne fait office
+d'entrée pour notre modèle. Nous allons utiliser notre modèle pour prédire l'âge médian des logements
+(colonne housing_median_age). Le nom de la colonne "âge médian"
+sera donc notre "libellé". Dans cette cellule,
+je définis les éléments nécessaires pour démarrer l'entraînement. La fonction "training"... La fonction "input" utilise les données
+présentes dans la structure de données. Rappelez-vous que le nombre de pièces
+(num_rooms) est notre caractéristique, et que la valeur "median_house_value"
+est le libellé. Ici, je définis
+le répertoire de sortie (outdir). Et pour m'assurer que je repartirai
+à chaque fois de zéro, je configure la suppression automatique
+du contenu de ce répertoire. J'ai mentionné que nous allions effectuer
+une régression linéaire. J'utilise pour cela
+la fonction "LinearRegressor" de la bibliothèque TensorFlow, puis je communique la caractéristique et
+le répertoire de sortie à cet estimateur, enfin, je démarre l'entraînement ici. Comme je l'ai déjà dit, j'évaluerai la performance du modèle
+en surveillant la valeur RMSE, j'utilise pour cela
+la fonction "print_rmse". Si j'exécute cette cellule, je constate que la valeur RMSE retournée
+est exceptionnellement élevée. C'est assez incroyable, car la valeur RMSE
+est normalement exprimée en "centièmes". Ce nombre est totalement surréaliste. Alors, que se passe-t-il ici ? C'est une question d'échelle. L'information est rapportée
+à l'échelle "100 000", et nous devons appliquer cette échelle pour obtenir une valeur RMSE appropriée. C'est ce que je fais
+dans la cellule suivante. Je divise juste la valeur "Y" en fonction
+de l'échelle que je viens de mentionner, et je ne touche pas aux autres éléments. Maintenant, si j'exécute cette cellule, le taux d'erreur renvoyé
+est d'environ 7,4 %. Pour un début,
+ce n'est pas trop mauvais, mais nous pouvons faire mieux. Voyons cela dans la cellule suivante. Je vais modifier le taux d'apprentissage
+et la taille de lot pour voir si cela permet
+de réduire le taux d'erreur. L'échelle reste la même (100 000). Ici, je définis la taille de lot, Je choisis la valeur 10. Comme précédemment,
+nous partirons systématiquement de zéro, le répertoire de sortie
+sera réinitialisé à chaque fois. Ici j'ajoute le taux d'apprentissage,
+j'opte pour la valeur 0,01. Nous utilisons encore une fois
+un outil de régression linéaire, le reste du code ne change presque pas. Seule petite différence
+avec le code précédent, comme nous utilisons
+des lots de taille inférieure, nous devons augmenter le nombre de pas. C'est ici que ça se passe. Enfin, nous allons "imprimer"
+la valeur RMSE, et observer
+les effets de nos modifications. Souvenez-vous, avant de spécifier le taux d'apprentissage
+et la taille de lot, nous avions un taux d'erreur de 7,4 %. Ces petites modifications nous ont permis
+de faire tomber ce taux à 3,6 %. Vous devriez essayer différentes
+valeurs pour ces hyperparamètres pour obtenir les meilleures
+performances possibles. La dernière fois que j'ai "joué" avec,
+j'ai réduit le taux d'erreur à 2,528 %. Voilà, je pense
+avoir abordé tous les points dont je souhaitais vous parler
+dans cet atelier. On me demande très souvent
+s'il existe une méthode standard pour le réglage de ces paramètres. Pour faire court, je dirais que les effets des différents
+hyperparamètres dépendent des données. Il n'y a pas de règle absolue. Vous devez effectuer des tests
+avec vos propres données. Il existe toutefois quelques règles
+de base qui pourraient vous être utiles. Lorsque vous surveillez
+le taux d'erreur d'entraînement, celui-ci devrait diminuer progressivement. Généralement,
+il chutera d'abord de façon abrupte, puis se stabilisera à mesure
+que l'entraînement converge. Si l'entraînement ne converge pas,
+essayez d'allonger sa durée. Si le taux d'erreur
+diminue trop lentement, vous pouvez augmenter
+le taux d'apprentissage pour accélérer les choses. Mais parfois, l'inverse peut se produire
+avec un taux d'apprentissage trop élevé. Si le taux d'erreur d'entraînement
+est très variable, essayez de réduire
+le taux d'apprentissage. Réduire le taux d'apprentissage et augmenter le nombre de pas
+ou la taille des lots donne souvent de bons résultats. Une taille de lot trop petite
+peut également causer de l'instabilité. Utilisez d'abord une valeur plus élevée,
+100, ou même 1 000, puis réduisez-la jusqu'à ce que
+vous constatiez une dégradation. Encore une fois, ne suivez jamais
+ces règles aveuglément, car les effets dépendent des données. Vous devez toujours
+expérimenter et vérifier. Pour conclure cet atelier, je vous propose
+d'ajouter des caractéristiques et d'examiner les résultats. Cela ne devrait pas prendre trop de temps, cinq à dix minutes tout au plus. Vous pouvez ajouter des caractéristiques
+pour observer le comportement du modèle.

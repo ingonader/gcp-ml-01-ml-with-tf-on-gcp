@@ -1,0 +1,298 @@
+1
+00:00:00,000 --> 00:00:03,595
+Lassen Sie uns jetzt selbst sehen,
+wie wichtig L1-Regularisierung sein kann,
+
+2
+00:00:03,595 --> 00:00:05,860
+um dünnbesetzte,
+präzise Modelle zu erschaffen.
+
+3
+00:00:05,860 --> 00:00:07,620
+In dieses L1-Regularisierungslab
+
+4
+00:00:07,620 --> 00:00:09,955
+habe ich viele
+störende Eigenschaften aufgenommen,
+
+5
+00:00:09,955 --> 00:00:12,435
+und es ist ein ziemlich 
+komplexes Modell entstanden.
+
+6
+00:00:12,435 --> 00:00:15,360
+Zuerst trainieren wir
+das Modell ohne L1-Regularisierung
+
+7
+00:00:15,360 --> 00:00:18,015
+und danach 
+sehen wir, ob L1-Regularisierung
+
+8
+00:00:18,015 --> 00:00:21,210
+dabei hilft, das Modell 
+in eine viel dünner besetzte,
+
+9
+00:00:21,210 --> 00:00:24,615
+präzisere und hoffentlich
+verallgemeinerbarere Form zu stutzen.
+
+10
+00:00:24,615 --> 00:00:26,970
+Hi, willkommen zurück
+in TensorFlow Playground.
+
+11
+00:00:26,970 --> 00:00:28,815
+In diesem Lab werden wir sehen,
+
+12
+00:00:28,815 --> 00:00:31,755
+ob L1-Regularisierung hilft, 
+unsere Modelle dünner besetzt
+
+13
+00:00:31,755 --> 00:00:32,885
+und präziser zu machen.
+
+14
+00:00:32,885 --> 00:00:35,325
+Wie Sie sehen 
+ist dies ein Klassifizierungsproblem,
+
+15
+00:00:35,325 --> 00:00:38,050
+bei dem wir versuchen,
+diese zwei Formen zu klassifizieren
+
+16
+00:00:38,050 --> 00:00:40,640
+Wir haben hier zwei konzentrische Kreise,
+
+17
+00:00:40,640 --> 00:00:45,480
+der blaue Kreis in 
+der Mitte und der orange Kreis außen.
+
+18
+00:00:45,480 --> 00:00:47,900
+Die gute Nachricht ist,
+es ist kein Noise gesetzt.
+
+19
+00:00:47,900 --> 00:00:50,485
+Die Darstellung 
+sollte also relativ leicht gehen.
+
+20
+00:00:51,585 --> 00:00:53,490
+Sie können auch die Eigenschaften sehen.
+
+21
+00:00:53,490 --> 00:00:55,315
+Alle Eigenschaften sind eingeschaltet.
+
+22
+00:00:55,315 --> 00:00:58,535
+Das heißt, es wäre
+ein ziemlich kompliziertes Modell.
+
+23
+00:00:58,535 --> 00:01:02,695
+Wir wissen intuitiv, dass 
+diese Gleichung x² geteilt durch y²
+
+24
+00:01:02,695 --> 00:01:07,060
+oder x1² geteilt durch x2²
+lauten wird, weil Kreise auftreten.
+
+25
+00:01:07,060 --> 00:01:11,565
+Es gibt hier aber noch 
+eine ganze Reihe anderer Eigenschaften.
+
+26
+00:01:11,565 --> 00:01:15,820
+Wir haben hier auch
+zusätzliche Ebenen mit je sechs Neuronen.
+
+27
+00:01:15,820 --> 00:01:18,230
+Es ist also hochkomplex.
+
+28
+00:01:18,230 --> 00:01:21,860
+Schauen wir, wie es
+ohne L1-Regularisierung trainiert,
+
+29
+00:01:21,860 --> 00:01:24,270
+die wir in diesem Fall abschalten.
+
+30
+00:01:26,150 --> 00:01:27,615
+Das ging ja schnell.
+
+31
+00:01:27,615 --> 00:01:30,345
+Sie sehen hier, 
+dass die L1-Regularisierung
+
+32
+00:01:30,345 --> 00:01:33,535
+die Distribution unserer
+Daten größtenteils gefunden hat.
+
+33
+00:01:33,535 --> 00:01:37,810
+Trotzdem können Sie hier
+einige Inkonsistenzen erkennen,
+
+34
+00:01:37,810 --> 00:01:43,110
+ein paar kleine Senkungen hier
+und Beulen dort, also kein echter Kreis.
+
+35
+00:01:43,110 --> 00:01:45,800
+Der Grund ist vielleicht,
+dass es überangepasst ist.
+
+36
+00:01:45,800 --> 00:01:49,250
+Wir haben also viel zu viele
+Eigenschaften und versteckte Ebenen
+
+37
+00:01:49,250 --> 00:01:53,230
+und erhalten für diese Daten eine
+überangepasste, komplexe Funktion.
+
+38
+00:01:53,230 --> 00:01:56,800
+Haben wir die Möglichkeit,
+ein viel einfacheres Modell zu finden?
+
+39
+00:01:56,800 --> 00:01:59,040
+Nun, ohne selbst
+Feature Engineering anzuwenden,
+
+40
+00:01:59,040 --> 00:02:01,365
+können wir es mit
+L1-Regularisierung versuchen.
+
+41
+00:02:01,365 --> 00:02:04,300
+Schauen wir, ob es funktioniert.
+
+42
+00:02:04,300 --> 00:02:08,790
+Ich setze hier 
+meine Regularisierung auf L1,
+
+43
+00:02:08,790 --> 00:02:13,810
+starte eine neue Initialisierung und
+wir werden sehen, wie sie sich schlägt.
+
+44
+00:02:16,230 --> 00:02:20,260
+Schauen Sie, das ist viel besser.
+
+45
+00:02:20,260 --> 00:02:22,565
+Lassen Sie uns das
+ein bisschen mehr untersuchen.
+
+46
+00:02:22,565 --> 00:02:25,770
+Wie Sie hier sehen, hat es
+einen viel gleichmäßigeren Kreis gelernt,
+
+47
+00:02:25,770 --> 00:02:29,400
+was gut zu unserer intuitiven
+Einschätzung der Daten passt.
+
+48
+00:02:29,400 --> 00:02:31,470
+Im echten Leben haben wir allerdings
+
+49
+00:02:31,470 --> 00:02:33,810
+meist nicht so eine
+schöne Distribution wie hier.
+
+50
+00:02:33,810 --> 00:02:38,270
+Darum könnten wir dies
+auf viele andere Prozesse anwenden müssen.
+
+51
+00:02:38,270 --> 00:02:39,900
+Was unsere Eigenschaften betrifft,
+
+52
+00:02:39,900 --> 00:02:44,400
+können Sie sehen, dass wir
+x1² und x2² haben, sowie ihre Gewichte,
+
+53
+00:02:44,400 --> 00:02:47,300
+eigentlich die einzigen
+Gewichte die noch einen Betrag haben.
+
+54
+00:02:47,300 --> 00:02:51,270
+Alle anderen Gewichte
+sind ausgegraut mit einem Wert von null.
+
+55
+00:02:51,270 --> 00:02:55,720
+Dies geht dann hier zu den
+versteckten Zwischenebenen,
+
+56
+00:02:55,720 --> 00:03:01,940
+wo Sie sehen, x1 und x2 sind letztlich
+die einzigen, die sich weiterverbreiten.
+
+57
+00:03:01,940 --> 00:03:04,450
+Und sie gehen alle zu
+diesem Neuron der letzten Ebene
+
+58
+00:03:04,450 --> 00:03:06,310
+und schließlich zur Ausgabe.
+
+59
+00:03:06,310 --> 00:03:10,460
+Es ist also, als würden wir
+nur x1² und x2² verwenden,
+
+60
+00:03:10,460 --> 00:03:12,970
+weil sie in unserem
+Modell viel prognostischer sind
+
+61
+00:03:12,970 --> 00:03:14,210
+als andere Eigenschaften.
+
+62
+00:03:14,210 --> 00:03:17,395
+und durch ihre Besonderheit
+in der Wahrscheinlichkeitsverteilung
+
+63
+00:03:17,395 --> 00:03:19,090
+kann L1 sie verkleinern.

@@ -1,0 +1,84 @@
+Começamos falando sobre
+incorporações de códigos de filmes, recursos categóricos. Depois, aplicamos o mesmo
+exemplo às palavras de um anúncio, recursos de texto. O que há em comum? As incorporações não são apenas
+para recursos categóricos ou de texto, são algo maior. Aqui, estou mostrando um problema
+de ML clássico chamado MNIST. A ideia é reconhecer dígitos escritos
+à mão em imagens digitalizadas. Você vê cada imagem, e cada pixel da imagem
+é uma entrada. É o que eu quero dizer
+com bitmap bruto Estas imagens são 28 x 28, então há 784 pixels em cada. Considere esta matriz
+de 784 números. A maior parte corresponde
+a pixels em branco. As incorporações
+também são úteis aqui. Nós representamos os 784 números
+em um tensor esparso. Essencialmente,
+só salvamos os pixels em que o dígito aparece. Só salvamos os pixels
+em que o dígito é preto e transmitimos por uma
+incorporação em 3D. Agora, temos uma rede neural
+comum de duas camadas e podemos transmitir
+outros recursos, se quisermos. e treinamos o
+modelo para prever o número real na imagem
+com base nesses rótulos. Por que tenho
+uma camada logit? Ela é a camada de saída
+de uma rede neural. A saída de um problema de
+classificação precisa ser um logit. Quando usamos um
+classificador linear ou DNN, a camada de saída
+é um único logit. Mas só se você
+tiver uma saída. No caso do problema MNIST, temos 10 classes no total. Essencialmente,
+os dígitos zero, um, dois, até nove. Por isso não tenho um logit, tenho uma camada logit. Tenho um logit para cada
+um dos possíveis dígitos. Quando temos uma camada logit,
+em vez de um logit único, não há garantia que a probabilidade
+total de todos os dígitos será igual a 1. Esse é o papel do Softmax. Ele normaliza os logits individuais
+para que a probabilidade total seja 1. Desculpe a tangente, falávamos de incorporações. Aqui, quando treinamos o modelo
+para reconhecer dígitos escritos à mão, cada imagem será
+representada por três números. Ao contrário do
+caso categórico, o bitmap bruto
+não é codificado. Assim, não recebemos
+três números por pixel. Em vez disso, os três números correspondem a todos os pixels
+ativados em uma imagem. No TensorBoard, você pode
+ver essas incorporações, o vetor 3D que corresponde
+a cada imagem de 784 pixels. Aqui, atribuímos cores
+diferentes aos rótulos e algo interessante acontece. Os 5s se agruparam no espaço 3D,
+assim como os 7s e os 0s. Ou seja, os números
+em 3D que representam cada imagem escrita à mão fazem com que itens semelhantes
+fiquem próximos no espaço 3D. Isso ocorre em incorporações
+de variáveis categóricas, texto de linguagem natural e para bitmaps brutos. O que há em comum entre eles? São todos esparsos. Se você transmitir uma
+codificação de vetor esparso por uma coluna de incorporação e usar essa coluna como
+entrada de um DNN e treiná-lo, as incorporações treinadas
+terão esta propriedade. Claro, desde que você tenha dados o bastante para
+uma boa precisão no treinamento. Você pode usar essa propriedade
+em outras situações. Suponha, por exemplo, que a tarefa
+é encontrar músicas parecidas. Você pode criar uma incorporação
+do áudio associado às músicas. Essencialmente, você representa o clipe
+de áudio como uma matriz de valores. Depois, assim como
+a imagem MNIST, você transmite a matriz por
+uma camada de incorporação. Use-a para treinar um problema
+de aprendizado de máquina. Talvez você use o sinal de áudio
+para treinar um modelo para prever o gênero musical
+ou a próxima nota. Independentemente
+da previsão do modelo, a incorporação oferecerá uma representação
+do clipe em uma dimensão menor. Para encontrar
+músicas semelhantes, você pode computar a distância
+euclidiana entre os clipes, entre as incorporações,
+para medir a similaridade. Você também pode usar
+os vetores da incorporação como entradas de
+um algoritmo de cluster. A ideia da similaridade também pode
+ser usada para incorporar vários recursos. Por exemplo, texto
+em línguas diferentes ou texto e o áudio correspondente
+para definir a similaridade. Nos quatro exemplos, usamos três para o
+número de incorporações. Você pode usar
+números diferentes, claro. Mas que números usar? O número de incorporações é o
+hiperparâmetro do seu modelo de ML. Você precisa testar
+diferentes números de dimensões de incorporação,
+porque há uma compensação. Incorporações com
+mais dimensões podem representar a relação entre
+os valores com maior precisão. Mas, quanto mais dimensões, maiores as chances
+de sobreajuste. Além disso, o modelo fica maior
+e o treinamento mais lento. Um bom ponto
+de partida é seguir a raiz quarta do número
+total de valores possíveis. Por exemplo, ao incorporar códigos
+de 500 mil filmes do seu catálogo, o número total de
+valores possíveis é 500 mil. Um bom ponto de partida é
+usar a raiz quarta de 500 mil. A raiz quadrada de 500 mil
+é em torno de 700, e a raiz de 700 é cerca de 26. Eu começaria com 25. Se você estiver ajustando o
+hiperparâmetro do número de dimensões, eu especificaria um
+intervalo de 15 a 35. Mas essa é apenas
+uma orientação.

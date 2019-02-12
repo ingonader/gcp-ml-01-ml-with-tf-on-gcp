@@ -1,0 +1,529 @@
+1
+00:00:00,240 --> 00:00:02,834
+Wir haben angefangen über Einbettungen
+
+2
+00:00:02,834 --> 00:00:04,629
+am Beispiel von Film-IDs zu sprechen.
+
+3
+00:00:04,629 --> 00:00:06,840
+Das waren kategoriale Merkmale.
+
+4
+00:00:06,840 --> 00:00:10,430
+Dann haben wir dasselbe Beispiel
+auf Wörter in einer Anzeige angewendet
+
+5
+00:00:10,430 --> 00:00:13,110
+und das waren Textmerkmale.
+
+6
+00:00:13,110 --> 00:00:16,055
+Was haben beide gemein?
+
+7
+00:00:16,055 --> 00:00:19,805
+Einbettungen gelten nicht nur
+für kategoriale oder Textmerkmale,
+
+8
+00:00:19,805 --> 00:00:21,340
+sondern sie drehen sich um mehr.
+
+9
+00:00:21,340 --> 00:00:26,445
+Ich zeige Ihnen hier ein
+klassisches ML-Problem namens MNIST.
+
+10
+00:00:26,445 --> 00:00:32,290
+Die Idee besteht darin, handschriftliche
+Zahlen aus gescannten Bildern zu erkennen.
+
+11
+00:00:32,290 --> 00:00:34,170
+Sie nehmen also jedes Bild
+
+12
+00:00:34,170 --> 00:00:38,095
+und jedes Pixel im Bild ist ein Input.
+
+13
+00:00:38,095 --> 00:00:41,280
+Das meine ich hier mit roher Bitmap.
+
+14
+00:00:41,280 --> 00:00:44,350
+Die Bilder sind 28 auf 28,
+
+15
+00:00:44,350 --> 00:00:49,680
+also haben wir 784 Pixel in dieser Bitmap.
+
+16
+00:00:49,680 --> 00:00:54,360
+Betrachten wir dieses Feld von 784 Zahlen.
+
+17
+00:00:54,360 --> 00:00:58,995
+Ein Großteil des Felds
+entspricht leeren Pixeln.
+
+18
+00:00:58,995 --> 00:01:02,360
+Hier sind Einbettungen auch hilfreich.
+
+19
+00:01:02,360 --> 00:01:08,950
+Wir nehmen die 784 Zahlen und
+stellen sie als dünnbesetzten Tensor dar.
+
+20
+00:01:08,950 --> 00:01:12,265
+An sich speichern wir die Pixel nur,
+
+21
+00:01:12,265 --> 00:01:14,355
+wo die handschriftliche Ziffer erscheint.
+
+22
+00:01:14,355 --> 00:01:19,370
+Wir speichern nur die Pixel,
+in denen die Ziffer schwarz ist
+
+23
+00:01:19,370 --> 00:01:23,570
+und senden sie dann
+durch eine 3D-Einbettung.
+
+24
+00:01:23,570 --> 00:01:27,075
+Wir können dann ein normales
+zweischichtiges neuronales Netzwerk haben
+
+25
+00:01:27,075 --> 00:01:30,365
+und wir könnten weitere
+Merkmale durchleiten, wenn wir möchten,
+
+26
+00:01:30,365 --> 00:01:32,475
+und dann trainieren wir das Modell,
+
+27
+00:01:32,475 --> 00:01:38,370
+um die tatsächliche Zahl im Bild auf der
+Grundlage dieser Merkmale vorherzusagen.
+
+28
+00:01:38,370 --> 00:01:41,710
+Warum habe ich hier eine Logit-Ebene?
+
+29
+00:01:41,710 --> 00:01:45,515
+Diese bilden die
+Ausgabeebene eines neuronalen Netzwerks.
+
+30
+00:01:45,515 --> 00:01:50,910
+Ein Logit ist, was die Ausgabe bei
+einem Klassifikationsproblem sein muss.
+
+31
+00:01:50,910 --> 00:01:55,365
+Wenn wir einen linearen oder
+einen DNN-Klassifikator verwenden,
+
+32
+00:01:55,365 --> 00:02:00,900
+ist die Ausgabeebene
+ein Logit, ein einzelnes Logit.
+
+33
+00:02:00,900 --> 00:02:03,615
+Aber das gilt nur, wenn
+wir eine Ausgabe haben.
+
+34
+00:02:03,615 --> 00:02:05,760
+Im Fall des MNIST-Problems
+
+35
+00:02:05,760 --> 00:02:08,425
+haben wir 10 Gesamtklassen.
+
+36
+00:02:08,425 --> 00:02:10,590
+Im Wesentlichen die Ziffern Null,
+
+37
+00:02:10,590 --> 00:02:12,545
+Eins, Zwei bis Neun.
+
+38
+00:02:12,545 --> 00:02:15,619
+Deshalb habe ich nicht ein Logit,
+
+39
+00:02:15,619 --> 00:02:17,850
+sondern eine Logit-Ebene.
+
+40
+00:02:17,850 --> 00:02:22,425
+Ich habe ein Logit je mögliche Ziffer.
+
+41
+00:02:22,425 --> 00:02:27,270
+Wenn wir eine Logit-Ebene
+anstelle eines einzelnen Logits haben,
+
+42
+00:02:27,270 --> 00:02:28,285
+ist nicht sicher,
+
+43
+00:02:28,285 --> 00:02:33,710
+dass die Wahrscheinlichkeit
+aller Ziffern insgesamt 1 ergibt.
+
+44
+00:02:33,710 --> 00:02:35,825
+Das ist die Rolle von Softmax.
+
+45
+00:02:35,825 --> 00:02:41,880
+Softmax normalisiert die Logits, sodass
+die Gesamtwahrscheinlichkeit 1 ergibt.
+
+46
+00:02:41,880 --> 00:02:45,965
+Entschuldigen Sie die Abschweifung,
+wir haben über Einbettungen geredet.
+
+47
+00:02:45,965 --> 00:02:50,655
+Also hier, wenn wir das Modell trainieren,
+um handschriftliche Ziffern zu erkennen,
+
+48
+00:02:50,655 --> 00:02:55,460
+wird jedes Bild von
+drei Zahlen dargestellt.
+
+49
+00:02:55,460 --> 00:02:58,055
+Im Gegensatz zum kategorialen Fall
+
+50
+00:02:58,055 --> 00:03:02,990
+wird die Raw-Bitmap
+jedoch nicht one-hot-codiert.
+
+51
+00:03:02,990 --> 00:03:06,220
+Wir bekommen also
+nicht drei Zahlen je Pixel.
+
+52
+00:03:06,220 --> 00:03:10,710
+Stattdessen entsprechen
+die drei Zahlen allen Pixeln,
+
+53
+00:03:10,710 --> 00:03:14,765
+die für ein bestimmtes
+Bild eingeschaltet sind.
+
+54
+00:03:14,765 --> 00:03:18,490
+In TensorBoard können
+Sie diese Einbettungen visualisieren,
+
+55
+00:03:18,490 --> 00:03:24,600
+den 3D-Vektor, der
+jedem 784-Pixel-Bild entspricht.
+
+56
+00:03:24,600 --> 00:03:28,715
+Hier haben wir den Labels
+unterschiedliche Farben zugewiesen
+
+57
+00:03:28,715 --> 00:03:33,245
+und wie Sie sehen,
+geschieht etwas richtig Tolles.
+
+58
+00:03:33,245 --> 00:03:40,990
+Alle Fünfer sind im 3D-Raum gruppiert,
+ebenso wie alle Siebener und alle Nullen.
+
+59
+00:03:40,990 --> 00:03:42,305
+In anderen Worten:
+
+60
+00:03:42,305 --> 00:03:47,250
+Die 3D-Zahlen die jedes
+handschriftliche Bild darstellen,
+
+61
+00:03:47,250 --> 00:03:52,960
+sind derart, dass ähnliche Elemente
+im 3D-Raum nahe beieinanderliegen.
+
+62
+00:03:52,960 --> 00:03:56,205
+Das trifft auf
+Einbettungen kategorialer Variablen zu,
+
+63
+00:03:56,205 --> 00:03:58,020
+auf Text in natürlicher Sprache
+
+64
+00:03:58,020 --> 00:04:00,200
+sowie auf rohe Bitmaps.
+
+65
+00:04:00,200 --> 00:04:02,470
+Was haben sie also alle gemein?
+
+66
+00:04:02,470 --> 00:04:04,230
+Sie alle sind "dünnbesetzt" - sparse.
+
+67
+00:04:04,230 --> 00:04:09,070
+Wenn Sie eine Sparse-Vektor-Codierung
+durch eine Einbettungsspalte senden
+
+68
+00:04:09,070 --> 00:04:15,425
+und die Einbettungsspalte als Eingabe für
+ein DNN verwenden und das DNN anlernen,
+
+69
+00:04:15,425 --> 00:04:21,030
+dann haben die trainierten Einbettungen
+diese Ähnlichkeitswahrscheinlichkeit,
+
+70
+00:04:21,030 --> 00:04:24,785
+natürlich nur, sofern
+Sie genügend Daten haben
+
+71
+00:04:24,785 --> 00:04:28,825
+und die Lernphase
+eine gute Genauigkeit erzielt.
+
+72
+00:04:28,825 --> 00:04:31,535
+Sie können diese Ähnlichkeitseigenschaft
+
+73
+00:04:31,535 --> 00:04:34,005
+in anderen Situationen nutzen.
+
+74
+00:04:34,005 --> 00:04:40,515
+Nehmen wir etwa an, Ihre Aufgabe ist es,
+ein diesem Lied ähnliches Lied zu finden.
+
+75
+00:04:40,515 --> 00:04:46,530
+Sie könnten eine Einbettung der den
+Liedern zugeordneten Audiodatei erstellen.
+
+76
+00:04:46,530 --> 00:04:52,005
+Sie nehmen den Audioclip und
+stellen ihn als ein Wertefeld dar.
+
+77
+00:04:52,005 --> 00:04:55,320
+Dann, genau wie beim MNIST-Bild,
+
+78
+00:04:55,320 --> 00:04:59,380
+nehmen Sie das Feld und senden
+es durch eine Einbettungsschicht.
+
+79
+00:04:59,380 --> 00:05:04,470
+Sie verwenden es, um ein
+sinnvolles ML-Problem zu trainieren.
+
+80
+00:05:04,470 --> 00:05:06,420
+Vielleicht verwenden Sie ein Audiosignal,
+
+81
+00:05:06,420 --> 00:05:07,820
+um ein Modell anzulernen,
+
+82
+00:05:07,820 --> 00:05:12,690
+mit dem Sie das Musikgenre
+oder die nächste Note voraussagen.
+
+83
+00:05:12,690 --> 00:05:15,967
+Unabhängig davon, für welches
+Voraussageziel Sie das Modell anlernen,
+
+84
+00:05:15,967 --> 00:05:21,635
+schafft die Einbettung eine Darstellung
+des Audioclips mit niedrigerer Dimension.
+
+85
+00:05:21,635 --> 00:05:24,490
+Nun, um ähnliche Lieder zu finden,
+
+86
+00:05:24,490 --> 00:05:28,790
+berechnen Sie einfach den
+euklidischen Abstand zwischen zwei Clips,
+
+87
+00:05:28,790 --> 00:05:34,800
+zwischen ihren Einbettungen, und das wird
+ein Maß für die Ähnlichkeit zweier Lieder.
+
+88
+00:05:36,090 --> 00:05:41,790
+Die Einbettungsvektoren dienen auch
+als Input für Clustering-Algorithmen.
+
+89
+00:05:41,790 --> 00:05:48,140
+Das Ähnlichkeitsprinzip ermöglicht auch
+die Einbettung unterschiedlicher Merkmale.
+
+90
+00:05:48,140 --> 00:05:51,255
+Etwa Text in zwei verschiedenen Sprachen
+
+91
+00:05:51,255 --> 00:05:54,010
+oder Text und das dazugehörige Audio
+
+92
+00:05:54,010 --> 00:05:57,500
+zum Definieren der
+Ähnlichkeit zwischen ihnen.
+
+93
+00:05:57,500 --> 00:06:00,110
+In allen unseren Beispielen
+
+94
+00:06:00,110 --> 00:06:03,430
+haben wir drei als Anzahl
+der Einbettungen verwendet.
+
+95
+00:06:03,430 --> 00:06:06,000
+Natürlich können Sie auch
+eine andere Anzahl verwenden.
+
+96
+00:06:06,000 --> 00:06:09,105
+Aber welche Anzahl sollten Sie wählen?
+
+97
+00:06:09,105 --> 00:06:14,225
+Die Anzahl der Einbettungen ist
+der Hyperparameter Ihres ML-Modells.
+
+98
+00:06:14,225 --> 00:06:17,800
+Sie müssen verschiedene
+Einbettungsdimensionen ausprobieren,
+
+99
+00:06:17,800 --> 00:06:20,145
+da hier ein Kompromiss zu machen ist.
+
+100
+00:06:20,145 --> 00:06:22,740
+Einbettungen höherer Dimensionen
+
+101
+00:06:22,740 --> 00:06:27,840
+können das Verhältnis zwischen
+Eingangswerten genauer darstellen.
+
+102
+00:06:27,840 --> 00:06:30,890
+Aber, je mehr Dimensionen Sie haben,
+
+103
+00:06:30,890 --> 00:06:33,805
+desto höher ist
+die Gefahr der Überanpassung.
+
+104
+00:06:33,805 --> 00:06:38,795
+Das Modell wird außerdem größer
+und das Anlernen dadurch langsamer.
+
+105
+00:06:38,795 --> 00:06:40,540
+Ein guter Ausgangspunkt
+
+106
+00:06:40,540 --> 00:06:46,545
+ist die vierte Wurzel aus der
+Gesamtzahl der möglichen Werte.
+
+107
+00:06:46,545 --> 00:06:49,757
+Zum Beispiel, wenn Sie Film-IDs einbetten
+
+108
+00:06:49,757 --> 00:06:52,970
+und 500.000 Filme im Katalog führen,
+
+109
+00:06:52,970 --> 00:06:57,045
+ist die Gesamtzahl
+der möglichen Werte 500.000.
+
+110
+00:06:57,045 --> 00:07:02,925
+Ein guter Ausgangspunkt wäre
+also die vierte Wurzel aus 500.000.
+
+111
+00:07:02,925 --> 00:07:06,284
+Die Quadratwurzel aus 500.000 ist etwa 700
+
+112
+00:07:06,284 --> 00:07:09,885
+und die Quadratwurzel aus 700 ist etwa 26.
+
+113
+00:07:09,885 --> 00:07:14,755
+Ich würde also
+wahrscheinlich mit rund 25 anfangen.
+
+114
+00:07:14,755 --> 00:07:19,410
+Bei einer Hyperparameter-Abstimmung
+der Anzahl der Einbettungsdimensionen
+
+115
+00:07:19,410 --> 00:07:24,405
+empfiehlt sich ein
+Suchbereich von, sagen wir, 15 bis 35.
+
+116
+00:07:24,405 --> 00:07:26,850
+Aber das ist 
+natürlich nur eine Faustregel.

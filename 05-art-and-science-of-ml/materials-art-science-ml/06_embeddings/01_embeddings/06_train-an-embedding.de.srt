@@ -1,0 +1,317 @@
+1
+00:00:00,790 --> 00:00:03,090
+Nehmen wir an,
+Sie erstellen eine Einbettung
+
+2
+00:00:03,090 --> 00:00:07,470
+zur Darstellung des wichtigsten
+Worts in einer Immobilienanzeige.
+
+3
+00:00:07,470 --> 00:00:12,000
+Ignorieren wir vorerst,
+wie Sie dieses wichtige Wort wählen.
+
+4
+00:00:12,000 --> 00:00:18,880
+Wörter in einer Anzeige sind natürliche
+Sprache, das mögliche Wörterbuch riesig.
+
+5
+00:00:18,880 --> 00:00:23,560
+In diesem Fall könnte es die
+Liste aller englischen Wörter sein.
+
+6
+00:00:23,560 --> 00:00:25,610
+Zigtausende Wörter.
+
+7
+00:00:25,610 --> 00:00:29,510
+Selbst bei Ausschluss seltener Wörter
+und wissenschaftlicher Fachsprache.
+
+8
+00:00:29,510 --> 00:00:32,940
+Also obwohl die erste Ebene hier
+
+9
+00:00:32,940 --> 00:00:37,250
+ein Wort der Immobilienanzeige
+nimmt und one-hot-codiert,
+
+10
+00:00:37,250 --> 00:00:42,160
+wird das im Speicher als
+ein dünnbesetzter Vektor dargestellt.
+
+11
+00:00:42,160 --> 00:00:46,520
+Auf diese Weise sorgt TensorFlow
+für eine effiziente Speichernutzung.
+
+12
+00:00:47,770 --> 00:00:51,140
+Wenn wir die
+one-hot-codierte Darstellung haben,
+
+13
+00:00:51,140 --> 00:00:54,140
+senden wir sie durch
+eine Ebene mit drei Knoten.
+
+14
+00:00:54,140 --> 00:00:55,780
+Das ist unsere Einbettung.
+
+15
+00:00:55,780 --> 00:00:58,635
+Und da wir drei Knoten in der Ebene haben,
+
+16
+00:00:58,635 --> 00:01:00,950
+ist es eine dreidimensionale Einbettung.
+
+17
+00:01:01,420 --> 00:01:07,250
+Die "sparse" Wörter und eingebetteten
+Wörter sind eigentlich Merkmalsspalten,
+
+18
+00:01:07,250 --> 00:01:09,960
+aber ich zeige sie hier als
+Ebenen im neuronalen Netzwerk,
+
+19
+00:01:09,960 --> 00:01:15,660
+da sie aus mathematischer Sicht genau wie
+Ebenen eines neuronalen Netzwerks sind.
+
+20
+00:01:15,660 --> 00:01:18,260
+Mathematisch ist eine
+Einbettung in diesem Fall
+
+21
+00:01:18,260 --> 00:01:22,250
+nicht wirklich anders als irgendeine
+verborgene Schicht in einem Netzwerk.
+
+22
+00:01:22,250 --> 00:01:25,290
+Sie können es als einen
+praktischen Adapter sehen,
+
+23
+00:01:25,290 --> 00:01:26,790
+der es dem Netzwerk ermöglicht,
+
+24
+00:01:26,790 --> 00:01:30,600
+Sparse- oder kategoriale
+Daten gut zu integrieren.
+
+25
+00:01:31,450 --> 00:01:34,115
+Der Hauptzweck dieser
+Folien ist es, Ihnen zu zeigen,
+
+26
+00:01:34,115 --> 00:01:38,080
+dass das mit einem 
+Regressions-, Klassifikations-
+
+27
+00:01:38,080 --> 00:01:40,610
+oder Rankingproblem möglich ist.
+
+28
+00:01:41,670 --> 00:01:45,100
+Die Gewichte werden bei Verwendung
+eines tiefen neuronalen Netzwerks
+
+29
+00:01:45,100 --> 00:01:46,835
+durch Rückpropagierung angelernt,
+
+30
+00:01:46,835 --> 00:01:49,530
+genau wie die anderen Ebenen.
+
+31
+00:01:49,530 --> 00:01:53,260
+Sagen wir, wir verwenden die Einbettung
+für die Wörter in der Immobilienanzeige
+
+32
+00:01:53,260 --> 00:01:56,730
+als eine der Eingaben in das Modell,
+das den Verkaufspreis vorhersagt.
+
+33
+00:01:57,730 --> 00:02:04,160
+Dieses Modell trainieren wir anhand
+historischer Verkaufspreise für Häuser.
+
+34
+00:02:04,160 --> 00:02:08,979
+Zusätzlich zum Wort in der Anzeige
+könnten wir die Anzahl der Räume,
+
+35
+00:02:08,979 --> 00:02:12,110
+der Schlafzimmer usw. als Input verwenden.
+
+36
+00:02:12,110 --> 00:02:15,260
+Das ist also ein Regressionsproblem
+mit strukturierten Daten.
+
+37
+00:02:15,260 --> 00:02:17,810
+Ebenso wie das Problem des Taxipreises.
+
+38
+00:02:18,940 --> 00:02:23,520
+Was passiert, wenn Sie versuchen, die
+Gewichte in allen Ebenen zu optimieren,
+
+39
+00:02:23,520 --> 00:02:26,530
+um den Fehler im vorausgesagten
+Verkaufspreis zu minimieren?
+
+40
+00:02:27,820 --> 00:02:31,490
+Alle Gewichte auf allen
+Ebenen müssen abgeglichen werden.
+
+41
+00:02:31,490 --> 00:02:34,560
+Die Gewichte werden so abgeglichen,
+
+42
+00:02:34,560 --> 00:02:38,970
+dass die Einbettungszahlen
+für ein Wort relevant werden
+
+43
+00:02:38,970 --> 00:02:42,970
+für dessen Fähigkeit,
+Verkaufspreise vorauszusagen.
+
+44
+00:02:42,970 --> 00:02:46,440
+Wenn die Anzeige
+ein Wort wie "Ausblick"
+
+45
+00:02:46,440 --> 00:02:50,330
+oder "See" enthält, muss
+der Verkaufspreis vielleicht höher sein
+
+46
+00:02:50,330 --> 00:02:56,970
+und bei einem Wort wie etwa
+"Zwangsvollstreckung" niedriger.
+
+47
+00:02:56,970 --> 00:03:01,529
+Die Gewichte auf allen Ebenen
+passen sich an, um das zu lernen.
+
+48
+00:03:02,840 --> 00:03:06,250
+Mathematisch ist eine
+Einbettung nicht wirklich anders
+
+49
+00:03:06,250 --> 00:03:09,170
+als jede andere verborgene
+Schicht in einem Netzwerk.
+
+50
+00:03:09,170 --> 00:03:11,600
+Sie können das als einen
+praktischen Adapter sehen,
+
+51
+00:03:11,600 --> 00:03:13,465
+der es einem Netzwerk ermöglicht,
+
+52
+00:03:13,465 --> 00:03:16,290
+Sparse- oder
+kategoriale Daten gut zu integrieren.
+
+53
+00:03:16,290 --> 00:03:20,320
+Die Gewichte werden bei einem
+DNN durch Rückpropagierung angelernt.
+
+54
+00:03:20,320 --> 00:03:22,410
+Genau wie andere Ebenen.
+
+55
+00:03:22,410 --> 00:03:25,420
+Und das ist mit einem
+Regressionsproblem möglich
+
+56
+00:03:25,420 --> 00:03:27,540
+oder mit einem Klassifikationsproblem.
+
+57
+00:03:28,450 --> 00:03:33,120
+Erinnern Sie sich jetzt an einen zentralen
+Aspekt der allerersten, der blauen Ebene.
+
+58
+00:03:34,190 --> 00:03:39,290
+Im Gegensatz zu den gelben Knoten
+ist die blaue Ebene one-hot-codiert.
+
+59
+00:03:39,290 --> 00:03:46,220
+Bei Verwendung des Worts "Ausblick"
+schaltet sich nur einer der Knoten ein.
+
+60
+00:03:46,220 --> 00:03:48,740
+Sagen wir, dieser schwarze hier.
+
+61
+00:03:48,740 --> 00:03:53,890
+Das Gewicht für die Verknüpfungen vom
+schwarzen Knoten zur nächsten Ebene
+
+62
+00:03:53,890 --> 00:03:58,578
+erfasst dann die Relevanz
+des Worts "Ausblick" für dieses Problem.
+
+63
+00:03:58,578 --> 00:04:05,960
+Deshalb wird jedes Wort nur
+durch drei Zahlen dargestellt.
+
+64
+00:04:05,960 --> 00:04:10,490
+Jeder der drei Knoten kann als
+eine Dimension betrachtet werden,
+
+65
+00:04:10,490 --> 00:04:13,520
+in die Wörter projiziert werden.
+
+66
+00:04:13,520 --> 00:04:17,840
+Randgewichte zwischen einem
+Film und einer verborgenen Ebene
+
+67
+00:04:17,840 --> 00:04:21,200
+sind die Koordinaten in dieser
+Projektion mit weniger Dimensionen.

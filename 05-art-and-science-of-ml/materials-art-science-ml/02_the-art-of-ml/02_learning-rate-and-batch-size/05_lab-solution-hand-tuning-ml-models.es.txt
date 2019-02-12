@@ -1,0 +1,52 @@
+En este lab, experimentamos
+con el ajuste manual de hiperparámetros. Veamos los resultados. Haremos una regresión lineal simple para predecir precios inmobiliarios
+según la cantidad de habitaciones. Evaluaremos la precisión
+del modelo según el RMSE y ajustaremos la tasa de aprendizaje
+y el tamaño del lote para mejorarlo. Los datos que usamos en este lab se basan
+en el censo de California de 1990. Si mira con atención
+este notebook de Python al comienzo solo cargo algunas bibliotecas,
+nada del otro mundo. Esta es una advertencia que puedo ignorar. Tal vez no la vea,
+depende de la versión que use. Luego, cargo el conjunto de datos de esta URL pública en un DataFrame de Pandas. Después, revisaremos los datos
+observando algunos registros y algunas estadísticas de los datos. Un problema de este conjunto de datos es que el nivel de detalle
+solo llega a la cuadra no a nivel de vivienda. Debemos corregir esto
+antes de comenzar a utilizarlo. Para poder hacerlo crearemos otra columna de datos basada en el total de habitaciones
+que tenemos a nivel de cuadra dividido por la cantidad de viviendas otra vez, a nivel de cuadra. Así obtenemos la cantidad aproximada
+de habitaciones por casa. Si puedo describir esto obtendré esta estadística. Antes de comenzar a entrenar el modelo veamos rápidamente el conjunto de datos y recordemos qué queremos hacer. Esta es la columna que acabo de hacer dividiendo las dos columnas existentes,
+cantidad de habitaciones. Este será nuestro atributo. Es básicamente
+la entrada para nuestro modelo. Lo que haremos con nuestro modelo es predecir
+la mediana de la edad de la vivienda. Esta columna es nuestra etiqueta. En esta celda, defino lo que se requiere
+para comenzar el entrenamiento. La función de entrenamiento… la función de entrada proviene del DataFrame. Recuerde que la cantidad
+de habitaciones es el atributo y la mediana del valor
+de la vivienda es la etiqueta. Aquí, defino el directorio de salida y me aseguro de comenzar de cero cada vez al eliminar el contenido
+de ese directorio de salida. Ya mencionamos
+que sería una regresión lineal y es lo que estoy haciendo. Estoy usando LinearRegressor
+de la biblioteca de TensorFlow y estoy pasando el atributo
+y el directorio de salida al estimador. Aquí comienzo el entrenamiento. Como mencioné evaluaré el rendimiento
+del modelo según el RMSE. Eso es lo que pasa aquí. Si ejecuto la celda... vemos que el valor del RMSE es muy alto. Pero es exagerado. El RMSE debería de estar
+en el rango de las centenas no un número tan increíblemente grande. Lo que sucede
+es que hay un poco de escalamiento. Esto se informa a la escala de 100,000 y debemos aplicar esa escala para ver el RMSE en la escala correcta. Eso es lo que hago en la siguiente celda. Simplemente divido el valor de y
+según la escala que acabo de mencionar y el resto permanece igual. Si lo ejecuto ahora... me da una tasa de error del 7.4% que, para comenzar
+no es terrible, pero puede ser mejor. Eso sucede
+en la celda siguiente. Cambiaré la tasa de aprendizaje
+y el tamaño del lote para ver cómo mejora la tasa de error. La escala sigue igual. Ahora, definiré un tamaño de lote de 10. Comenzaré desde cero. Eliminamos cada vez
+el directorio de salida introducimos una tasa
+de aprendizaje de 0.01. Otra vez, es un regresor lineal así que el resto del código
+se mantiene igual. Lo único diferente se debe a que tenemos
+un tamaño de lote más pequeño. Debemos aumentar la cantidad de pasos. Eso es lo que hacemos aquí. Usaremos print en el RMSE
+y veremos qué sucede. Considere que antes de tener la tasa
+de aprendizaje y el tamaño del lote estábamos en 7.4. Con este pequeño cambio bajamos a 3.6. Debe experimentar con los hiperparámetros
+para obtener el mejor rendimiento posible. La última vez que lo modifiqué,
+obtuve 2.528. Esto es lo que quería abordar en este lab. Una de las preguntas más frecuentes
+es si existe un método estándar para ajustar estos parámetros. La respuesta corta es
+que los efectos de los hiperparámetros dependen de los datos. No existe una regla que sirva para todo. Deberá hacer pruebas con sus datos. Hay algunas pautas que lo pueden ayudar. Cuando revise el error de entrenamiento debería reducirse gradualmente. En general, al comienzo es muy acentuado para luego estabilizarse a medida
+que converge el entrenamiento. Si el entrenamiento no converge intente ejecutarlo por más tiempo. Si el error de entrenamiento se reduce
+muy lentamente puede aumentar la tasa de aprendizaje
+para ver si se reduce más rápido. Sin embargo, a veces pasa lo contrario
+si la tasa de aprendizaje es muy alta. Si el error de entrenamiento varía mucho intente reducir la tasa de aprendizaje. Reducir la tasa de aprendizaje
+y aumentar la cantidad de pasos o el tamaño del lote suele ser
+una buena combinación. Los tamaños de lote muy pequeños
+también pueden causar inestabilidad. Primero, pruebe con valores grandes,
+en el rango de cientos o miles y luego redúzcalo hasta ver una degradación. No siga estas pautas estrictamente,
+porque los efectos dependen de los datos. Experimente y verifique siempre. Como extra para este lab agregue algunos atributos
+y revise los resultados. No debería tardar mucho en hacerlo. Debiera poder agregar atributos
+en 5 o 10 minutos y evaluar el rendimiento del modelo.

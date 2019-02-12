@@ -1,0 +1,83 @@
+Isso nos leva à segunda
+seção deste módulo, em que discutimos dois
+hiperparâmetros importantes: taxa de aprendizado
+e tamanho do lote. Para começar, vamos
+testá-los no Playground. Começando com a
+taxa de aprendizado. Lembre-se de que essa taxa controla
+o tamanho da parada no espaço do peso. Mantendo o tamanho
+do lote igual a 30 e os outros
+parâmetros constantes, eu defino uma taxa
+de aprendizado de 0,01. O TensorFlow Playground usa
+pontos de partida aleatórios. Por isso, seus resultados
+podem ser diferentes dos meus. Você pode ver saltos
+na curva de perda, mas ela converge rapidamente. No meu caso, consegui
+0,139 de perda na taxa de teste e menos de 300 épocas. Ao mudar a taxa de
+aprendizado para 0,001, vi um desempenho
+muito mais lento. No meu caso, levou
+quase 3 mil épocas para alcançar uma perda de teste
+comparável ao último teste. O ponto positivo é que não há
+saltos na curva de perda. Ela converge rapidamente,
+mas de maneira suave. Vamos testar os efeitos
+do tamanho do lote. O tamanho do lote controla o número de
+amostras em que o gradiente é calculado. Mantendo a taxa de
+aprendizado em 0,01 e todos os outros
+parâmetros contantes, primeiro eu testo um
+tamanho de lote igual a 100. Se você estiver
+fazendo junto comigo, pode estar pensando como aumentar
+o tamanho do lote acima de 30. Não se preocupe,
+nada quebrou. É proposital. A interface não
+permite ir além de 30, mas você pode alterar no URO. Com um tamanho de lote 100, eu vejo uma
+convergência mais lenta. Levou mais de mil épocas
+para alcançar um valor de perda parecido com o
+dos testes anteriores. Mas não há ruído nas etapas. Ao mudar o tamanho
+do lote para cinco, eu consigo resultados
+muito rápidos. Basicamente,
+em apenas 65 épocas eu consegui uma perda parecida
+com a dos últimos testes. Mas há ruídos visíveis
+na curva de perda. O desempenho do modelo
+é muito sensível à taxa de aprendizado
+e ao tamanho do lote. É como afinar um
+instrumento musical, não? Eu disse que era uma arte. Vamos recapitular
+as descobertas. A taxa de aprendizado controla o
+tamanho da etapa no espaço do peso. Se as etapas forem
+pequenas demais, o treinamento levará
+muito tempo. Por outro lado, se as etapas
+forem grandes demais, ele ficará instável e pode
+perder o ponto ideal. Uma taxa de
+aprendizado de 0,001 significa uma etapa igual a
+1/1.000 do espaço da entrada. Pode ser uma etapa
+muito pequena quando você tem uma
+superfície de otimização grande. Por exemplo, o padrão
+do estimador de regressão linear na biblioteca do TensorFlow é definido como 0,2 ou 1 sobre a raiz
+quadrada do número de recursos. Isso assume que seus valores de
+recursos e marcadores sejam pequenos. O outro ajuste,
+o tamanho do lote. controla o número de amostras
+em que o gradiente é calculado. Se o tamanho do lote
+for muito pequeno, ele pode ficar instável
+porque o lote não é uma boa
+representação da entrada. Por outro lado, se o
+tamanho for muito grande, o treinamento
+levará muito tempo. Em geral, 40 a 100 tende a ser um bom
+intervalo para o tamanho do lote. Ele pode ir até 500. Como estamos
+falando de lotes, não podemos esquecer
+da aleatorização. Você deve ter ouvido que é bom
+aleatorizar os exemplos. Mas por quê? Veja estes livros. Digamos que você que você
+está treinando um comando que sugere um
+novo título para o leitor. Observe que os títulos
+estão em ordem alfabética. Se você usar o conjunto
+de dados como está, cada lote de treinamento conterá
+um subconjunto de títulos com base nas letras
+consecutivas do alfabeto. Você daria ao modelo
+uma visão muito limitada do domínio do problema e tiraria as
+chances de ele descobrir a verdade. Você não quer ser
+um professor ruim. Cada lote precisa ser representativo
+de todo o conjunto de dados. A maior parte dos conjuntos
+tende a ter uma ordem. Como esses títulos
+em ordem alfabética, registros de cliente
+classificados por CEP, compras arquivadas
+por temporada, ano, etc. Ao aleatorizar o
+conjunto de dados, você garante que cada lote
+represente todo o conjunto de dados. O gradiente é computado
+dentro do lote. Se o lote não
+for representativo, a perda será muito irregular
+por causa de um lote ruim.

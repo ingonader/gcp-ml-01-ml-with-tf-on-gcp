@@ -1,0 +1,76 @@
+Primeiro, vamos falar sobre
+como podemos usar a regularização para criar modelos
+mais esparsos e mais simples. No início do curso, aprendemos
+sobre a regularização de L2, que é adicionada à soma
+dos termos das ponderações dos parâmetros quadrados
+para a função de perda. Isso foi ótimo para manter
+as ponderações pequenas, ter estabilidade e uma solução única, mas pode deixar o modelo
+desnecessariamente grande e complexo, já que todos os atributos ainda podem
+permanecer com ponderações pequenas. Usar algo chamado de regularização L1 adiciona a soma do valor absoluto que o
+parâmetro pondera à função de perda, o que tende a forçar as ponderações de
+atributos não muito previstos para zero. Isso funciona como um seletor
+de atributos integrado, eliminando todos os atributos inválidos e
+deixando apenas os mais fortes no modelo. Este modelo esparso tem muitos benefícios. Primeiro, com menos coeficiente
+para armazenar e carregar, há uma redução no armazenamento
+e na memória necessária com um tamanho de modelo menor, o que é especialmente importante
+para modelos incorporados. Além disso, com menos atributos, há muito menos anúncios múltiplos,
+o que leva a mais velocidade de treino, e também aumenta a velocidade de previsão. Muitos modelos de aprendizado de máquina
+já tem atributos suficientes. Por exemplo, digamos que
+eu tenha dados que contenham a data/hora dos
+pedidos que estão sendo colocados. Nosso primeiro modelo de pedido provavelmente incluiria 7 atributos
+para os dias da semana e 24 para as horas do dia, além de outros possíveis. Então, apenas o dia da semana mais a hora
+já somam 31 entradas. E se quisermos analisar os efeitos de segunda ordem do dia
+da semana e cruzar com a hora do dia? Há outras 168 entradas além das nossas 31, mais outras para
+um total de quase 200 atributos, apenas para o campo de data/hora, além
+dos outros atributos que estamos usando. Se cruzarmos isso com uma codificação
+one-hot para os EUA, por exemplo, o produto cartesiano triplo já está em 8.400 atributos, e muitos estão
+provavelmente muito esparsos e com zeros. Isso deixa claro por que
+a seleção de atributos integrados por meio da regularização de L1
+pode ser algo muito bom. Quais estratégias podemos usar para
+remover coeficientes de atributos que não são úteis além
+da regularização de L1, talvez? Poderíamos incluir contagens simples
+de quais atributos ocorrem com valores diferentes de zero. A norma-L0 é a contagem
+das ponderações diferentes de zero, e a otimização para ela é um problema
+de otimização NP-hard não convexo. Este diagrama ilustra como uma superfície
+de erro de otimização não convexa parece. Como você vê, há muitos
+picos e vales locais, e este é um exemplo simples
+de uma dimensão. Você teve que explorar muitos pontos
+de partida com o gradiente descendente, tornando este um problema NP-hard
+para resolver completamente. Felizmente, a norma L1, assim como
+a norma L2, é convexa, mas também encoraja a dispersão no modelo. Na imagem,
+as distribuições de probabilidade das normas L1 e L2 são plotadas. Observe como a norma L2 tem um pico
+muito mais suave em zero, o que resulta em magnitudes
+das ponderações mais próximas de zero. Porém, você notará que a norma L1 é
+mais uma cúspide centrada em zero. Portanto, maior a probabilidade de ser
+exatamente no zero do que a norma L2. Há um número infinito de normas
+que são generalizadas pela norma P. Algumas outras, como a norma L0
+que já abordamos, que é a contagem dos valores diferentes
+de zero em um vetor, e a norma L infinito, que é o valor absoluto máximo
+de qualquer valor em um vetor. Na prática, porém, normalmente a norma L2 fornece modelos mais generalizáveis
+qu​e a norma L1. Mas acabaremos com modelos pesados ​​mais
+complexos se usarmos L2 em vez de L1. Isso acontece porque, muitas vezes,
+os atributos têm alta correlação entre si e a regularização de L1 usa um deles e
+descarta o outro, enquanto a L2 mantém os dois atributos e as magnitudes
+de ponderações pequenas. Com L1, você pode acabar com um modelo
+menor, mas pode ser menos preditivo. Há alguma maneira de conseguir
+o melhor das duas? A rede elástica é só uma combinação linear
+das penalidades de regularização L1 e L2. Assim, temos os benefícios da esparsidade
+para atributos preditivos incorretos e, ao mesmo tempo, mantemos
+atributos corretos com ponderações menores para
+uma boa generalização. A única contrapartida agora
+é que há dois em vez de um hiperparâmetro
+para ajustar, com os dois parâmetros de regularização
+do Lambda diferentes. O que a regularização de L1 tende a fazer com as ponderações de parâmetros de
+atributos preditivos baixos de um modelo? A resposta correta é ter valores zero. Sempre que fazemos 
+técnicas de regularização, estamos adicionando um termo de penalidade
+à função de perda ou à função objetiva, para não otimizar demais as variáveis de
+decisão ou as ponderações de parâmetros. Escolhemos os termos de penalidade com
+base no conhecimento prévio, função, forma etc. A regularização de L1 mostrou induzir esparsidade ao modelo e, devido
+à distribuição de probabilidade, ter um pico alto em zero. A maioria das ponderações, exceto
+as altamente preditivas, serão deslocadas dos valores
+não regularizados para zero. A regularização de L2 será usada para ter
+pequenas magnitudes, e o negativo seria usado para ter grandes
+magnitudes, que são ambas incorretas. Ter todos os valores positivos seria como adicionar muitas restrições
+adicionais ao problema de otimização, limitando todas as
+variáveis ​​de decisão a serem maiores que zero, o que também
+não é a regularização de L1.

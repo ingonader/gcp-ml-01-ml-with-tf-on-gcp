@@ -1,0 +1,1011 @@
+1
+00:00:00,000 --> 00:00:02,960
+Now, to put our new knowledge into practice and
+
+2
+00:00:02,960 --> 00:00:06,035
+use Neural Networks in TensorFlow to build an ML model.
+
+3
+00:00:06,035 --> 00:00:10,380
+It's time for another exciting lab using Neural Networks to build ML model.
+
+4
+00:00:10,380 --> 00:00:12,840
+In this lab, you will use the canned estimator,
+
+5
+00:00:12,840 --> 00:00:15,700
+DNNReggressor class in TensorFlow to
+
+6
+00:00:15,700 --> 00:00:19,205
+predict median housing price based on many different features.
+
+7
+00:00:19,205 --> 00:00:22,500
+The data is based on a 1990 census data from California.
+
+8
+00:00:22,500 --> 00:00:24,690
+This data is at the city block level,
+
+9
+00:00:24,690 --> 00:00:27,925
+so these features reflect the total number of rooms in that block,
+
+10
+00:00:27,925 --> 00:00:32,685
+or the total number of people who live on that block, respectively. Welcome back.
+
+11
+00:00:32,685 --> 00:00:35,880
+We're going to go through some of our code to see how we can make
+
+12
+00:00:35,880 --> 00:00:39,195
+a Neural Network using the DNN class Regressor in TensorFlow.
+
+13
+00:00:39,195 --> 00:00:43,490
+So here we are, we're going to learn how to use a Neural Network.
+
+14
+00:00:43,490 --> 00:00:48,530
+So, we're going to use this housing data based on 1990 census data from California.
+
+15
+00:00:48,530 --> 00:00:50,230
+This data is at the city block level.
+
+16
+00:00:50,230 --> 00:00:51,735
+So, it's going to reflect features,
+
+17
+00:00:51,735 --> 00:00:53,150
+the total number of rooms in that block,
+
+18
+00:00:53,150 --> 00:00:55,990
+the total number of people who live in that block respectively.
+
+19
+00:00:55,990 --> 00:00:59,375
+So, let's use a set of features to rate the house value.
+
+20
+00:00:59,375 --> 00:01:01,020
+So, first let me set up.
+
+21
+00:01:01,020 --> 00:01:03,915
+So in the first cell, we're going to lower unnecessary libraries.
+
+22
+00:01:03,915 --> 00:01:06,185
+We're going to import the math,
+
+23
+00:01:06,185 --> 00:01:09,260
+shutil, numpy, pandas, tensorflow.
+
+24
+00:01:09,260 --> 00:01:13,075
+Make sure your proposity is set to info so you can get a lots of results.
+
+25
+00:01:13,075 --> 00:01:16,135
+Make sure some reformatting for pandas is set.
+
+26
+00:01:16,135 --> 00:01:20,085
+So, now we're going to load our dataset from this URL here,
+
+27
+00:01:20,085 --> 00:01:23,940
+or ml Carlifornia housing train data into a panda's data frame.
+
+28
+00:01:23,940 --> 00:01:26,125
+Next, we examine the data.
+
+29
+00:01:26,125 --> 00:01:29,235
+So, it's a good idea to get to know your data a little bit before you work with it.
+
+30
+00:01:29,235 --> 00:01:32,220
+We'll print out a quick summary of useful statistics on each column.
+
+31
+00:01:32,220 --> 00:01:33,430
+This will include things like mean,
+
+32
+00:01:33,430 --> 00:01:36,720
+standard deviation, max, min and various quantiles.
+
+33
+00:01:36,720 --> 00:01:40,130
+So first, what we're going to do is print off the head of the data frame.
+
+34
+00:01:40,130 --> 00:01:44,200
+What this does is simply print off an example of the first five rows of the dataset;
+
+35
+00:01:44,200 --> 00:01:47,050
+longitude, latitude, housing median age,
+
+36
+00:01:47,050 --> 00:01:50,020
+total rooms, total bedrooms, population, households,
+
+37
+00:01:50,020 --> 00:01:52,535
+median income and median house value;
+
+38
+00:01:52,535 --> 00:01:54,140
+which is my label in this case.
+
+39
+00:01:54,140 --> 00:01:56,725
+It's what I want to predict using these other features.
+
+40
+00:01:56,725 --> 00:01:59,190
+So, actually lets see what the statistics are.
+
+41
+00:01:59,190 --> 00:02:01,115
+This I can do with df.describe.
+
+42
+00:02:01,115 --> 00:02:02,630
+It will show me the count,
+
+43
+00:02:02,630 --> 00:02:04,130
+the means, standard deviation,
+
+44
+00:02:04,130 --> 00:02:06,540
+the minimum, 25th percentile,
+
+45
+00:02:06,540 --> 00:02:09,700
+the 50th percentile, the 75th percentile and the maximum.
+
+46
+00:02:09,700 --> 00:02:13,865
+As you can see here, everything looks pretty clean here.
+
+47
+00:02:13,865 --> 00:02:16,050
+However, it is on a city block level still.
+
+48
+00:02:16,050 --> 00:02:20,830
+So, we're going to have to figure out how to do that on a per house level.
+
+49
+00:02:20,830 --> 00:02:24,480
+So to do that, I take the number of rooms, if I want to find that,
+
+50
+00:02:24,480 --> 00:02:27,490
+I take the total rooms for the entire city block,
+
+51
+00:02:27,490 --> 00:02:30,050
+and divide with the total number of households in that block.
+
+52
+00:02:30,050 --> 00:02:33,215
+This will give me the average number of rooms per house.
+
+53
+00:02:33,215 --> 00:02:34,870
+Same goes for bedrooms,
+
+54
+00:02:34,870 --> 00:02:36,695
+I take the number of bedrooms,
+
+55
+00:02:36,695 --> 00:02:41,110
+I'm then going to use the total number of bedrooms in the whole block,
+
+56
+00:02:41,110 --> 00:02:44,215
+divide with the number of households in that block to get the average number of bedrooms.
+
+57
+00:02:44,215 --> 00:02:47,505
+Now, for persons per house,
+
+58
+00:02:47,505 --> 00:02:49,760
+I'm going to take the total population
+
+59
+00:02:49,760 --> 00:02:51,775
+of that block and divide by the number of households,
+
+60
+00:02:51,775 --> 00:02:54,190
+same with the average number of people in that house.
+
+61
+00:02:54,190 --> 00:02:56,785
+Now, if I do a df.describe,
+
+62
+00:02:56,785 --> 00:02:58,755
+we'll see my original columns here.
+
+63
+00:02:58,755 --> 00:03:02,050
+However, I have new columns added right here.
+
+64
+00:03:02,050 --> 00:03:04,560
+This are my average number of rooms per house,
+
+65
+00:03:04,560 --> 00:03:06,330
+my average number of bedrooms per house,
+
+66
+00:03:06,330 --> 00:03:08,875
+and my average number of a persons per house.
+
+67
+00:03:08,875 --> 00:03:15,005
+Excellent. Now, I can drop those population statistics now,
+
+68
+00:03:15,005 --> 00:03:17,890
+and say block level statistics;
+
+69
+00:03:17,890 --> 00:03:19,630
+like total rooms, total bedrooms,
+
+70
+00:03:19,630 --> 00:03:24,850
+population, households, and I'm going to drop all those columns in place.
+
+71
+00:03:24,850 --> 00:03:26,345
+So, I don't create a new data frame.
+
+72
+00:03:26,345 --> 00:03:27,670
+And now, if I do df.describe,
+
+73
+00:03:27,670 --> 00:03:30,825
+you'll see I have my new features over here,
+
+74
+00:03:30,825 --> 00:03:32,440
+my old features over there.
+
+75
+00:03:32,440 --> 00:03:36,260
+Here's my label, and those things I used before are no longer there.
+
+76
+00:03:36,260 --> 00:03:39,025
+This is now at a house level view.
+
+77
+00:03:39,025 --> 00:03:41,160
+So now, let's build
+
+78
+00:03:41,160 --> 00:03:45,295
+our Neural Network model that will have our feature data in the correct format.
+
+79
+00:03:45,295 --> 00:03:48,565
+All right. So, what we're going to do is create our feature columns.
+
+80
+00:03:48,565 --> 00:03:51,070
+So remember, feature columns are basically
+
+81
+00:03:51,070 --> 00:03:54,360
+getting our data into the right representation for our model to use.
+
+82
+00:03:54,360 --> 00:03:58,030
+So, even if it is already in floating point notation,
+
+83
+00:03:58,030 --> 00:04:03,745
+we still need to decide if it's going to be a floating point in a column or not.
+
+84
+00:04:03,745 --> 00:04:05,950
+So, it comes in here,
+
+85
+00:04:05,950 --> 00:04:08,555
+and I'm looping as you can see here,
+
+86
+00:04:08,555 --> 00:04:11,570
+over all the columns and median housing age,
+
+87
+00:04:11,570 --> 00:04:13,130
+median income, the number of rooms,
+
+88
+00:04:13,130 --> 00:04:15,780
+number of bedrooms, and the persons per house.
+
+89
+00:04:15,780 --> 00:04:19,325
+After that, I want to do a little more feature engineering.
+
+90
+00:04:19,325 --> 00:04:23,299
+So, I'm going to create a new feature column called Longitude.
+
+91
+00:04:23,299 --> 00:04:27,665
+It's going to be a bucketized column of the numerical longitude,
+
+92
+00:04:27,665 --> 00:04:31,680
+with the spacing of linear space from a negative
+
+93
+00:04:31,680 --> 00:04:37,275
+124.3 to negative 114.3 in steps of five.
+
+94
+00:04:37,275 --> 00:04:39,150
+Then feature columns latitude,
+
+95
+00:04:39,150 --> 00:04:40,775
+I'm going to have the same sort of thing,
+
+96
+00:04:40,775 --> 00:04:47,670
+except now it's going to be from the latitudes 32.5 to 42 with 10 buckets in this.
+
+97
+00:04:48,790 --> 00:04:53,555
+The reason I'm doing this is because California is longer than it is wider.
+
+98
+00:04:53,555 --> 00:04:56,150
+Therefore, our latitude should have a greater number of buckets;
+
+99
+00:04:56,150 --> 00:04:59,215
+10 buckets versus the five buckets for longitude.
+
+100
+00:04:59,215 --> 00:05:02,215
+Just printing out my feature column names.
+
+101
+00:05:02,215 --> 00:05:04,900
+Here, I can see, I have median income, persons per house,
+
+102
+00:05:04,900 --> 00:05:06,810
+number of rooms, housing median age,
+
+103
+00:05:06,810 --> 00:05:09,315
+longitude, number of bedrooms and latitude.
+
+104
+00:05:09,315 --> 00:05:11,800
+That's great. But first,
+
+105
+00:05:11,800 --> 00:05:15,210
+we need to make sure we split this into a train and evaluation data set.
+
+106
+00:05:15,210 --> 00:05:19,810
+So, that way I'm able to see how my model is progressing as I'm training.
+
+107
+00:05:19,810 --> 00:05:23,120
+To do this, I'm going to create a random mask,
+
+108
+00:05:23,120 --> 00:05:25,535
+where I'm checking for the length of data frame,
+
+109
+00:05:25,535 --> 00:05:28,885
+I'm going to create that many number of random values,
+
+110
+00:05:28,885 --> 00:05:30,565
+from a uniform distribution,
+
+111
+00:05:30,565 --> 00:05:32,200
+and if they're less than 0.8,
+
+112
+00:05:32,200 --> 00:05:34,460
+I'm going to save it into this mask vector.
+
+113
+00:05:34,460 --> 00:05:38,990
+What's going to happen is, this mask vector is actually length of the data frame,
+
+114
+00:05:38,990 --> 00:05:40,200
+but they're all trues and false,
+
+115
+00:05:40,200 --> 00:05:43,085
+it is called a Boolean mask,
+
+116
+00:05:43,085 --> 00:05:45,555
+when I apply this Boolean mask in my data frame.
+
+117
+00:05:45,555 --> 00:05:49,195
+So therefore, for all things were that mask was true,
+
+118
+00:05:49,195 --> 00:05:51,780
+those rows will be put into trained data frame.
+
+119
+00:05:51,780 --> 00:05:54,805
+And for all values that are not true,
+
+120
+00:05:54,805 --> 00:05:56,700
+that's what this tilde is right here,
+
+121
+00:05:56,700 --> 00:05:58,755
+they will be put into evaluation data frame.
+
+122
+00:05:58,755 --> 00:06:03,110
+Therefore, this will give me pretty much an 80 percent split into my train data frame,
+
+123
+00:06:03,110 --> 00:06:06,195
+and the rest of the 20 percent of my data goes in the evaluation data frame.
+
+124
+00:06:06,195 --> 00:06:07,880
+Here, I also have a scale factor,
+
+125
+00:06:07,880 --> 00:06:10,885
+as you can see, I'm 100,000.
+
+126
+00:06:10,885 --> 00:06:14,510
+The reason for this is because I want to scale my labels here.
+
+127
+00:06:14,510 --> 00:06:16,460
+Because they are way too large.
+
+128
+00:06:16,460 --> 00:06:18,885
+As you can see, there are totally different scales.
+
+129
+00:06:18,885 --> 00:06:22,395
+These are in the 100,000, millions range almost,
+
+130
+00:06:22,395 --> 00:06:26,740
+and these are all much smaller like single one or two digit floats.
+
+131
+00:06:26,740 --> 00:06:29,150
+So, I'm going to do that.
+
+132
+00:06:29,150 --> 00:06:30,340
+I'm also going to create my batch size here,
+
+133
+00:06:30,340 --> 00:06:31,670
+and set that, I'm going to set it to 100.
+
+134
+00:06:31,670 --> 00:06:35,080
+Set it to 100 rows at a time under each one of these data frames.
+
+135
+00:06:35,080 --> 00:06:38,640
+I had to then create my training input function.
+
+136
+00:06:38,640 --> 00:06:43,350
+So for this, I'm going to use the nifty estimator pandas input function right here,
+
+137
+00:06:43,350 --> 00:06:45,300
+where X equals my features.
+
+138
+00:06:45,300 --> 00:06:48,900
+Well, this is going to create a dictionary of tensors,
+
+139
+00:06:48,900 --> 00:06:50,430
+will be the output of that.
+
+140
+00:06:50,430 --> 00:06:55,585
+This will turn my train data frame of median house values of that column.
+
+141
+00:06:55,585 --> 00:07:00,140
+It'll read that into Y, which will then become a tensor for my labels.
+
+142
+00:07:00,140 --> 00:07:01,810
+Number of epochs is going to equal one in
+
+143
+00:07:01,810 --> 00:07:04,670
+this case from a batch size and I am going to shuffle.
+
+144
+00:07:04,670 --> 00:07:06,730
+All right. Over here,
+
+145
+00:07:06,730 --> 00:07:08,800
+I have my eval input function.
+
+146
+00:07:08,800 --> 00:07:12,485
+Once again, it's going to use the pandas input function to do its work.
+
+147
+00:07:12,485 --> 00:07:15,490
+And now, we're going to use all perimeter [inaudible] for the input data frame.
+
+148
+00:07:15,490 --> 00:07:16,990
+However, I'm going to have shuffle,
+
+149
+00:07:16,990 --> 00:07:18,855
+equal false because I don't want to shuffle
+
+150
+00:07:18,855 --> 00:07:22,360
+my evaluations set because I want repeatability.
+
+151
+00:07:22,360 --> 00:07:24,855
+I also create another function here called rmse,
+
+152
+00:07:24,855 --> 00:07:27,930
+which is going to print out the rmse of my model.
+
+153
+00:07:27,930 --> 00:07:31,905
+Calling in the name of it and calling the input function associated.
+
+154
+00:07:31,905 --> 00:07:34,595
+So for this, I'm going to create into the metrics.
+
+155
+00:07:34,595 --> 00:07:37,090
+I'm going to model.evaluate of my estimator.
+
+156
+00:07:37,090 --> 00:07:38,790
+Remember, my estimator is set as model.
+
+157
+00:07:38,790 --> 00:07:41,100
+And I'm going to pass it to as input function,
+
+158
+00:07:41,100 --> 00:07:44,530
+where it's going to be the input function that is passed to our print_rmse,
+
+159
+00:07:44,530 --> 00:07:47,190
+and I'm going to do onestep.
+
+160
+00:07:47,510 --> 00:07:49,615
+The right news about this,
+
+161
+00:07:49,615 --> 00:07:52,170
+is that I'm going to be- this metrics is out,
+
+162
+00:07:52,170 --> 00:07:53,480
+it should be dictionary.
+
+163
+00:07:53,480 --> 00:07:54,755
+It's still a regression problem.
+
+164
+00:07:54,755 --> 00:07:57,100
+So, I'm going to end up with loss,
+
+165
+00:07:57,100 --> 00:07:59,850
+average loss, and a global step.
+
+166
+00:07:59,850 --> 00:08:04,120
+Then I'm going to print the rmse on this data set, and the answer will be,
+
+167
+00:08:04,120 --> 00:08:05,950
+I'm going to have to hit the square root
+
+168
+00:08:05,950 --> 00:08:08,615
+because currently the average loss is just the mse.
+
+169
+00:08:08,615 --> 00:08:10,770
+From the rmse, I've check the square root.
+
+170
+00:08:10,770 --> 00:08:13,645
+Also you might notice that I'm multiplying by the scale here.
+
+171
+00:08:13,645 --> 00:08:18,635
+So, I can get back into the correct units of price, the mean the house value.
+
+172
+00:08:18,635 --> 00:08:20,760
+Now, I'm going to equip my Linear Reggressor.
+
+173
+00:08:20,760 --> 00:08:22,160
+I created an output directory,
+
+174
+00:08:22,160 --> 00:08:24,960
+this is where all my files will be saved from the training,
+
+175
+00:08:24,960 --> 00:08:27,615
+like my checkpoints, my event logs,
+
+176
+00:08:27,615 --> 00:08:30,370
+any saved models for instance.
+
+177
+00:08:30,370 --> 00:08:33,430
+I want remove it, to make sure I have a fresh start each time.
+
+178
+00:08:33,430 --> 00:08:35,295
+So, we're going to remove everything in that tree,
+
+179
+00:08:35,295 --> 00:08:37,380
+make sure it's a clear fresh folder.
+
+180
+00:08:37,380 --> 00:08:39,985
+I'm going to create my custom optimizer.
+
+181
+00:08:39,985 --> 00:08:41,850
+This is Linear Regression. So, I'm going to
+
+182
+00:08:41,850 --> 00:08:44,250
+use a follow the regularized leader optimizer,
+
+183
+00:08:44,250 --> 00:08:46,530
+since that's usually a pretty good choice for that.
+
+184
+00:08:46,530 --> 00:08:49,280
+I'm going to have a learning rate of 0.01,
+
+185
+00:08:49,280 --> 00:08:51,000
+then I'm going to create my model.
+
+186
+00:08:51,000 --> 00:08:52,370
+So here, I'm creating my estimator now.
+
+187
+00:08:52,370 --> 00:08:54,040
+It's going to be a linear aggressor,
+
+188
+00:08:54,040 --> 00:08:56,730
+and I'm passing my model directory.
+
+189
+00:08:56,730 --> 00:08:58,630
+So, I'm going to put my stuff,
+
+190
+00:08:58,630 --> 00:09:01,470
+and then feature columns and I'm going to pass my feature columns values.
+
+191
+00:09:01,470 --> 00:09:03,110
+So, these are the tensors for that.
+
+192
+00:09:03,110 --> 00:09:06,190
+And then my optimizer is going to be my custom optimizer here [inaudible] leader.
+
+193
+00:09:06,190 --> 00:09:09,060
+I'm going to train for a number of steps here.
+
+194
+00:09:09,060 --> 00:09:11,060
+For this, I'm going to train for a hundred times
+
+195
+00:09:11,060 --> 00:09:12,940
+unlike to my data frame over my batch size.
+
+196
+00:09:12,940 --> 00:09:16,430
+Essentially, what this means, I may train for 100 epochs.
+
+197
+00:09:16,430 --> 00:09:18,565
+I then call model.train,
+
+198
+00:09:18,565 --> 00:09:20,140
+passing my input function,
+
+199
+00:09:20,140 --> 00:09:21,740
+specifically my training input function,
+
+200
+00:09:21,740 --> 00:09:23,650
+and my number of steps could be this number of steps I
+
+201
+00:09:23,650 --> 00:09:25,960
+created here. It's going to train my model.
+
+202
+00:09:25,960 --> 00:09:29,300
+Then at the very end, I'm going to print the rmse of that model.
+
+203
+00:09:29,300 --> 00:09:33,100
+I'm going to call my evaluation input function,
+
+204
+00:09:33,100 --> 00:09:35,805
+so that way, it will be on my evaluation input functions set.
+
+205
+00:09:35,805 --> 00:09:38,600
+As you can see, when I perform the training,
+
+206
+00:09:38,600 --> 00:09:41,210
+I have the default config here,
+
+207
+00:09:41,210 --> 00:09:45,325
+and changing that I create a checkpoint and I start the training process.
+
+208
+00:09:45,325 --> 00:09:46,800
+I compute the loss at step one.
+
+209
+00:09:46,800 --> 00:09:49,540
+It looks like, and then that's how many steps per second I've done,
+
+210
+00:09:49,540 --> 00:09:51,270
+and as training proceeds,
+
+211
+00:09:51,270 --> 00:09:53,140
+the loss is hopefully going down.
+
+212
+00:09:53,140 --> 00:09:59,175
+We can see that my evaluation final average loss is 0.93,
+
+213
+00:09:59,175 --> 00:10:01,590
+after 137 global steps,
+
+214
+00:10:01,590 --> 00:10:04,345
+and my total loss is 3,141.
+
+215
+00:10:04,345 --> 00:10:10,000
+And my evaluation, by multiplying back by the scale on my evaluations set,
+
+216
+00:10:10,000 --> 00:10:14,315
+the rmse is $96,583.
+
+217
+00:10:14,315 --> 00:10:17,855
+Remember, rmse is essentially the standard deviation of your residuals.
+
+218
+00:10:17,855 --> 00:10:19,750
+Remember, in your residuals, are the difference
+
+219
+00:10:19,750 --> 00:10:22,190
+between your prediction and the actual label.
+
+220
+00:10:22,190 --> 00:10:25,370
+So now, let's see if we can do any better with my DNNRegressor.
+
+221
+00:10:25,370 --> 00:10:27,095
+Everything is the same as before,
+
+222
+00:10:27,095 --> 00:10:29,580
+except this time I'm using the AdamOptimizer,
+
+223
+00:10:29,580 --> 00:10:33,850
+because that's usually pretty great to use on DNNReggressor's rather than the [inaudible] leader.
+
+224
+00:10:33,850 --> 00:10:38,100
+I'm also going to now change from the Linear Regressor to the DNNReggressor.
+
+225
+00:10:38,100 --> 00:10:41,250
+Where I pass it as before everything else.
+
+226
+00:10:41,250 --> 00:10:45,310
+However, I'm going to add in my hidden units and I'm going to have one,
+
+227
+00:10:45,310 --> 00:10:46,865
+two, three layers here,
+
+228
+00:10:46,865 --> 00:10:49,170
+where the first layer has 100 hidden neurons.
+
+229
+00:10:49,170 --> 00:10:50,975
+The second layer has 50 hidden neurons,
+
+230
+00:10:50,975 --> 00:10:52,870
+and the last layer has 20 hidden neurons.
+
+231
+00:10:52,870 --> 00:10:54,735
+I'm also passing the feature columns,
+
+232
+00:10:54,735 --> 00:10:56,370
+the optimizer I created,
+
+233
+00:10:56,370 --> 00:10:58,215
+which is using Adam this time.
+
+234
+00:10:58,215 --> 00:11:01,035
+Then a drop dropout of 10 percent.
+
+235
+00:11:01,035 --> 00:11:03,240
+Remember, this is the drafted probability and
+
+236
+00:11:03,240 --> 00:11:06,420
+not the key probability like it is in some other insulations.
+
+237
+00:11:06,420 --> 00:11:09,230
+I'm also creating the number of steps the same as before,
+
+238
+00:11:09,230 --> 00:11:11,760
+and I'm training as before, and I printed my rmse.
+
+239
+00:11:11,760 --> 00:11:13,730
+Let's see if it can do any better. All right.
+
+240
+00:11:13,730 --> 00:11:15,380
+So, it does everything the same as before,
+
+241
+00:11:15,380 --> 00:11:18,100
+when my default configuration is at training.
+
+242
+00:11:18,100 --> 00:11:19,890
+Let's see what the final steps are.
+
+243
+00:11:19,890 --> 00:11:22,830
+So, my average loss from my training is 0.67.
+
+244
+00:11:22,830 --> 00:11:27,175
+This is already a good sign because it's lower than what I had before, 0.93.
+
+245
+00:11:27,175 --> 00:11:32,280
+But on my rmse on this, it's $81,974.
+
+246
+00:11:32,280 --> 00:11:36,600
+As you can see here, I have a lot smaller standard deviation compared to the last one,
+
+247
+00:11:36,600 --> 00:11:38,900
+which means this model is doing much better.
+
+248
+00:11:38,900 --> 00:11:40,950
+Of course, you can always make this much more
+
+249
+00:11:40,950 --> 00:11:43,305
+complicated and use way more fancy algorithms,
+
+250
+00:11:43,305 --> 00:11:45,590
+which goes to show you, that a Neural Network can very
+
+251
+00:11:45,590 --> 00:11:49,050
+easily get you much better performance than a Linear Regression can.
+
+252
+00:11:49,120 --> 00:11:52,090
+Lastly, what we can do, we call this in TensorBoard,
+
+253
+00:11:52,090 --> 00:11:54,940
+and we can look at how it's progressing.

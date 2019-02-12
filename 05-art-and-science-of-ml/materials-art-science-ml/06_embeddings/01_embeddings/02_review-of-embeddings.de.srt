@@ -1,0 +1,321 @@
+1
+00:00:00,560 --> 00:00:07,245
+Im vorigen Kurs haben wir Einbettungen
+bei Merkmalsverknüpfungen gesehen,
+
+2
+00:00:07,245 --> 00:00:10,890
+aber Einbettungen kommen
+im modernen ML überall vor
+
+3
+00:00:10,890 --> 00:00:16,140
+und sind nicht auf Merkmalsverknüpfungen
+oder gar strukturierte Daten beschränkt.
+
+4
+00:00:16,140 --> 00:00:22,700
+Tatsächlich werden Sie sie ziemlich viel
+für Bildmodelle und Textmodelle einsetzen.
+
+5
+00:00:22,700 --> 00:00:27,885
+Fassen wir Einbettungen erneut
+kurz so zusammen, wie wir sie verstehen.
+
+6
+00:00:27,885 --> 00:00:30,900
+Wir haben gesagt, wir
+möchten vielleicht ein ML-Modell bauen,
+
+7
+00:00:30,900 --> 00:00:34,255
+um etwas über
+den Straßenverkehr vorherzusagen,
+
+8
+00:00:34,255 --> 00:00:35,342
+etwa die Zeit,
+
+9
+00:00:35,342 --> 00:00:39,330
+bevor das nächste Fahrzeug
+an einer Kreuzung ankommt,
+
+10
+00:00:39,330 --> 00:00:42,460
+und wir haben diverse
+Inputs für unser Modell.
+
+11
+00:00:42,460 --> 00:00:46,425
+Insbesondere sind das kategoriale Inputs,
+
+12
+00:00:46,425 --> 00:00:49,065
+Tageszeit und Wochentag.
+
+13
+00:00:49,065 --> 00:00:52,635
+Wir haben gesagt, dass
+das ML-Modell wesentlich besser wäre,
+
+14
+00:00:52,635 --> 00:00:58,775
+wenn wir, anstatt die Tageszeit
+unabhängig vom Wochentag zu behandeln,
+
+15
+00:00:58,775 --> 00:01:03,670
+diese Inputs verketten würden, um
+eine Merkmalsverknüpfung zu erstellen.
+
+16
+00:01:03,670 --> 00:01:09,445
+Wenn wir viele Hash-Buckets für
+diese Merkmalsverknüpfung verwenden,
+
+17
+00:01:09,445 --> 00:01:11,640
+können wir relativ sicher sein,
+
+18
+00:01:11,640 --> 00:01:18,240
+dass jeder Bucket nur eine
+Uhrzeit/Tag-Kombination enthält.
+
+19
+00:01:18,240 --> 00:01:23,100
+An diesem Punkt haben
+wir Einbettungen eingeführt.
+
+20
+00:01:23,100 --> 00:01:30,880
+Anstatt eine one-hot-codierte
+Merkmalsverknüpfung so zu verwenden,
+
+21
+00:01:30,880 --> 00:01:33,837
+können wir sie einem Dense Layer übergeben
+
+22
+00:01:33,837 --> 00:01:38,115
+und das Modell zur Vorhersage trainieren.
+
+23
+00:01:38,115 --> 00:01:45,360
+Der Dense Layer, hier der gelbe
+und grüne Knoten, bildet eine Einbettung.
+
+24
+00:01:45,360 --> 00:01:48,965
+Die Einbettungen sind reale Werte,
+
+25
+00:01:48,965 --> 00:01:53,700
+da sie eine gewichtete Summe der
+Werte der Merkmalsverknüpfung sind.
+
+26
+00:01:53,700 --> 00:01:58,820
+Zu beachten ist, dass die Gewichte,
+die in die Einbettungsebene übergehen,
+
+27
+00:01:58,820 --> 00:02:01,300
+den gelben und grünen
+Knoten, die Einbettungsebene,
+
+28
+00:02:01,300 --> 00:02:05,530
+diese Gewichte
+wurden aus den Daten erlernt.
+
+29
+00:02:05,530 --> 00:02:07,027
+Der Punkt ist,
+
+30
+00:02:07,027 --> 00:02:10,594
+dass durch das Trainieren
+dieser Gewichte an einem Dataset,
+
+31
+00:02:10,594 --> 00:02:13,159
+sodass Sie ein praktisches Problem lösen,
+
+32
+00:02:13,159 --> 00:02:16,184
+etwas ganz Besonderes geschieht.
+
+33
+00:02:16,184 --> 00:02:22,210
+Die Funktionsverknüpfung
+Tag/Stunde hat 168 einmalige Werte,
+
+34
+00:02:22,210 --> 00:02:28,810
+aber wir erzwingen deren
+Darstellung durch nur zwei reale Werte.
+
+35
+00:02:28,810 --> 00:02:37,255
+Das Modell lernt, die Funktionsverknüpfung
+im Raum niedrigerer Dimension einzubetten.
+
+36
+00:02:37,255 --> 00:02:41,840
+Wir haben überlegt, dass
+vielleicht die grüne Box dazu tendiert,
+
+37
+00:02:41,840 --> 00:02:47,020
+den Fußgängerverkehr zu
+erfassen und die gelbe den Autoverkehr.
+
+38
+00:02:47,020 --> 00:02:52,120
+Aber es ist egal, was genau
+diese zwei Dimensionen erfassen.
+
+39
+00:02:52,120 --> 00:02:58,110
+Wichtig ist, dass all die Informationen
+in der Tageszeit und dem Wochentag,
+
+40
+00:02:58,110 --> 00:03:02,150
+die sich auf den Verkehr
+an den Kreuzungen beziehen,
+
+41
+00:03:02,150 --> 00:03:06,609
+in nur zwei Zahlen eingezwängt werden.
+
+42
+00:03:06,609 --> 00:03:10,945
+Wenn Sie das mit einem ausreichend
+großen und guten Dataset vornehmen,
+
+43
+00:03:10,945 --> 00:03:16,472
+haben diese Zahlen
+eine sehr nützliche Eigenschaft.
+
+44
+00:03:16,472 --> 00:03:20,110
+Bezüglich des Verkehrs ähnliche Zeiten,
+
+45
+00:03:20,110 --> 00:03:23,470
+erhalten reale Werte,
+die nahe beieinanderliegen
+
+46
+00:03:23,470 --> 00:03:26,600
+und bezüglich des
+Verkehrs unterschiedliche Zeiten
+
+47
+00:03:26,600 --> 00:03:30,955
+erhalten reale Werte, die differieren.
+
+48
+00:03:30,955 --> 00:03:35,155
+Dann haben wir gesehen, wie man
+eine Einbettung in TensorFlow erzeugt.
+
+49
+00:03:35,155 --> 00:03:36,600
+Zum Erzeugen einer Einbettung
+
+50
+00:03:36,600 --> 00:03:40,890
+verwenden Sie die Methode
+embedding_column in tf.feature_column
+
+51
+00:03:40,890 --> 00:03:45,990
+und übergeben ihr die kategoriale
+Spalte, die Sie einbetten möchten.
+
+52
+00:03:45,990 --> 00:03:49,185
+Das funktioniert mit
+jeder kategorialen Spalte,
+
+53
+00:03:49,185 --> 00:03:52,180
+nicht nur mit Merkmalsverknüpfungen.
+
+54
+00:03:52,180 --> 00:03:57,645
+Sie führen eine Einbettung einer
+beliebigen kategorialen Spalte durch.
+
+55
+00:03:57,645 --> 00:04:00,927
+Zum Schluss haben wir kurz gesehen,
+
+56
+00:04:00,927 --> 00:04:05,120
+wie Sie die mit einem
+Problem erlernten Einbettungen
+
+57
+00:04:05,120 --> 00:04:09,950
+auf ein anderes ähnliches
+ML-Problem anwenden könnten.
+
+58
+00:04:09,950 --> 00:04:13,965
+Vielleicht haben Sie gelernt, wie
+Sie die Tageszeit und den Wochentag
+
+59
+00:04:13,965 --> 00:04:19,475
+durch Training an Verkehrsdaten in London
+mit zwei realen Werten darstellen können.
+
+60
+00:04:19,475 --> 00:04:26,500
+Sie können dieselben Gewichte für ihr
+Frankfurt-Modell als Starthilfe nutzen.
+
+61
+00:04:26,500 --> 00:04:29,440
+Möglicherweise können
+Sie sogar die Einbettung,
+
+62
+00:04:29,440 --> 00:04:32,020
+die Sie im Verkehrsproblem gelernt haben
+
+63
+00:04:32,020 --> 00:04:35,055
+zur Vorhersage der Zuschauer
+einer TV-Sendung verwenden.
+
+64
+00:04:35,055 --> 00:04:38,320
+Dahinter steckt die Idee,
+dass sowohl der Straßenverkehr
+
+65
+00:04:38,320 --> 00:04:43,645
+als auch die Zuschauerschaft von
+demselben latenten Faktor abhängen,
+
+66
+00:04:43,645 --> 00:04:50,275
+nämlich: Sind die Einwohner der Stadt
+unterwegs oder daheim oder bei der Arbeit?
+
+67
+00:04:50,275 --> 00:04:55,027
+Der Lerntransfer kann für scheinbar sehr
+unterschiedliche Probleme funktionieren,
+
+68
+00:04:55,027 --> 00:05:00,270
+sofern dieselben latenten Faktoren gelten.

@@ -1,0 +1,54 @@
+Wir erstellten einen 
+benutzerdefinierten Estimator für den der Ein- und Ausgabetensorcode
+mit TensorFlow geschrieben wurde. Der Code und die Funktion, 
+die eine EstimatorSpec zurückgeben, wurden zusammengefasst. Die Funktion 
+wurde an den Basisklassen-Estimator übergeben. Wie funktioniert das mit Keras? Was ist Keras überhaupt? Keras ist eine übergeordnete API
+für neuronale Netze. Sie unterstützt Convolutional Neural Networks 
+(CNN) und Recurrent Neural Networks (RNN). Keras ist im Gegensatz zu TensorFlow 
+keine Implementierung von CNNs oder RNNs. Keras ist eine übergeordnete API 
+für neuronale Netzwerke, die in Python geschrieben wurde, 
+aber TensorFlow als Back-End unterstützt. Wenn Sie 
+eine Keras-Funktion aufrufen, ruft diese eine Reihe von TensorFlow-Funktionen auf, 
+um diese Funktionalität zu implementieren. Keras unterstützt das Ausführen 
+auf Basis von Implementierungen anderer neuronaler Netzwerke 
+wie CNTK und Theano. Keras ist für
+schnelles Prototyping einfach verwendbar. Dieses in Keras geschriebene Modell 
+dient z. B. der Sequenzklassifizierung. Es gibt Klassen 
+für Einbettungen, LSDMs, Dropout usw. Mit Keras können Sie sich 
+statt auf die Modellimplementierung auf untergeordneter Ebene 
+auf die Architektur konzentrieren. Z. B. sind für Einbettungen 
+in TensorFlow Einbettungsspalten erforderlich. Zuerst müssen Sie mit den Trainingsdaten 
+eine kategorische Spalte erstellen. In Keras müssen Sie sich 
+mit solchen Einzelheiten nicht befassen. Wenn Sie aber möchten, 
+dass die Vorverarbeitung anders ausgeführt wird, 
+bevor es an die Einbettungen geht, müssen Sie vieles
+in der Keras-Dokumentation nachlesen. Oft wurde bei Software 
+nämlich ein Kompromiss zwischen Einfachheit 
+und Aussagekraft eingegangen. Data Scientists erstellen
+ihre Modelle oft mit Keras. Keras ist jedoch 
+für schnelles Prototyping gedacht. Verteilertraining oder 
+Vorhersagenskalierung sind nicht möglich. Zu diesem Zweck, zur Produktionalisierung nutzen wir die Estimator API. Oft müssen Sie 
+in Keras geschriebene ML-Prototypen operationalisieren. Wie müssen Sie da vorgehen? Schauen wir uns dazu den Code etwas genauer an. Die Details des Codes sind nicht wichtig, aber sehen Sie, 
+wie in den ersten Codezeilen eine Architektur
+aus mehreren Schichten erstellt wird? Nachdem das Modell erstellt wurde, 
+wird es kompiliert und Verlustfunktion, Optimierungsmethode 
+und Bewertungsmesswerte werden übergeben. Woran erinnert Sie das? Genau, die Modellfunktion 
+eines benutzerdefinierten Estimators. Wie kombinieren wir 
+Keras mit der Estimator API? Sie können einen Estimator einbinden, 
+sobald Ihr Keras-Modell kompiliert wurde. Bei älterem Keras-Code wird ggf. 
+die eigenständige Keras-Version importiert. Ändern Sie ggf. die Anweisungen,
+sodass "TF.Keras" importiert wird. Wie Sie sehen, habe ich jetzt 
+"from tensorflow import keras". Keras ist jetzt 
+Teil des TensorFlow-Aufrufs, damit Sie das tun können. Rufen Sie dann 
+"keras.estimator.model_to_estimator" auf. Das kompilierte Modell wird übergeben 
+und ein Estimator zurückgegeben. Entfernen Sie das "model.fit" 
+oder "model.evaluate", das aufgerufen wird. Wie trainieren wir dieses Modell? Sie verwenden diesen Estimator
+auf die gleiche Art wie sonst auch, also mit Trainingseingabefunktion, Evaluierungseingabefunktion, 
+"train_spec", "eval_spec", Exporter usw. Diese Elemente werden dann
+in "train_and_evaluate" übergeben. Auf diese Art
+produktionalisieren Sie ein Keras-Modell. Beachten Sie, dass die Eingabefunktion und das Keras-Modell 
+über eine Namenskonvention verknüpft sind. Wenn eine Ihrer Keras-Ebenen "XYZ" heißt, sollte das 
+von der Eingabefunktion zurückgegebene Features-Wörterbuch ein Feature 
+mit dem Namen "XYZ_input" enthalten. Auf dem Notebook von vorhin 
+schauen wir dazu eine kurze Demo an. Ich werde zu Demo-Zwecken
+ein Keras-Beispielmodell verwenden.

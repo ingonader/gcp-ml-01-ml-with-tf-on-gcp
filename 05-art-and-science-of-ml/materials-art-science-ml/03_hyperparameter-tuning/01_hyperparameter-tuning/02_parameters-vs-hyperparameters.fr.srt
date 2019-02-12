@@ -1,0 +1,181 @@
+1
+00:00:00,890 --> 00:00:02,670
+Vous reconnaissez sûrement ce schéma.
+
+2
+00:00:02,750 --> 00:00:06,180
+Vous l'avez déjà vu dans le deuxième
+cours sur la mise en pratique du ML.
+
+3
+00:00:06,810 --> 00:00:10,075
+On avait vu que les modèles de ML
+étaient des fonctions mathématiques
+
+4
+00:00:10,075 --> 00:00:12,130
+avec des paramètres
+et des hyperparamètres.
+
+5
+00:00:12,180 --> 00:00:16,810
+Un paramètre est une variable à valeur réelle
+qui change pendant l'entraînement du modèle,
+
+6
+00:00:16,810 --> 00:00:20,320
+comme tous ces biais et bases que
+vous connaissez bien à présent.
+
+7
+00:00:21,340 --> 00:00:25,760
+Un hyperparamètre est un élément
+défini avant l'entraînement,
+
+8
+00:00:25,760 --> 00:00:27,436
+qui ne change pas après,
+
+9
+00:00:27,476 --> 00:00:33,200
+par exemple, le taux d'apprentissage, le taux
+de régularisation, la taille des lots,
+
+10
+00:00:33,200 --> 00:00:37,419
+le nombre de couches cachées et le nombre
+de neurones dans chaque couche du réseau.
+
+11
+00:00:38,610 --> 00:00:42,795
+Maintenant que vous faites la distinction
+entre les paramètres et les hyperparamètres,
+
+12
+00:00:42,795 --> 00:00:45,598
+concentrons-nous sur les hyperparamètres.
+
+13
+00:00:45,638 --> 00:00:49,670
+Comme les paramètres sont réglés
+par l'algorithme d'entraînement,
+
+14
+00:00:49,670 --> 00:00:52,010
+nous devons régler les hyperparamètres.
+
+15
+00:00:52,080 --> 00:00:55,965
+Dans le module précédent, on a ajusté
+manuellement certains d'entre eux.
+
+16
+00:00:55,995 --> 00:01:00,010
+Vous savez donc que la taille des lots et
+le taux d'apprentissage sont importants.
+
+17
+00:01:00,370 --> 00:01:03,695
+Voici des graphiques tirés de
+l'article d'Andrej Karpathy,
+
+18
+00:01:03,695 --> 00:01:05,930
+que je vous recommande de lire.
+
+19
+00:01:06,000 --> 00:01:08,130
+Il illustre bien le problème.
+
+20
+00:01:08,600 --> 00:01:12,120
+Sur la gauche, avec un taux
+d'apprentissage bas,
+
+21
+00:01:12,120 --> 00:01:16,070
+la courbe bleue du graphique,
+l'amélioration est linéaire.
+
+22
+00:01:16,130 --> 00:01:19,730
+Mais, vous n'obtenez pas souvent
+les meilleures performances.
+
+23
+00:01:20,370 --> 00:01:25,080
+Avec un taux d'apprentissage élevé,
+soit la courbe verte,
+
+24
+00:01:25,080 --> 00:01:30,430
+l'amélioration est exponentielle, mais
+les performances sont rarement optimales.
+
+25
+00:01:31,560 --> 00:01:37,380
+Avec un taux très élevé, ici la courbe jaune,
+votre tâche sera compliquée.
+
+26
+00:01:38,140 --> 00:01:42,810
+Il existe souvent un taux d'apprentissage
+idéal, comme la courbe rouge,
+
+27
+00:01:42,810 --> 00:01:44,828
+mais quasiment impossible à trouver.
+
+28
+00:01:46,148 --> 00:01:49,568
+Voyons ce que nous apprennent ces
+graphiques sur la taille des lots.
+
+29
+00:01:50,278 --> 00:01:53,464
+À droite, vous voyez une courbe
+de pertes très complexe.
+
+30
+00:01:53,694 --> 00:01:55,947
+Cela est dû à une petite taille de lots.
+
+31
+00:01:56,070 --> 00:02:00,389
+Dans le précédent module, vous avez
+appris qu'une taille de lots trop grande
+
+32
+00:02:00,389 --> 00:02:02,869
+pouvait ralentir le processus
+de façon considérable.
+
+33
+00:02:03,209 --> 00:02:06,410
+Notez que ces graphiques
+sont affichés par itération.
+
+34
+00:02:06,590 --> 00:02:09,870
+Malheureusement, TensorFlow
+ne détermine pas les itérations.
+
+35
+00:02:10,120 --> 00:02:14,200
+Vous devez déterminer l'itération
+en calculant le nombre d'étapes
+
+36
+00:02:14,200 --> 00:02:17,520
+d'une taille de lots donnée
+étant égal à une itération.
+
+37
+00:02:18,140 --> 00:02:22,290
+En d'autres termes, vous devez déterminer
+le nombre d'étapes de la taille de lots
+
+38
+00:02:22,290 --> 00:02:25,660
+nécessaires pour parcourir une fois
+votre ensemble de données.

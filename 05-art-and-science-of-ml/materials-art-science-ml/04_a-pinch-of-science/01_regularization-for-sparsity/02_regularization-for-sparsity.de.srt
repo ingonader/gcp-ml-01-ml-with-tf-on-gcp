@@ -1,0 +1,499 @@
+1
+00:00:00,000 --> 00:00:03,660
+Lassen Sie uns zuerst darüber sprechen,
+wie wir Regularisierung nutzen können,
+
+2
+00:00:03,660 --> 00:00:06,340
+um dünner besetzte,
+einfachere Modelle zu erhalten.
+
+3
+00:00:06,340 --> 00:00:09,365
+Zuvor haben wir die 
+L2-Regularisierung kennengelernt,
+
+4
+00:00:09,365 --> 00:00:12,402
+die die Summe der Terme
+der quadrierten Parametergewichte
+
+5
+00:00:12,402 --> 00:00:14,060
+zur letzten Funktion hinzufügt.
+
+6
+00:00:14,060 --> 00:00:16,105
+Damit konnten wir
+Gewichte klein halten,
+
+7
+00:00:16,105 --> 00:00:18,485
+Stabilität und eine
+eindeutige Lösung erhalten,
+
+8
+00:00:18,485 --> 00:00:21,665
+aber das Modell kann dadurch
+unnötig groß und komplex bleiben,
+
+9
+00:00:21,665 --> 00:00:26,540
+weil alle Merkmale unabhängig
+ihrer Gewichte bewahrt bleiben.
+
+10
+00:00:26,540 --> 00:00:31,385
+Die sogenannte L1-Regularisierung fügt 
+stattdessen die Summe des Absolutwerts
+
+11
+00:00:31,385 --> 00:00:34,205
+der Parametergewichte
+zur letzten Funktion hinzu
+
+12
+00:00:34,205 --> 00:00:38,320
+und drängt so die Gewichte von
+wenig prognostischen Merkmalen auf null.
+
+13
+00:00:38,320 --> 00:00:40,940
+Dies wirkt wie ein 
+integrierter Selektor von Merkmalen,
+
+14
+00:00:40,940 --> 00:00:44,965
+der alle schlechten Merkmale löscht
+und nur die stärksten im Modell behält.
+
+15
+00:00:44,965 --> 00:00:47,775
+Dieses dünnbesetzte 
+Modell hat viele Vorteile.
+
+16
+00:00:47,775 --> 00:00:50,790
+Zum einen werden weniger 
+Koeffizienten gespeichert und geladen,
+
+17
+00:00:50,790 --> 00:00:52,857
+so werden der benötigte Speicherplatz
+
+18
+00:00:52,857 --> 00:00:54,925
+und die Modellgröße verkleinert,
+
+19
+00:00:54,925 --> 00:00:57,730
+was gerade bei 
+eingebetteten Modellen wichtig ist.
+
+20
+00:00:57,730 --> 00:00:59,830
+Mit weniger Merkmalen gibt es außerdem
+
+21
+00:00:59,830 --> 00:01:03,755
+viel weniger Mult Ads, womit nicht
+nur die Geschwindigkeit des Trainings,
+
+22
+00:01:03,755 --> 00:01:06,990
+sondern vor allem die 
+der Vorhersagen erhöht wird.
+
+23
+00:01:06,990 --> 00:01:10,570
+Viele Modelle für maschinelles 
+Lernen haben ohnehin genügend Merkmale.
+
+24
+00:01:10,570 --> 00:01:12,410
+Sagen wir etwa, ich habe Daten,
+
+25
+00:01:12,410 --> 00:01:14,985
+die die Zeiten von Bestellungen enthalten.
+
+26
+00:01:14,985 --> 00:01:16,400
+Unser erstes Bestellmodell
+
+27
+00:01:16,400 --> 00:01:19,020
+würde wahrscheinlich 
+sieben Merkmale für die Wochentage
+
+28
+00:01:19,020 --> 00:01:21,500
+und 24 Merkmale für 
+die Stunden des Tages enthalten,
+
+29
+00:01:21,500 --> 00:01:23,340
+plus womöglich viele mehr.
+
+30
+00:01:23,340 --> 00:01:28,965
+Also ergeben allein Wochentage
+und Stunden des Tages schon 31 Eingaben.
+
+31
+00:01:30,415 --> 00:01:34,190
+Und was, wenn wir jetzt
+die Effekte zweiter Ordnung des Wochentags
+
+32
+00:01:34,190 --> 00:01:35,940
+mit der Stunde des Tages kreuzen?
+
+33
+00:01:35,940 --> 00:01:38,525
+Damit gibt es nochmal 168 weitere Eingaben
+
+34
+00:01:38,525 --> 00:01:40,950
+zusätzlich zu unseren 31, plus weiteren,
+
+35
+00:01:40,950 --> 00:01:43,210
+und damit einen
+Gesamtbetrag von 200 Merkmalen,
+
+36
+00:01:43,210 --> 00:01:48,080
+nur für dieses eine Datum-Zeit-Feld, plus
+den weiteren Merkmalen, die wir nutzen.
+
+37
+00:01:48,080 --> 00:01:51,600
+Wenn wir dies mit einer One-Hot-
+Kodierung für den US-Bundesstaat kreuzen,
+
+38
+00:01:51,600 --> 00:01:53,840
+liegt das dreifache kartesische Produkt
+
+39
+00:01:53,840 --> 00:01:59,295
+bei 8.400 Merkmalen, wobei viele sehr
+dünnbesetzt sein werden, voller Nullen.
+
+40
+00:01:59,295 --> 00:02:02,372
+Damit wird hoffentlich deutlich,
+warum eine eingebaute Selektion
+
+41
+00:02:02,372 --> 00:02:05,486
+von Merkmalen durch 
+L1-Regularisierung großartig sein kann.
+
+42
+00:02:05,486 --> 00:02:09,029
+Welche Strategien können wir nutzen,
+um Merkmalskoeffizienten zu entfernen,
+
+43
+00:02:09,029 --> 00:02:12,255
+die nicht nützlich sind, 
+vielleicht außer L1-Regularisierung?
+
+44
+00:02:13,633 --> 00:02:15,567
+Wir könnten einfach zählen lassen,
+
+45
+00:02:15,567 --> 00:02:18,110
+welche Merkmale
+andere Werte als null haben.
+
+46
+00:02:19,170 --> 00:02:22,660
+Die L0-Norm ist schlicht die Anzahl
+der Gewichte, die nicht null betragen,
+
+47
+00:02:22,660 --> 00:02:24,255
+und danach zu optimieren
+
+48
+00:02:24,255 --> 00:02:28,140
+ist ein NP-hartes,
+nichtkonvexes Optimierungsproblem.
+
+49
+00:02:28,140 --> 00:02:32,735
+Dieses Diagramm zeigt einen möglichen
+nichtkonvexen Optimierungsfehler.
+
+50
+00:02:32,735 --> 00:02:35,870
+Wie Sie sehen können,
+gibt es viele lokale Höhen und Tiefen
+
+51
+00:02:35,870 --> 00:02:38,670
+und dies ist nur ein
+simples eindimensionales Beispiel.
+
+52
+00:02:38,670 --> 00:02:42,260
+Man müsste also sehr viele Startpunkte
+mit Gradientenabstieg untersuchen,
+
+53
+00:02:42,260 --> 00:02:46,265
+womit die vollständige Lösung
+zu einem NP-harten Problem wird.
+
+54
+00:02:46,265 --> 00:02:50,805
+Glücklicherweise ist die
+L1-Norm genau wie die L2-Norm konvex
+
+55
+00:02:50,805 --> 00:02:53,750
+und regt zudem
+die Datendichte im Modell an.
+
+56
+00:02:53,750 --> 00:02:54,750
+In dieser Abbildung
+
+57
+00:02:54,750 --> 00:02:59,080
+sind die Wahrscheinlichkeitsverteilungen
+der L1- und L2-Normen gezeichnet.
+
+58
+00:02:59,080 --> 00:03:02,775
+Beachten Sie bei der L2-Norm
+den viel weicheren Höhepunkt bei null,
+
+59
+00:03:02,775 --> 00:03:05,915
+wodurch die Beträge
+der Gewichte näher bei null liegen.
+
+60
+00:03:05,915 --> 00:03:10,420
+Allerdings gleicht die L1-Norm eher
+einer Spitze, die auf null zentriert ist.
+
+61
+00:03:10,420 --> 00:03:15,670
+So liegt viel mehr der Wahrscheinlichkeit
+genau bei null als mit der L2-Norm.
+
+62
+00:03:15,670 --> 00:03:19,655
+Es gibt eine unendliche Anzahl an Normen,
+die durch die P-Norm verallgemeinert sind.
+
+63
+00:03:19,655 --> 00:03:22,260
+Weitere Normen enthalten
+die schon behandelte L0-Norm,
+
+64
+00:03:22,260 --> 00:03:25,125
+also die Anzahl der Werte
+eines Vektors, die nicht null sind,
+
+65
+00:03:25,125 --> 00:03:26,665
+und die L-unendlich-Norm,
+
+66
+00:03:26,665 --> 00:03:30,285
+also der maximale Absolutwert
+jedes Werts in einem Vektor.
+
+67
+00:03:30,285 --> 00:03:32,740
+In der Praxis
+liefert zwar normalerweise die L2-Norm
+
+68
+00:03:32,740 --> 00:03:36,135
+besser verallgemeinerbare 
+Modelle als die L1-Norm,
+
+69
+00:03:36,135 --> 00:03:41,800
+allerdings landen wir mit L2 statt L1 bei
+viel komplexeren, gewichtigeren Modellen.
+
+70
+00:03:41,800 --> 00:03:45,710
+Schuld daran sind die oftmals starken
+Korrelationen zwischen Eigenschaften,
+
+71
+00:03:45,710 --> 00:03:51,325
+da L1 eine auswählt 
+und die andere wegwirft,
+
+72
+00:03:51,325 --> 00:03:56,560
+während L2 beide Eigenschaften behält
+und die Beträge ihrer Gewichte klein hält.
+
+73
+00:03:56,560 --> 00:04:01,310
+Mit L1 kann man also bei kleineren, aber
+weniger prognostischen Modellen landen.
+
+74
+00:04:01,310 --> 00:04:04,315
+Kann man irgendwie
+das beste aus zwei Welten bekommen?
+
+75
+00:04:04,315 --> 00:04:05,510
+Das elastische Netz
+
+76
+00:04:05,510 --> 00:04:10,140
+ist einfach eine lineare Kombination
+der L1- und L2-Regularisierungsstrafen.
+
+77
+00:04:10,140 --> 00:04:13,970
+So erhält man die Vorteile der Dichte in 
+schwachen, prognostischen Eigenschaften
+
+78
+00:04:13,970 --> 00:04:16,649
+und behält zugleich
+mittel- bis hochwertige Eigenschaften
+
+79
+00:04:16,649 --> 00:04:19,264
+mit kleineren Gewichten
+für eine gute Verallgemeinerung.
+
+80
+00:04:19,264 --> 00:04:20,804
+Der einzige Kompromiss ist,
+
+81
+00:04:20,804 --> 00:04:24,010
+dass es jetzt zwei statt 
+eines Hyperparameters gibt,
+
+82
+00:04:24,010 --> 00:04:27,820
+abgestimmt auf die zwei 
+Lambda-Regularisierungsparameter.
+
+83
+00:04:27,820 --> 00:04:30,630
+Wozu neigt L1-Regularisierung
+bei den Parametergewichten
+
+84
+00:04:30,630 --> 00:04:34,200
+von schwach prognostischen 
+Eigenschaften eines Modells?
+
+85
+00:04:35,180 --> 00:04:36,415
+Die korrekte Antwort ist:
+
+86
+00:04:36,415 --> 00:04:37,790
+"Nullwerte besitzen".
+
+87
+00:04:37,790 --> 00:04:40,170
+Wann immer wir 
+Regularisierungsverfahren anwenden,
+
+88
+00:04:40,170 --> 00:04:42,555
+fügen wir einen 
+Strafterm zu der letzten Funktion,
+
+89
+00:04:42,555 --> 00:04:44,650
+oder generell der 
+objektiven Funktion hinzu,
+
+90
+00:04:44,650 --> 00:04:46,845
+damit sie nicht
+unsere Entscheidungsvariablen
+
+91
+00:04:46,845 --> 00:04:48,670
+oder Parametergewichte überoptimiert.
+
+92
+00:04:48,670 --> 00:04:51,050
+Wir wählen die
+Strafterme anhand von Vorwissen,
+
+93
+00:04:51,050 --> 00:04:53,190
+Funktion, Form et cetera.
+
+94
+00:04:53,190 --> 00:04:55,600
+Es wurde gezeigt,
+dass L1-Regularisierung im Modell
+
+95
+00:04:55,600 --> 00:04:58,460
+Dichte erzeugt und, durch ihre
+Wahrscheinlichkeitsverteilung,
+
+96
+00:04:58,460 --> 00:04:59,995
+mit einer hohen Spitze bei null,
+
+97
+00:04:59,995 --> 00:05:02,570
+werden die meisten Gewichte,
+außer stark prognostische,
+
+98
+00:05:02,570 --> 00:05:05,680
+von ihren nicht regulierten
+Werten zu null verschoben.
+
+99
+00:05:05,680 --> 00:05:09,659
+L2-Regularisierung wird
+für kleine Beträge verwendet
+
+100
+00:05:09,659 --> 00:05:12,845
+und sein Negativ würde
+für große Beträge verwendet werden,
+
+101
+00:05:12,845 --> 00:05:14,945
+was beides falsch ist.
+
+102
+00:05:14,945 --> 00:05:18,380
+Mit ausschließlich positiven Werten
+würde man dem Optimierungsproblem
+
+103
+00:05:18,380 --> 00:05:20,000
+weitere Beschränkungen hinzufügen
+
+104
+00:05:20,000 --> 00:05:22,960
+und alle Entscheidungsvariablen
+müssten mehr als null betragen,
+
+105
+00:05:22,960 --> 00:05:26,050
+was auch keine
+L1-Regularisierung ist.

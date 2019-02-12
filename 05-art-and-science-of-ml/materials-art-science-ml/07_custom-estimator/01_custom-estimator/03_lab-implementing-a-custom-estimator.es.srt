@@ -1,0 +1,1039 @@
+1
+00:00:00,330 --> 00:00:04,345
+En este lab, nuestro objetivo es aprender
+a escribir un estimador personalizado.
+
+2
+00:00:04,915 --> 00:00:07,405
+Supondremos que tenemos
+una función de TensorFlow
+
+3
+00:00:07,675 --> 00:00:09,887
+que toma un conjunto de tensores de entrada
+
+4
+00:00:10,470 --> 00:00:12,420
+y crea un conjunto de tensores de salida.
+
+5
+00:00:12,710 --> 00:00:17,075
+Nuestro trabajo será envolver esta función
+en el marco de trabajo del estimador
+
+6
+00:00:17,265 --> 00:00:20,950
+para obtener todos los beneficios
+que nos ofrece el estimador.
+
+7
+00:00:21,680 --> 00:00:22,634
+En realidad
+
+8
+00:00:22,894 --> 00:00:26,129
+cuando tiene un modelo
+funcional que no usa estimadores
+
+9
+00:00:26,439 --> 00:00:30,605
+tendrá una manera de leer datos
+y de producir modelos.
+
+10
+00:00:30,825 --> 00:00:33,730
+Esencialmente,
+eliminaremos esas partes del modelo
+
+11
+00:00:33,950 --> 00:00:36,970
+y conservaremos
+solo la esencia matemática del modelo
+
+12
+00:00:37,240 --> 00:00:41,360
+el modelo que transforma el tensor de entrada
+en el tensor de salida.
+
+13
+00:00:42,110 --> 00:00:45,770
+En este lab
+veremos cómo tomaría un modelo
+
+14
+00:00:46,150 --> 00:00:48,525
+y lo envolvería
+en el marco de trabajo del estimador
+
+15
+00:00:48,615 --> 00:00:51,365
+su propia función personalizada de modelo.
+
+16
+00:00:51,645 --> 00:00:53,990
+Para ilustrar esto como en las imágenes
+
+17
+00:00:54,190 --> 00:00:56,435
+usamos un modelo de serie de tiempo.
+
+18
+00:00:56,685 --> 00:00:59,800
+No se preocupe de cómo funciona
+el modelo de serie de tiempo.
+
+19
+00:00:59,840 --> 00:01:03,490
+Veremos modelos de secuencias
+más adelante en la especialización.
+
+20
+00:01:03,640 --> 00:01:05,845
+Por ahora, lo usaremos
+como una caja negra.
+
+21
+00:01:05,995 --> 00:01:10,715
+Solo lo básico,
+pero veremos superficialmente cómo funciona.
+
+22
+00:01:11,025 --> 00:01:12,945
+En este caso, tenemos...
+
+23
+00:01:13,705 --> 00:01:15,535
+Voy a importar TensorFlow
+
+24
+00:01:15,845 --> 00:01:18,660
+y lo que haremos será crear
+
+25
+00:01:18,660 --> 00:01:20,955
+o simular un montón de datos.
+
+26
+00:01:21,245 --> 00:01:25,420
+Cada uno de estos tiene ondas sinusoidales
+de diferentes amplitudes
+
+27
+00:01:25,730 --> 00:01:29,380
+que básicamente van en frecuencias distintas
+que se están creando.
+
+28
+00:01:29,580 --> 00:01:32,740
+Aquí tenemos cinco ejemplos
+de esta serie de tiempo.
+
+29
+00:01:33,000 --> 00:01:35,625
+Crearemos muchos datos de este tipo
+
+30
+00:01:35,775 --> 00:01:37,985
+y este será el tipo de datos
+que entrenaremos.
+
+31
+00:01:38,305 --> 00:01:42,740
+La idea es que le daremos
+nueve valores a la red neuronal.
+
+32
+00:01:43,230 --> 00:01:45,165
+Cero, uno, dos y tres. ¿Sí?
+
+33
+00:01:45,205 --> 00:01:46,965
+Le daremos hasta ocho.
+
+34
+00:01:46,965 --> 00:01:51,900
+Le daremos nueve valores
+y haremos que prediga el décimo.
+
+35
+00:01:52,210 --> 00:01:56,130
+Le enseñaremos
+con muchos datos existentes
+
+36
+00:01:56,520 --> 00:02:03,160
+y haremos aprenda con nueve valores
+cuál debe ser el décimo valor.
+
+37
+00:02:03,780 --> 00:02:04,945
+Para hacerlo
+
+38
+00:02:05,385 --> 00:02:07,600
+crearemos un archivo CSV
+
+39
+00:02:08,000 --> 00:02:09,969
+to_csv, le damos un nombre al archivo
+
+40
+00:02:10,099 --> 00:02:12,930
+y e decimos cuántas secuencias queremos.
+
+41
+00:02:14,340 --> 00:02:17,355
+Luego lo que haremos
+es abrir el archivo, lo escribimos
+
+42
+00:02:17,705 --> 00:02:20,040
+y creamos una serie de tiempo.
+
+43
+00:02:21,220 --> 00:02:23,485
+¿Cuántas series de tiempo? N.
+
+44
+00:02:23,735 --> 00:02:27,490
+En este caso,
+digo que n para train.csv es igual a 1,000.
+
+45
+00:02:27,840 --> 00:02:30,155
+Tendré un archivo con 1,000 secuencias.
+
+46
+00:02:30,385 --> 00:02:33,070
+Mi train.csv contendrá 1,000 secuencias
+
+47
+00:02:33,510 --> 00:02:36,740
+y value.csv contendrá 50 secuencias
+
+48
+00:02:37,580 --> 00:02:40,865
+que estarán separadas por comas.
+
+49
+00:02:41,295 --> 00:02:42,490
+Puedo ejecutar esto
+
+50
+00:02:44,580 --> 00:02:45,915
+y, posteriormente
+
+51
+00:02:46,075 --> 00:02:49,745
+puedo ver las primeras
+cinco líneas de train.csv.
+
+52
+00:02:50,285 --> 00:02:51,865
+Esas son las cinco primeras líneas
+
+53
+00:02:52,045 --> 00:02:55,085
+y las cinco primeras líneas de valid.csv.
+
+54
+00:02:55,815 --> 00:02:56,900
+Como puede ver
+
+55
+00:02:57,280 --> 00:03:00,017
+es esencialmente una serie de tiempo
+
+56
+00:03:00,367 --> 00:03:04,305
+y nuestros atributos de entrada
+para el entrenamiento serán estos
+
+57
+00:03:05,167 --> 00:03:07,140
+y esta será nuestra etiqueta.
+
+58
+00:03:08,460 --> 00:03:11,065
+Eso es lo que queremos
+que aprenda nuestro modelo.
+
+59
+00:03:12,025 --> 00:03:13,550
+¿Dónde entra algo así?
+
+60
+00:03:14,180 --> 00:03:16,285
+Aunque no hablaremos de series de tiempo
+
+61
+00:03:16,445 --> 00:03:20,265
+es bueno pensar en la situación
+que estamos ilustrando.
+
+62
+00:03:20,615 --> 00:03:23,190
+Esta situación es algo como
+
+63
+00:03:23,190 --> 00:03:25,435
+por ejemplo,
+tener una tienda minorista
+
+64
+00:03:25,855 --> 00:03:27,680
+con miles de artículos.
+
+65
+00:03:28,110 --> 00:03:31,510
+Cada uno tiene su estacionalidad.
+
+66
+00:03:31,920 --> 00:03:36,707
+Digamos que le interesa ver
+los últimos ocho períodos
+
+67
+00:03:37,127 --> 00:03:39,805
+o quizá los últimos nueve períodos
+
+68
+00:03:39,985 --> 00:03:42,545
+y usarlos para predecir
+el décimo período.
+
+69
+00:03:42,755 --> 00:03:44,160
+Eso es lo que está haciendo.
+
+70
+00:03:44,290 --> 00:03:47,430
+Este no es el tipo de serie de tiempo
+
+71
+00:03:47,580 --> 00:03:51,540
+en la que intenta predecir
+el valor futuro de las acciones de la bolsa.
+
+72
+00:03:51,860 --> 00:03:56,260
+Eso es diferente:
+esa es una serie de tiempo muy extensa.
+
+73
+00:03:56,790 --> 00:04:01,725
+Aquí, por el contrario,
+tenemos miles de series de tiempo breves.
+
+74
+00:04:01,875 --> 00:04:03,100
+Es un problema diferente.
+
+75
+00:04:04,540 --> 00:04:06,910
+Este problema es el ejemplo de la tienda
+
+76
+00:04:06,910 --> 00:04:09,120
+en la que tenemos miles de productos
+
+77
+00:04:09,120 --> 00:04:13,025
+cada uno con su estacionalidad propia,
+todos la tienen en general.
+
+78
+00:04:13,345 --> 00:04:17,970
+Básicamente,
+desea comprender esa estacionalidad
+
+79
+00:04:17,970 --> 00:04:22,685
+para ver la serie de tiempo de cada producto
+y predecir la siguiente.
+
+80
+00:04:23,925 --> 00:04:26,210
+Ese es nuestro conjunto de datos
+de entrenamiento.
+
+81
+00:04:26,550 --> 00:04:29,170
+A partir de él entrenaremos nuestro modelo.
+
+82
+00:04:29,170 --> 00:04:32,010
+El modelo que entrenaremos
+se llama red neuronal recurrente.
+
+83
+00:04:32,230 --> 00:04:36,150
+No se preocupe
+por el funcionamiento del modelo
+
+84
+00:04:36,150 --> 00:04:39,095
+sino en cómo configurarlo.
+
+85
+00:04:39,455 --> 00:04:42,720
+En este caso,
+importamos de nuevo TensorFlow
+
+86
+00:04:43,100 --> 00:04:45,170
+y, luego, leemos nuestros datos.
+
+87
+00:04:45,410 --> 00:04:49,430
+Nuestros datos
+son la duración de la secuencia.
+
+88
+00:04:49,690 --> 00:04:53,625
+Nuestro valor predeterminado es 0.0
+
+89
+00:04:53,625 --> 00:04:55,400
+Todos son números de punto flotante
+
+90
+00:04:55,740 --> 00:04:57,870
+para un rango x de cero a SEQ_LEN.
+
+91
+00:04:57,870 --> 00:04:59,375
+En suma, tenemos diez números.
+
+92
+00:04:59,935 --> 00:05:01,180
+El tamaño de nuestro lote.
+
+93
+00:05:02,050 --> 00:05:04,275
+Sobre esto calcularemos
+el descenso del gradiente
+
+94
+00:05:04,275 --> 00:05:05,905
+y nuestro tamaño de lote será 20.
+
+95
+00:05:06,305 --> 00:05:10,190
+La columna de serie de tiempo
+en nuestros datos se llamará rawdata.
+
+96
+00:05:10,910 --> 00:05:15,150
+En nuestra secuencia
+la cantidad de salidas es uno.
+
+97
+00:05:15,160 --> 00:05:16,375
+esa es la salida final
+
+98
+00:05:16,565 --> 00:05:19,262
+y la cantidad de entradas
+es la longitud de la secuencia
+
+99
+00:05:19,262 --> 00:05:21,760
+menos la cantidad de salidas.
+
+100
+00:05:22,030 --> 00:05:25,250
+En otras palabras,
+las primeras nueve son entradas
+
+101
+00:05:25,250 --> 00:05:26,945
+y la última es una salida.
+
+102
+00:05:27,265 --> 00:05:30,945
+Ese es el conjunto
+de constantes que definiremos.
+
+103
+00:05:31,625 --> 00:05:34,380
+Después escribimos
+nuestro conjunto de datos de lectura.
+
+104
+00:05:34,760 --> 00:05:36,540
+Es como crear una función de entrada.
+
+105
+00:05:37,150 --> 00:05:40,515
+Aquí, decode_csv recibe una línea.
+
+106
+00:05:41,195 --> 00:05:45,750
+Aquí dice "lee todo
+como números de puntos flotantes".
+
+107
+00:05:45,750 --> 00:05:47,220
+Ahí están todos los datos
+
+108
+00:05:47,450 --> 00:05:48,750
+que serán 10 números.
+
+109
+00:05:48,750 --> 00:05:52,450
+Pero recordemos que leerá
+un lote a la vez.
+
+110
+00:05:52,670 --> 00:05:54,445
+Así que esto no es una línea
+
+111
+00:05:55,255 --> 00:05:59,410
+sino los datos
+que corresponden generalmente a 20 líneas
+
+112
+00:05:59,410 --> 00:06:01,005
+porque se lee un lote por vez.
+
+113
+00:06:01,285 --> 00:06:02,730
+Aquí hay 20 líneas
+
+114
+00:06:03,100 --> 00:06:07,930
+y de ellas vamos a fragmentar
+las primeras nueve
+
+115
+00:06:08,240 --> 00:06:09,835
+que serán nuestras entradas
+
+116
+00:06:10,025 --> 00:06:11,895
+y fragmentaremos la última columna
+
+117
+00:06:12,235 --> 00:06:13,660
+que serán las etiquetas.
+
+118
+00:06:13,890 --> 00:06:15,650
+Eso es lo que estamos haciendo.
+
+119
+00:06:15,650 --> 00:06:20,215
+Fragmentamos los primeros nueve valores,
+que serán nuestras entradas
+
+120
+00:06:20,405 --> 00:06:22,140
+el último valor es nuestra etiqueta.
+
+121
+00:06:22,270 --> 00:06:26,660
+Las entradas
+tendrán una longitud del tamaño del lote
+
+122
+00:06:27,330 --> 00:06:28,870
+y 9 de ancho.
+
+123
+00:06:29,150 --> 00:06:32,742
+Las etiquetas
+tendrán una altura del tamaño de lote
+
+124
+00:06:32,992 --> 00:06:35,435
+y 1 de ancho,
+que es la cantidad de salidas.
+
+125
+00:06:36,355 --> 00:06:38,555
+Tomamos estas cosas
+
+126
+00:06:39,385 --> 00:06:42,672
+pues son todos valores independientes
+
+127
+00:06:43,002 --> 00:06:44,590
+y los juntamos
+
+128
+00:06:44,890 --> 00:06:46,870
+de manera que obtenemos una matriz.
+
+129
+00:06:46,970 --> 00:06:49,865
+Esas son nuestras entradas.
+Las juntamos para formar una matriz.
+
+130
+00:06:49,865 --> 00:06:51,960
+Juntamos esto para formar una matriz.
+
+131
+00:06:52,310 --> 00:06:54,620
+Aquí está la matriz,
+la segunda dimensión es uno
+
+132
+00:06:54,620 --> 00:06:58,330
+pero aún no está en nuestra matriz,
+sino en la lista de listas.
+
+133
+00:06:58,395 --> 00:07:00,970
+No queremos una lista de listas,
+sino una matriz.
+
+134
+00:07:01,200 --> 00:07:02,645
+Eso hace esta pila.
+
+135
+00:07:03,065 --> 00:07:05,475
+Y luego decimos que TIMESERIES_COL
+
+136
+00:07:05,715 --> 00:07:08,040
+datos sin procesar,
+el tensor son las entradas
+
+137
+00:07:08,310 --> 00:07:10,355
+y podemos ver los atributos
+y las etiquetas.
+
+138
+00:07:10,485 --> 00:07:12,460
+features contiene solo una…
+
+139
+00:07:12,900 --> 00:07:15,350
+Es un diccionario
+que contiene solo un atributo
+
+140
+00:07:15,590 --> 00:07:17,900
+y ese atributo es una matriz.
+
+141
+00:07:18,370 --> 00:07:21,090
+Antes, todos nuestros atributos
+eran columnas únicas
+
+142
+00:07:21,620 --> 00:07:23,545
+pero aquí nuestro atributo
+es una matriz.
+
+143
+00:07:24,365 --> 00:07:26,210
+Por eso estamos armando esta pila.
+
+144
+00:07:26,520 --> 00:07:27,645
+Después de hacer esto
+
+145
+00:07:28,175 --> 00:07:29,765
+¿cómo leemos el conjunto de datos?
+
+146
+00:07:29,765 --> 00:07:31,120
+Cuando tenemos read_dataset
+
+147
+00:07:31,120 --> 00:07:34,000
+con un nombre de archivo
+tal vez nos den una ruta.
+
+148
+00:07:34,800 --> 00:07:36,995
+Entonces, ejecutaremos Glob
+
+149
+00:07:37,465 --> 00:07:40,030
+hacemos coincidir
+los archivos que tienen un comodín
+
+150
+00:07:40,030 --> 00:07:41,995
+lo que nos dará una lista de archivos
+
+151
+00:07:42,235 --> 00:07:43,970
+y la leemos como una línea de texto.
+
+152
+00:07:44,260 --> 00:07:47,275
+Usamos decode_csv
+para recuperar el conjunto de datos.
+
+153
+00:07:47,725 --> 00:07:50,255
+Si estamos entrenando
+
+154
+00:07:50,565 --> 00:07:52,290
+redistribuimos el conjunto de datos.
+
+155
+00:07:52,420 --> 00:07:54,775
+Si estamos evaluando,
+no es necesario redistribuirlo
+
+156
+00:07:54,885 --> 00:07:56,700
+así que no lo haremos.
+
+157
+00:07:57,050 --> 00:07:59,555
+Si estamos entrenando
+leemos indefinidamente
+
+158
+00:08:01,395 --> 00:08:04,490
+Durante la evaluación hay que leer
+todo el conjunto de datos una vez
+
+159
+00:08:04,490 --> 00:08:06,540
+así que los ciclos de entrenamiento es uno.
+
+160
+00:08:06,580 --> 00:08:09,420
+Repetimos el conjunto de datos
+por la cantidad de ciclos.
+
+161
+00:08:09,700 --> 00:08:11,560
+Para la evaluación, lo hacemos una vez.
+
+162
+00:08:11,710 --> 00:08:15,915
+En entrenamiento lo hacemos para siempre
+y lo agrupamos según el tamaño del lote.
+
+163
+00:08:16,055 --> 00:08:18,145
+20 filas por vez
+
+164
+00:08:18,415 --> 00:08:20,115
+20 secuencias por vez
+
+165
+00:08:20,565 --> 00:08:22,775
+y, luego, obtenemos el iterador.
+
+166
+00:08:23,065 --> 00:08:25,955
+Esa es nuestra lectura del conjunto de datos.
+
+167
+00:08:28,215 --> 00:08:30,570
+Respecto al modelo en sí mismo
+
+168
+00:08:30,860 --> 00:08:33,075
+no se preocupe por cómo funciona esto.
+
+169
+00:08:33,875 --> 00:08:37,257
+Lo importante es que tenemos
+un simple_rnn métrico
+
+170
+00:08:37,667 --> 00:08:40,569
+que toma los atributos,
+las etiquetas y el modo
+
+171
+00:08:41,305 --> 00:08:46,250
+y toma la secuencia x de los atributos
+
+172
+00:08:46,710 --> 00:08:49,085
+y hace algo con ellos
+
+173
+00:08:49,595 --> 00:08:51,025
+(no se preocupe por esto)
+
+174
+00:08:51,245 --> 00:08:53,760
+hasta que llega a las predicciones.
+
+175
+00:08:54,090 --> 00:08:56,680
+Esta es la salida de nuestro modelo
+de serie de tiempo.
+
+176
+00:08:57,590 --> 00:08:59,380
+Dada la entrada
+
+177
+00:08:59,770 --> 00:09:01,465
+básicamente tenemos una salida.
+
+178
+00:09:01,715 --> 00:09:03,925
+Esa es cualquier función de un modelo.
+
+179
+00:09:04,245 --> 00:09:07,980
+Luego, debemos decidir
+cuál es nuestra función de pérdida.
+
+180
+00:09:08,480 --> 00:09:10,545
+Recuerde que es un problema
+de serie de tiempo
+
+181
+00:09:10,545 --> 00:09:12,660
+y queremos predecir el último valor.
+
+182
+00:09:13,000 --> 00:09:14,890
+Es decir,
+estamos prediciendo un valor.
+
+183
+00:09:15,440 --> 00:09:17,520
+¿Es regresión o clasificación?
+
+184
+00:09:18,660 --> 00:09:19,740
+Regresión, ¿cierto?
+
+185
+00:09:19,920 --> 00:09:21,305
+Como es regresión
+
+186
+00:09:21,595 --> 00:09:23,795
+mi pérdida será el error cuadrático medio
+
+187
+00:09:24,195 --> 00:09:26,625
+Podría usar
+el error de la raíz cuadrada de la media
+
+188
+00:09:26,625 --> 00:09:28,635
+o el error cuadrático medio.
+
+189
+00:09:28,875 --> 00:09:32,199
+Mi operación de entrenamiento
+será minimizar la pérdida
+
+190
+00:09:32,959 --> 00:09:36,620
+con una tasa de aprendizaje específica
+y un optimizador específico.
+
+191
+00:09:37,010 --> 00:09:40,585
+Mi métrica de evaluación
+esta vez será el RMSE.
+
+192
+00:09:41,235 --> 00:09:44,750
+El error de la raíz cuadrada de la media,
+dadas las etiquetas y predicciones.
+
+193
+00:09:45,200 --> 00:09:48,555
+Si no es entrenamiento ni evaluación
+
+194
+00:09:49,005 --> 00:09:52,635
+la pérdida, la operación de entrenamiento
+y la métrica de evaluación son "None".
+
+195
+00:09:52,715 --> 00:09:54,860
+Son "None" porque no tenemos una etiqueta.
+
+196
+00:09:55,140 --> 00:09:57,400
+Durante la predicción,
+no tendremos etiqueta.
+
+197
+00:09:57,680 --> 00:09:59,425
+Podemos hacer evaluación
+
+198
+00:09:59,425 --> 00:10:01,560
+pero no podemos hacer entrenamiento
+ni pérdida.
+
+199
+00:10:01,720 --> 00:10:03,955
+Todas esas operaciones
+tienen el valor "None".
+
+200
+00:10:04,185 --> 00:10:07,940
+Nuestros diccionarios de predicciones
+son las predicciones de salida.
+
+201
+00:10:08,120 --> 00:10:11,310
+Los llamaremos "predicted".
+
+202
+00:10:11,820 --> 00:10:15,690
+Cuando los exportemos,
+las llamaremos regression_export_outputs.
+
+203
+00:10:17,750 --> 00:10:21,765
+Tomaremos esas predicciones
+y las escribiremos.
+
+204
+00:10:21,975 --> 00:10:24,670
+No tenemos ninguna
+incorporación que queramos escribir
+
+205
+00:10:24,880 --> 00:10:26,320
+solo escribiremos una cosa.
+
+206
+00:10:26,460 --> 00:10:28,525
+Si tuviéramos que escribir varias cosas
+
+207
+00:10:28,825 --> 00:10:30,525
+esto es solo un diccionario.
+
+208
+00:10:31,005 --> 00:10:35,565
+Podríamos bajar a este punto
+y escribir embedding.
+
+209
+00:10:36,275 --> 00:10:40,940
+Supongamos que en nuestra incorporación
+tuviéramos un tensor.
+
+210
+00:10:41,890 --> 00:10:44,830
+Supongamos que este tensor de peso
+fuera la incorporación.
+
+211
+00:10:45,760 --> 00:10:48,250
+Vamos a este punto
+y declaramos "embedding": weight
+
+212
+00:10:48,330 --> 00:10:49,040
+Y listo.
+
+213
+00:10:49,290 --> 00:10:52,170
+Cuando exportemos el modelo
+estaremos exportando dos cosas.
+
+214
+00:10:52,325 --> 00:10:56,160
+Exportaremos la salida de la regresión
+y una incorporación.
+
+215
+00:10:56,710 --> 00:10:58,035
+Luego de hacer eso
+
+216
+00:10:58,185 --> 00:11:01,630
+podemos escribir
+un EstimatorSpec que pase el modo
+
+217
+00:11:01,680 --> 00:11:03,260
+el diccionario de predicciones
+
+218
+00:11:03,570 --> 00:11:04,640
+la pérdida
+
+219
+00:11:04,640 --> 00:11:07,065
+la operación de entrenamiento,
+las métricas de evaluación
+
+220
+00:11:07,065 --> 00:11:08,865
+y lo que queremos exportar.
+
+221
+00:11:09,765 --> 00:11:10,990
+Eso es todo.
+
+222
+00:11:11,890 --> 00:11:14,160
+El resto queda esencialmente
+igual que antes.
+
+223
+00:11:14,240 --> 00:11:17,515
+Creamos un entrenamiento,
+las funciones de validación.
+
+224
+00:11:17,785 --> 00:11:20,402
+Estas no toman parámetros
+ni funciones de entrada
+
+225
+00:11:20,592 --> 00:11:21,540
+Eso estoy haciendo.
+
+226
+00:11:21,540 --> 00:11:23,165
+Solo defino un get_train
+
+227
+00:11:23,325 --> 00:11:27,130
+que pasa train.csv y TRAIN para el modo
+
+228
+00:11:27,590 --> 00:11:31,305
+luego, la función de entrega de entrada
+toma TIMESERIES_COL
+
+229
+00:11:31,565 --> 00:11:33,770
+y dice que todos son
+números de punto flotante.
+
+230
+00:11:34,090 --> 00:11:36,010
+Llamamos a train_and_evaluate
+
+231
+00:11:36,370 --> 00:11:39,005
+y lo probamos como un módulo independiente.
+
+232
+00:11:40,455 --> 00:11:42,775
+También podemos entrenarlo en ML Engine
+
+233
+00:11:42,805 --> 00:11:46,240
+recordando cambiar el depósito
+para que sea de Qwiklabs.

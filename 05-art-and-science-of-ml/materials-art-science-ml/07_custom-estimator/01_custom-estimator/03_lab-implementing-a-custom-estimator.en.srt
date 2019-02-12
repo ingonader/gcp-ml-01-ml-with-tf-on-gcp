@@ -1,0 +1,887 @@
+1
+00:00:00,000 --> 00:00:04,665
+In this lab, our goal is to learn how to write a custom estimator.
+
+2
+00:00:04,665 --> 00:00:07,575
+We will assume that we have a TensorFlow function,
+
+3
+00:00:07,575 --> 00:00:12,650
+that takes a set of input tensors and creates a set of output tensors.
+
+4
+00:00:12,650 --> 00:00:17,235
+Our job will be to wrap this function into the estimator framework,
+
+5
+00:00:17,235 --> 00:00:21,320
+so that we get all the high-level benefits that estimator provides.
+
+6
+00:00:21,320 --> 00:00:26,329
+In reality, when you get a working model that doesn't use estimators,
+
+7
+00:00:26,329 --> 00:00:30,705
+it will have some way of reading data and outputting models.
+
+8
+00:00:30,705 --> 00:00:34,620
+You will essentially throw those parts of the model away and keep
+
+9
+00:00:34,620 --> 00:00:37,080
+only the mathematical core of the model:
+
+10
+00:00:37,080 --> 00:00:41,630
+the model that turns the input tensor into the output tensor.
+
+11
+00:00:41,630 --> 00:00:45,150
+So in this lab, we are essentially looking at how you would take
+
+12
+00:00:45,150 --> 00:00:48,415
+a model and wrap it with the estimator framework,
+
+13
+00:00:48,415 --> 00:00:51,405
+your own custom module function.
+
+14
+00:00:51,405 --> 00:00:54,100
+So in order to illustrate this as in the slides,
+
+15
+00:00:54,100 --> 00:00:56,645
+we are essentially using a time series model.
+
+16
+00:00:56,645 --> 00:00:59,840
+Let's not worry about how the time series model actually works,
+
+17
+00:00:59,840 --> 00:01:03,570
+we'll look at sequence models later in the specialization,
+
+18
+00:01:03,570 --> 00:01:05,935
+but for now we just treat it as a black box.
+
+19
+00:01:05,935 --> 00:01:10,835
+The basic, but we'll look at the external wrapper of how this thing works.
+
+20
+00:01:10,835 --> 00:01:13,705
+So in this case what we have is,
+
+21
+00:01:13,705 --> 00:01:15,665
+let me just go to an import TensorFlow,
+
+22
+00:01:15,665 --> 00:01:18,660
+and what we will do is that we basically create,
+
+23
+00:01:18,660 --> 00:01:21,165
+simulate a bunch of data,
+
+24
+00:01:21,165 --> 00:01:24,250
+each of these data has essentially different sine waves of
+
+25
+00:01:24,250 --> 00:01:26,650
+different amplitudes that are basically
+
+26
+00:01:26,650 --> 00:01:29,380
+going in different frequencies that are essentially getting created.
+
+27
+00:01:29,380 --> 00:01:32,870
+So here are five examples of this time series.
+
+28
+00:01:32,870 --> 00:01:35,725
+We will actually create lots and lots of this data,
+
+29
+00:01:35,725 --> 00:01:38,185
+and that is the data that we are going to be training,
+
+30
+00:01:38,185 --> 00:01:42,950
+and the idea is that we will give the neural network nine values.
+
+31
+00:01:42,950 --> 00:01:45,165
+So, zero, one, two, three. All right?
+
+32
+00:01:45,165 --> 00:01:46,965
+We'll give it actually up to eight,
+
+33
+00:01:46,965 --> 00:01:51,990
+then nav we'll give it nine values and have it predict the tenth.
+
+34
+00:01:51,990 --> 00:01:57,010
+So we'll teach it based on a bunch of existing data and have it
+
+35
+00:01:57,010 --> 00:02:03,610
+learn based on nine values what the tenth one ought to be.
+
+36
+00:02:03,610 --> 00:02:05,155
+So in order to do that,
+
+37
+00:02:05,155 --> 00:02:07,770
+we'll go ahead and create a CSV file,
+
+38
+00:02:07,770 --> 00:02:10,010
+two CSV, give it a file name,
+
+39
+00:02:10,010 --> 00:02:12,950
+tell it how many sequences we want,
+
+40
+00:02:12,950 --> 00:02:16,625
+then what we'll do is we basically open up the file,
+
+41
+00:02:16,625 --> 00:02:20,550
+write it, and create a time series.
+
+42
+00:02:20,550 --> 00:02:23,545
+How many times series? N of them.
+
+43
+00:02:23,545 --> 00:02:27,640
+So in this case I'm calling train.csv.n equals thousand.
+
+44
+00:02:27,640 --> 00:02:30,295
+So I'm going to get a file with a thousand sequences.
+
+45
+00:02:30,295 --> 00:02:33,290
+My train.csv is going to contain a thousand sequences,
+
+46
+00:02:33,290 --> 00:02:37,110
+value.csv is going to contain 50 sequences.
+
+47
+00:02:37,110 --> 00:02:41,075
+So, and they're all going to be separated by commas.
+
+48
+00:02:41,075 --> 00:02:43,380
+So I can run this,
+
+49
+00:02:43,660 --> 00:02:45,975
+and then having run it,
+
+50
+00:02:45,975 --> 00:02:50,095
+I can look at the first five lines of train.csv,
+
+51
+00:02:50,095 --> 00:02:51,965
+those are the first five lines,
+
+52
+00:02:51,965 --> 00:02:55,415
+and the first five lines of value.csv.
+
+53
+00:02:55,415 --> 00:02:58,240
+As you can see, this is essentially
+
+54
+00:02:58,240 --> 00:03:04,805
+one time series and our training input features are going to be these,
+
+55
+00:03:04,805 --> 00:03:06,910
+and this is going to be our label,
+
+56
+00:03:06,910 --> 00:03:11,985
+and that's essentially what we want our model to learn.
+
+57
+00:03:11,985 --> 00:03:13,550
+So where does something like this come in?
+
+58
+00:03:13,550 --> 00:03:16,285
+I mean some, even though you're not going to talk about time series,
+
+59
+00:03:16,285 --> 00:03:20,435
+it's probably good to kind of think about what the situation we're illustrating is.
+
+60
+00:03:20,435 --> 00:03:23,880
+The situation that we are illustrating is something like let's say,
+
+61
+00:03:23,880 --> 00:03:27,920
+you're running a retail store and you have thousands of items,
+
+62
+00:03:27,920 --> 00:03:31,620
+and each item has its own seasonality,
+
+63
+00:03:31,620 --> 00:03:39,935
+and you want to basically look at the past eight time periods or plus nine time periods,
+
+64
+00:03:39,935 --> 00:03:42,665
+and use it to predict that tenth time period.
+
+65
+00:03:42,665 --> 00:03:44,100
+That's essentially what you're doing.
+
+66
+00:03:44,100 --> 00:03:47,730
+This is not the time series thing where
+
+67
+00:03:47,730 --> 00:03:51,660
+you're trying to predict the future value of a stock market.
+
+68
+00:03:51,660 --> 00:03:56,530
+That is different, that is one very very very long time series.
+
+69
+00:03:56,530 --> 00:04:01,765
+Instead here, we have thousands of shark time series.
+
+70
+00:04:01,765 --> 00:04:03,030
+So it's a different problem,
+
+71
+00:04:03,030 --> 00:04:04,540
+it's a different problem.
+
+72
+00:04:04,540 --> 00:04:06,910
+This problem is the retail example,
+
+73
+00:04:06,910 --> 00:04:09,120
+where you have thousands of products,
+
+74
+00:04:09,120 --> 00:04:11,205
+each of them have their own seasonality,
+
+75
+00:04:11,205 --> 00:04:13,155
+but they all have seasonality,
+
+76
+00:04:13,155 --> 00:04:17,970
+and you want to basically learn that idea of the seasonality,
+
+77
+00:04:17,970 --> 00:04:23,795
+so that you can look at just that one product's time series and predict the next one.
+
+78
+00:04:23,795 --> 00:04:26,360
+So that's our training dataset,
+
+79
+00:04:26,360 --> 00:04:29,150
+and based on that we're basically going to train our model.
+
+80
+00:04:29,150 --> 00:04:32,090
+The model that you're going to train is called recurring neural network.
+
+81
+00:04:32,090 --> 00:04:36,150
+Again we're not going to worry too much about the internals of the model itself,
+
+82
+00:04:36,150 --> 00:04:39,205
+but we're going to be worried about how we set it up.
+
+83
+00:04:39,205 --> 00:04:40,570
+So, in this case again,
+
+84
+00:04:40,570 --> 00:04:45,310
+we import TensorFlow, and then we have to read our data.
+
+85
+00:04:45,310 --> 00:04:49,530
+Our data is essentially our sequence length.
+
+86
+00:04:49,530 --> 00:04:53,370
+So we basically have defaults is 0.01,
+
+87
+00:04:53,370 --> 00:04:57,870
+so these are all floating point numbers for X range of zero to sequence length.
+
+88
+00:04:57,870 --> 00:04:59,665
+So we basically have 10 numbers.
+
+89
+00:04:59,665 --> 00:05:02,130
+Our batch size, this is how many?
+
+90
+00:05:02,130 --> 00:05:04,115
+We going to compute a gradient descent on,
+
+91
+00:05:04,115 --> 00:05:06,135
+our batch size is going to be 20.
+
+92
+00:05:06,135 --> 00:05:10,620
+The time series column in our data is going to be called raw data,
+
+93
+00:05:10,620 --> 00:05:13,330
+and in our sequence,
+
+94
+00:05:13,330 --> 00:05:15,160
+the number of outputs is one,
+
+95
+00:05:15,160 --> 00:05:16,485
+that's the final output,
+
+96
+00:05:16,485 --> 00:05:21,840
+and the number of inputs is a sequence length minus the number of outputs.
+
+97
+00:05:21,840 --> 00:05:25,250
+So in other words, the first nine are the inputs,
+
+98
+00:05:25,250 --> 00:05:27,055
+and the last one is output.
+
+99
+00:05:27,055 --> 00:05:31,405
+So that's the set of constants if you're defining,
+
+100
+00:05:31,405 --> 00:05:34,520
+and then we basically write our read dataset.
+
+101
+00:05:34,520 --> 00:05:36,890
+This is like creating an input function,
+
+102
+00:05:36,890 --> 00:05:40,845
+here our decode csv given a line,
+
+103
+00:05:40,845 --> 00:05:45,750
+it's basically going to say "Go ahead and read them all as floating point numbers",
+
+104
+00:05:45,750 --> 00:05:47,220
+so you're going to get all data,
+
+105
+00:05:47,220 --> 00:05:48,750
+which is going to be 10 numbers,
+
+106
+00:05:48,750 --> 00:05:52,570
+but remember that it's going to read them one batch at a time.
+
+107
+00:05:52,570 --> 00:05:54,855
+So this thing is not one line,
+
+108
+00:05:54,855 --> 00:05:57,360
+it is actually the data corresponding to
+
+109
+00:05:57,360 --> 00:06:01,145
+typically 20 lines because we're reading it batch by batch.
+
+110
+00:06:01,145 --> 00:06:04,380
+So this is 20 lines, and of those,
+
+111
+00:06:04,380 --> 00:06:08,110
+we're going to slice the first nine of them,
+
+112
+00:06:08,110 --> 00:06:09,855
+and those become the inputs,
+
+113
+00:06:09,855 --> 00:06:12,035
+and we're going to slice the last column,
+
+114
+00:06:12,035 --> 00:06:13,800
+and that's going to become the labels.
+
+115
+00:06:13,800 --> 00:06:15,650
+So that's basically what we're doing here.
+
+116
+00:06:15,650 --> 00:06:20,255
+We're slicing the first nine values and that's our inputs,
+
+117
+00:06:20,255 --> 00:06:22,140
+last value and that's our labels.
+
+118
+00:06:22,140 --> 00:06:29,150
+So again, inputs is going to be of length batch size and width nine,
+
+119
+00:06:29,150 --> 00:06:35,675
+and labels is going to be of height batch size and width one, number of outputs.
+
+120
+00:06:35,675 --> 00:06:39,025
+So we basically take those things,
+
+121
+00:06:39,025 --> 00:06:44,780
+and these are all separate values and we stack them together,
+
+122
+00:06:44,780 --> 00:06:46,910
+so that we basically get a matrix.
+
+123
+00:06:46,910 --> 00:06:49,860
+So that's our input. So we're stacking it to form a matrix,
+
+124
+00:06:49,860 --> 00:06:52,150
+we are stacking this to form a matrix,
+
+125
+00:06:52,150 --> 00:06:54,620
+the matrix here, the second dimension is one,
+
+126
+00:06:54,620 --> 00:06:56,340
+but it's still not in our matrix,
+
+127
+00:06:56,340 --> 00:06:58,395
+rather than the list of lists.
+
+128
+00:06:58,395 --> 00:07:01,100
+We don't want a list of lists, we want a matrix.
+
+129
+00:07:01,100 --> 00:07:02,805
+So that's what the stack does,
+
+130
+00:07:02,805 --> 00:07:05,635
+and then we basically say the time series call,
+
+131
+00:07:05,635 --> 00:07:10,465
+raw data, the tensor is the inputs and now we can return the features and labels.
+
+132
+00:07:10,465 --> 00:07:12,750
+So features contains only one,
+
+133
+00:07:12,750 --> 00:07:15,440
+it's a dictionary contains one feature,
+
+134
+00:07:15,440 --> 00:07:18,160
+that feature is a matrix.
+
+135
+00:07:18,160 --> 00:07:21,370
+Earlier, all of our features were single columns,
+
+136
+00:07:21,370 --> 00:07:23,685
+but here our feature is a matrix.
+
+137
+00:07:23,685 --> 00:07:26,210
+Okay? So that's why you're doing the stack here.
+
+138
+00:07:26,210 --> 00:07:27,935
+So having done that,
+
+139
+00:07:27,935 --> 00:07:29,765
+now how do you do the read dataset?
+
+140
+00:07:29,765 --> 00:07:31,580
+When somebody says read dataset giving us
+
+141
+00:07:31,580 --> 00:07:34,130
+a file name they may actually give us a file path.
+
+142
+00:07:34,130 --> 00:07:37,205
+So what we basically going to do is that we're going to do glob,
+
+143
+00:07:37,205 --> 00:07:42,075
+match all the files that have a wildcard in it for example that gives us a file list,
+
+144
+00:07:42,075 --> 00:07:47,545
+and read it as a text line and call decode csv has to get back our dataset,
+
+145
+00:07:47,545 --> 00:07:50,415
+and if we are doing training,
+
+146
+00:07:50,415 --> 00:07:52,290
+we will shuffle the dataset.
+
+147
+00:07:52,290 --> 00:07:54,795
+If we're doing evaluation there's no need to shuffle,
+
+148
+00:07:54,795 --> 00:07:56,840
+so we just don't shuffle.
+
+149
+00:07:56,840 --> 00:08:01,105
+If we're doing training we'll read indefinitely, if you're reading,
+
+150
+00:08:01,105 --> 00:08:04,560
+during evaluation you want to read the entire dataset once,
+
+151
+00:08:04,560 --> 00:08:06,330
+so the number of epochs is one.
+
+152
+00:08:06,330 --> 00:08:09,420
+So we basically repeat the dataset for the number of epochs.
+
+153
+00:08:09,420 --> 00:08:11,610
+For evaluation we do it once,
+
+154
+00:08:11,610 --> 00:08:15,965
+for training we do it forever and we batch it by batch size.
+
+155
+00:08:15,965 --> 00:08:18,335
+So 20 rows at a time,
+
+156
+00:08:18,335 --> 00:08:20,415
+20 sequences at a time,
+
+157
+00:08:20,415 --> 00:08:22,855
+and then we basically return the iterator.
+
+158
+00:08:22,855 --> 00:08:26,215
+So that is our reading of our dataset.
+
+159
+00:08:26,215 --> 00:08:30,660
+Now, the model itself,
+
+160
+00:08:30,660 --> 00:08:33,475
+let's not worry about how this works,
+
+161
+00:08:33,475 --> 00:08:38,999
+the key thing is that we have a metrical simple RNN that takes our features,
+
+162
+00:08:38,999 --> 00:08:40,965
+our labels and our mode,
+
+163
+00:08:40,965 --> 00:08:46,490
+and what it does is that it pulls out the sequence X out of the features,
+
+164
+00:08:46,490 --> 00:08:49,435
+and then it does something to them.
+
+165
+00:08:49,435 --> 00:08:51,095
+So let's not worry about these,
+
+166
+00:08:51,095 --> 00:08:53,940
+until it gets to the predictions.
+
+167
+00:08:53,940 --> 00:08:56,910
+This is the output of our time series model.
+
+168
+00:08:56,910 --> 00:08:59,550
+So given the input,
+
+169
+00:08:59,550 --> 00:09:01,555
+we basically have an output,
+
+170
+00:09:01,555 --> 00:09:04,015
+and that's what pretty much every model function is.
+
+171
+00:09:04,015 --> 00:09:08,240
+Having done that we now have to decide what our last function is.
+
+172
+00:09:08,240 --> 00:09:10,465
+Remember that there is a time series problem,
+
+173
+00:09:10,465 --> 00:09:12,870
+we are predicting the last value.
+
+174
+00:09:12,870 --> 00:09:14,980
+In other words, we are predicting a value.
+
+175
+00:09:14,980 --> 00:09:19,800
+So is this regression or is a classification? Regression, right?
+
+176
+00:09:19,800 --> 00:09:21,505
+And because it's regression,
+
+177
+00:09:21,505 --> 00:09:23,895
+my loss is going to be mean squared error.
+
+178
+00:09:23,895 --> 00:09:26,205
+I could use root-mean- squared error,
+
+179
+00:09:26,205 --> 00:09:28,645
+I can also use treatment the mean squared error.
+
+180
+00:09:28,645 --> 00:09:31,599
+My training operation is going to be to minimize
+
+181
+00:09:31,599 --> 00:09:36,690
+the loss with a specific learning rate and with the specific optimizer,
+
+182
+00:09:36,690 --> 00:09:41,025
+and my evaluation metrics is going to be the rmc this time.
+
+183
+00:09:41,025 --> 00:09:44,930
+The root-mean-squared error given the labels and given the predictions.
+
+184
+00:09:44,930 --> 00:09:48,855
+If it's not training and it's not evaluation,
+
+185
+00:09:48,855 --> 00:09:52,715
+the loss, the train op and the eval metrics are all none.
+
+186
+00:09:52,715 --> 00:09:54,960
+There are none because we don't have a label.
+
+187
+00:09:54,960 --> 00:09:57,540
+We can't during prediction, we won't have a label.
+
+188
+00:09:57,540 --> 00:09:59,425
+So we can do evaluation,
+
+189
+00:09:59,425 --> 00:10:01,600
+we can not do training, we cannot do loss.
+
+190
+00:10:01,600 --> 00:10:03,955
+So we set all of those operations to be none.
+
+191
+00:10:03,955 --> 00:10:08,120
+Our predictions dictionaries are essentially the output predictions,
+
+192
+00:10:08,120 --> 00:10:11,520
+we're just calling it, giving it a name "Predicted",
+
+193
+00:10:11,520 --> 00:10:15,830
+and when we are exporting we'll call it regression export outputs,
+
+194
+00:10:15,830 --> 00:10:21,875
+and what we basically do is to basically take those predictions and write them out.
+
+195
+00:10:21,875 --> 00:10:24,700
+In this case we don't have any embedding that we want to write out,
+
+196
+00:10:24,700 --> 00:10:26,410
+so we're just writing one thing out.
+
+197
+00:10:26,410 --> 00:10:28,665
+If you had multiple things to write out,
+
+198
+00:10:28,665 --> 00:10:30,625
+again this is just a dictionary.
+
+199
+00:10:30,625 --> 00:10:36,275
+So we could basically go down here and say embedding, right?
+
+200
+00:10:36,275 --> 00:10:41,220
+And let's say up here in our embedding let's say we had some tensor.
+
+201
+00:10:41,220 --> 00:10:44,960
+Okay. So let's say this weight tensor wasn't an embedding,
+
+202
+00:10:44,960 --> 00:10:49,100
+you would basically go down here and say embedding weight, and that's it.
+
+203
+00:10:49,100 --> 00:10:50,680
+So when we export our model,
+
+204
+00:10:50,680 --> 00:10:52,225
+we'll now be exporting two things.
+
+205
+00:10:52,225 --> 00:10:56,410
+We'll be exporting the regression output and we'll be exporting an embedding.
+
+206
+00:10:56,410 --> 00:10:58,035
+So having done that,
+
+207
+00:10:58,035 --> 00:11:01,680
+we can basically write out an estimators spec passing in the mode,
+
+208
+00:11:01,680 --> 00:11:03,430
+passing in the predictions dict,
+
+209
+00:11:03,430 --> 00:11:04,710
+passing in the loss,
+
+210
+00:11:04,710 --> 00:11:09,185
+the train op, the valuation metrics and the things that we want to export.
+
+211
+00:11:09,185 --> 00:11:11,420
+And that's pretty much it.
+
+212
+00:11:11,420 --> 00:11:14,240
+The rest of it is essentially the same as before,
+
+213
+00:11:14,240 --> 00:11:17,655
+you basically create your training, your validation functions.
+
+214
+00:11:17,655 --> 00:11:21,540
+These have to take no parameters or input functions, so this is what I'm doing,
+
+215
+00:11:21,540 --> 00:11:23,245
+I'm just giving it a get train,
+
+216
+00:11:23,245 --> 00:11:27,330
+that passes in train.csv and train for the mode,
+
+217
+00:11:27,330 --> 00:11:31,475
+and then our serving input function essentially takes the time series col,
+
+218
+00:11:31,475 --> 00:11:34,000
+and says these are all 14 point numbers,
+
+219
+00:11:34,000 --> 00:11:36,190
+we col the train and evaluate,
+
+220
+00:11:36,190 --> 00:11:39,285
+and we try it out as a standalone module,
+
+221
+00:11:39,285 --> 00:11:42,805
+and we can also train it on ML engine,
+
+222
+00:11:42,805 --> 00:11:47,020
+remembering to change the bucket to be a qwiklabs bucket.

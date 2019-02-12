@@ -1,0 +1,266 @@
+Jetzt, da wir L1-Regularisierung kennen, gehen wir zur logistischen Regression über und erfahren, warum sie
+für Regularisierung wichtig ist. Angenommen, wir möchten das
+Ergebnis von Münzwürfen voraussagen. Wir wissen, dass bei einer fairen Münze der erwartete Wert 50 Prozent
+Kopf und 50 Prozent Zahl beträgt. Was, wenn wir stattdessen
+eine unfaire Münze hätten, die gebogen ist? Sagen wir, wir möchten die Vorhersagen
+für alle Münzwürfe verallgemeinern, fair und unfair, groß und klein, schwer und leicht, et cetera. Welche Eigenschaften könnten vorhersagen, ob ein Wurf Kopf oder Zahl ergibt? Vielleicht könnten wir
+den Biegewinkel nutzen, weil er X Prozent Masse in
+die andere Dimension verteilt und/oder die Rotation durch Luftwiderstand oder Schwerpunkt verändert. Die Masse der Münze wäre
+auch eine wissenswerte Eigenschaft, sowie die Größe, also
+der Durchmesser, die Dicke, et cetera. Durch Feature Engineering 
+könnten wir das Volumen der Münze und ihre Dichte erhalten. Vielleicht wären die Materialart oder -arten der Münze
+nützliche Informationen. Diese Eigenschaften
+wären einfach zu messen. Doch sie sind nur eine Seite
+der Medaille, Anspielung beabsichtigt. Der Rest kommt auf
+die Handlung des Wurfes selbst an, wie viel lineare oder schräge
+Geschwindigkeit eingesetzt wurde, der Winkel des Wurfes, der Winkel dessen, worauf sie landet, Windgeschwindigkeit, et cetera. Diese Dinge könnten
+schwerer zu messen sein. Jetzt, da wir alle
+diese Eigenschaften haben, was ist das einfachste Modell, mit dem
+wir Kopf oder Zahl vorhersagen könnten? Lineare Regression natürlich. Was könnte mit
+dieser Wahl aber schiefgehen? Unsere Labels sind Kopf oder Zahl, oder anders gedacht, Kopf oder nicht Kopf. Die One-Hot-Kodierung davon könnte eins
+für Kopf und null für nicht Kopf sein. Doch lineare Regression
+einer Standardfunktion der mittleren quadratischen Abweichung könnte die Vorhersagen aus
+den Bereich von eins und null bringen. Was würde eine Vorhersage von 2,75
+für den Status des Münzwurfs bedeuten? Das macht keinen Sinn. Ein Modell, das
+quadratische Abweichung minimiert, muss nicht N(0,1)
+als Wahrscheinlichkeit setzen, aber genau das brauchen wir hier. Man kann sich
+insbesondere ein Modell vorstellen, das Werte kleiner als
+null oder größer als eins für einige neue Beispiele vorhersagt. Daher könnten wir dieses Modell
+nicht als Wahrscheinlichkeit verwenden. Einfache Tricks wie das Deckeln
+der Vorhersagen bei null und eins würde Verzerrung hereinbringen. Wir brauchen also etwas anderes, insbesondere eine neue Verlustfunktion. Diese lineare in eine
+logistische Regression umzuwandeln kann das Dilemma auflösen. Einer unserer früheren Kurse
+hat in die Geschichte von ML und die sigmoide
+Aktivierungsfunktion eingeführt. Schauen wir uns das jetzt genauer an. Die sigmoide Aktivierungsfunktion nimmt im Grunde die
+gewichtete Summe w transponiert x plus b von einer linearen Regression
+und statt einfach das auszugeben und die mittlere quadratische
+Abweichung zu berechnen, ändern wir die Aktivierungs-
+funktion von linear zu sigmoid und mit diesem Argument wird alles
+sanft zwischen null und eins gehalten. Die Eingabe in den Sigmoid, normalerweise die Ausgabe der
+linearen Regression, heißt der Logit. Wir führen also
+eine nichtlineare Transformation auf unserem linearen Modell aus. Beachten Sie, wie die
+Wahrscheinlichkeit gegen null strebt, wenn die Logits in die negative
+Unendlichkeit laufen und gegen eins bei positiver Unendlichkeit. Was bedeutet dies für das Training? Anders als
+mittlere quadratische Abweichung schätzt der Sigmoid
+nie 1,0 oder 0,0 Wahrscheinlichkeit. So werden durch den
+steten Drang des Gradientenverfahrens, den Verlust immer
+näher gegen null zu bringen, die Gewichte immer näher gegen positive
+oder negative Unendlichkeit gedrängt, wenn keine Regularisierung stattfindet, was zu Problemen führen kann Zunächst aber, wie können wir
+die Ausgabe eines Sigmoids interpretieren? Ist es einfach eine unter vielen 
+Funktionen mit Bereichen von null bis eins oder ist er noch mehr? Die gute Nachricht ist, er ist mehr; er ist eine kalibrierte
+Wahrscheinlichkeitsschätzung. Jenseits des Bereichs allein ist die Sigmoidfunktion
+die kumulative Verteilungsfunktion der logistischen
+Wahrscheinlichkeitsverteilung, deren Quantilfunktion der Kehrwert
+des Logits ist, der die Log-odds abbildet. Daher kann man
+mathematisch das Gegenteil eines Sigmoids als Wahrscheinlichkeiten verstehen. Somit können wir
+Kalibrierung als den Fakt betrachten, dass Ausgaben reale Werte
+wie Wahrscheinlichkeiten sind. Dies steht im Gegensatz
+zu unkalibrierten Ausgaben wie einem eingebetteten Vektor, der intern informativ ist, aber
+die Werte haben keine reale Korrelation. Viele Ausgabe-Aktivierungsfunktionen, tatsächlich eine unendliche Anzahl, könnten Ihnen eine Zahl zwischen null
+und eins geben, doch nur dieses Sigmoid ist erwiesenermaßen
+eine kalibrierte Schätzung der Auftrittswahrscheinlichkeit
+des Trainings-Datasets. Mittels dieser Tatsache
+über die sigmoide Aktivierungsfunktion können wir binäre Klassifizierungsprobleme
+in probabilistische Probleme umwandeln. Zum Beispiel, statt eines Modells,
+das einfach Ja oder Nein vorhersagt, etwa ob ein Kunde
+einen Artikel kaufen wird, kann es jetzt 
+die Wahrscheinlichkeit vorhersagen. Dies, gekoppelt mit einem Schwellenwert, kann viel mehr Vorhersagepotenzial
+bieten als eine einfache binäre Antwort. Da wir nun die Ausgabe der
+logistischen Regression berechnet haben, zu einer kalibrierten
+Wahrscheinlichkeit zwischen null und eins, wie können wir
+unseren Fehler finden und nutzen, um unsere Gewichte
+durch Rückpropagierung anzupassen? Wir benutzen eine
+Verlustfunktion namens Kreuzentropie, die auch der logarithmische Verlust ist. Anders als mittlere
+quadratische Abweichung betont sie weniger die Fehler, bei denen
+die Ausgabe relativ nah am Label ist, wo sie fast linear
+gegenüber quadratisch ist. Aber, auch im Gegensatz
+zu mittlerer quadratischer Abweichung, wächst Kreuzentropie exponentiell, wenn
+die Vorhersage dem Label gegenübersteht. Anders gesagt gibt es eine hohe Strafe, wenn das Modell nicht nur falsch liegt,
+sondern es mit großer Konfidenz tut. Auch kann die Ableitung der
+mittleren quadratischen Abweichung Probleme beim Training verursachen. Da wir die Ausgabe immer
+weiter Richtung null oder eins drücken, wird der Gradient, der Ausgabe mal eins
+minus der Ausgabe entspricht, immer kleiner und
+ändert die Gewichte immer weniger. Das Training könnte
+völlig zum Stillstand kommen. Jedoch ist der
+Gradient über der Entropie eine logistische Funktion
+mal eins minus die logistische Funktion, die sich praktischerweise
+durch Rückpropagierung aufhebt und dieses Problem somit nicht hat. Dennoch ist Regularisierung
+in logistischer Regression wichtig, denn den Verlust gegen null
+zu drängen ist schwierig und gefährlich. Erstens strebt das Gradientenverfahren an, Kreuzentropie zu minimieren und drängt daher die Ausgabewerte näher gegen eins bei positiven Labels
+und näher gegen null bei negativen Labels. Durch die Gleichung des Sigmoids strebt die Funktion gegen null,
+wenn die Logik negativ unendlich ist, und eins, wenn
+die Logik positiv unendlich ist. Für Logits in negativer
+oder positiver Unendlichkeit wird der Betrag der
+Gewichte beständig angehoben, was zu numerischen Stabilitätsproblemen,
+Überläufen und Unterläufen führt. Das ist gefährlich und
+kann unser Taining zunichte machen. Nahe an den Asymptoten, wie Sie am Graph sehen, wird die sigmoide
+Funktion zudem immer flacher. Das heißt, dass die Ableitung
+sich immer weiter zu null bewegt. Da wir mittels Ableitung und
+Rückpropagierung unsere Gewichte anpassen, ist es wichtig, dass
+der Gradient nicht auf null fällt, sonst steht das Training still. Man spricht von Sättigung, wenn alle Aktivierungen
+in diesen Plateaus enden, was zum Problem
+verschwindender Gradienten führt und das Training erschwert. Diese Erkenntnis ist
+möglicherweise auch nützlich hierfür. Angenommen, Sie geben
+jedem Beispiel eine eindeutige ID und bilden jede ID
+auf ihr eigenes Merkmal ab. Mit unregularisierter
+logistischer Regression erhalten Sie absolute Überanpassung. Das Modell versucht vergeblich, Verluste
+in allen Beispielen gegen null zu drängen und die Gewichte aller Bezugsmerkmale werden gegen positive oder
+negative Unendlichkeit gedrängt. Das kann in der Praxis passieren, bei hochdimensionalen
+Daten mit gekreuzten Merkmalen. Oft gibt es eine große
+Masse seltener Kreuzungen, die nur bei jeweils
+einem Beispiel auftreten. Wie können wir uns also
+vor Überanpassung schützen? Welche dieser Dinge sind wichtig für
+das Ausführen von logistischer Regression? Die richtige Antwort
+ist sowohl A als auch B. Regularisierung bei
+logistischer Regression hilft dabei, das Modell durch kleinere
+Parametergewichte einfacher zu halten. Diesen Strafterm der Verlustfunktion
+hinzuzufügen stellt sicher, dass die Kreuzentropie
+im Gradientenverfahren nicht die Gewichte immer näher
+gegen plus oder minus unendlich drängt und numerische Probleme schafft. Hinzu kommt, wir können mit jetzt kleineren Logits
+in den weniger flachen Abschnitten der Sigmoidfunktion bleiben, wo
+die Gradienten weniger nah bei null sind und so Gewicht angepasst und
+das Training fortgeführt werden kann. C ist deshalb falsch, genauso E, weil Regularisierung nicht die Ausgaben einer kalibrierten
+Wahrscheinlichkeitsschätzung umwandelt. Das Gute an
+logistischer Regression ist, dass die bereits die kalibrierte
+Wahrscheinlichkeitsschätzung ausgibt, weil der Sigmoid
+eine kumulative Verteilungsfunktion der logistischen
+Wahrscheinlichkeitsverteilung ist. So werden wirklich
+Wahrscheinlichkeiten vorhergesagt, statt nur binäre Antworten,
+wie ja oder nein, wahr oder falsch, kaufen oder verkaufen, et cetera. Gegen Überanpassung
+verwenden wir oft sowohl Regularisierung als auch Vorzeitiges Beenden. Bei der Regularisierung wächst
+die Modellkomplexität durch große Gewichte und wenn wir dann abstimmen und immer größere Gewichte
+für immer seltenere Szenarios bekommen, erhöhen wir am Ende
+den Verlust, also halten wir an. L2-Regularisierung hält
+die gewichteten Werte kleiner und L1-Regularisierung hält
+das Modell dünner besetzt, indem es schwache Merkmale weglässt. Für die Wahl der optimalen L1- und
+L2-Hyperparameter während der Abstimmung suchen Sie nach der Stelle
+in der Validierungs-Verlustfunktion, wo Sie den niedrigsten Wert erhalten. Ab diesem Punkt wird weniger
+Regularisierung ihre Varianz erhöhen, Überanpassung einleiten
+und die Verallgemeinerung stören, und mehr Regularisierung
+wird Ihre Verzerrung erhöhen, Unteranpassung einleiten
+und Ihre Verallgemeinerung stören. Vorzeitiges Beenden hält das Training an, wenn die Überanpassung beginnt. Während Ihr Modell trainiert, sollten Sie es im
+Validierungs-Dataset auswerten, anhand jeder Menge Schritte,
+Epochen, Minuten, et cetera. Während des Trainings
+sollten sowohl Trainingsfehler als auch Validierungsfehler abnehmen, aber an einer bestimmten Stelle kann der
+Validierungsfehler beginnen anzusteigen. An dieser Stelle beginnt das Modell,
+sich das Trainings-Dataset zu merken und verliert die Fähigkeit
+zur Verallgemeinerung auf Basis des Validierungs-Datasets
+und besonders der neuen Daten, für die wir dieses Modell
+einmal einsetzen möchten. Vorzeitiges Beenden hält
+das Modell hier an und geht zurück, um die Gewichte vom
+letzten Schritt zu verwenden, vor dem Validierungsfehler
+und Funktionspunkt. Hier ist der Verlust nur L(w,D), also kein Regularisierungsterm. Interessanterweise ist Vorzeitiges Beenden ein ungefähres Äquivalent
+zur L2-Regularisierung und wird oft an ihrer statt verwendet,
+weil sein Rechenaufwand geringer ist. Zum Glück benutzen wir in der Praxis immer sowohl explizite
+Regularisierung, L1 und L2, als auch ein gewisses Maß an
+Regularisierung durch Vorzeitiges Beenden. Obwohl L2-Regularisierung und
+Vorzeitiges Beenden redundant erscheinen können Sie in realen Systemen nicht
+immer die optimalen Hyperparameter wählen und Vorzeitiges Beenden
+kann diese Wahl für Sie korrigieren. Großartig, dass die logistische Regression
+uns eine Wahrscheinlichkeit ausgibt. Trotzdem wollen Nutzer
+am Ende des Tages manchmal einfach, dass eine simple Entscheidung
+für ihre realen Probleme getroffen wird. Soll die E-Mail an den
+Spamordner gesendet werden oder nicht, soll das Darlehen
+genehmigt werden oder nicht, über welche Straße
+sollen wir den User lotsen? Wie kann unsere
+Wahrscheinlichkeitsschätzung helfen, damit ein Tool mit unserem
+Modell eine Entscheidung treffen kann? Wir wählen einen Schwellenwert. Ein einfacher Schwellenwert
+binärer Klassifikationsprobleme gäbe allen Wahrscheinlichkeiten
+kleiner gleich 50 Prozent ein Nein und allen Wahrscheinlichkeiten
+größer als 50 Prozent ein Ja. Bei einigen realen Problemen
+wird allerdings anders gewichtet etwa 60-40, 20-80, 99-1, et cetera, je nachdem wie die Balance
+unserer Typ1- und Typ2-Fehler sein soll, anders gesagt, die Balance von
+falschen Positiven und falschen Negativen. Für binäre Klassifikationen
+haben wir vier mögliche Ergebnisse; echt Positive, echt Negative, falsch Positive und falsch Negative. Kombinationen dieser Werte können
+können zu Bewertungsmesswerten führen wie Genauigkeit,
+also die Anzahl der echt Positiven geteilt durch alle Positiven, und Trefferquote, also
+die Anzahl der echt Positiven geteilt durch die Summe
+echt Positiver und falsch Negativer, was die Sensitivität
+oder Richtig-positiv-Rate ergibt. Der Schwellenwert lässt sich abstimmen,
+um den Messwert Ihrer Wahl zu optimieren. Gibt es einen einfachen Weg, der uns dabei hilft? Eine Grenzwertoptimierungskurve oder kurz ROC-Kurve, zeigt, wie
+die Vorhersagen eines gegebenen Modells unterschiedliche echt positive vs.
+falsch positive Raten erzeugen, wenn man unterschiedliche
+Entscheidungsschwellenwerte nutzt. Senken wir den Schwellenwert, bekommen
+wir wahrscheinlich mehr falsch Positive, finden aber auch eine 
+höhere Anzahl echt Positiver vor. Idealerweise hätte ein perfektes Modell null falsch Positive
+und null falsch Negative. In der Gleichung ergäbe das
+eine Rate echt Positiver von eins und eine Rate falsch Positiver von null. Um eine Kurve zu erstellen, würden wir jeden möglichen Entscheidungs-
+schwellenwert aussuchen und neu bewerten. Jeder Schwellenwert
+erzeugt einen einzelnen Punkt, aber indem viele Schwellenwerte bewertet
+werden, entsteht schließlich eine Kurve. Zum Glück gibt es dafür einen
+effizienten Sortier-Algorithmus. Jedes Modell würde eine
+andere ROC-Kurve erzeugen. Wie können wir diese Kurven nutzen, um die relative Leistung
+unserer Modelle zu vergleichen, wenn wir unseren genauen
+Entscheidungsschwellenwert nicht kennen? Wir nutzen die Fläche unter der Kurve
+als aggregierte Leistungsmessung über alle möglichen 
+Klassifikationsschwellenwerte hinweg. AUC hilft Ihnen,
+zwischen Modellen zu wählen, wenn Sie den endgültigen
+Entscheidungsschwellenwert nicht kennen. Es ist, als fragten wir: Wenn wir je ein
+zufälliges Positives und Negatives wählen, wie wahrscheinlich ist es, dass mein Modell sie in der
+richtigen relativen Reihenfolge wertet? Das Gute an AUC ist, dass
+sie invariant gegenüber der Skalierung und dem Klassifikationsschwellenwert ist. Aus diesen Gründen wird sie gerne genutzt. Manchmal wird AUC auch für die
+Genauigkeits-/Trefferquotenkurve genutzt oder jüngst für
+deren Wachstumskurven, die bloß verschiedene Kombinationen der vier Ergebnisse als
+Messwerte entlang der Achsen verwenden. Dies aber nur als
+aggregierte Messung zu behandeln, kann einige Effekte kaschieren. So ist eine kleine Verbesserung in AUC eher in der Lage, sehr
+unwahrscheinliche Negative einzustufen als nochmals viel unwahrscheinlichere. Das ist in Ordnung, aber
+eventuell nicht wesentlich nutzbringend. Beim Bewerten unserer
+logistischen Regressionsmodelle müssen wir sichergehen,
+dass Vorhersagen unverzerrt sind. In diesem Zusammenhang
+sprechen wir von Verzerrung nicht als dem Verzerrungsterm in
+der linearen Gleichung des Modells. Vielmehr meinen wir, sollte eine generelle Verschiebung in
+positive oder negative Richtung auftreten. Eine einfache Überprüfung der Verzerrung ist der Vergleich der mittleren
+Wertvorhersagen des Modells anhand eines Datasets mit dem
+mittleren Wert der Labels in dem Dataset. Wenn sie nicht nah beieinander liegen, könnten Sie ein Problem haben. Verzerrung ist wie ein
+Kanarienvogel in der Mine, wo wir ihn als Indikator
+für einen Irrtum nutzen können. Wenn Sie Verzerrung haben, haben Sie definitiv ein Problem. Wenn auch null Verzerrung für sich nicht heißt, dass
+alles in Ihrem System perfekt ist, ist sie doch eine
+gute Plausibilitätsprüfung. Wenn Sie Verzerrung haben, könnten es
+unvollständige Merkmale sein, eine fehlerhafte Pipeline, eine
+verzerrte Trainingsprobe, et cetera. Sie können in Datensegmenten
+nach Verzerrung suchen, wodurch das Entfernen von Verzerrung
+aus Ihrem Modell verbessert werden kann. Sehen wir uns ein Beispiel an,
+wie Sie das tun können. Hier ist eine Kalibrierkurve
+eines einfachen Versuchsbrowers. Sie sehen die
+doppeltlogarithmische Skala, da wir die vorhergesagten
+Log-odds in Buckets mit den beobachteten
+Log-odds in Buckets vergleichen. Sie sehen, dass im moderaten
+Bereich alles recht gut kalibriert ist, doch im niedrigsten
+Bereich ziemlich schlecht. Das kommt vor, wenn Teile der Daten-Basis
+schlecht repräsentiert sind, aufgrund von Rauschen
+oder übermäßig starker Regularisierung. Das Aufteilen in Buckets
+kann auf einige Arten passieren; durch das wirkliche
+Aufbrechen der Zielvorhersagen oder indem wir in Quantile aufteilen. Warum müssen wir
+die Vorhersage in Buckets aufteilen, um Kalibrierkurven zu erhalten
+und Wahrscheinlichkeiten vorherzusagen? Für jedes gegebene Ereignis ist
+das echte Label entweder null oder eins, zum Beispiel nicht geklickt oder geklickt. Doch unsere Vorhersagewerte
+sind immer probabilistische Schätzungen irgendwo in der Mitte, wie 0,1 oder 0,33. Bei jedem einzelnen Beispiel
+für sich liegen wir immer daneben. Doch wenn man
+genügend Beispiele gruppiert, möchten wir, dass im Durchschnitt
+die Summe der echten Nullen und Einsen ungefähr unserer vorhergesagten 
+mittleren Wahrscheinlichkeit entspricht. Was hiervon ist wichtig für die
+Ausführung von logistischer Regression? Die richtige Antwort lautet: 
+Alle vorgenannten. Es ist sehr wichtig, dass unser
+Modell sich verallgemeinern lässt, für die besten
+Vorhersagen zu neuen Daten, was der Grund ist,
+für den wir sie überhaupt erstellen. Um das zu erreichen, ist es wichtig,
+unsere Daten nicht überanzupassen. Das Hinzufügen von Straftermen
+an die Zielfunktion kann helfen, wie durch
+L1-Regularisierung für Datendichte und L2-Regularisierung,
+um das Modellgewicht klein zu halten, sowie durch den
+Einsatz von Vorzeitigem Beenden. Es ist auch wichtig, einen
+abgestimmten Schwellenwert zu wählen, für die richtigen Entscheidungen zur Ausgabe Ihrer
+Wahrscheinlichkeitsschätzung, die Geschäftsmesswerte zu minimieren
+oder maximieren, wie Sie es wünschen. Wenn dies nicht klar definiert ist, können wir statistischere Mittel nutzen, wie die Berechnung der echt
+und falsch Positiven und Negativen und ihre Kombination
+in verschiedenen Messwerten, zum Beispiel echt
+und falsch positive Raten. Wir können diesen Prozess für
+viele Schwellenwerte wiederholen und die Fläche unter der 
+Kurve oder AUC darstellen, um eine relativ aggregierte
+Messung der Modellleistung zu erhalten. Zu guter Letzt ist es wichtig, 
+dass unsere Vorhersagen unverzerrt sind, und selbst ohne Verzerrung
+sollten wir sorgfältig darauf achten, dass unser Modell
+eine gute Leistung zeigt. Zunächst suchen wir nach
+Verzerrung, indem wir sichergehen, dass die mittleren Vorhersagen sehr nah
+bei den mittleren Beobachtungen liegen. Ein hilfreicher Weg, Verzerrung zu finden, ist das Betrachten von Datensegmenten
+und der Einsatz etwa einer Kalibrierkurve, um die Problembereiche
+noch weiter einzugrenzen.
